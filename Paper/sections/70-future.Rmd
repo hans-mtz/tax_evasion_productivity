@@ -1,0 +1,35 @@
+# Future work on tax evasion and productivity
+
+## Applications and extensions
+
+The identification strategy and the results I can obtain with the deconvolution methods suggest some interesting applications. For example, I can study the effect of e-invoices on tax evasion through cost overreporting. The OECD (2017) recommends e-invoices to fight fake invoices. Mexico (since 2014: Castro et al., 2016), Ecuador, Chile, and Colombia already use e-invoices. I can look into the distribution of tax evasion before and after the implementations and measure the changes in the distribution over time and across countries.
+
+In addition, I can look further into the relationship between tax evasion and productivity, and the resulting productivity bias. The focus of this paper shifted towards measuring tax evasion, but the biased measures of productivity have many implications. I discuss how this is relevant to the literature on misallocations. 
+
+I plan to extend the current identification strategy to allow for non-linear production functions and misreporting of input prices. Recent work has shown identification conditions of a non-parametric regression when the measurement error is correlated with the latent variable and the function of the regression is monotonic [@Hu2022b]. I could use this framework to estimate the input overreporting when the production function is non-linear.
+
+Other interesting extensions could be allowing for misreporting of input prices or revenue. For price misreporting, the assumption that firms are price-takers could help us identify the cost overreporting. I can use a centering condition that is less susceptible to collusion, like the mode. Concerning revenue misreporting, we could use the fact that firm-to-firm sales are less likely to be underreported than firm-to-customer sales for the identification strategy.
+
+# Thesis outline
+
+At this early stage, I visualize how my research agenda is taking form. Some subjects keep popping into the research questions I find interesting: unobservables, productivity, measurement error, market power,... The conducting line is how to deal with unobservables, leveraging what we know of them from economic theory, and using non-conventional tools to tackle them.
+
+My first chapter and Job Market Paper is the one described here. The insight is that I can use the first-order conditions from the firm's cost minimization problem to learn about tax evasion and productivity.
+
+The second chapter is my summer paper. In this paper, I use recently developed tools from the measurement error literature [@Schennach2014] to explore an old question, Cournot rationalizability. The main result is that the Cournot revealed preference test could no longer be rejected once measurement error in quantities is introduced. This opens the door to more questions and future work. I foresee that the end product could lead to designing a non-parametric test for Market Power and non-parametric robust bounds for markups.
+
+The last chapter will be an application looking deeply into the relationship between productivity and tax evasion, and the repercussions of using a naive measure. In specific, this chapter will look into the misallocation literature where aggregate productivity is decomposed à la @Olley1996. This decomposition takes the following form,
+
+\begin{equation*}
+    \omega_t=\bar\omega_t+\sum_{i\in I}(s_{it}-\bar s_t)(\omega_{it}-\bar\omega_t)
+\end{equation*}
+
+The third term of this decomposition is the sample covariance between productivity and output. The larger this covariance, the higher the output that goes into more productive firms. However, in the presence of tax evasion, this covariance is likely to be mismeasured. 
+
+Using this decomposition, @Eslava2004 argues that the policy reforms in Colombia during the 90s led to a higher reallocation from low to high-productivity firms. This covariance is likely to be mismeasured because of the tax evasion in Colombia. Hence, the conclusions might change depending on the relationship between tax evasion, size, and productivity. Suppose tax evasion is monotonically decreasing in size. Then, smaller firms will evade the most. This will result in a higher measured covariance of productivity and size than the true one. My method does not impose any condition on monotonicity between tax evasion and size, thus, I can explore this relationship.
+
+In summary, my thesis outline looks like the following:
+
+1. Tax evasion and productivity
+2. Mismeasuring misallocations: Aggregate productivity and the productivity bias due to tax evasion
+3. Cournot rationalizability and measurement error (Summer paper)

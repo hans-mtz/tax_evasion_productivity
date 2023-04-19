@@ -1,0 +1,109 @@
+
+# The model
+
+To draw intuition on the mechanisms and consequences of tax evasion on productivity measurement, I set up a simplified model. I use then the model to guide Monte Carlo simulations and explore the results of a counterfactual policy aiming to reduce the productivity gap by a reallocation of resources from low to high-productivity firms. I contrast the result of the policy using a naive measure of productivity —ignoring the effect of tax evasion— with the results of using the true measure.
+
+The simulations show that there is a reshuffling of firms in the naive measure of the productivity distribution; tax-evading firms move to the lower end. In addition, the mismeasured productivity distribution is more spread out than the underlying true productivity. The mismeasured productivity distribution is higher spread apart because the productivity of firms at the low end of the distribution is underestimated up to the 80th percentile, while the top end of the distribution is overestimated. 
+
+The reshuffling of firms in the mismeasured productivity distribution is relevant for policies; using the wrong measure will lead to failure of achieving their target. Tax evading firms appear to be less productive than they are, but their likelihood to evade taxes is independent of true productivity. Therefore, if a policy uses a naive productivity measurement to reduce the productivity gap by targeting the lower quartile of the distribution, the result is that the true productivity gap will not be significantly reduced. A secondary result is that the tax gap —the ratio of the tax revenue the government is collecting to what it *should* collect if firms were not evading taxes— decreases because the share of firms that are likely to evade shrinks. If the policy uses the true measure, the productivity gap is effectively reduced but the tax gap is unaffected.
+
+In the model, price-taking firms maximize after-tax profits in a two-stage game. At the start, firm $i \in \mathcal I$ gets a random draw of productivity $\omega_i$ with probability distribution function (pdf) $f_\omega$ and size $s_i$ with pdf $f_s$. 
+
+In the first stage, firms maximize before-tax profits given input and output prices, $\rho$ and $P$, the production function $G(\cdot)$, and their productivity $\omega_i$. 
+
+\begin{equation*}
+  \max_{x_i \in \mathcal X} P G(x_i)e^{\omega_{i}}-\rho x_i
+\end{equation*}
+
+Their optimal input choice is $x_i^*$. In other words, let $x_i^*=argmax_{x} P G(x_i)e^{\omega_{i}}-\rho x_i$. Then, they produce output $y_i=G(x^{*}_{i})e^{\omega_{i}}$.
+
+In the second stage, firms choose how much inputs to overreport to maximize their after-tax profits, given the tax rate $\tau$, their optimal input choice $x_i^*$ of the first stage, their size $s_i$, and the tax-evasion cost. The cost function of the tax-evasion decision is increasing and convex on the overreporting —the greater the difference from the true input the higher the cost— and increasing in the firm's size. 
+
+\begin{equation*}
+  \max_{x \in \mathcal X} (1-\tau)P y_i - \rho (x_i^*-\tau x_i)-C(x_i-x_i^*, s_i)
+\end{equation*}
+
+Likewise, the optimal overreporting input choice is $\tilde{x}_i$. That is, $\tilde{x}_i=argmax_{x} (1-\tau)P y_i - \rho (x_i^*-\tau x_i)-C(x_i-x_i^*, s_i)$
+
+Finally, firms choose to overreport if the after-tax profits, $V^E=(1-\tau)P y_i - \rho (x_i^*-\tau \tilde{x}_i)-C(\tilde{x}_i-x_i^*, s_i)$, are greater than reporting the truth, $V^T=(1-\tau)P y_i - \rho x_i^*$. In summary,
+
+\begin{equation*}
+  \max \{V^T, V^E\}
+\end{equation*}
+
+\begin{equation*}
+  x_i-x_i^* = \left\{
+    \begin{array}{ll}
+      \ge 0 &, V^E \ge V^T \\
+      0 &, \text{otherwise}
+    \end{array} \right. 
+\end{equation*}
+
+The first-order conditions of the first stage are well-known, $G_x(x_i^*)e^{\omega_i}=\frac{\rho}{P}$. Firms choose inputs such that the slope of the production function equals the input/output price ratio. From this FOC, we can solve for the optimal input choice $x^*_i=G^{-1}_x(\frac{\rho}{P}e^{-\omega})$. Here is easy to observe why input demand is strictly monotonic in productivity; the higher the productivity the lower the quantity demanded by firms.
+
+On the second stage, the FOC, $\tau\rho=C_x(\tilde{x}_i-x_i^*, s_i)$, reveal that overrerporting is increasing in the tax rate and input prices, but decreasing in firm size, $\tilde{x}_i-x_i^*=C_x^{-1}(\tau\rho, s_i)$. Productivity does not directly influence tax-evasion overreporting, but only through the optimal input choice $x^*_i$.
+
+## Monte Carlo simulations
+
+To run the Monte Carlo simulations, I choose the following functional forms for the production function and the tax-evading cost:
+
+\begin{align*}
+  G(x_i)e^{\omega_i}&=x_i^\beta e^{\omega_i} \\
+  C(x_i-x_i^*, s_i)&=(x_i-x_i^*)\gamma s_i+\alpha^{(x_i-x_i^*)}
+\end{align*}
+
+With these functional forms, the FOC of the first and second stage become
+
+\begin{align}
+  x_i^*&=\left(\frac{\beta P e^{\omega_i}}{\rho}\right)^{\frac{1}{1-\beta}} \\
+  \tilde{x}_i&= \log \frac{\left(\frac{\tau\rho-\gamma s_i}{\log\alpha}\right)}{\log \alpha}+ x_i^*
+\end{align}
+
+The parameters are set as indicated in the next table.
+
+| Parameter  | Value |
+|:---------: |------:|
+|$\beta$     | 0.4   |
+|$\gamma$    | 0.0059|
+|$\alpha$    | 1.05  |
+|$\tau$      | 0.30  |
+|$\rho$      | 1.00  |
+|p           | 2.00  |
+
+Finally, $\omega_i \sim N(0,1)$ and $s_i\sim U[1,50]$. I generate 1,000 firms and simulate their decisions.
+
+
+### Measuring productivity
+
+To recover productivity estimates, I use the following specifications.
+1. OLS: $\log y_i = \beta \log x_i + \omega_i$
+2. Controlling for size: $\log y_i =  \beta \log x_i + \delta \log s_i + \omega_i$
+3. 2SIV: 1S $\log x_i = \alpha \log s_i + \varepsilon_i$; 2S $\log y_i =  \beta \log \hat{x}_i + \omega_i$
+4. FOC: 
+
+\begin{align}
+  \frac{\rho x_i}{P y_i} &= \frac{\beta e^{\omega_i} x_i}{x_i^{1-\beta} x_i^{\beta} e^{\omega_i}} \\
+  \frac{\rho x_i}{P y_i} &= \beta \\
+  \hat{\omega}&=\log y_i - \hat{\beta} \log x_i
+\end{align}
+
+
+In the following tables, we can see that the true parameter cannot be recovered using these procedures in the presence of measurement error.
+
+\input{tables/reg-table-obs}
+
+\input{tables/reg-table-true}
+
+
+### Policy counterfactuals
+
+I evaluate a policy aiming to reduce the productivity gap by reallocating resources from the lowest quartile of productivity distribution to high-productivity firms [@Eslava2004; @Levy2018]. I contrast two scenarios, one in which a naive measure of productivity is employed versus recovering the true productivity accounting for tax evasion.
+
+I assume, all else equal, that the firms in the lowest quartile of the productivity distribution go out of the market.
+
+```{r policy, echo = FALSE}
+diff_mean<-read.csv("tables/policy.csv")
+knitr::kable(diff_mean)
+```
+
+In summary, using the naive measure, the policy fails at effectively reducing the productivity gap, but the share of large firms increases. Using the correct measure leaves the ratio of small and large firms practically unchanged and effectively reduces the productivity gap.

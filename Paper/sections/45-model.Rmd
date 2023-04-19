@@ -1,0 +1,33 @@
+# A model of tax evasion through input overreporting
+
+First, productivity shocks $\omega_{it}$ are realized. Firms observe input $\rho_t$ and output $P_t$ prices. Firms choose optimal inputs given productivity, prices, and the production function.
+
+\begin{equation*}
+  \max_{x_{it}} P_t\mathbbm{E}[ x_{it}^\beta e^{\omega_{it}+\varepsilon^Y_{it}}]-\rho_t x_{it}
+\end{equation*}
+
+Optimal input choice is $x_{it}^*=\left(\frac{\beta P_t e^{\omega_{it}}}{\rho_t}\right)^{\frac{1}{1-\beta}}$. Output is $y_{it}=x^{*\beta}_{it}e^{\omega_{it}+\varepsilon_{it}}$.
+
+Then, firms choose input overreporting $\varepsilon_{it}^X$ given their optimal inputs $x_{it}^*$, tax rate $\tau_{t}$, probability of getting caught $p(\varepsilon_{it}^X)$, and punishment cost $\kappa_{t}$, with $p(0)=0$ and $p(\infty)=1$.
+  
+\begin{align}\label{eq:eva}
+  \max_{\varepsilon_{it}^X \in [0,\infty)} [1-p(\varepsilon_{it}^X)]&\left[(P_t\mathbbm{E}[y_{it}]-\rho_{t} x_{it}^*) -\tau_{t}[P_t\mathbbm{E}[y_{it}]-\rho_{t}(x^*+\varepsilon_{it}^X)]\right]\\
+  +p(\varepsilon_{it}^X)&\left[(1-\tau_{t})(P_t\mathbbm{E}[y_{it}]-\rho_{t} x_{it}^*)-\kappa_{t}\right] \notag
+\end{align}
+
+Finally, the output shock is realized $\varepsilon_{it}^Y$
+
+From the first-order conditions, we can examine the properties of tax evasion.
+
+\begin{equation*}
+    \varepsilon_{it}^X=\frac{1-p(\varepsilon_{it}^X)}{p'(\varepsilon_{it}^X)}-\frac{\kappa_t}{\rho_t\tau_t}
+\end{equation*}
+
+Tax evasion $\varepsilon_{it}^X$ decreases if the probability of getting caught $p(\varepsilon_{it}^X)$ or punishment $\kappa_t$ increase; it increases if input prices $\rho_t$ or the tax rate $\tau_t$ increase.
+
+Likewise, the SOC of the tax evasion problem indicates a lower bound for the probability of getting caught evading.
+
+\begin{equation*}
+  p''(\varepsilon^X)\ge -\frac{p'(\varepsilon^X)2\rho\tau}{\rho\tau\varepsilon^X+\kappa}
+\end{equation*}
+

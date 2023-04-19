@@ -1,0 +1,176 @@
+
+
+# Empirical framework and data, or feasibility
+
+In this section, I argue that it is *feasible* to answer the question regarding the estimation of firm-level productivity in the presence of tax evasion. First, I outline the *identification* and *estimation* strategy. Namely, I explain how we can build upon the proxy variable literature and recent developments in the measurement error literature to account for unobserved systematic deviations from the truth by employing an incentive constraint. Moreover, I sustain that our identification assumption —that large firms are less likely to overreport intermediate inputs— is not unreasonable. Finally, I describe the _data_ that I use in the estimation.
+
+
+## Empirical framework 
+
+Assuming momentarily that firms do not cheat on sales or prices for the sake of exposition, firms will, then, overreport inputs if the expected profits of cheating is greater than the profits of reporting the truth. In other words, firms cheat if the incentive constraint is binding, otherwise they don't. Let $\Pi(X_{it})=P_{t}Y_{it}-\rho_{t} X_{it}$ be the price-taking firm's profits. Therefore, the input quantities we observe in data are as follows:
+
+\begin{align}
+ X_{it}&=X_{it}^*+\varepsilon^X_{it}(S_{i}) \\
+ \label{eq:eps_x}
+ \varepsilon^X_{it}(S_{i}) &= \left \{ \begin{array}{ll}
+ 0, & (1-\tau)\Pi(x_{it}^*) \ge \Pi(x_{it}^*)-\tau\Pi(x_{it})-C(x_{it}-x_{it}^*, s_{i}) \\
+ (0,\tilde x], & \text{otherwise}
+ \end{array} \right.
+\end{align}
+
+$X_{it}$ is the observed input quantities in data, while $X^*_{it}$ is the true input quantity consumed by the firm, and $\tau$ is the tax on firms' profits. \fxnote*{Firms get tax benefits for (past) losses? Alternatively, upper bound could be $\inf$, then the probability of being audited increase $C(\cdot)$ goes up.}{Once firms reach zero profits, firms don not have incentives to over-report more}. Consequently, $\Pi(\tilde x)=0$. Lastly, $C(\cdot)$ is the cost function of cheating. This cost function might be decomposed into $C(\cdot)=\kappa Pr(a)+c(X_{it}-X_{it}^*, S_{i})$, where $\kappa$ is the economic penalty for cheating, $Pr(a)$ is the probability of being caught cheating, and $c(\cdot)$ is a convex cost function that depends on how much the firm departs from the truth $X_{it}-X_{it}^*$ and its size $S_{i}$.
+
+Now, we're interested to estimate the gross output production function,
+
+\begin{equation}\label{eq:prod}
+ Y_{it}=G(X^*_{it})e^{\omega_{it}+\varepsilon^Y_{it}}
+\end{equation}
+
+$Y_{it}$ is the gross output for firm $i$ at time $t$. $\omega_{it}$ is the scalar productivity —the object of interest— and $\varepsilon_{it}^Y$ is the classical measurement error. The output is a function $G(\cdot)$ of the true unobserved input $X^*_{it}$, measured in quantities.
+
+The properties of this functional form of the production function have been well studied by the proxy variable literature [@Ackerberg2015; @Gandhi2020]. In particular, there exists a simultaneity problem between the inputs and productivity. We follow this literature and assume that productivity $\omega_{it}$ is scalar and follows a Markov process, input demand is strictly monotonic in $\omega_{it}$, and that the classical measurement error $\varepsilon_{it}^Y$ is uncorrelated with the inputs and across time.
+
+A simple way to see how tax evasion biases downward the productivity $\omega_{it}$ is to assume, without loss of generality, a log-linear production function like the Cobb-Douglas. Then,
+
+\begin{align*}
+ \mathbbm{E}[\ln Y_{it}|x]&=\mathbbm{E}[\beta \ln X_{it}|x]+\mathbbm{E}[\tilde\omega_{it}|x] \\
+ \mathbbm{E}[\ln Y_{it}|x]&=\mathbbm{E}[\beta \ln(X^*_{it}+\varepsilon^X_{it})|x]+\mathbbm{E}[\tilde\omega_{it}|x] \\
+ \mathbbm{E}[\tilde\omega_{it}|x]&=\mathbbm{E}[\ln Y_{it}|x]-\beta \mathbbm{E}[\ln(X^*_{it}+\varepsilon^X_{it})|x]
+\end{align*}
+
+Likewise, true productivity is defined as
+
+\begin{equation*}
+    \mathbbm{E}[\omega_{it}|x]=\mathbbm{E}[\ln Y_{it}|x]-\beta \mathbbm{E}[\ln X^*_{it}|x]
+\end{equation*}
+
+Therefore, the bias is as follows:
+
+\begin{align*}
+ \mathbbm{E}[\tilde\omega|x]-\mathbbm{E}[\omega|x]& = \beta \left(\mathbbm{E}[\ln(X^*_{it})|x]-\mathbbm{E}[\ln(X^*_{it}+\varepsilon^X_{it})|x]\right) \\
+ & = \beta \mathbbm{E}[\ln(X^*_{it})-\ln(X^*_{it}+\varepsilon^X_{it})|x] \\
+ & = \beta \mathbbm{E}\left[\ln\left(\frac{X^*_{it}}{X^*_{it}+\varepsilon^X_{it}}\right)|x\right] \\
+ & \le \beta \ln\left(\mathbbm{E}\left[\frac{X^*_{it}}{X^*_{it}+\varepsilon^X_{it}}|x\right]\right) \\
+ & \le 0
+\end{align*}
+
+by Jensen's inequality and because $\varepsilon_{it}^X\ge0$ by \ref{eq:eps_x}.
+
+In this paper, the key identification assumption is that larger firms do not overreport inputs. For larger firms, it is costlier to keep the double accounting because more people need to get involved. Likewise, the larger the firm the higher the probability to be denounced to the authority by an anonymous employee just because more eyes are watching. Finally, larger firms have access to other legal tools to reduce their tax liabilities, which might be more profitable than tax evasion. Let $L(X^*_{it},S_i)=\tau [\Pi(X^*_{it})-\Pi(X_{it})]-C(X_{it}-X^*_{it},S_{i})$. Therefore, the location condition for large firms $S_i=s$ is
+
+\begin{equation}\label{eq:l_ic}
+ \mathbbm{E}[L(X^*_{it},S_i)|X^*_{it},S_{i}=s]=0
+\end{equation}
+
+In other words, the expected return of cheating conditional on being a large firm is zero.
+
+In addition, I follow the proxy variable literature in using the first-order conditions from the firm's profit-maximization problem and the flexible input assumption. In particular, the firm's optimization problem is the following:
+
+\begin{equation}
+ \label{eq:prof_max}
+ \max_{X^*_{it}} P_t \mathbbm{E}[G(x_{it}^*)e^{\omega_{it}+\varepsilon_{it}^Y}]-\rho_t X^*_{it}
+\end{equation}
+
+From the first-order conditions of \ref{eq:prof_max}, equation \ref{eq:prod}, multiplying by $X^*_{it}/P_t$, taking logs, and rearranging, we get the share equation,
+
+\begin{equation}
+ \label{eq:share}
+ \ln\left(\frac{\rho_t X^*_{it}}{P_{t}Y_{it}}\right)=\ln\left(\frac{G_x(x^*_{it})X^*_{it}}{G(x^*_{it})}\right) - \varepsilon^Y_{it}
+\end{equation}
+
+
+## Estimation strategy
+
+We can state our problem as recovering the joint distribution $f(y_{it},x_{it},p_{t},s_i)=f(y_{it},x_{it},x^*_{it},p_{t},\omega_{it},\omega_{it-1},s_i)$ from the data $\mathcal{O}=\{Y_{it},X_{it},P_{t},S_{i}\}_{i\in I, t \in T}$. Notice $x^*_{it}$ and $\omega_{it}$ are unobserved. Additionally, we can rewrite our joint distribution in terms of the conditional and marginal probabilities densities.
+
+Note that so far we have implicitly stated before the following assumptions that we enumerate below.
+
+\begin{ass}
+ The production function from equation \ref{eq:prod} satisfies 
+ 
+ $f_1(y_{it}|x_{it}, x_{it}^*,\omega_{it},\omega_{it-1}, s_{i}, p_{t})=f_1(y_{it}|x_{it}^*,\omega_{it})$.
+\end{ass}
+
+\begin{ass}
+ The share function from equation \ref{eq:share} satisfies 
+ 
+ $f_2(p_{t}|x_{it}, x_{it}^*,\omega_{it},\omega_{it-1}, s_{i})=f_2(p_{t}|y_{it},x_{it}^*)$.
+\end{ass}
+
+\begin{ass}
+ The Markov process of the scalar productivity satisfies 
+ 
+ $f_3(\omega_{it}|x_{it}, x_{it}^*,\omega_{it-1}, s_{i}, p_{t})=f_3(\omega_{it},|\omega_{it-1})$.
+\end{ass}
+
+\begin{ass}
+ The systemaric underreporting from tax evasion satisfies 
+ 
+ $f_4(x_{it}|x_{it}^*,\omega_{it},\omega_{it-1}, s_{i}, p_{t})=f_4(x_{it}|x_{it}^*,s_{i})$.
+\end{ass}
+
+Therefore, we can redefine our joint distribution as follows:
+
+$$\begin{aligned}
+ f&(y_{it},x_{it},p_{t},s_i)\\
+ &= f(y_{it},x_{it},p_{t},\omega_{it},\omega_{it-1},x^*_{it},s_i) \\ \notag
+ &= f_1(y_{it}| x^*_{it},\omega_{it})
+ f_2(p_{it}|y_{it},x^*_{it},\omega_{it})
+ f_3(\omega_{it}|\omega_{it-1})
+ f_4(x_{it}|x^*_{it},s_i)
+ f_5(x_{it}^*|s_i)
+ f(s_i,\omega_{it-1}) \notag
+\end{aligned}$$
+
+\fxnote*{flexible input assumption: Don't need it}{Note that $f(\omega_{it-1})f(x_{it}^*,s_i)$ follows from the }.
+
+Let $\mathcal{A}=(\Theta, \mathcal{F}_1, \mathcal{F}_2, \mathcal{F}_3,\mathcal{F}_4)$ be the parameter space of the functional forms of equations \ref{eq:l_ic}, \ref{eq:prod}, \ref{eq:prof_max}, and \ref{eq:share} and of the conditional distributions $f_1,f_2,f_3,\text{ and }f_4$. Assuming $f(y_{it},x_{it},p_{t},s_i)$ is time invariant, we can form the quasi likelihood function as follows:
+
+\begin{equation*}
+ \label{eq:mle_def}
+ \sum_{i\in I}\left(
+ \sum_{t\in T} \log f(y_{it},x_{it},p_{t},s_i)
+ \right) \equiv
+ \sum_{i\in I} l(D_i;\alpha)
+\end{equation*}
+
+in which $D_i=(Y_{it},X_{it},P_{t},S_{i})$ and 
+
+$$\begin{aligned} \label{eq:mle}
+ l(D_i:\alpha) &\equiv l(D_i;\theta, f_1,f_2,f_3,f_4)\notag\\
+ &= \sum_{t\in T}\log \bigg\{ 
+ \int f_1(y_{it} - g(x^*_{it})-\varepsilon^Y_{it}) \\
+ & f_2\left(-\ln\left(\frac{\rho_t X^*_{it}}{P_{t}Y_{it}}\right)+\ln\left(\frac{G_x(x^*_{it})X^*_{it}}{G(x^*_{it})}\right)\right)\\
+ & f_3(\omega_{it}-h(\omega_{it-1})) \\
+ & f_4(0|s_{i})^{\mathbbm 1 [L(x^*_{it},s_i)\ge 0]}
+ f_4(x_{it}-x^*_{it}|s_{i})^{\mathbbm 1 [L(x^*_{it},s_i) < 0]}\\
+ & f_5(x^*_{it}|s_i)dx^* \bigg\} \\
+ & + \sum_{t\in T}\log f(\omega_{it-1},s_i)
+\end{aligned}$$
+
+Let $\mathbbm E[\cdot]$ be the expectation from the true data generating process for $D_i$. Then, 
+
+\begin{equation*}
+ \alpha_0 = \text{arg sup}_{\alpha \in \mathcal A } \mathbbm{E} [l(D_i;\alpha)]
+\end{equation*}
+
+We can use a sequence of finite-dimensional sieves spaces[^her] $\mathcal{A}_N=(\Theta, \mathcal{F}^N_1, \mathcal{F}^N_2, \mathcal{F}^N_3,\mathcal{F}^N_4)$ to approximate the functional space $\mathcal{A}=(\Theta, \mathcal{F}_1, \mathcal{F}_2, \mathcal{F}_3,\mathcal{F}_4)$. The semiparametric sieve MLE $\hat \alpha \in \mathcal A_N$ for $\alpha_0\in\mathcal A$ is defined as:
+
+\begin{equation*}
+ \hat\alpha_N = \text{argmax}_{\alpha\in\mathcal A_N} \sum_{i\in I} l(D_i;\alpha)
+\end{equation*}
+
+[^her]: @Hu2022 use Hermite orthogonal polynomials because they work well with just a few sieve terms. 
+
+
+
+## Expected challenges
+
+\begin{itemize}
+ \item Firms might cheat on sales. Possible solution: Tax evasion in sales needs collusion between selling and buying parties. I can focus on business-to-business (B2B) sales firms instead of business-to-consumer (B2C) ones. Counter-incentives will likely eliminate collusion incentives decreasing tax evasion noise —buying firm wants to over-report expenses, selling firm wants to under-report sales. Whereas in the latter, consumers might be willing to collude with firms by getting a lower price if they request no invoice, for example.
+ \item Firms might cheat on input prices. Possible solution: for the base case, I can assume no cheating on prices and argue it's a lower bound for tax evasion bias. For robustness, I can model cheating on prices for the case in which data includes input prices.
+ \item Firms might also report losses and use past losses to reduce the tax burden of the current period. Counter-argument: if firms keep reporting losses or the reported loss is too high, then the probability of getting audited and caught cheating increases, increasing the cheating cost. So, the probability of over-reporting expenses such that there are losses instead of zero profits is low. Data shows a high concentration around zero. 
+ \item No input prices on Mexican data. Possible solution: because firms are price-taking, then a time-dummy can take care of it if firms do not cheat on prices.
+ \item In Mexico, if firms are classified as Small or Medium, they are subject to a lower tax rate. Solution: tax rate should adjust depending on the firms' classification. I think classification depends on the number of employees and sales level.
+ \item Colombia: what's the tax evasion evidence? what's the tax scheme? is there data on firms' taxes?
+\end{itemize}

@@ -1,0 +1,29 @@
+
+## The setting
+
+Suppose we have access to panel data, where we observe output $Y_{it}$, intermediate inputs $M_{it}$, capital $K_{it}$, labor $L_{it}$, and output $P_{t}$ and intermediate input prices $\rho_t$ for $I$ firms over $T$ periods. Then our set of observations is $\mathcal O = \{Y_{it}, M_{it}, K_{it}, L_{it}, P_{t}, \rho_t\}_{i\in I, t \in T}$. As is standard in the literature, firms are price-takers and the intermediates are flexible.
+
+The objects of interest are the production function (PF), $Y_{it}=G(M_{it}, K_{it}, L_{it})e^{\omega_{it}+\varepsilon^Y_{it}}$, and productivity $\omega_{it}$. $\varepsilon^Y_{it}$ is the current period output shock. We are also interested in the Markov process of productivity, which we assume is AR(1), $\omega_{it}=\delta_0 + \delta_1 \omega_{it-1}+\eta_{it}$, with $\mathbb{E}[\eta_{it}]=0$ and $\eta_{it}\perp\omega_{it}$.
+
+### Tax evasion and the productivity bias
+
+Firms overreport their true intermediate inputs $M^*_{it}$ by $e^{\varepsilon^M_{it}}$ to evade taxes. Then, reported inputs are
+
+$$
+M_{it}=M^*_{it}e^{\varepsilon^M_{it}}   
+$$
+ 
+with $\varepsilon_{it}^M\ge0$ and $\varepsilon_{it}^M\not\perp M^*_{it}$. A simple model of tax evasion through input overreporting can be found in the appendix. 
+
+It is fairly easy to see that the productivity bias, the difference between the naively estimated $\tilde\omega_{it}$ and true productivity $\omega_{it}$ is as follows:
+
+$$
+ \mathbb{E}[\tilde\omega_{it}|\mathcal{I}_{it}]-
+    \mathbb{E}[\omega_{it}|\mathcal{I}_{it}] \le
+      \ln\mathbb{E}\left[
+        \frac{G(M^*_{it}, K_{it}, L_{it})}{G(M^*_{it}e^{\varepsilon^M_{it}}, K_{it}, L_{it})}\Bigg|\mathcal{I}_{it}\right] \le 0
+$$
+
+Where $\mathcal{I}$ stands for the information set of firm $i$ in time $t$.
+
+The previous result holds because of Jensen's inequality and because $G(\cdot)$ is monotonically increasing in its arguments.

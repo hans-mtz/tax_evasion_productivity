@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.313">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Hans Martinez">
+<meta name="dcterms.date" content="2023-01-25">
+<meta name="keywords" content="Cost overreporting, Production function, Bias">
+
+<title>Tax evasion and productivity</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="Tax-Prod_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Tax-Prod_files/libs/quarto-html/quarto.js"></script>
+<script src="Tax-Prod_files/libs/quarto-html/popper.min.js"></script>
+<script src="Tax-Prod_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Tax-Prod_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Tax-Prod_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Tax-Prod_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Tax-Prod_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Tax-Prod_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Tax-Prod_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Tax evasion and productivity</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    Hans Martinez 
+  </div>
+    <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Western Ontario
+          </p>
+      </div>
+    </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 25, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="abstract-title">Abstract</div>
+    <p>Corporate tax evasion through cost overreporting is a widespread and significant problem for developing and developed countries. Detecting and measuring this type —or any type— of tax evasion remains a challenge, however, even for governments with detailed administrative data. Moreover, if cost overreporting is so large and widespread, firm-level productivity estimates based on production functions are likely biased. I provide a new estimation strategy to recover cost overreporting using commonly available data like manufacturing surveys. Then, I show that ignoring cost overreporting leads to downward biased productivity estimates. Finally, I show how to recover productivity in the presence of tax evasion.</p>
+  </div>
+</div>
+
+</header>
+
+<section id="introduction" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Corporate tax evasion through cost overreporting is a widespread and significant problem for developing and developed countries. Detecting and measuring this type —or any type— of tax evasion remains a challenge, however, even for governments with detailed administrative data. Moreover, if cost overreporting is so large and widespread, firm-level productivity estimates based on production functions are likely biased. The fundamental problem is that both tax evasion and productivity are unobserved. I provide a new estimation strategy to recover cost overreporting using commonly available data like manufacturing surveys. Then, I show that ignoring cost overreporting leads to downward biased productivity estimates. Finally, I show how to recover productivity in the presence of tax evasion.</p>
+<p>Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added and corporate income taxes. Reports of this practice emerge all over the globe and it is not unique to developing countries<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Recent evidence from Ecuador <span class="citation" data-cites="Carrillo2022">(<a href="#ref-Carrillo2022" role="doc-biblioref">Carrillo et al. 2022</a>)</span> shows that cost overreporting is quantitatively large and widespread across firms —not limited to small, semi-formal firms, contrary to the current belief. Tax evasion through cost overreporting has been largely overlooked by the literature, though; most recent studies focus on revenue underreporting.</p>
+<p>Despite its relevance, detecting and measuring tax evasion —through cost overreporting or otherwise— remains a non-trivial task even for governments with detailed administrative data; mainly because of firms’ —and individuals’— incentives to avoid getting caught. Direct empirical measures are mostly unreliable because firms and individuals have incentives to conceal their behavior <span class="citation" data-cites="Slemrod2019">(<a href="#ref-Slemrod2019" role="doc-biblioref">Slemrod 2019</a>)</span>. Hence, it is unlikely that evasion would be truthfully reported in surveys, for instance. Indirect structural measures have had some degree of success in the case of individual income tax evasion <span class="citation" data-cites="Pissarides1989">(<a href="#ref-Pissarides1989" role="doc-biblioref">Pissarides and Weber 1989</a>)</span>, but in the case of corporate tax evasion researchers must account for an additional latent variable, the productivity of firms. The reason is that low productivity might be naively quantified as tax evasion. Intuitively, for a given level of output, high input utilization by a firm could be explained by either the amount of input the firm overreports to evade taxes or by a low productivity shock. In certain countries, governments take advantage of the different sources of administrative data. For example, in Ecuador, the tax authority uses third-party information on reported corporate taxes to detect evasion through revenue underreporting <span class="citation" data-cites="Carrillo2017">(<a href="#ref-Carrillo2017" role="doc-biblioref">Carrillo et al. 2017</a>)</span>. However, access to this type of administrative data is generally restricted for most researchers.</p>
+<p>Moreover, I show that ignoring tax evasion leads to biased estimates of productivity, which can be significant considering cost overreporting is widespread and quantitatively large. In the proxy variable literature, productivity is measured as the residual of a production function, where the output is a function of the inputs. A key assumption is that input demand is strictly monotonic on the productivity <span class="citation" data-cites="Gandhi2020 Ackerberg2015 Levinsohn2003">(<a href="#ref-Ackerberg2015" role="doc-biblioref">Ackerberg et al. 2015</a>; <a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>; <a href="#ref-Levinsohn2003" role="doc-biblioref">Levinsohn and Petrin 2003</a>)</span>. In other words, we expect highly productive firms will use fewer inputs and produce more output. When firms overreport their costs (inputs) to reduce their tax liabilities, their reported inputs are higher than their actual utilization, resulting in lower productivity estimates.</p>
+<p>To address this gap in the literature, I provide a new estimation strategy to jointly recover tax evasion and productivity using commonly available firm-level data. In particular, the method can identify the density of tax evasion and productivity over time. The key insight is that the first-order conditions of the firms’ cost minimization problem are informative about a common technology (production function) that allows to abstract from productivity. Then, deviations from this common technology identify the tax evasion up to the current-period output shock. The identifying assumption is that there is a subset of firms that do not overreport. From this subset of compliers, the production function and the density of the output shock are identified. Finally, using deconvolution techniques, I learn the distributions of tax evasion and productivity, and how these distributions have changed over time. I also learn how tax evasion changes with productivity, and how this relationship has changed over time.</p>
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Ackerberg2015" class="csl-entry" role="doc-biblioentry">
+Ackerberg, D. A., Caves, K., and Frazer, G. (2015), <span>“IDENTIFICATION PROPERTIES OF RECENT PRODUCTION FUNCTION ESTIMATORS,”</span> 83, 2411–2451. <a href="https://doi.org/10.3982/ECTA">https://doi.org/10.3982/ECTA</a>.
+</div>
+<div id="ref-Carrillo2017" class="csl-entry" role="doc-biblioentry">
+Carrillo, B. P., Pomeranz, D., and Singhal, M. (2017), <span>“Dodging the taxman: Firm misreporting and limits to tax enforcement,”</span> <em>American Economic Journal: Applied Economics</em>, 9, 144–164. <a href="https://doi.org/10.1257/app.20140495">https://doi.org/10.1257/app.20140495</a>.
+</div>
+<div id="ref-Carrillo2022" class="csl-entry" role="doc-biblioentry">
+Carrillo, P., Donaldson, D., Pomeranz, D., and Singhal, M. (2022), <span>“<a href="http://www.nber.org/papers/w30242">Ghosting the tax authority: Fake firms and tax fraud</a>,”</span> NBER.
+</div>
+<div id="ref-Gandhi2020" class="csl-entry" role="doc-biblioentry">
+Gandhi, A., Navarro, S., and Rivers, D. A. (2020), <span>“On the identification of gross output production functions.”</span>
+</div>
+<div id="ref-Levinsohn2003" class="csl-entry" role="doc-biblioentry">
+Levinsohn, J., and Petrin, A. (2003), <span>“Estimating production functions using inputs to control for unobservables,”</span> <em>Review of Economic Studies</em>, 70, 317–341. <a href="https://doi.org/10.1111/1467-937X.00246">https://doi.org/10.1111/1467-937X.00246</a>.
+</div>
+<div id="ref-Pissarides1989" class="csl-entry" role="doc-biblioentry">
+Pissarides, C. A., and Weber, G. (1989), <span>“An expenditure-based estimate of britain’s black economy,”</span> <em>Journal of Public Economics</em>, North-Holland, 39, 17–32. <a href="https://doi.org/10.1016/0047-2727(89)90052-2">https://doi.org/10.1016/0047-2727(89)90052-2</a>.
+</div>
+<div id="ref-Slemrod2019" class="csl-entry" role="doc-biblioentry">
+Slemrod, J. (2019), <span>“Tax compliance and enforcement†,”</span> <em>Journal of Economic Literature</em>, American Economic Association, 57, 904–954. <a href="https://doi.org/10.1257/JEL.20181437">https://doi.org/10.1257/JEL.20181437</a>.
+</div>
+<div id="ref-OECD2017" class="csl-entry" role="doc-biblioentry">
+<em><a href="https://www.oecd.org">Technology tools to tackle tax evasion and tax fraud</a></em> (2017), OECD.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>According to the OECD’s report <span class="citation" data-cites="OECD2017"><em>Technology tools to tackle tax evasion and tax fraud</em> (<a href="#ref-OECD2017" role="doc-biblioref">2017</a>)</span>, cost overreporting — also known as “fake invoicing”, “ghost firms”, “invoice mills”, or “missing traders”— is internationally pervasive. <span class="citation" data-cites="Carrillo2022">Carrillo et al. (<a href="#ref-Carrillo2022" role="doc-biblioref">2022</a>)</span> documents reports of false invoicing from Latin America, Europe, Asia, and Africa.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

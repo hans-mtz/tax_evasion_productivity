@@ -1,0 +1,112 @@
+/*-- scss:defaults --*/
+
+// fonts
+// @import 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap';
+@import 'https://fonts.googleapis.com/css?family=Arimo:400,400i&display=swap)';
+@import 'https://fonts.googleapis.com/css?family=Merriweather:400,400i,700&display=swap)';
+@import 'https://fonts.googleapis.com/css?family=IBM+Plex+Mono&display=swap)';
+
+$font-family-sans-serif: Arimo, sans-serif;
+$presentation-heading-font: Merriweather;
+$presentation-heading-color: #4F2683;
+$link-color: #26837D;
+// $presentation-title-slide-text-align: "left";
+// $presentation-slide-text-align: "right";
+// $presentation-subtitle-slide-text-align: "left";
+// $code-block-font-size: 0.6em;
+// $code-color: #5f5f5f;
+// $presentation-h2-font-size: 2.25em;
+
+/*-- scss:rules --*/
+
+.reveal .custom-title {
+  position: absolute;
+  color: $presentation-heading-color;
+  font-size: 3em;
+  text-align: right;
+  right: 20px;
+  top: -200px;
+}
+
+.reveal .custom-author {
+  position: absolute;
+  font-size: 1.4em;
+  text-align: right;
+  right: 20px;
+  top: 300px;
+}
+
+.reveal .custom-twitter a {
+  position: absolute;
+  color: #1DA1F2;
+  font-size: 1.3em;
+  text-align: right;
+  right: 20px;
+  top: 470px;
+}
+
+.reveal .custom-url a {
+  position: absolute;
+  color: $presentation-heading-color;
+  font-size: 1.5em;
+  text-align: right;
+  right: 20px;
+  top: 570px;
+}
+
+details>summary {
+  font-size: 0.75em;
+}
+
+// .small {
+//   font-size: 0.75em;
+// }
+
+.small {
+    font-size: 80%;
+    color: #807F83;
+}
+
+strong {
+    font-weight: bold;
+    color: #4F2683;
+}
+
+.reveal .slide .in-out {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 1em;
+  background: #E8E8E8;
+  font-family: $font-family-monospace;
+  font-size: 0.6em;
+}
+
+
+.reveal .slide .goal {
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 1em;
+//   background: lighten($color: #807F83, $amount: 30%);
+  border: solid 1px $border-color; //lighten($color: #4F2683, $amount: 20%);
+  border-left: solid 5px #4F2683;
+//   border: #4F2683;
+  color: lighten($color: #4F2683, $amount: 5%);
+}
+
+.reveal blockquote {
+    border-left: solid 5px #4F2683;
+    padding-left: 1em;
+}
+
+.reveal .slides section .callout {
+    font-size: $presentation-font-size-root;
+}
+
+.reveal .slide .center {
+  text-align: center;
+}

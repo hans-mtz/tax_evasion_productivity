@@ -1,0 +1,68 @@
+## MC Simulations
+
+Rearranging equation \ref{eq:eva}, we can get our tax evasion problem in terms of the cost and benefit of evasion. This is typical in the literature because it helps with estimation.
+
+\begin{align*}
+    \max_{\varepsilon^X \in [0,\infty)} (1-\tau)(Py-\rho x^*)+\rho\tau \varepsilon^X - p(\varepsilon^X)[\rho\tau\varepsilon^X-\kappa] \\  
+\end{align*}
+
+\begin{equation*}
+  V^E=\max_{\varepsilon^X_{it}} (1-\tau)\left(P_t \mathbbm{E}[y_{it}] - \rho x_{it}^*\right)+\rho_t\tau \varepsilon^X_{it}-C(\varepsilon^X_{it}, s_{it})
+\end{equation*}
+
+The cost function of the tax-evasion decision should be $C(\varepsilon\le0)=0$ $\frac{\partial C}{\partial \varepsilon}>0$ $\frac{\partial C}{\partial s}<0$. The functional forms in simulations is the following, 
+
+\begin{align*}
+  C(\varepsilon^X_{it}, s_{it})&=\mathbf 1 (\varepsilon^X_{it}\ge0)\left[\alpha_0\varepsilon_{it}s^{-1}_{it}+\alpha_1^{\varepsilon_{it}}-1 \right]
+\end{align*}
+
+Then, optimal overreporting is
+
+\begin{align}
+  \varepsilon^X_{it}&=  \frac{\ln\left(\tau\rho_t-\alpha_0 s_{it}^{-1}\right)-\ln\ln\alpha_1}{\ln\alpha_1}
+\end{align}
+
+Optimal inputs are chosen given productivity, prices, and the production function
+
+\begin{equation*}
+  V^T=\max_{x_{it}} P_t\mathbbm{E}[ x_{it}^\beta e^{\omega_{it}+\varepsilon_{it}}]-\rho_t x_{it}
+\end{equation*}
+
+Therefore, the optimal input choice is $x_{it}^*=\left(\frac{\beta P_t e^{\omega_{it}}}{\rho_t}\right)^{\frac{1}{1-\beta}}$. Output is $y_{it}=x^{*\beta}_{it}e^{\omega_{it}+\varepsilon_{it}}$. 
+
+In the simulations, I use the following additional functional forms and parameters:
+  - $n=1,000$ firms and 4 periods $t=\{1,2,3,4\}$ 
+  - $\varepsilon^Y_{it}\sim N(0,1)$
+  - $\omega_{it}=\delta\omega_{it}+\eta_{it}$; $\eta_{it}\sim N(0,1)$ and 
+  - $s_{it}=40\frac{1}{1+e^{\omega_{it}}}+ U[1,10]$
+  - $P_t\sim U[1.5,2]$, $\rho_t\sim U[0.5,1]$
+
+| Parameter        | Value |
+|:----------------:|------:|
+|\(\beta\)      | 0.40   |
+|\(\delta\)     | 0.80   |
+|\(\alpha_0\)   | 0.14  |
+|\(\alpha_1\)   | 1.05  |
+|\(\tau\)       | 0.30  |
+
+I use the following estimation strategies to compare the performance of recovering the production function parameters:
+  1. OLS: $\ln y_{it} = \beta \ln x_{it} + \nu_{it}$
+  2. 2SIV: 1S $\ln x_{it} = \gamma \ln x_{it-1} + \upsilon_{it}$; 2S $\ln y_{it} =  \beta \ln \hat{x}_{it} + \nu_{it}$
+  3. ACF+: $\mathbbm{E}[\eta_{it}|Z_{it}]$ with $Z_{it}=\{1,\ln x_{it-2}, 2\ln x_{it-2}\}$
+  4. GNR on compliers only
+  5. Proposed solution in this paper
+
+```{r <chunk-label>, echo = FALSE}
+results<-read.csv("tables/results.csv")
+opts <- options(knitr.kable.NA = "")
+# knitr::kable(results, digits=3)
+
+results %>%
+  knitr::kable(caption="100 repetitions, 95% confidence intervals",
+      col.names=c("Model","Estimate","LCI","UCI","Estimate","LCI","UCI"),
+      digits=2) #%>%
+  # kable_classic(full_width = F, html_font = "Cambria") %>%
+  # add_header_above(c(" "=1, "\\$\\beta\\$"=3,"\\$\\delta\\$"=3),escape=FALSE)
+
+```
+We can see that the estimated parameter $beta$ is unbiased. Likewise, the $\delta$ parameter estimates of the Markov productivity is the closest of all the methods displayed.
