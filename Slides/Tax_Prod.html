@@ -188,9 +188,9 @@ Assume Cobb-Douglas: `\(G(K_{it},L_{it}, M_{it})e^{\omega_{it}+\varepsilon^Y_{it
 From the FOC of the cost minimization problem of the firms
 
 `\begin{align*}
-    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)&amp;=\ln\beta - \varepsilon^Y_{it} \\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}&gt;s\right]+\mathbb{E}[\varepsilon^M_{it}| S_{it}&gt;s]&amp;=\ln\beta - \mathbb{E}[\varepsilon^Y_{it}| S_{it}&gt;s]\\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}&gt;s\right]&amp;=\ln\beta
+    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)&amp;=\ln\beta_M - \varepsilon^Y_{it} \\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}&gt;s\right]+\mathbb{E}[\varepsilon^M_{it}| S_{it}&gt;s]&amp;=\ln\beta_M - \mathbb{E}[\varepsilon^Y_{it}| S_{it}&gt;s]\\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}&gt;s\right]&amp;=\ln\beta_M
 \end{align*}`
 
 
@@ -215,11 +215,11 @@ You can't recover `\(\delta=[\delta_0,\delta_1]'\)` because of the selection on 
 ---
 ### Recovering tax evasion
 
-For every firm, form `\(\mathcal E_{it}\)` using input cost share of sales and the output elasticity of intermediates `\(\beta\)` from 1st stage
+For every firm, form `\(\mathcal E_{it}\)` using input cost share of sales and the output elasticity of intermediates `\(\beta_M\)` from 1st stage
 
 `\begin{align}
-    \mathcal E_{it}\equiv&amp;\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta\\
-    &amp;=\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+\varepsilon^M_{it}\\
+    \mathcal E_{it}\equiv&amp;\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta_M\\
+    &amp;=\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta_M+\varepsilon^M_{it}\\
     &amp;=-\varepsilon^Y_{it} +\varepsilon^M_{it}
 \end{align}`
 
@@ -397,7 +397,7 @@ class: center middle
 class: center middle
 
 
-&lt;table class="table-unshaded lightable-paper" style="font-size: 22px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;table class="table-unshaded lightable-paper" style="font-size: 22px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
 &lt;caption style="font-size: initial !important;"&gt;Change in sales threshold to report income taxes in 1983&lt;/caption&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -468,13 +468,19 @@ class: center middle
    &lt;td style="text-align:left;"&gt; 0.01825 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Control group 10% and 95% of taxes paid last period distribution. 1982 is the base year.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
 &lt;/table&gt;
 
-.small[Tax evasion decreased by  -14.19646 %]
+.footer[Tax evasion decreased by  -14.2 %]
+
 ---
 class: center middle
 
-&lt;table class="table-unshaded lightable-paper" style="font-size: 17px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;table class="table-unshaded lightable-paper" style="font-size: 17px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
 &lt;caption style="font-size: initial !important;"&gt;Fiscal reform of 1983&lt;/caption&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -515,6 +521,21 @@ class: center middle
    &lt;td style="text-align:left;"&gt; -0.0136 (0.0164) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Year of 1984 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0253 (0.0175) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0253 (0.0174) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Year of 1985 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0006 (0.0180) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0001 (0.0180) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Year of 1986 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0258 (0.0172) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0255 (0.0171) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Industry FE &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
@@ -550,6 +571,11 @@ class: center middle
    &lt;td style="text-align:left;"&gt; 0.03590 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Control group top 5% of sale taxes paid last period. Reference year is 1983.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
 &lt;/table&gt;
 
 .pull-left[
@@ -561,7 +587,7 @@ class: center middle
 ---
 class: center middle
 
-&lt;table class="table-unshaded lightable-paper" style="font-size: 17px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;table class="table-unshaded lightable-paper" style="font-size: 17px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
 &lt;caption style="font-size: initial !important;"&gt;Fiscal reform of 1983&lt;/caption&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -580,6 +606,26 @@ class: center middle
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 1-15% x Year of 1984 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0039 (0.0281) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0052 (0.0280) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20-50% x Year of 1984 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0226 (0.0217) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0210 (0.0216) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 55-75% x Year of 1984 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0099 (0.0213) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0098 (0.0212) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 80-95% x Year of 1984 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0284 (0.0219) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0294 (0.0219) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; 1-15% x Year of 1985 &lt;/td&gt;
@@ -657,6 +703,11 @@ class: center middle
    &lt;td style="text-align:left;"&gt; 0.03590 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Control group top 5% of sale taxes paid last period. Reference year is 1983.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
 &lt;/table&gt;
 
 .pull-left[
@@ -666,13 +717,247 @@ class: center middle
 ]
 
 ---
+class: center middle
+
+&lt;table class="table-unshaded lightable-paper" style="font-size: 17px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+&lt;caption style="font-size: initial !important;"&gt;Fiscal reform of 1986&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; did_1986.1 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; did_1986.2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Inter. cost share of sales (logs) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Inter. cost share of sales (logs) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 1-15% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.2055*** (0.0179) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.1979*** (0.0178) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20-50% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0794*** (0.0135) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0761*** (0.0134) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 55-75% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0536*** (0.0135) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0530*** (0.0135) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 80-95% &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0660*** (0.0142) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0641*** (0.0142) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Year of 1987 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0087 (0.0163) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0080 (0.0162) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Year of 1988 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0183 (0.0161) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0122 (0.0160) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Year of 1989 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0103 (0.0160) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0025 (0.0159) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Industry FE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Metropolitian area FE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; _____________________ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ______________________________ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ______________________________ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; S.E. type &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Heteroskedasticity-robust &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Heteroskedasticity-robust &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Observations &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 28,137 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 28,137 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.13303 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.14011 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Within R2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.04402 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.04108 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Control group top 5% of sale taxes paid last period. Reference year is 1986.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+
+
+---
+class: center middle
+
+&lt;table class="table-unshaded lightable-paper" style="font-size: 17px; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+&lt;caption style="font-size: initial !important;"&gt;Fiscal reform of 1986&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; did_1986.1 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; did_1986.2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Inter. cost share of sales (logs) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Inter. cost share of sales (logs) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 1-15% x Year of 1987 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0107 (0.0249) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0108 (0.0248) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20-50% x Year of 1987 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0031 (0.0198) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0029 (0.0196) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 55-75% x Year of 1987 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0102 (0.0197) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0095 (0.0196) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 80-95% x Year of 1987 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0181 (0.0201) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0178 (0.0199) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 1-15% x Year of 1988 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0019 (0.0263) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0053 (0.0262) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20-50% x Year of 1988 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0198 (0.0194) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0125 (0.0192) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 55-75% x Year of 1988 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0184 (0.0195) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0116 (0.0194) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 80-95% x Year of 1988 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0187 (0.0199) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0115 (0.0198) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 1-15% x Year of 1989 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0321 (0.0248) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0226 (0.0247) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 20-50% x Year of 1989 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0190 (0.0192) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0113 (0.0191) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 55-75% x Year of 1989 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0065 (0.0193) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0140 (0.0191) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 80-95% x Year of 1989 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0071 (0.0199) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.0021 (0.0198) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Industry FE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Metropolitian area FE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; _____________________ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ______________________________ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ______________________________ &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; S.E. type &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Heteroskedasticity-robust &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Heteroskedasticity-robust &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Observations &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 28,137 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 28,137 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.13303 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.14011 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Within R2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.04402 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.04108 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Control group top 5% of sale taxes paid last period. Reference year is 1986.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+
+.footer[ 1986 reform stopped tax evasion growth]
+
+
+---
 ### Conclusions
+
+Firms that were required to report income tax in 1983 reduced tax evasion by 14%
 
 Evidence suggests that tax evasion through cost overreporting increased after the reform of 1983 between 8 and 9% in 1985 and 1986
 
 This result stands at odds with previous studies that indicate that the evasion of income tax and VAT declined during this period .small[(Sanchez &amp; Gutierrez, 1994)]
 
-Likewise, firms that were required to report income tax in 1983 reduced tax evasion by 14%
+Likewise, evidence suggests that tax evasion growth stopped after the 1986 reform
 
 
 ---

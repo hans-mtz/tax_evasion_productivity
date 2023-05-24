@@ -239,9 +239,9 @@ Assume Cobb-Douglas: $G(K_{it},L_{it}, M_{it})e^{\omega_{it}+\varepsilon^Y_{it}}
 From the FOC of the cost minimization problem of the firms
 
 \begin{align*}
-    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)&=\ln\beta - \varepsilon^Y_{it} \\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]+\mathbb{E}[\varepsilon^M_{it}| S_{it}>s]&=\ln\beta - \mathbb{E}[\varepsilon^Y_{it}| S_{it}>s]\\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]&=\ln\beta
+    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)&=\ln\beta_M - \varepsilon^Y_{it} \\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]+\mathbb{E}[\varepsilon^M_{it}| S_{it}>s]&=\ln\beta_M - \mathbb{E}[\varepsilon^Y_{it}| S_{it}>s]\\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]&=\ln\beta_M
 \end{align*}
 
 
@@ -266,11 +266,11 @@ $$\mathbb{E}[\eta_{it}|S_{it}>s]\not=\mathbb{E}[\eta_{it}]\not=0$$
 ---
 ### Recovering tax evasion
 
-For every firm, form $\mathcal E_{it}$ using input cost share of sales and the output elasticity of intermediates $\beta$ from 1st stage
+For every firm, form $\mathcal E_{it}$ using input cost share of sales and the output elasticity of intermediates $\beta_M$ from 1st stage
 
 \begin{align}
-    \mathcal E_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta\\
-    &=\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+\varepsilon^M_{it}\\
+    \mathcal E_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta_M\\
+    &=\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta_M+\varepsilon^M_{it}\\
     &=-\varepsilon^Y_{it} +\varepsilon^M_{it}
 \end{align}
 
@@ -493,8 +493,11 @@ setFixest_dict(c(
     `treat_fact80-95%` = "80-95%",
     year_fct84 = "Year of 1984",
     year_fct85 = "Year of 1985",
-    year_fct86 = "Year of 1986"
-
+    year_fct86 = "Year of 1986",
+    year_fct87 = "Year of 1987",
+    year_fct88 = "Year of 1988",
+    year_fct89 = "Year of 1989",
+    year_fct90 = "Year of 1990"#,
 ))
 
 etable(
@@ -513,6 +516,9 @@ kable_paper(
   full_width = FALSE,
   html_font = "Cambria",
   font_size = 22
+) %>%
+footnote(
+  general = "Control group 10% and 95% of taxes paid last period distribution. 1982 is the base year."
 )
 
 ```
@@ -522,9 +528,10 @@ kable_paper(
 model1_coefs <-coef(threshold_model)
 e_coef <- exp(model1_coefs["treatment:time"])-1
 
-cat(".small[Tax evasion decreased by ",e_coef[[1,1]]*100,"%]")
+cat(".footer[Tax evasion decreased by ",round(e_coef[[1,1]]*100,1),"%]")
 
 ```
+
 ---
 class: center middle
 
@@ -532,7 +539,7 @@ class: center middle
 
 etable(
     did_1983,
-    keep = "%%",
+    # keep = "%%",
     drop = "x"
 ) %>%
 kbl(caption="Fiscal reform of 1983") %>%
@@ -541,6 +548,9 @@ kable_paper(
   full_width = FALSE,
   html_font = "Cambria",
   font_size = 17
+) %>%
+footnote(
+  general = "Control group top 5% of sale taxes paid last period. Reference year is 1983."
 )
 
 ```
@@ -558,8 +568,8 @@ class: center middle
 
 etable(
     did_1983,
-    keep = "x",
-    drop = "84"
+    keep = "x"#,
+    # drop = "84"
 ) %>%
 kbl(caption="Fiscal reform of 1983") %>%
 kable_paper(
@@ -567,6 +577,9 @@ kable_paper(
   full_width = FALSE,
   html_font = "Cambria",
   font_size = 17
+) %>%
+footnote(
+  general = "Control group top 5% of sale taxes paid last period. Reference year is 1983."
 )
 
 ```
@@ -578,13 +591,66 @@ kable_paper(
 ]
 
 ---
+class: center middle
+
+```{r did_1986, echo = FALSE}
+
+etable(
+    did_1986,
+    # keep = "%%",
+    drop = "x"
+) %>%
+kbl(caption="Fiscal reform of 1986") %>%
+kable_paper(
+  # 'basic',
+  full_width = FALSE,
+  html_font = "Cambria",
+  font_size = 17
+) %>%
+footnote(
+  general = "Control group top 5% of sale taxes paid last period. Reference year is 1986."
+)
+
+```
+
+
+
+---
+class: center middle
+
+```{r did_1986_2, echo = FALSE}
+
+etable(
+    did_1986,
+    keep = "x"#,
+    # drop = "84"
+) %>%
+kbl(caption="Fiscal reform of 1986") %>%
+kable_paper(
+  # 'basic',
+  full_width = FALSE,
+  html_font = "Cambria",
+  font_size = 17
+) %>%
+footnote(
+  general = "Control group top 5% of sale taxes paid last period. Reference year is 1986."
+)
+
+```
+
+.footer[ 1986 reform stopped tax evasion growth]
+
+
+---
 ### Conclusions
+
+Firms that were required to report income tax in 1983 reduced tax evasion by 14%
 
 Evidence suggests that tax evasion through cost overreporting increased after the reform of 1983 between 8 and 9% in 1985 and 1986
 
 This result stands at odds with previous studies that indicate that the evasion of income tax and VAT declined during this period .small[(Sanchez & Gutierrez, 1994)]
 
-Likewise, firms that were required to report income tax in 1983 reduced tax evasion by 14%
+Likewise, evidence suggests that tax evasion growth stopped after the 1986 reform
 
 
 ---

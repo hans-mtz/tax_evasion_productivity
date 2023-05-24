@@ -19,7 +19,11 @@ setFixest_dict(c(
     `treat_fact80-95%` = "80-95%",
     year_fct84 = "Year of 1984",
     year_fct85 = "Year of 1985",
-    year_fct86 = "Year of 1986"
+    year_fct86 = "Year of 1986",
+    year_fct87 = "Year of 1987",
+    year_fct88 = "Year of 1988",
+    year_fct89 = "Year of 1989",
+    year_fct90 = "Year of 1990"#,
 ))
 
 # Change in threshold -------
@@ -74,7 +78,7 @@ threshold_model <- colombia_data_frame %>%
     ) #%>%
     # summary()
 
-etable(threshold_model, tex = TRUE)
+etable(threshold_model)
 
 ## 1983 fiscal reform
 
@@ -187,7 +191,7 @@ colombia_data_frame %>%
         year_fct = factor(year)
     ) %>%
     filter(
-        year %in% c(86, 87, 88, 90),
+        year %in% c(86, 87, 88, 89),
         # nthile %in% c(2,4,20),
     ) %>%
     mutate(
@@ -203,11 +207,56 @@ colombia_data_frame %>%
     ) %>%
     summary()
 
+did_1986<-colombia_data_frame %>%
+    ungroup() %>%
+    group_by(year) %>%
+    mutate(
+        nthile = ntile(lag_log_sales_tax, 20),
+        treatment = case_when(
+            nthile %in% 1:3 ~ "1-15%",
+            nthile %in% 4:10 ~ "20-50%",
+            nthile %in% 11:15 ~ "55-75%",
+            nthile %in% 16:19 ~ "80-95%",
+            .default = "Top 5%"
+        ),
+        treat_fact = relevel(
+            as.factor(treatment),
+            ref = "Top 5%"
+        ),
+        time = ifelse(
+            year %in% c(84, 85),
+            1, 0
+        ),
+        year_fct = factor(year)
+    ) %>%
+    filter(
+        year %in% c(86, 87, 88, 89),
+        # nthile %in% c(2,4,20),
+    ) %>%
+    mutate(
+        year_fct = relevel(
+            year_fct,
+            ref = "86"
+        )
+    ) %>%
+    feols(
+        log_share ~ treat_fact*year_fct | csw(sic_3,metro_area_code),
+        data = .,
+        vcov = "hc1"
+    )
+    #%>%
+    # summary()
+
+
+etable(
+    did_1986
+)
 # Saving results
 
 save(
     threshold_model,
     did_1983,
+    did_1986,
     file = "Results/Tables/Colombia/regression_tables.RData"
 )
 
