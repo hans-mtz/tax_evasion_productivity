@@ -9,10 +9,10 @@ stata_labels <- attributes(col_df)$var.labels
 vars <- names(col_df)
 
 names(stata_labels) <- vars
-
+stata_labels <- as.data.frame(stata_labels)
 # Save data --------------
 
-save(col_df, file = "Code/Products/col_df.RData")
+save(col_df, stata_labels, file = "Code/Products/col_df.RData")
 
 ## Exploring ---- 
 

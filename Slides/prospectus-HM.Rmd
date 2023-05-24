@@ -1,0 +1,1044 @@
+---
+title: "Tax evasion and productivity"
+subtitle: ""  
+author: 
+  - "Hans Martinez"
+  - "Navarro*, Rivers, Aguiar"
+#date: '`r format(Sys.Date(),"%b %d, %Y")`'
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css", "mycss.css"]
+    nature:
+      slideNumberFormat: "%current%/16" #/%total%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+header-includes:
+  - \usepackage{bbm}
+  - \usepackage{eucal}
+  - \usepackage{bm}
+  - \usepackage{amsmath}
+  - \usepackage{amsfont}
+  - \usepackage{longtable}
+  - \usepackage{booktabs}
+  - \usepackage{xcolor}
+  - \newtheorem{definition}{Definition}
+  - \newtheorem{theo}{Theorem}
+  - \newtheorem{lemma}{Lemma}
+  - \usepackage[lite]{mtpro2}
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  fig.width=9, fig.height=3.5, fig.retina=3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = FALSE,
+  message = FALSE, 
+  warning = FALSE,
+  hiline = TRUE
+)
+library("kableExtra")
+# library("tydiverse")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_duo_accent(
+  primary_color = "#4F2683",
+  secondary_color = "#807F83",
+  inverse_header_color = "#FFFFFF",
+  inverse_text_color = "#FFFFFF",
+  inverse_background_color = "#4F2683",
+  base_font_size = "30px",
+  title_slide_background_image = "Horizontal_Rev.png",
+  title_slide_background_size = "4.5% no-repeat",
+  title_slide_background_position = "bottom",
+  extra_css = list(
+  ".small" = list("font-size" = "80%", 
+                  "color" = "#807F83"),
+  ".large" = list("font-size" = "130%", 
+                  "color" = "#4F2683",
+                  "font-family" = "var(--header-font-family)",
+                  "font-weight" = "600"),
+  ".full-width" = list(
+    display = "flex",
+    width   = "100%",
+    flex    = "1 1 auto"
+    ),
+  ".footer" = list("color"    = "#807F83",
+                   "position" = "fixed",
+                   "top"      = "95%",
+                   "left"     = "0",
+                   "text-align"= "left",
+                   "width"    = "50%",
+                   "font-size"= "80%"
+                     )
+  ),
+  header_font_google = google_font("Merriweather", "400","400i","700"),
+  text_font_google   = google_font("Arimo", "400", "400i"),
+  code_font_google   = google_font("IBM Plex Mono")
+)
+```
+name: over-r
+count: false
+### Tax evasion by input overreporting
+
+- Firms might **reduce** their tax burden by **overreporting** expenses .small[(VAT, Profit tax)]
+
+--
+count: false
+- **International** problem
+
+  - OECD acknowledges its pervasiveness .small[(OECD, 2017)]
+  - Mexico .small[(Tax revenue loss 0.3% Mexico's GDP)], Colombia .small[(0.2%)], Chile .small[(0.2%)], Poland .small[(5.6%)], Asia .small[(South Korea and China)], and Africa .small[(Kenya and Rwanda)] 
+
+--
+count: false
+
+
+- Recent **evidence** from Ecuador .small[ [&#9654; (Carrillo et al. 2022)](#carrillo)]
+
+  - Quantitatively large .small[up to 14% of a firm's annual purchases]
+  - Widespread across firms .small[In 2015, 4.7% of firms were detected overreporting]
+  - Very large firms do not overreport inputs .small[Sophisticated: Profit shifting (Bustos et al., 2022); Higher risk of getting caught: 3rd-party reporting (ISO), gov't attention]
+
+???
+
+.footer[[&#9654; Evasion vs Avoidance](#tax-conv)]
+
+
+---
+### Research Questions
+
+- Even governments with detailed administrative data have difficulties detecting tax evasion because firms conceal their behavior
+
+> How can a researcher with access to more **commonly available data** like manufacturing surveys **estimate tax evasion** through cost overreporting?
+
+--
+count: false
+- If overreporting is so widespread and significant, then our measures of productivity are likely to be biased because they are a function of inputs
+
+> How can a researcher **recover productivity** in the presence of **tax evasion** through input overreporting?
+
+--
+count: false
+- The fundamental **challenge** is that both tax evasion and productivity are **unobserved**
+
+---
+count: false
+name: lit
+### Contribution
+
+- I provide a **new estimation strategy** to recover **tax evasion** using firm-level data
+
+  - [&#9654; Corporate tax evasion](#firms-evasion) by cost overreporting .small[[&#9654; Traces of income](#traces) (Pissarides and Weber, 1989; Artavanis, 2016; Paulus, 2015)]
+
+--
+count: false
+- I show that ignoring tax evasion leads to **biased estimates** of productivity
+  - Production function and productivity estimation .small[(Gandhi, Navarro, and Rivers, 2020 [GNR]; Ackerberg et al., 2015); Productivity gap (Syverson, 2011)]
+
+--
+count: false
+- I estimate productivity despite the **systematic** overreporting of **intermediates**
+
+???
+
+  - Measurement error on capital .small[(Collard et al., 2020; Ursenbach, 2022)]
+
+---
+class: middle
+
+### KEY INSIGHT
+
+>In the absence of tax evasion, the first-order conditions (FOC) of the cost-minimization problem of the firms reveal the production function parameters (common technology) and the output shock distribution 
+
+>Since I have a subset of non-evading firms, I learn the production function from them in the presence of tax evasion
+
+>I then recover input overreporting up to the output shock as the deviations of the tax evaders from the common technology
+
+---
+layout: false
+### Research timeline
+
+1. Derive a method to estimate **productivity** and **tax evasion**
+   
+2. Implement the method using **data** from developing countries
+  
+3. Compare estimates of **tax evasion** with previous studies
+
+4. Contrast the **productivity distribution** with the mismeasured one .small[Bias magnitude, distribution dispersion, and ranking]
+
+5. Study the **policy** implications
+  - **Effective targeting** to improve government tax revenue
+  - **Efficient reallocation** of resources from low- to high-productivity firms .small[(Eslava et al., 2004; Levy, 2018)]
+
+---
+layout: false
+count: false
+### Research timeline
+
+1. Derive a method to estimate **productivity** and **tax evasion** &#9989;
+   
+2. Implement the method using **data** from developing countries &#128221;
+
+3. Compare estimates of **tax evasion** with previous studies 
+   
+4. Contrast the **productivity distribution** with the mismeasured one .small[Bias magnitude, distribution dispersion, and ranking] 
+
+5. Study the **policy** implications 
+  - **Effective targeting** to improve government tax revenue
+  - **Efficient reallocation** of resources from low- to high-productivity firms .small[(Eslava et al., 2004; Levy, 2018)]
+
+
+
+---
+layout: false
+### The standard setting
+
+- We observe output $Y_{it}$, reported inputs $X_{it}$, and output $P_t$ and input prices $\rho_t$. 
+
+$\mathcal O = \{Y_{it}, X_{it}, P_{t}, \rho_t\}_{i\in I, t \in T}$
+  
+- We want to estimate the production function $G$ and productivity $\omega_{it}$
+
+$Y_{it}=G(X_{it})e^{\omega_{it}+\varepsilon^Y_{it}}$, where $\varepsilon^Y_{it}$ is the output shock with $\mathbb{E}[\varepsilon^Y_{it}]=0$
+
+- We are also interested in the Markov process of productivity (AR1)
+
+$\omega_{it}=\delta_0 + \delta_1 \omega_{it-1}+\eta_{it}$ with $\mathbb{E}[\eta_{it}|\omega_{it-1}]=0$
+
+
+---
+name: bias
+### Tax evasion and the productivity bias
+
+- Firms overreport their true inputs $X^*_{it}$ by $e^{\varepsilon^X_{it}}$ to evade taxes
+
+$X_{it}=X^*_{it}e^{\varepsilon^X_{it}}$ with $\varepsilon_{it}^X\ge0$ .small[ [&#9654; Microfoundation](#model)[&#9654; Justification (+)](#true-ins)]
+
+- Bias: Difference between the naively estimated $\tilde\omega_{it}$ and true productivity $\omega_{it}$
+
+\begin{equation}
+ \mathbb{E}[\tilde\omega_{it}|x]-
+    \mathbb{E}[\omega_{it}|x] \le
+      \ln\mathbb{E}\left[
+        \frac{G(X^*_{it})}{G(X^*_{it}e^{\varepsilon^X_{it}})}|x\right] \le 0
+\end{equation}
+
+.center[
+.small[By Jensen's inequality and because *G(X)* is monotonically increasing]
+]
+.footer[ [&#9654; Bias in PF parameters](#prd-bias)]
+
+
+
+---
+layout: false
+name: id-strat
+### Identification strategy
+
+- Data: 
+  - Firm-level data from Ecuador: Inputs, outputs, and prices </br>.small[[&#9654; Sum-stats](#sum-stats) [&#9654; Access](#data-slide)]
+  - Threshold of the size distribution for non-evading firms .small[(Carrillo et al., 2022)</br>[&#9654; Contingency plan](#contingency)]
+  
+- Assumptions: 
+  - (A-1) Firms above percentile $s$ do not overreport inputs
+  - (A-2) Firms choose input overreporting $\varepsilon^X_{it}$ *before* the output shock $\varepsilon^Y_{it}$ .small[ [&#9654;Microfoundation](#model) [&#9654; Justification](#a-2)]
+
+
+---
+layout: false
+name: gnr
+### Estimating the production function
+
+Assume Cobb-Douglas: $G(X^*_{it})e^{\omega_{it}+\varepsilon^Y_{it}}=X^{*\beta}_{it}e^{\omega_{it}+\varepsilon^Y_{it}}$
+
+Apply 1st Stage of GNR (2020) using only non-evaders:
+
+\begin{align*}
+    \ln\left(\frac{\rho_t X_{it}}{P_{t}Y_{it}}\right)&=\ln\beta - \varepsilon^Y_{it} \\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t X^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]+\mathbb{E}[\varepsilon^X_{it}| S_{it}>s]&=\ln\beta - \mathbb{E}[\varepsilon^Y_{it}| S_{it}>s]\\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t X^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]&=\ln\beta
+\end{align*}
+
+
+---
+### Failing to estimate productivity's AR(1)
+
+GNR's 2nd stage can be computed only for $S_{it}>s$
+
+\begin{align}
+    \mathcal Y_{it}&\equiv \ln Y_{it}-\varepsilon^Y_{it}-\beta \ln X_{it}\\
+    &= \omega_{it}\\
+    \\
+    \mathbb{E}[\mathcal Y_{it}|\mathcal Y_{it-1},S_{it}>s] &= \delta_0+\delta_1\mathbb{E}[\omega_{it}|\omega_{it-1},S_{it}>s] + \mathbb{E}[\eta_{it}|\omega_{it-1},S_{it}>s]
+\end{align}
+
+You can't recover $\delta=[\delta_0,\delta_1]'$ because of the selection on $S$, i.e., 
+
+$$\mathbb{E}[\eta_{it}|S_{it}>s]\not=\mathbb{E}[\eta_{it}]\not=0$$
+
+---
+### Proposed solution
+
+For every firm, form $\mathcal E_{it}$ with input cost share and $\beta$ from 1st stage
+
+\begin{align}
+    \mathcal E_{it}\equiv&\ln\left(\frac{\rho_t X_{it}}{P_{t}Y_{it}}\right)-\ln\beta\\
+    &=\ln\left(\frac{\rho_tX^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+\varepsilon^X_{it}\\
+    &=-\varepsilon^Y_{it} +\varepsilon^X_{it}
+\end{align}
+
+$\mathcal E_{it}$, tax evasion up to the output shock
+
+---
+### Trading unobservables
+
+Likewise,
+
+\begin{align}
+    \mathcal X_{it}&\equiv \ln X_{it}-\mathcal E_{it}\\
+    & = \ln X^*_{it} +\varepsilon^X_{it}-(\varepsilon^X_{it}- \varepsilon^Y_{it})\\
+    & = \ln X^*_{it} + \varepsilon^Y_{it}\\
+    \\
+    \mathcal W_{it} & \equiv \ln Y_{it} - \beta\mathcal X_{it}\\
+    & = \beta\ln X^*_{it}+\omega_{it}+\varepsilon^Y_{it}-\beta\ln X^*_{it}-\beta\varepsilon^Y_{it} \\
+    & = \omega_{it}+(1-\beta)\varepsilon^Y_{it}
+\end{align}
+
+---
+name: markov
+### Markov process of productivity
+
+
+I can now recover $\delta$
+
+\begin{align}
+  \mathbb{E}[\mathcal W_{it}|\mathcal W_{it-1}]=&\\
+  \mathbb{E}[\omega_{it}|\mathcal W_{it-1}]=&\delta_0+\delta_1\mathbb{E}[\omega_{it-1}+(1-\beta)\varepsilon^Y_{it-1}|\mathcal W_{it-1}]\\
+  &-\mathbb{E}[(1-\beta)\varepsilon^Y_{it}|\mathcal W_{it-1}]
+  +\mathbb{E}[\eta_{it}|\mathcal W_{it-1}]\\
+  \\
+  =&\delta_0+\delta_1\mathbb{E}[\omega_{it-1}|\mathcal W_{it-1}]
+\end{align}
+
+.footer[Preliminary MC simulations: [&#9654; DGP](#mc-sim)[&#9654; Results](#mc-res)]
+
+---
+name: deconv
+### Using deconvolution
+
+From the 1st stage, I also learn the **distribution** $m$ of $\varepsilon^Y_{it}$
+
+#### Result from probability theory:
+> The density of the sum of two *independent* random variables is equal to the *convolution* of the densities of both addends; hence
+
+\begin{equation*}
+  h^d= f^d*m = \int f^d(\mathcal Z^d - \varepsilon^Y)m(\varepsilon^Y)d\varepsilon^y
+\end{equation*}
+
+> where $h^d$ is the density of $\mathcal Z^d\in \{\mathcal{E,X,W}\}$ .small[(Meister, 2009)]
+
+I can use non-parametric density **deconvolution methods**
+
+---
+### Deconvolution: the intuition
+
+For every $n$-th moment $\mathbb{E}[(\varepsilon^{Y}_{it})^n|S_{it}>s]=\mathbb{E}[(\varepsilon^{Y}_{it})^n|t]=\mathbb{E}[(\varepsilon^{Y}_{it})^n]$
+
+Therefore, I can get any moment of the tax evasion $\varepsilon^X_{it}$ distribution $\forall t\in T$
+
+For example: 
+\begin{align}
+  \mathbb{E}[\mathcal E_{it}|t]&=\mathbb{E}[\varepsilon^X_{it}|t]-\mathbb{E}[\varepsilon^Y_{it}]=\mathbb{E}[\varepsilon^X_{it}|t] \\
+  \\
+  \mathbb{Var}[\mathcal E_{it}|t]&=\mathbb{Var}[\varepsilon^X_{it}|t]
+  +\underbrace{\mathbb{Var}[\varepsilon^Y_{it}]}_{known}\\
+\end{align}
+
+---
+### The power of deconvolution
+
+- Using $\mathcal E_{it}$, I can learn the **distribution of tax evasion** and how it has **evolved**
+
+- Using $\mathcal{W}_{it}$, I learn the **distribution of productivity** $\omega_{it}$ and how it has **evolved**
+
+- Moreover, I can get any mixed moment $\mathbb{E}[(\mathcal{Z}^c, \mathcal{Z}^d)^n|t]$
+  - I can learn how **tax evasion** changes with **productivity**, e.g.,
+
+\begin{align}
+  \mathbb{Cov}[\mathcal{E}_{it},\mathcal{W}_{it}|t]&=\mathbb{E}[\varepsilon^X_{it}\omega_{it}|t]
+  -\underbrace{
+    (1-\beta)\mathbb{E}[(\varepsilon^{Y}_{it})^2]-\mathbb{E}[\varepsilon^X_{it}|t]\mathbb{E}[\omega_{it}|t]}_{
+    known
+    }
+\end{align}
+
+
+---
+### Thesis outline
+
+1. Tax evasion and productivity
+
+2. The effect of the e-invoice on tax evasion through cost overreporting
+  - OECD (2017) recommends the e-invoice to fight fake invoices
+  - Mexico .small[ (since 2014: Castro et al., 2016)], Ecuador, Chile, Colombia
+
+3. Cournot rationalizability and measurement error (Summer paper)
+  - Working on an application
+
+
+---
+name: final_slide
+count: false
+layout: false
+class: center middle last
+
+[hansmartinez.com](https://hansmartinez.com)
+
+```{r, out.width="90%"}
+library(qrcode)
+qr <- qrcode::qr_code('https://raw.githack.com/hans-mtz/Slides/main/Slides/prospectus-HM.html')
+plot(qr)
+
+```
+
+.small[ Download slides: Scan QR with your phone's camera ]
+
+<!-- .center[Link to slides: Scan me!] -->
+<!-- .footer[ .full-width[Hello there]] -->
+
+---
+class: inverse center middle 
+count: false
+## Appendix
+
+
+
+
+---
+layout: false
+count: false
+name: sum-stats
+
+<!-- ![](tax_t.png){width="50%"} -->
+
+```{r , echo = FALSE, out.width='75%', fig.align='center'}
+knitr::include_graphics('figures/tax_t.png')
+```
+
+
+---
+
+![](figures/eaim.png)
+
+---
+
+![](figures/colombia.png)
+
+.footer[[&#9664; Back](#id-strat)]
+
+
+---
+
+
+```{r , echo = FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics('figures/tax_dens_notrim.png')
+```
+
+---
+
+```{r , echo = FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics('figures/tax_dens_over.png')
+```
+
+.footer[[&#9664; Back](#id-strat)]
+
+---
+name: tax-conv
+
+### Brief tax evasion literature overview
+
+Conventions in the literature .small[(Slemrod, 2019)]:
+- Tax avoidance: Legal actions to reduce tax liability
+- Tax evasion: Illegal actions to reduce tax liability
+- Informality: Small-scale economic activities unobserved by official authorities
+
+.footer[[&#9664; Back](#lit)]
+
+
+---
+name: tax-stats
+### What do they do in the tax evasion lit?
+
+- Random audits
+  - Tax gap: US, 18.3% overall; UK, 6.4% overall, 6.4% corporate income, 5 % individual, 11.1% VAT; Denmark, 2.2 % overall.
+  - Small- and medium-sized enterprises account for 50% of the overall tax gap in the UK .small[(HMRC, 2015)], 47% of individual income in the US, and 14.9% (self-employment income) in Denmark.
+- Admin data .small[Canada, UK, Brazil, Chile, China, Costa Rica, Ecuador, India, Pakistan, Rwanda, Tunisia, and Uganda.]
+- Experiments (RCT): .small[ Uruguay (Bergolo et al., 2018), Colombia (Ortega & Scartascini, 2018), Chile (Pomenranz, 2015), Ecuador (Carrillo et al., 2017)]
+- RD and "bunching" analysis of kinks and notches: .small[Spain (Almunia and Lopez-Rodriguez, 2018); Ecuador (Carrillo et al., 2012)]
+- Traces
+
+.footer[[&#9664; Back-Motivation](#motivation)[&#9664; Back-Relevance](#lit)]
+
+---
+name: traces
+### Traces of true income
+
+- Seminal paper Pissarides and Weber (1989): 
+  - Food consumption is a function of income and other characteristics, but not of kind of income, salary versus self-employment income
+  - A higher ratio of food purchases to reported income of the self-employed vs employees in the UK implies the self-employed understate their income
+- Most recent studies focus on individual income .small[
+  - Bank's credit multipliers for employees and self-employed in Greece (Artavanis, 2016); Public vs private sector employees in Estonia (Paulus, 2015); for Canada (Dunbar and Fu, 2015)]
+- Trace's estimates are considered as lower bounds of evasion (by the self-employed)
+  
+
+.footer[[&#9664; Back](#lit)]
+
+---
+name: firms-evasion
+### Firms' tax evasion
+
+- Import/export tariffs
+  - Mislabelling .small[(between China and Hong Kong: Feisman and Wei, 2004)] 
+- Payroll taxes
+  - Incentive to underreport labor and wages .small[(Mexico: Kumler et al., 2013)]
+- Value added tax (VAT)
+  - Incentive to underreport sales/overreport costs .small[(Chile: Pomeranz, 2015; for Brazil: Naritomi, 2016)]
+- Profit tax (Corporate income tax)
+  - Most recent work focuses on revenue underreporting .small[(Ecuador: Carrillo et al., 2017; US: Slemrod et at., 2017; Slemrod, 2019; Pomeranz and Vila-Belda, 2019)], 
+  - Few look into **cost overreporting** .small[(Carrillo et al., 2022)].
+
+.footer[[&#9664; Back](#lit)]
+
+---
+name: cost-over
+### Cost overreporting through fake invoices by ghost firms
+
+*Carrillo, Donaldson, Pomeranz, and Singhal (2022) NBER Working Paper*
+
+- Internationally prevalent
+  - OECD (2017) acknowledges fake invoicing pervasiveness.
+  - Mexico (Tax revenue loss 0.3% Mexico's GDP), Colombia (0.2%), Chile (0.2%), Poland (5.6%); Asia: South Korea and China; and Africa: Kenya and Rwanda. 
+- "Extremely sparse"
+  - Needed data is rare
+  - Pakistan: VAT rates reduced to zero, ghost firms decreased .small[(Waseem, 2020)]; ML algorithm to detect ghost firms .small[(Mittal et al., 2018)]
+
+
+---
+name: carrillo
+### Carrillo et al. (2022)
+
+- Authors exploit **transaction-level data** from Ecuador and a **list of ghost firms** —pre-identified by the tax authority— to document new facts about the use of fake invoices to evade taxes. 
+- Data covers the period before and after **government intervention** —emails challenging ghost clients misreporting.
+- Ghost transactions are **widespread** and **quantitatively large** 
+  - Not limited to small, semi-formal firms; **Larger firms** are more likely to engage in ghost transactions
+  - Annual ghost purchases reached 14.1% of the value of firms' total purchases. 4.7% of potential clients engaged in ghost transactions.
+
+.footer[[&#9664; Back](#over-r)]
+
+---
+name: evidence
+### Empirical evidence
+
+**Carrillo et al. (2022)**
+
+- Firms at the top of the size distribution don't overreport inputs .small[
+  - Share of ghost deductions increases throughout much of the size distribution, *except at the very top* —very large corporations might have stronger incentives to avoid illegal behavior or they can use more sophisticated avenues of tax avoidance that do not require evasion using fake receipts (Bustos et al., 2022)]
+- Timing of the evasion decision .small[
+  - Ghost transactions are clustered toward the end of the tax year
+- Consistent with firms assessing their annual revenues at the end of the year and then utilizing ghost transactions to achieve a target reported profit level or rate for tax purposes]
+- Cost overreporting mainly on non-labor costs (intermediates) .small[
+  - Adjusting firms reduced most strongly non-labor costs: domestic purchases, other production costs, and imports]
+
+.footer[[&#9664; Back](#id-strat)]
+
+
+---
+### In the context of my approach
+
+- No economic activity behind overreporting .small[
+  - Ghost transactions bunch at round numbers
+- Ghost transactions bunch below the financial system payment threshold]
+- Monotonic relation between size and tax evasion .small[
+  - The probability of engaging in cost overreporting through ghost firms increases monotonically in firm revenue.]
+- No underreporting in firm-to-firm sales .small[
+  - There was no offsetting behavior as in revenue misreporting studies]
+
+
+---
+name: id-sources
+### Possible sources of identification
+
+From theory
+1. Thresholds: changes in audit probability, penalties, or tax rates after passing a thresholds
+2. Unexpected changes in input prices: productivity increments to offset raises in prices will follow the Markov assumption and thus take longer than just misreporting because of higher incentives to evade taxes
+3. Timing of the misreporting decision: after realization of productivity and true inputs are chosen
+
+
+---
+### Possible sources of identification
+
+From data
+1. Firms at the top of the size distribution do not overreport inputs
+2. Firms' characteristics correlated with tax evasion: 
+  1. Correlated with productivity: Revenue, market shares .small[(Carrillo et al., 2022)], firm's age .small[(Zumaya et at., 2021)], Owner's income .small[(Carrillo et al., 2022)], costs and assets ratio .small[(Gonzales and Velasques, 2013)]
+  2. Uncorrelated with productivity:  Results of previous audits .small[(Gonzalez and Velasquez, 2013)]
+
+.footer[[&#9664; Back](#id-strat)]
+
+---
+layout: false
+name: hu-sch
+### Hu, Schennach, and Shiu (2021)
+
+\begin{align}
+  Y&=m_0(X^*)+\eta \\
+  X&=X^*+\varepsilon \\
+  \varepsilon &\not\perp X^*
+\end{align}
+
+1. $m_0$ monotone function
+2. $\mathbb{E}[\eta| X^*]=0$, $\eta\perp\varepsilon$
+3. $f(y|x^*,x)=f(y|x^*)$
+4. $G[f(x|x^*)]=x^*$
+
+In my case, $m_0=\beta \ln X^* + g^{-1}(X^*)$ and $G[\cdot]=\inf\{\nu:\int_{0}^\nu f(x|x^*)dx \ge 0.9\}$
+
+.footer[[&#9664; Back](#future)]
+
+---
+layout: false
+
+
+Recovering the joint distribution $f(y_{it},x_{it},p_{t})=f(y_{it},x_{it},x^*_{it},p_{t},\omega_{it})$ from the data $\mathcal{O}=\{Y_{it},X_{it},P_{t}\}_{i\in I, t \in T}$.
+
+Assumptions: 
+1. $f_1(y_{it}|x_{it}, x_{it}^*,\omega_{it}, p_{t})=f_1(y_{it}|x_{it}^*)$
+2. $f_2(p_{t}|x_{it}, x_{it}^*,\omega_{it}, p_{t})=f_2(p_{t}|x_{it}^*)$
+3. $f_3(x_{it}|x_{it}, x_{it}^*,\omega_{it}, p_{t})=f_4(x_{it}|x_{it}^*)$
+
+---
+
+
+Recast joint distribution as
+
+$$\begin{aligned}
+ f&(y_{it},x_{it},p_{t})\\
+ &= f(y_{it},x_{it},p_{t},\omega_{it},x^*_{it}) \\ \notag
+ &= f_1(y_{it}| x^*_{it},\omega_{it})
+ f_2(p_{it}|x^*_{it})
+ f_3(x_{it}|x^*_{it})
+ f(x_{it}^*,\omega_{it-1}) \notag
+\end{aligned}$$
+
+---
+
+
+Assuming $f(y_{it},x_{it},p_{t})$ is time-invariant, we can form the quasi-likelihood function as follows:
+
+$$\begin{equation*}
+ \label{eq:mle_def}
+ \sum_{i\in I}\left(
+ \sum_{t\in T} \log f(y_{it},x_{it},p_{t})
+ \right) \equiv
+ \sum_{i\in I} l(D_i;\alpha)
+\end{equation*}$$
+
+in which $D_i=(Y_{it},X_{it},P_{t})$ and
+
+---
+
+
+$$\begin{aligned} \label{eq:mle}
+ l(D_i:\alpha) &\equiv l(D_i;\theta, f_1,f_2,f_3)\notag\\
+ &= \sum_{t\in T}\log \bigg\{ 
+ \int f_1(y_{it} - g(x^*_{it})-\varepsilon^Y_{it}) \\
+ & f_2\left(-\ln\left(\frac{\rho_t X^*_{it}}{P_{t}Y_{it}}\right)+\ln\left(\frac{G_x(x^*_{it})X^*_{it}}{G(x^*_{it})}\right)\right)\\
+ & f_3(x_{it}-x^*_{it}) \bigg\} \\
+ & + \sum_{t\in T}\log f(\omega_{it},x_{it}^*)
+\end{aligned}$$
+
+.footer[[&#9664; Back](#future)]
+
+
+---
+layout: true
+
+### MC Simulations
+---
+name: mc-sim
+
+**The model**
+
+- Price-taking firms maximize after-tax profits given input prices, taxes, optimal inputs, and size
+- The cost function of the tax-evasion decision $C(\varepsilon\le0)=0$ $\frac{\partial C}{\partial \varepsilon}>0$ $\frac{\partial C}{\partial s}<0$
+- Size is correlated with productivity
+
+---
+
+Rearranging
+
+\begin{align*}
+    \max_{\varepsilon^X \in [0,\infty)} (1-\tau)(Py-\rho x^*)+\rho\tau \varepsilon^X - p(\varepsilon^X)[\rho\tau\varepsilon^X-\kappa] \\  
+\end{align*}
+
+\begin{equation*}
+  V^E=\max_{\varepsilon^X_{it}} (1-\tau)\left(P_t \mathbb{E}[y_{it}] - \rho x_{it}^*\right)+\rho_t\tau \varepsilon^X_{it}-C(\varepsilon^X_{it}, s_{it})
+\end{equation*}
+
+
+---
+
+Functional forms in simulations
+
+\begin{align*}
+  C(\varepsilon^X_{it}, s_{it})&=\mathbf 1 (\varepsilon^X_{it}\ge0)\left[\alpha_0\varepsilon_{it}s^{-1}_{it}+\alpha_1^{\varepsilon_{it}}-1 \right]
+\end{align*}
+
+Optimal overreporting
+
+\begin{align}
+  \varepsilon^X_{it}&=  \frac{\ln\left(\tau\rho_t-\alpha_0 s_{it}^{-1}\right)-\ln\ln\alpha_1}{\ln\alpha_1}
+\end{align}
+
+
+---
+
+- Optimal inputs are chosen given productivity, prices, and the production function
+
+\begin{equation*}
+  V^T=\max_{x_{it}} P_t\mathbb{E}[ x_{it}^\beta e^{\omega_{it}+\varepsilon_{it}}]-\rho_t x_{it}
+\end{equation*}
+
+- Optimal input choice is $x_{it}^*=\left(\frac{\beta P_t e^{\omega_{it}}}{\rho_t}\right)^{\frac{1}{1-\beta}}$. 
+- Output is $y_{it}=x^{*\beta}_{it}e^{\omega_{it}+\varepsilon_{it}}$
+
+
+---
+
+- $n=1,000$ firms and 4 periods $t=\{1,2,3,4\}$ 
+- $\varepsilon^Y_{it}\sim N(0,1)$
+- $\omega_{it}=\delta\omega_{it}+\eta_{it}$; $\eta_{it}\sim N(0,1)$ and 
+- $s_{it}=40\frac{1}{1+e^{\omega_{it}}}+ U[1,10]$
+- $P_t\sim U[1.5,2]$, $\rho_t\sim U[0.5,1]$
+
+
+---
+layout: true
+### Recovering production function parameters
+---
+
+1. OLS: $\ln y_{it} = \beta \ln x_{it} + \nu_{it}$
+2. 2SIV: 1S $\ln x_{it} = \gamma \ln x_{it-1} + \upsilon_{it}$; 2S $\ln y_{it} =  \beta \ln \hat{x}_{it} + \nu_{it}$
+3. ACF+: $\mathbb{E}[\eta_{it}|Z_{it}]$ with $Z_{it}=\{1,\ln x_{it-2}, 2\ln x_{it-2}\}$
+4. GNR-
+5. GNR+
+
+---
+
+| Parameter        | Value |
+|:----------------:|------:|
+|\\(\\beta\\)      | 0.40   |
+|\\(\\delta\\)     | 0.80   |
+|\\(\\alpha_0\\)   | 0.14  |
+|\\(\\alpha_1\\)   | 1.05  |
+|\\(\\tau\\)       | 0.30  |
+
+
+---
+name: mc-res
+
+```{r <chunk-label>, echo = FALSE}
+results<-read.csv("tables/results.csv")
+opts <- options(knitr.kable.NA = "")
+# knitr::kable(results, digits=3)
+
+results %>%
+  knitr::kable(caption="100 repetitions, 95% confidence intervals",
+      col.names=c("Model","Estimate","LCI","UCI","Estimate","LCI","UCI"),
+      digits=2) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  add_header_above(c(" "=1, "\\(\\beta=0.4\\)"=3,"\\(\\delta=0.8\\)"=3),escape=TRUE)
+
+```
+
+.footer[[&#9664; Back](#markov)]
+
+---
+layout: false
+name: prd-bias
+### Bias of production function parameter
+
+OLS: $\mathbb{E}[\ln Y_{it}|x_{it}]=\mathbb{E}[\beta \ln(X^*_{it}+\varepsilon^X_{it})|x_{it}]+\mathbb{E}[\omega_{it}|x_{it}]$
+
+IV: $\mathbb{E}[\ln Y_{it}|x_{it-1}]=\mathbb{E}[\beta \ln(X^*_{it}+\varepsilon^X_{it})|x_{it-1}]$
+
+ACF: (1st stage) $\mathbb{E}[\ln Y_{it}]=\mathbb{E}[\beta\ln(X^*_{it})+ g^{-1}(X^*_{it})]$
+
+GNR: (1st stage) $\mathbb{E}[\ln\left(\frac{\rho_t (X^*_{it}+\varepsilon^X_{it})}{P_{t}Y_{it}}\right)]=\ln\beta$
+
+.footer[[&#9664; Back](#bias)]
+
+---
+name: data-slide
+
+### Data
+
+- Mexico
+  - Tax records: SAT-UNAM public study data requested through *INAI* .small[(National Institute of Information Access)]
+  - Firm-level data: Remote access or on-site .small[(Census, Annual, and Monthly Surveys)] 
+- Ecuador
+  - Tax records: Carrillo et al. (2022) data 
+  - Firm-level data: EMM (*Encuesta Manufactura y Minería* 2007-2010, 2012; *Encuesta Manufactura, Minería y Construcción* 2013-2015); ENSEM (*Encuesta Estructural Empresarial* 2017-2019); EE (*Encuesta Exhaustiva* 2011)
+
+---
+
+### Data
+
+- Chile:
+  - Tax records: Gonzalez\* and Velasquez (2013) data from *Servicio de Impuestos Internos*. Not likely to get access
+  - Firm-level data: Good
+- Colombia:
+  - Tax records: Not available. 
+  - Supersociedades: Detailed financial data (Profits/losses, income per activity, income of operations, assets, debt, etc.)
+  - Firm-level data: Good
+
+Depending on similarities with Mexico and Ecuador, might estimate *bounds* for these two countries.
+
+.footer[[&#9664; Back](#id-strat)]
+
+---
+name: acf
+
+**ACF+**
+
+1st Stage
+
+\begin{align*}
+  \ln Y_{it}&=\beta\ln X^*_{it}+\beta\epsilon_{it} + \omega_{it} + \varepsilon^Y_{it} \\
+  \mathbb{E}[\ln Y_{it}|S_{it}>s]&=\mathbb{E}[\beta\ln(X^*_{it})+\omega_{it}|S_{it}>s] &\text{(A-1)}\\
+  &=\mathbb{E}[\beta\ln(X^*_{it})+ g^{-1}(X^*_{it})|S_{it}>s]\\
+  &=\mathbb{E}[\varphi_X(X^*_{it})|S_{it}>s]
+\end{align*}
+
+If selection on $S=\{K,L,Y,M\}$, i.e., $\mathbb{E}[\omega_{it}|S_{it}>s]\not=\mathbb{E}[\omega_{it}]$, then 2nd stage might not work.
+
+---
+
+2nd Stage
+
+Markov assumption on productivity implies $\omega_{it}=\delta\omega_{it-1}+\eta_{it}$. Then,
+
+\begin{align}
+  \varphi_X(X_{it}) - &\delta\varphi_X(X_{it-1}) \\
+  &= \beta\ln(X_{it}) + \omega_{it}- \delta\left(\beta\ln(X_{it}) + \omega_{it} \right)\\
+  &= \beta(\ln X_{it}-\delta \ln X_{it-1})+ \omega_{it}-\delta\omega_{it-1}\\
+  &= \beta(\ln X^*_{it}-\delta \ln X^*_{it-1})+ \beta(\epsilon_{it}-\delta \epsilon_{it-1}) + \eta_{it}
+\end{align}
+
+\begin{align}
+  \mathbb{E}[\beta(\epsilon_{it}-\delta \epsilon_{it-1})+\eta_{it}|Z_{it}]=0
+\end{align}
+
+I recover $\beta$ and $\delta$ with GMM
+
+.footer[[&#9664; Back](#gnr)]
+
+
+---
+name: gnr-iv
+### Using instruments
+
+Finally, for tax-evasion
+
+\begin{align}
+  \mathbb{E}[\mathcal E_{it}|Z_{it}]&=\mathbb{E}[\epsilon_{it}-\varepsilon^Y_{it}|Z_{it}]\\
+  &=\mathbb{E}[\epsilon_{it}|Z_{it}]
+\end{align}
+
+$Z_{it}=\{P_t,\rho_t,\omega_{it},Y_{it-1},X_{it-1},\mathcal X_{it-1}, \mathcal W_{it-1}\}$
+
+$Z_{it}\cup X_{it}$ if (A-2) holds
+
+---
+
+Alternatively, I can work with true inputs $X^*$
+
+\begin{align}
+  \mathbb{E}[\mathcal X_{it}|Z_{it}]&=\mathbb{E}[\ln X^*_{it}+\varepsilon^Y_{it}|Z_{it}]\\
+  &=\mathbb{E}[\ln X^*_{it}|Z_{it}]
+\end{align}
+
+$Z_{it}=\{P_t,\rho_t,\omega_{it},Y_{it-1},X_{it-1},\mathcal X_{it-1}, \mathcal W_{it-1}\}$
+
+$Z_{it}\cup X_{it}$ if (A-2) holds
+
+.footer[[&#9664; Back](#deconv)]
+
+
+---
+name: sec-mom
+### Second moments
+
+Also, $Var[\ln Y_{it}|t]=Var[\beta \ln X^* + \omega|t]+Var[\varepsilon^Y_{it}]$
+
+From the FOC of the firm's profit-maximization problem, we know $Var[\omega_{it}|t]=(1-\beta)^2Var[\ln X^*|t]$
+
+
+---
+
+Also, note that by normalizing $\mathbb{E}[\omega_{it}]=0$
+
+\begin{align}
+  Cov(\ln X^*_{it},\omega_{it}|t)&= \mathbb{E}[\ln X^*_{it}\omega_{it}|t]-\mathbb{E}[\ln X^*_{it}|t]\mathbb{E}[\omega_{it}|t] \\
+  &=\mathbb{E}[\ln X^*_{it}\omega_{it}|t]
+\end{align}
+
+\begin{align}
+  \mathbb{E}[\ln X^*_{it}\omega_{it}|t]&=\mathbb{E}\left[(1-\beta)^{-1}
+    \left(
+      \omega_{it}+\ln\left(\beta P_t\rho_t^{-1}\right)
+      \right)
+        \omega_{it}
+      |t\right]\\
+  &= (1-\beta)^{-1}\mathbb{E}\left[
+    \omega_{it}\omega_{it}+\omega_{it}\ln\left(\beta P_t\rho_t^{-1}\right)
+    |t\right]\\
+  &= (1-\beta)^{-1}\left(\mathbb{E}[\omega_{it}\omega_{it}|t]
+    +\ln\left(\beta P_t\rho_t^{-1}\right)\mathbb{E}[\omega_{it}|t]
+  \right)\\
+  &= (1-\beta)^{-1}\mathbb{E}[\omega_{it}\omega_{it}|t]\\
+  &=(1-\beta)^{-1}Var[\omega_{it}|t]
+\end{align}
+
+---
+
+Using these results
+
+
+\begin{align}
+  Var[\beta&\ln X^*_{it}+\omega_{it}|t] \\
+  &=\beta^2 Var[\ln X^*_{it}|t]+Var[\omega_{it}|t]+2\beta Cov[\ln X^*_{it},\omega_{it}|t]\\
+  &=\beta^2 (1-\beta)^{-2} Var[\omega_{it}|t]+Var[\omega_{it}|t]+2\beta(1-\beta)^{-1}Var[\omega_{it}|t]\\
+  &=(1-\beta)^{-2}Var[\omega_{it}|t]
+\end{align}
+
+---
+
+Then, the variance of $\omega_{it}$ and $X^*_{it}$ are identified 
+
+$Var[\ln Y_{it}|t]-Var[\varepsilon^Y_{it}]=(1-\beta)^{-2}Var[\omega_{it}|t]$
+
+$Var[\ln Y_{it}|t]-Var[\varepsilon^Y_{it}]=Var[\ln X^*_{it}|t]$
+
+Likewise, the mean of $X^*_{it}$ is 
+
+$\mathbb{E}[\mathcal{X}_{it}]=\mathbb{E}[\ln X^*_{it}]+\mathbb{E}[\varepsilon^Y_{it}]=\mathbb{E}[\ln X^*_{it}]$
+
+.footer[[&#9664; Back](#deconv)]
+
+---
+layout: true
+### A model of tax evasion by input overreporting
+---
+name: model
+
+- First, productivity shocks $\omega_{it}$ are realized. Firms observe input $\rho_t$ and output $P_t$ prices
+
+- Firms choose optimal inputs given productivity, prices, and the production function
+
+\begin{equation*}
+  \max_{x_{it}} P_t\mathbb{E}[ x_{it}^\beta e^{\omega_{it}+\varepsilon^Y_{it}}]-\rho_t x_{it}
+\end{equation*}
+
+- Optimal input choice is $x_{it}^*=\left(\frac{\beta P_t e^{\omega_{it}}}{\rho_t}\right)^{\frac{1}{1-\beta}}$. Output is $y_{it}=x^{*\beta}_{it}e^{\omega_{it}+\varepsilon_{it}}$
+
+---
+
+- Then, firms choose input overreporting $\varepsilon_{it}^X$ given their optimal inputs $x_{it}^*$, tax rate $\tau_{t}$, probability of getting caught $p(\varepsilon_{it}^X)$, and punishment cost $\kappa_{t}$
+  
+\begin{align*}
+  \max_{\varepsilon_{it}^X \in [0,\infty)} [1-p(\varepsilon_{it}^X)]&\left[(P_t\mathbb{E}[y_{it}]-\rho_{t} x_{it}^*) -\tau_{t}[P_t\mathbb{E}[y_{it}]-\rho_{t}(x^*+\varepsilon_{it}^X)]\right]\\
+  +p(\varepsilon_{it}^X)&\left[(1-\tau_{t})(P_t\mathbb{E}[y_{it}]-\rho_{t} x_{it}^*)-\kappa_{t}\right]
+\end{align*}
+
+- Finally, the output shock is realized $\varepsilon_{it}^Y$
+
+---
+layout: false
+### Properties of tax evasion
+
+\begin{equation*}
+    \varepsilon_{it}^X=\frac{1-p(\varepsilon_{it}^X)}{p'(\varepsilon_{it}^X)}-\frac{\kappa_t}{\rho_t\tau_t}
+\end{equation*}
+
+- Tax evasion $\varepsilon_{it}^X$ decreases if the probability of getting caught $p(\varepsilon_{it}^X)$ or punishment $\kappa_t$ increase
+- increases if input prices $\rho_t$ or the tax rate $\tau_t$ increase
+- properties (potentially) exploited in identification
+
+.footer[[&#9664; Back to Productivity bias](#bias) [&#9664; Back to Id-Strategy](#id-strat)]
+
+
+---
+layout: false
+name: soc
+### SOC of the tax evasion problem
+
+\begin{equation*}
+  p''(\varepsilon^X)\ge -\frac{p'(\varepsilon^X)2\rho\tau}{\rho\tau\varepsilon^X+\kappa}
+\end{equation*}
+
+Convexity, linearity, and lower bound for concavity.
+
+For example, $p(\varepsilon)=p(C=1|\varepsilon)=1-e^{-\varepsilon}$
+- $p(0)=0$, $p(\infty)=1$
+- $p'=e^{-\varepsilon}$, $p''=-e^{-\varepsilon}$
+- Equation above implies $\varepsilon+\frac{\kappa}{\rho\tau}\ge 2$
+
+.footer[[&#9664; Back](#bias)]
+
+---
+name: a-2
+### A-2
+
+- $\varepsilon^X_{it} \perp \varepsilon^Y_{it}$
+  - In the lit $\varepsilon^Y_{it}\not\in \mathcal{I_t}$, random noise
+  - Timing assumptions for identification are common in production functions and demand estimation .small[(Ackerberg et al., 2021; Ackerberg, 2019)]
+
+.footer[[&#9664; Back](#id-strat)]
+
+---
+name: true-ins
+
+### True inputs and evasion
+
+- Firms optimize true inputs maximizing before-tax profits
+  - Empirical evidence shows the number and value of fake invoices cluster towards the end of the tax year .small[Carrillo et al., 2022]
+  - In the tax-compliance literature, individual income is treated as given. </br> However, we could think there is self-selection of individuals into jobs where evading taxes can be more or less difficult
+
+.footer[[&#9664; Back](#bias)]
+
+
+---
+name: contingency
+### Contingency plan
+
+1. Reverse engineering the quantile: Run for different values of $s$
+
+\begin{align*}
+    \mathbb{E}\left[\ln\left(\frac{\rho_t X^*_{it}}{P_{t}Y_{it}}\right)| S_{it}>s\right]+\mathbb{E}[\varepsilon^X_{it}| S_{it}>s]&=\ln\beta - \mathbb{E}[\varepsilon^Y_{it}| S_{it}>s]
+\end{align*}
+
+  - Intuition: if CD is true, $\beta$ should _converge_ for a percentile interval
+  - Find the sweet spot: Choose the $s$ in which $\beta$ is stable
+
+2. Compliers vs. evaders
+   - China: state-owned vs. private firms
+   - ISO9000/14000 certified vs. non-certified
+
+.footer[[&#9664; Back](#id-strat)]

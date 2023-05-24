@@ -1,0 +1,607 @@
+---
+title: "Tax Evasion and Productivity"
+subtitle: ""
+author: "Hans Martinez"
+institute: "Western University"
+date: last-modified
+date-format: long
+format:
+  revealjs: 
+    slide-number: true
+    # chalkboard: 
+    #   buttons: false
+    preview-links: true
+    incremental: false
+    theme: [simple, theme.scss ]
+    width: 1260
+    height: 700
+    embed-resources: true
+    navigation-mode: linear
+    # revealjs-plugins:
+    #   - fullscreen
+    # include-in-header: packages.tex
+    # css: [style.css, xaringan-themer.css]
+    logo: Horizontal_Rev.png
+    # footer: <https://quarto.org>
+# resources:
+#   - Paper/WP-LCFI.pdf
+# bibliography: biblio/lcfi.bib
+
+---
+## Tax evasion by input overreporting
+
+- Who are the non-evaders?
+- Does the strategy work for non-constant elasticities?
+
+## Preview
+
+1. Acknowledging the strategy's mechanism (limitation) helps ask better questions that are still of interest and relevant
+
+2. The identification strategy also works for non-constant elasticities as long as the elasticity is monotonic in the intermediates.
+- However, even if it only works for constant elasticities, the idea is worth pursuing
+  - Relevant
+  - Novel
+
+## Relative to the good guys
+
+In theory, the identification strategy **relies** on the subset of non-evaders firms
+
+In practice, identifying the non-evaders subset is **non-trivial** and depends on the data at hand
+
+However, we can use **economic theory, previous empirical evidence**, along with the **fiscal environment** to identify the non-evaders or the subset of firms more likely to be non-evaders
+
+
+## Colombia 1981-1991
+
+Colombia passed three major fiscal policy changes during this period, in 1983, 1986, and 1990 [(Sanchez & Gutierrez, 1994; Gonzalez & Calderon, 2002; Sanchez & Espinoza, 2005; )]{.small}. 
+
+Their main objectives were to increase government tax revenue, decrease tax evasion, and open to foreign markets.
+
+## Corporate profit tax rate (1981-1985)
+
+Even though the maximum rate of the progressive tax schedule decreased from 56% to 49%, the **1983 reform expanded the taxpayer base**. Taxpayers with income greater than $200,000 COL were now required to report profit taxes.
+
+From **1983 to 1985**, the tax authority focused efforts on the **5% biggest** taxpayers that represented 80% of the government tax revenue. 
+
+## Corporate profit tax rate (1986-1991)
+
+With the reform of **1986**, the government **relocated** the tax collection and reception of tax reports to the **banking system**. The reform also reinforced the control over the big taxpayers. 
+
+The 1986 reform decreased the maximum tax rate by 1% annually from 33% in 1986 to 30% in 1989.
+
+## Value Added Tax (VAT)
+
+In 1983, the VAT increased from 6% to 10%
+
+In 1990, the VAT increased from 10% to 12%
+
+
+## 
+
+![](../Results/Figures/Colombia/share_sales_tax_byy.png)
+
+## 
+
+![](../Results/Figures/Colombia/log_share_byy.png)
+
+##
+
+![](../Results/Figures/Colombia/sales_byy.png)
+
+## Take-away
+
+The log share of intermediates' costs/revenue seems to react according to the fiscal policy changes 
+
+In particular, the average log share **increases with the 1983** reform (higher VAT, increase taxpayer base)
+
+The growth rate of the **tax evasion** seems to slow down and then **stabilize after the 1986 reform**, when the banking system took over the reporting and collecting tax system
+
+The 1990 reform increasing the VAT by 1% seems to have not a significant effect
+
+## 
+
+Previous studies highlight that during most of this period, the evasion of corporate tax and VAT declined
+
+However, the previous analysis could suggest that tax evasion through cost overreporting actually increased from 1984-1987
+
+
+
+
+## Identifying the good guys
+
+From previous empirical evidence [(Chile: Castellon and Velazques, 2013; Ecuador: Carrillo et al., 2023)]{.small}, the following variables are associated with fake invoicing (positively or negatively correlated):
+
+:::: {.columns} 
+
+::: {.column width="40%"}
+- Age
+- Ratio income/assets
+- Cost and expenditures
+- Assets
+:::
+
+::: {.column width="60%"}
+- Ratio costs/assets
+- Sales tax (VAT)
+- Exporters
+:::
+
+::::
+
+##
+
+![How does non-established firms overreport with respect established firms?](../Results/Figures/Colombia/select_disc_age_20.png)
+
+##
+
+![](../Results/Figures/Colombia/select_disc_lag_log_sales_k_20.png)
+
+[The data might not even contain the very big firms. Alternatively, we can use the small firms]{.small}
+
+##
+
+![](../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png)
+
+## 
+
+![](../Results/Figures/Colombia/select_disc_lag_log_ind_exp_k_20.png)
+
+[IE: Fuel, outside work, domestic workers, maintenance]{.small}
+
+
+
+## This looks familiar
+
+Like finding a discontinuity when we only know the outcome variable
+
+A ranking that identifies the subset of firms that consistently report lower cost share than the average of the rest of the firms over the years
+
+##
+
+![1983: Taxpayer base expand](../Results/Figures/Colombia/select_disc_byy_lag_log_sales_tax_20.png)
+
+##
+
+![1986: Reallocation of tax collecting system to banks](../Results/Figures/Colombia/select_disc_byy_lag_log_ind_exp_k_20.png)
+
+## Empirical evidence
+
+Empirical model
+
+$$
+\begin{aligned}
+s_{it}&=\beta_0+\beta_1D(Non-Evaders)+\gamma_J+\varepsilon_{it}^Y\\
+s_{it}&=\beta_0+\Phi(k,l,m)+\beta_1D(Non-Evaders)+\gamma_J+\varepsilon_{it}^Y
+\end{aligned}
+$$ {#eq-ols}
+
+- $D(Non-Evaders)$: dummy variable, 1 if the firm is a complier; 0, otherwise
+- $\gamma_J$: industry fixed effects
+- $\Phi(\cdot)$: second degree polynomial
+
+## Empirical evidence
+
+Graphs report percentage deviations of Non-Evaders from the rest of the firms, controlling for industry
+
+$\Delta\%=exp(\beta_1)-1$. Why?
+
+$$
+\begin{aligned}
+\ln\beta_{Non-Evaders}&=\hat{\beta}_0+\hat{\beta}_1\\
+&=\ln\beta_{Evaders}+\ln\Delta\\
+&=\ln(\beta_{Evaders}\times\Delta)\\
+\implies \Delta &=\frac{\beta_{Non-Evaders}}{\beta_{Evaders}}\\
+\implies exp(\hat{\beta_1})-1&=\frac{\beta_{Non-Evaders}}{\beta_{Evaders}}-1\\
+&\equiv \Delta \%
+\end{aligned}
+$$
+
+## 
+
+![](../Results/Figures/Colombia/select_yoy_pick.png){fig-align="center" width="100%" height="100%"}
+
+## 
+
+![](../Results/Figures/Colombia/night_yoy_pick.png){fig-align="center" width="100%" height="100%"}
+
+## {visibility=uncounted}
+
+:::{.center}
+
+[hansmartinez.com](https://hansmartinez.com)
+
+```{r}
+#| out.height="50%"
+#| 
+library(qrcode)
+qr <- qrcode::qr_code('https://raw.githack.com/hans-mtz/Slides/main/Quarto/MPHG-Slides/lcfi.html')
+plot(qr)
+
+```
+
+[ Scan QR with your phone's camera </br> to download slides]{.small}
+
+:::
+
+
+## Preview
+
+- Tax evasion estimates using a CD PF might be a lower bound if the derivative of the true PF is monotonic in $m^*$
+- Even though very big firms do not overreport inputs, they might be very few to statistically learn from them
+- Alternatively, using small firms might provide lower bound of tax evasion because they do not evade as much as large firms
+
+
+## Departing from CD
+
+$$
+\begin{aligned}
+  \mathbb{E}\left[\ln\left(\frac{\rho M^*}{PY}\right)\right] &= \mathbb{E}\left[\ln\left(\frac{\partial }{\partial m^*}f(k_{it},l_{it},m_{it}^*+\varepsilon_{it}^M)\right)\right]+\ln\mathcal{E}+\mathbb{E}[\varepsilon_{it}^M] \\
+  &= \mathbb{E}\left[\ln\left(\frac{\partial }{\partial m^*}f(k_{it},l_{it},m_{it}^*)\right)\right]+\delta+\ln\mathcal{E}+\mathbb{E}[\varepsilon_{it}^M]
+\end{aligned}
+$$
+
+where, $\delta\equiv\mathbb{E}\left[\ln\left(\frac{\partial }{\partial m^*}f(k_{it},l_{it},m_{it}^*+\varepsilon_{it}^M)\right)\right]-\mathbb{E}\left[\ln\left(\frac{\partial }{\partial m^*}f(k_{it},l_{it},m_{it}^*)\right)\right]$
+
+## Departing from CD
+
+- $\frac{\partial }{\partial m^*}f(\cdot)$ can still be recovered from compliers
+
+- $\delta\ge0$ if $\frac{\partial }{\partial m^*}f(k_{it},l_{it},m_{it}^*+\varepsilon_{it}^M)$ is monotonic in $m_{it}^*+\varepsilon_{it}^M$
+
+- $\delta$ is a function of $\varepsilon^M_{it}$ and therefore not independent from $\mathbb{E}\left[\ln\left(\frac{\partial }{\partial m^*}f(\cdot)\right)\right]$
+
+## CD as a lower bound
+
+- CD PF ignores the non-linear effect $\delta$, however it can be considered a lower bound
+
+- The tax evasion may be greater than what CD suggests because $\delta\ge0$
+
+- Alternatively, because $m^*_{it}$ is not observed separately from $\varepsilon_{it}^M$, using a PF with a derivative that is monotonic in $m_{it}^*+\varepsilon_{it}^M$ might affect estimates of tax evasion
+
+
+## Translog PF 
+
+In the case of the translog PF when there is only $K$ and $M$
+
+$$
+\begin{aligned}
+  \mathbb{E}\left[\ln\left(\frac{\rho M^*}{PY}\right)\right]=\mathbb{E}&\left[\ln\left(\beta_0 +\beta_K\ln K+\beta_M \ln M^*+\beta_M\varepsilon_{it}^M\right)\right]\\
+  &+\ln\mathcal{E}+\mathbb{E}[\varepsilon_{it}^M]
+\end{aligned}
+$$
+
+## How to estimate?
+
+Hu et al. (*J. Econom.* 2022)
+
+$$
+\begin{aligned}
+  Y &= m_0(X^*) + \eta\\
+  X &= X^* + \varepsilon
+\end{aligned}
+$$
+
+- Zero conditional mean $\mathbb{E}[\eta|X^*]=0$
+- Independence $f_{Y|X^*,X}(y|x^*,x)=f_{Y|X^*}(y|x^*)$
+- Normalization $G[f_{X|X^*}(\cdot|x^*)]=x^*$
+- Monotonicity $m_0$ is strictly monotonic in $X^*$
+- Then, $m_0$ is identified even when $X^*$ and $\varepsilon$ are correlated
+
+## Who are the compliers? 
+
+- **Very big firms** do not evade taxes by overreporting inputs; more sophisticated, 
+  - e.g., profit shifting, they can afford long legal disputes with authority to avoid paying taxes
+  - Ecuadorian evidence: The probability of having ownership of a ghost client increases with individuals' income
+  - Stronger incentives to avoid illegal behavior
+
+## Who are the compliers?
+  
+- **Large firms** evade more through overreporting
+  - Ghost clients have higher revenues, costs, and tax liabilities. 
+  - The probability of engaging in cost overreporting increases monotonically in firm revenue [Higher volume of transactions. Fake invoicing limits to cash transactions. Cash transactions are capped in Ecuador.]{.small}
+  - Share of ghost deductions also increases throughout much of the size distribution, except at the very top
+
+## Who are the compliers?
+
+- **Small firms** evade by overreporting but by a small amount
+  - Small firms are less sophisticated (owner's income)
+  - Small firms have a lower volume of transactions, so higher probability of getting caught if they cheat, so they cheat but a little
+
+## Who are the compliers?
+
+- It is still likely that very large firms do not overreport costs but they might be very few to statistically learn from them
+
+- Alternatively, using small firms to learn about tax evasion can provide a lower bound of tax evasion
+
+
+## Empirical evidence
+
+Empirical model
+
+$$
+\begin{aligned}
+s_{it}&=\beta_0+\beta_1D(Compliers)+\gamma_J+\varepsilon_{it}^Y\\
+s_{it}&=\beta_0+\Phi(k,l,m)+\beta_1D(Compliers)+\gamma_J+\varepsilon_{it}^Y
+\end{aligned}
+$$ {#eq-ols}
+
+- $D(Compliers)$: dummy variable, 1 if the firm is a complier; 0, otherwise
+- $\gamma_J$: industry fixed effects
+- $\Phi(\cdot)$: second degree polynomial
+
+## Empirical evidence
+
+Graphs report percentage deviations of compliers from the rest of the firms, controlling for industry
+
+$\Delta\%=exp(\beta_1)-1$. Why?
+
+$$
+\begin{aligned}
+\ln\beta_{Compliers}&=\hat{\beta}_0+\hat{\beta}_1\\
+&=\ln\beta_{Evaders}+\ln\Delta\\
+&=\ln(\beta_{Evaders}\times\Delta)\\
+\implies \Delta &=\frac{\beta_{Compliers}}{\beta_{Evaders}}\\
+\implies exp(\hat{\beta_1})-1&=\frac{\beta_{Compliers}}{\beta_{Evaders}}-1\\
+&\equiv \Delta \%
+\end{aligned}
+$$
+
+## {.scrollable}
+
+![](../Results/Figures/Colombia/beta_diff_fe.png){fig-align="center" width="100%" height="100%"}
+
+## {.scrollable}
+
+![](../Results/Figures/Colombia/beta_diff_poly_fe.png){fig-align="center" width="100%" height="100%"}
+
+## Summary
+
+- CD functional form suggests Tax Evasion lower bound
+- If very large firms are too few, I might use small firms knowing they cheat a little
+- Maybe I won't be able to pick a measure of size until I get access to validation data
+
+## Next steps
+
+- Compliers: explore exporters (sophisticated), ISO certified firms (third-party reporting)
+- Repeat exercise with Ecuadorian data
+- Move forward to deconvolution for CD and Hu et al.(2023) for NLPF
+
+
+## CD {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diffcapital_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## CD {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_difflabor_employee_years_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## CD {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_difflag_sales_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## CD {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_difflag_taxes_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## CD {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diffwages_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## NL {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diff_polycapital_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## NL {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diff_polylabor_employee_years_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## NL {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diff_polylag_sales_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## NL {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diff_polylag_taxes_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## NL {.scrollable}
+
+![](../Results/Figures/Colombia/beta_inds_diff_polywages_by_inds.png){fig-align="center" width="100%" height="100%"}
+
+## Update {.scrollable}
+
+- Identification does not depend on functional form, i.e., CD
+  - Show theory
+  - Show Translog
+  - Use deconvolution for CD and Hu et al. (2022) for non-parametric
+- Maybe not able to use very large firms because they are very few. Even though it is true they are more sophisticated and they do not overreport costs, from a statistical perspective I can't learn too much from them
+- Use small firms as lower bound estimates. They cheat, but they cheat a little. Small firms are:
+  - Less sophisticated -> Higher income owners are more likely to have firms engaging in cost overreporting
+  - Lower probability due to the lower number of transactions -> ghost transactions are caped at the threshold to avoid being forced into e-transfer (cash)
+- Pending update in the paper:
+  - Estimate tax evasion at the firm level Hu et al. (2022)
+  - Show tax evasion effect in misallocation framework
+
+## Outline
+
+- Looking ahead
+  - The Job Market
+  - Miscellaneous
+- JMP update
+  - Ecuadorian data
+  - Measure of size: 1) Data; 2) Carrillo et al.
+- Next steps
+  - Deconvolution
+  
+## Looking ahead
+
+- Plan: 2024 JM
+  - Have JMP mostly done by the 2023 Fall
+  - Apply to conferences by Early 2024 Winter
+  - Present at conferences during 2024 Summer
+  - Go to Job Market Fall 2024
+
+
+
+## Miscellaneous
+
+- Funding, out by 2023 summer; ~$3K monthly (tuition, rent, services)
+  - Teaching
+  - Graduate Fellow rather than Graduate Student Assistant
+
+- 2nd and 3rd papers
+  - Are you OK working with multiple projects simultaneously?
+  - 1) Summer Paper with new twist and 2) new idea 
+
+## Misc 2
+
+- Networking
+  - Cold email: Targeting canadian universities with a PhD program located in cities with manufacturing sector
+  - CEA
+
+- Applying for PR (Canadian market)
+  - Goal to submit docs by end of 2023 summer
+  - Took English Test (CELPIP-G) (March 18, 2023)
+  - Next: ECA's 
+
+- [Web page](https://hansmartinez.com) (done!), research (draft) and teaching (to do) statement
+
+
+## Upcoming presentations
+
+- UWO Applied Seminar: May 24, 2023
+- CEA, Winnipeg, Manitoba: June 2-3, 2023
+
+## JMP update
+
+- Ecuadorian Tax data:
+  - Agustin Carvajal, a former member of Ecuador's Fiscal Research Institute (now extinct), is willing to provide access to data
+  - **Data can only be accessed in Ecuador**
+  - Paul Carrillo, author of Tax Evasion paper, agreed to talk
+- Ecuadorian firm data:
+  - Now using *Manufacturing and Mining Survey* (EMM), which includes small, medium, and large firms [before, *Structural Survey* only covers large firms]{.small}
+  - Still fewer observations than Colombian data [(Colombia's manufacturing GDP is 2.5+ times bigger than Ecuador's)]{.small}
+
+
+## Measure of firm size
+
+Who are the non-evaders? What's the threshold of size?
+
+- Data:
+  - Last time: $exp\left(E\left[\ln\left(\frac{\rho M}{PY}\right)\Big | S\ge s\right]\right)=\beta$
+  - Today: adding confidence intervals, keeping labor and capital, adding alternative measures of size [lag of paid taxes, sales, and production]{.small}
+  
+- Ecuador paper: eye-balling ~95-98 percentile of firm revenue
+
+## 
+
+![Carrillo et al., 2022](ghost-firms.png)
+
+::: footer
+
+*Panels A and B show the probability of being a ghost client and the share of firms’reported purchases that are based on receipts from ghost firms, by percentile of firm revenue (for firms that are required to filea purchase annex and have positive revenues)*
+
+:::
+
+## {.scrollable}
+
+![](../Results/Figures/Colombia/311_by_size_diff.svg){fig-align="center" width="100%" height="100%"}
+
+##
+
+![](../Results/Figures/Colombia/beta_labor_employees.svg){fig-align="center" width="120%"}
+
+::: footer
+
+All industries
+:::
+
+##
+
+![](../Results/Figures/Colombia/beta_labor_employee_years.svg){fig-align="center" width="120%" fig-alt="All industries"}
+
+::: footer
+
+All industries
+:::
+
+##
+
+![](../Results/Figures/Colombia/beta_wages.svg){fig-align="center" width="120%" fig-alt="All industries"}
+
+::: footer
+
+All industries
+:::
+
+##
+
+![](../Results/Figures/Colombia/beta_all_inds_related_size.svg){fig-align="center" width="120%" fig-alt="All industries"}
+
+::: footer
+
+All manufacturing industries in Colombia, quantiles of different measures
+:::
+
+##
+
+![](../Results/Figures/Colombia/beta_by_inds_labor.svg){fig-align="center" width="120%"}
+
+::: footer
+
+Colombian major manufacturing industries, quantiles of Labor (employee *x* years)
+:::
+
+##
+
+![](../Results/Figures/Colombia/342_beta.svg){fig-align="center" width="120%"}
+
+::: footer
+
+Colombia, 342 Industry by different measures of size
+:::
+
+## Summary
+
+- Using Labor (number of employees, and number of employees $x$ years, and somewhat less total wages) as measure of firm size is consisten with my model
+- Different bias magnitude for different industries suggest different opportunities for tax evasion through cost overreporting --- which makes sense!
+- High $\beta$'s for top deciles of lag taxes, lag output, and lag sales suggest there might be a dynamic component in tax evasion
+  - Firms might adjust their prior probabilities the next period. If they were not caught cheating, they might cheat again
+
+## Next steps
+
+- Repeat the exercise with Ecuadorian data
+- Select industries in both countries
+- Deconvolution using Labor as the measure of firm size
+  - Colombia
+  - Ecuador
+- Model?
+  - Structural model counterfactual estimation for showcasing in JM
+
+## {#sec-conferences .scrollable}
+
+```{r}
+#| label: tbl-confs
+#| tbl-cap-location: bottom
+#| tbl-cap: "Conferences"
+
+
+googlesheets4::gs4_deauth()
+confs <- googlesheets4::read_sheet("https://docs.google.com/spreadsheets/d/17CK2WB_WeeGC0DGPQttrUA5Y5anvTu6U_kM706Ihrqo/edit?usp=sharing", sheet= "Conferences", range = "A1:E7")
+
+kableExtra::kable(confs)
+
+```
+
+## Job interests
+
+- What?
+  1. Academia 
+  2. Research-focused non-academic: government agency, tech company, consulting
+- Where?
+  1. Canada
+  2. Mexico
+  3. USA
+
+## {#sec-colombia-vs-ecuador background-iframe="https://data.worldbank.org/share/widget?end=2021&indicators=NV.IND.MANF.KD&locations=CO-EC&start=1999"}
+
+
