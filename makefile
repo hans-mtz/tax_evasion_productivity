@@ -33,9 +33,11 @@ R: $(OUT_FILES)
 
 ## Make paper
 paper: #$(QPAPDIR)/$(QPAPFILE).pdf
-	quarto render $(QPAPDIR)/$(QPAPFILE).qmd
+	quarto render $(QPAPDIR)/$(QPAPFILE).qmd 
+#	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:packages.tex
 #	open -a Preview $(QPAPDIR)/$(QPAPFILE).pdf
-
+pdf:
+	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:packages.tex
 ## Make slides
 slides: #$(QSlIFILE).html
 	quarto render $(QSLIDIR)/$(QSLIFILE).qmd

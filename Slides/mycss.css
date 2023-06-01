@@ -29,3 +29,23 @@ table.dataTable.display tbody tr.odd {
 /* :root {
     --inverse-text-color: #FFFFFF;
 } */
+
+/* // Special catch for etable environment to ensure these table images
+// don't overflow the slide.
+// See: https://lrberge.github.io/fixest/articles/etable_new_features.html */
+
+.etable {
+    width: 100%;
+    height: calc(100% - 3em);
+   /* Adjust 3em based on the height of your header, if necessary */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.etable img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}

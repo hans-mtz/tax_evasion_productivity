@@ -72,6 +72,29 @@
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \addtolength{\oddsidemargin}{-.5in}%
 \addtolength{\evensidemargin}{-1in}%
@@ -88,7 +111,10 @@
 \fxsetface{env}{\color{blue}}
 % \usepackage{amsmath}
 % \usepackage[final,nomargin,index,inline, author=]{fixme}
-\usepackage{bbm}
+% \usepackage{bbm}
+\usepackage{unicode-math}
+\usepackage{tabularx}
+\usepackage{adjustbox}
 % \usepackage{amsmath}
 % - \usepackage{longtable}
 % - \usepackage{booktabs}
@@ -97,10 +123,40 @@
 % \newtheorem{theo}{Theorem}
 % \newtheorem{lemma}{Lemma}
 % \newtheorem{ass}{Assumption}
-% - \usepackage{xkvltxp}
+% \usepackage{xkvltxp}
 % -  #final or draft
 % - \fxsetup{envlayout=color, targetlayout=color}
 % - \fxsetface{inline}{\color{blue}}
+
+% kableExtra required packages:
+\usepackage{booktabs}
+\usepackage{longtable}
+% \usepackage{array}
+% \usepackage{multirow}
+% \usepackage{wrapfig}
+% \usepackage{float}
+% \usepackage{colortbl}
+% \usepackage{pdflscape}
+% \usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+% \usepackage[normalem]{ulem}
+% \usepackage{makecell}
+% \usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -205,7 +261,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{May 4, 2023}
+\date{May 30, 2023}
 \title{\bf Tax evasion and productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -238,7 +294,7 @@ Estimation, Productivity
 
 \newpage
 \spacingset{1.9} % DON'T change the spacing!
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, interior hidden, frame hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, enhanced, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, enhanced, frame hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, interior hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{introduction}{%
 \section*{Introduction}\label{introduction}}
@@ -262,13 +318,18 @@ additional tax deductions on value-added and corporate income taxes.
 According to the OECD's document \citet{OECD2017}, cost overreporting
 --- also known as ``fake invoicing'', ``ghost firms'', ``invoice
 mills'', or ``missing traders''--- permeates internationally reaching
-Latin America, Eastern Europe, Asia, and Africa. Cost overreporting
-reportedly generated annual tax revenue losses amounting to non-trivial
-shares of GDP in countries such as Poland, 6\%; Chile, 0.2\%; Colombia,
-0.2\%; and Mexico, 0.03\%. Recent evidence from Ecuador
-\citep{Carrillo2022} shows that, contrary to current belief, cost
-overreporting is widespread across firms ---not limited to small,
-semi-formal firms--- and quantitatively large.
+Latin America, Eastern Europe, Asia, and Africa. For example, cost
+overreporting reportedly generated annual tax revenue losses amounting
+to 5.6\% of Poland's GDP in 2016 (Poland's Minister of Finance, 2018);
+0.2\% of Chile's GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat,
+2001; CIAT, 2008); 0.2\% of Colombia's GDP (Portafolio, 2019); and
+0.03\% of Mexico's GDP in 2018 (Senado de la Republica, 2019).
+
+Recent evidence from Ecuador \citep{Carrillo2022} shows that cost
+overreporting is widespread across firms and quantitatively large.
+Contrary to the literature consensus, evasion by overreporting is not
+limited to small, semi-formal firms. Firms were found to overreport up
+to 14.1\% of the value of their purchase deductions.
 \fxnote*{how does it compare to other forms of tax evasion?}
 
 The evidence from Ecuador also shows that big firms do not overreport
@@ -298,23 +359,30 @@ by either the amount of input the firm overreports to evade taxes or by
 a low productivity shock.
 
 To address this gap in the literature, first I formally show that
-ignoring tax evasion leads to productivity estimates that are downwardly
-biased. I then provide a new estimation strategy, requiring only
-commonly available firm-level data, to jointly recover the densities of
-tax evasion and productivity. The intuition works as follows. In the
-absence of tax evasion, the first-order conditions of the firms'
+ignoring tax evasion leads to downwardly biased productivity estimates.
+I then provide a new estimation strategy, requiring only commonly
+available firm-level data, to jointly recover the densities of tax
+evasion and productivity. The intuition works as follows. In the absence
+of tax evasion, the first-order conditions of the firms'
 cost-minimization problem inform about a common technology, the
 production function. Consequently, in the presence of cost
 overreporting, deviations from this common technology identify tax
 evasion up to the current-period output shock. Then, from the subset of
 non-overreporting firms, the strategy identifies the production function
 parameters and the density of the output shock. Finally, using
-deconvolution techniques, I jointly recover the distributions of tax
-evasion and productivity. I also estimate how tax evasion evolves with
-productivity, in other words, their joint distribution.
+deconvolution techniques, I can jointly recover the distributions of tax
+evasion and productivity.
+\fxnote*{I also estimate how tax evasion evolves with productivity, in other words, their joint distribution.}
 
-Using firm-level data from Ecuador, Colombia, Chile, and Mexico, the
-estimates show that \ldots{}
+In a preliminary application, I show how to use the method to learn
+about tax evasion even when we do not know the subset of non-evading
+firms, but there has been a change in fiscal policy that incentivizes
+cost overreporting. Using firm-level data from Colombia between 1981 and
+1991, I show that tax evasion through cost overreporting increased after
+the fiscal reform of 1983 between 8 and 9\% in 1985 and 1986. This
+result stands at odds with previous studies that indicate that the
+evasion of income tax and VAT declined during this period (Sanchez \&
+Gutierrez, 1994)
 
 \begin{anfxnote*}{Remove}
 
@@ -435,9 +503,9 @@ showing that very large firms do not evade taxes by input overreporting
 \citep{Carrillo2022}. Hence, I assume I know the quantile of the size
 distribution of compliant firms.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colframe=quarto-callout-color-frame, opacityback=0, colback=white, breakable, arc=.35mm, left=2mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, breakable, colback=white, leftrule=.75mm, rightrule=.15mm, left=2mm, colframe=quarto-callout-color-frame, arc=.35mm, bottomrule=.15mm, opacityback=0]
 
-\begin{ass}[Compliers]\label{ass-comp}
+\begin{ass}[Non-evaders]\label{ass-comp}
 Firms above percentile $s$ do not overreport inputs $$\mathbb{E}[\varepsilon^M_{it}|S_{it}>s]=0$$
 \end{ass}
 
@@ -445,7 +513,7 @@ Firms above percentile $s$ do not overreport inputs $$\mathbb{E}[\varepsilon^M_{
 
 In addition, I impose the following timing assumption.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, colframe=quarto-callout-color-frame, opacityback=0, colback=white, breakable, arc=.35mm, left=2mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, breakable, colback=white, leftrule=.75mm, rightrule=.15mm, left=2mm, colframe=quarto-callout-color-frame, arc=.35mm, bottomrule=.15mm, opacityback=0]
 
 \begin{ass}\label{ass-ind}
 Firms choose overreporting $\varepsilon^M_{it}$ \emph{before} the output shock $\varepsilon^Y_{it}$
@@ -590,8 +658,8 @@ Therefore, I can get any moment of the tax evasion
 \begin{aligned}
   \mathbb{E}[\mathcal E_{it}|t]&=\mathbb{E}[\varepsilon^M_{it}|t]-\mathbb{E}[\varepsilon^Y_{it}]=\mathbb{E}[\varepsilon^M_{it}|t] \\
   \\
-  \mathbbm{Var}[\mathcal E_{it}|t]&=\mathbbm{Var}[\varepsilon^M_{it}|t]
-  +\underbrace{\mathbbm{Var}[\varepsilon^Y_{it}]}_{known}\\
+  \mathbb{Var}[\mathcal E_{it}|t]&=\mathbb{Var}[\varepsilon^M_{it}|t]
+  +\underbrace{\mathbb{Var}[\varepsilon^Y_{it}]}_{known}\\
 \end{aligned}
 \]
 
@@ -605,95 +673,426 @@ evasion changes with productivity, for instance, and how this
 relationship has evolved.
 
 \[
-\mathbbm{Cov}[\mathcal{E}_{it},\mathcal{W}_{it}|t]=\mathbb{E}[\varepsilon^M_{it}\omega_{it}|t]
+\mathbb{Cov}[\mathcal{E}_{it},\mathcal{W}_{it}|t]=\mathbb{E}[\varepsilon^M_{it}\omega_{it}|t]
 -\underbrace{
 (1-\beta)\mathbb{E}[(\varepsilon^{Y}_{it})^2]-\mathbb{E}[\varepsilon^M_{it}|t]\mathbb{E}[\omega_{it}|t]}_{
 known
 }
 \]
 
-\hypertarget{preliminary-results}{%
-\section{Preliminary results}\label{preliminary-results}}
+\hypertarget{colombia-1981-1991-an-application}{%
+\section{Colombia 1981-1991: an
+application}\label{colombia-1981-1991-an-application}}
 
-The figure below shows the percentage difference from the top and bottom
-percentiles of different size distributions.
+During this period, Colombia went through three major fiscal reforms
+(1983, 1986, 1990). The 1983 reform increased the value-added tax (VAT)
+from 6\% to 10\% and expanded the number of the products and services
+that were levied. In addition, the 1983 fiscal reform required firms
+with profits over COL\$ 200,000 and owned by individuals to pay profit
+taxes. The 1986 reform relocated the tax collection and reception of tax
+reports to the banking system, among other things. The 1990 reform
+increased the VAT from 10\% to 12\%. See section the appendix for more
+details on the fiscal reforms.
 
-The main takeaway is that for measures of size structurally unrelated to
-the FOC, the \textbf{compliers} are below the non-compliers.
+Intuitively, we expect higher levels of tax evasion if tax rates
+increase. On the other hand, reporting more information to the authority
+---like the firms required to report and pay profit taxes in 1983---, or
+having a third party reporting on your private information --- like the
+banking system being responsible for the collection and reception of tax
+reports in 1986--- would decrease tax evasion.
 
-\newpage{}
+\hypertarget{data}{%
+\subsection{Data}\label{data}}
 
-\begin{figure}
+The data is a well-known data set that has been used in the estimation
+of production functions and productivity before. The dataset comes from
+the Annual Survey of Manufacturing (EAM) and contains information about
+manufacturing firms with more than 10 employees from 1981 to 1991.
 
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/beta_diff_all_fe.png}
-
-}
-
-\end{figure}
-
-\begin{figure}
-
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/311_by_size_diff.png}
-
-}
-
-\end{figure}
-
-\begin{figure}
-
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/322_by_size_diff.png}
-
-}
-
-\end{figure}
-
-\begin{figure}
-
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/321_by_size_diff.png}
-
-}
-
-\end{figure}
+A simple graphical analysis shows that the average (of the log)
+intermediates cost share of sales started growing after 1983 and that it
+stabilized in 1988 after the policy changes of the 1986 reform settled
+in (Figure~\ref{fig-logshare}). The dataset does not capture any changes
+after the 1990 reform, although there is only one more year of data.
 
 \begin{figure}
 
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/342_by_size_diff.png}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/log_share_byy.png}
 
 }
 
+\caption{\label{fig-logshare}Input's cost share of sales, average by
+year of the logs.}
+
 \end{figure}
+
+Furthermore, we can appreciate in Figure~\ref{fig-ls-ntax} two different
+patterns before and after the threshold where firms start being required
+to report and pay profit taxes. We can observe that the intermediate's
+cost share decreases abruptly by the 20th percentile. Then, it reaches
+its minimum by the percentile 25th and starts growing up till the end of
+the distribution.
+
+Before the 25th percentile, firms only file and pay VAT, starting in the
+25th percentile, firms report and pay in addition profit taxes. In other
+words, the information they have to provide to the authority is greater.
+The bunching before the 25th percentile is also informative about firms'
+beliefs of the probability of getting caught evading, or the difficulty
+for firms in evading as they report more information to the authority.
+
+In addition, Colombia has a progressive profit tax schedule. Firms with
+higher profits pay a higher tax rate. Higher tax rates lead to increased
+incentives to evade them; a plausible explanation of why the increasing
+pattern.
 
 \begin{figure}
 
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/labor_employee_years_by_inds_diff.png}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png}
 
 }
 
+\caption{\label{fig-ls-ntax}Input's cost share of sales, average by
+percentile of sales taxes paid the previous year (in logs, groupings of
+5 percentiles).}
+
 \end{figure}
+
+As a validation exercise, we can see that the VAT changes induced by the
+three fiscal reforms are captured in the dataset. Figure~\ref{fig-vat}
+shows that the sales tax increased to 10\% after the 1983 reform, and
+then around 12\% after the 1990 reform.
 
 \begin{figure}
 
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/lag_sales_by_inds_diff.png}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/share_sales_tax_byy.png}
 
 }
 
+\caption{\label{fig-vat}Sale taxes paid as share of sales, average by
+year.}
+
 \end{figure}
+
+Just as an exercise to see if other economic changes in this period were
+driving the apparent changes in overreporting, Figure~\ref{fig-logsales}
+shows that sales, for instance, were not exactly following the changes
+in fiscal policy. Sales start to grow during 1983, the year of the
+reform, whereas the cost share of sales started to grow the year after.
+Likewise, sales fall in 1986, while the cost share seems to reduce its
+growth after 1986.
 
 \begin{figure}
 
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/lag_taxes_by_inds_diff.png}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png}
 
 }
 
+\caption{\label{fig-logsales}Sales, average by year of the logs.}
+
 \end{figure}
+
+\hypertarget{empirical-evidence}{%
+\section{Empirical evidence}\label{empirical-evidence}}
+
+To inform the empirical application, I analyze Figure~\ref{fig-ls-ntax}
+by year, focusing on the years around the policy change of 1983.
+Figure~\ref{fig-ls-83} shows the mean of the intermediate's cost share
+of sales (mean log share, henceforth) by percentile of the sales taxes
+paid the previous year and by year, only for 1982 to 1984.
 
 \begin{figure}
 
-{\centering \includegraphics[width=\textwidth,height=1\textheight]{../Results/Figures/Colombia/wages_by_inds_diff.png}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/night_disc_byy_lag_log_sales_tax_82-83-84_20.png}
 
 }
 
+\caption{\label{fig-ls-83}Input's cost share of sales, average by
+percentile of sales taxes paid the previous year and by year (in logs).}
+
 \end{figure}
+
+The first observation that jumps into view is that the firms that in
+1982 only paid VAT and were required to pay profit taxes in 1983 seem to
+decrease their intermediates' cost share of sales drastically in 1983,
+precisely. Please note how the mean log share of the 20th percentile
+(4/20 in Figure~\ref{fig-ls-83}) drops significantly from 1982 to 1983.
+
+The second consideration is that there is a generalized increase in the
+mean log share from 1983 to 1984 across almost all the distribution.
+Although the increases differ across the percentiles of the
+distribution, the highest 10\% of the distribution increased the least.
+This makes sense if the tax authority scrutinizes with the finest detail
+the firms paying the greatest tax bill.
+
+Based on this graphical analysis, I investigate with a simple empirical
+model 1) how the firms required to pay profit taxes by the 1983 reform
+adjusted their tax evasion and 2) the change in overreporting induced by
+the 1983 and 1986 reforms in subsequent years.
+
+On one hand, as Figure~\ref{fig-ls-83} suggests, I expect firms required
+to report and pay profit taxes to reduce their tax evasion. This might
+seem counterintuitive as higher taxes will increase the incentive to
+evade. These firms however have now to report more information to the
+tax authority increasing the difficulty to evade. In addition, firms had
+to adjust their beliefs about the probability of being caught evading
+taxes under the additional required information. On the other hand,
+Figure~\ref{fig-logshare} and Figure~\ref{fig-ls-83} suggest that tax
+evasion increased after the 1983 reform and it ceased to grow after the
+1986 reform.
+
+Of course, we would like to control for other factors that might have
+affected the log share during these years. We would need to control also
+for industry and regional variation. Consequently, to test the change in
+overreporting by firms required to pay profit taxes in 1983 (20th
+percentile in Figure~\ref{fig-ls-83}), I use as the control group the
+firms at the 10 and 95 percentile of the distribution. The intuition is
+that these firms were not affected by this fiscal policy change.
+Furthermore, firms in the 10th percentile are more similar to the
+affected firms than the ones at the 95th percentile. However, the firms
+at the 95th percentile receive the most attention from the tax
+authority, consequently, they are less likely to adjust their log share
+because of tax evasion motives. Likewise, I use the 95th percentile
+firms as the control group to test the change in overreporting induced
+by the 1983 and 1986 reforms. For these two specifications, the base
+year is 1983 and 1986 respectively.
+
+The results of the estimations in Table~\ref{tbl-did-change-threshold}
+show that firms that were required to report and pay profit taxes in
+1983 because of the change in the threshold reduced their tax evasion
+through cost overreporting by 14\%. Table~\ref{tbl-did-1983} shows that
+tax evasion grew between 8\% and 9\% in 1985 and 1986, following the
+increased value-added tax rates of the 1983 fiscal reform. Finally,
+Table~\ref{tbl-did-1986} indicates that the tax evasion growth came to a
+halt after 1986, as the subsequent years do not show a significant
+increase with respect 1986.
+
+\hypertarget{tbl-did-change-threshold}{}
+\begingroup
+\centering
+\begin{table}
+\caption{\label{tbl-did-change-threshold}1983 Reform, Change in Threshold }\tabularnewline
+
+\centering
+\begin{tabular}{lcc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{2}{c}{Inter. cost share of sales (logs)}\\
+   Model:                                & (1)             & (2)\\  
+   \midrule
+   \emph{Variables}\\
+   Affected firms                        & 0.0003          & 0.0061\\   
+                                         & (0.0309)        & (0.0309)\\   
+   Year of 1983                          & -0.0090         & -0.0091\\   
+                                         & (0.0212)        & (0.0208)\\   
+   Affected firms $\times$ Year of 1983  & -0.1531$^{***}$ & -0.1543$^{***}$\\   
+                                         & (0.0456)        & (0.0457)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry                              & Yes             & Yes\\  
+   Metropolitian area                    &                 & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                          & 1,714           & 1,714\\  
+   R$^2$                                 & 0.17053         & 0.17614\\  
+   Within R$^2$                          & 0.01889         & 0.01825\\  
+   \midrule \midrule
+   \multicolumn{3}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}\\
+   \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\end{table}
+
+\par\endgroup
+
+\hypertarget{tbl-did-1983}{}
+\begingroup
+\centering
+\begin{table}
+\caption{\label{tbl-did-1983}1983 Fiscal Reform }\tabularnewline
+
+\centering
+\begin{tabular}{lcc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{2}{c}{Inter. cost share of sales (logs)}\\
+   Model:                          & (1)            & (2)\\  
+   \midrule
+   \emph{Variables}\\
+   1-15\% $\times$ Year of 1984    & 0.0039         & 0.0052\\   
+                                   & (0.0281)       & (0.0280)\\   
+   20-50\% $\times$ Year of 1984   & 0.0226         & 0.0210\\   
+                                   & (0.0217)       & (0.0216)\\   
+   55-75\% $\times$ Year of 1984   & 0.0099         & 0.0098\\   
+                                   & (0.0213)       & (0.0212)\\   
+   80-95\% $\times$ Year of 1984   & 0.0284         & 0.0294\\   
+                                   & (0.0219)       & (0.0219)\\   
+   1-15\% $\times$ Year of 1985    & 0.0536$^{*}$   & 0.0534$^{*}$\\   
+                                   & (0.0275)       & (0.0275)\\   
+   20-50\% $\times$ Year of 1985   & 0.0762$^{***}$ & 0.0737$^{***}$\\   
+                                   & (0.0219)       & (0.0218)\\   
+   55-75\% $\times$ Year of 1985   & 0.0753$^{***}$ & 0.0751$^{***}$\\   
+                                   & (0.0215)       & (0.0214)\\   
+   80-95\% $\times$ Year of 1985   & 0.0801$^{***}$ & 0.0796$^{***}$\\   
+                                   & (0.0225)       & (0.0224)\\   
+   1-15\% $\times$ Year of 1986    & -0.0271        & -0.0249\\   
+                                   & (0.0267)       & (0.0267)\\   
+   20-50\% $\times$ Year of 1986   & 0.0681$^{***}$ & 0.0662$^{***}$\\   
+                                   & (0.0211)       & (0.0210)\\   
+   55-75\% $\times$ Year of 1986   & 0.0827$^{***}$ & 0.0829$^{***}$\\   
+                                   & (0.0207)       & (0.0207)\\   
+   80-95\% $\times$ Year of 1986   & 0.0784$^{***}$ & 0.0800$^{***}$\\   
+                                   & (0.0216)       & (0.0216)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry                        & Yes            & Yes\\  
+   Metropolitian area              &                & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                    & 24,953         & 24,953\\  
+   R$^2$                           & 0.14193        & 0.14779\\  
+   Within R$^2$                    & 0.03795        & 0.03590\\  
+   \midrule \midrule
+   \multicolumn{3}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}\\
+   \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\end{table}
+
+\par\endgroup
+
+\hypertarget{tbl-did-1986}{}
+\begingroup
+\centering
+\begin{table}
+\caption{\label{tbl-did-1986}1986 Fiscal Reform }\tabularnewline
+
+\centering
+\begin{tabular}{lcc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{2}{c}{Inter. cost share of sales (logs)}\\
+   Model:                          & (1)      & (2)\\  
+   \midrule
+   \emph{Variables}\\
+   1-15\% $\times$ Year of 1987    & 0.0107   & 0.0108\\   
+                                   & (0.0249) & (0.0248)\\   
+   20-50\% $\times$ Year of 1987   & -0.0031  & -0.0029\\   
+                                   & (0.0198) & (0.0196)\\   
+   55-75\% $\times$ Year of 1987   & -0.0102  & -0.0095\\   
+                                   & (0.0197) & (0.0196)\\   
+   80-95\% $\times$ Year of 1987   & 0.0181   & 0.0178\\   
+                                   & (0.0201) & (0.0199)\\   
+   1-15\% $\times$ Year of 1988    & 0.0019   & -0.0053\\   
+                                   & (0.0263) & (0.0262)\\   
+   20-50\% $\times$ Year of 1988   & 0.0198   & 0.0125\\   
+                                   & (0.0194) & (0.0192)\\   
+   55-75\% $\times$ Year of 1988   & 0.0184   & 0.0116\\   
+                                   & (0.0195) & (0.0194)\\   
+   80-95\% $\times$ Year of 1988   & 0.0187   & 0.0115\\   
+                                   & (0.0199) & (0.0198)\\   
+   1-15\% $\times$ Year of 1989    & 0.0321   & 0.0226\\   
+                                   & (0.0248) & (0.0247)\\   
+   20-50\% $\times$ Year of 1989   & 0.0190   & 0.0113\\   
+                                   & (0.0192) & (0.0191)\\   
+   55-75\% $\times$ Year of 1989   & -0.0065  & -0.0140\\   
+                                   & (0.0193) & (0.0191)\\   
+   80-95\% $\times$ Year of 1989   & 0.0071   & -0.0021\\   
+                                   & (0.0199) & (0.0198)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry                        & Yes      & Yes\\  
+   Metropolitian area              &          & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                    & 28,137   & 28,137\\  
+   R$^2$                           & 0.13303  & 0.14011\\  
+   Within R$^2$                    & 0.04402  & 0.04108\\  
+   \midrule \midrule
+   \multicolumn{3}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}\\
+   \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\end{table}
+
+\par\endgroup
+
+\hypertarget{conclusions}{%
+\section*{Conclusions}\label{conclusions}}
+\addcontentsline{toc}{section}{Conclusions}
+
+I provide a new estimation strategy to jointly recover tax evasion
+through cost overreporting and productivity that only requires commonly
+available firm-level data.
+
+Studying manufacturing firms from Colombia, I show that the method can
+be used to investigate tax evasion using surveys and fiscal policy
+changes. The 1983 reform required firms with profits above COL\$ 200,000
+or more to report income tax in 1983 in addition to the value-added tax.
+These firms reduced their tax evasion by cost overreporting by 14\%
+likely due to the additional information firms needed to report and the
+adjustment in their beliefs on the probability of getting caught
+evading.
+
+Likewise, the evidence suggests that this type of tax evasion increased
+after the reform of 1983 between 8 and 9\% in 1985 and 1986. The
+increase in value-added tax likely amplified the incentives to evade.
+This result stands at odds with previous studies that indicate that the
+evasion of income tax and VAT declined during this period (Sanchez \&
+Gutierrez, 1994). Finally, evidence suggests that tax evasion growth
+came to a halt after the 1986 reform where the banking system took over
+the tax collection and reception of tax reports from the tax authority.
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{0}{0}
+\end{CSLReferences}
+
+\hypertarget{colombias-fiscal-reforms-of-1983-1986-and-1990}{%
+\section*{Colombia's fiscal reforms of 1983, 1986, and
+1990}\label{colombias-fiscal-reforms-of-1983-1986-and-1990}}
+\addcontentsline{toc}{section}{Colombia's fiscal reforms of 1983, 1986,
+and 1990}
+
+The 1983 reform tried to increase the country's income tax and
+reactivate the economy. The 1986 reform attempted to reduce evasion,
+among other things. The 1990 reform took place during the process of
+commercial opening. It had the objective of developing the capital
+market and incentivizing the repatriation of foreign capital.
+
+\hypertarget{reform}{%
+\subsection{1983 Reform}\label{reform}}
+
+\textbf{Corporate profit tax (impuesto de la renta):} In 1983, Colombia
+reduced the maximum corporate tax rate from 56\% to 49\%. The
+progressive tax schedule went from 11.5\% to 49\%. However, the base of
+the taxpayers was increased.
+
+\textbf{VAT (IVA)}: Increased from 6\% to 10\%. The 1983 reform set the
+VAT on national vehicles between 25-30\%, depending on the motor. The
+motorcycles' VAT rate was set at 20\%.
+
+The tax authorities focused on the 5\% of the big taxpayers that
+constituted 80\% of the country's tax revenue.
+
+\hypertarget{reform-1}{%
+\subsection{1986 Reform}\label{reform-1}}
+
+\textbf{Corporate profit tax}: In 1986, Colombia set the corporate max
+tax rate at 30\% starting in 1989. To ease the transition, they set tax
+rates of 33\%, 32\%, and 31\% for 1986, 1987, and 1988.
+
+The reform relocated the tax collection and reception of tax reports to
+the banking system. Likewise, the 1986 reform increased the control over
+the big taxpayers.
+
+\hypertarget{reform-2}{%
+\subsection{1990 Reform}\label{reform-2}}
+
+Corporate income tax: among other things, the foreign investment tax
+rates were reduced. Also, the reform reduced the base of the taxpayers
+obligated to file tax reports.
+
+VAT was increased from 10\% to 12\%. In addition, several exceptions
+were eliminated, so the basket of taxed goods increased.
+
+Import taxes were reduced and some goods were exempted.
 
 
   \bibliography{biblio/export.bib,biblio/export2.bib,biblio/export31072022.bib,biblio/b100422.bib,biblio/b270123.bib}
