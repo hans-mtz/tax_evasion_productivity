@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.313">
+<meta name="generator" content="quarto-1.3.361">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2023-05-30">
+<meta name="dcterms.date" content="2023-08-01">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax evasion and productivity</title>
@@ -20,14 +20,15 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -41,8 +42,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="Tax-Prod_files/libs/clipboard/clipboard.min.js"></script>
@@ -56,6 +56,7 @@ div.csl-indent {
 <link href="Tax-Prod_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Tax-Prod_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
@@ -69,31 +70,30 @@ div.csl-indent {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#the-setting" id="toc-the-setting" class="nav-link" data-scroll-target="#the-setting"><span class="toc-section-number">1</span>  The setting</a>
+  <li><a href="#a-parsimonious-model-of-tax-evasion-through-input-overreporting" id="toc-a-parsimonious-model-of-tax-evasion-through-input-overreporting" class="nav-link" data-scroll-target="#a-parsimonious-model-of-tax-evasion-through-input-overreporting"><span class="header-section-number">1</span> A parsimonious model of tax evasion through input overreporting</a>
   <ul class="collapse">
-  <li><a href="#tax-evasion-and-the-productivity-bias" id="toc-tax-evasion-and-the-productivity-bias" class="nav-link" data-scroll-target="#tax-evasion-and-the-productivity-bias"><span class="toc-section-number">1.1</span>  Tax evasion and the productivity bias</a></li>
+  <li><a href="#case-1-qesqe" id="toc-case-1-qesqe" class="nav-link" data-scroll-target="#case-1-qesqe"><span class="header-section-number">1.1</span> Case 1: <span class="math inline">\(q(e|s)=q(e)\)</span></a></li>
+  <li><a href="#case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size" id="toc-case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size" class="nav-link" data-scroll-target="#case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size"><span class="header-section-number">1.2</span> Case 2: increase in the probability of detection after a certain threshold of size</a></li>
   </ul></li>
-  <li><a href="#identification-strategy" id="toc-identification-strategy" class="nav-link" data-scroll-target="#identification-strategy"><span class="toc-section-number">2</span>  Identification strategy</a>
+  <li><a href="#the-setting" id="toc-the-setting" class="nav-link" data-scroll-target="#the-setting"><span class="header-section-number">2</span> The setting</a>
   <ul class="collapse">
-  <li><a href="#identifying-the-production-function-parameters" id="toc-identifying-the-production-function-parameters" class="nav-link" data-scroll-target="#identifying-the-production-function-parameters"><span class="toc-section-number">2.1</span>  Identifying the production function parameters</a></li>
-  <li><a href="#identifying-the-markov-process-of-productivity" id="toc-identifying-the-markov-process-of-productivity" class="nav-link" data-scroll-target="#identifying-the-markov-process-of-productivity"><span class="toc-section-number">2.2</span>  Identifying the Markov Process of Productivity</a></li>
-  <li><a href="#deconvoluting" id="toc-deconvoluting" class="nav-link" data-scroll-target="#deconvoluting"><span class="toc-section-number">2.3</span>  Deconvoluting</a></li>
+  <li><a href="#tax-evasion-and-the-productivity-bias" id="toc-tax-evasion-and-the-productivity-bias" class="nav-link" data-scroll-target="#tax-evasion-and-the-productivity-bias"><span class="header-section-number">2.1</span> Tax evasion and the productivity bias</a></li>
   </ul></li>
-  <li><a href="#colombia-1981-1991-an-application" id="toc-colombia-1981-1991-an-application" class="nav-link" data-scroll-target="#colombia-1981-1991-an-application"><span class="toc-section-number">3</span>  Colombia 1981-1991: an application</a>
+  <li><a href="#identification-strategy" id="toc-identification-strategy" class="nav-link" data-scroll-target="#identification-strategy"><span class="header-section-number">3</span> Identification strategy</a>
   <ul class="collapse">
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">3.1</span>  Data</a></li>
+  <li><a href="#identifying-the-production-function-parameters" id="toc-identifying-the-production-function-parameters" class="nav-link" data-scroll-target="#identifying-the-production-function-parameters"><span class="header-section-number">3.1</span> Identifying the production function parameters</a></li>
+  <li><a href="#identifying-the-markov-process-of-productivity" id="toc-identifying-the-markov-process-of-productivity" class="nav-link" data-scroll-target="#identifying-the-markov-process-of-productivity"><span class="header-section-number">3.2</span> Identifying the Markov Process of Productivity</a></li>
+  <li><a href="#deconvoluting" id="toc-deconvoluting" class="nav-link" data-scroll-target="#deconvoluting"><span class="header-section-number">3.3</span> Deconvoluting</a></li>
   </ul></li>
-  <li><a href="#empirical-evidence" id="toc-empirical-evidence" class="nav-link" data-scroll-target="#empirical-evidence"><span class="toc-section-number">4</span>  Empirical evidence</a></li>
+  <li><a href="#colombia-1981-1991-an-application" id="toc-colombia-1981-1991-an-application" class="nav-link" data-scroll-target="#colombia-1981-1991-an-application"><span class="header-section-number">4</span> Colombia 1981-1991: an application</a>
+  <ul class="collapse">
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">4.1</span> Data</a></li>
+  </ul></li>
+  <li><a href="#empirical-evidence" id="toc-empirical-evidence" class="nav-link" data-scroll-target="#empirical-evidence"><span class="header-section-number">5</span> Empirical evidence</a></li>
   <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
-  <li><a href="#colombias-fiscal-reforms-of-1983-1986-and-1990" id="toc-colombias-fiscal-reforms-of-1983-1986-and-1990" class="nav-link" data-scroll-target="#colombias-fiscal-reforms-of-1983-1986-and-1990">Colombia’s fiscal reforms of 1983, 1986, and 1990</a>
-  <ul class="collapse">
-  <li><a href="#reform" id="toc-reform" class="nav-link" data-scroll-target="#reform"><span class="toc-section-number">4.1</span>  1983 Reform</a></li>
-  <li><a href="#reform-1" id="toc-reform-1" class="nav-link" data-scroll-target="#reform-1"><span class="toc-section-number">4.2</span>  1986 Reform</a></li>
-  <li><a href="#reform-2" id="toc-reform-2" class="nav-link" data-scroll-target="#reform-2"><span class="toc-section-number">4.3</span>  1990 Reform</a></li>
-  </ul></li>
   </ul>
-</nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../Tax-Prod.pdf"><i class="bi bi-file-pdf"></i>PDF (jasa)</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -108,7 +108,7 @@ div.csl-indent {
   <div class="quarto-title-meta-heading">Affiliation</div>
   
     <div class="quarto-title-meta-contents">
-    Hans Martinez 
+    <p class="author">Hans Martinez </p>
   </div>
     <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -123,7 +123,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 30, 2023</p>
+      <p class="date">August 1, 2023</p>
     </div>
   </div>
   
@@ -142,21 +142,79 @@ div.csl-indent {
 <!-- Intro -->
 <section id="introduction" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Corporate tax evasion through cost overreporting spreads internationally causing governments significant tax revenue losses. Detecting and measuring the magnitude of tax evasion remains a challenge, even for the few studies on overreporting where researchers can exploit administrative data. Moreover, if this evasion strategy accounts for economic losses as large as reported, then cost overreporting might bias estimates of production functions, especially productivity. This paper addresses both issues. I first provide a novel strategy to estimate cost overreporting using commonly available firm-level data. I then formally show that ignoring cost overreporting leads to downward biased productivity estimates. Finally, I demonstrate how to recover productivity in the presence of tax evasion.</p>
-<p>Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added and corporate income taxes. According to the OECD’s document <span class="citation" data-cites="OECD2017"><span>“Technology tools to tackle tax evasion and tax fraud”</span> (<a href="#ref-OECD2017" role="doc-biblioref">2017</a>)</span>, cost overreporting — also known as “fake invoicing”, “ghost firms”, “invoice mills”, or “missing traders”— permeates internationally reaching Latin America, Eastern Europe, Asia, and Africa. For example, cost overreporting reportedly generated annual tax revenue losses amounting to 5.6% of Poland’s GDP in 2016 (Poland’s Minister of Finance, 2018); 0.2% of Chile’s GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat, 2001; CIAT, 2008); 0.2% of Colombia’s GDP (Portafolio, 2019); and 0.03% of Mexico’s GDP in 2018 (Senado de la Republica, 2019).</p>
-<p>Recent evidence from Ecuador <span class="citation" data-cites="Carrillo2022">(<a href="#ref-Carrillo2022" role="doc-biblioref">Carrillo et al. 2022</a>)</span> shows that cost overreporting is widespread across firms and quantitatively large. Contrary to the literature consensus, evasion by overreporting is not limited to small, semi-formal firms. Firms were found to overreport up to 14.1% of the value of their purchase deductions. </p>
+<p>Corporate tax evasion through cost overreporting globally spreads causing governments significant tax revenue losses. Detecting and measuring the magnitude of cost overreporting remains a challenge, even for governments with administrative data. Moreover, if this evasion strategy accounts for economic losses as large as reported, then cost overreporting might bias estimates of production functions and, especially, productivity. This paper addresses both issues. I first provide a novel strategy to estimate cost overreporting using commonly available firm-level data. I then formally show that ignoring cost overreporting leads to downward biased productivity estimates. Finally, I demonstrate how to recover productivity in the presence of tax evasion.</p>
+<p>Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added and corporate income taxes. According to the OECD’s document <span class="citation" data-cites="OECD2017"><span>“Technology tools to tackle tax evasion and tax fraud”</span> (<a href="#ref-OECD2017" role="doc-biblioref">2017</a>)</span>, cost overreporting — also known as “fake invoicing”, “ghost firms”, “invoice mills”, or “missing traders”— permeates internationally reaching Latin America, Eastern Europe, Asia, and Africa. Reports claim cost overreporting generated annual tax revenue losses amounting to 5.6% of Poland’s GDP in 2016 (Poland’s Minister of Finance, 2018); 0.2% of Chile’s GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat, 2001; CIAT, 2008); 0.2% of Colombia’s GDP (Portafolio, 2019); and 0.03% of Mexico’s GDP in 2018 (Senado de la Republica, 2019).</p>
+<p>Recently, evidence from Ecuador <span class="citation" data-cites="Carrillo2022">(<a href="#ref-Carrillo2022" role="doc-biblioref">Carrillo et al. 2022</a>)</span> shows that cost overreporting disseminates across all types of firms; constitutes a quantitatively large share of firms’ total deductions; and occurs mostly in the intermediate inputs. Contrary to the literature consensus, evasion by overreporting is not limited to small, semi-formal firms, but large and formal firms overreport too. Likewise, firms were found to overreport up to 14.1% of the value of their purchase deductions. Finally, when challenged by the tax authority, firms adjusted mostly intermediate inputs. </p>
 <p>The evidence from Ecuador also shows that big firms do not overreport inputs. This is unsurprising for several reasons. First, a large firm arguably draws more attention from the tax authority. Given its limited resources, the government optimizes its expected revenues by targeting the firms with the higher potential tax recovery, the few big ones. Second, the cost of being caught cheating is potentially higher for big firms. Large firms are likely to participate in international markets. A tax evasion scandal in Colombia, for example, might affect US sales. Finally, big firms potentially have more sophisticated strategies for tax evasion <span class="citation" data-cites="Bustos2022">(e.g., profit shifting <a href="#ref-Bustos2022" role="doc-biblioref">Bustos et al. 2022</a>)</span>.</p>
 <p>Despite its relevance, cost overreporting has been mostly overlooked by the literature. On one hand, the few studies on this evasion strategy exploit detailed administrative data <span class="citation" data-cites="Zumaya2021 Carrillo2022">(<a href="#ref-Carrillo2022" role="doc-biblioref">Carrillo et al. 2022</a>; <a href="#ref-Zumaya2021" role="doc-biblioref">Zumaya et al. 2021</a>)</span>. Government tax authorities restrict access to administrative data because of firms’ confidentiality concerns. On the other hand, to the best of my knowledge, no study has attempted to structurally identify cost overreporting. Unlike the case of individuals <span class="citation" data-cites="Pissarides1989 Paulus2015">(<a href="#ref-Paulus2015" role="doc-biblioref">Paulus 2015</a>; <a href="#ref-Pissarides1989" role="doc-biblioref">Pissarides and Weber 1989</a>)</span>, when it comes to corporate tax evasion, researchers have to account for an additional source of unobserved heterogeneity, productivity. Why? Because cost overreporting might be naively quantified as low productivity. Intuitively, for a given output level, high input utilization by a firm could be explained by either the amount of input the firm overreports to evade taxes or by a low productivity shock.</p>
 <p>To address this gap in the literature, first I formally show that ignoring tax evasion leads to downwardly biased productivity estimates. I then provide a new estimation strategy, requiring only commonly available firm-level data, to jointly recover the densities of tax evasion and productivity. The intuition works as follows. In the absence of tax evasion, the first-order conditions of the firms’ cost-minimization problem inform about a common technology, the production function. Consequently, in the presence of cost overreporting, deviations from this common technology identify tax evasion up to the current-period output shock. Then, from the subset of non-overreporting firms, the strategy identifies the production function parameters and the density of the output shock. Finally, using deconvolution techniques, I can jointly recover the distributions of tax evasion and productivity. </p>
 <p>In a preliminary application, I show how to use the method to learn about tax evasion even when we do not know the subset of non-evading firms, but there has been a change in fiscal policy that incentivizes cost overreporting. Using firm-level data from Colombia between 1981 and 1991, I show that tax evasion through cost overreporting increased after the fiscal reform of 1983 between 8 and 9% in 1985 and 1986. This result stands at odds with previous studies that indicate that the evasion of income tax and VAT declined during this period (Sanchez &amp; Gutierrez, 1994)</p>
+<!-- Theoretical Model -->
+</section>
+<section id="a-parsimonious-model-of-tax-evasion-through-input-overreporting" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="a-parsimonious-model-of-tax-evasion-through-input-overreporting"><span class="header-section-number">1</span> A parsimonious model of tax evasion through input overreporting</h2>
+<p>Price-taking firms maximize expected after-tax profits. Firms choose input <span class="math inline">\(M_{it}\)</span> and tax evasion <span class="math inline">\(e_{it}\)</span> given the prices —output and input prices <span class="math inline">\(\{P_{t}, \rho_t\}\)</span>—, and expected output —firms take the expectation of the production function and their current period productivity shock over the output shock <span class="math inline">\(\varepsilon_{it}\)</span>, i.e.,</p>
+<p><span id="eq-exp-rev"><span class="math display">\[
+\mathbb{E}[Y_{it}]=\mathbb{E}[G(M_{it})\exp(\omega_{it}+\varepsilon_{it})]
+\tag{1}\]</span></span></p>
+<p>In their optimization problem, firms also consider the profit tax <span class="math inline">\(\tau\)</span>, the penalty for evading taxes <span class="math inline">\(\kappa\)</span>, and their perceived probability of detection <span class="math inline">\(q_{it}(e_{it}|s_{it})\)</span>.</p>
+<p>Firms, then, solve <a href="#eq-eva">Equation&nbsp;2</a> <span id="eq-eva"><span class="math display">\[
+\begin{aligned}
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|s_{it})]&amp;\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q_{it}(e_{it}|s_{it})&amp;\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})&amp;\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+\tag{2}\]</span></span></p>
+<p>Intuitively, for a given size, firms that evade more are more likely to get caught. Formally, the firm’s <span class="math inline">\(i\)</span> perceived probability of detection <span class="math inline">\(q_{it}(e_{it}|s_{it})\)</span> is monotonically increasing in the amount evaded <span class="math inline">\(e_{it}\)</span>, conditional on the size of the firm <span class="math inline">\(s_{it}\)</span>. Likewise, larger firms might be more likely to get caught. That is, for a given level of tax evasion <span class="math inline">\(e_0\)</span> and two different sizes <span class="math inline">\(s' &gt; s \in \mathbfcal{S}\)</span>, then <span class="math inline">\(q(e_0|s')\ge q(e_0|s)\)</span>, where <span class="math inline">\(s\)</span> can be continuous or discrete for a range of expected revenues.</p>
+<p>Expected revenue determines the size of firms. The fiscal authority in the countries I examined in the empirical application defines the tax rules in terms of firms’ revenue, i.e., Mexico, Colombia, Ecuador, and Chile (?). In these countries, firm revenues represent the main input for VAT and corporate profit taxes.</p>
+<p>Because size <span class="math inline">\(s\)</span> is measured in expected revenues, a function of inputs, firms affect their perceived probability of detection in two ways. Firms affect the probability <span class="math inline">\(q(e|s)\)</span> directly, by choosing how much they evade <span class="math inline">\(e_{it}\)</span>, and indirectly, by their implicit choice of size when choosing inputs <span class="math inline">\(M_{it}\)</span>.</p>
+<p>The firms’ problem can be rewritten as follows, <span id="eq-eva2"><span class="math display">\[
+\begin{aligned}
+  \max_{M_{it}, e_{it}} \mathbb{E}[\pi|s_{it}] = &amp;(1-\tau)(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it})+[1-q_{it}(e_{it}|s_{it})](\frac{\rho_{t}}{P_t}e_{it}\tau)
+  -q_{it}(e_{it}|s_{it})\kappa \\
+  &amp;\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+\tag{3}\]</span></span></p>
+<p>Intuitively, if the firm overreports her inputs’ cost, she will get the share of the value she overreported with probability <span class="math inline">\((1-q)\)</span> and she will be penalized with probability <span class="math inline">\(q\)</span>.</p>
+<p>The optimal decision of the firm will depend on the fiscal environment <span class="math inline">\(\{\tau, \kappa\}\)</span> and its perceived probability of detection.</p>
+<section id="case-1-qesqe" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="case-1-qesqe"><span class="header-section-number">1.1</span> Case 1: <span class="math inline">\(q(e|s)=q(e)\)</span></h3>
+<p>Consider the case when the probability of detection is independent of size, <span class="math inline">\(q(e|s)=q(e)\)</span>. This could be the case if, given a productivity shock, the firm perceives that the probability of detection is independent of her size within the range of its maximum optimal size.</p>
+<p>The optimal input choice is independent, hence, of the evasion decision. In this case, the first-order conditions of <a href="#eq-eva2">Equation&nbsp;3</a> with respect to the input <span class="math inline">\(M_{it}\)</span> and the tax evasion <span class="math inline">\(e_{it}\)</span> yield the following</p>
+<p><span id="eq-foc:ind"><span class="math display">\[
+G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
+\tag{4}\]</span></span></p>
+<p><span id="eq-foc:eva:ind"><span class="math display">\[
+    e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa}{\frac{\rho_{t}}{P_t}\tau}
+\tag{5}\]</span></span></p>
+<p><a href="#eq-foc:ind">Equation&nbsp;4</a>, the well-known optimality condition, says that the price ratio is equal to the marginal product of the inputs, given the productivity and the expected value of the output shock, <span class="math inline">\(\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)</span>.</p>
+<p>Likewise, <a href="#eq-foc:eva:ind">Equation&nbsp;5</a> reveals the firms’ optimal tax evasion decision decreases if the probability of detection <span class="math inline">\(q(e_{it})\)</span> or the penalty of evading <span class="math inline">\(\kappa\)</span> increases. Tax evasion also depends on how sensitive the probability of detection is to the level of evasion <span class="math inline">\(q'(e)\)</span>. In particular, greater sensibility will result in lower levels of evasion.</p>
+<p>Note that the net change of tax evasion due to an increase in the relative prices <span class="math inline">\(\frac{\rho_{t}}{P_t}\)</span> or the tax rate <span class="math inline">\(\tau\)</span> is not evident at first sight. The net effect will also depend on the change in the detection probability induced by the changes in the relative prices or the tax rate. In particular, an increase in relative prices <span class="math inline">\(\frac{\rho_{t}}{P_t}\)</span> or the tax rate <span class="math inline">\(\tau\)</span> will incentivize a higher tax evasion level, however, a higher tax evasion level will increase the probability of detection —depending on the shape of the probability as a function of <span class="math inline">\(e\)</span>—, so it will deter higher levels of evasion. An increase in the tax rate, for instance, will only increase tax evasion if the change in the tax rates increases the incentives to evade more than the decrease in the incentives due to the changes in the detection probability.</p>
+<p>Formally, suppose a firm increases its tax evasion, <span class="math inline">\(e_1-e_0&gt;0\)</span> because of an increase in taxes <span class="math inline">\(\tau_1&gt;\tau_0\)</span>. Then, it follows that</p>
+<p><span class="math display">\[
+\left(\frac{\tau_1-\tau_0}{\tau_1\tau_0}\right)\frac{P\kappa}{\rho}&gt;
+  \left(\frac{1-q(e_1)}{q'(e_1)}-\frac{1-q(e_0)}{q'(e_0)}\right)
+\]</span></p>
+<p>The change in the probability of detection weighted by the slope of the probability function should be less than the change in the tax rate weighted by the penalty of evading and the relative prices<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+</section>
+<section id="case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size"><span class="header-section-number">1.2</span> Case 2: increase in the probability of detection after a certain threshold of size</h3>
+<p>Consider now the case where there is a threshold of size <span class="math inline">\(s_0\)</span> after which the probability of detection increases significantly. To make things simpler, assume that before the threshold, the probability changes as a function of evasion but does not vary conditional on size. After the threshold, the probability increases for every level of evasion but does not vary conditional on size.</p>
+<p>This could be the case in which there are different fiscal regimes for small and medium-large firms, and firms believe that the probability of detection in the medium-large firms’ regime is higher. The medium-large regime might imply submitting more information that can be traced by a third party, like in Mexico and Colombia. Another possibility could be that the tax authority increases auditing efforts significantly after a certain size threshold, like in Spain.</p>
+<p>In this scenario, depending on the productivity shock, the firm might be better off choosing not to grow. Indeed, for a small enough productivity shock, the firm will not choose to grow past the size threshold if the expected profits of staying small are greater than the expected profits of growing.</p>
+<p>Formally, let <span class="math inline">\(S_{s} = \{s_i : s_{i} &lt; s_0 \}\)</span> and <span class="math inline">\(S_{l} = \{s_i : s_{i} \ge s_0 \}\)</span>, then for any <span class="math inline">\(e_0\)</span> and <span class="math inline">\(s'_i&gt;s_i\)</span>, <span class="math inline">\(q(e_0|s_i \in S_k)=q(e_0|s'_i \in S_k)\)</span> with <span class="math inline">\(k=\{s,l\}\)</span>, but <span class="math inline">\(q(e_0|s'_i \in S_l)\ge q(e_0|s_i \in S_s)\)</span> for all <span class="math inline">\(e_0\)</span>.</p>
+<p>Suppose the realized productivity shock of the current period <span class="math inline">\(\omega_{it}\)</span> is such that, taking the probabilities as constant, the optimal input <span class="math inline">\(M^*_{it}\)</span> implies an expected revenue greater than threshold <span class="math inline">\(s^*_{it}\ge s_0\)</span>. Let the expected profits given <span class="math inline">\(M^*_{it}\)</span> and the optimal tax evasion in the range of size <span class="math inline">\(S_l\)</span>, <span class="math inline">\(e^*_{it}\)</span>, is <span class="math inline">\(\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|S_l]\)</span>. Let <span class="math inline">\(\tilde{M}_{it}\)</span> be the input level such that the expected revenue is below the threshold <span class="math inline">\(\tilde{s}_{it}&lt;s_0\)</span> and <span class="math inline">\(\tilde{e}_{it}\)</span> be the optimal tax evasion in the range of size <span class="math inline">\(S_s\)</span>. Let also the expected profits of staying small are <span class="math inline">\(\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|S_s]\)</span>.</p>
+<p>In this second case, therefore, firms might optimally choose to remain small if, for a low productivity shock, the expected profits of not growing are greater than the expected profits of growing <span class="math inline">\(\pi_l&lt;\pi_s\)</span>. Firms choosing to remain small will lead to a bunching below the threshold in the size distribution of firms.</p>
+<p>Besides the higher levels of evasion before the threshold —simply because of the higher probability of detection—, we can also expect bunching firms to evade more than their similar-sized peers. At <span class="math inline">\(\tilde{M}_{it}\)</span>, the optimization condition of <a href="#eq-foc:ind">Equation&nbsp;4</a> no longer holds, hence, the marginal product of the input is now greater than the relative prices. Therefore, according to <a href="#eq-foc:eva:ind">Equation&nbsp;5</a>, bunching firms would compensate for their <em>higher</em> costs by increasing overreporting.</p>
 <!-- Setting -->
 </section>
-<section id="the-setting" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="the-setting"><span class="header-section-number">1</span> The setting</h2>
+</section>
+<section id="the-setting" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="the-setting"><span class="header-section-number">2</span> The setting</h2>
 <p>Suppose we have access to panel data, where we observe output <span class="math inline">\(Y_{it}\)</span>, intermediate inputs <span class="math inline">\(M_{it}\)</span>, capital <span class="math inline">\(K_{it}\)</span>, labor <span class="math inline">\(L_{it}\)</span>, and output <span class="math inline">\(P_{t}\)</span> and intermediate input prices <span class="math inline">\(\rho_t\)</span> for <span class="math inline">\(I\)</span> firms over <span class="math inline">\(T\)</span> periods. Then our set of observations is <span class="math inline">\(\mathcal O = \{Y_{it}, M_{it}, K_{it}, L_{it}, P_{t}, \rho_t\}_{i\in I, t \in T}\)</span>. As is standard in the literature, firms are price-takers and the intermediates are flexible.</p>
-<p>The objects of interest are the production function (PF), <span class="math inline">\(Y_{it}=G(M_{it}, K_{it}, L_{it})e^{\omega_{it}+\varepsilon^Y_{it}}\)</span>, and productivity <span class="math inline">\(\omega_{it}\)</span>. <span class="math inline">\(\varepsilon^Y_{it}\)</span> is the current period output shock. We are also interested in the Markov process of productivity, which we assume is AR(1), <span class="math inline">\(\omega_{it}=\delta_0 + \delta_1 \omega_{it-1}+\eta_{it}\)</span>, with <span class="math inline">\(\mathbb{E}[\eta_{it}]=0\)</span> and <span class="math inline">\(\eta_{it}\perp\omega_{it}\)</span>.</p>
-<section id="tax-evasion-and-the-productivity-bias" class="level3" data-number="1.1">
-<h3 data-number="1.1" class="anchored" data-anchor-id="tax-evasion-and-the-productivity-bias"><span class="header-section-number">1.1</span> Tax evasion and the productivity bias</h3>
+<p>The objects of interest are the production function (PF), <span class="math inline">\(Y_{it}=G(M_{it}, K_{it}, L_{it})e^{\omega_{it}+\varepsilon^Y_{it}}\)</span>, and productivity <span class="math inline">\(\omega_{it}\)</span>. <span class="math inline">\(\varepsilon^Y_{it}\)</span> is the current period output shock. We are also interested in the Markov process of productivity, which we assume is AR(1), <span class="math inline">\(\omega_{it}=h(\omega_{it-1})+\eta_{it}\)</span>, with <span class="math inline">\(\mathbb{E}[\eta_{it}|\omega_{it-1}]=0\)</span>.</p>
+<section id="tax-evasion-and-the-productivity-bias" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="tax-evasion-and-the-productivity-bias"><span class="header-section-number">2.1</span> Tax evasion and the productivity bias</h3>
 <p>Firms overreport their true intermediate inputs <span class="math inline">\(M^*_{it}\)</span> by <span class="math inline">\(e^{\varepsilon^M_{it}}\)</span> to evade taxes. Then, reported inputs are</p>
 <p><span class="math display">\[
 M_{it}=M^*_{it}e^{\varepsilon^M_{it}}   
@@ -172,14 +230,14 @@ M_{it}=M^*_{it}e^{\varepsilon^M_{it}}
 <p>Where <span class="math inline">\(\mathcal{I}\)</span> stands for the information set of firm <span class="math inline">\(i\)</span> in time <span class="math inline">\(t\)</span>.</p>
 <p>The previous result holds because of Jensen’s inequality and because <span class="math inline">\(G(\cdot)\)</span> is monotonically increasing in its arguments.</p>
 <!-- Empirical model -->
-<!-- {{< include sections/50-empirical.rmd >}} -->
+<!--NO {{< include sections/50-empirical.rmd >}} -->
 <!-- Identification strategy -->
 </section>
 </section>
-<section id="identification-strategy" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="identification-strategy"><span class="header-section-number">2</span> Identification strategy</h2>
+<section id="identification-strategy" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="identification-strategy"><span class="header-section-number">3</span> Identification strategy</h2>
 <p>My identification assumption is motivated by the empirical evidence showing that very large firms do not evade taxes by input overreporting <span class="citation" data-cites="Carrillo2022">(<a href="#ref-Carrillo2022" role="doc-biblioref">Carrillo et al. 2022</a>)</span>. Hence, I assume I know the quantile of the size distribution of compliant firms.</p>
-<div class="callout callout callout-style-simple no-icon">
+<div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -190,7 +248,7 @@ M_{it}=M^*_{it}e^{\varepsilon^M_{it}}
 </div>
 </div>
 <p>In addition, I impose the following timing assumption.</p>
-<div class="callout callout callout-style-simple no-icon">
+<div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -201,20 +259,20 @@ M_{it}=M^*_{it}e^{\varepsilon^M_{it}}
 </div>
 </div>
 <p>Assumption <span class="math inline">\(\ref{ass-ind}\)</span> implies that input overreporting is independent of the current period output shock, <span class="math inline">\(\varepsilon^M_{it} \perp \varepsilon^Y_{it}\)</span>. In the literature is not rare to assume that the output shock is not part of the information set of the firms, <span class="math inline">\(\varepsilon^Y_{it}\not\in \mathcal{I}_t\)</span> <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation <span class="citation" data-cites="Ackerberg2021 Ackerberg2019">(<a href="#ref-Ackerberg2021" role="doc-biblioref">Ackerberg et al. 2021</a>; <a href="#ref-Ackerberg2019" role="doc-biblioref">Ackerberg 2019</a>)</span>.</p>
-<section id="identifying-the-production-function-parameters" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="identifying-the-production-function-parameters"><span class="header-section-number">2.1</span> Identifying the production function parameters</h3>
+<section id="identifying-the-production-function-parameters" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="identifying-the-production-function-parameters"><span class="header-section-number">3.1</span> Identifying the production function parameters</h3>
 <p>Suppose the production function is Cobb-Douglas, <span class="math inline">\(G(M^*_{it}, K_{it}, L_{it})e^{\omega_{it}+\varepsilon^Y_{it}}=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}e^{\omega_{it}+\varepsilon^Y_{it}}\)</span>. Then, we can use the first-order conditions of the firms’ cost minimization problem on the flexible input, as in <span class="citation" data-cites="Gandhi2020">Gandhi et al. (<a href="#ref-Gandhi2020" role="doc-biblioref">2020</a>)</span>, and assumption <span class="math inline">\(\ref{ass-comp}\)</span> to recover the production function parameter <span class="math inline">\(\beta\)</span>.</p>
 <p><span id="eq-foc-cd"><span class="math display">\[
 \begin{aligned}
     \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+\varepsilon^M_{it}&amp;=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
     \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| S_{it}&gt;s\right]&amp;=\ln\beta
 \end{aligned}
-\tag{1}\]</span></span></p>
+\tag{6}\]</span></span></p>
 <p><span class="math inline">\(\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]\)</span></p>
-<p>Note that this is the case because <span class="math inline">\(\mathbb{E}[\varepsilon^Y_{it}|S_{it}&gt;s]=\mathbb{E}[\varepsilon^Y_{it}]=0\)</span>. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to <a href="#eq-foc-cd">Equation&nbsp;1</a> — like output or revenue in the same period—, the output elasticity of input, <span class="math inline">\(\beta\)</span>, can be recovered.</p>
+<p>Note that this is the case because <span class="math inline">\(\mathbb{E}[\varepsilon^Y_{it}|S_{it}&gt;s]=\mathbb{E}[\varepsilon^Y_{it}]=0\)</span>. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to <a href="#eq-foc-cd">Equation&nbsp;6</a> — like output or revenue in the same period—, the output elasticity of input, <span class="math inline">\(\beta\)</span>, can be recovered.</p>
 </section>
-<section id="identifying-the-markov-process-of-productivity" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="identifying-the-markov-process-of-productivity"><span class="header-section-number">2.2</span> Identifying the Markov Process of Productivity</h3>
+<section id="identifying-the-markov-process-of-productivity" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="identifying-the-markov-process-of-productivity"><span class="header-section-number">3.2</span> Identifying the Markov Process of Productivity</h3>
 <p>If we were to follow <span class="citation" data-cites="Gandhi2020">Gandhi et al. (<a href="#ref-Gandhi2020" role="doc-biblioref">2020</a>)</span> to recover the Markov process of productivity, we could only have estimates for firms with size <span class="math inline">\(S_{it}&gt;s\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -255,8 +313,8 @@ M_{it}=M^*_{it}e^{\varepsilon^M_{it}}
 \end{aligned}
 \]</span></p>
 </section>
-<section id="deconvoluting" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="deconvoluting"><span class="header-section-number">2.3</span> Deconvoluting</h3>
+<section id="deconvoluting" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="deconvoluting"><span class="header-section-number">3.3</span> Deconvoluting</h3>
 <p>But I can go further and recover the densities of tax evasion and productivity at every period. The key insight is that from the 1st stage, I also learn the distribution <span class="math inline">\(m\)</span> of <span class="math inline">\(\varepsilon^Y_{it}\)</span>. Hence, I can use non-parametric density deconvolution methods.</p>
 <p>For completeness, I reproduce a result from probability theory that allows me to pursue these techniques.</p>
 <div id="def-deconv" class="theorem definition">
@@ -284,24 +342,24 @@ known
 }
 \]</span></p>
 <!-- Identification strategy -->
-<!-- {{< include sections/60-data.rmd >}} -->
+<!--NO {{< include sections/60-data.rmd >}} -->
 <!-- Identification strategy -->
-<!-- {{< include sections/65-prelim.qmd >}} -->
+<!--NO {{< include sections/65-prelim.qmd >}} -->
 <!-- Colombia 1981-1991: an application -->
 </section>
 </section>
-<section id="colombia-1981-1991-an-application" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="colombia-1981-1991-an-application"><span class="header-section-number">3</span> Colombia 1981-1991: an application</h2>
+<section id="colombia-1981-1991-an-application" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="colombia-1981-1991-an-application"><span class="header-section-number">4</span> Colombia 1981-1991: an application</h2>
 <p>During this period, Colombia went through three major fiscal reforms (1983, 1986, 1990). The 1983 reform increased the value-added tax (VAT) from 6% to 10% and expanded the number of the products and services that were levied. In addition, the 1983 fiscal reform required firms with profits over COL$ 200,000 and owned by individuals to pay profit taxes. The 1986 reform relocated the tax collection and reception of tax reports to the banking system, among other things. The 1990 reform increased the VAT from 10% to 12%. See section the appendix for more details on the fiscal reforms.</p>
 <p>Intuitively, we expect higher levels of tax evasion if tax rates increase. On the other hand, reporting more information to the authority —like the firms required to report and pay profit taxes in 1983—, or having a third party reporting on your private information — like the banking system being responsible for the collection and reception of tax reports in 1986— would decrease tax evasion.</p>
-<section id="data" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="data"><span class="header-section-number">3.1</span> Data</h3>
+<section id="data" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="data"><span class="header-section-number">4.1</span> Data</h3>
 <p>The data is a well-known data set that has been used in the estimation of production functions and productivity before. The dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.</p>
 <p>A simple graphical analysis shows that the average (of the log) intermediates cost share of sales started growing after 1983 and that it stabilized in 1988 after the policy changes of the 1986 reform settled in (<a href="#fig-logshare">Figure&nbsp;1</a>). The dataset does not capture any changes after the 1990 reform, although there is only one more year of data.</p>
 <div id="fig-logshare" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="../Results/Figures/Colombia/log_share_byy.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: Input’s cost share of sales, average by year of the logs.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Input’s cost share of sales, average by year of the logs.</figcaption>
 </figure>
 </div>
 <p>Furthermore, we can appreciate in <a href="#fig-ls-ntax">Figure&nbsp;2</a> two different patterns before and after the threshold where firms start being required to report and pay profit taxes. We can observe that the intermediate’s cost share decreases abruptly by the 20th percentile. Then, it reaches its minimum by the percentile 25th and starts growing up till the end of the distribution.</p>
@@ -310,32 +368,32 @@ known
 <div id="fig-ls-ntax" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: Input’s cost share of sales, average by percentile of sales taxes paid the previous year (in logs, groupings of 5 percentiles).</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;2: Input’s cost share of sales, average by percentile of sales taxes paid the previous year (in logs, groupings of 5 percentiles).</figcaption>
 </figure>
 </div>
 <p>As a validation exercise, we can see that the VAT changes induced by the three fiscal reforms are captured in the dataset. <a href="#fig-vat">Figure&nbsp;3</a> shows that the sales tax increased to 10% after the 1983 reform, and then around 12% after the 1990 reform.</p>
 <div id="fig-vat" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="../Results/Figures/Colombia/share_sales_tax_byy.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: Sale taxes paid as share of sales, average by year.</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;3: Sale taxes paid as share of sales, average by year.</figcaption>
 </figure>
 </div>
 <p>Just as an exercise to see if other economic changes in this period were driving the apparent changes in overreporting, <a href="#fig-logsales">Figure&nbsp;4</a> shows that sales, for instance, were not exactly following the changes in fiscal policy. Sales start to grow during 1983, the year of the reform, whereas the cost share of sales started to grow the year after. Likewise, sales fall in 1986, while the cost share seems to reduce its growth after 1986.</p>
 <div id="fig-logsales" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4: Sales, average by year of the logs.</figcaption><p></p>
+<p><img src="../Results/Figures/Colombia/log_sales_byy.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4: Sales in logs, annual mean.</figcaption>
 </figure>
 </div>
 </section>
 </section>
-<section id="empirical-evidence" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="empirical-evidence"><span class="header-section-number">4</span> Empirical evidence</h2>
+<section id="empirical-evidence" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="empirical-evidence"><span class="header-section-number">5</span> Empirical evidence</h2>
 <p>To inform the empirical application, I analyze <a href="#fig-ls-ntax">Figure&nbsp;2</a> by year, focusing on the years around the policy change of 1983. <a href="#fig-ls-83">Figure&nbsp;5</a> shows the mean of the intermediate’s cost share of sales (mean log share, henceforth) by percentile of the sales taxes paid the previous year and by year, only for 1982 to 1984.</p>
 <div id="fig-ls-83" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="../Results/Figures/Colombia/night_disc_byy_lag_log_sales_tax_82-83-84_20.png" class="img-fluid figure-img" style="width:100.0%"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Input’s cost share of sales, average by percentile of sales taxes paid the previous year and by year (in logs).</figcaption><p></p>
+<figcaption class="figure-caption">Figure&nbsp;5: Input’s cost share of sales, average by percentile of sales taxes paid the previous year and by year (in logs).</figcaption>
 </figure>
 </div>
 <p>The first observation that jumps into view is that the firms that in 1982 only paid VAT and were required to pay profit taxes in 1983 seem to decrease their intermediates’ cost share of sales drastically in 1983, precisely. Please note how the mean log share of the 20th percentile (4/20 in <a href="#fig-ls-83">Figure&nbsp;5</a>) drops significantly from 1982 to 1983.</p>
@@ -344,14 +402,35 @@ known
 <p>On one hand, as <a href="#fig-ls-83">Figure&nbsp;5</a> suggests, I expect firms required to report and pay profit taxes to reduce their tax evasion. This might seem counterintuitive as higher taxes will increase the incentive to evade. These firms however have now to report more information to the tax authority increasing the difficulty to evade. In addition, firms had to adjust their beliefs about the probability of being caught evading taxes under the additional required information. On the other hand, <a href="#fig-logshare">Figure&nbsp;1</a> and <a href="#fig-ls-83">Figure&nbsp;5</a> suggest that tax evasion increased after the 1983 reform and it ceased to grow after the 1986 reform.</p>
 <p>Of course, we would like to control for other factors that might have affected the log share during these years. We would need to control also for industry and regional variation. Consequently, to test the change in overreporting by firms required to pay profit taxes in 1983 (20th percentile in <a href="#fig-ls-83">Figure&nbsp;5</a>), I use as the control group the firms at the 10 and 95 percentile of the distribution. The intuition is that these firms were not affected by this fiscal policy change. Furthermore, firms in the 10th percentile are more similar to the affected firms than the ones at the 95th percentile. However, the firms at the 95th percentile receive the most attention from the tax authority, consequently, they are less likely to adjust their log share because of tax evasion motives. Likewise, I use the 95th percentile firms as the control group to test the change in overreporting induced by the 1983 and 1986 reforms. For these two specifications, the base year is 1983 and 1986 respectively.</p>
 <p>The results of the estimations in <strong>?@tbl-did-change-threshold</strong> show that firms that were required to report and pay profit taxes in 1983 because of the change in the threshold reduced their tax evasion through cost overreporting by 14%. <strong>?@tbl-did-1983</strong> shows that tax evasion grew between 8% and 9% in 1985 and 1986, following the increased value-added tax rates of the 1983 fiscal reform. Finally, <strong>?@tbl-did-1986</strong> indicates that the tax evasion growth came to a halt after 1986, as the subsequent years do not show a significant increase with respect 1986.</p>
-<div class="cell">
+<div id="tbl-did-change-threshold" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="1983 Reform, Change in Threshold">
+<div class="panel-caption table-caption">
+<p><strong>?(caption)</strong></p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 
 </div>
-<div class="cell">
+</div>
+</div>
+<div id="tbl-did-1983" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="1983 Fiscal Reform">
+<div class="panel-caption table-caption">
+<p><strong>?(caption)</strong></p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 
 </div>
-<div class="cell">
+</div>
+</div>
+<div id="tbl-did-1986" class="cell tbl-parent quarto-layout-panel anchored" data-tbl-cap="1986 Fiscal Reform">
+<div class="panel-caption table-caption">
+<p><strong>?(caption)</strong></p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 
+</div>
+</div>
 </div>
 </section>
 <section id="conclusions" class="level2 unnumbered">
@@ -360,63 +439,49 @@ known
 <p>Studying manufacturing firms from Colombia, I show that the method can be used to investigate tax evasion using surveys and fiscal policy changes. The 1983 reform required firms with profits above COL$ 200,000 or more to report income tax in 1983 in addition to the value-added tax. These firms reduced their tax evasion by cost overreporting by 14% likely due to the additional information firms needed to report and the adjustment in their beliefs on the probability of getting caught evading.</p>
 <p>Likewise, the evidence suggests that this type of tax evasion increased after the reform of 1983 between 8 and 9% in 1985 and 1986. The increase in value-added tax likely amplified the incentives to evade. This result stands at odds with previous studies that indicate that the evasion of income tax and VAT declined during this period (Sanchez &amp; Gutierrez, 1994). Finally, evidence suggests that tax evasion growth came to a halt after the 1986 reform where the banking system took over the tax collection and reception of tax reports from the tax authority.</p>
 <!-- Future work -->
-<!-- {{< include sections/70-future.rmd >}} -->
+<!-- NO {{< include sections/70-future.rmd >}} -->
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-Ackerberg2019" class="csl-entry" role="doc-biblioentry">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Ackerberg2019" class="csl-entry" role="listitem">
 Ackerberg, D. A. (2019), <span>“Timing assumptions and e¢ ciency: Empirical evidence in a production function context.”</span>
 </div>
-<div id="ref-Ackerberg2021" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Ackerberg2021" class="csl-entry" role="listitem">
 Ackerberg, D., Frazer, G., Luo, Y., and Su, Y. (2021), <span>“<a href="https://ssrn.com/abstract=3717757">Under-identification of structural models based on timing and information set assumptions</a>.”</span>
 </div>
-<div id="ref-Bustos2022" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Bustos2022" class="csl-entry" role="listitem">
 Bustos, S., Pomeranz, D., Carlos, J., Serrato, S., Vila-Belda, J., and Zucman, G. (2022), <span>“<a href="http://www.nber.org/papers/w30114">THE RACE BETWEEN TAX ENFORCEMENT AND TAX PLANNING: EVIDENCE FROM a NATURAL EXPERIMENT IN CHILE the race between tax enforcement and tax planning: Evidence from a natural experiment in chile</a>,”</span> NBER.
 </div>
-<div id="ref-Carrillo2022" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Carrillo2022" class="csl-entry" role="listitem">
 Carrillo, P., Donaldson, D., Pomeranz, D., and Singhal, M. (2022), <span>“<a href="http://www.nber.org/papers/w30242">Ghosting the tax authority: Fake firms and tax fraud</a>,”</span> NBER.
 </div>
-<div id="ref-Gandhi2020" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Gandhi2020" class="csl-entry" role="listitem">
 Gandhi, A., Navarro, S., and Rivers, D. A. (2020), <span>“On the identification of gross output production functions.”</span>
 </div>
-<div id="ref-Paulus2015" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Paulus2015" class="csl-entry" role="listitem">
 Paulus, A. (2015), <span>“<a href="http://hdl.handle.net/10419/126489">Tax evasion and measurement error: An econometric analysis of survey data linked with tax records</a>,”</span> University of Essex, Institute for Social; Economic Research (ISER).
 </div>
-<div id="ref-Pissarides1989" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Pissarides1989" class="csl-entry" role="listitem">
 Pissarides, C. A., and Weber, G. (1989), <span>“An expenditure-based estimate of britain’s black economy,”</span> <em>Journal of Public Economics</em>, North-Holland, 39, 17–32. <a href="https://doi.org/10.1016/0047-2727(89)90052-2">https://doi.org/10.1016/0047-2727(89)90052-2</a>.
 </div>
-<div id="ref-OECD2017" class="csl-entry" role="doc-biblioentry">
+<div id="ref-OECD2017" class="csl-entry" role="listitem">
 <span>“<a href="https://www.oecd.org">Technology tools to tackle tax evasion and tax fraud</a>”</span> (2017), OECD.
 </div>
-<div id="ref-Zumaya2021" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Zumaya2021" class="csl-entry" role="listitem">
 Zumaya, M., Guerrero, R., Islas, E., Pineda, O., Gershenson, C., Iñiguez, G., and Pineda, C. (2021), <span>“<a href="http://arxiv.org/abs/2104.13353">Identifying tax evasion in mexico with tools from network science and machine learning</a>.”</span>
 </div>
 </div>
+<!-- {{< include sections/100-appendix.qmd >}} -->
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="colombias-fiscal-reforms-of-1983-1986-and-1990" class="level2 appendix unnumbered"><h2 class="quarto-appendix-heading">Colombia’s fiscal reforms of 1983, 1986, and 1990</h2><div class="quarto-appendix-contents">
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
-<p>The 1983 reform tried to increase the country’s income tax and reactivate the economy. The 1986 reform attempted to reduce evasion, among other things. The 1990 reform took place during the process of commercial opening. It had the objective of developing the capital market and incentivizing the repatriation of foreign capital.</p>
-<section id="reform" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="reform"><span class="header-section-number">4.1</span> 1983 Reform</h3>
-<p><strong>Corporate profit tax (impuesto de la renta):</strong> In 1983, Colombia reduced the maximum corporate tax rate from 56% to 49%. The progressive tax schedule went from 11.5% to 49%. However, the base of the taxpayers was increased.</p>
-<p><strong>VAT (IVA)</strong>: Increased from 6% to 10%. The 1983 reform set the VAT on national vehicles between 25-30%, depending on the motor. The motorcycles’ VAT rate was set at 20%.</p>
-<p>The tax authorities focused on the 5% of the big taxpayers that constituted 80% of the country’s tax revenue.</p>
-</section>
-<section id="reform-1" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="reform-1"><span class="header-section-number">4.2</span> 1986 Reform</h3>
-<p><strong>Corporate profit tax</strong>: In 1986, Colombia set the corporate max tax rate at 30% starting in 1989. To ease the transition, they set tax rates of 33%, 32%, and 31% for 1986, 1987, and 1988.</p>
-<p>The reform relocated the tax collection and reception of tax reports to the banking system. Likewise, the 1986 reform increased the control over the big taxpayers.</p>
-</section>
-<section id="reform-2" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="reform-2"><span class="header-section-number">4.3</span> 1990 Reform</h3>
-<p>Corporate income tax: among other things, the foreign investment tax rates were reduced. Also, the reform reduced the base of the taxpayers obligated to file tax reports.</p>
-<p>VAT was increased from 10% to 12%. In addition, several exceptions were eliminated, so the basket of taxed goods increased.</p>
-<p>Import taxes were reduced and some goods were exempted.</p>
-</section>
-</div></section></div></main>
+<ol>
+<li id="fn1"><p>An analogous condition for an increase in relative prices leading to higher levels of tax evasion exists. Under this condition, the model is consistent with the literature that macroeconomic downturns lead to higher evasion.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -445,9 +510,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -512,6 +591,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

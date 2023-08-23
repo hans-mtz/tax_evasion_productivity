@@ -65,8 +65,11 @@ cdf <- col_df %>%
         real_general_expenditure = c17/p_gdp_new,
         real_industrial_expenditure = c7/p_gdp_new,
         real_expenditure = real_general_expenditure+real_industrial_expenditure,
-        share_fem_owners = k10/(k2+k10),
         share_fem_managers = k11/(k3+k11),
+        male_owners = k2,
+        female_owners = k10,
+        total_owners = k2 + k10,
+        share_fem_owners = k10/(k2+k10),
         share_exports = s4/s5,
         share_imports = s7/s8,
         real_interest_payments = c14/p_gdp_new,
@@ -121,7 +124,10 @@ cdf <- col_df %>%
         import_tax_raw_mat = real_import_tax_raw_mat,
         share_sales_tax,
         metro_area_code = x4,
-        section_country_code = x5
+        section_country_code = x5,
+        male_owners,
+        total_owners,
+        female_owners
     )
 
 ## Adding size variables March 20, 2023 ----

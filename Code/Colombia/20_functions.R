@@ -546,6 +546,8 @@ plot_share_means_by_ntile <- function(
     )
 }
 
+
+
 plot_share_means_by_ntile_year <- function(
     running_var = "lag_log_ind_exp_k",
     colors = my_colors,
@@ -702,6 +704,72 @@ plot_mean_by_year <- function(
     )
 }
 
+plot_y_means_by_x_ntile <- function(
+    running_var = "lag_log_ind_exp_k",
+    y = "log_share",
+    data = colombia_data_frame,
+    colors = my_colors,
+    run_var_desc = size_desc,
+    ntile = 20,
+    save_list = list(
+        fig_dir = fig_dir,
+        ex_name = ex_name,
+        local_data = "disc",
+        plot_suffix = "png"
+    )) {
+    my_plot <- data %>%
+        ungroup() %>%
+        group_by(year) %>%
+        mutate(
+            nthile = ntile(.data[[running_var]], ntile)
+        ) %>%
+        group_by(nthile) %>%
+        ggplot(
+            aes(x = nthile, y = .data[[y]], group = nthile)
+        ) +
+        # geom_boxplot() + #(color='gray')+
+        stat_summary(
+            fun = "mean",
+            na.rm = TRUE,
+            geom = "point",
+            shape = 18,
+            size = 4,
+            color = colors[["purple"]]
+        ) + # add mean points
+        stat_summary(
+            fun.data = mean_cl_normal,
+            geom = "errorbar",
+            width = 0.1,
+            color = colors[["gray"]],
+            show.legend = FALSE
+        ) + # add CI bars
+        theme_classic() +
+        labs(
+            title = "Means by percentile",
+            y = paste0(run_var_desc[y]),
+            x = paste0("N-tile of\n", run_var_desc[running_var])
+        )
+    # run_var_name <- data %>%
+    #     ungroup() %>%
+    #     select(lag_log_ind_exp_k) %>%
+    #     names()
+    print(my_plot)
+    ggsave(
+        paste0(
+            save_list[["fig_dir"]],
+            save_list[["ex_name"]],
+            "_",
+            save_list[["local_data"]],
+            "_",
+            running_var, "_", ntile,
+            ".",
+            save_list[["plot_suffix"]]
+        ),
+        width = 16,
+        height = 9,
+        units = "cm"
+    )
+}
 # Save my plot -----------------------
 
 save_plot <- function(

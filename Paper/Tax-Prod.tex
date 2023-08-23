@@ -7,7 +7,6 @@
   12pt]{article}
 
 \usepackage{amsmath,amssymb}
-\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -17,6 +16,10 @@
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -72,29 +75,6 @@
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newlength{\cslentryspacingunit} % times entry-spacing
-\setlength{\cslentryspacingunit}{\parskip}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1
-  \let\oldpar\par
-  \def\par{\hangindent=\cslhangindent\oldpar}
-  \fi
-  % set entry spacing
-  \setlength{\parskip}{#2\cslentryspacingunit}
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \addtolength{\oddsidemargin}{-.5in}%
 \addtolength{\evensidemargin}{-1in}%
@@ -158,7 +138,7 @@
 \usepackage{makecell}
 \usepackage{xcolor}
 \makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
 \definecolor{quarto-callout-color}{HTML}{909090}
 \definecolor{quarto-callout-note-color}{HTML}{0758E5}
@@ -215,7 +195,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \theoremstyle{remark}
-\renewcommand*{\proofname}{Proof}
+\AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
 \newtheorem*{solution}{Solution}
 \makeatother
@@ -224,10 +204,12 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 \makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \makeatother
 \makeatletter
 \@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
 \makeatother
 \makeatletter
 \makeatother
@@ -261,7 +243,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{May 30, 2023}
+\date{August 1, 2023}
 \title{\bf Tax evasion and productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -294,42 +276,46 @@ Estimation, Productivity
 
 \newpage
 \spacingset{1.9} % DON'T change the spacing!
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, enhanced, frame hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, breakable, frame hidden, interior hidden, sharp corners]}{\end{tcolorbox}}\fi
 
 \hypertarget{introduction}{%
 \section*{Introduction}\label{introduction}}
 \addcontentsline{toc}{section}{Introduction}
 
-Corporate tax evasion through cost overreporting spreads internationally
+Corporate tax evasion through cost overreporting globally spreads
 causing governments significant tax revenue losses. Detecting and
-measuring the magnitude of tax evasion remains a challenge, even for the
-few studies on overreporting where researchers can exploit
-administrative data. Moreover, if this evasion strategy accounts for
-economic losses as large as reported, then cost overreporting might bias
-estimates of production functions, especially productivity. This paper
-addresses both issues. I first provide a novel strategy to estimate cost
-overreporting using commonly available firm-level data. I then formally
-show that ignoring cost overreporting leads to downward biased
-productivity estimates. Finally, I demonstrate how to recover
-productivity in the presence of tax evasion.
+measuring the magnitude of cost overreporting remains a challenge, even
+for governments with administrative data. Moreover, if this evasion
+strategy accounts for economic losses as large as reported, then cost
+overreporting might bias estimates of production functions and,
+especially, productivity. This paper addresses both issues. I first
+provide a novel strategy to estimate cost overreporting using commonly
+available firm-level data. I then formally show that ignoring cost
+overreporting leads to downward biased productivity estimates. Finally,
+I demonstrate how to recover productivity in the presence of tax
+evasion.
 
 Cost overreporting arises when firms acquire false invoices to claim
 additional tax deductions on value-added and corporate income taxes.
 According to the OECD's document \citet{OECD2017}, cost overreporting
 --- also known as ``fake invoicing'', ``ghost firms'', ``invoice
 mills'', or ``missing traders''--- permeates internationally reaching
-Latin America, Eastern Europe, Asia, and Africa. For example, cost
-overreporting reportedly generated annual tax revenue losses amounting
-to 5.6\% of Poland's GDP in 2016 (Poland's Minister of Finance, 2018);
-0.2\% of Chile's GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat,
-2001; CIAT, 2008); 0.2\% of Colombia's GDP (Portafolio, 2019); and
-0.03\% of Mexico's GDP in 2018 (Senado de la Republica, 2019).
+Latin America, Eastern Europe, Asia, and Africa. Reports claim cost
+overreporting generated annual tax revenue losses amounting to 5.6\% of
+Poland's GDP in 2016 (Poland's Minister of Finance, 2018); 0.2\% of
+Chile's GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat, 2001; CIAT,
+2008); 0.2\% of Colombia's GDP (Portafolio, 2019); and 0.03\% of
+Mexico's GDP in 2018 (Senado de la Republica, 2019).
 
-Recent evidence from Ecuador \citep{Carrillo2022} shows that cost
-overreporting is widespread across firms and quantitatively large.
-Contrary to the literature consensus, evasion by overreporting is not
-limited to small, semi-formal firms. Firms were found to overreport up
-to 14.1\% of the value of their purchase deductions.
+Recently, evidence from Ecuador \citep{Carrillo2022} shows that cost
+overreporting disseminates across all types of firms; constitutes a
+quantitatively large share of firms' total deductions; and occurs mostly
+in the intermediate inputs. Contrary to the literature consensus,
+evasion by overreporting is not limited to small, semi-formal firms, but
+large and formal firms overreport too. Likewise, firms were found to
+overreport up to 14.1\% of the value of their purchase deductions.
+Finally, when challenged by the tax authority, firms adjusted mostly
+intermediate inputs.
 \fxnote*{how does it compare to other forms of tax evasion?}
 
 The evidence from Ecuador also shows that big firms do not overreport
@@ -443,6 +429,194 @@ Moreover, I focus on gross-output production functions, as opposed to value-adde
 
 \end{anfxnote*}
 
+\hypertarget{a-parsimonious-model-of-tax-evasion-through-input-overreporting}{%
+\section{A parsimonious model of tax evasion through input
+overreporting}\label{a-parsimonious-model-of-tax-evasion-through-input-overreporting}}
+
+Price-taking firms maximize expected after-tax profits. Firms choose
+input \(M_{it}\) and tax evasion \(e_{it}\) given the prices ---output
+and input prices \(\{P_{t}, \rho_t\}\)---, and expected output ---firms
+take the expectation of the production function and their current period
+productivity shock over the output shock \(\varepsilon_{it}\), i.e.,
+
+\begin{equation}\protect\hypertarget{eq-exp-rev}{}{
+\mathbb{E}[Y_{it}]=\mathbb{E}[G(M_{it})\exp(\omega_{it}+\varepsilon_{it})]
+}\label{eq-exp-rev}\end{equation}
+
+In their optimization problem, firms also consider the profit tax
+\(\tau\), the penalty for evading taxes \(\kappa\), and their perceived
+probability of detection \(q_{it}(e_{it}|s_{it})\).
+
+Firms, then, solve Equation~\ref{eq-eva}
+\begin{equation}\protect\hypertarget{eq-eva}{}{
+\begin{aligned}
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|s_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q_{it}(e_{it}|s_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+}\label{eq-eva}\end{equation}
+
+Intuitively, for a given size, firms that evade more are more likely to
+get caught. Formally, the firm's \(i\) perceived probability of
+detection \(q_{it}(e_{it}|s_{it})\) is monotonically increasing in the
+amount evaded \(e_{it}\), conditional on the size of the firm
+\(s_{it}\). Likewise, larger firms might be more likely to get caught.
+That is, for a given level of tax evasion \(e_0\) and two different
+sizes \(s' > s \in \mathbfcal{S}\), then \(q(e_0|s')\ge q(e_0|s)\),
+where \(s\) can be continuous or discrete for a range of expected
+revenues.
+
+Expected revenue determines the size of firms. The fiscal authority in
+the countries I examined in the empirical application defines the tax
+rules in terms of firms' revenue, i.e., Mexico, Colombia, Ecuador, and
+Chile (?). In these countries, firm revenues represent the main input
+for VAT and corporate profit taxes.
+
+Because size \(s\) is measured in expected revenues, a function of
+inputs, firms affect their perceived probability of detection in two
+ways. Firms affect the probability \(q(e|s)\) directly, by choosing how
+much they evade \(e_{it}\), and indirectly, by their implicit choice of
+size when choosing inputs \(M_{it}\).
+
+The firms' problem can be rewritten as follows,
+\begin{equation}\protect\hypertarget{eq-eva2}{}{
+\begin{aligned}
+  \max_{M_{it}, e_{it}} \mathbb{E}[\pi|s_{it}] = &(1-\tau)(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it})+[1-q_{it}(e_{it}|s_{it})](\frac{\rho_{t}}{P_t}e_{it}\tau)
+  -q_{it}(e_{it}|s_{it})\kappa \\
+  &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+}\label{eq-eva2}\end{equation}
+
+Intuitively, if the firm overreports her inputs' cost, she will get the
+share of the value she overreported with probability \((1-q)\) and she
+will be penalized with probability \(q\).
+
+The optimal decision of the firm will depend on the fiscal environment
+\(\{\tau, \kappa\}\) and its perceived probability of detection.
+
+\hypertarget{case-1-qesqe}{%
+\subsection{\texorpdfstring{Case 1:
+\(q(e|s)=q(e)\)}{Case 1: q(e\textbar s)=q(e)}}\label{case-1-qesqe}}
+
+Consider the case when the probability of detection is independent of
+size, \(q(e|s)=q(e)\). This could be the case if, given a productivity
+shock, the firm perceives that the probability of detection is
+independent of her size within the range of its maximum optimal size.
+
+The optimal input choice is independent, hence, of the evasion decision.
+In this case, the first-order conditions of Equation~\ref{eq-eva2} with
+respect to the input \(M_{it}\) and the tax evasion \(e_{it}\) yield the
+following
+
+\begin{equation}\protect\hypertarget{eq-foc:ind}{}{
+G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
+}\label{eq-foc:ind}\end{equation}
+
+\begin{equation}\protect\hypertarget{eq-foc:eva:ind}{}{
+    e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa}{\frac{\rho_{t}}{P_t}\tau}
+}\label{eq-foc:eva:ind}\end{equation}
+
+Equation~\ref{eq-foc:ind}, the well-known optimality condition, says
+that the price ratio is equal to the marginal product of the inputs,
+given the productivity and the expected value of the output shock,
+\(\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\).
+
+Likewise, Equation~\ref{eq-foc:eva:ind} reveals the firms' optimal tax
+evasion decision decreases if the probability of detection \(q(e_{it})\)
+or the penalty of evading \(\kappa\) increases. Tax evasion also depends
+on how sensitive the probability of detection is to the level of evasion
+\(q'(e)\). In particular, greater sensibility will result in lower
+levels of evasion.
+
+Note that the net change of tax evasion due to an increase in the
+relative prices \(\frac{\rho_{t}}{P_t}\) or the tax rate \(\tau\) is not
+evident at first sight. The net effect will also depend on the change in
+the detection probability induced by the changes in the relative prices
+or the tax rate. In particular, an increase in relative prices
+\(\frac{\rho_{t}}{P_t}\) or the tax rate \(\tau\) will incentivize a
+higher tax evasion level, however, a higher tax evasion level will
+increase the probability of detection ---depending on the shape of the
+probability as a function of \(e\)---, so it will deter higher levels of
+evasion. An increase in the tax rate, for instance, will only increase
+tax evasion if the change in the tax rates increases the incentives to
+evade more than the decrease in the incentives due to the changes in the
+detection probability.
+
+Formally, suppose a firm increases its tax evasion, \(e_1-e_0>0\)
+because of an increase in taxes \(\tau_1>\tau_0\). Then, it follows that
+
+\[
+\left(\frac{\tau_1-\tau_0}{\tau_1\tau_0}\right)\frac{P\kappa}{\rho}>
+  \left(\frac{1-q(e_1)}{q'(e_1)}-\frac{1-q(e_0)}{q'(e_0)}\right)
+\]
+
+The change in the probability of detection weighted by the slope of the
+probability function should be less than the change in the tax rate
+weighted by the penalty of evading and the relative prices\footnote{An
+  analogous condition for an increase in relative prices leading to
+  higher levels of tax evasion exists. Under this condition, the model
+  is consistent with the literature that macroeconomic downturns lead to
+  higher evasion.}.
+
+\hypertarget{case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size}{%
+\subsection{Case 2: increase in the probability of detection after a
+certain threshold of
+size}\label{case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size}}
+
+Consider now the case where there is a threshold of size \(s_0\) after
+which the probability of detection increases significantly. To make
+things simpler, assume that before the threshold, the probability
+changes as a function of evasion but does not vary conditional on size.
+After the threshold, the probability increases for every level of
+evasion but does not vary conditional on size.
+
+This could be the case in which there are different fiscal regimes for
+small and medium-large firms, and firms believe that the probability of
+detection in the medium-large firms' regime is higher. The medium-large
+regime might imply submitting more information that can be traced by a
+third party, like in Mexico and Colombia. Another possibility could be
+that the tax authority increases auditing efforts significantly after a
+certain size threshold, like in Spain.
+
+In this scenario, depending on the productivity shock, the firm might be
+better off choosing not to grow. Indeed, for a small enough productivity
+shock, the firm will not choose to grow past the size threshold if the
+expected profits of staying small are greater than the expected profits
+of growing.
+
+Formally, let \(S_{s} = \{s_i : s_{i} < s_0 \}\) and
+\(S_{l} = \{s_i : s_{i} \ge s_0 \}\), then for any \(e_0\) and
+\(s'_i>s_i\), \(q(e_0|s_i \in S_k)=q(e_0|s'_i \in S_k)\) with
+\(k=\{s,l\}\), but \(q(e_0|s'_i \in S_l)\ge q(e_0|s_i \in S_s)\) for all
+\(e_0\).
+
+Suppose the realized productivity shock of the current period
+\(\omega_{it}\) is such that, taking the probabilities as constant, the
+optimal input \(M^*_{it}\) implies an expected revenue greater than
+threshold \(s^*_{it}\ge s_0\). Let the expected profits given
+\(M^*_{it}\) and the optimal tax evasion in the range of size \(S_l\),
+\(e^*_{it}\), is \(\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|S_l]\).
+Let \(\tilde{M}_{it}\) be the input level such that the expected revenue
+is below the threshold \(\tilde{s}_{it}<s_0\) and \(\tilde{e}_{it}\) be
+the optimal tax evasion in the range of size \(S_s\). Let also the
+expected profits of staying small are
+\(\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|S_s]\).
+
+In this second case, therefore, firms might optimally choose to remain
+small if, for a low productivity shock, the expected profits of not
+growing are greater than the expected profits of growing
+\(\pi_l<\pi_s\). Firms choosing to remain small will lead to a bunching
+below the threshold in the size distribution of firms.
+
+Besides the higher levels of evasion before the threshold ---simply
+because of the higher probability of detection---, we can also expect
+bunching firms to evade more than their similar-sized peers. At
+\(\tilde{M}_{it}\), the optimization condition of
+Equation~\ref{eq-foc:ind} no longer holds, hence, the marginal product
+of the input is now greater than the relative prices. Therefore,
+according to Equation~\ref{eq-foc:eva:ind}, bunching firms would
+compensate for their \emph{higher} costs by increasing overreporting.
+
 \hypertarget{the-setting}{%
 \section{The setting}\label{the-setting}}
 
@@ -460,8 +634,8 @@ The objects of interest are the production function (PF),
 and productivity \(\omega_{it}\). \(\varepsilon^Y_{it}\) is the current
 period output shock. We are also interested in the Markov process of
 productivity, which we assume is AR(1),
-\(\omega_{it}=\delta_0 + \delta_1 \omega_{it-1}+\eta_{it}\), with
-\(\mathbb{E}[\eta_{it}]=0\) and \(\eta_{it}\perp\omega_{it}\).
+\(\omega_{it}=h(\omega_{it-1})+\eta_{it}\), with
+\(\mathbb{E}[\eta_{it}|\omega_{it-1}]=0\).
 
 \hypertarget{tax-evasion-and-the-productivity-bias}{%
 \subsection{Tax evasion and the productivity
@@ -503,7 +677,7 @@ showing that very large firms do not evade taxes by input overreporting
 \citep{Carrillo2022}. Hence, I assume I know the quantile of the size
 distribution of compliant firms.
 
-\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, breakable, colback=white, leftrule=.75mm, rightrule=.15mm, left=2mm, colframe=quarto-callout-color-frame, arc=.35mm, bottomrule=.15mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, rightrule=.15mm, arc=.35mm, breakable, left=2mm, toprule=.15mm, bottomrule=.15mm, leftrule=.75mm, colback=white]
 
 \begin{ass}[Non-evaders]\label{ass-comp}
 Firms above percentile $s$ do not overreport inputs $$\mathbb{E}[\varepsilon^M_{it}|S_{it}>s]=0$$
@@ -513,7 +687,7 @@ Firms above percentile $s$ do not overreport inputs $$\mathbb{E}[\varepsilon^M_{
 
 In addition, I impose the following timing assumption.
 
-\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, breakable, colback=white, leftrule=.75mm, rightrule=.15mm, left=2mm, colframe=quarto-callout-color-frame, arc=.35mm, bottomrule=.15mm, opacityback=0]
+\begin{tcolorbox}[enhanced jigsaw, opacityback=0, rightrule=.15mm, arc=.35mm, breakable, left=2mm, toprule=.15mm, bottomrule=.15mm, leftrule=.75mm, colback=white]
 
 \begin{ass}\label{ass-ind}
 Firms choose overreporting $\varepsilon^M_{it}$ \emph{before} the output shock $\varepsilon^Y_{it}$
@@ -633,8 +807,7 @@ Hence, I can use non-parametric density deconvolution methods.
 For completeness, I reproduce a result from probability theory that
 allows me to pursue these techniques.
 
-\leavevmode\vadjust pre{\hypertarget{def-deconv}{}}%
-\begin{definition}[]\label{def-deconv}
+\begin{definition}[]\protect\hypertarget{def-deconv}{}\label{def-deconv}
 
 The density of the sum of two \emph{independent} random variables is
 equal to the \emph{convolution} of the densities of both addends; hence
@@ -783,11 +956,11 @@ growth after 1986.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png}
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/log_sales_byy.png}
 
 }
 
-\caption{\label{fig-logsales}Sales, average by year of the logs.}
+\caption{\label{fig-logsales}Sales in logs, annual mean.}
 
 \end{figure}
 
@@ -1040,62 +1213,10 @@ the tax collection and reception of tax reports from the tax authority.
 \section*{References}\label{references}}
 \addcontentsline{toc}{section}{References}
 
-\hypertarget{refs}{}
-\begin{CSLReferences}{0}{0}
-\end{CSLReferences}
-
-\hypertarget{colombias-fiscal-reforms-of-1983-1986-and-1990}{%
-\section*{Colombia's fiscal reforms of 1983, 1986, and
-1990}\label{colombias-fiscal-reforms-of-1983-1986-and-1990}}
-\addcontentsline{toc}{section}{Colombia's fiscal reforms of 1983, 1986,
-and 1990}
-
-The 1983 reform tried to increase the country's income tax and
-reactivate the economy. The 1986 reform attempted to reduce evasion,
-among other things. The 1990 reform took place during the process of
-commercial opening. It had the objective of developing the capital
-market and incentivizing the repatriation of foreign capital.
-
-\hypertarget{reform}{%
-\subsection{1983 Reform}\label{reform}}
-
-\textbf{Corporate profit tax (impuesto de la renta):} In 1983, Colombia
-reduced the maximum corporate tax rate from 56\% to 49\%. The
-progressive tax schedule went from 11.5\% to 49\%. However, the base of
-the taxpayers was increased.
-
-\textbf{VAT (IVA)}: Increased from 6\% to 10\%. The 1983 reform set the
-VAT on national vehicles between 25-30\%, depending on the motor. The
-motorcycles' VAT rate was set at 20\%.
-
-The tax authorities focused on the 5\% of the big taxpayers that
-constituted 80\% of the country's tax revenue.
-
-\hypertarget{reform-1}{%
-\subsection{1986 Reform}\label{reform-1}}
-
-\textbf{Corporate profit tax}: In 1986, Colombia set the corporate max
-tax rate at 30\% starting in 1989. To ease the transition, they set tax
-rates of 33\%, 32\%, and 31\% for 1986, 1987, and 1988.
-
-The reform relocated the tax collection and reception of tax reports to
-the banking system. Likewise, the 1986 reform increased the control over
-the big taxpayers.
-
-\hypertarget{reform-2}{%
-\subsection{1990 Reform}\label{reform-2}}
-
-Corporate income tax: among other things, the foreign investment tax
-rates were reduced. Also, the reform reduced the base of the taxpayers
-obligated to file tax reports.
-
-VAT was increased from 10\% to 12\%. In addition, several exceptions
-were eliminated, so the basket of taxed goods increased.
-
-Import taxes were reduced and some goods were exempted.
+\renewcommand{\bibsection}{}
+\bibliography{biblio/export.bib,biblio/export2.bib,biblio/export31072022.bib,biblio/b100422.bib,biblio/b270123.bib}
 
 
-  \bibliography{biblio/export.bib,biblio/export2.bib,biblio/export31072022.bib,biblio/b100422.bib,biblio/b270123.bib}
 
 
 \end{document}
