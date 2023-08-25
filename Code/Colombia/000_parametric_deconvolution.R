@@ -39,36 +39,60 @@ g_res<-optim(c(0,1), logl_g_u, u = u_hat)
 
 
 ### Using g to learn f
+mu <- g_res$par[1]
+sigma <- g_res$par[2]
 
 frechet <- function(x, alpha, s, m=0){
     # x>m
     # alpha \in (0,Inf)
     # s \in (0,Inf)
     #  m\in (-Inf,Inf)
-    interior <- (x-m)/s
-    A <- alpha/s
-    B <- interior^(-1-alpha)
-    C <- exp(-(interior^(-alpha)))
-    return(A*B*C)
+    if (x<=m) {
+        return(0)
+    } else {
+
+        interior <- (x-m)/s
+        A <- alpha/s
+        B <- interior^(-1-alpha)
+        C <- exp(-(interior^(-alpha)))
+        return(A*B*C)
+    }
+}
+frech_v <-Vectorize(frechet, vectorize.args = "x")
+
+integrand <- function(e,u,mu,sigma,alpha,s){
+    dnorm(-u+e,mu,sigma)*frech_v(e,alpha,s)
 }
 
-integrand <- function(u,e,mu,sigma,alpha,s){
-    x<-log(e+u)
-    frechet(x,alpha,s)*dnorm(u,mu,sigma)/(x)
+logl <- function(u,mu,sigma,alpha,s){
+    l <- integrate(
+        integrand,
+        lower=0,
+        upper=Inf,
+        u=u,mu=mu,sigma=sigma,alpha=alpha,s=s)
+
+    return(log(l$value))
 }
 
-logl <- function(e,mu,sigma,alpha,s){
-    l <- integrate(integrand,0,Inf,e=e,mu=mu,sigma=sigma,alpha=alpha,s=s)
-    return(log(l))
-}
-
-obj_f<-function(theta,log_share,mu,sigma){
-    # mu <- theta[1]
-    # sigma <- theta[2]
+## 
+obj_f<-function(theta, mu, sigma, formula, data){
     alpha <- theta[1]
     s <- theta[2]
-    m <- theta[3]
-    beta <- theta[4]
-    e_u <- log_share - beta
-    return(-sum(sapply(u,logl,e=e_u,mu=mu,alpha=alpha,s=s,m=m)))
+    df <- model.frame(formula,data)
+    y <- df[,1]
+    X <- model.matrix(formula,df)
+    k <- length(X[1,])
+    beta <- theta[3:(2+k)]
+    u <- y - X%*%beta
+
+    return(-sum(sapply(u,logl,mu=mu,sigma=sigma,alpha=alpha,s=s)))
+    # return(u)
 }
+
+obj_f(c(1,1,0))
+model.frame
+model.matrix
+
+fml <- log_share ~ share_sales_tax+age+lag_log_sales+total_owners+factor(sic_3)+factor(metro_area_code)+factor(year)
+k<-length(model.matrix(fml, colombia_data_frame)[1,])+2
+optim(rep(0,k+3), obj_f, mu, sigma, fml, colombia_data_frame)
