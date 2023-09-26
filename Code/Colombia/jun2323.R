@@ -249,6 +249,13 @@ summary(
     )
 )
 
+summary(
+    feols(
+        share_sales_tax~age+lag_log_sales+log(total_owners+1)|factor(sic_3)^factor(metro_area_code)^factor(year),
+        data=colombia_data_frame
+    )
+)
+
 
 1 500,001 1,000,001 1,500,001 2,000,001 2,500,001 3,000,001 3,500,001 4,000,001 4,500,001 5,000,001 5,500,001 6,000,001
 thresholds_1983 <- "a 500,000 a 1,000,000 a 1,500,000 a 2,000,000 a 2,500,000 a 3,000,000 a 3,500,000 a 4,000,000 a 4,500,000 a 5,000,000 a 5,500,000 a 6,000,000 a 6,500,000"
@@ -262,3 +269,7 @@ tax_tresh_1983<-as.numeric(gsub(",","",tax_tresh[[1]]))[2:length(tax_tresh[[1]])
 
 deflators <-colombia_data_frame %>% ungroup() %>% select(year, p_gdp) %>% unique()
 real_tax_tresh_1983 <- tax_tresh_1983/(deflators[deflators$year==83, "p_gdp"][[1]]*1000)
+
+tax_rates_1983_text <- "11.54 19.62 27.11 32.11 35.45 37.55 39.19 40.59 41.60 42.39 43.02 43.54 43.97"
+tax_rates_1983<- gregexpr("[[:digit:]]+\\.[[:digit:]]+",tax_rates_1983_text) |> regmatches(tax_rates_1983_text,m=_,invert = F)
+tax_ratex_1983<- as.numeric(tax_rates_1983[[1]])
