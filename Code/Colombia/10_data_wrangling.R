@@ -123,6 +123,7 @@ cdf <- col_df %>%
         raw_material_foreign = real_raw_material_foreign,
         import_tax_raw_mat = real_import_tax_raw_mat,
         share_sales_tax,
+        juridical_organization = x3,
         metro_area_code = x4,
         section_country_code = x5,
         male_owners,

@@ -3,6 +3,7 @@ library(ggplot2)
 library(modeest)
 library(fixest)
 
+
 load("Code/Products/colombia_data.RData")
 load("Code/Products/global_vars.RData")
 load("Code/Products/functions.RData")
@@ -22,6 +23,20 @@ colombia_data_frame %>%
     hist(., 
     breaks=300000,
     xlim=c(0,5000))
+abline(v=real_tax_tresh_1983)
+
+colombia_data_frame %>%
+    filter(
+        year<84,
+        juridical_organization==0
+        # sales<6000
+    ) %>%
+    pull(sales) %>%
+    hist(., 
+    breaks=100)
+    
+    ,
+    xlim=c(0,40000))
 abline(v=real_tax_tresh_1983)
 
 
@@ -89,6 +104,14 @@ with(
     )
 )
 
+with(
+    colombia_data_frame,
+    table(
+        juridical_organization,
+        sic_3
+    )
+)
+
 colombia_data_frame %>%
     # filter(year==83) %>%
     mutate(
@@ -113,6 +136,37 @@ colombia_data_frame %>%
         geom = "errorbar",
         width = 0.1,
         color = my_colors[["gray"]],
+        show.legend = FALSE
+    ) + # add CI bars
+    theme_classic()
+
+colombia_data_frame %>%
+    # filter(year==83) %>%
+    # mutate(
+    #     owners = case_when(
+    #         total_owners < 9 ~ as.character(total_owners),
+    #         .default = "9 or more"
+    #     )
+    # ) %>%
+    ggplot(
+        aes(
+            x=factor(juridical_organization),
+            y=log_share,
+            color = factor(sic_3))
+    )+
+    stat_summary(
+        fun = "mean",
+        na.rm = TRUE,
+        geom = "point",
+        shape = 18,
+        size = 4,
+        # color = my_colors[["purple"]]
+    ) +# add mean points
+    stat_summary(
+        fun.data = mean_cl_normal,
+        geom = "errorbar",
+        width = 0.1,
+        # color = my_colors[["gray"]],
         show.legend = FALSE
     ) + # add CI bars
     theme_classic()
@@ -244,14 +298,14 @@ plot_y_means_by_x_ntile("age","share_sales_tax")
 
 summary(
     feols(
-        log_share~polym(m, k, l, degree = 2, raw = TRUE) +share_sales_tax+age+lag_log_sales+total_owners|factor(sic_3)^factor(metro_area_code)^factor(year),
+        log_share~polym(m, k, l, degree = 2, raw = TRUE) +log(share_sales_tax)+log(age)+lag_log_sales+factor(juridical_organization)|factor(metro_area_code)^factor(sic_3)^factor(year),
         data=colombia_data_frame
     )
 )
 
 summary(
     feols(
-        share_sales_tax~age+lag_log_sales+log(total_owners+1)|factor(sic_3)^factor(metro_area_code)^factor(year),
+        log(share_sales_tax)~log(age)+log(lag_sales)+factor(juridical_organization)|factor(sic_3)^factor(metro_area_code)^factor(year),
         data=colombia_data_frame
     )
 )
@@ -273,3 +327,10 @@ real_tax_tresh_1983 <- tax_tresh_1983/(deflators[deflators$year==83, "p_gdp"][[1
 tax_rates_1983_text <- "11.54 19.62 27.11 32.11 35.45 37.55 39.19 40.59 41.60 42.39 43.02 43.54 43.97"
 tax_rates_1983<- gregexpr("[[:digit:]]+\\.[[:digit:]]+",tax_rates_1983_text) |> regmatches(tax_rates_1983_text,m=_,invert = F)
 tax_ratex_1983<- as.numeric(tax_rates_1983[[1]])
+
+
+colombia_data_frame %>%
+    group_by(sic_3,year,metro_area_code) %>%
+    summarise( mean_tax_rate = mean(share_sales_tax), n=n()) %>%
+    filter(sic_3=="342") %>%
+    print(n='all')

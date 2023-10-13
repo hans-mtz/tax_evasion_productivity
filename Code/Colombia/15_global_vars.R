@@ -214,6 +214,17 @@ size_desc <- c(
 #     unique() %>%
 #     pull(Size)
 
+thresholds_1983 <- "a 500,000 a 1,000,000 a 1,500,000 a 2,000,000 a 2,500,000 a 3,000,000 a 3,500,000 a 4,000,000 a 4,500,000 a 5,000,000 a 5,500,000 a 6,000,000 a 6,500,000"
+
+pattern <- "[[:space:]]*a[[:space:]]"
+tax_tresh <- gregexpr(pattern,thresholds_1983) |> regmatches(thresholds_1983,m=_, invert = T)
+
+tax_tresh_1983<-as.numeric(gsub(",","",tax_tresh[[1]]))[2:length(tax_tresh[[1]])]
+
+deflators <-colombia_data_frame %>% ungroup() %>% select(year, p_gdp) %>% unique()
+real_tax_tresh_1983 <- tax_tresh_1983/(deflators[deflators$year==83, "p_gdp"][[1]]*1000)
+
+
 # Saving global variables -----------
 print("Saving global variables")
 save(
