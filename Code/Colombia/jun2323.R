@@ -262,6 +262,17 @@ xtabs(share_sales_tax~.,
         mean)
 )
 
+xtabs(share_sales_tax~.,
+    stats::aggregate(
+        share_sales_tax~sic_3+year,
+        colombia_data_frame %>%
+        filter(
+            sales>0,
+            year <= 84
+            ),
+        mean)
+)
+
 colombia_data_frame %>%
     filter(
         sales>0,

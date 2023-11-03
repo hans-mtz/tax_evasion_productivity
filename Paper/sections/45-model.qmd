@@ -1,56 +1,77 @@
 ## A parsimonious model of tax evasion through input overreporting
 
-Price-taking firms maximize expected after-tax profits. Firms choose input $M_{it}$ and tax evasion $e_{it}$ given the prices —output and input prices $\{P_{t}, \rho_t\}$—, and expected output —firms take the expectation of the production function and their current period productivity shock over the output shock $\varepsilon_{it}$, i.e.,
+Price-taking firms maximize expected after-tax profits. Firms choose the flexible input $M_{it}$ to produce output $Y_{it}$ given output and input prices $\{P_{t}, \rho_t\}$,  a common technology, the production function (@eq-prod-fn), and their productivity $\omega_{it}$.
 
 $$
-\mathbb{E}[Y_{it}]=\mathbb{E}[G(M_{it})\exp(\omega_{it}+\varepsilon_{it})]
-$$ {#eq-exp-rev}
+Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+$$ {#eq-prod-fn}
 
-In their optimization problem, firms also consider the profit tax $\tau$, the penalty for evading taxes $\kappa$, and their perceived probability of detection $q_{it}(e_{it}|s_{it})$.
+As standard in the literature, productivity $\omega_{it}$ is known to firms when they take input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock $\varepsilon_{it}$ is not part of the firms' information set. 
 
-Firms, then, solve @eq-eva
+The model departs from the literature by allowing firms to overreport their inputs $e_{it}$ to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax $\tau$, the evasion penalty/cost $\kappa(e)$, and the probability of detection $q_{it}(e_{it}|\theta_{it})$.
+
+Firms solve @eq-eva
 $$
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|s_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
-  +q_{it}(e_{it}|s_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa\right] \\
-  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q_{it}(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$ {#eq-eva}
 
-Intuitively, for a given size, firms that evade more are more likely to get caught. Formally, the firm's $i$ perceived probability of detection $q_{it}(e_{it}|s_{it})$ is monotonically increasing in the amount evaded $e_{it}$, conditional on the size of the firm $s_{it}$. Likewise, larger firms might be more likely to get caught. That is, for a given level of tax evasion $e_0$ and two different sizes $s' > s \in \mathbfcal{S}$, then $q(e_0|s')\ge q(e_0|s)$, where $s$ can be continuous or discrete for a range of expected revenues. 
+The probability of detection $q_{it}(e_{it}|\theta_{it})$ is monotonically increasing in the amount evaded $e_{it}$, conditional on the type of the firm $\theta_{it}$. Intuitively, for a given type, firms that evade more are more likely to get caught. 
 
-Expected revenue determines the size of firms. The fiscal authority in the countries I examined in the empirical application defines the tax rules in terms of firms' revenue, i.e., Mexico, Colombia, Ecuador, and Chile (?). In these countries, firm revenues represent the main input for VAT and corporate profit taxes.
+The type of the firm $\theta_{it}$ might be discrete, like the type of juridical organization, or continuous, like the level of revenue[^rev-tax]. Some types might be more likely to be detected if the firm engages in tax evasion. For example, in contrast to other types of juridical organizations in Colombia, corporations are closely supervised and are required to have an auditor. That is, for a given level of tax evasion $e_0$ and two different types $\theta' \not= \theta \in \mathbfcal{\Theta}$, then $q(e_0|\theta')\ge q(e_0|\theta)$.
 
-Because size $s$ is measured in expected revenues, a function of inputs, firms affect their perceived probability of detection in two ways. Firms affect the probability $q(e|s)$ directly, by choosing how much they evade $e_{it}$, and indirectly, by their implicit choice of size when choosing inputs $M_{it}$.
+If the type $\theta$ is continuous, it might be a function of inputs; for example, level of revenue. Firms will then affect their probability of detection $q(e|\theta)$ in two ways: directly, by choosing how much they evade $e$; and indirectly, when choosing inputs $M$.
 
-The firms' problem can be rewritten as follows,
+[^rev-tax]: Level of revenue is a common measure for fiscal authorities to determine a firm's taxes and/or level of scrutiny, e.g., Mexico, Spain, Colombia, Ecuador, and Chile (?).
+
+The optimal decision of the firm will depend on the fiscal environment $\Gamma=\{\tau, \kappa, q \}$, namely the tax rates, the penalty/cost of detection, and the probability of detection. 
+
+
+The firms' problem (@eq-eva) can be rewritten as follows,
 $$
 \begin{aligned}
-  \max_{M_{it}, e_{it}} \mathbb{E}[\pi|s_{it}] = &(1-\tau)(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it})+[1-q_{it}(e_{it}|s_{it})](\frac{\rho_{t}}{P_t}e_{it}\tau)
-  -q_{it}(e_{it}|s_{it})\kappa \\
+  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q_{it}(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
+  -q_{it}(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
-$$ {#eq-eva2}
+$$
 
 Intuitively, if the firm overreports her inputs' cost, she will get the share of the value she overreported with probability $(1-q)$ and she will be penalized with probability $q$.
 
-The optimal decision of the firm will depend on the fiscal environment $\{\tau, \kappa\}$ and its perceived probability of detection.
+Assuming well-behaved functions and no corner solutions, the first-order conditions lead to the following system of differential equations,
 
-### Case 1: $q(e|s)=q(e)$
+$$
+G_M(M_{it})\exp(\omega_{it})\mathcal{E}-\frac{\rho_{t}}{P_t} = \frac{1}{(1-\tau)}\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}\left[\frac{\rho_t}{P_t}e_{it}\tau+\kappa(e_{it})\right]
+$$ {#eq-foc-cont-m}
 
-Consider the case when the probability of detection is independent of size, $q(e|s)=q(e)$. This could be the case if, given a productivity shock, the firm perceives that the probability of detection is independent of her size within the range of its maximum optimal size.
+$$
+[1-q(e_{it}|\theta_{it})]\frac{\rho_t}{P_t}\tau-q(e_{it}|\theta_{it})\kappa'(e_{it})=q'(e_{it}|\theta_{it})\left[\frac{\rho_t}{P_t}\tau e_{it} + \kappa(e_{it})\right]
+$$ {#eq-foc-cont-e}
 
-The optimal input choice is independent, hence, of the evasion decision. In this case, the first-order conditions of @eq-eva2 with respect to the input $M_{it}$ and the tax evasion $e_{it}$ yield the following
+where $\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]$. The type of firms is continuous and increasing on the input. The probability of detection is increasing in the type continuum. In particular, $\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}\ge0$.
+
+The left-hand side of @eq-foc-cont-m is the familiar marginal output of inputs and the price ratio. In the absence of incentives' distortions induced by the fiscal environment, they are equal. But now, the equality holds no more. There's a wedge arising from the fiscal environment. The right-hand side of the equation is positive by the assumptions of the model.
+
+@eq-foc-cont-e solves for the optimal evasion decision. The left-hand side is the marginal benefit net of the marginal cost of evasion. The right-hand side is the rate of change of the probability of detection due to a change in evasion weighted by the benefit and cost of evading.
+
+### Case 1 (Independece): $q(e|\theta)=q(e)$ and $\kappa(e)=\kappa_0$
+
+Consider the case when the probability of detection is independent of type, $q(e|\theta)=q(e)$, and the evasion cost is constant $\kappa(e)=\kappa_0$. This could be the case if the type is the juridical organization of the firm and the penalty of evading is constant for the type of juridical organization. The type of the firm, and therefore the probability of detection, does not change with the firm's input decisions.
+
+In this case, the first-order conditions of @eq-eva with respect to the input $M_{it}$ and the tax evasion $e_{it}$ yield the following
 
 $$
 G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
 $$ {#eq-foc:ind}
 
 $$
-    e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa}{\frac{\rho_{t}}{P_t}\tau}
+e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 $$ {#eq-foc:eva:ind}
 
-@eq-foc:ind, the well-known optimality condition, says that the price ratio is equal to the marginal product of the inputs, given the productivity and the expected value of the output shock, $\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]$.
+@eq-foc:ind, the well-known optimality condition, says that the price ratio is equal to the marginal product of the inputs.
 
 Likewise, @eq-foc:eva:ind reveals the firms' optimal tax evasion decision decreases if the probability of detection $q(e_{it})$ or the penalty of evading $\kappa$ increases. Tax evasion also depends on how sensitive the probability of detection is to the level of evasion $q'(e)$. In particular, greater sensibility will result in lower levels of evasion. 
 
@@ -68,18 +89,44 @@ The change in the probability of detection weighted by the slope of the probabil
 [^evasion-econ-crises]: An analogous condition for an increase in relative prices leading to higher levels of tax evasion exists. Under this condition, the model is consistent with the literature that macroeconomic downturns lead to higher evasion.
 
 
-### Case 2: increase in the probability of detection after a certain threshold of size
+### Case 2 (Spain): Discrete increase in the probability of detection after a certain threshold of revenue
 
-Consider now the case where there is a threshold of size $s_0$ after which the probability of detection increases significantly. To make things simpler, assume that before the threshold, the probability changes as a function of evasion but does not vary conditional on size. After the threshold, the probability increases for every level of evasion but does not vary conditional on size. 
+In Spain, the Large Taxpayers Unit (LTU) of the tax authority focuses exclusively on firms with total operating revenue above 6 million euros. The LTU has more auditors per taxpayer than the rest of the tax authority, and these auditors are on average more experienced and better trained to deal with the most complex taxpayers. This LTU creates a discontinuity in the monitoring effort of the tax authority. Consequently, at this arbitrary revenue level, the probability of detection increases discretely [@Almunia2018].
 
-This could be the case in which there are different fiscal regimes for small and medium-large firms, and firms believe that the probability of detection in the medium-large firms' regime is higher. The medium-large regime might imply submitting more information that can be traced by a third party, like in Mexico and Colombia. Another possibility could be that the tax authority increases auditing efforts significantly after a certain size threshold, like in Spain.
+In this scenario, depending on the productivity shock, the firm might be better off choosing not to produce past the revenue threshold. Indeed, for a relevant range of productivity draws $\Omega^B=[\omega^L, \omega^H]$, the firms will not choose to grow past the revenue threshold if the expected after-tax profits of staying small are greater than the expected after-tax profits of growing.
 
-In this scenario, depending on the productivity shock, the firm might be better off choosing not to grow. Indeed, for a small enough productivity shock, the firm will not choose to grow past the size threshold if the expected profits of staying small are greater than the expected profits of growing. 
+In the model, there is now a threshold of revenue $\theta^L$ after which the probability of detection increases discretely. To make things simpler, assume that before the threshold, the probability changes as a function of evasion but does not vary conditional on size. After the threshold, the probability increases for every level of evasion but does not vary conditional on size.
 
-Formally, let $S_{s} = \{s_i : s_{i} < s_0 \}$ and $S_{l} = \{s_i : s_{i} \ge s_0 \}$, then for any $e_0$ and $s'_i>s_i$, $q(e_0|s_i \in S_k)=q(e_0|s'_i \in S_k)$  with $k=\{s,l\}$, but $q(e_0|s'_i \in S_l)\ge q(e_0|s_i \in S_s)$ for all $e_0$.
+Formally, let $\Theta_{L} = \{\theta_i : \theta_{i} < \theta^L \}$ and $\Theta_{H} = \{\theta_i : \theta_{i} \ge \theta^L \}$, then for all $e_0$ and $\theta'_i\not=\theta_i$, $q(e_0|\theta_i \in \Theta_k)=q(e_0|\theta'_i \in \Theta_k)$  with $k=\{L,H\}$, but $q(e_0|\theta'_i \in \Theta_H)\ge q(e_0|\theta_i \in \Theta_L)$.
 
-Suppose the realized productivity shock of the current period $\omega_{it}$ is such that, taking the probabilities as constant, the optimal input $M^*_{it}$ implies an expected revenue greater than threshold $s^*_{it}\ge s_0$. Let the expected profits given $M^*_{it}$ and the optimal tax evasion in the range of size $S_l$, $e^*_{it}$, is $\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|S_l]$. Let $\tilde{M}_{it}$ be the input level such that the expected revenue is below the threshold $\tilde{s}_{it}<s_0$ and $\tilde{e}_{it}$ be the optimal tax evasion in the range of size $S_s$. Let also the expected profits of staying small are $\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|S_s]$. 
+Firms' revenue with productivity draw $\omega^L$ corresponds exactly to the enforcement threshold $\theta^L$. Production and reporting decisions of firms with productivity draws below $\omega^L$ are not affected by the change in the probability of detection. Firms choose their inputs according to @eq-foc:ind and their evasion decision according to @eq-foc-cont-e. Firms with productivity draws above $\omega^U$ 
+
+Firms with productivity $\omega_{i}\in \Omega^B$ will choose the input level $\tilde{M}_{i}$ resulting in an expected revenue below the threshold $\theta_{i}<\theta^L$, if the expected after-tax profit of staying small are greater than growing, $\mathbb{E}[\pi_{i}|\Theta_L, \Omega^B]-\mathbb{E}[\pi_{i}|\Theta_H, \Omega^B]\ge0$.
+
+The optimal input choice $M^*_{i}$ for firms with productivity $\omega_i\in\Omega^B$ implies an expected revenue greater than or equal to the threshold $\theta^*_{i}\ge \theta^L$. Let the expected profits given $M^*_{i}$ and the optimal tax evasion in the range of size $\theta_l$, $e^*_{it}$, is $\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|\theta_l]$. Let $\tilde{M}_{it}$ be the input level such that the expected revenue is below the threshold $\tilde{s}_{it}<\theta^L$ and $\tilde{e}_{it}$ be the optimal tax evasion in the range of size $\theta_s$. Let also the expected profits of staying small are $\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|\theta_s]$. 
 
 In this second case, therefore, firms might optimally choose to remain small if, for a low productivity shock, the expected profits of not growing are greater than the expected profits of growing $\pi_l<\pi_s$. Firms choosing to remain small will lead to a bunching below the threshold in the size distribution of firms.
 
 Besides the higher levels of evasion before the threshold —simply because of the higher probability of detection—, we can also expect bunching firms to evade more than their similar-sized peers. At $\tilde{M}_{it}$, the optimization condition of @eq-foc:ind no longer holds, hence, the marginal product of the input is now greater than the relative prices. Therefore, according to @eq-foc:eva:ind, bunching firms would compensate for their *higher* costs by increasing overreporting.
+
+#### What's new?
+
+- GOPF framework with public data vs bunching estimator with private administrative data
+- Focus on input overreporting rather than on revenue underreporting
+- Bunching effects are real. Bunching firms optimally forgo higher revenue levels. @Almunia2018 argue effects are not real, just fake underreporting.
+
+
+### Case 3 (Colombia): Discrete increase in the tax rate after a revenue threshold
+
+In Colombia between 1981 and 1991, individual firm proprietors were subject to the individual income tax schedule. Individuals had incentives to not form juridical organizations to avoid double taxation. While corporations were closely supervised by the Superintedent of Corporations and are required to have an auditor, all other firms were subject to the regular monitoring efforts of the tax authority which such suffered from severe limitations and inefficiencies at the time.
+
+In this case, after the revenue threshold, the tax rate increases discretely but the probability of detection does not. The jump in the tax rate generates the incentive to increase the evasion, however a higher level of evasion increases the cost of evading by increasing the probability of detection. If the cost of an increased evasion outweights the benefits of growing past the revenue threshold, firm would bunch below the cutoff.
+
+
+
+### Case 4 (Mexico): Irreversible change in tax regime after a revenue threshold
+
+In Mexico, firms with annual revenues below 2 million pesos are taxed under the REPECO (*Regime de Pequeños Contribuyentes*) regime of small contributors at 2 percent of annual revenues, while firms above that threshold are taxed under the general regime at 30 percent. Firms must transition to the general regime if revenues increase beyond the threshold. Once in the general regime, firms cannot revert to the REPECO regime.
+
+Firms' decision is now dynamic. Firms will maximize the sum of current and future after-tax profits. The discrete jump in the tax rate will lead to a bunchigh below the threshold. Moreover, the bunching will be exacerbated because firms will choose to grow past the cutoff only if the future productivity shocks allow the firm to continue to be profitable.
+

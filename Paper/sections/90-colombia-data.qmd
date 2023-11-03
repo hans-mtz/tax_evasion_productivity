@@ -1,0 +1,155 @@
+### Data
+
+The data is a well-known data set that has been used in the estimation of production functions and productivity before. The dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.
+
+Besides the information on output, intermediates, capital, and labor, the dataset includes the type of juridical organization, the sales taxes, and the metropolitan area and country region.
+
+```{r}
+#| label: fig-revenue-hist-bunch-0
+#| fig-cap: Revenue distribution Juridical Org. 0 (81-83)
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(ggplot2)
+library(modeest)
+library(fixest)
+library(kableExtra)
+
+load("../Code/Products/colombia_data.RData")
+load("../Code/Products/global_vars.RData")
+colombia_data_frame %>%
+    filter(
+        year<=83,
+        juridical_organization==0
+    ) %>%
+    pull(sales) %>%
+    hist(., 
+    breaks=30000,
+    xlim=c(0,5000),
+    main="")
+abline(v=real_tax_tresh_1983)
+title("")
+
+```
+
+```{r}
+#| label: fig-revenue-hist-bunch-1
+#| fig-cap: Revenue distribution Juridical Org. 1 (81-83)
+#| echo: false
+#| warning: false
+
+# library(tidyverse)
+# library(ggplot2)
+# library(modeest)
+# library(fixest)
+
+# load("../Code/Products/colombia_data.RData")
+# load("../Code/Products/global_vars.RData")
+colombia_data_frame %>%
+    filter(
+        year<=83,
+        juridical_organization==1
+    ) %>%
+    pull(sales) %>%
+    hist(., 
+    breaks=30000,
+    xlim=c(0,5000),
+    main="")
+abline(v=real_tax_tresh_1983)
+title("")
+
+```
+
+$$
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+$$ {#eq-reg-tax-jo}
+
+
+
+```{r}
+#| label: tbl-reg-tax-jo
+#| tbl-cap: Sales tax and Juridical Organization type effect on the log share of intermediate inputs.
+#| echo: false
+#| warning: false
+
+
+setFixest_dict(c(
+    share_sales_tax = "Sales Tax Rate",
+    `relevel(factor(juridical_organization),ref="9")0` = "J. Org. (0)",
+    `relevel(factor(juridical_organization),ref="9")1` = "J. Org. (1)",
+    `relevel(factor(juridical_organization),ref="9")2` = "J. Org. (2)",
+    `relevel(factor(juridical_organization),ref="9")3` = "J. Org. (3)",
+    `relevel(factor(juridical_organization),ref="9")4` = "J. Org. (4)",
+    `relevel(factor(juridical_organization),ref="9")5` = "J. Org. (5)",
+    `relevel(factor(juridical_organization),ref="9")6` = "J. Org. (6)",
+    `relevel(factor(juridical_organization),ref="9")7` = "J. Org. (7)",
+    `relevel(factor(juridical_organization),ref="9")8` = "J. Org. (8)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.0.0` = "\\(m\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)2.0.0` = "\\(m^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.1.0` = "\\(k\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.2.0` = "\\(k^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.0.1` = "\\(l\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.0.2` = "\\(l^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.1.0` = "\\(mk\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.0.1` = "\\(ml\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.1.1` = "\\(kl\\)",
+    log_share = "\\(log(s)\\)",
+    sic_3 = "Industry",
+    year = "Year",
+    metro_area_code = "Metro Area",
+    `factor(fiscal_period)83` = "83-86 fiscal period",
+    `factor(fiscal_period)86` = "87-91 fiscal period"
+)
+
+)
+
+feols(
+        log_share ~  polym(m, k, l, degree = 2, raw = TRUE)+share_sales_tax+relevel(factor(juridical_organization),ref="9")*factor(year)|csw0(sic_3,year,metro_area_code),
+        data = colombia_data_frame, cluster=~sic_3+year
+    ) |> etable(
+        keep = c("Sales","J. Org."),
+        drop="year",
+        headers = c("(1)","(2)","(3)","(4)")#,
+        # postprocess.df = pandoc.table.return, style = "rmarkdown"
+    ) |> kbl(
+        escape = FALSE
+    )
+
+```
+
+$$
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \mathbf{\beta}_1'JurOrg_i + \beta_2FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+$$ {#eq-reg-tax-fp}
+
+```{r}
+#| label: tbl-reg-fiscal-p
+#| tbl-cap: Juridical Organization type per fiscal period effect on the log share of intermediate inputs.
+#| echo: false
+#| warning: false
+
+
+colombia_data_frame %>%
+    ungroup() %>%
+    mutate(
+        fiscal_period = case_when(
+            year <= 83 ~ '74',
+            year <= 86 ~ '83',
+            .default = '86'
+        )
+    ) %>%
+    feols(
+        log_share ~ polym(m, k, l, degree = 2, raw = TRUE)+relevel(factor(juridical_organization), ref="9")*factor(fiscal_period)| csw0(sic_3,metro_area_code,year),#factor(sic_3)+factor(metro_area_code)+factor(year),
+        data = . , cluster = ~sic_3+year
+    ) %>%
+    etable(
+        keep = "%:",
+        headers = c("(1)","(2)","(3)","(4)")
+    ) %>%
+    kbl(
+        escape = FALSE
+    )
+    
+
+
+```

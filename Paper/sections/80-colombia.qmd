@@ -1,199 +1,65 @@
-## Colombia 1981-1991: an application
+## Colombia 1981-1991
 
-During this period, Colombia went through three major fiscal reforms (1983, 1986, 1990). The 1983 reform increased the value-added tax (VAT) from 6% to 10% and expanded the number of the products and services that were levied. In addition, the 1983 fiscal reform required firms with profits over COL$ 200,000 and owned by individuals to pay profit taxes. The 1986 reform relocated the tax collection and reception of tax reports to the banking system, among other things. The 1990 reform increased the VAT from 10% to 12%. See section the appendix for more details on the fiscal reforms.
+### Colombian Corporate Tax System
+
+The relevant corporate taxes for input overreporting are the Corporate Income Tax and the Sales Tax that (gradually transformed into a kind of Value-Added Tax).
+
+High levels of overall tax evasion during the period. No penalties, inefficient monitoring system, overburdened authority, and legal loopholes.
+
+#### Corporate Income tax
+
+The Corporate Income Tax depended on the type of juridical organization of the firm. For tax purposes, we can classify firms as Corporations, Partnerships, Limited Liability Companies, and Individual Proprietorships. 
+
+Corporations were taxed at a fixed rate of 40%, while Partnerships and Limited Liability companies at 20%. Individual proprietors were subject to the graduated Individual Tax Schedule consisting of 56 rates, ranging from 0.50 to 51 percent. 
+
+Corporations were taxed on their distributed dividends, while parternships and limited liability companies were taxed on their profits, whether or not distributed. Owners of juridical organizations were double taxed, at the firm and the individual level, whereas the income of proprietorships was taxed only once. 
+
+Moreover, Corporations were subjecto to the Superindent of Corporations and were closely supervised, being required to have an auditor.
+
+Since 1974, individuals and juridical organizations, except for limited liability companies, were subject to the minimum presumptive income. Rent (income and profits) was presumed to be no less than 8 percent of net wealth (assets less depreciation, real estate, livestock, securities). Firms with profits lower than 8 percent of their wealth had incentives to underreport capital. Firms with larger profits had incentives to overreport inputs and underreport sales.
+
+Exemptions were granted for automobile producers, private electrical companies, airlines, publishing, and reforestation sectors, and for various activities in selected regions (primarily "frontier" and other less developed ones).
+
+#### Sales taxes
+
+Sales taxes were originally targeted at the manufacturing sector on finished goods and imports. Since 1974, manufacturers were allowed to credit taxes paid on any purchse made by the firm, except the acquisition of capital goods [@Perry1990]. The credits worked through a system of refunds. Consequently, the tax became a kind of value-added tax (VAT). The VAT was extended to many services. 
+
+The basic rate was 15 percent. There was also a preferential rate of 6 percent for "wage goods" (clothing, footwear, and major inputs used for building popular housing), and a rate of 35 percent for luxury goods. Exports, foodstuff, drugs, and textbooks were excluded from the begining. Also excluded were inputs, transportation equipment, agricultural machinery, and equipment.
+
+#### Take-aways
+
+- Corporations are the least likely to evade because the probability of detection is higher for them.
+- Firms' incentives to overreporting inputs was heterogeneous within industry because it depended on the effective sales tax rate which varied according to the firm's location and sales composition (inputs to other firms, to consumers, to foreign market), and the type of juridical organization.
+- Individual proprietorships (and maybe low revenue limited liability companies) were likely to bunch at the individual income thresholds.
+
+
+### Fiscal Reforms
+
+During this period, Colombia went through three major fiscal reforms (1983, 1986, 1990). 
+
+#### 1983
+
+The 1983 reform tried to alleviate the double taxation by introducing a tax credit of 10% of dividends received for individuals.
+
+In addition, Law 9 of 1983 instituted a measure of presumptive income equal to 2 percent of gross receipts to supplement the measure based on net wealth. This reform was aimed specifically at the commerce and service sectors; the former were thought to evade the wealth-based presumptive tax by systematically understating inventories. In addition, it extended the presumptive income tax to limited liability companies.
+
+In 1983, the value-added tax (VAT) was extended to the retail level, with a *simplified system* being made available to small retailers in the effort to ease compliance costs and administrative burden.
+
+The 1983 reform realively unified the value-added tax (VAT) rates by combining previously taxed goods at 6% and 15 percent into 10%. The number of the products and services that were levied expanded. 
+
+In 1984, exemptions for agricultural machinery, transportation equipment, and certain other goods were eliminated.
+
+
+#### 1986
+
+The 1986 reforms unified the taxation of corporations and limited liability companies by taxing both at a rate of 30%. The top tax rate applied to individual income was reduced from 49 to 30%.
+
+Double taxation was eliminated. The reform exempted corporate dividends and participation in profits of limited liability companies from tax at the individual shareholder/owner level. 
+
+Lastly, the 1986 reform relocated the tax collection and reception of tax reports to the banking system, among other things. 
+
+#### 1990
+
+The 1990 reform increased the VAT from 10% to 12%. See section the appendix for more details on the fiscal reforms.
 
 Intuitively, we expect higher levels of tax evasion if tax rates increase. On the other hand, reporting more information to the authority —like the firms required to report and pay profit taxes in 1983—, or having a third party reporting on your private information — like the banking system being responsible for the collection and reception of tax reports in 1986— would decrease tax evasion.
-
-### Data
-
-The data is a well-known data set that has been used in the estimation of production functions and productivity before. The dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.
-
-A simple graphical analysis shows that the average (of the log) intermediates cost share of sales started growing after 1983 and that it stabilized in 1988 after the policy changes of the 1986 reform settled in (@fig-logshare). The dataset does not capture any changes after the 1990 reform, although there is only one more year of data.
-
-![Input's cost share of sales, average by year of the logs.](../Results/Figures/Colombia/log_share_byy.png){#fig-logshare fig-align="center" width="100%"}
-
-Furthermore, we can appreciate in @fig-ls-ntax two different patterns before and after the threshold where firms start being required to report and pay profit taxes. We can observe that the intermediate's cost share decreases abruptly by the 20th percentile. Then, it reaches its minimum by the percentile 25th and starts growing up till the end of the distribution.
-
-Before the 25th percentile, firms only file and pay VAT, starting in the 25th percentile, firms report and pay in addition profit taxes. In other words, the information they have to provide to the authority is greater. The bunching before the 25th percentile is also informative about firms' beliefs of the probability of getting caught evading, or the difficulty for firms in evading as they report more information to the authority. 
-
-In addition, Colombia has a progressive profit tax schedule. Firms with higher profits pay a higher tax rate. Higher tax rates lead to increased incentives to evade them; a plausible explanation of why the increasing pattern. 
-
-![Input's cost share of sales, average by percentile of sales taxes paid the previous year (in logs, groupings of 5 percentiles).](../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png){#fig-ls-ntax fig-align="center" width="100%"}
-
-As a validation exercise, we can see that the VAT changes induced by the three fiscal reforms are captured in the dataset. @fig-vat shows that the sales tax increased to 10% after the 1983 reform, and then around 12% after the 1990 reform.
-
-![Sale taxes paid as share of sales, average by year.](../Results/Figures/Colombia/share_sales_tax_byy.png){#fig-vat fig-align="center" width="100%"}
-
-Just as an exercise to see if other economic changes in this period were driving the apparent changes in overreporting, @fig-logsales shows that sales, for instance, were not exactly following the changes in fiscal policy. Sales start to grow during 1983, the year of the reform, whereas the cost share of sales started to grow the year after. Likewise, sales fall in 1986, while the cost share seems to reduce its growth after 1986.
-
-![Sales in logs, annual mean.](../Results/Figures/Colombia/log_sales_byy.png){#fig-logsales fig-align="center" width="100%"}
-
-## Empirical evidence
-
-To inform the empirical application, I analyze @fig-ls-ntax by year, focusing on the years around the policy change of 1983. @fig-ls-83 shows the mean of the intermediate's cost share of sales (mean log share, henceforth) by percentile of the sales taxes paid the previous year and by year, only for 1982 to 1984.
-
-![Input's cost share of sales, average by percentile of sales taxes paid the previous year and by year (in logs).](../Results/Figures/Colombia/night_disc_byy_lag_log_sales_tax_82-83-84_20.png){#fig-ls-83 fig-align="center" width="100%"}
-
-The first observation that jumps into view is that the firms that in 1982 only paid VAT and were required to pay profit taxes in 1983 seem to decrease their intermediates' cost share of sales drastically in 1983, precisely. Please note how the mean log share of the 20th percentile (4/20 in @fig-ls-83) drops significantly from 1982 to 1983.
-
-The second consideration is that there is a generalized increase in the mean log share from 1983 to 1984 across almost all the distribution. Although the increases differ across the percentiles of the distribution, the highest 10% of the distribution increased the least. This makes sense if the tax authority scrutinizes with the finest detail the firms paying the greatest tax bill.
-
-Based on this graphical analysis, I investigate with a simple empirical model 1) how the firms required to pay profit taxes by the 1983 reform adjusted their tax evasion and 2) the change in overreporting induced by the 1983 and 1986 reforms in subsequent years. 
-
-On one hand, as @fig-ls-83 suggests, I expect firms required to report and pay profit taxes to reduce their tax evasion. This might seem counterintuitive as higher taxes will increase the incentive to evade. These firms however have now to report more information to the tax authority increasing the difficulty to evade. In addition, firms had to adjust their beliefs about the probability of being caught evading taxes under the additional required information. On the other hand, @fig-logshare and @fig-ls-83 suggest that tax evasion increased after the 1983 reform and it ceased to grow after the 1986 reform. 
-
-Of course, we would like to control for other factors that might have affected the log share during these years. We would need to control also for industry and regional variation. Consequently, to test the change in overreporting by firms required to pay profit taxes in 1983 (20th percentile in @fig-ls-83), I use as the control group the firms at the 10 and 95 percentile of the distribution. The intuition is that these firms were not affected by this fiscal policy change. Furthermore, firms in the 10th percentile are more similar to the affected firms than the ones at the 95th percentile. However, the firms at the 95th percentile receive the most attention from the tax authority, consequently, they are less likely to adjust their log share because of tax evasion motives. Likewise, I use the 95th percentile firms as the control group to test the change in overreporting induced by the 1983 and 1986 reforms. For these two specifications, the base year is 1983 and 1986 respectively.
-
-The results of the estimations in @tbl-did-change-threshold show that firms that were required to report and pay profit taxes in 1983 because of the change in the threshold reduced their tax evasion through cost overreporting by 14%. @tbl-did-1983 shows that tax evasion grew between 8% and 9% in 1985 and 1986, following the increased value-added tax rates of the 1983 fiscal reform. Finally, @tbl-did-1986 indicates that the tax evasion growth came to a halt after 1986, as the subsequent years do not show a significant increase with respect 1986. 
-
-
-```{r}
-#| label: tbl-did-change-threshold
-#| tbl-cap: 1983 Reform, Change in Threshold
-#| echo: FALSE
-#| results: asis
-
-
-library(kableExtra)
-library(fixest)
-
-load("../Results/Tables/Colombia/regression_tables.RData")
-
-my_style = style.df(
-  depvar.title = "", 
-  fixef.title = "", 
-  fixef.suffix = " FE"#, 
-  # yesNo = "yes"#,
-  # threshold_model.1 = "(1)",
-  # threshold_model.2 = "(2)"#,
-)
-
-setFixest_etable(style.df = my_style)
-
-setFixest_dict(c(
-    treatment = "Affected firms", 
-    time = "Year of 1983",
-    log_share = "Inter. cost share of sales (logs)", 
-    sic_3 = "Industry",
-    metro_area_code = "Metropolitian area",
-    `treat_fact1-15%` = "1-15%",
-    `treat_fact20-50%` = "20-50%",
-    `treat_fact55-75%` = "55-75%",
-    `treat_fact80-95%` = "80-95%",
-    year_fct84 = "Year of 1984",
-    year_fct85 = "Year of 1985",
-    year_fct86 = "Year of 1986",
-    year_fct87 = "Year of 1987",
-    year_fct88 = "Year of 1988",
-    year_fct89 = "Year of 1989",
-    year_fct90 = "Year of 1990",
-    "note 1" = "Control group 10% and 95% of taxes paid last period distribution. 1982 is the base year.",
-    "note 2" = "Control group top 5% of sale taxes paid last period. The reference year is 1983.",
-    "note 3" = "Control group top 5% of sale taxes paid last period. The reference year is 1986."
-))
-
-etable(    
-        threshold_model,
-        tex = TRUE#,
-        # notes = "note 1",
-        # style.tex = style.tex(
-        # #     tabular ="*"
-        # #     # "aer"#,
-        #     tpt = TRUE
-        # )
-
-    )
-
-
-```
-
-
-
-```{r}
-#| label: tbl-did-1983
-#| tbl-cap: 1983 Fiscal Reform
-#| echo: FALSE
-#| results: asis
-
-
-etable(
-    did_1983,
-    keep = "%:",
-    # drop = "84",
-    # notes = "notes 2"
-    tex = TRUE#,
-    # style.tex = style.tex(
-    #     adjustbox = "0.5 th"
-    # #     # "aer",
-    # #     # tpt = TRUE,
-    #     # tabular = "*",
-    #     # fontsize = "tiny"
-    #     )
-    # # drop = "84"
-) #%>%
-# kbl(
-#     caption="Fiscal reform of 1983", 
-#     longtable = TRUE,
-#     booktabs = TRUE) %>%
-# # kable_paper(
-# #   # 'basic',
-# #   full_width = FALSE,
-# #   html_font = "Cambria",
-# #   font_size = 17
-# # ) %>%
-# footnote(
-#   general = "Control group top 5% of sale taxes paid last period. Reference year is 1983."
-# )
-
-
-```
-
-```{r}
-#| label: tbl-did-1986
-#| tbl-cap: 1986 Fiscal Reform
-#| echo: FALSE
-#| results: asis
-
-
-etable(
-    did_1986,
-    keep = "%:",
-    # drop = "89",
-    tex = TRUE#,
-    # style.tex = style.tex(
-    #     # tabular = "*",
-    # #     # "aer",
-    # #     # tpt = TRUE,
-    #     # fontsize = "tiny"
-    #     adjustbox = "0.5 th"
-    # )
-
-) #%>%
-# kbl(
-#     caption="Fiscal reform of 1986",
-#     longtable = TRUE,
-#     booktabs = TRUE) %>%
-# # kable_paper(
-# #   # 'basic',
-# #   full_width = FALSE,
-# #   html_font = "Cambria",
-# #   font_size = 17
-# # ) %>%
-# footnote(
-#   general = "Control group top 5% of sale taxes paid last period. Reference year is 1986."
-# )
-
-
-```
-
-
-
-## Conclusions {-}
-
-I provide a new estimation strategy to jointly recover tax evasion through cost overreporting and productivity that only requires commonly available firm-level data.
-
-Studying manufacturing firms from Colombia, I show that the method can be used to investigate tax evasion using surveys and fiscal policy changes. The 1983 reform required firms with profits above COL$ 200,000 or more to report income tax in 1983 in addition to the value-added tax. These firms reduced their tax evasion by cost overreporting by 14% likely due to the additional information firms needed to report and the adjustment in their beliefs on the probability of getting caught evading.
-
-Likewise, the evidence suggests that this type of tax evasion increased after the reform of 1983 between 8 and 9% in 1985 and 1986. The increase in value-added tax likely amplified the incentives to evade. This result stands at odds with previous studies that indicate that the evasion of income tax and VAT declined during this period (Sanchez & Gutierrez, 1994). Finally, evidence suggests that tax evasion growth came to a halt after the 1986 reform where the banking system took over the tax collection and reception of tax reports from the tax authority.
-
-

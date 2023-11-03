@@ -37,7 +37,10 @@ paper: #$(QPAPDIR)/$(QPAPFILE).pdf
 #	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:packages.tex
 #	open -a Preview $(QPAPDIR)/$(QPAPFILE).pdf
 pdf:
-	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:packages.tex
+	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:_extensions/quarto-journals/jasa/packages.tex
+
+html:
+	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to html
 ## Make slides
 slides: #$(QSlIFILE).html
 	quarto render $(QSLIDIR)/$(QSLIFILE).qmd

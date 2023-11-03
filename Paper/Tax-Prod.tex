@@ -138,22 +138,6 @@
 \usepackage{makecell}
 \usepackage{xcolor}
 \makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
-\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
-\definecolor{quarto-callout-color}{HTML}{909090}
-\definecolor{quarto-callout-note-color}{HTML}{0758E5}
-\definecolor{quarto-callout-important-color}{HTML}{CC1914}
-\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
-\definecolor{quarto-callout-tip-color}{HTML}{00A047}
-\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
-\definecolor{quarto-callout-color-frame}{HTML}{acacac}
-\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
-\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
-\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
-\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
-\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
-\makeatother
-\makeatletter
 \makeatother
 \makeatletter
 \makeatother
@@ -191,13 +175,6 @@
 \@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
-\usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-\theoremstyle{remark}
-\AtBeginDocument{\renewcommand*{\proofname}{Proof}}
-\newtheorem*{remark}{Remark}
-\newtheorem*{solution}{Solution}
 \makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
@@ -243,7 +220,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{August 1, 2023}
+\date{November 3, 2023}
 \title{\bf Tax evasion and productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -276,235 +253,139 @@ Estimation, Productivity
 
 \newpage
 \spacingset{1.9} % DON'T change the spacing!
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, breakable, frame hidden, interior hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, frame hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
 
-\hypertarget{introduction}{%
-\section*{Introduction}\label{introduction}}
-\addcontentsline{toc}{section}{Introduction}
+\hypertarget{updates}{%
+\section*{Updates}\label{updates}}
+\addcontentsline{toc}{section}{Updates}
 
-Corporate tax evasion through cost overreporting globally spreads
-causing governments significant tax revenue losses. Detecting and
-measuring the magnitude of cost overreporting remains a challenge, even
-for governments with administrative data. Moreover, if this evasion
-strategy accounts for economic losses as large as reported, then cost
-overreporting might bias estimates of production functions and,
-especially, productivity. This paper addresses both issues. I first
-provide a novel strategy to estimate cost overreporting using commonly
-available firm-level data. I then formally show that ignoring cost
-overreporting leads to downward biased productivity estimates. Finally,
-I demonstrate how to recover productivity in the presence of tax
-evasion.
-
-Cost overreporting arises when firms acquire false invoices to claim
-additional tax deductions on value-added and corporate income taxes.
-According to the OECD's document \citet{OECD2017}, cost overreporting
---- also known as ``fake invoicing'', ``ghost firms'', ``invoice
-mills'', or ``missing traders''--- permeates internationally reaching
-Latin America, Eastern Europe, Asia, and Africa. Reports claim cost
-overreporting generated annual tax revenue losses amounting to 5.6\% of
-Poland's GDP in 2016 (Poland's Minister of Finance, 2018); 0.2\% of
-Chile's GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat, 2001; CIAT,
-2008); 0.2\% of Colombia's GDP (Portafolio, 2019); and 0.03\% of
-Mexico's GDP in 2018 (Senado de la Republica, 2019).
-
-Recently, evidence from Ecuador \citep{Carrillo2022} shows that cost
-overreporting disseminates across all types of firms; constitutes a
-quantitatively large share of firms' total deductions; and occurs mostly
-in the intermediate inputs. Contrary to the literature consensus,
-evasion by overreporting is not limited to small, semi-formal firms, but
-large and formal firms overreport too. Likewise, firms were found to
-overreport up to 14.1\% of the value of their purchase deductions.
-Finally, when challenged by the tax authority, firms adjusted mostly
-intermediate inputs.
-\fxnote*{how does it compare to other forms of tax evasion?}
-
-The evidence from Ecuador also shows that big firms do not overreport
-inputs. This is unsurprising for several reasons. First, a large firm
-arguably draws more attention from the tax authority. Given its limited
-resources, the government optimizes its expected revenues by targeting
-the firms with the higher potential tax recovery, the few big ones.
-Second, the cost of being caught cheating is potentially higher for big
-firms. Large firms are likely to participate in international markets. A
-tax evasion scandal in Colombia, for example, might affect US sales.
-Finally, big firms potentially have more sophisticated strategies for
-tax evasion \citep[e.g., profit shifting][]{Bustos2022}.
-
-Despite its relevance, cost overreporting has been mostly overlooked by
-the literature. On one hand, the few studies on this evasion strategy
-exploit detailed administrative data \citep{Zumaya2021, Carrillo2022}.
-Government tax authorities restrict access to administrative data
-because of firms' confidentiality concerns. On the other hand, to the
-best of my knowledge, no study has attempted to structurally identify
-cost overreporting. Unlike the case of individuals
-\citep{Pissarides1989, Paulus2015}, when it comes to corporate tax
-evasion, researchers have to account for an additional source of
-unobserved heterogeneity, productivity. Why? Because cost overreporting
-might be naively quantified as low productivity. Intuitively, for a
-given output level, high input utilization by a firm could be explained
-by either the amount of input the firm overreports to evade taxes or by
-a low productivity shock.
-
-To address this gap in the literature, first I formally show that
-ignoring tax evasion leads to downwardly biased productivity estimates.
-I then provide a new estimation strategy, requiring only commonly
-available firm-level data, to jointly recover the densities of tax
-evasion and productivity. The intuition works as follows. In the absence
-of tax evasion, the first-order conditions of the firms'
-cost-minimization problem inform about a common technology, the
-production function. Consequently, in the presence of cost
-overreporting, deviations from this common technology identify tax
-evasion up to the current-period output shock. Then, from the subset of
-non-overreporting firms, the strategy identifies the production function
-parameters and the density of the output shock. Finally, using
-deconvolution techniques, I can jointly recover the distributions of tax
-evasion and productivity.
-\fxnote*{I also estimate how tax evasion evolves with productivity, in other words, their joint distribution.}
-
-In a preliminary application, I show how to use the method to learn
-about tax evasion even when we do not know the subset of non-evading
-firms, but there has been a change in fiscal policy that incentivizes
-cost overreporting. Using firm-level data from Colombia between 1981 and
-1991, I show that tax evasion through cost overreporting increased after
-the fiscal reform of 1983 between 8 and 9\% in 1985 and 1986. This
-result stands at odds with previous studies that indicate that the
-evasion of income tax and VAT declined during this period (Sanchez \&
-Gutierrez, 1994)
-
-\begin{anfxnote*}{Remove}
-
-I formally show that ignoring tax evasion leads to biased estimates of productivity, which can be significant considering cost overreporting is widespread and quantitatively large. In the proxy variable literature, productivity is measured as the residual of a production function, where the output is a function of the inputs. A key assumption is that input demand is strictly monotonic on the productivity [@Gandhi2020; @Ackerberg2015; @Levinsohn2003]. In other words, we expect highly productive firms will use fewer inputs and produce more output. When firms overreport their costs (inputs) to reduce their tax liabilities, their reported inputs are higher than their actual utilization, resulting in lower productivity estimates.
-
-Tax evasion through cost overreporting has been largely overlooked by the literature, though; most recent studies focus on revenue underreporting.
-
-Despite its relevance, detecting and measuring tax evasion —through cost overreporting or otherwise— remains a non-trivial task even for governments with detailed administrative data; mainly because of firms' —and individuals'— incentives to avoid getting caught. Direct empirical measures are mostly unreliable because firms and individuals have incentives to conceal their behavior [@Slemrod2019]. Hence, it is unlikely that evasion would be truthfully reported in surveys, for instance. Indirect structural measures have had some degree of success in the case of individual income tax evasion [@Pissarides1989], but in the case of corporate tax evasion researchers must account for an additional latent variable, the productivity of firms. The reason is that tax evasion might be naively quantified as low productivity. Intuitively, for a given level of output, high input utilization by a firm could be explained by either the amount of input the firm overreports to evade taxes or by a low productivity shock. In certain countries, governments take advantage of the different sources of administrative data. For example, in Ecuador, the tax authority uses third-party information on reported corporate taxes to detect evasion through revenue underreporting [@Carrillo2017]. However, access to this type of administrative data is generally restricted for most researchers.
-
-Despite the vast efforts of the literature, measuring tax evasion remains a non-trivial task[^measure].
-
-[^measure]: The challenge is to obtain reliable data. Practitioners usually have to undergo time- and resource-consuming processes to access or collect data; for example, by requesting access to government administrative data or by collecting their own through surveys or experiments.
-
-Tax evasion is a significant concern for developing and developed countries[^wide]. 
-
-[^wide]: Tax evasion has been a long-standing concern for developing countries, but since the 2008 economic crisis, it has also been of increasing importance for developed countries [@Slemrod2019].
-
-
-Having productivity estimates could potentially help, however, tax evasion has not been satisfactorily addressed in the estimation of productivity. I show that ignoring tax evasion leads to biased estimates of productivity. To address this gap in the literature, I provide a new estimation strategy to recover tax evasion and productivity using commonly available data. 
-
-Indirect structural attempts to estimate corporate tax evasion have to account for the productivity of the firms. The reason is that low productivity might be naively quantified as tax evasion. Consider the case in which firms overreport input expenses to reduce their profits to evade taxes. A practitioner with output and input data might conclude that output is a function of inputs, thus it can be considered a second measure. She might try to recover true inputs and get an estimate of tax evasion by the difference between reported and true inputs. However, for a given level of output, high input utilization by a firm could be explained by either the amount of input the firm overreports to evade taxes or by its low productivity.
-
-Firm-level estimates of productivity could be helpful to measure tax evasion, however, tax evasion has not been satisfactorily addressed in the estimation of productivity by the literature. The literature has coped with tax evasion by treating it as a classical measurement error [e.g., @Blalock2004, p.204]. In other words, it has been assumed that tax-evasion misreporting has zero mean —some firms under-report and others over-report so that the misreporting does not bias the estimates of interest— and this misreporting is independent of everything else, including the attributes of the firms. However, the classical measurement error argument is inconsistent with economic intuition[^econ-int]. 
-
-[^econ-int]: Economic intuition will inform us that systematic misreporting due to tax evasion should lead firms to decrease profits by either underreporting sales or overreporting costs. Put differently, there's no economic incentive for firms to go the other direction —overreporting sales or underreporting input expenses— and artificially increase their profits. An artificial increment of profits will increase the tax liabilities of the firm and decrease their after-tax real profits. Therefore, it is unlikely that tax evasion is mean zero. Economic intuition will also point out that the degree of misreporting is likely to vary across firms depending on the characteristics of the firms, e.g., age, size, owner's risk aversion, etc.
-    
-The contribution to the tax evasion literature is two-fold: (1) I provide an estimation strategy using commonly available data, and (2) the method identifies tax evasion through cost overreporting, an overlooked by the literature but relevant phenomenon. The contribution to the productivity literature is to show that ignoring tax evasion leads to biased estimates and to provide a method to recover the productivity density in the presence of input overreporting.
-
-Why do we care about productivity measurement bias due to tax evasion? First, it might help explain part of the productivity gap puzzle. Economists have found *enormous and consistent* productivity differences across producers [@Syverson2011]. We still don't know how much of this productivity gap —the difference between the lower and higher percentiles of the distribution— tax evasion can explain. Second, it should be considered in the design of public policies aiming at reducing resource misallocations. Aggregate productivity —and, thus, the economic growth of a country and the welfare of its citizens— depends on the efficient allocation of its inputs among its firms. Ideally, resources should be allocated to the most productive firms. Additionally, it is not necessarily the case that firms with the highest incentives to evade taxes are always the lowest productive. The incentives depend on the tax system. For example, in countries where a profit threshold determines different tax rates, the firms near the threshold are the ones with the highest incentives to misreport, but the threshold might be completely unrelated to productivity. Therefore, firm-level productivity estimates adjusted by tax evasion misreporting might inform better the design of public policies aiming at an efficient reallocation of resources to boost economic growth.
-
-Moreover, accounting for tax evasion in estimating and measuring firm-level productivity is particularly significant for developing countries. This is the case because tax evasion is likely to be higher in low- and middle-income countries[^infor], and because the productivity gap in these countries is wider —wider productivity gaps are associated with higher resource misallocations. For example, recent estimates of non-detected tax evasion are up to \$10 billion USD per year in Mexico [@Zumaya2021], approximately 1% of the country's GDP. Furthermore, some studies argue that input misallocation —implied by a wider productivity gap— explains a significant part of the differences in income per capita between developed and developing countries [@Syverson2011; @Levy2018]. For instance, evidence from Colombia suggests that labor and financial policy reforms during the 1990s aimed at reallocating away from low- and towards high-productivity firms —effectively reducing the productivity gap— resulted in a higher aggregate productivity [@Eslava2004].
-
-[^infor]: Informality —the extreme form of tax evasion— is larger in developing countries [@Loayza2006; @LaPorta2014].
-
-The main challenge of dealing with tax evasion is that it is hidden by nature, for that reason, 
-
-
-So, then, in this paper, I ask, 
-
-> can we recover unbiased productivity estimates at the firm level using a gross-output production function in the presence of systematic misreporting due to tax evasion?
-> if so, what is the magnitude of this bias, in particular for developing countries?
-> given that different tax systems —rates, rules and enforcement procedures— generate different tax evasion incentives, how does the producitivity bias vary according to different tax systems? 
-> how much of the productivity gap can tax evasion explain within a country and across countries?
-
-To answer these questions, this paper studies productivity at the establishment level for Mexican and Colombian firms accounting for tax evasion. I employ data from a sample of anonymized firms' tax filings and INEGI's EAIM annual production survey, in the case of Mexico. For Colombia, I use the EAM annual survey on manufacturing firms. In the estimation framework, I jointly model the firm-level productivity and the tax evasion, allowing for classical measurement error. The key identifying assumption is that while tax evasion depends on the expected return to cheating, productivity follows a Markov process, and measurement error is uncorrelated with inputs and across time. In turn, the expected returns to cheating depend on the firm's characteristics[^mkt]. In particular, larger firms are less likely to underreport inputs because of their higher cheating cost, their higher probability to be anonymously denounced by an employee, and their access to complex tools to legally \emph{avoid} taxes[^avoid].
-
-[^mkt]: Tax evasion might also depend on the firm's market characteristics, e.g., market concentration, end-consumer vs. intermediate goods market, etc.
-
-[^avoid]:  I follow the literature by referring to evasion as illegal actions to reduce tax liability, while avoidance refers to legal actions to reduce tax.
-
-By jointly modeling tax evasion and productivity, this paper departs from the literature in estimating a latent variable that follows an incentive constraint (IC) —tax compliance—, and in focusing on the productivity bias —rather than on an input's coefficient. Recent work has studied the effect of measurement error in capital inputs on production function estimation. Their approach has been using an IV [@Collard2020] or a centering condition *à la* @Hu2008 (Charlotte's JMP). However, systematic misreporting is different from measurement error in that it goes only one way and it follows an IC, as discussed above. Likewise, because capital is not a flexible input[^flex], the focus of these papers is on the effect of the marginal return to capital coefficient rather than on the effect on productivity estimates.
-
-[^flex]: In the literature, a flexible input is neither dynamic —current input choice depends on its lagged value—, nor predetermined —completely defined in the past.
-
-Moreover, I focus on gross-output production functions, as opposed to value-added, to reduce the noise that might be introduced by firms cheating also on prices. Besides the fact that prices are an equilibrium object and might be affected by demand also —and not only by supply—, firms might also artificially increase the price of inputs or reduce the price of sales to reduce declared profits. Then, in that sense, the tax-evasion bias magnitude of productivity estimates obtained through a value-added production function would be greater than through the gross-output production function. In the latter, only the price of the flexible input —intermediates—, and the output sale price enter through the first-order conditions (FOC) of the profit maximization problem of the firm[^cros_d]. In contrast, the prices of the non-flexible inputs, —capital and labor—, might introduce noise in the case of the value-added production function. \fxnote{tax evasion underreporting sales: use firms that sell to other firms because of opposite incentives in contrast to firm-end consumer sales. Unskilled labor might be flexible but it's the least productive, so less damage.}
-
-[^cros_d]: If the cross-derivative of the flexible input with respect to the non-flexible inputs is not zero, then systematic misreporting in the non-flexible inputs will also affect productivity.
-
-\end{anfxnote*}
+\begin{itemize}
+\tightlist
+\item
+  Simple model that incorporates evasion decision and size endogenously
+\item
+  Colombian Corporate tax system
+\item
+  Identification strategy for Colombia
+\end{itemize}
 
 \hypertarget{a-parsimonious-model-of-tax-evasion-through-input-overreporting}{%
 \section{A parsimonious model of tax evasion through input
 overreporting}\label{a-parsimonious-model-of-tax-evasion-through-input-overreporting}}
 
-Price-taking firms maximize expected after-tax profits. Firms choose
-input \(M_{it}\) and tax evasion \(e_{it}\) given the prices ---output
-and input prices \(\{P_{t}, \rho_t\}\)---, and expected output ---firms
-take the expectation of the production function and their current period
-productivity shock over the output shock \(\varepsilon_{it}\), i.e.,
+Price-taking firms maximize expected after-tax profits. Firms choose the
+flexible input \(M_{it}\) to produce output \(Y_{it}\) given output and
+input prices \(\{P_{t}, \rho_t\}\), a common technology, the production
+function (Equation~\ref{eq-prod-fn}), and their productivity
+\(\omega_{it}\).
 
-\begin{equation}\protect\hypertarget{eq-exp-rev}{}{
-\mathbb{E}[Y_{it}]=\mathbb{E}[G(M_{it})\exp(\omega_{it}+\varepsilon_{it})]
-}\label{eq-exp-rev}\end{equation}
+\begin{equation}\protect\hypertarget{eq-prod-fn}{}{
+Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+}\label{eq-prod-fn}\end{equation}
 
-In their optimization problem, firms also consider the profit tax
-\(\tau\), the penalty for evading taxes \(\kappa\), and their perceived
-probability of detection \(q_{it}(e_{it}|s_{it})\).
+As standard in the literature, productivity \(\omega_{it}\) is known to
+firms when they take input decisions. This is the well-known endogeneity
+problem of simultaneity. On the other hand, firms face output shocks.
+The output shock \(\varepsilon_{it}\) is not part of the firms'
+information set.
 
-Firms, then, solve Equation~\ref{eq-eva}
+The model departs from the literature by allowing firms to overreport
+their inputs \(e_{it}\) to reduce their tax burden and optimize
+after-tax profits. Firms, then, consider in their optimization problem
+the profit tax \(\tau\), the evasion penalty/cost \(\kappa(e)\), and the
+probability of detection \(q_{it}(e_{it}|\theta_{it})\).
+
+Firms solve Equation~\ref{eq-eva}
 \begin{equation}\protect\hypertarget{eq-eva}{}{
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|s_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
-  +q_{it}(e_{it}|s_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa\right] \\
-  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q_{it}(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 }\label{eq-eva}\end{equation}
 
-Intuitively, for a given size, firms that evade more are more likely to
-get caught. Formally, the firm's \(i\) perceived probability of
-detection \(q_{it}(e_{it}|s_{it})\) is monotonically increasing in the
-amount evaded \(e_{it}\), conditional on the size of the firm
-\(s_{it}\). Likewise, larger firms might be more likely to get caught.
-That is, for a given level of tax evasion \(e_0\) and two different
-sizes \(s' > s \in \mathbfcal{S}\), then \(q(e_0|s')\ge q(e_0|s)\),
-where \(s\) can be continuous or discrete for a range of expected
-revenues.
+The probability of detection \(q_{it}(e_{it}|\theta_{it})\) is
+monotonically increasing in the amount evaded \(e_{it}\), conditional on
+the type of the firm \(\theta_{it}\). Intuitively, for a given type,
+firms that evade more are more likely to get caught.
 
-Expected revenue determines the size of firms. The fiscal authority in
-the countries I examined in the empirical application defines the tax
-rules in terms of firms' revenue, i.e., Mexico, Colombia, Ecuador, and
-Chile (?). In these countries, firm revenues represent the main input
-for VAT and corporate profit taxes.
+The type of the firm \(\theta_{it}\) might be discrete, like the type of
+juridical organization, or continuous, like the level of
+revenue\footnote{Level of revenue is a common measure for fiscal
+  authorities to determine a firm's taxes and/or level of scrutiny,
+  e.g., Mexico, Spain, Colombia, Ecuador, and Chile (?).}. Some types
+might be more likely to be detected if the firm engages in tax evasion.
+For example, in contrast to other types of juridical organizations in
+Colombia, corporations are closely supervised and are required to have
+an auditor. That is, for a given level of tax evasion \(e_0\) and two
+different types \(\theta' \not= \theta \in \mathbfcal{\Theta}\), then
+\(q(e_0|\theta')\ge q(e_0|\theta)\).
 
-Because size \(s\) is measured in expected revenues, a function of
-inputs, firms affect their perceived probability of detection in two
-ways. Firms affect the probability \(q(e|s)\) directly, by choosing how
-much they evade \(e_{it}\), and indirectly, by their implicit choice of
-size when choosing inputs \(M_{it}\).
+If the type \(\theta\) is continuous, it might be a function of inputs;
+for example, level of revenue. Firms will then affect their probability
+of detection \(q(e|\theta)\) in two ways: directly, by choosing how much
+they evade \(e\); and indirectly, when choosing inputs \(M\).
 
-The firms' problem can be rewritten as follows,
-\begin{equation}\protect\hypertarget{eq-eva2}{}{
+The optimal decision of the firm will depend on the fiscal environment
+\(\Gamma=\{\tau, \kappa, q \}\), namely the tax rates, the penalty/cost
+of detection, and the probability of detection.
+
+The firms' problem (Equation~\ref{eq-eva}) can be rewritten as follows,
+\[
 \begin{aligned}
-  \max_{M_{it}, e_{it}} \mathbb{E}[\pi|s_{it}] = &(1-\tau)(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it})+[1-q_{it}(e_{it}|s_{it})](\frac{\rho_{t}}{P_t}e_{it}\tau)
-  -q_{it}(e_{it}|s_{it})\kappa \\
+  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q_{it}(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
+  -q_{it}(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
-}\label{eq-eva2}\end{equation}
+\]
 
 Intuitively, if the firm overreports her inputs' cost, she will get the
 share of the value she overreported with probability \((1-q)\) and she
 will be penalized with probability \(q\).
 
-The optimal decision of the firm will depend on the fiscal environment
-\(\{\tau, \kappa\}\) and its perceived probability of detection.
+Assuming well-behaved functions and no corner solutions, the first-order
+conditions lead to the following system of differential equations,
 
-\hypertarget{case-1-qesqe}{%
-\subsection{\texorpdfstring{Case 1:
-\(q(e|s)=q(e)\)}{Case 1: q(e\textbar s)=q(e)}}\label{case-1-qesqe}}
+\begin{equation}\protect\hypertarget{eq-foc-cont-m}{}{
+G_M(M_{it})\exp(\omega_{it})\mathcal{E}-\frac{\rho_{t}}{P_t} = \frac{1}{(1-\tau)}\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}\left[\frac{\rho_t}{P_t}e_{it}\tau+\kappa(e_{it})\right]
+}\label{eq-foc-cont-m}\end{equation}
+
+\begin{equation}\protect\hypertarget{eq-foc-cont-e}{}{
+[1-q(e_{it}|\theta_{it})]\frac{\rho_t}{P_t}\tau-q(e_{it}|\theta_{it})\kappa'(e_{it})=q'(e_{it}|\theta_{it})\left[\frac{\rho_t}{P_t}\tau e_{it} + \kappa(e_{it})\right]
+}\label{eq-foc-cont-e}\end{equation}
+
+where \(\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\). The type of
+firms is continuous and increasing on the input. The probability of
+detection is increasing in the type continuum. In particular,
+\(\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}\ge0\).
+
+The left-hand side of Equation~\ref{eq-foc-cont-m} is the familiar
+marginal output of inputs and the price ratio. In the absence of
+incentives' distortions induced by the fiscal environment, they are
+equal. But now, the equality holds no more. There's a wedge arising from
+the fiscal environment. The right-hand side of the equation is positive
+by the assumptions of the model.
+
+Equation~\ref{eq-foc-cont-e} solves for the optimal evasion decision.
+The left-hand side is the marginal benefit net of the marginal cost of
+evasion. The right-hand side is the rate of change of the probability of
+detection due to a change in evasion weighted by the benefit and cost of
+evading.
+
+\hypertarget{case-1-independece-qethetaqe-and-kappaekappa_0}{%
+\subsection{\texorpdfstring{Case 1 (Independece): \(q(e|\theta)=q(e)\)
+and
+\(\kappa(e)=\kappa_0\)}{Case 1 (Independece): q(e\textbar\textbackslash theta)=q(e) and \textbackslash kappa(e)=\textbackslash kappa\_0}}\label{case-1-independece-qethetaqe-and-kappaekappa_0}}
 
 Consider the case when the probability of detection is independent of
-size, \(q(e|s)=q(e)\). This could be the case if, given a productivity
-shock, the firm perceives that the probability of detection is
-independent of her size within the range of its maximum optimal size.
+type, \(q(e|\theta)=q(e)\), and the evasion cost is constant
+\(\kappa(e)=\kappa_0\). This could be the case if the type is the
+juridical organization of the firm and the penalty of evading is
+constant for the type of juridical organization. The type of the firm,
+and therefore the probability of detection, does not change with the
+firm's input decisions.
 
-The optimal input choice is independent, hence, of the evasion decision.
-In this case, the first-order conditions of Equation~\ref{eq-eva2} with
+In this case, the first-order conditions of Equation~\ref{eq-eva} with
 respect to the input \(M_{it}\) and the tax evasion \(e_{it}\) yield the
 following
 
@@ -513,13 +394,11 @@ G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
 }\label{eq-foc:ind}\end{equation}
 
 \begin{equation}\protect\hypertarget{eq-foc:eva:ind}{}{
-    e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa}{\frac{\rho_{t}}{P_t}\tau}
+e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 }\label{eq-foc:eva:ind}\end{equation}
 
 Equation~\ref{eq-foc:ind}, the well-known optimality condition, says
-that the price ratio is equal to the marginal product of the inputs,
-given the productivity and the expected value of the output shock,
-\(\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\).
+that the price ratio is equal to the marginal product of the inputs.
 
 Likewise, Equation~\ref{eq-foc:eva:ind} reveals the firms' optimal tax
 evasion decision decreases if the probability of detection \(q(e_{it})\)
@@ -558,49 +437,66 @@ weighted by the penalty of evading and the relative prices\footnote{An
   is consistent with the literature that macroeconomic downturns lead to
   higher evasion.}.
 
-\hypertarget{case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size}{%
-\subsection{Case 2: increase in the probability of detection after a
-certain threshold of
-size}\label{case-2-increase-in-the-probability-of-detection-after-a-certain-threshold-of-size}}
+\hypertarget{case-2-spain-discrete-increase-in-the-probability-of-detection-after-a-certain-threshold-of-revenue}{%
+\subsection{Case 2 (Spain): Discrete increase in the probability of
+detection after a certain threshold of
+revenue}\label{case-2-spain-discrete-increase-in-the-probability-of-detection-after-a-certain-threshold-of-revenue}}
 
-Consider now the case where there is a threshold of size \(s_0\) after
-which the probability of detection increases significantly. To make
-things simpler, assume that before the threshold, the probability
-changes as a function of evasion but does not vary conditional on size.
-After the threshold, the probability increases for every level of
-evasion but does not vary conditional on size.
-
-This could be the case in which there are different fiscal regimes for
-small and medium-large firms, and firms believe that the probability of
-detection in the medium-large firms' regime is higher. The medium-large
-regime might imply submitting more information that can be traced by a
-third party, like in Mexico and Colombia. Another possibility could be
-that the tax authority increases auditing efforts significantly after a
-certain size threshold, like in Spain.
+In Spain, the Large Taxpayers Unit (LTU) of the tax authority focuses
+exclusively on firms with total operating revenue above 6 million euros.
+The LTU has more auditors per taxpayer than the rest of the tax
+authority, and these auditors are on average more experienced and better
+trained to deal with the most complex taxpayers. This LTU creates a
+discontinuity in the monitoring effort of the tax authority.
+Consequently, at this arbitrary revenue level, the probability of
+detection increases discretely \citep{Almunia2018}.
 
 In this scenario, depending on the productivity shock, the firm might be
-better off choosing not to grow. Indeed, for a small enough productivity
-shock, the firm will not choose to grow past the size threshold if the
-expected profits of staying small are greater than the expected profits
-of growing.
+better off choosing not to produce past the revenue threshold. Indeed,
+for a relevant range of productivity draws
+\(\Omega^B=[\omega^L, \omega^H]\), the firms will not choose to grow
+past the revenue threshold if the expected after-tax profits of staying
+small are greater than the expected after-tax profits of growing.
 
-Formally, let \(S_{s} = \{s_i : s_{i} < s_0 \}\) and
-\(S_{l} = \{s_i : s_{i} \ge s_0 \}\), then for any \(e_0\) and
-\(s'_i>s_i\), \(q(e_0|s_i \in S_k)=q(e_0|s'_i \in S_k)\) with
-\(k=\{s,l\}\), but \(q(e_0|s'_i \in S_l)\ge q(e_0|s_i \in S_s)\) for all
-\(e_0\).
+In the model, there is now a threshold of revenue \(\theta^L\) after
+which the probability of detection increases discretely. To make things
+simpler, assume that before the threshold, the probability changes as a
+function of evasion but does not vary conditional on size. After the
+threshold, the probability increases for every level of evasion but does
+not vary conditional on size.
 
-Suppose the realized productivity shock of the current period
-\(\omega_{it}\) is such that, taking the probabilities as constant, the
-optimal input \(M^*_{it}\) implies an expected revenue greater than
-threshold \(s^*_{it}\ge s_0\). Let the expected profits given
-\(M^*_{it}\) and the optimal tax evasion in the range of size \(S_l\),
-\(e^*_{it}\), is \(\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|S_l]\).
-Let \(\tilde{M}_{it}\) be the input level such that the expected revenue
-is below the threshold \(\tilde{s}_{it}<s_0\) and \(\tilde{e}_{it}\) be
-the optimal tax evasion in the range of size \(S_s\). Let also the
-expected profits of staying small are
-\(\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|S_s]\).
+Formally, let \(\Theta_{L} = \{\theta_i : \theta_{i} < \theta^L \}\) and
+\(\Theta_{H} = \{\theta_i : \theta_{i} \ge \theta^L \}\), then for all
+\(e_0\) and \(\theta'_i\not=\theta_i\),
+\(q(e_0|\theta_i \in \Theta_k)=q(e_0|\theta'_i \in \Theta_k)\) with
+\(k=\{L,H\}\), but
+\(q(e_0|\theta'_i \in \Theta_H)\ge q(e_0|\theta_i \in \Theta_L)\).
+
+Firms' revenue with productivity draw \(\omega^L\) corresponds exactly
+to the enforcement threshold \(\theta^L\). Production and reporting
+decisions of firms with productivity draws below \(\omega^L\) are not
+affected by the change in the probability of detection. Firms choose
+their inputs according to Equation~\ref{eq-foc:ind} and their evasion
+decision according to Equation~\ref{eq-foc-cont-e}. Firms with
+productivity draws above \(\omega^U\)
+
+Firms with productivity \(\omega_{i}\in \Omega^B\) will choose the input
+level \(\tilde{M}_{i}\) resulting in an expected revenue below the
+threshold \(\theta_{i}<\theta^L\), if the expected after-tax profit of
+staying small are greater than growing,
+\(\mathbb{E}[\pi_{i}|\Theta_L, \Omega^B]-\mathbb{E}[\pi_{i}|\Theta_H, \Omega^B]\ge0\).
+
+The optimal input choice \(M^*_{i}\) for firms with productivity
+\(\omega_i\in\Omega^B\) implies an expected revenue greater than or
+equal to the threshold \(\theta^*_{i}\ge \theta^L\). Let the expected
+profits given \(M^*_{i}\) and the optimal tax evasion in the range of
+size \(\theta_l\), \(e^*_{it}\), is
+\(\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|\theta_l]\). Let
+\(\tilde{M}_{it}\) be the input level such that the expected revenue is
+below the threshold \(\tilde{s}_{it}<\theta^L\) and \(\tilde{e}_{it}\)
+be the optimal tax evasion in the range of size \(\theta_s\). Let also
+the expected profits of staying small are
+\(\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|\theta_s]\).
 
 In this second case, therefore, firms might optimally choose to remain
 small if, for a low productivity shock, the expected profits of not
@@ -617,255 +513,198 @@ of the input is now greater than the relative prices. Therefore,
 according to Equation~\ref{eq-foc:eva:ind}, bunching firms would
 compensate for their \emph{higher} costs by increasing overreporting.
 
-\hypertarget{the-setting}{%
-\section{The setting}\label{the-setting}}
+\hypertarget{whats-new}{%
+\subsubsection{What's new?}\label{whats-new}}
 
-Suppose we have access to panel data, where we observe output
-\(Y_{it}\), intermediate inputs \(M_{it}\), capital \(K_{it}\), labor
-\(L_{it}\), and output \(P_{t}\) and intermediate input prices
-\(\rho_t\) for \(I\) firms over \(T\) periods. Then our set of
-observations is
-\(\mathcal O = \{Y_{it}, M_{it}, K_{it}, L_{it}, P_{t}, \rho_t\}_{i\in I, t \in T}\).
-As is standard in the literature, firms are price-takers and the
-intermediates are flexible.
+\begin{itemize}
+\tightlist
+\item
+  GOPF framework with public data vs bunching estimator with private
+  administrative data
+\item
+  Focus on input overreporting rather than on revenue underreporting
+\item
+  Bunching effects are real. Bunching firms optimally forgo higher
+  revenue levels. \citet{Almunia2018} argue effects are not real, just
+  fake underreporting.
+\end{itemize}
 
-The objects of interest are the production function (PF),
-\(Y_{it}=G(M_{it}, K_{it}, L_{it})e^{\omega_{it}+\varepsilon^Y_{it}}\),
-and productivity \(\omega_{it}\). \(\varepsilon^Y_{it}\) is the current
-period output shock. We are also interested in the Markov process of
-productivity, which we assume is AR(1),
-\(\omega_{it}=h(\omega_{it-1})+\eta_{it}\), with
-\(\mathbb{E}[\eta_{it}|\omega_{it-1}]=0\).
+\hypertarget{case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}{%
+\subsection{Case 3 (Colombia): Discrete increase in the tax rate after a
+revenue
+threshold}\label{case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}}
 
-\hypertarget{tax-evasion-and-the-productivity-bias}{%
-\subsection{Tax evasion and the productivity
-bias}\label{tax-evasion-and-the-productivity-bias}}
+In Colombia between 1981 and 1991, individual firm proprietors were
+subject to the individual income tax schedule. Individuals had
+incentives to not form juridical organizations to avoid double taxation.
+While corporations were closely supervised by the Superintedent of
+Corporations and are required to have an auditor, all other firms were
+subject to the regular monitoring efforts of the tax authority which
+such suffered from severe limitations and inefficiencies at the time.
 
-Firms overreport their true intermediate inputs \(M^*_{it}\) by
-\(e^{\varepsilon^M_{it}}\) to evade taxes. Then, reported inputs are
+In this case, after the revenue threshold, the tax rate increases
+discretely but the probability of detection does not. The jump in the
+tax rate generates the incentive to increase the evasion, however a
+higher level of evasion increases the cost of evading by increasing the
+probability of detection. If the cost of an increased evasion outweights
+the benefits of growing past the revenue threshold, firm would bunch
+below the cutoff.
 
-\[
-M_{it}=M^*_{it}e^{\varepsilon^M_{it}}   
-\]
+\hypertarget{case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}{%
+\subsection{Case 4 (Mexico): Irreversible change in tax regime after a
+revenue
+threshold}\label{case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}}
 
-with \(\varepsilon_{it}^M\ge0\) and
-\(\varepsilon_{it}^M\not\perp M^*_{it}\). A simple model of tax evasion
-through input overreporting can be found in the appendix.
+In Mexico, firms with annual revenues below 2 million pesos are taxed
+under the REPECO (\emph{Regime de Pequeños Contribuyentes}) regime of
+small contributors at 2 percent of annual revenues, while firms above
+that threshold are taxed under the general regime at 30 percent. Firms
+must transition to the general regime if revenues increase beyond the
+threshold. Once in the general regime, firms cannot revert to the REPECO
+regime.
 
-It is fairly easy to see that the productivity bias, the difference
-between the naively estimated \(\tilde\omega_{it}\) and true
-productivity \(\omega_{it}\) is as follows:
+Firms' decision is now dynamic. Firms will maximize the sum of current
+and future after-tax profits. The discrete jump in the tax rate will
+lead to a bunchigh below the threshold. Moreover, the bunching will be
+exacerbated because firms will choose to grow past the cutoff only if
+the future productivity shocks allow the firm to continue to be
+profitable.
 
-\[
- \mathbb{E}[\tilde\omega_{it}|\mathcal{I}_{it}]-
-    \mathbb{E}[\omega_{it}|\mathcal{I}_{it}] \le
-      \ln\mathbb{E}\left[
-        \frac{G(M^*_{it}, K_{it}, L_{it})}{G(M^*_{it}e^{\varepsilon^M_{it}}, K_{it}, L_{it})}\Bigg|\mathcal{I}_{it}\right] \le 0
-\]
+\hypertarget{colombia-1981-1991}{%
+\section{Colombia 1981-1991}\label{colombia-1981-1991}}
 
-Where \(\mathcal{I}\) stands for the information set of firm \(i\) in
-time \(t\).
+\hypertarget{colombian-corporate-tax-system}{%
+\subsection{Colombian Corporate Tax
+System}\label{colombian-corporate-tax-system}}
 
-The previous result holds because of Jensen's inequality and because
-\(G(\cdot)\) is monotonically increasing in its arguments.
+The relevant corporate taxes for input overreporting are the Corporate
+Income Tax and the Sales Tax that (gradually transformed into a kind of
+Value-Added Tax).
 
-\hypertarget{identification-strategy}{%
-\section{Identification strategy}\label{identification-strategy}}
+High levels of overall tax evasion during the period. No penalties,
+inefficient monitoring system, overburdened authority, and legal
+loopholes.
 
-My identification assumption is motivated by the empirical evidence
-showing that very large firms do not evade taxes by input overreporting
-\citep{Carrillo2022}. Hence, I assume I know the quantile of the size
-distribution of compliant firms.
+\hypertarget{corporate-income-tax}{%
+\subsubsection{Corporate Income tax}\label{corporate-income-tax}}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, rightrule=.15mm, arc=.35mm, breakable, left=2mm, toprule=.15mm, bottomrule=.15mm, leftrule=.75mm, colback=white]
+The Corporate Income Tax depended on the type of juridical organization
+of the firm. For tax purposes, we can classify firms as Corporations,
+Partnerships, Limited Liability Companies, and Individual
+Proprietorships.
 
-\begin{ass}[Non-evaders]\label{ass-comp}
-Firms above percentile $s$ do not overreport inputs $$\mathbb{E}[\varepsilon^M_{it}|S_{it}>s]=0$$
-\end{ass}
+Corporations were taxed at a fixed rate of 40\%, while Partnerships and
+Limited Liability companies at 20\%. Individual proprietors were subject
+to the graduated Individual Tax Schedule consisting of 56 rates, ranging
+from 0.50 to 51 percent.
 
-\end{tcolorbox}
+Corporations were taxed on their distributed dividends, while
+parternships and limited liability companies were taxed on their
+profits, whether or not distributed. Owners of juridical organizations
+were double taxed, at the firm and the individual level, whereas the
+income of proprietorships was taxed only once.
 
-In addition, I impose the following timing assumption.
+Moreover, Corporations were subjecto to the Superindent of Corporations
+and were closely supervised, being required to have an auditor.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, rightrule=.15mm, arc=.35mm, breakable, left=2mm, toprule=.15mm, bottomrule=.15mm, leftrule=.75mm, colback=white]
+Since 1974, individuals and juridical organizations, except for limited
+liability companies, were subject to the minimum presumptive income.
+Rent (income and profits) was presumed to be no less than 8 percent of
+net wealth (assets less depreciation, real estate, livestock,
+securities). Firms with profits lower than 8 percent of their wealth had
+incentives to underreport capital. Firms with larger profits had
+incentives to overreport inputs and underreport sales.
 
-\begin{ass}\label{ass-ind}
-Firms choose overreporting $\varepsilon^M_{it}$ \emph{before} the output shock $\varepsilon^Y_{it}$
-\end{ass}
+Exemptions were granted for automobile producers, private electrical
+companies, airlines, publishing, and reforestation sectors, and for
+various activities in selected regions (primarily ``frontier'' and other
+less developed ones).
 
-\end{tcolorbox}
+\hypertarget{sales-taxes}{%
+\subsubsection{Sales taxes}\label{sales-taxes}}
 
-Assumption \ref{ass-ind} implies that input overreporting is independent
-of the current period output shock,
-\(\varepsilon^M_{it} \perp \varepsilon^Y_{it}\). In the literature is
-not rare to assume that the output shock is not part of the information
-set of the firms, \(\varepsilon^Y_{it}\not\in \mathcal{I}_t\)
-\citep{Gandhi2020}. Timing and information set assumptions are not
-uncommon for identification strategies in production functions and
-demand estimation \citep{Ackerberg2021, Ackerberg2019}.
+Sales taxes were originally targeted at the manufacturing sector on
+finished goods and imports. Since 1974, manufacturers were allowed to
+credit taxes paid on any purchse made by the firm, except the
+acquisition of capital goods \citep{Perry1990}. The credits worked
+through a system of refunds. Consequently, the tax became a kind of
+value-added tax (VAT). The VAT was extended to many services.
 
-\hypertarget{identifying-the-production-function-parameters}{%
-\subsection{Identifying the production function
-parameters}\label{identifying-the-production-function-parameters}}
+The basic rate was 15 percent. There was also a preferential rate of 6
+percent for ``wage goods'' (clothing, footwear, and major inputs used
+for building popular housing), and a rate of 35 percent for luxury
+goods. Exports, foodstuff, drugs, and textbooks were excluded from the
+begining. Also excluded were inputs, transportation equipment,
+agricultural machinery, and equipment.
 
-Suppose the production function is Cobb-Douglas,
-\(G(M^*_{it}, K_{it}, L_{it})e^{\omega_{it}+\varepsilon^Y_{it}}=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}e^{\omega_{it}+\varepsilon^Y_{it}}\).
-Then, we can use the first-order conditions of the firms' cost
-minimization problem on the flexible input, as in \citet{Gandhi2020},
-and assumption \ref{ass-comp} to recover the production function
-parameter \(\beta\).
+\hypertarget{take-aways}{%
+\subsubsection{Take-aways}\label{take-aways}}
 
-\begin{equation}\protect\hypertarget{eq-foc-cd}{}{
-\begin{aligned}
-    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+\varepsilon^M_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| S_{it}>s\right]&=\ln\beta
-\end{aligned}
-}\label{eq-foc-cd}\end{equation}
+\begin{itemize}
+\tightlist
+\item
+  Corporations are the least likely to evade because the probability of
+  detection is higher for them.
+\item
+  Firms' incentives to overreporting inputs was heterogeneous within
+  industry because it depended on the effective sales tax rate which
+  varied according to the firm's location and sales composition (inputs
+  to other firms, to consumers, to foreign market), and the type of
+  juridical organization.
+\item
+  Individual proprietorships (and maybe low revenue limited liability
+  companies) were likely to bunch at the individual income thresholds.
+\end{itemize}
 
-\(\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]\)
-
-Note that this is the case because
-\(\mathbb{E}[\varepsilon^Y_{it}|S_{it}>s]=\mathbb{E}[\varepsilon^Y_{it}]=0\).
-That is, there is no selection on the output shock. Therefore, as long
-as our measure of size is not structurally related to
-Equation~\ref{eq-foc-cd} --- like output or revenue in the same
-period---, the output elasticity of input, \(\beta\), can be recovered.
-
-\hypertarget{identifying-the-markov-process-of-productivity}{%
-\subsection{Identifying the Markov Process of
-Productivity}\label{identifying-the-markov-process-of-productivity}}
-
-If we were to follow \citet{Gandhi2020} to recover the Markov process of
-productivity, we could only have estimates for firms with size
-\(S_{it}>s\).
-
-\[
-\begin{aligned}
-    \mathcal Y_{it}&\equiv \ln Y_{it}-\varepsilon^Y_{it}-\beta \ln M_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it}= \omega_{it}\\
-    \mathbb{E}[\mathcal Y_{it}|\mathcal Y_{it-1},S_{it}>s] &= \mathbb{E}[\omega_{it}|\omega_{it-1},S_{it}>s] 
-\end{aligned}
-\]
-
-However, it is likely that there would be selection on \(S\), i.e.,
-\(\mathbb{E}[\omega_{it}|S_{it}>s]\not=\mathbb{E}[\omega_{it}]\). In
-other words, larger firms will have a higher probability of getting a
-higher draw of productivity. Therefore, the parameters of the AR(1)
-process of productivity would be biased.
-
-However, for every firm, I can form the following variable using
-observed variables and the production function parameter I recovered
-from the first stage.
-
-\[
-\begin{aligned}
-    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta \notag \\
-    &=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+\varepsilon^M_{it} \notag \\
-    &=-\varepsilon^Y_{it} +\varepsilon^M_{it}
-\end{aligned}
-\]
-
-This is useful because I can recover the tax evasion up to a random
-variable, \(\varepsilon^Y_{it}\), with mean zero and, by assumption
-\ref{ass-ind}, independent of \(\varepsilon^M_{it}\).
-
-Likewise, I can recover the true inputs \(M^*_{it}\) and productivity up
-to \(\varepsilon^Y_{it}\).
-
-\[
-\begin{aligned}
-    \mathcal M_{it}&\equiv \ln M_{it}-\mathcal V_{it}\\
-    & = \ln M^*_{it} +\varepsilon^M_{it}-(\varepsilon^M_{it}- \varepsilon^Y_{it}) \\
-    & = \ln M^*_{it} + \varepsilon^Y_{it} \\
-    \\
-    \mathcal W_{it} & \equiv \ln Y_{it} - \beta\mathcal M_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it}\\
-    & = \beta\ln M^*_{it}+\alpha_K \ln K_{it}+\alpha_L \ln L_{it}+\omega_{it}+\varepsilon^Y_{it}-\beta\ln M^*_{it}-\beta\varepsilon^Y_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it} \\
-    & = \omega_{it}+(1-\beta)\varepsilon^Y_{it}
-\end{aligned}
-\]
-
-I can use \(\mathcal W_{it}\) to recover
-\(\delta=[\delta_0,\delta_1]'\).
-
-\[
-\begin{aligned}
-  \mathbb{E}[\mathcal W_{it}|\mathcal W_{it-1}]=&\\
-  \mathbb{E}[\omega_{it}|\mathcal W_{it-1}]=&\delta_0+\delta_1\mathbb{E}[\omega_{it-1}+(1-\beta)\varepsilon^Y_{it-1}|\mathcal W_{it-1}]\\
-  &-\mathbb{E}[(1-\beta)\varepsilon^Y_{it}|\mathcal W_{it-1}]
-  +\mathbb{E}[\eta_{it}|\mathcal W_{it-1}]\\
-  =&\delta_0+\delta_1\mathbb{E}[\omega_{it-1}|\mathcal W_{it-1}]
-\end{aligned}
-\]
-
-\hypertarget{deconvoluting}{%
-\subsection{Deconvoluting}\label{deconvoluting}}
-
-But I can go further and recover the densities of tax evasion and
-productivity at every period. The key insight is that from the 1st
-stage, I also learn the distribution \(m\) of \(\varepsilon^Y_{it}\).
-Hence, I can use non-parametric density deconvolution methods.
-
-For completeness, I reproduce a result from probability theory that
-allows me to pursue these techniques.
-
-\begin{definition}[]\protect\hypertarget{def-deconv}{}\label{def-deconv}
-
-The density of the sum of two \emph{independent} random variables is
-equal to the \emph{convolution} of the densities of both addends; hence
-
-\[h^d = f^d*m = \int f^d(\mathcal Z^d - \varepsilon^Y)m(\varepsilon^Y)d\varepsilon^y\]
-
-where \(h^d\) is the density of \(\mathcal Z^d\in \{\mathcal{E,X,W}\}\)
-(Meister, 2009)
-
-\end{definition}
-
-The result holds by definition for productivity and true inputs, and by
-assumption \ref{ass-ind} for tax evasion.
-
-Intuitively, for every \(n\)-th moment
-\(\mathbb{E}[(\varepsilon^{Y}_{it})^n|S_{it}>s]=\mathbb{E}[(\varepsilon^{Y}_{it})^n|t]=\mathbb{E}[(\varepsilon^{Y}_{it})^n]\).
-Therefore, I can get any moment of the tax evasion
-\(\varepsilon^M_{it}\) distribution \(\forall t\in T\). For example,
-
-\[
-\begin{aligned}
-  \mathbb{E}[\mathcal E_{it}|t]&=\mathbb{E}[\varepsilon^M_{it}|t]-\mathbb{E}[\varepsilon^Y_{it}]=\mathbb{E}[\varepsilon^M_{it}|t] \\
-  \\
-  \mathbb{Var}[\mathcal E_{it}|t]&=\mathbb{Var}[\varepsilon^M_{it}|t]
-  +\underbrace{\mathbb{Var}[\varepsilon^Y_{it}]}_{known}\\
-\end{aligned}
-\]
-
-Therefore, I can recover the distribution of tax evasion and how it has
-changed over time. Furthermore, I can do the same with true inputs
-\(M_{it}^*\) and productivity \(\omega_{it}\).
-
-Moreover, I can get any mixed moment
-\(\mathbb{E}[(\mathcal{Z}^c, \mathcal{Z}^d)^n|t]\) and learn how tax
-evasion changes with productivity, for instance, and how this
-relationship has evolved.
-
-\[
-\mathbb{Cov}[\mathcal{E}_{it},\mathcal{W}_{it}|t]=\mathbb{E}[\varepsilon^M_{it}\omega_{it}|t]
--\underbrace{
-(1-\beta)\mathbb{E}[(\varepsilon^{Y}_{it})^2]-\mathbb{E}[\varepsilon^M_{it}|t]\mathbb{E}[\omega_{it}|t]}_{
-known
-}
-\]
-
-\hypertarget{colombia-1981-1991-an-application}{%
-\section{Colombia 1981-1991: an
-application}\label{colombia-1981-1991-an-application}}
+\hypertarget{fiscal-reforms}{%
+\subsection{Fiscal Reforms}\label{fiscal-reforms}}
 
 During this period, Colombia went through three major fiscal reforms
-(1983, 1986, 1990). The 1983 reform increased the value-added tax (VAT)
-from 6\% to 10\% and expanded the number of the products and services
-that were levied. In addition, the 1983 fiscal reform required firms
-with profits over COL\$ 200,000 and owned by individuals to pay profit
-taxes. The 1986 reform relocated the tax collection and reception of tax
-reports to the banking system, among other things. The 1990 reform
-increased the VAT from 10\% to 12\%. See section the appendix for more
-details on the fiscal reforms.
+(1983, 1986, 1990).
+
+\hypertarget{section}{%
+\subsubsection{1983}\label{section}}
+
+The 1983 reform tried to alleviate the double taxation by introducing a
+tax credit of 10\% of dividends received for individuals.
+
+In addition, Law 9 of 1983 instituted a measure of presumptive income
+equal to 2 percent of gross receipts to supplement the measure based on
+net wealth. This reform was aimed specifically at the commerce and
+service sectors; the former were thought to evade the wealth-based
+presumptive tax by systematically understating inventories. In addition,
+it extended the presumptive income tax to limited liability companies.
+
+In 1983, the value-added tax (VAT) was extended to the retail level,
+with a \emph{simplified system} being made available to small retailers
+in the effort to ease compliance costs and administrative burden.
+
+The 1983 reform realively unified the value-added tax (VAT) rates by
+combining previously taxed goods at 6\% and 15 percent into 10\%. The
+number of the products and services that were levied expanded.
+
+In 1984, exemptions for agricultural machinery, transportation
+equipment, and certain other goods were eliminated.
+
+\hypertarget{section-1}{%
+\subsubsection{1986}\label{section-1}}
+
+The 1986 reforms unified the taxation of corporations and limited
+liability companies by taxing both at a rate of 30\%. The top tax rate
+applied to individual income was reduced from 49 to 30\%.
+
+Double taxation was eliminated. The reform exempted corporate dividends
+and participation in profits of limited liability companies from tax at
+the individual shareholder/owner level.
+
+Lastly, the 1986 reform relocated the tax collection and reception of
+tax reports to the banking system, among other things.
+
+\hypertarget{section-2}{%
+\subsubsection{1990}\label{section-2}}
+
+The 1990 reform increased the VAT from 10\% to 12\%. See section the
+appendix for more details on the fiscal reforms.
 
 Intuitively, we expect higher levels of tax evasion if tax rates
 increase. On the other hand, reporting more information to the authority
@@ -882,339 +721,176 @@ of production functions and productivity before. The dataset comes from
 the Annual Survey of Manufacturing (EAM) and contains information about
 manufacturing firms with more than 10 employees from 1981 to 1991.
 
-A simple graphical analysis shows that the average (of the log)
-intermediates cost share of sales started growing after 1983 and that it
-stabilized in 1988 after the policy changes of the 1986 reform settled
-in (Figure~\ref{fig-logshare}). The dataset does not capture any changes
-after the 1990 reform, although there is only one more year of data.
+Besides the information on output, intermediates, capital, and labor,
+the dataset includes the type of juridical organization, the sales
+taxes, and the metropolitan area and country region.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/log_share_byy.png}
+{\centering \includegraphics{Tax-Prod_files/figure-pdf/fig-revenue-hist-bunch-0-1.pdf}
 
 }
 
-\caption{\label{fig-logshare}Input's cost share of sales, average by
-year of the logs.}
+\caption{\label{fig-revenue-hist-bunch-0}Revenue distribution Juridical
+Org. 0 (81-83)}
 
 \end{figure}
-
-Furthermore, we can appreciate in Figure~\ref{fig-ls-ntax} two different
-patterns before and after the threshold where firms start being required
-to report and pay profit taxes. We can observe that the intermediate's
-cost share decreases abruptly by the 20th percentile. Then, it reaches
-its minimum by the percentile 25th and starts growing up till the end of
-the distribution.
-
-Before the 25th percentile, firms only file and pay VAT, starting in the
-25th percentile, firms report and pay in addition profit taxes. In other
-words, the information they have to provide to the authority is greater.
-The bunching before the 25th percentile is also informative about firms'
-beliefs of the probability of getting caught evading, or the difficulty
-for firms in evading as they report more information to the authority.
-
-In addition, Colombia has a progressive profit tax schedule. Firms with
-higher profits pay a higher tax rate. Higher tax rates lead to increased
-incentives to evade them; a plausible explanation of why the increasing
-pattern.
 
 \begin{figure}
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/select_disc_lag_log_sales_tax_20.png}
+{\centering \includegraphics{Tax-Prod_files/figure-pdf/fig-revenue-hist-bunch-1-1.pdf}
 
 }
 
-\caption{\label{fig-ls-ntax}Input's cost share of sales, average by
-percentile of sales taxes paid the previous year (in logs, groupings of
-5 percentiles).}
+\caption{\label{fig-revenue-hist-bunch-1}Revenue distribution Juridical
+Org. 1 (81-83)}
 
 \end{figure}
 
-As a validation exercise, we can see that the VAT changes induced by the
-three fiscal reforms are captured in the dataset. Figure~\ref{fig-vat}
-shows that the sales tax increased to 10\% after the 1983 reform, and
-then around 12\% after the 1990 reform.
+\begin{equation}\protect\hypertarget{eq-reg-tax-jo}{}{
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+}\label{eq-reg-tax-jo}\end{equation}
 
-\begin{figure}
-
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/share_sales_tax_byy.png}
-
-}
-
-\caption{\label{fig-vat}Sale taxes paid as share of sales, average by
-year.}
-
-\end{figure}
-
-Just as an exercise to see if other economic changes in this period were
-driving the apparent changes in overreporting, Figure~\ref{fig-logsales}
-shows that sales, for instance, were not exactly following the changes
-in fiscal policy. Sales start to grow during 1983, the year of the
-reform, whereas the cost share of sales started to grow the year after.
-Likewise, sales fall in 1986, while the cost share seems to reduce its
-growth after 1986.
-
-\begin{figure}
-
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/log_sales_byy.png}
-
-}
-
-\caption{\label{fig-logsales}Sales in logs, annual mean.}
-
-\end{figure}
-
-\hypertarget{empirical-evidence}{%
-\section{Empirical evidence}\label{empirical-evidence}}
-
-To inform the empirical application, I analyze Figure~\ref{fig-ls-ntax}
-by year, focusing on the years around the policy change of 1983.
-Figure~\ref{fig-ls-83} shows the mean of the intermediate's cost share
-of sales (mean log share, henceforth) by percentile of the sales taxes
-paid the previous year and by year, only for 1982 to 1984.
-
-\begin{figure}
-
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{../Results/Figures/Colombia/night_disc_byy_lag_log_sales_tax_82-83-84_20.png}
-
-}
-
-\caption{\label{fig-ls-83}Input's cost share of sales, average by
-percentile of sales taxes paid the previous year and by year (in logs).}
-
-\end{figure}
-
-The first observation that jumps into view is that the firms that in
-1982 only paid VAT and were required to pay profit taxes in 1983 seem to
-decrease their intermediates' cost share of sales drastically in 1983,
-precisely. Please note how the mean log share of the 20th percentile
-(4/20 in Figure~\ref{fig-ls-83}) drops significantly from 1982 to 1983.
-
-The second consideration is that there is a generalized increase in the
-mean log share from 1983 to 1984 across almost all the distribution.
-Although the increases differ across the percentiles of the
-distribution, the highest 10\% of the distribution increased the least.
-This makes sense if the tax authority scrutinizes with the finest detail
-the firms paying the greatest tax bill.
-
-Based on this graphical analysis, I investigate with a simple empirical
-model 1) how the firms required to pay profit taxes by the 1983 reform
-adjusted their tax evasion and 2) the change in overreporting induced by
-the 1983 and 1986 reforms in subsequent years.
-
-On one hand, as Figure~\ref{fig-ls-83} suggests, I expect firms required
-to report and pay profit taxes to reduce their tax evasion. This might
-seem counterintuitive as higher taxes will increase the incentive to
-evade. These firms however have now to report more information to the
-tax authority increasing the difficulty to evade. In addition, firms had
-to adjust their beliefs about the probability of being caught evading
-taxes under the additional required information. On the other hand,
-Figure~\ref{fig-logshare} and Figure~\ref{fig-ls-83} suggest that tax
-evasion increased after the 1983 reform and it ceased to grow after the
-1986 reform.
-
-Of course, we would like to control for other factors that might have
-affected the log share during these years. We would need to control also
-for industry and regional variation. Consequently, to test the change in
-overreporting by firms required to pay profit taxes in 1983 (20th
-percentile in Figure~\ref{fig-ls-83}), I use as the control group the
-firms at the 10 and 95 percentile of the distribution. The intuition is
-that these firms were not affected by this fiscal policy change.
-Furthermore, firms in the 10th percentile are more similar to the
-affected firms than the ones at the 95th percentile. However, the firms
-at the 95th percentile receive the most attention from the tax
-authority, consequently, they are less likely to adjust their log share
-because of tax evasion motives. Likewise, I use the 95th percentile
-firms as the control group to test the change in overreporting induced
-by the 1983 and 1986 reforms. For these two specifications, the base
-year is 1983 and 1986 respectively.
-
-The results of the estimations in Table~\ref{tbl-did-change-threshold}
-show that firms that were required to report and pay profit taxes in
-1983 because of the change in the threshold reduced their tax evasion
-through cost overreporting by 14\%. Table~\ref{tbl-did-1983} shows that
-tax evasion grew between 8\% and 9\% in 1985 and 1986, following the
-increased value-added tax rates of the 1983 fiscal reform. Finally,
-Table~\ref{tbl-did-1986} indicates that the tax evasion growth came to a
-halt after 1986, as the subsequent years do not show a significant
-increase with respect 1986.
-
-\hypertarget{tbl-did-change-threshold}{}
-\begingroup
-\centering
+\hypertarget{tbl-reg-tax-jo}{}
 \begin{table}
-\caption{\label{tbl-did-change-threshold}1983 Reform, Change in Threshold }\tabularnewline
+\caption{\label{tbl-reg-tax-jo}Sales tax and Juridical Organization type effect on the log share of
+intermediate inputs. }\tabularnewline
 
 \centering
-\begin{tabular}{lcc}
-   \tabularnewline \midrule \midrule
-   Dependent Variable: & \multicolumn{2}{c}{Inter. cost share of sales (logs)}\\
-   Model:                                & (1)             & (2)\\  
-   \midrule
-   \emph{Variables}\\
-   Affected firms                        & 0.0003          & 0.0061\\   
-                                         & (0.0309)        & (0.0309)\\   
-   Year of 1983                          & -0.0090         & -0.0091\\   
-                                         & (0.0212)        & (0.0208)\\   
-   Affected firms $\times$ Year of 1983  & -0.1531$^{***}$ & -0.1543$^{***}$\\   
-                                         & (0.0456)        & (0.0457)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   Industry                              & Yes             & Yes\\  
-   Metropolitian area                    &                 & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                          & 1,714           & 1,714\\  
-   R$^2$                                 & 0.17053         & 0.17614\\  
-   Within R$^2$                          & 0.01889         & 0.01825\\  
-   \midrule \midrule
-   \multicolumn{3}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}\\
-   \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\begin{tabular}[t]{l|l|l|l|l}
+\hline
+ & feols(log_shar..1 & feols(log_share..2 & feols(log_share..3 & feols(log_share..4\\
+\hline
+ & (1) & (2) & (3) & (4)\\
+\hline
+Dependent Var.: & \(log(s)\) & \(log(s)\) & \(log(s)\) & \(log(s)\)\\
+\hline
+ &  &  &  & \\
+\hline
+Sales Tax Rate & 0.5941** (0.1366) & 0.7719*** (0.0976) & 0.7719*** (0.0973) & 0.7520*** (0.1001)\\
+\hline
+J. Org. (0) & 0.4412** (0.1081) & 0.4285** (0.1088) & 0.4285** (0.1082) & 0.4249** (0.1064)\\
+\hline
+J. Org. (1) & 0.4492** (0.1077) & 0.4429** (0.1088) & 0.4429** (0.1082) & 0.4376** (0.1069)\\
+\hline
+J. Org. (2) & 0.4596** (0.1145) & 0.4434** (0.1141) & 0.4434** (0.1134) & 0.4480** (0.1116)\\
+\hline
+J. Org. (3) & 0.2757* (0.1145) & 0.3033* (0.1109) & 0.3033* (0.1104) & 0.3023* (0.1087)\\
+\hline
+J. Org. (4) & 0.4509** (0.1025) & 0.4471** (0.1035) & 0.4471** (0.1029) & 0.4431** (0.1014)\\
+\hline
+J. Org. (5) & 0.4619** (0.1193) & 0.4534** (0.1210) & 0.4534** (0.1204) & 0.4482** (0.1189)\\
+\hline
+J. Org. (6) & 0.3464** (0.0979) & 0.3397** (0.0973) & 0.3397** (0.0968) & 0.3369** (0.0964)\\
+\hline
+J. Org. (7) & 0.5487** (0.1571) & 0.5196** (0.1579) & 0.5196** (0.1571) & 0.5229** (0.1553)\\
+\hline
+J. Org. (8) & 0.2637. (0.1430) & 0.3024. (0.1377) & 0.3024. (0.1370) & 0.3068* (0.1349)\\
+\hline
+Fixed-Effects: & ----------------- & ------------------ & ------------------ & ------------------\\
+\hline
+Industry & No & Yes & Yes & Yes\\
+\hline
+Year & No & No & Yes & Yes\\
+\hline
+Metro Area & No & No & No & Yes\\
+\hline
+_______________ & _________________ & __________________ & __________________ & __________________\\
+\hline
+S.E.: Clustered & by: Industry & Year & by: Industry & Year & by: Industry & Year & by: Industry & Year\\
+\hline
+Observations & 41,467 & 41,467 & 41,467 & 41,467\\
+\hline
+R2 & 0.57951 & 0.59731 & 0.59731 & 0.60142\\
+\hline
+Within R2 & -- & 0.54058 & 0.53633 & 0.53876\\
+\hline
 \end{tabular}
 \end{table}
 
-\par\endgroup
+\begin{equation}\protect\hypertarget{eq-reg-tax-fp}{}{
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \mathbf{\beta}_1'JurOrg_i + \beta_2FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+}\label{eq-reg-tax-fp}\end{equation}
 
-\hypertarget{tbl-did-1983}{}
-\begingroup
-\centering
+\hypertarget{tbl-reg-fiscal-p}{}
 \begin{table}
-\caption{\label{tbl-did-1983}1983 Fiscal Reform }\tabularnewline
+\caption{\label{tbl-reg-fiscal-p}Juridical Organization type per fiscal period effect on the log share of
+intermediate inputs. }\tabularnewline
 
 \centering
-\begin{tabular}{lcc}
-   \tabularnewline \midrule \midrule
-   Dependent Variable: & \multicolumn{2}{c}{Inter. cost share of sales (logs)}\\
-   Model:                          & (1)            & (2)\\  
-   \midrule
-   \emph{Variables}\\
-   1-15\% $\times$ Year of 1984    & 0.0039         & 0.0052\\   
-                                   & (0.0281)       & (0.0280)\\   
-   20-50\% $\times$ Year of 1984   & 0.0226         & 0.0210\\   
-                                   & (0.0217)       & (0.0216)\\   
-   55-75\% $\times$ Year of 1984   & 0.0099         & 0.0098\\   
-                                   & (0.0213)       & (0.0212)\\   
-   80-95\% $\times$ Year of 1984   & 0.0284         & 0.0294\\   
-                                   & (0.0219)       & (0.0219)\\   
-   1-15\% $\times$ Year of 1985    & 0.0536$^{*}$   & 0.0534$^{*}$\\   
-                                   & (0.0275)       & (0.0275)\\   
-   20-50\% $\times$ Year of 1985   & 0.0762$^{***}$ & 0.0737$^{***}$\\   
-                                   & (0.0219)       & (0.0218)\\   
-   55-75\% $\times$ Year of 1985   & 0.0753$^{***}$ & 0.0751$^{***}$\\   
-                                   & (0.0215)       & (0.0214)\\   
-   80-95\% $\times$ Year of 1985   & 0.0801$^{***}$ & 0.0796$^{***}$\\   
-                                   & (0.0225)       & (0.0224)\\   
-   1-15\% $\times$ Year of 1986    & -0.0271        & -0.0249\\   
-                                   & (0.0267)       & (0.0267)\\   
-   20-50\% $\times$ Year of 1986   & 0.0681$^{***}$ & 0.0662$^{***}$\\   
-                                   & (0.0211)       & (0.0210)\\   
-   55-75\% $\times$ Year of 1986   & 0.0827$^{***}$ & 0.0829$^{***}$\\   
-                                   & (0.0207)       & (0.0207)\\   
-   80-95\% $\times$ Year of 1986   & 0.0784$^{***}$ & 0.0800$^{***}$\\   
-                                   & (0.0216)       & (0.0216)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   Industry                        & Yes            & Yes\\  
-   Metropolitian area              &                & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                    & 24,953         & 24,953\\  
-   R$^2$                           & 0.14193        & 0.14779\\  
-   Within R$^2$                    & 0.03795        & 0.03590\\  
-   \midrule \midrule
-   \multicolumn{3}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}\\
-   \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\begin{tabular}[t]{l|l|l|l|l}
+\hline
+ & ..1 & ..2 & ..3 & ..4\\
+\hline
+ & (1) & (2) & (3) & (4)\\
+\hline
+Dependent Var.: & \(log(s)\) & \(log(s)\) & \(log(s)\) & \(log(s)\)\\
+\hline
+ &  &  &  & \\
+\hline
+J. Org. (0) x 83-86 fiscal period & -0.1112 (0.0647) & -0.1134 (0.0643) & -0.1019 (0.0612) & -0.1035 (0.0637)\\
+\hline
+J. Org. (1) x 83-86 fiscal period & -0.1163. (0.0619) & -0.1171. (0.0622) & -0.1091. (0.0592) & -0.1113. (0.0613)\\
+\hline
+J. Org. (2) x 83-86 fiscal period & -0.1462 (0.0888) & -0.1444 (0.0896) & -0.1308 (0.0866) & -0.1321 (0.0887)\\
+\hline
+J. Org. (3) x 83-86 fiscal period & -0.0793 (0.0605) & -0.0853 (0.0614) & -0.0779 (0.0583) & -0.0808 (0.0604)\\
+\hline
+J. Org. (4) x 83-86 fiscal period & -0.1401. (0.0722) & -0.1384. (0.0733) & -0.1260 (0.0699) & -0.1276 (0.0720)\\
+\hline
+J. Org. (5) x 83-86 fiscal period & -0.1068 (0.0592) & -0.1047 (0.0596) & -0.0963 (0.0570) & -0.0982 (0.0592)\\
+\hline
+J. Org. (6) x 83-86 fiscal period & -0.1566. (0.0827) & -0.1530. (0.0816) & -0.1474. (0.0805) & -0.1495. (0.0824)\\
+\hline
+J. Org. (7) x 83-86 fiscal period & -0.1840** (0.0545) & -0.1856** (0.0539) & -0.1747** (0.0516) & -0.1777** (0.0542)\\
+\hline
+J. Org. (8) x 83-86 fiscal period & -0.1989** (0.0540) & -0.1980* (0.0646) & -0.1896* (0.0612) & -0.1923* (0.0628)\\
+\hline
+J. Org. (0) x 87-91 fiscal period & -0.2045*** (0.0224) & -0.2146*** (0.0203) & -0.1936*** (0.0209) & -0.1938*** (0.0229)\\
+\hline
+J. Org. (1) x 87-91 fiscal period & -0.1942*** (0.0224) & -0.2028*** (0.0226) & -0.1858*** (0.0223) & -0.1856*** (0.0243)\\
+\hline
+J. Org. (2) x 87-91 fiscal period & -0.1675. (0.0832) & -0.1776. (0.0805) & -0.1536. (0.0794) & -0.1541. (0.0813)\\
+\hline
+J. Org. (3) x 87-91 fiscal period & -0.1631*** (0.0254) & -0.1832*** (0.0232) & -0.1676*** (0.0228) & -0.1667*** (0.0242)\\
+\hline
+J. Org. (4) x 87-91 fiscal period & -0.2694*** (0.0439) & -0.2738*** (0.0462) & -0.2533*** (0.0455) & -0.2533*** (0.0465)\\
+\hline
+J. Org. (5) x 87-91 fiscal period & -0.1904*** (0.0272) & -0.1995*** (0.0262) & -0.1803*** (0.0265) & -0.1799*** (0.0279)\\
+\hline
+J. Org. (6) x 87-91 fiscal period & -0.1127 (0.0655) & -0.1256. (0.0667) & -0.1120 (0.0634) & -0.1117 (0.0644)\\
+\hline
+J. Org. (7) x 87-91 fiscal period & -0.2389*** (0.0500) & -0.2454*** (0.0521) & -0.2212** (0.0520) & -0.2209** (0.0530)\\
+\hline
+J. Org. (8) x 87-91 fiscal period & -0.2547*** (0.0393) & -0.2593*** (0.0558) & -0.2429** (0.0547) & -0.2424** (0.0548)\\
+\hline
+Fixed-Effects: & ------------------- & ------------------- & ------------------- & -------------------\\
+\hline
+Industry & No & Yes & Yes & Yes\\
+\hline
+Metro Area & No & No & Yes & Yes\\
+\hline
+Year & No & No & No & Yes\\
+\hline
+_________________________________ & ___________________ & ___________________ & ___________________ & ___________________\\
+\hline
+S.E.: Clustered & by: Industry & Year & by: Industry & Year & by: Industry & Year & by: Industry & Year\\
+\hline
+Observations & 41,467 & 41,467 & 41,467 & 41,467\\
+\hline
+R2 & 0.56230 & 0.57858 & 0.58367 & 0.58420\\
+\hline
+Within R2 & -- & 0.51921 & 0.52254 & 0.51882\\
+\hline
 \end{tabular}
 \end{table}
-
-\par\endgroup
-
-\hypertarget{tbl-did-1986}{}
-\begingroup
-\centering
-\begin{table}
-\caption{\label{tbl-did-1986}1986 Fiscal Reform }\tabularnewline
-
-\centering
-\begin{tabular}{lcc}
-   \tabularnewline \midrule \midrule
-   Dependent Variable: & \multicolumn{2}{c}{Inter. cost share of sales (logs)}\\
-   Model:                          & (1)      & (2)\\  
-   \midrule
-   \emph{Variables}\\
-   1-15\% $\times$ Year of 1987    & 0.0107   & 0.0108\\   
-                                   & (0.0249) & (0.0248)\\   
-   20-50\% $\times$ Year of 1987   & -0.0031  & -0.0029\\   
-                                   & (0.0198) & (0.0196)\\   
-   55-75\% $\times$ Year of 1987   & -0.0102  & -0.0095\\   
-                                   & (0.0197) & (0.0196)\\   
-   80-95\% $\times$ Year of 1987   & 0.0181   & 0.0178\\   
-                                   & (0.0201) & (0.0199)\\   
-   1-15\% $\times$ Year of 1988    & 0.0019   & -0.0053\\   
-                                   & (0.0263) & (0.0262)\\   
-   20-50\% $\times$ Year of 1988   & 0.0198   & 0.0125\\   
-                                   & (0.0194) & (0.0192)\\   
-   55-75\% $\times$ Year of 1988   & 0.0184   & 0.0116\\   
-                                   & (0.0195) & (0.0194)\\   
-   80-95\% $\times$ Year of 1988   & 0.0187   & 0.0115\\   
-                                   & (0.0199) & (0.0198)\\   
-   1-15\% $\times$ Year of 1989    & 0.0321   & 0.0226\\   
-                                   & (0.0248) & (0.0247)\\   
-   20-50\% $\times$ Year of 1989   & 0.0190   & 0.0113\\   
-                                   & (0.0192) & (0.0191)\\   
-   55-75\% $\times$ Year of 1989   & -0.0065  & -0.0140\\   
-                                   & (0.0193) & (0.0191)\\   
-   80-95\% $\times$ Year of 1989   & 0.0071   & -0.0021\\   
-                                   & (0.0199) & (0.0198)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   Industry                        & Yes      & Yes\\  
-   Metropolitian area              &          & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                    & 28,137   & 28,137\\  
-   R$^2$                           & 0.13303  & 0.14011\\  
-   Within R$^2$                    & 0.04402  & 0.04108\\  
-   \midrule \midrule
-   \multicolumn{3}{l}{\emph{Heteroskedasticity-robust standard-errors in parentheses}}\\
-   \multicolumn{3}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
-\end{tabular}
-\end{table}
-
-\par\endgroup
-
-\hypertarget{conclusions}{%
-\section*{Conclusions}\label{conclusions}}
-\addcontentsline{toc}{section}{Conclusions}
-
-I provide a new estimation strategy to jointly recover tax evasion
-through cost overreporting and productivity that only requires commonly
-available firm-level data.
-
-Studying manufacturing firms from Colombia, I show that the method can
-be used to investigate tax evasion using surveys and fiscal policy
-changes. The 1983 reform required firms with profits above COL\$ 200,000
-or more to report income tax in 1983 in addition to the value-added tax.
-These firms reduced their tax evasion by cost overreporting by 14\%
-likely due to the additional information firms needed to report and the
-adjustment in their beliefs on the probability of getting caught
-evading.
-
-Likewise, the evidence suggests that this type of tax evasion increased
-after the reform of 1983 between 8 and 9\% in 1985 and 1986. The
-increase in value-added tax likely amplified the incentives to evade.
-This result stands at odds with previous studies that indicate that the
-evasion of income tax and VAT declined during this period (Sanchez \&
-Gutierrez, 1994). Finally, evidence suggests that tax evasion growth
-came to a halt after the 1986 reform where the banking system took over
-the tax collection and reception of tax reports from the tax authority.
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
 \addcontentsline{toc}{section}{References}
 
 \renewcommand{\bibsection}{}
-\bibliography{biblio/export.bib,biblio/export2.bib,biblio/export31072022.bib,biblio/b100422.bib,biblio/b270123.bib}
+\bibliography{biblio/export.bib,biblio/export2.bib,biblio/export3.bib,biblio/export31072022.bib,biblio/b100422.bib,biblio/b270123.bib}
 
 
 
