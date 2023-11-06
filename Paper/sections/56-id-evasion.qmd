@@ -1,0 +1,83 @@
+## Identification Strategy
+
+Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations.
+
+
+::: {.Assumption #ass-non-ev title="Non-Evaders"}
+Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\Theta^{Non-Evaders}$ that do not evade by overreporting inputs.
+:::
+
+For those firms, then $\mathbb{E}[e_{it}|\theta_i\in\Theta^{Non-Evaders}]=0$
+
+In addition, I impose the following timing assumption.
+
+::: {.Assumption #ass-ind title="Independence"}
+Firms choose overreporting $e_{it}$ *before *the output shock $\varepsilon^Y_{it}$
+:::
+
+Assumption \ref{ass-ind} implies that input overreporting is independent of the current period output shock, $e_{it} \perp \varepsilon^Y_{it}$. In the literature is not rare to assume that the output shock is not part of the information set of the firms, $\varepsilon^Y_{it}\not\in \mathcal{I}_t$ [@Gandhi2020]. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation [@Ackerberg2021; @Ackerberg2019].
+
+### Identifying the production function parameters 
+
+Suppose the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon^Y_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon^Y_{it})$. Then, we can use the first-order conditions of the firms' cost minimization problem on the flexible input, as in @Gandhi2020, and assumption \ref{ass-non-ev} to recover the production function parameter $\beta$.
+
+$$
+\begin{aligned}
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{Non-Evaders}\right]&=\ln\beta
+\end{aligned}
+$$ {#eq-foc-cd}
+
+$\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]$
+
+Note that this is the case because $\mathbb{E}[\varepsilon^Y_{it}|\Theta^{Non-Evaders}]=\mathbb{E}[\varepsilon^Y_{it}]=0$. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to  @eq-foc-cd --- like output or revenue in the same period---, the output elasticity of input, $\beta$, can be recovered.
+
+### Identifying Tax Evasion
+
+I can form the following variable using observed variables and the production function parameter I recovered from the first stage. 
+
+$$
+\begin{aligned}
+    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta \notag \\
+    &=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+e_{it} \notag \\
+    &=-\varepsilon^Y_{it} +e_{it}
+\end{aligned}
+$$
+
+This is useful because I can recover the tax evasion up to a random variable, $\varepsilon^Y_{it}$, with mean zero and, by assumption \ref{ass-ind}, independent of $e_{it}$.
+
+### Non-Parametric Identification
+
+$\ln\left(\frac{\rho M}{PY}\right)=D^{\mathcal{E}}(K,L,M)-\varepsilon^Y$
+
+$$
+\begin{aligned}
+\ln\left(\frac{\rho M}{PY}\right)-D^{\mathcal{E}}(K,L,M)& \\
+&=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
+&=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
+&+\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&-\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right] \\
+&=\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*) \\
+&+\left[\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln\left(\frac{\rho(M^*)}{PY}\right)\right]\\
+&-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&= -\varepsilon^Y \\
+&+\left[D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon^Y-D^{\mathcal{E}}(K,L,M^*)+\varepsilon^Y\right]\\
+&-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&= -\varepsilon^Y
+\end{aligned}
+$$
+
+$\ln\left(\frac{\rho E}{PY}\right)=D^{\mathcal{E}}(K,L,E,M)-\varepsilon^Y$
+
+$$
+\begin{aligned}
+\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M)& \\
+&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
+&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
+&+\left[D^{\mathcal{E}}(K,L,E,M^*)\right]\\
+&-\left[D^{\mathcal{E}}(K,L,E,M^*)\right] \\
+&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*) \\
+&-\left[D^{\mathcal{E}}(K,L,E,M^*+e)-D^{\mathcal{E}}(K,L,E,M^*)\right]\\
+&= -\varepsilon^Y(M^*) - \delta(K,L,E,M^*+e)
+\end{aligned}
+$$

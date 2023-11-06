@@ -8,18 +8,18 @@ $$ {#eq-prod-fn}
 
 As standard in the literature, productivity $\omega_{it}$ is known to firms when they take input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock $\varepsilon_{it}$ is not part of the firms' information set. 
 
-The model departs from the literature by allowing firms to overreport their inputs $e_{it}$ to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax $\tau$, the evasion penalty/cost $\kappa(e)$, and the probability of detection $q_{it}(e_{it}|\theta_{it})$.
+The model departs from the literature by allowing firms to overreport their inputs $e_{it}$ to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax $\tau$, the evasion penalty/cost $\kappa(e)$, and the probability of detection $q(e_{it}|\theta_{it})$.
 
 Firms solve @eq-eva
 $$
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
-  +q_{it}(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
   \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$ {#eq-eva}
 
-The probability of detection $q_{it}(e_{it}|\theta_{it})$ is monotonically increasing in the amount evaded $e_{it}$, conditional on the type of the firm $\theta_{it}$. Intuitively, for a given type, firms that evade more are more likely to get caught. 
+The probability of detection $q(e_{it}|\theta_{it})$ is monotonically increasing in the amount evaded $e_{it}$, conditional on the type of the firm $\theta_{it}$. Intuitively, for a given type, firms that evade more are more likely to get caught. 
 
 The type of the firm $\theta_{it}$ might be discrete, like the type of juridical organization, or continuous, like the level of revenue[^rev-tax]. Some types might be more likely to be detected if the firm engages in tax evasion. For example, in contrast to other types of juridical organizations in Colombia, corporations are closely supervised and are required to have an auditor. That is, for a given level of tax evasion $e_0$ and two different types $\theta' \not= \theta \in \mathbfcal{\Theta}$, then $q(e_0|\theta')\ge q(e_0|\theta)$.
 
@@ -33,8 +33,8 @@ The optimal decision of the firm will depend on the fiscal environment $\Gamma=\
 The firms' problem (@eq-eva) can be rewritten as follows,
 $$
 \begin{aligned}
-  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q_{it}(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
-  -q_{it}(e_{it}|\theta_{it})\kappa(e_{it}) \\
+  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
+  -q(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$
@@ -116,17 +116,31 @@ Besides the higher levels of evasion before the threshold —simply because of t
 - Bunching effects are real. Bunching firms optimally forgo higher revenue levels. @Almunia2018 argue effects are not real, just fake underreporting.
 
 
-### Case 3 (Colombia): Discrete increase in the tax rate after a revenue threshold
+### Case 3 (Colombia & Mexico): Discrete increase in the tax rate after a revenue threshold
 
-In Colombia between 1981 and 1991, individual firm proprietors were subject to the individual income tax schedule. Individuals had incentives to not form juridical organizations to avoid double taxation. While corporations were closely supervised by the Superintedent of Corporations and are required to have an auditor, all other firms were subject to the regular monitoring efforts of the tax authority which such suffered from severe limitations and inefficiencies at the time.
+#### Colombia, Individual Proprietorships
 
-In this case, after the revenue threshold, the tax rate increases discretely but the probability of detection does not. The jump in the tax rate generates the incentive to increase the evasion, however a higher level of evasion increases the cost of evading by increasing the probability of detection. If the cost of an increased evasion outweights the benefits of growing past the revenue threshold, firm would bunch below the cutoff.
+In Colombia between 1981 and 1991, individual firm proprietors were subject to the individual income tax schedule. Individuals had incentives to not form juridical organizations to avoid double taxation. The tax authority suffered from severe limitations and inefficiencies at the time.
 
+In this case, after the revenue threshold, the tax rate increases discretely but the probability of detection does not. The jump in the tax rate generates the incentive to increase evasion. However, a higher level of evasion increases the cost of evading by increasing the probability of detection. If the cost of an increased evasion outweighs the benefits of growing past the revenue threshold, the firms would bunch below the cutoff.
 
-
-### Case 4 (Mexico): Irreversible change in tax regime after a revenue threshold
+#### Mexico, Irreversible Change in Tax Regime after a Revenue Threshold
 
 In Mexico, firms with annual revenues below 2 million pesos are taxed under the REPECO (*Regime de Pequeños Contribuyentes*) regime of small contributors at 2 percent of annual revenues, while firms above that threshold are taxed under the general regime at 30 percent. Firms must transition to the general regime if revenues increase beyond the threshold. Once in the general regime, firms cannot revert to the REPECO regime.
 
-Firms' decision is now dynamic. Firms will maximize the sum of current and future after-tax profits. The discrete jump in the tax rate will lead to a bunchigh below the threshold. Moreover, the bunching will be exacerbated because firms will choose to grow past the cutoff only if the future productivity shocks allow the firm to continue to be profitable.
+Firms' decision is now dynamic. Firms will maximize the sum of current and future after-tax profits. The discrete jump in the tax rate will lead to a bunching below the threshold. Moreover, the bunching will be exacerbated because firms will choose to grow past the cutoff only if the future productivity shocks allow the firm to continue to be profitable.
+
+### Case 4 (Colombia): Firms first choose type, input decisions do not affect the probability of detection
+
+In Colombia between 1981 and 1991, Corporations were closely supervised by the Superintendent of Corporations and were required to have an auditor. All other firms were subject to the regular monitoring efforts of the tax authority, which suffered from severe limitations and inefficiencies at the time.
+
+In the model, firms first choose their type. Input decisions do not affect the probability of detection. However, if the type is *Corporation* the probability of detection is higher than *Partnership*. Firms maximize the sum of their expected profits. In their optimization problem, firms will consider the sum of expected productivity shocks and their corresponding probability of detection. High-productivity firms will self-select into *Corporations*.
+
+
+### Other Sources of Heterogeneity
+
+Currently, only productivity. But, it can also be
+
+- Probability of detection might be a random function (idiosyncratic random shocks on the beliefs about being detected)
+- Cost of evasion (different technologies of evasion)
 

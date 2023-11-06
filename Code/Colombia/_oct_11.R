@@ -81,23 +81,29 @@ colombia_data_frame %>%
     ) %>%
     etable()
 
+## non-deductible intermediate
 
 colombia_data_frame %>%
     # filter(
     #     year <= 83
     # ) %>%
     feols(
-        log(industrial_expenditure/sales) ~ polym(m, k, l,log(industrial_expenditure), degree = 2, raw = TRUE)+factor(juridical_organization) +share_sales_tax| csw0(sic_3,metro_area_code,year),
+        log(industrial_expenditure/sales) ~ polym(materials, k, l,log(industrial_expenditure), degree = 2, raw = TRUE)+factor(juridical_organization)*factor(year) +share_sales_tax| csw0(sic_3,metro_area_code,year),
         data = ., cluster = ~sic_3+year
     ) %>%
     etable()
 
 colombia_data_frame %>%
-    # filter(
-    #     year <= 83
-    # ) %>%
     feols(
-        log(energy/sales) ~ polym(m, k, l,log(energy), degree = 2, raw = TRUE)+factor(juridical_organization) +share_sales_tax| csw0(sic_3,metro_area_code,year),
+        log(energy/sales) ~ polym(mats_serv, k, l,log(energy), degree = 2, raw = TRUE)+factor(juridical_organization)*factor(year) +share_sales_tax| csw0(sic_3,metro_area_code),
+        data = ., cluster = ~sic_3+year
+    ) %>%
+    etable(
+    )
+
+colombia_data_frame %>%
+    feols(
+        log(mats_serv/sales) ~ polym(mats_serv, k, l,log(energy), degree = 2, raw = TRUE)+factor(juridical_organization)*factor(year) +share_sales_tax| csw0(sic_3,metro_area_code),
         data = ., cluster = ~sic_3+year
     ) %>%
     etable()

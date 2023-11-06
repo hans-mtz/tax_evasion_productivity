@@ -66,13 +66,13 @@ log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOr
 $$ {#eq-reg-tax-jo}
 
 
-
+::: {#tbl-reg-jo-tax}
 ```{r}
-#| label: tbl-reg-tax-jo
-#| tbl-cap: Sales tax and Juridical Organization type effect on the log share of intermediate inputs.
 #| echo: false
 #| warning: false
+#| results: asis
 
+setFixest_etable(markdown = TRUE)
 
 setFixest_dict(c(
     share_sales_tax = "Sales Tax Rate",
@@ -97,36 +97,43 @@ setFixest_dict(c(
     log_share = "\\(log(s)\\)",
     sic_3 = "Industry",
     year = "Year",
+    `log(energy/sales)` = "\\(log(Energy/Revenue)\\)",
+    `log(mats_serv/sales)` = "\\(log(Mats+Serv/Revenue)\\)",
     metro_area_code = "Metro Area",
-    `factor(fiscal_period)83` = "83-86 fiscal period",
-    `factor(fiscal_period)86` = "87-91 fiscal period"
-)
-
-)
+    `factor(fiscal_period)83` = "84-86 F.P.",
+    `factor(fiscal_period)86` = "87-91 F.P."#,
+    # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
+    # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
+))
 
 feols(
-        log_share ~  polym(m, k, l, degree = 2, raw = TRUE)+share_sales_tax+relevel(factor(juridical_organization),ref="9")*factor(year)|csw0(sic_3,year,metro_area_code),
+        log_share ~  polym(m, k, l, degree = 2, raw = TRUE)+share_sales_tax+relevel(factor(juridical_organization),ref="9")*factor(year)|csw0(sic_3,metro_area_code),
         data = colombia_data_frame, cluster=~sic_3+year
     ) |> etable(
         keep = c("Sales","J. Org."),
         drop="year",
-        headers = c("(1)","(2)","(3)","(4)")#,
+        notes = "Reference group is J.O. (9) in 1981."
+        # headers = c("(1)","(2)","(3)","(4)")#,
         # postprocess.df = pandoc.table.return, style = "rmarkdown"
-    ) |> kbl(
-        escape = FALSE
-    )
+    ) 
+    # |> kbl(
+    #     escape = FALSE
+    # )
 
 ```
 
+Juridical Organization type and Sales Tax effect on the log share of intermediate inputs.
+:::
+
 $$
-log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \mathbf{\beta}_1'JurOrg_i + \beta_2FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \beta_1'JurOrg_i + \beta_2'FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
 $$ {#eq-reg-tax-fp}
 
+::: {#tbl-reg-fiscal-p}
 ```{r}
-#| label: tbl-reg-fiscal-p
-#| tbl-cap: Juridical Organization type per fiscal period effect on the log share of intermediate inputs.
 #| echo: false
 #| warning: false
+#| results: asis
 
 
 colombia_data_frame %>%
@@ -144,12 +151,65 @@ colombia_data_frame %>%
     ) %>%
     etable(
         keep = "%:",
-        headers = c("(1)","(2)","(3)","(4)")
-    ) %>%
-    kbl(
-        escape = FALSE
-    )
+        notes = "Reference group is J.O. (9) in Fiscal Period 1981-1983."
+        # tex = TRUE
+        # headers = c("(1)","(2)","(3)","(4)")
+    ) 
+    # %>%
+    # kbl(
+    #     escape = FALSE
+    # )
     
 
 
 ```
+
+Juridical Organization type per fiscal period effect on the log share of intermediate inputs.
+:::
+
+::: {#tbl-reg-energy}
+```{r}
+#| echo: false
+#| warning: false
+#| results: asis
+
+colombia_data_frame %>%
+    feols(
+        log(energy/sales) ~ polym(mats_serv, k, l,log(energy), degree = 2, raw = TRUE)+share_sales_tax+
+        relevel(factor(juridical_organization), ref="9")*factor(year) | csw0(sic_3,metro_area_code),
+        data = ., cluster = ~sic_3+year
+    ) %>%
+    etable(
+        keep = c("Sales","J. Org."),
+        drop="year",
+        notes = "Reference group is J.O. (9) in 1981."
+    )
+
+
+```
+Juridical Organization type and Sales Tax effect on the log share of Consumed Energy.
+:::
+
+::: {#tbl-reg-mats}
+```{r}
+#| echo: false
+#| warning: false
+#| results: asis
+
+
+colombia_data_frame %>%
+    feols(
+        log(mats_serv/sales) ~ polym(mats_serv, k, l,log(energy), degree = 2, raw = TRUE)+share_sales_tax+
+        relevel(factor(juridical_organization), ref="9")*factor(year) | csw0(sic_3,metro_area_code),
+        data = ., cluster = ~sic_3+year
+    ) %>%
+    etable(
+        keep = c("Sales","J. Org."),
+        drop="year",
+        notes = "Reference group is J.O. (9) in 1981."
+    )
+
+```
+
+Juridical Organization type and Sales Tax effect on the log share of Raw Materials and Services.
+:::

@@ -1,25 +1,18 @@
-## Identification strategy
+## Identification Strategy
 
-My identification assumption is motivated by the empirical evidence showing that very large firms do not evade taxes by input overreporting [@Carrillo2022]. Hence, I assume I know the quantile of the size distribution of compliant firms.
+Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations.
 
 
-::: {.callout}
-```{=tex}
-\begin{ass}[Non-evaders]\label{ass-comp}
-Firms above percentile $s$ do not overreport inputs $$\mathbb{E}[\varepsilon^M_{it}|S_{it}>s]=0$$
-\end{ass}
-```
-
+::: {.Assumption #ass-non-ev title="Non-Evaders"}
+Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\Theta^{Non-Evaders}$ that do not evade by overreporting inputs.
 :::
+
+For those firms, then $\mathbb{E}[\varepsilon^M_{it}|\theta_i\in\Theta^{Non-Evaders}]=0$
 
 In addition, I impose the following timing assumption.
 
-::: {.callout}
-```{=tex}
-\begin{ass}\label{ass-ind}
-Firms choose overreporting $\varepsilon^M_{it}$ \emph{before} the output shock $\varepsilon^Y_{it}$
-\end{ass}
-```
+::: {.Assumption #ass-ind title="Independence"}
+Firms choose overreporting $\varepsilon^M_{it}$ *before *the output shock $\varepsilon^Y_{it}$
 :::
 
 Assumption \ref{ass-ind} implies that input overreporting is independent of the current period output shock, $\varepsilon^M_{it} \perp \varepsilon^Y_{it}$. In the literature is not rare to assume that the output shock is not part of the information set of the firms, $\varepsilon^Y_{it}\not\in \mathcal{I}_t$ [@Gandhi2020]. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation [@Ackerberg2021; @Ackerberg2019].
@@ -31,13 +24,13 @@ Suppose the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})e^{
 $$
 \begin{aligned}
     \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+\varepsilon^M_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| S_{it}>s\right]&=\ln\beta
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{Non-Evaders}\right]&=\ln\beta
 \end{aligned}
 $$ {#eq-foc-cd}
 
 $\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]$
 
-Note that this is the case because $\mathbb{E}[\varepsilon^Y_{it}|S_{it}>s]=\mathbb{E}[\varepsilon^Y_{it}]=0$. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to  @eq-foc-cd --- like output or revenue in the same period---, the output elasticity of input, $\beta$, can be recovered.
+Note that this is the case because $\mathbb{E}[\varepsilon^Y_{it}|\Theta^{Non-Evaders}]=\mathbb{E}[\varepsilon^Y_{it}]=0$. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to  @eq-foc-cd --- like output or revenue in the same period---, the output elasticity of input, $\beta$, can be recovered.
 
 ### Identifying the Markov Process of Productivity
 

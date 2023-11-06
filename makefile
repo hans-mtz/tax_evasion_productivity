@@ -80,4 +80,8 @@ clean:
 clean-out:
 	rm -fv $(OUT_FILES) *.Rout
 
-.PHONY: all clean paper slides
+clean-tex:
+	rm -fv Paper/*.aux Paper/*.log Paper/*.toc Paper/*.blg Paper/*.bbl Paper/*.synctex.gz
+	rm -fv Paper/*.fdb_latexmk Paper/*.fls
+
+.PHONY: all clean paper slides clean-tex clean-out

@@ -190,6 +190,38 @@
 \makeatother
 \makeatletter
 \makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\makeatother
+%%%% ---foldboxy preamble ----- %%%%%
+
+\definecolor{fbx-default-color1}{HTML}{c7c7d0}
+\definecolor{fbx-default-color2}{HTML}{a3a3aa}
+
+\definecolor{fbox-color1}{HTML}{c7c7d0}
+\definecolor{fbox-color2}{HTML}{a3a3aa}
+
+% arguments: #1 typelabelnummer: #2 titel: #3
+\newenvironment{fbx}[3]{\begin{tcolorbox}[enhanced, breakable,%
+attach boxed title to top*={xshift=1.4pt},
+boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, arc=.3em, rounded corners=east, sharp corners=west}, colframe=#1-color2, colbacktitle=#1-color1, colback = white, coltitle=black,  titlerule=0mm, toprule=0pt, bottomrule=.7pt, leftrule=.3em, rightrule=0pt, outer arc=.3em,  arc=0pt,	 sharp corners = east, left=.5em, bottomtitle=1mm, toptitle=1mm,title=\textbf{#2}\hspace{0.5em}{#3}]}
+{\end{tcolorbox}}
+
+% boxed environment with right border
+\newenvironment{fbxSimple}[3]{\begin{tcolorbox}[enhanced, breakable,%
+attach boxed title to top*={xshift=1.4pt},
+boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, arc=.3em, rounded corners=east, sharp corners=west}, colframe=#1-color2, colbacktitle=#1-color1, colback = white, coltitle=black,  titlerule=0mm, toprule=0pt, bottomrule=.7pt, leftrule=.3em, rightrule=.7pt, outer arc=.3em,  	left=.5em, right=.5em, bottomtitle=1mm, toptitle=1mm,title=\textbf{#2}\hspace{0.5em}{#3}]}
+{\end{tcolorbox}}
+
+%%%% --- end foldboxy preamble ----- %%%%%
+%%==== colors from yaml ===%
+\definecolor{Assumption-color1}{HTML}{99CCFF}
+\definecolor{Assumption-color2}{HTML}{FFFFFF}
+\definecolor{Proposition-color1}{HTML}{99CCFF}
+\definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Theorem-color1}{HTML}{99CCFF}
+\definecolor{Theorem-color2}{HTML}{FFFFFF}
+%=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -220,7 +252,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{November 3, 2023}
+\date{November 6, 2023}
 \title{\bf Tax evasion and productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -253,7 +285,7 @@ Estimation, Productivity
 
 \newpage
 \spacingset{1.9} % DON'T change the spacing!
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, breakable, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, frame hidden, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt, sharp corners, interior hidden, frame hidden, enhanced]}{\end{tcolorbox}}\fi
 
 \hypertarget{updates}{%
 \section*{Updates}\label{updates}}
@@ -293,21 +325,21 @@ The model departs from the literature by allowing firms to overreport
 their inputs \(e_{it}\) to reduce their tax burden and optimize
 after-tax profits. Firms, then, consider in their optimization problem
 the profit tax \(\tau\), the evasion penalty/cost \(\kappa(e)\), and the
-probability of detection \(q_{it}(e_{it}|\theta_{it})\).
+probability of detection \(q(e_{it}|\theta_{it})\).
 
 Firms solve Equation~\ref{eq-eva}
 \begin{equation}\protect\hypertarget{eq-eva}{}{
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
-  +q_{it}(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
   \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 }\label{eq-eva}\end{equation}
 
-The probability of detection \(q_{it}(e_{it}|\theta_{it})\) is
-monotonically increasing in the amount evaded \(e_{it}\), conditional on
-the type of the firm \(\theta_{it}\). Intuitively, for a given type,
-firms that evade more are more likely to get caught.
+The probability of detection \(q(e_{it}|\theta_{it})\) is monotonically
+increasing in the amount evaded \(e_{it}\), conditional on the type of
+the firm \(\theta_{it}\). Intuitively, for a given type, firms that
+evade more are more likely to get caught.
 
 The type of the firm \(\theta_{it}\) might be discrete, like the type of
 juridical organization, or continuous, like the level of
@@ -333,8 +365,8 @@ of detection, and the probability of detection.
 The firms' problem (Equation~\ref{eq-eva}) can be rewritten as follows,
 \[
 \begin{aligned}
-  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q_{it}(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
-  -q_{it}(e_{it}|\theta_{it})\kappa(e_{it}) \\
+  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
+  -q(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 \]
@@ -529,31 +561,32 @@ compensate for their \emph{higher} costs by increasing overreporting.
   fake underreporting.
 \end{itemize}
 
-\hypertarget{case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}{%
-\subsection{Case 3 (Colombia): Discrete increase in the tax rate after a
-revenue
-threshold}\label{case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}}
+\hypertarget{case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}{%
+\subsection{Case 3 (Colombia \& Mexico): Discrete increase in the tax
+rate after a revenue
+threshold}\label{case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}}
+
+\hypertarget{colombia-individual-proprietorships}{%
+\subsubsection{Colombia, Individual
+Proprietorships}\label{colombia-individual-proprietorships}}
 
 In Colombia between 1981 and 1991, individual firm proprietors were
 subject to the individual income tax schedule. Individuals had
 incentives to not form juridical organizations to avoid double taxation.
-While corporations were closely supervised by the Superintedent of
-Corporations and are required to have an auditor, all other firms were
-subject to the regular monitoring efforts of the tax authority which
-such suffered from severe limitations and inefficiencies at the time.
+The tax authority suffered from severe limitations and inefficiencies at
+the time.
 
 In this case, after the revenue threshold, the tax rate increases
 discretely but the probability of detection does not. The jump in the
-tax rate generates the incentive to increase the evasion, however a
-higher level of evasion increases the cost of evading by increasing the
-probability of detection. If the cost of an increased evasion outweights
-the benefits of growing past the revenue threshold, firm would bunch
-below the cutoff.
+tax rate generates the incentive to increase evasion. However, a higher
+level of evasion increases the cost of evading by increasing the
+probability of detection. If the cost of an increased evasion outweighs
+the benefits of growing past the revenue threshold, the firms would
+bunch below the cutoff.
 
-\hypertarget{case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}{%
-\subsection{Case 4 (Mexico): Irreversible change in tax regime after a
-revenue
-threshold}\label{case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}}
+\hypertarget{mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}{%
+\subsubsection{Mexico, Irreversible Change in Tax Regime after a Revenue
+Threshold}\label{mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}}
 
 In Mexico, firms with annual revenues below 2 million pesos are taxed
 under the REPECO (\emph{Regime de Pequeños Contribuyentes}) regime of
@@ -565,10 +598,44 @@ regime.
 
 Firms' decision is now dynamic. Firms will maximize the sum of current
 and future after-tax profits. The discrete jump in the tax rate will
-lead to a bunchigh below the threshold. Moreover, the bunching will be
+lead to a bunching below the threshold. Moreover, the bunching will be
 exacerbated because firms will choose to grow past the cutoff only if
 the future productivity shocks allow the firm to continue to be
 profitable.
+
+\hypertarget{case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection}{%
+\subsection{Case 4 (Colombia): Firms first choose type, input decisions
+do not affect the probability of
+detection}\label{case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection}}
+
+In Colombia between 1981 and 1991, Corporations were closely supervised
+by the Superintendent of Corporations and were required to have an
+auditor. All other firms were subject to the regular monitoring efforts
+of the tax authority, which suffered from severe limitations and
+inefficiencies at the time.
+
+In the model, firms first choose their type. Input decisions do not
+affect the probability of detection. However, if the type is
+\emph{Corporation} the probability of detection is higher than
+\emph{Partnership}. Firms maximize the sum of their expected profits. In
+their optimization problem, firms will consider the sum of expected
+productivity shocks and their corresponding probability of detection.
+High-productivity firms will self-select into \emph{Corporations}.
+
+\hypertarget{other-sources-of-heterogeneity}{%
+\subsection{Other Sources of
+Heterogeneity}\label{other-sources-of-heterogeneity}}
+
+Currently, only productivity. But, it can also be
+
+\begin{itemize}
+\tightlist
+\item
+  Probability of detection might be a random function (idiosyncratic
+  random shocks on the beliefs about being detected)
+\item
+  Cost of evasion (different technologies of evasion)
+\end{itemize}
 
 \hypertarget{colombia-1981-1991}{%
 \section{Colombia 1981-1991}\label{colombia-1981-1991}}
@@ -578,10 +645,10 @@ profitable.
 System}\label{colombian-corporate-tax-system}}
 
 The relevant corporate taxes for input overreporting are the Corporate
-Income Tax and the Sales Tax that (gradually transformed into a kind of
-Value-Added Tax).
+Income Tax and the Sales Tax. The Sales gradually transformed into a
+kind of Value-Added Tax.
 
-High levels of overall tax evasion during the period. No penalties,
+High levels of overall tax evasion during the period. No penalties, an
 inefficient monitoring system, overburdened authority, and legal
 loopholes.
 
@@ -599,13 +666,14 @@ to the graduated Individual Tax Schedule consisting of 56 rates, ranging
 from 0.50 to 51 percent.
 
 Corporations were taxed on their distributed dividends, while
-parternships and limited liability companies were taxed on their
+partnerships and limited liability companies were taxed on their
 profits, whether or not distributed. Owners of juridical organizations
 were double taxed, at the firm and the individual level, whereas the
 income of proprietorships was taxed only once.
 
-Moreover, Corporations were subjecto to the Superindent of Corporations
-and were closely supervised, being required to have an auditor.
+Moreover, Corporations were subject to the Superintendent of
+Corporations and were closely supervised, being required to have an
+auditor.
 
 Since 1974, individuals and juridical organizations, except for limited
 liability companies, were subject to the minimum presumptive income.
@@ -616,16 +684,16 @@ incentives to underreport capital. Firms with larger profits had
 incentives to overreport inputs and underreport sales.
 
 Exemptions were granted for automobile producers, private electrical
-companies, airlines, publishing, and reforestation sectors, and for
-various activities in selected regions (primarily ``frontier'' and other
-less developed ones).
+companies, airlines, publishing, and reforestation sectors, and various
+activities in selected regions (primarily ``frontier'' and other less
+developed ones).
 
 \hypertarget{sales-taxes}{%
 \subsubsection{Sales taxes}\label{sales-taxes}}
 
 Sales taxes were originally targeted at the manufacturing sector on
 finished goods and imports. Since 1974, manufacturers were allowed to
-credit taxes paid on any purchse made by the firm, except the
+credit taxes paid on any purchase made by the firm, except the
 acquisition of capital goods \citep{Perry1990}. The credits worked
 through a system of refunds. Consequently, the tax became a kind of
 value-added tax (VAT). The VAT was extended to many services.
@@ -634,7 +702,7 @@ The basic rate was 15 percent. There was also a preferential rate of 6
 percent for ``wage goods'' (clothing, footwear, and major inputs used
 for building popular housing), and a rate of 35 percent for luxury
 goods. Exports, foodstuff, drugs, and textbooks were excluded from the
-begining. Also excluded were inputs, transportation equipment,
+beginning. Also excluded were inputs, transportation equipment,
 agricultural machinery, and equipment.
 
 \hypertarget{take-aways}{%
@@ -646,11 +714,11 @@ agricultural machinery, and equipment.
   Corporations are the least likely to evade because the probability of
   detection is higher for them.
 \item
-  Firms' incentives to overreporting inputs was heterogeneous within
-  industry because it depended on the effective sales tax rate which
-  varied according to the firm's location and sales composition (inputs
-  to other firms, to consumers, to foreign market), and the type of
-  juridical organization.
+  Firms' incentives to overreport inputs were heterogeneous within
+  industry sectors because it depended on the effective sales tax rate
+  which varied according to the firm's location and sales composition
+  (inputs to other firms, to consumers, to the foreign market), and the
+  type of juridical organization.
 \item
   Individual proprietorships (and maybe low revenue limited liability
   companies) were likely to bunch at the individual income thresholds.
@@ -671,15 +739,15 @@ tax credit of 10\% of dividends received for individuals.
 In addition, Law 9 of 1983 instituted a measure of presumptive income
 equal to 2 percent of gross receipts to supplement the measure based on
 net wealth. This reform was aimed specifically at the commerce and
-service sectors; the former were thought to evade the wealth-based
+service sectors; the former was thought to evade the wealth-based
 presumptive tax by systematically understating inventories. In addition,
 it extended the presumptive income tax to limited liability companies.
 
 In 1983, the value-added tax (VAT) was extended to the retail level,
 with a \emph{simplified system} being made available to small retailers
-in the effort to ease compliance costs and administrative burden.
+to ease compliance costs and the administrative burden.
 
-The 1983 reform realively unified the value-added tax (VAT) rates by
+The 1983 reform relatively unified the value-added tax (VAT) rates by
 combining previously taxed goods at 6\% and 15 percent into 10\%. The
 number of the products and services that were levied expanded.
 
@@ -751,139 +819,507 @@ Org. 1 (81-83)}
 log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
 }\label{eq-reg-tax-jo}\end{equation}
 
-\hypertarget{tbl-reg-tax-jo}{}
 \begin{table}
-\caption{\label{tbl-reg-tax-jo}Sales tax and Juridical Organization type effect on the log share of
-intermediate inputs. }\tabularnewline
 
+\caption{\label{tbl-reg-jo-tax}Juridical Organization type and Sales Tax
+effect on the log share of intermediate
+inputs.}\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-jo-tax-1}}
+
+{\centering 
+
+\begingroup
 \centering
-\begin{tabular}[t]{l|l|l|l|l}
-\hline
- & feols(log_shar..1 & feols(log_share..2 & feols(log_share..3 & feols(log_share..4\\
-\hline
- & (1) & (2) & (3) & (4)\\
-\hline
-Dependent Var.: & \(log(s)\) & \(log(s)\) & \(log(s)\) & \(log(s)\)\\
-\hline
- &  &  &  & \\
-\hline
-Sales Tax Rate & 0.5941** (0.1366) & 0.7719*** (0.0976) & 0.7719*** (0.0973) & 0.7520*** (0.1001)\\
-\hline
-J. Org. (0) & 0.4412** (0.1081) & 0.4285** (0.1088) & 0.4285** (0.1082) & 0.4249** (0.1064)\\
-\hline
-J. Org. (1) & 0.4492** (0.1077) & 0.4429** (0.1088) & 0.4429** (0.1082) & 0.4376** (0.1069)\\
-\hline
-J. Org. (2) & 0.4596** (0.1145) & 0.4434** (0.1141) & 0.4434** (0.1134) & 0.4480** (0.1116)\\
-\hline
-J. Org. (3) & 0.2757* (0.1145) & 0.3033* (0.1109) & 0.3033* (0.1104) & 0.3023* (0.1087)\\
-\hline
-J. Org. (4) & 0.4509** (0.1025) & 0.4471** (0.1035) & 0.4471** (0.1029) & 0.4431** (0.1014)\\
-\hline
-J. Org. (5) & 0.4619** (0.1193) & 0.4534** (0.1210) & 0.4534** (0.1204) & 0.4482** (0.1189)\\
-\hline
-J. Org. (6) & 0.3464** (0.0979) & 0.3397** (0.0973) & 0.3397** (0.0968) & 0.3369** (0.0964)\\
-\hline
-J. Org. (7) & 0.5487** (0.1571) & 0.5196** (0.1579) & 0.5196** (0.1571) & 0.5229** (0.1553)\\
-\hline
-J. Org. (8) & 0.2637. (0.1430) & 0.3024. (0.1377) & 0.3024. (0.1370) & 0.3068* (0.1349)\\
-\hline
-Fixed-Effects: & ----------------- & ------------------ & ------------------ & ------------------\\
-\hline
-Industry & No & Yes & Yes & Yes\\
-\hline
-Year & No & No & Yes & Yes\\
-\hline
-Metro Area & No & No & No & Yes\\
-\hline
-_______________ & _________________ & __________________ & __________________ & __________________\\
-\hline
-S.E.: Clustered & by: Industry & Year & by: Industry & Year & by: Industry & Year & by: Industry & Year\\
-\hline
-Observations & 41,467 & 41,467 & 41,467 & 41,467\\
-\hline
-R2 & 0.57951 & 0.59731 & 0.59731 & 0.60142\\
-\hline
-Within R2 & -- & 0.54058 & 0.53633 & 0.53876\\
-\hline
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{3}{c}{\(log(s)\)}\\
+   Model:         & (1)            & (2)            & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   Sales Tax Rate & 0.5941$^{***}$ & 0.7719$^{***}$ & 0.7520$^{***}$\\   
+                  & (0.1366)       & (0.0976)       & (0.0969)\\   
+   J. Org. (0)    & 0.4412$^{***}$ & 0.4285$^{***}$ & 0.4249$^{***}$\\   
+                  & (0.1081)       & (0.1088)       & (0.1058)\\   
+   J. Org. (1)    & 0.4492$^{***}$ & 0.4429$^{***}$ & 0.4376$^{***}$\\   
+                  & (0.1077)       & (0.1088)       & (0.1061)\\   
+   J. Org. (2)    & 0.4596$^{***}$ & 0.4434$^{***}$ & 0.4480$^{***}$\\   
+                  & (0.1145)       & (0.1141)       & (0.1114)\\   
+   J. Org. (3)    & 0.2757$^{**}$  & 0.3033$^{**}$  & 0.3023$^{**}$\\   
+                  & (0.1145)       & (0.1109)       & (0.1077)\\   
+   J. Org. (4)    & 0.4509$^{***}$ & 0.4471$^{***}$ & 0.4431$^{***}$\\   
+                  & (0.1025)       & (0.1035)       & (0.1004)\\   
+   J. Org. (5)    & 0.4619$^{***}$ & 0.4534$^{***}$ & 0.4482$^{***}$\\   
+                  & (0.1193)       & (0.1210)       & (0.1183)\\   
+   J. Org. (6)    & 0.3464$^{***}$ & 0.3397$^{***}$ & 0.3369$^{***}$\\   
+                  & (0.0979)       & (0.0973)       & (0.0948)\\   
+   J. Org. (7)    & 0.5487$^{***}$ & 0.5196$^{***}$ & 0.5229$^{***}$\\   
+                  & (0.1571)       & (0.1579)       & (0.1546)\\   
+   J. Org. (8)    & 0.2637$^{*}$   & 0.3024$^{*}$   & 0.3068$^{**}$\\   
+                  & (0.1430)       & (0.1377)       & (0.1346)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry       &                & Yes            & Yes\\  
+   Metro Area     &                &                & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations   & 41,467         & 41,467         & 41,467\\  
+   R$^2$          & 0.57951        & 0.59731        & 0.60142\\  
+   Within R$^2$   &                & 0.54058        & 0.54290\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-jo-tax-2}}
+
+{\centering 
+
+\par \raggedright
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+
+{\centering 
+
+Reference group is J.O. (9) in 1981.
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-jo-tax-3}}
+
+{\centering 
+
+\par\endgroup
+
+}
+
+\end{minipage}%
+
 \end{table}
 
 \begin{equation}\protect\hypertarget{eq-reg-tax-fp}{}{
-log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \mathbf{\beta}_1'JurOrg_i + \beta_2FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \beta_1'JurOrg_i + \beta_2'FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
 }\label{eq-reg-tax-fp}\end{equation}
 
-\hypertarget{tbl-reg-fiscal-p}{}
 \begin{table}
-\caption{\label{tbl-reg-fiscal-p}Juridical Organization type per fiscal period effect on the log share of
-intermediate inputs. }\tabularnewline
 
+\caption{\label{tbl-reg-fiscal-p}Juridical Organization type per fiscal
+period effect on the log share of intermediate
+inputs.}\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-fiscal-p-1}}
+
+{\centering 
+
+\begingroup
 \centering
-\begin{tabular}[t]{l|l|l|l|l}
-\hline
- & ..1 & ..2 & ..3 & ..4\\
-\hline
- & (1) & (2) & (3) & (4)\\
-\hline
-Dependent Var.: & \(log(s)\) & \(log(s)\) & \(log(s)\) & \(log(s)\)\\
-\hline
- &  &  &  & \\
-\hline
-J. Org. (0) x 83-86 fiscal period & -0.1112 (0.0647) & -0.1134 (0.0643) & -0.1019 (0.0612) & -0.1035 (0.0637)\\
-\hline
-J. Org. (1) x 83-86 fiscal period & -0.1163. (0.0619) & -0.1171. (0.0622) & -0.1091. (0.0592) & -0.1113. (0.0613)\\
-\hline
-J. Org. (2) x 83-86 fiscal period & -0.1462 (0.0888) & -0.1444 (0.0896) & -0.1308 (0.0866) & -0.1321 (0.0887)\\
-\hline
-J. Org. (3) x 83-86 fiscal period & -0.0793 (0.0605) & -0.0853 (0.0614) & -0.0779 (0.0583) & -0.0808 (0.0604)\\
-\hline
-J. Org. (4) x 83-86 fiscal period & -0.1401. (0.0722) & -0.1384. (0.0733) & -0.1260 (0.0699) & -0.1276 (0.0720)\\
-\hline
-J. Org. (5) x 83-86 fiscal period & -0.1068 (0.0592) & -0.1047 (0.0596) & -0.0963 (0.0570) & -0.0982 (0.0592)\\
-\hline
-J. Org. (6) x 83-86 fiscal period & -0.1566. (0.0827) & -0.1530. (0.0816) & -0.1474. (0.0805) & -0.1495. (0.0824)\\
-\hline
-J. Org. (7) x 83-86 fiscal period & -0.1840** (0.0545) & -0.1856** (0.0539) & -0.1747** (0.0516) & -0.1777** (0.0542)\\
-\hline
-J. Org. (8) x 83-86 fiscal period & -0.1989** (0.0540) & -0.1980* (0.0646) & -0.1896* (0.0612) & -0.1923* (0.0628)\\
-\hline
-J. Org. (0) x 87-91 fiscal period & -0.2045*** (0.0224) & -0.2146*** (0.0203) & -0.1936*** (0.0209) & -0.1938*** (0.0229)\\
-\hline
-J. Org. (1) x 87-91 fiscal period & -0.1942*** (0.0224) & -0.2028*** (0.0226) & -0.1858*** (0.0223) & -0.1856*** (0.0243)\\
-\hline
-J. Org. (2) x 87-91 fiscal period & -0.1675. (0.0832) & -0.1776. (0.0805) & -0.1536. (0.0794) & -0.1541. (0.0813)\\
-\hline
-J. Org. (3) x 87-91 fiscal period & -0.1631*** (0.0254) & -0.1832*** (0.0232) & -0.1676*** (0.0228) & -0.1667*** (0.0242)\\
-\hline
-J. Org. (4) x 87-91 fiscal period & -0.2694*** (0.0439) & -0.2738*** (0.0462) & -0.2533*** (0.0455) & -0.2533*** (0.0465)\\
-\hline
-J. Org. (5) x 87-91 fiscal period & -0.1904*** (0.0272) & -0.1995*** (0.0262) & -0.1803*** (0.0265) & -0.1799*** (0.0279)\\
-\hline
-J. Org. (6) x 87-91 fiscal period & -0.1127 (0.0655) & -0.1256. (0.0667) & -0.1120 (0.0634) & -0.1117 (0.0644)\\
-\hline
-J. Org. (7) x 87-91 fiscal period & -0.2389*** (0.0500) & -0.2454*** (0.0521) & -0.2212** (0.0520) & -0.2209** (0.0530)\\
-\hline
-J. Org. (8) x 87-91 fiscal period & -0.2547*** (0.0393) & -0.2593*** (0.0558) & -0.2429** (0.0547) & -0.2424** (0.0548)\\
-\hline
-Fixed-Effects: & ------------------- & ------------------- & ------------------- & -------------------\\
-\hline
-Industry & No & Yes & Yes & Yes\\
-\hline
-Metro Area & No & No & Yes & Yes\\
-\hline
-Year & No & No & No & Yes\\
-\hline
-_________________________________ & ___________________ & ___________________ & ___________________ & ___________________\\
-\hline
-S.E.: Clustered & by: Industry & Year & by: Industry & Year & by: Industry & Year & by: Industry & Year\\
-\hline
-Observations & 41,467 & 41,467 & 41,467 & 41,467\\
-\hline
-R2 & 0.56230 & 0.57858 & 0.58367 & 0.58420\\
-\hline
-Within R2 & -- & 0.51921 & 0.52254 & 0.51882\\
-\hline
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{4}{c}{\(log(s)\)}\\
+   Model:                           & (1)             & (2)             & (3)             & (4)\\  
+   \midrule
+   \emph{Variables}\\
+   J. Org. (0) $\times$ 84-86 F.P.  & -0.1112         & -0.1134         & -0.1019         & -0.1035\\   
+                                    & (0.0647)        & (0.0643)        & (0.0612)        & (0.0637)\\   
+   J. Org. (1) $\times$ 84-86 F.P.  & -0.1163$^{*}$   & -0.1171$^{*}$   & -0.1091$^{*}$   & -0.1113$^{*}$\\   
+                                    & (0.0619)        & (0.0622)        & (0.0592)        & (0.0613)\\   
+   J. Org. (2) $\times$ 84-86 F.P.  & -0.1462         & -0.1444         & -0.1308         & -0.1321\\   
+                                    & (0.0888)        & (0.0896)        & (0.0866)        & (0.0887)\\   
+   J. Org. (3) $\times$ 84-86 F.P.  & -0.0793         & -0.0853         & -0.0779         & -0.0808\\   
+                                    & (0.0605)        & (0.0614)        & (0.0583)        & (0.0604)\\   
+   J. Org. (4) $\times$ 84-86 F.P.  & -0.1401$^{*}$   & -0.1384$^{*}$   & -0.1260         & -0.1276\\   
+                                    & (0.0722)        & (0.0733)        & (0.0699)        & (0.0720)\\   
+   J. Org. (5) $\times$ 84-86 F.P.  & -0.1068         & -0.1047         & -0.0963         & -0.0982\\   
+                                    & (0.0592)        & (0.0596)        & (0.0570)        & (0.0592)\\   
+   J. Org. (6) $\times$ 84-86 F.P.  & -0.1566$^{*}$   & -0.1530$^{*}$   & -0.1474$^{*}$   & -0.1495$^{*}$\\   
+                                    & (0.0827)        & (0.0816)        & (0.0805)        & (0.0824)\\   
+   J. Org. (7) $\times$ 84-86 F.P.  & -0.1840$^{***}$ & -0.1856$^{***}$ & -0.1747$^{***}$ & -0.1777$^{***}$\\   
+                                    & (0.0545)        & (0.0539)        & (0.0516)        & (0.0542)\\   
+   J. Org. (8) $\times$ 84-86 F.P.  & -0.1989$^{***}$ & -0.1980$^{**}$  & -0.1896$^{**}$  & -0.1923$^{**}$\\   
+                                    & (0.0540)        & (0.0646)        & (0.0612)        & (0.0628)\\   
+   J. Org. (0) $\times$ 87-91 F.P.  & -0.2045$^{***}$ & -0.2146$^{***}$ & -0.1936$^{***}$ & -0.1938$^{***}$\\   
+                                    & (0.0224)        & (0.0203)        & (0.0209)        & (0.0229)\\   
+   J. Org. (1) $\times$ 87-91 F.P.  & -0.1942$^{***}$ & -0.2028$^{***}$ & -0.1858$^{***}$ & -0.1856$^{***}$\\   
+                                    & (0.0224)        & (0.0226)        & (0.0223)        & (0.0243)\\   
+   J. Org. (2) $\times$ 87-91 F.P.  & -0.1675$^{*}$   & -0.1776$^{*}$   & -0.1536$^{*}$   & -0.1541$^{*}$\\   
+                                    & (0.0832)        & (0.0805)        & (0.0794)        & (0.0813)\\   
+   J. Org. (3) $\times$ 87-91 F.P.  & -0.1631$^{***}$ & -0.1832$^{***}$ & -0.1676$^{***}$ & -0.1667$^{***}$\\   
+                                    & (0.0254)        & (0.0232)        & (0.0228)        & (0.0242)\\   
+   J. Org. (4) $\times$ 87-91 F.P.  & -0.2694$^{***}$ & -0.2738$^{***}$ & -0.2533$^{***}$ & -0.2533$^{***}$\\   
+                                    & (0.0439)        & (0.0462)        & (0.0455)        & (0.0465)\\   
+   J. Org. (5) $\times$ 87-91 F.P.  & -0.1904$^{***}$ & -0.1995$^{***}$ & -0.1803$^{***}$ & -0.1799$^{***}$\\   
+                                    & (0.0272)        & (0.0262)        & (0.0265)        & (0.0279)\\   
+   J. Org. (6) $\times$ 87-91 F.P.  & -0.1127         & -0.1256$^{*}$   & -0.1120         & -0.1117\\   
+                                    & (0.0655)        & (0.0667)        & (0.0634)        & (0.0644)\\   
+   J. Org. (7) $\times$ 87-91 F.P.  & -0.2389$^{***}$ & -0.2454$^{***}$ & -0.2212$^{***}$ & -0.2209$^{***}$\\   
+                                    & (0.0500)        & (0.0521)        & (0.0520)        & (0.0530)\\   
+   J. Org. (8) $\times$ 87-91 F.P.  & -0.2547$^{***}$ & -0.2593$^{***}$ & -0.2429$^{***}$ & -0.2424$^{***}$\\   
+                                    & (0.0393)        & (0.0558)        & (0.0547)        & (0.0548)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry                         &                 & Yes             & Yes             & Yes\\  
+   Metro Area                       &                 &                 & Yes             & Yes\\  
+   Year                             &                 &                 &                 & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                     & 41,467          & 41,467          & 41,467          & 41,467\\  
+   R$^2$                            & 0.56230         & 0.57858         & 0.58367         & 0.58420\\  
+   Within R$^2$                     &                 & 0.51921         & 0.52254         & 0.51882\\  
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-fiscal-p-2}}
+
+{\centering 
+
+\par \raggedright
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+
+{\centering 
+
+Reference group is J.O. (9) in Fiscal Period 1981-1983.
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-fiscal-p-3}}
+
+{\centering 
+
+\par\endgroup
+
+}
+
+\end{minipage}%
+
 \end{table}
+
+\begin{table}
+
+\caption{\label{tbl-reg-energy}Juridical Organization type and Sales Tax
+effect on the log share of Consumed
+Energy.}\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-energy-1}}
+
+{\centering 
+
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{3}{c}{\(log(Energy/Revenue)\)}\\
+   Model:         & (1)      & (2)            & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   Sales Tax Rate & 0.8065   & -0.2481        & -0.2595\\   
+                  & (0.5199) & (0.3932)       & (0.3946)\\   
+   J. Org. (0)    & 0.2118   & 0.3705$^{***}$ & 0.3659$^{**}$\\   
+                  & (0.1357) & (0.1141)       & (0.1285)\\   
+   J. Org. (1)    & 0.1735   & 0.3208$^{**}$  & 0.3112$^{**}$\\   
+                  & (0.1328) & (0.1149)       & (0.1344)\\   
+   J. Org. (2)    & 0.1978   & 0.3640$^{**}$  & 0.3635$^{**}$\\   
+                  & (0.1280) & (0.1217)       & (0.1375)\\   
+   J. Org. (3)    & -0.1269  & 0.0573         & 0.0585\\   
+                  & (0.1205) & (0.1110)       & (0.1214)\\   
+   J. Org. (4)    & 0.2346   & 0.3558$^{**}$  & 0.3471$^{**}$\\   
+                  & (0.1736) & (0.1280)       & (0.1448)\\   
+   J. Org. (5)    & 0.1527   & 0.3118$^{*}$   & 0.2946\\   
+                  & (0.1676) & (0.1471)       & (0.1707)\\   
+   J. Org. (6)    & 0.0336   & 0.1728         & 0.1549\\   
+                  & (0.1215) & (0.1151)       & (0.1281)\\   
+   J. Org. (7)    & 0.0553   & 0.2660         & 0.2509\\   
+                  & (0.2629) & (0.2374)       & (0.2577)\\   
+   J. Org. (8)    & -0.1510  & 0.2390         & 0.2429\\   
+                  & (0.2830) & (0.2178)       & (0.2252)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry       &          & Yes            & Yes\\  
+   Metro Area     &          &                & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations   & 41,467   & 41,467         & 41,467\\  
+   R$^2$          & 0.69147  & 0.72920        & 0.73177\\  
+   Within R$^2$   &          & 0.68745        & 0.67525\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-energy-2}}
+
+{\centering 
+
+\par \raggedright
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+
+{\centering 
+
+Reference group is J.O. (9) in 1981.
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-energy-3}}
+
+{\centering 
+
+\par\endgroup
+
+}
+
+\end{minipage}%
+
+\end{table}
+
+\begin{table}
+
+\caption{\label{tbl-reg-mats}Juridical Organization type and Sales Tax
+effect on the log share of Raw Materials and
+Services.}\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-mats-1}}
+
+{\centering 
+
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variable: & \multicolumn{3}{c}{\(log(Mats+Serv/Revenue)\)}\\
+   Model:         & (1)            & (2)            & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   Sales Tax Rate & 0.7504         & 1.370$^{***}$  & 1.357$^{***}$\\   
+                  & (0.4956)       & (0.3723)       & (0.3727)\\   
+   J. Org. (0)    & 0.4714$^{***}$ & 0.4077$^{**}$  & 0.3961$^{***}$\\   
+                  & (0.1452)       & (0.1337)       & (0.1249)\\   
+   J. Org. (1)    & 0.5005$^{***}$ & 0.4463$^{***}$ & 0.4320$^{***}$\\   
+                  & (0.1329)       & (0.1305)       & (0.1212)\\   
+   J. Org. (2)    & 0.4985$^{***}$ & 0.4132$^{**}$  & 0.4023$^{**}$\\   
+                  & (0.1360)       & (0.1425)       & (0.1336)\\   
+   J. Org. (3)    & 0.4428$^{***}$ & 0.4114$^{**}$  & 0.3958$^{***}$\\   
+                  & (0.1308)       & (0.1319)       & (0.1233)\\   
+   J. Org. (4)    & 0.4267$^{**}$  & 0.4021$^{**}$  & 0.3902$^{***}$\\   
+                  & (0.1656)       & (0.1314)       & (0.1226)\\   
+   J. Org. (5)    & 0.5317$^{***}$ & 0.4703$^{***}$ & 0.4579$^{***}$\\   
+                  & (0.1386)       & (0.1309)       & (0.1224)\\   
+   J. Org. (6)    & 0.4410$^{***}$ & 0.3851$^{***}$ & 0.3760$^{***}$\\   
+                  & (0.1195)       & (0.1141)       & (0.1056)\\   
+   J. Org. (7)    & 0.6278$^{***}$ & 0.5024$^{**}$  & 0.5027$^{**}$\\   
+                  & (0.1893)       & (0.1774)       & (0.1693)\\   
+   J. Org. (8)    & 0.2951$^{*}$   & 0.2221         & 0.2143\\   
+                  & (0.1439)       & (0.1658)       & (0.1606)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry       &                & Yes            & Yes\\  
+   Metro Area     &                &                & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations   & 41,467         & 41,467         & 41,467\\  
+   R$^2$          & 0.11012        & 0.23773        & 0.24070\\  
+   Within R$^2$   &                & 0.12098        & 0.11736\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-mats-2}}
+
+{\centering 
+
+\par \raggedright
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+
+{\centering 
+
+Reference group is J.O. (9) in 1981.
+
+}
+
+\end{minipage}%
+\newline
+\begin{minipage}[t]{\linewidth}
+\subcaption{\label{tbl-reg-mats-3}}
+
+{\centering 
+
+\par\endgroup
+
+}
+
+\end{minipage}%
+
+\end{table}
+
+\hypertarget{identification-strategy}{%
+\section{Identification Strategy}\label{identification-strategy}}
+
+Because the firms' optimization decisions depend on the fiscal
+environment, the identification strategy should be motivated by the
+fiscal environment \(\Gamma\). In particular, the identification
+strategy will be as good as how well we can tell apart a subset of firms
+that have the highest incentive to not evade. For example, in the case
+of Spain, the firms above the revenue LTU threshold. In the case of
+Colombia, the corporations.
+
+\leavevmode\vadjust pre{\hypertarget{ass-non-ev}{}}%
+\begin{fbx}{Assumption}{Assumption 3.1: }{Non-Evaders}
+\phantomsection\label{ass-non-ev}
+Based on the fiscal environment \(\Gamma\), the researcher can identify
+a subset of firms \(\Theta^{Non-Evaders}\) that do not evade by
+overreporting inputs.
+
+\end{fbx}
+
+For those firms, then
+\(\mathbb{E}[e_{it}|\theta_i\in\Theta^{Non-Evaders}]=0\)
+
+In addition, I impose the following timing assumption.
+
+\leavevmode\vadjust pre{\hypertarget{ass-ind}{}}%
+\begin{fbx}{Assumption}{Assumption 3.2: }{Independence}
+\phantomsection\label{ass-ind}
+Firms choose overreporting \(e_{it}\) \emph{before }the output shock
+\(\varepsilon^Y_{it}\)
+
+\end{fbx}
+
+Assumption \protect\hyperlink{ass-ind}{0.2} implies that input
+overreporting is independent of the current period output shock,
+\(e_{it} \perp \varepsilon^Y_{it}\). In the literature is not rare to
+assume that the output shock is not part of the information set of the
+firms, \(\varepsilon^Y_{it}\not\in \mathcal{I}_t\) \citep{Gandhi2020}.
+Timing and information set assumptions are not uncommon for
+identification strategies in production functions and demand estimation
+\citep{Ackerberg2021, Ackerberg2019}.
+
+\hypertarget{identifying-the-production-function-parameters}{%
+\subsection{Identifying the production function
+parameters}\label{identifying-the-production-function-parameters}}
+
+Suppose the production function is Cobb-Douglas,
+\(G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon^Y_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon^Y_{it})\).
+Then, we can use the first-order conditions of the firms' cost
+minimization problem on the flexible input, as in \citet{Gandhi2020},
+and assumption \protect\hyperlink{ass-non-ev}{0.1} to recover the
+production function parameter \(\beta\).
+
+\begin{equation}\protect\hypertarget{eq-foc-cd}{}{
+\begin{aligned}
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{Non-Evaders}\right]&=\ln\beta
+\end{aligned}
+}\label{eq-foc-cd}\end{equation}
+
+\(\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]\)
+
+Note that this is the case because
+\(\mathbb{E}[\varepsilon^Y_{it}|\Theta^{Non-Evaders}]=\mathbb{E}[\varepsilon^Y_{it}]=0\).
+That is, there is no selection on the output shock. Therefore, as long
+as our measure of size is not structurally related to
+Equation~\ref{eq-foc-cd} --- like output or revenue in the same
+period---, the output elasticity of input, \(\beta\), can be recovered.
+
+\hypertarget{identifying-tax-evasion}{%
+\subsection{Identifying Tax Evasion}\label{identifying-tax-evasion}}
+
+I can form the following variable using observed variables and the
+production function parameter I recovered from the first stage.
+
+\[
+\begin{aligned}
+    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta \notag \\
+    &=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+e_{it} \notag \\
+    &=-\varepsilon^Y_{it} +e_{it}
+\end{aligned}
+\]
+
+This is useful because I can recover the tax evasion up to a random
+variable, \(\varepsilon^Y_{it}\), with mean zero and, by assumption
+\protect\hyperlink{ass-ind}{0.2}, independent of \(e_{it}\).
+
+\hypertarget{non-parametric-identification}{%
+\subsection{Non-Parametric
+Identification}\label{non-parametric-identification}}
+
+\(\ln\left(\frac{\rho M}{PY}\right)=D^{\mathcal{E}}(K,L,M)-\varepsilon^Y\)
+
+\[
+\begin{aligned}
+\ln\left(\frac{\rho M}{PY}\right)-D^{\mathcal{E}}(K,L,M)& \\
+&=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
+&=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
+&+\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&-\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right] \\
+&=\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*) \\
+&+\left[\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln\left(\frac{\rho(M^*)}{PY}\right)\right]\\
+&-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&= -\varepsilon^Y \\
+&+\left[D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon^Y-D^{\mathcal{E}}(K,L,M^*)+\varepsilon^Y\right]\\
+&-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&= -\varepsilon^Y
+\end{aligned}
+\]
+
+\(\ln\left(\frac{\rho E}{PY}\right)=D^{\mathcal{E}}(K,L,E,M)-\varepsilon^Y\)
+
+\[
+\begin{aligned}
+\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M)& \\
+&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
+&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
+&+\left[D^{\mathcal{E}}(K,L,E,M^*)\right]\\
+&-\left[D^{\mathcal{E}}(K,L,E,M^*)\right] \\
+&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*) \\
+&-\left[D^{\mathcal{E}}(K,L,E,M^*+e)-D^{\mathcal{E}}(K,L,E,M^*)\right]\\
+&= -\varepsilon^Y(M^*) - \delta(K,L,E,M^*+e)
+\end{aligned}
+\]
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2023-11-03">
+<meta name="dcterms.date" content="2023-11-06">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax evasion and productivity</title>
@@ -55,9 +55,21 @@ div.csl-indent {
 <script src="Tax-Prod_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Tax-Prod_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Tax-Prod_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
-<script src="Tax-Prod_files/libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="Tax-Prod_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="Tax-Prod_files/libs/quarto-contrib/foldbox/foldbox.css" rel="stylesheet">
+<style>
+.Proposition {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Assumption {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Theorem {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+</style>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -77,14 +89,21 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#case-1-independece-qethetaqe-and-kappaekappa_0" id="toc-case-1-independece-qethetaqe-and-kappaekappa_0" class="nav-link" data-scroll-target="#case-1-independece-qethetaqe-and-kappaekappa_0"><span class="header-section-number">1.1</span> Case 1 (Independece): <span class="math inline">\(q(e|\theta)=q(e)\)</span> and <span class="math inline">\(\kappa(e)=\kappa_0\)</span></a></li>
   <li><a href="#case-2-spain-discrete-increase-in-the-probability-of-detection-after-a-certain-threshold-of-revenue" id="toc-case-2-spain-discrete-increase-in-the-probability-of-detection-after-a-certain-threshold-of-revenue" class="nav-link" data-scroll-target="#case-2-spain-discrete-increase-in-the-probability-of-detection-after-a-certain-threshold-of-revenue"><span class="header-section-number">1.2</span> Case 2 (Spain): Discrete increase in the probability of detection after a certain threshold of revenue</a></li>
-  <li><a href="#case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold" id="toc-case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold" class="nav-link" data-scroll-target="#case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold"><span class="header-section-number">1.3</span> Case 3 (Colombia): Discrete increase in the tax rate after a revenue threshold</a></li>
-  <li><a href="#case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold" id="toc-case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold" class="nav-link" data-scroll-target="#case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold"><span class="header-section-number">1.4</span> Case 4 (Mexico): Irreversible change in tax regime after a revenue threshold</a></li>
+  <li><a href="#case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold" id="toc-case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold" class="nav-link" data-scroll-target="#case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold"><span class="header-section-number">1.3</span> Case 3 (Colombia &amp; Mexico): Discrete increase in the tax rate after a revenue threshold</a></li>
+  <li><a href="#case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection" id="toc-case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection" class="nav-link" data-scroll-target="#case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection"><span class="header-section-number">1.4</span> Case 4 (Colombia): Firms first choose type, input decisions do not affect the probability of detection</a></li>
+  <li><a href="#other-sources-of-heterogeneity" id="toc-other-sources-of-heterogeneity" class="nav-link" data-scroll-target="#other-sources-of-heterogeneity"><span class="header-section-number">1.5</span> Other Sources of Heterogeneity</a></li>
   </ul></li>
   <li><a href="#colombia-1981-1991" id="toc-colombia-1981-1991" class="nav-link" data-scroll-target="#colombia-1981-1991"><span class="header-section-number">2</span> Colombia 1981-1991</a>
   <ul class="collapse">
   <li><a href="#colombian-corporate-tax-system" id="toc-colombian-corporate-tax-system" class="nav-link" data-scroll-target="#colombian-corporate-tax-system"><span class="header-section-number">2.1</span> Colombian Corporate Tax System</a></li>
   <li><a href="#fiscal-reforms" id="toc-fiscal-reforms" class="nav-link" data-scroll-target="#fiscal-reforms"><span class="header-section-number">2.2</span> Fiscal Reforms</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2.3</span> Data</a></li>
+  </ul></li>
+  <li><a href="#identification-strategy" id="toc-identification-strategy" class="nav-link" data-scroll-target="#identification-strategy"><span class="header-section-number">3</span> Identification Strategy</a>
+  <ul class="collapse">
+  <li><a href="#identifying-the-production-function-parameters" id="toc-identifying-the-production-function-parameters" class="nav-link" data-scroll-target="#identifying-the-production-function-parameters"><span class="header-section-number">3.1</span> Identifying the production function parameters</a></li>
+  <li><a href="#identifying-tax-evasion" id="toc-identifying-tax-evasion" class="nav-link" data-scroll-target="#identifying-tax-evasion"><span class="header-section-number">3.2</span> Identifying Tax Evasion</a></li>
+  <li><a href="#non-parametric-identification" id="toc-non-parametric-identification" class="nav-link" data-scroll-target="#non-parametric-identification"><span class="header-section-number">3.3</span> Non-Parametric Identification</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -118,7 +137,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 3, 2023</p>
+      <p class="date">November 6, 2023</p>
     </div>
   </div>
   
@@ -152,22 +171,22 @@ div.csl-indent {
 Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \tag{1}\]</span></span></p>
 <p>As standard in the literature, productivity <span class="math inline">\(\omega_{it}\)</span> is known to firms when they take input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock <span class="math inline">\(\varepsilon_{it}\)</span> is not part of the firms’ information set.</p>
-<p>The model departs from the literature by allowing firms to overreport their inputs <span class="math inline">\(e_{it}\)</span> to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax <span class="math inline">\(\tau\)</span>, the evasion penalty/cost <span class="math inline">\(\kappa(e)\)</span>, and the probability of detection <span class="math inline">\(q_{it}(e_{it}|\theta_{it})\)</span>.</p>
+<p>The model departs from the literature by allowing firms to overreport their inputs <span class="math inline">\(e_{it}\)</span> to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax <span class="math inline">\(\tau\)</span>, the evasion penalty/cost <span class="math inline">\(\kappa(e)\)</span>, and the probability of detection <span class="math inline">\(q(e_{it}|\theta_{it})\)</span>.</p>
 <p>Firms solve <a href="#eq-eva">Equation&nbsp;2</a> <span id="eq-eva"><span class="math display">\[
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q_{it}(e_{it}|\theta_{it})]&amp;\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
-  +q_{it}(e_{it}|\theta_{it})&amp;\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
+  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&amp;\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&amp;\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
   \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 \tag{2}\]</span></span></p>
-<p>The probability of detection <span class="math inline">\(q_{it}(e_{it}|\theta_{it})\)</span> is monotonically increasing in the amount evaded <span class="math inline">\(e_{it}\)</span>, conditional on the type of the firm <span class="math inline">\(\theta_{it}\)</span>. Intuitively, for a given type, firms that evade more are more likely to get caught.</p>
+<p>The probability of detection <span class="math inline">\(q(e_{it}|\theta_{it})\)</span> is monotonically increasing in the amount evaded <span class="math inline">\(e_{it}\)</span>, conditional on the type of the firm <span class="math inline">\(\theta_{it}\)</span>. Intuitively, for a given type, firms that evade more are more likely to get caught.</p>
 <p>The type of the firm <span class="math inline">\(\theta_{it}\)</span> might be discrete, like the type of juridical organization, or continuous, like the level of revenue<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Some types might be more likely to be detected if the firm engages in tax evasion. For example, in contrast to other types of juridical organizations in Colombia, corporations are closely supervised and are required to have an auditor. That is, for a given level of tax evasion <span class="math inline">\(e_0\)</span> and two different types <span class="math inline">\(\theta' \not= \theta \in \mathbfcal{\Theta}\)</span>, then <span class="math inline">\(q(e_0|\theta')\ge q(e_0|\theta)\)</span>.</p>
 <p>If the type <span class="math inline">\(\theta\)</span> is continuous, it might be a function of inputs; for example, level of revenue. Firms will then affect their probability of detection <span class="math inline">\(q(e|\theta)\)</span> in two ways: directly, by choosing how much they evade <span class="math inline">\(e\)</span>; and indirectly, when choosing inputs <span class="math inline">\(M\)</span>.</p>
 <p>The optimal decision of the firm will depend on the fiscal environment <span class="math inline">\(\Gamma=\{\tau, \kappa, q \}\)</span>, namely the tax rates, the penalty/cost of detection, and the probability of detection.</p>
 <p>The firms’ problem (<a href="#eq-eva">Equation&nbsp;2</a>) can be rewritten as follows, <span class="math display">\[
 \begin{aligned}
-  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &amp;(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q_{it}(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
-  -q_{it}(e_{it}|\theta_{it})\kappa(e_{it}) \\
+  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &amp;(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
+  -q(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &amp;\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 \]</span></p>
@@ -222,25 +241,35 @@ e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 </ul>
 </section>
 </section>
-<section id="case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold" class="level3" data-number="1.3">
-<h3 data-number="1.3" class="anchored" data-anchor-id="case-3-colombia-discrete-increase-in-the-tax-rate-after-a-revenue-threshold"><span class="header-section-number">1.3</span> Case 3 (Colombia): Discrete increase in the tax rate after a revenue threshold</h3>
-<p>In Colombia between 1981 and 1991, individual firm proprietors were subject to the individual income tax schedule. Individuals had incentives to not form juridical organizations to avoid double taxation. While corporations were closely supervised by the Superintedent of Corporations and are required to have an auditor, all other firms were subject to the regular monitoring efforts of the tax authority which such suffered from severe limitations and inefficiencies at the time.</p>
-<p>In this case, after the revenue threshold, the tax rate increases discretely but the probability of detection does not. The jump in the tax rate generates the incentive to increase the evasion, however a higher level of evasion increases the cost of evading by increasing the probability of detection. If the cost of an increased evasion outweights the benefits of growing past the revenue threshold, firm would bunch below the cutoff.</p>
+<section id="case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold"><span class="header-section-number">1.3</span> Case 3 (Colombia &amp; Mexico): Discrete increase in the tax rate after a revenue threshold</h3>
+<section id="colombia-individual-proprietorships" class="level4" data-number="1.3.1">
+<h4 data-number="1.3.1" class="anchored" data-anchor-id="colombia-individual-proprietorships"><span class="header-section-number">1.3.1</span> Colombia, Individual Proprietorships</h4>
+<p>In Colombia between 1981 and 1991, individual firm proprietors were subject to the individual income tax schedule. Individuals had incentives to not form juridical organizations to avoid double taxation. The tax authority suffered from severe limitations and inefficiencies at the time.</p>
+<p>In this case, after the revenue threshold, the tax rate increases discretely but the probability of detection does not. The jump in the tax rate generates the incentive to increase evasion. However, a higher level of evasion increases the cost of evading by increasing the probability of detection. If the cost of an increased evasion outweighs the benefits of growing past the revenue threshold, the firms would bunch below the cutoff.</p>
 </section>
-<section id="case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold" class="level3" data-number="1.4">
-<h3 data-number="1.4" class="anchored" data-anchor-id="case-4-mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold"><span class="header-section-number">1.4</span> Case 4 (Mexico): Irreversible change in tax regime after a revenue threshold</h3>
+<section id="mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold" class="level4" data-number="1.3.2">
+<h4 data-number="1.3.2" class="anchored" data-anchor-id="mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold"><span class="header-section-number">1.3.2</span> Mexico, Irreversible Change in Tax Regime after a Revenue Threshold</h4>
 <p>In Mexico, firms with annual revenues below 2 million pesos are taxed under the REPECO (<em>Regime de Pequeños Contribuyentes</em>) regime of small contributors at 2 percent of annual revenues, while firms above that threshold are taxed under the general regime at 30 percent. Firms must transition to the general regime if revenues increase beyond the threshold. Once in the general regime, firms cannot revert to the REPECO regime.</p>
-<p>Firms’ decision is now dynamic. Firms will maximize the sum of current and future after-tax profits. The discrete jump in the tax rate will lead to a bunchigh below the threshold. Moreover, the bunching will be exacerbated because firms will choose to grow past the cutoff only if the future productivity shocks allow the firm to continue to be profitable.</p>
+<p>Firms’ decision is now dynamic. Firms will maximize the sum of current and future after-tax profits. The discrete jump in the tax rate will lead to a bunching below the threshold. Moreover, the bunching will be exacerbated because firms will choose to grow past the cutoff only if the future productivity shocks allow the firm to continue to be profitable.</p>
+</section>
+</section>
+<section id="case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection"><span class="header-section-number">1.4</span> Case 4 (Colombia): Firms first choose type, input decisions do not affect the probability of detection</h3>
+<p>In Colombia between 1981 and 1991, Corporations were closely supervised by the Superintendent of Corporations and were required to have an auditor. All other firms were subject to the regular monitoring efforts of the tax authority, which suffered from severe limitations and inefficiencies at the time.</p>
+<p>In the model, firms first choose their type. Input decisions do not affect the probability of detection. However, if the type is <em>Corporation</em> the probability of detection is higher than <em>Partnership</em>. Firms maximize the sum of their expected profits. In their optimization problem, firms will consider the sum of expected productivity shocks and their corresponding probability of detection. High-productivity firms will self-select into <em>Corporations</em>.</p>
+</section>
+<section id="other-sources-of-heterogeneity" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="other-sources-of-heterogeneity"><span class="header-section-number">1.5</span> Other Sources of Heterogeneity</h3>
+<p>Currently, only productivity. But, it can also be</p>
+<ul>
+<li>Probability of detection might be a random function (idiosyncratic random shocks on the beliefs about being detected)</li>
+<li>Cost of evasion (different technologies of evasion)</li>
+</ul>
 <!-- Setting -->
 <!-- {{< include sections/35-setting.qmd >}} -->
-<!-- Empirical model -->
-<!--NO {{< include sections/50-empirical.rmd >}} -->
 <!-- Identification strategy -->
 <!-- {{< include sections/55-id-strat.qmd >}} -->
-<!-- Identification strategy -->
-<!--NO {{< include sections/60-data.rmd >}} -->
-<!-- Identification strategy -->
-<!--NO {{< include sections/65-prelim.qmd >}} -->
 <!-- Colombia 1981-1991: tax system and reforms -->
 </section>
 </section>
@@ -248,27 +277,27 @@ e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 <h2 data-number="2" class="anchored" data-anchor-id="colombia-1981-1991"><span class="header-section-number">2</span> Colombia 1981-1991</h2>
 <section id="colombian-corporate-tax-system" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="colombian-corporate-tax-system"><span class="header-section-number">2.1</span> Colombian Corporate Tax System</h3>
-<p>The relevant corporate taxes for input overreporting are the Corporate Income Tax and the Sales Tax that (gradually transformed into a kind of Value-Added Tax).</p>
-<p>High levels of overall tax evasion during the period. No penalties, inefficient monitoring system, overburdened authority, and legal loopholes.</p>
+<p>The relevant corporate taxes for input overreporting are the Corporate Income Tax and the Sales Tax. The Sales gradually transformed into a kind of Value-Added Tax.</p>
+<p>High levels of overall tax evasion during the period. No penalties, an inefficient monitoring system, overburdened authority, and legal loopholes.</p>
 <section id="corporate-income-tax" class="level4" data-number="2.1.1">
 <h4 data-number="2.1.1" class="anchored" data-anchor-id="corporate-income-tax"><span class="header-section-number">2.1.1</span> Corporate Income tax</h4>
 <p>The Corporate Income Tax depended on the type of juridical organization of the firm. For tax purposes, we can classify firms as Corporations, Partnerships, Limited Liability Companies, and Individual Proprietorships.</p>
 <p>Corporations were taxed at a fixed rate of 40%, while Partnerships and Limited Liability companies at 20%. Individual proprietors were subject to the graduated Individual Tax Schedule consisting of 56 rates, ranging from 0.50 to 51 percent.</p>
-<p>Corporations were taxed on their distributed dividends, while parternships and limited liability companies were taxed on their profits, whether or not distributed. Owners of juridical organizations were double taxed, at the firm and the individual level, whereas the income of proprietorships was taxed only once.</p>
-<p>Moreover, Corporations were subjecto to the Superindent of Corporations and were closely supervised, being required to have an auditor.</p>
+<p>Corporations were taxed on their distributed dividends, while partnerships and limited liability companies were taxed on their profits, whether or not distributed. Owners of juridical organizations were double taxed, at the firm and the individual level, whereas the income of proprietorships was taxed only once.</p>
+<p>Moreover, Corporations were subject to the Superintendent of Corporations and were closely supervised, being required to have an auditor.</p>
 <p>Since 1974, individuals and juridical organizations, except for limited liability companies, were subject to the minimum presumptive income. Rent (income and profits) was presumed to be no less than 8 percent of net wealth (assets less depreciation, real estate, livestock, securities). Firms with profits lower than 8 percent of their wealth had incentives to underreport capital. Firms with larger profits had incentives to overreport inputs and underreport sales.</p>
-<p>Exemptions were granted for automobile producers, private electrical companies, airlines, publishing, and reforestation sectors, and for various activities in selected regions (primarily “frontier” and other less developed ones).</p>
+<p>Exemptions were granted for automobile producers, private electrical companies, airlines, publishing, and reforestation sectors, and various activities in selected regions (primarily “frontier” and other less developed ones).</p>
 </section>
 <section id="sales-taxes" class="level4" data-number="2.1.2">
 <h4 data-number="2.1.2" class="anchored" data-anchor-id="sales-taxes"><span class="header-section-number">2.1.2</span> Sales taxes</h4>
-<p>Sales taxes were originally targeted at the manufacturing sector on finished goods and imports. Since 1974, manufacturers were allowed to credit taxes paid on any purchse made by the firm, except the acquisition of capital goods <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>. The credits worked through a system of refunds. Consequently, the tax became a kind of value-added tax (VAT). The VAT was extended to many services.</p>
-<p>The basic rate was 15 percent. There was also a preferential rate of 6 percent for “wage goods” (clothing, footwear, and major inputs used for building popular housing), and a rate of 35 percent for luxury goods. Exports, foodstuff, drugs, and textbooks were excluded from the begining. Also excluded were inputs, transportation equipment, agricultural machinery, and equipment.</p>
+<p>Sales taxes were originally targeted at the manufacturing sector on finished goods and imports. Since 1974, manufacturers were allowed to credit taxes paid on any purchase made by the firm, except the acquisition of capital goods <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>. The credits worked through a system of refunds. Consequently, the tax became a kind of value-added tax (VAT). The VAT was extended to many services.</p>
+<p>The basic rate was 15 percent. There was also a preferential rate of 6 percent for “wage goods” (clothing, footwear, and major inputs used for building popular housing), and a rate of 35 percent for luxury goods. Exports, foodstuff, drugs, and textbooks were excluded from the beginning. Also excluded were inputs, transportation equipment, agricultural machinery, and equipment.</p>
 </section>
 <section id="take-aways" class="level4" data-number="2.1.3">
 <h4 data-number="2.1.3" class="anchored" data-anchor-id="take-aways"><span class="header-section-number">2.1.3</span> Take-aways</h4>
 <ul>
 <li>Corporations are the least likely to evade because the probability of detection is higher for them.</li>
-<li>Firms’ incentives to overreporting inputs was heterogeneous within industry because it depended on the effective sales tax rate which varied according to the firm’s location and sales composition (inputs to other firms, to consumers, to foreign market), and the type of juridical organization.</li>
+<li>Firms’ incentives to overreport inputs were heterogeneous within industry sectors because it depended on the effective sales tax rate which varied according to the firm’s location and sales composition (inputs to other firms, to consumers, to the foreign market), and the type of juridical organization.</li>
 <li>Individual proprietorships (and maybe low revenue limited liability companies) were likely to bunch at the individual income thresholds.</li>
 </ul>
 </section>
@@ -279,9 +308,9 @@ e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 <section id="section" class="level4" data-number="2.2.1">
 <h4 data-number="2.2.1" class="anchored" data-anchor-id="section"><span class="header-section-number">2.2.1</span> 1983</h4>
 <p>The 1983 reform tried to alleviate the double taxation by introducing a tax credit of 10% of dividends received for individuals.</p>
-<p>In addition, Law 9 of 1983 instituted a measure of presumptive income equal to 2 percent of gross receipts to supplement the measure based on net wealth. This reform was aimed specifically at the commerce and service sectors; the former were thought to evade the wealth-based presumptive tax by systematically understating inventories. In addition, it extended the presumptive income tax to limited liability companies.</p>
-<p>In 1983, the value-added tax (VAT) was extended to the retail level, with a <em>simplified system</em> being made available to small retailers in the effort to ease compliance costs and administrative burden.</p>
-<p>The 1983 reform realively unified the value-added tax (VAT) rates by combining previously taxed goods at 6% and 15 percent into 10%. The number of the products and services that were levied expanded.</p>
+<p>In addition, Law 9 of 1983 instituted a measure of presumptive income equal to 2 percent of gross receipts to supplement the measure based on net wealth. This reform was aimed specifically at the commerce and service sectors; the former was thought to evade the wealth-based presumptive tax by systematically understating inventories. In addition, it extended the presumptive income tax to limited liability companies.</p>
+<p>In 1983, the value-added tax (VAT) was extended to the retail level, with a <em>simplified system</em> being made available to small retailers to ease compliance costs and the administrative burden.</p>
+<p>The 1983 reform relatively unified the value-added tax (VAT) rates by combining previously taxed goods at 6% and 15 percent into 10%. The number of the products and services that were levied expanded.</p>
 <p>In 1984, exemptions for agricultural machinery, transportation equipment, and certain other goods were eliminated.</p>
 </section>
 <section id="section-1" class="level4" data-number="2.2.2">
@@ -324,428 +353,140 @@ e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 <p><span id="eq-reg-tax-jo"><span class="math display">\[
 log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
 \tag{7}\]</span></span></p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-reg-tax-jo" class="anchored">
-<table data-quarto-postprocess="true" class="table table-sm table-striped small">
-<caption>Table&nbsp;1: Sales tax and Juridical Organization type effect on the log share of intermediate inputs.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">feols(log_shar..1</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">feols(log_share..2</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">feols(log_share..3</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">feols(log_share..4</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">(1)</td>
-<td style="text-align: left;">(2)</td>
-<td style="text-align: left;">(3)</td>
-<td style="text-align: left;">(4)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Dependent Var.:</td>
-<td style="text-align: left;">\(log(s)\)</td>
-<td style="text-align: left;">\(log(s)\)</td>
-<td style="text-align: left;">\(log(s)\)</td>
-<td style="text-align: left;">\(log(s)\)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Sales Tax Rate</td>
-<td style="text-align: left;">0.5941** (0.1366)</td>
-<td style="text-align: left;">0.7719*** (0.0976)</td>
-<td style="text-align: left;">0.7719*** (0.0973)</td>
-<td style="text-align: left;">0.7520*** (0.1001)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (0)</td>
-<td style="text-align: left;">0.4412** (0.1081)</td>
-<td style="text-align: left;">0.4285** (0.1088)</td>
-<td style="text-align: left;">0.4285** (0.1082)</td>
-<td style="text-align: left;">0.4249** (0.1064)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (1)</td>
-<td style="text-align: left;">0.4492** (0.1077)</td>
-<td style="text-align: left;">0.4429** (0.1088)</td>
-<td style="text-align: left;">0.4429** (0.1082)</td>
-<td style="text-align: left;">0.4376** (0.1069)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (2)</td>
-<td style="text-align: left;">0.4596** (0.1145)</td>
-<td style="text-align: left;">0.4434** (0.1141)</td>
-<td style="text-align: left;">0.4434** (0.1134)</td>
-<td style="text-align: left;">0.4480** (0.1116)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (3)</td>
-<td style="text-align: left;">0.2757* (0.1145)</td>
-<td style="text-align: left;">0.3033* (0.1109)</td>
-<td style="text-align: left;">0.3033* (0.1104)</td>
-<td style="text-align: left;">0.3023* (0.1087)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (4)</td>
-<td style="text-align: left;">0.4509** (0.1025)</td>
-<td style="text-align: left;">0.4471** (0.1035)</td>
-<td style="text-align: left;">0.4471** (0.1029)</td>
-<td style="text-align: left;">0.4431** (0.1014)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (5)</td>
-<td style="text-align: left;">0.4619** (0.1193)</td>
-<td style="text-align: left;">0.4534** (0.1210)</td>
-<td style="text-align: left;">0.4534** (0.1204)</td>
-<td style="text-align: left;">0.4482** (0.1189)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (6)</td>
-<td style="text-align: left;">0.3464** (0.0979)</td>
-<td style="text-align: left;">0.3397** (0.0973)</td>
-<td style="text-align: left;">0.3397** (0.0968)</td>
-<td style="text-align: left;">0.3369** (0.0964)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (7)</td>
-<td style="text-align: left;">0.5487** (0.1571)</td>
-<td style="text-align: left;">0.5196** (0.1579)</td>
-<td style="text-align: left;">0.5196** (0.1571)</td>
-<td style="text-align: left;">0.5229** (0.1553)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (8)</td>
-<td style="text-align: left;">0.2637. (0.1430)</td>
-<td style="text-align: left;">0.3024. (0.1377)</td>
-<td style="text-align: left;">0.3024. (0.1370)</td>
-<td style="text-align: left;">0.3068* (0.1349)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Fixed-Effects:</td>
-<td style="text-align: left;">-----------------</td>
-<td style="text-align: left;">------------------</td>
-<td style="text-align: left;">------------------</td>
-<td style="text-align: left;">------------------</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Industry</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Year</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Metro Area</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________</td>
-<td style="text-align: left;">_________________</td>
-<td style="text-align: left;">__________________</td>
-<td style="text-align: left;">__________________</td>
-<td style="text-align: left;">__________________</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">S.E.: Clustered</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Observations</td>
-<td style="text-align: left;">41,467</td>
-<td style="text-align: left;">41,467</td>
-<td style="text-align: left;">41,467</td>
-<td style="text-align: left;">41,467</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">R2</td>
-<td style="text-align: left;">0.57951</td>
-<td style="text-align: left;">0.59731</td>
-<td style="text-align: left;">0.59731</td>
-<td style="text-align: left;">0.60142</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Within R2</td>
-<td style="text-align: left;">--</td>
-<td style="text-align: left;">0.54058</td>
-<td style="text-align: left;">0.53633</td>
-<td style="text-align: left;">0.53876</td>
-</tr>
-</tbody>
-</table>
+<div id="tbl-reg-jo-tax" class="tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p>Juridical Organization type and Sales Tax effect on the log share of intermediate inputs.</p>
 </div>
-
-
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="etable quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<img src="./images/etable/etable_tex_2023-11-04_1208303405.png">
+</div>
 </div>
 </div>
 <p><span id="eq-reg-tax-fp"><span class="math display">\[
-log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \mathbf{\beta}_1'JurOrg_i + \beta_2FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \beta_1'JurOrg_i + \beta_2'FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
 \tag{8}\]</span></span></p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="tbl-reg-fiscal-p" class="anchored">
-<table data-quarto-postprocess="true" class="table table-sm table-striped small">
-<caption>Table&nbsp;2: Juridical Organization type per fiscal period effect on the log share of intermediate inputs.</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">..1</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">..2</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">..3</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">..4</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;">(1)</td>
-<td style="text-align: left;">(2)</td>
-<td style="text-align: left;">(3)</td>
-<td style="text-align: left;">(4)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Dependent Var.:</td>
-<td style="text-align: left;">\(log(s)\)</td>
-<td style="text-align: left;">\(log(s)\)</td>
-<td style="text-align: left;">\(log(s)\)</td>
-<td style="text-align: left;">\(log(s)\)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (0) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1112 (0.0647)</td>
-<td style="text-align: left;">-0.1134 (0.0643)</td>
-<td style="text-align: left;">-0.1019 (0.0612)</td>
-<td style="text-align: left;">-0.1035 (0.0637)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (1) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1163. (0.0619)</td>
-<td style="text-align: left;">-0.1171. (0.0622)</td>
-<td style="text-align: left;">-0.1091. (0.0592)</td>
-<td style="text-align: left;">-0.1113. (0.0613)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (2) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1462 (0.0888)</td>
-<td style="text-align: left;">-0.1444 (0.0896)</td>
-<td style="text-align: left;">-0.1308 (0.0866)</td>
-<td style="text-align: left;">-0.1321 (0.0887)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (3) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.0793 (0.0605)</td>
-<td style="text-align: left;">-0.0853 (0.0614)</td>
-<td style="text-align: left;">-0.0779 (0.0583)</td>
-<td style="text-align: left;">-0.0808 (0.0604)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (4) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1401. (0.0722)</td>
-<td style="text-align: left;">-0.1384. (0.0733)</td>
-<td style="text-align: left;">-0.1260 (0.0699)</td>
-<td style="text-align: left;">-0.1276 (0.0720)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (5) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1068 (0.0592)</td>
-<td style="text-align: left;">-0.1047 (0.0596)</td>
-<td style="text-align: left;">-0.0963 (0.0570)</td>
-<td style="text-align: left;">-0.0982 (0.0592)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (6) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1566. (0.0827)</td>
-<td style="text-align: left;">-0.1530. (0.0816)</td>
-<td style="text-align: left;">-0.1474. (0.0805)</td>
-<td style="text-align: left;">-0.1495. (0.0824)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (7) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1840** (0.0545)</td>
-<td style="text-align: left;">-0.1856** (0.0539)</td>
-<td style="text-align: left;">-0.1747** (0.0516)</td>
-<td style="text-align: left;">-0.1777** (0.0542)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (8) x 83-86 fiscal period</td>
-<td style="text-align: left;">-0.1989** (0.0540)</td>
-<td style="text-align: left;">-0.1980* (0.0646)</td>
-<td style="text-align: left;">-0.1896* (0.0612)</td>
-<td style="text-align: left;">-0.1923* (0.0628)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (0) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.2045*** (0.0224)</td>
-<td style="text-align: left;">-0.2146*** (0.0203)</td>
-<td style="text-align: left;">-0.1936*** (0.0209)</td>
-<td style="text-align: left;">-0.1938*** (0.0229)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (1) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.1942*** (0.0224)</td>
-<td style="text-align: left;">-0.2028*** (0.0226)</td>
-<td style="text-align: left;">-0.1858*** (0.0223)</td>
-<td style="text-align: left;">-0.1856*** (0.0243)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (2) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.1675. (0.0832)</td>
-<td style="text-align: left;">-0.1776. (0.0805)</td>
-<td style="text-align: left;">-0.1536. (0.0794)</td>
-<td style="text-align: left;">-0.1541. (0.0813)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (3) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.1631*** (0.0254)</td>
-<td style="text-align: left;">-0.1832*** (0.0232)</td>
-<td style="text-align: left;">-0.1676*** (0.0228)</td>
-<td style="text-align: left;">-0.1667*** (0.0242)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (4) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.2694*** (0.0439)</td>
-<td style="text-align: left;">-0.2738*** (0.0462)</td>
-<td style="text-align: left;">-0.2533*** (0.0455)</td>
-<td style="text-align: left;">-0.2533*** (0.0465)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (5) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.1904*** (0.0272)</td>
-<td style="text-align: left;">-0.1995*** (0.0262)</td>
-<td style="text-align: left;">-0.1803*** (0.0265)</td>
-<td style="text-align: left;">-0.1799*** (0.0279)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (6) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.1127 (0.0655)</td>
-<td style="text-align: left;">-0.1256. (0.0667)</td>
-<td style="text-align: left;">-0.1120 (0.0634)</td>
-<td style="text-align: left;">-0.1117 (0.0644)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">J. Org. (7) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.2389*** (0.0500)</td>
-<td style="text-align: left;">-0.2454*** (0.0521)</td>
-<td style="text-align: left;">-0.2212** (0.0520)</td>
-<td style="text-align: left;">-0.2209** (0.0530)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">J. Org. (8) x 87-91 fiscal period</td>
-<td style="text-align: left;">-0.2547*** (0.0393)</td>
-<td style="text-align: left;">-0.2593*** (0.0558)</td>
-<td style="text-align: left;">-0.2429** (0.0547)</td>
-<td style="text-align: left;">-0.2424** (0.0548)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Fixed-Effects:</td>
-<td style="text-align: left;">-------------------</td>
-<td style="text-align: left;">-------------------</td>
-<td style="text-align: left;">-------------------</td>
-<td style="text-align: left;">-------------------</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Industry</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Metro Area</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Year</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_________________________________</td>
-<td style="text-align: left;">___________________</td>
-<td style="text-align: left;">___________________</td>
-<td style="text-align: left;">___________________</td>
-<td style="text-align: left;">___________________</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">S.E.: Clustered</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-<td style="text-align: left;">by: Industry &amp; Year</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Observations</td>
-<td style="text-align: left;">41,467</td>
-<td style="text-align: left;">41,467</td>
-<td style="text-align: left;">41,467</td>
-<td style="text-align: left;">41,467</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">R2</td>
-<td style="text-align: left;">0.56230</td>
-<td style="text-align: left;">0.57858</td>
-<td style="text-align: left;">0.58367</td>
-<td style="text-align: left;">0.58420</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Within R2</td>
-<td style="text-align: left;">--</td>
-<td style="text-align: left;">0.51921</td>
-<td style="text-align: left;">0.52254</td>
-<td style="text-align: left;">0.51882</td>
-</tr>
-</tbody>
-</table>
+<div id="tbl-reg-fiscal-p" class="tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p>Juridical Organization type per fiscal period effect on the log share of intermediate inputs.</p>
 </div>
-
-
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="etable quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<img src="./images/etable/etable_tex_2023-11-04_1830212349.png">
 </div>
 </div>
+</div>
+<div id="tbl-reg-energy" class="tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p>Juridical Organization type and Sales Tax effect on the log share of Consumed Energy.</p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="etable quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<img src="./images/etable/etable_tex_2023-11-04_5039455019.png">
+</div>
+</div>
+</div>
+<div id="tbl-reg-mats" class="tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p>Juridical Organization type and Sales Tax effect on the log share of Raw Materials and Services.</p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="etable quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<img src="./images/etable/etable_tex_2023-11-04_1703073930.png">
+</div>
+</div>
+</div>
+<!-- Identification strategy -->
+</section>
+</section>
+<section id="identification-strategy" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="identification-strategy"><span class="header-section-number">3</span> Identification Strategy</h2>
+<p>Because the firms’ optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment <span class="math inline">\(\Gamma\)</span>. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations.</p>
+<div id="ass-non-ev" class="Assumption" title="Non-Evaders">
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 0.1: </strong>Non-Evaders</summary><div>Based on the fiscal environment <span class="math inline">\(\Gamma\)</span>, the researcher can identify a subset of firms <span class="math inline">\(\Theta^{Non-Evaders}\)</span> that do not evade by overreporting inputs.<p></p>
+</div></details>
+</div>
+<p>For those firms, then <span class="math inline">\(\mathbb{E}[e_{it}|\theta_i\in\Theta^{Non-Evaders}]=0\)</span></p>
+<p>In addition, I impose the following timing assumption.</p>
+<div id="ass-ind" class="Assumption" title="Independence">
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 0.2: </strong>Independence</summary><div>Firms choose overreporting <span class="math inline">\(e_{it}\)</span> <em>before </em>the output shock <span class="math inline">\(\varepsilon^Y_{it}\)</span><p></p>
+</div></details>
+</div>
+<p>Assumption <a href="#ass-ind">0.2</a> implies that input overreporting is independent of the current period output shock, <span class="math inline">\(e_{it} \perp \varepsilon^Y_{it}\)</span>. In the literature is not rare to assume that the output shock is not part of the information set of the firms, <span class="math inline">\(\varepsilon^Y_{it}\not\in \mathcal{I}_t\)</span> <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation <span class="citation" data-cites="Ackerberg2021 Ackerberg2019">(<a href="#ref-Ackerberg2021" role="doc-biblioref">Ackerberg et al. 2021</a>; <a href="#ref-Ackerberg2019" role="doc-biblioref">Ackerberg 2019</a>)</span>.</p>
+<section id="identifying-the-production-function-parameters" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="identifying-the-production-function-parameters"><span class="header-section-number">3.1</span> Identifying the production function parameters</h3>
+<p>Suppose the production function is Cobb-Douglas, <span class="math inline">\(G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon^Y_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon^Y_{it})\)</span>. Then, we can use the first-order conditions of the firms’ cost minimization problem on the flexible input, as in <span class="citation" data-cites="Gandhi2020">Gandhi et al. (<a href="#ref-Gandhi2020" role="doc-biblioref">2020</a>)</span>, and assumption <a href="#ass-non-ev">0.1</a> to recover the production function parameter <span class="math inline">\(\beta\)</span>.</p>
+<p><span id="eq-foc-cd"><span class="math display">\[
+\begin{aligned}
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&amp;=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{Non-Evaders}\right]&amp;=\ln\beta
+\end{aligned}
+\tag{9}\]</span></span></p>
+<p><span class="math inline">\(\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]\)</span></p>
+<p>Note that this is the case because <span class="math inline">\(\mathbb{E}[\varepsilon^Y_{it}|\Theta^{Non-Evaders}]=\mathbb{E}[\varepsilon^Y_{it}]=0\)</span>. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to <a href="#eq-foc-cd">Equation&nbsp;9</a> — like output or revenue in the same period—, the output elasticity of input, <span class="math inline">\(\beta\)</span>, can be recovered.</p>
+</section>
+<section id="identifying-tax-evasion" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="identifying-tax-evasion"><span class="header-section-number">3.2</span> Identifying Tax Evasion</h3>
+<p>I can form the following variable using observed variables and the production function parameter I recovered from the first stage.</p>
+<p><span class="math display">\[
+\begin{aligned}
+    \mathcal V_{it}\equiv&amp;\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta \notag \\
+    &amp;=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+e_{it} \notag \\
+    &amp;=-\varepsilon^Y_{it} +e_{it}
+\end{aligned}
+\]</span></p>
+<p>This is useful because I can recover the tax evasion up to a random variable, <span class="math inline">\(\varepsilon^Y_{it}\)</span>, with mean zero and, by assumption <a href="#ass-ind">0.2</a>, independent of <span class="math inline">\(e_{it}\)</span>.</p>
+</section>
+<section id="non-parametric-identification" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="non-parametric-identification"><span class="header-section-number">3.3</span> Non-Parametric Identification</h3>
+<p><span class="math inline">\(\ln\left(\frac{\rho M}{PY}\right)=D^{\mathcal{E}}(K,L,M)-\varepsilon^Y\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\ln\left(\frac{\rho M}{PY}\right)-D^{\mathcal{E}}(K,L,M)&amp; \\
+&amp;=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
+&amp;=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
+&amp;+\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&amp;-\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right] \\
+&amp;=\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*) \\
+&amp;+\left[\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln\left(\frac{\rho(M^*)}{PY}\right)\right]\\
+&amp;-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&amp;= -\varepsilon^Y \\
+&amp;+\left[D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon^Y-D^{\mathcal{E}}(K,L,M^*)+\varepsilon^Y\right]\\
+&amp;-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
+&amp;= -\varepsilon^Y
+\end{aligned}
+\]</span></p>
+<p><span class="math inline">\(\ln\left(\frac{\rho E}{PY}\right)=D^{\mathcal{E}}(K,L,E,M)-\varepsilon^Y\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M)&amp; \\
+&amp;=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
+&amp;=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
+&amp;+\left[D^{\mathcal{E}}(K,L,E,M^*)\right]\\
+&amp;-\left[D^{\mathcal{E}}(K,L,E,M^*)\right] \\
+&amp;=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*) \\
+&amp;-\left[D^{\mathcal{E}}(K,L,E,M^*+e)-D^{\mathcal{E}}(K,L,E,M^*)\right]\\
+&amp;= -\varepsilon^Y(M^*) - \delta(K,L,E,M^*+e)
+\end{aligned}
+\]</span></p>
 <!-- Colombia 1981-1991: an application (previous) -->
 <!-- {{< include sections/91-colombia-empiric.qmd >}} -->
-<!-- Future work -->
-<!-- NO {{< include sections/70-future.rmd >}} -->
 </section>
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Ackerberg2019" class="csl-entry" role="listitem">
+Ackerberg, D. A. (2019), <span>“Timing assumptions and e¢ ciency: Empirical evidence in a production function context.”</span>
+</div>
+<div id="ref-Ackerberg2021" class="csl-entry" role="listitem">
+Ackerberg, D., Frazer, G., Luo, Y., and Su, Y. (2021), <span>“<a href="https://ssrn.com/abstract=3717757">Under-identification of structural models based on timing and information set assumptions</a>.”</span>
+</div>
 <div id="ref-Almunia2018" class="csl-entry" role="listitem">
 Almunia, M., and Lopez-Rodriguez, D. (2018), <span>“Under the radar: The effects of monitoring firms on tax compliance †,”</span> <em>American Economic Journal: Economic Policy</em>, 10, 1–38. <a href="https://doi.org/10.1257/pol.20160229">https://doi.org/10.1257/pol.20160229</a>.
+</div>
+<div id="ref-Gandhi2020" class="csl-entry" role="listitem">
+Gandhi, A., Navarro, S., and Rivers, D. A. (2020), <span>“On the identification of gross output production functions.”</span>
 </div>
 <div id="ref-Perry1990" class="csl-entry" role="listitem">
 Perry, G., and Triana, L. O. de (1990), <span>“The VAT in colombia,”</span> in <em>Value Added Taxation in Developing Countries</em>, eds. M. Gillis, C. S. Shoup, and G. P. Sicat, The World Bank, pp. 180–194.
