@@ -6,18 +6,12 @@ Besides the information on output, intermediates, capital, and labor, the datase
 
 ```{r}
 #| label: fig-revenue-hist-bunch-0
-#| fig-cap: Revenue distribution Juridical Org. 0 (81-83)
+#| fig-cap: Revenue distribution Proprietorships (81-83)
+#| cap-location: top
 #| echo: false
 #| warning: false
 
-library(tidyverse)
-library(ggplot2)
-library(modeest)
-library(fixest)
-library(kableExtra)
 
-load("../Code/Products/colombia_data.RData")
-load("../Code/Products/global_vars.RData")
 colombia_data_frame %>%
     filter(
         year<=83,
@@ -35,7 +29,8 @@ title("")
 
 ```{r}
 #| label: fig-revenue-hist-bunch-1
-#| fig-cap: Revenue distribution Juridical Org. 1 (81-83)
+#| fig-cap: Revenue distribution Limited Partnership (81-83)
+#| cap-location: top
 #| echo: false
 #| warning: false
 
@@ -66,70 +61,41 @@ log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOr
 $$ {#eq-reg-tax-jo}
 
 
-::: {#tbl-reg-jo-tax}
+::: {#tbl-reg-jo-tax layout-ncol=1}
+
 ```{r}
+#| eval: true
 #| echo: false
 #| warning: false
 #| results: asis
 
-setFixest_etable(markdown = TRUE)
-
-setFixest_dict(c(
-    share_sales_tax = "Sales Tax Rate",
-    `relevel(factor(juridical_organization),ref="9")0` = "J. Org. (0)",
-    `relevel(factor(juridical_organization),ref="9")1` = "J. Org. (1)",
-    `relevel(factor(juridical_organization),ref="9")2` = "J. Org. (2)",
-    `relevel(factor(juridical_organization),ref="9")3` = "J. Org. (3)",
-    `relevel(factor(juridical_organization),ref="9")4` = "J. Org. (4)",
-    `relevel(factor(juridical_organization),ref="9")5` = "J. Org. (5)",
-    `relevel(factor(juridical_organization),ref="9")6` = "J. Org. (6)",
-    `relevel(factor(juridical_organization),ref="9")7` = "J. Org. (7)",
-    `relevel(factor(juridical_organization),ref="9")8` = "J. Org. (8)",
-    `polym(m,k,l,degree=2,raw=TRUE)1.0.0` = "\\(m\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)2.0.0` = "\\(m^2\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)0.1.0` = "\\(k\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)0.2.0` = "\\(k^2\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)0.0.1` = "\\(l\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)0.0.2` = "\\(l^2\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)1.1.0` = "\\(mk\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)1.0.1` = "\\(ml\\)",
-    `polym(m,k,l,degree=2,raw=TRUE)0.1.1` = "\\(kl\\)",
-    log_share = "\\(log(s)\\)",
-    sic_3 = "Industry",
-    year = "Year",
-    `log(energy/sales)` = "\\(log(Energy/Revenue)\\)",
-    `log(mats_serv/sales)` = "\\(log(Mats+Serv/Revenue)\\)",
-    metro_area_code = "Metro Area",
-    `factor(fiscal_period)83` = "84-86 F.P.",
-    `factor(fiscal_period)86` = "87-91 F.P."#,
-    # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
-    # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
-))
-
-feols(
-        log_share ~  polym(m, k, l, degree = 2, raw = TRUE)+share_sales_tax+relevel(factor(juridical_organization),ref="9")*factor(year)|csw0(sic_3,metro_area_code),
-        data = colombia_data_frame, cluster=~sic_3+year
-    ) |> etable(
-        keep = c("Sales","J. Org."),
-        drop="year",
-        notes = "Reference group is J.O. (9) in 1981."
-        # headers = c("(1)","(2)","(3)","(4)")#,
-        # postprocess.df = pandoc.table.return, style = "rmarkdown"
+colombia_data_frame %>%
+    feols( log_share ~ share_sales_tax+
+        relevel(factor(juridical_organization),ref="3")*factor(year)+
+        polym(m, k, l, degree = 2, raw = TRUE)
+        | csw0(sic_3,metro_area_code),
+        data = ., cluster=~sic_3+year
+    ) %>% 
+    etable(
+        drop = c("Year", "%poly", "Const"),
+        notes = "Reference group is Corporations in 1981.",
+        div.class = "table"
     ) 
-    # |> kbl(
-    #     escape = FALSE
-    # )
+
 
 ```
 
-Juridical Organization type and Sales Tax effect on the log share of intermediate inputs.
+
+Effect of the Juridical Organization Type and Sales Tax on the Log Share of Intermediate Inputs.
+
 :::
 
 $$
 log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \beta_1'JurOrg_i + \beta_2'FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
 $$ {#eq-reg-tax-fp}
 
-::: {#tbl-reg-fiscal-p}
+::: {#tbl-reg-fiscal-p layout-ncol=1}
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -146,12 +112,14 @@ colombia_data_frame %>%
         )
     ) %>%
     feols(
-        log_share ~ polym(m, k, l, degree = 2, raw = TRUE)+relevel(factor(juridical_organization), ref="9")*factor(fiscal_period)| csw0(sic_3,metro_area_code,year),#factor(sic_3)+factor(metro_area_code)+factor(year),
+        log_share ~ polym(m, k, l, degree = 2, raw = TRUE)+relevel(factor(juridical_organization), ref="3")*factor(year)| csw0(sic_3,metro_area_code),#factor(sic_3)+factor(metro_area_code)+factor(year),
         data = . , cluster = ~sic_3+year
     ) %>%
     etable(
-        keep = "%:",
-        notes = "Reference group is J.O. (9) in Fiscal Period 1981-1983."
+        keep = "Proprietorship",
+        # drop = "%:",
+        notes = "Reference group is Corporations in 1981",
+        div.class = "table"
         # tex = TRUE
         # headers = c("(1)","(2)","(3)","(4)")
     ) 
@@ -164,10 +132,12 @@ colombia_data_frame %>%
 
 ```
 
-Juridical Organization type per fiscal period effect on the log share of intermediate inputs.
+Effect of the Type of Juridical Organization on the Log Share of Intermediate Inputs, per Fiscal Period.
+
 :::
 
-::: {#tbl-reg-energy}
+::: {#tbl-reg-energy layout-ncol=1}
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -175,22 +145,26 @@ Juridical Organization type per fiscal period effect on the log share of interme
 
 colombia_data_frame %>%
     feols(
-        log(energy/sales) ~ polym(mats_serv, k, l,log(energy), degree = 2, raw = TRUE)+share_sales_tax+
-        relevel(factor(juridical_organization), ref="9")*factor(year) | csw0(sic_3,metro_area_code),
+        log(consumed_energy/sales) ~ share_sales_tax+
+        relevel(factor(juridical_organization), ref="3")*factor(year)+polym(log(mats_serv), k, l,log(consumed_energy), degree = 2, raw = TRUE) | csw0(sic_3,metro_area_code),
         data = ., cluster = ~sic_3+year
     ) %>%
     etable(
-        keep = c("Sales","J. Org."),
-        drop="year",
-        notes = "Reference group is J.O. (9) in 1981."
+        # keep = c("Proprietorship"),
+        drop=c("Year","%:","%polym","Const"),
+        notes = "Reference group is Corporations in 1981.",
+        div.class = "table"
     )
 
 
 ```
-Juridical Organization type and Sales Tax effect on the log share of Consumed Energy.
+
+Effect of the Juridical Organization Type and Sales Tax on the Log Share of Consumed Energy.
+
 :::
 
-::: {#tbl-reg-mats}
+::: {#tbl-reg-ded layout-ncol=1}
+
 ```{r}
 #| echo: false
 #| warning: false
@@ -198,18 +172,71 @@ Juridical Organization type and Sales Tax effect on the log share of Consumed En
 
 
 colombia_data_frame %>%
+    mutate(
+        deductibles = materials+deductible_expenses,
+        non_deductibles = consumed_energy+non_deductible_expenses
+    ) %>%
     feols(
-        log(mats_serv/sales) ~ polym(mats_serv, k, l,log(energy), degree = 2, raw = TRUE)+share_sales_tax+
-        relevel(factor(juridical_organization), ref="9")*factor(year) | csw0(sic_3,metro_area_code),
+        log(deductibles/sales) ~ share_sales_tax+
+        relevel(factor(juridical_organization), ref="3")*factor(year)+polym(log(deductibles), k, l,log(non_deductibles), degree = 2, raw = TRUE) | csw0(sic_3,metro_area_code),
         data = ., cluster = ~sic_3+year
     ) %>%
     etable(
-        keep = c("Sales","J. Org."),
-        drop="year",
-        notes = "Reference group is J.O. (9) in 1981."
-    )
+        # keep = c("Sales","J. Org."),
+        # markdown = NULL,
+        # tex = FALSE,
+        drop=c("Year","%:","%polym","Const"),
+        notes = "Reference group is Corporations in 1981.",
+        div.class = "table"
+    ) 
+    # %>%
+    # kbl(
+    #     # format = "html"
+    #     table.attr = 'data-quarto-disable-processing="true"'
+    # )%>%
+    # kable_classic(full_width=F, html_font = "Cambria")
 
 ```
 
-Juridical Organization type and Sales Tax effect on the log share of Raw Materials and Services.
+Effect of the Juridical Organization Type and Sales Tax on the Log Share of Deductible Expenses.
+
+:::
+
+::: {#tbl-reg-non-ded layout-ncol=1}
+
+```{r}
+#| echo: false
+#| warning: false
+#| results: asis
+
+
+colombia_data_frame %>%
+    mutate(
+        deductibles = materials+deductible_expenses,
+        non_deductibles = consumed_energy+non_deductible_expenses
+    ) %>%
+    feols(
+        log(non_deductibles/sales) ~ share_sales_tax+
+        relevel(factor(juridical_organization), ref="3")*factor(year)+polym(log(deductibles), k, l,log(non_deductibles), degree = 2, raw = TRUE) | csw0(sic_3,metro_area_code),
+        data = ., cluster = ~sic_3+year
+    ) %>%
+    etable(
+        # keep = c("Sales","J. Org."),
+        # markdown = NULL,
+        # tex = FALSE,
+        drop=c("Year","%:","%polym","Const"),
+        notes = "Reference group is Corporations in 1981.",
+        div.class = "table"
+    ) 
+    # %>%
+    # kbl(
+    #     # format = "html"
+    #     table.attr = 'data-quarto-disable-processing="true"'
+    # )%>%
+    # kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+Effect of the Juridical Organization Type and Sales Tax on the Log Share of Non-Deductible Expenses.
+
 :::

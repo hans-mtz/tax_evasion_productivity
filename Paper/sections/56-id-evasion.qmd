@@ -3,81 +3,179 @@
 Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations.
 
 
-::: {.Assumption #ass-non-ev title="Non-Evaders"}
-Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\Theta^{Non-Evaders}$ that do not evade by overreporting inputs.
+::: {.Assumption #ass-non-ev}
+#### Non-Evaders
+Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\theta_i\in\Theta^{NE}\subset \Theta$ that does not evade taxes by overreporting inputs.
 :::
 
-For those firms, then $\mathbb{E}[e_{it}|\theta_i\in\Theta^{Non-Evaders}]=0$
+For those firms, then $\mathbb{E}[e_{it}|\theta_i\in\Theta^{NE}]=0$
 
 In addition, I impose the following timing assumption.
 
-::: {.Assumption #ass-ind title="Independence"}
-Firms choose overreporting $e_{it}$ *before *the output shock $\varepsilon^Y_{it}$
+::: {.Assumption #ass-ind title="Independence" number="II"}
+Firms choose overreporting $e_{it}$ *before *the output shock $\varepsilon_{it}$
 :::
 
-Assumption \ref{ass-ind} implies that input overreporting is independent of the current period output shock, $e_{it} \perp \varepsilon^Y_{it}$. In the literature is not rare to assume that the output shock is not part of the information set of the firms, $\varepsilon^Y_{it}\not\in \mathcal{I}_t$ [@Gandhi2020]. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation [@Ackerberg2021; @Ackerberg2019].
+Assumption \ref{ass-ind} implies that input overreporting is independent of the current period output shock, $e_{it} \perp \varepsilon_{it}$. In the literature is not rare to assume that the output shock is not part of the information set of the firms, $\varepsilon_{it}\not\in \mathcal{I}_t$ [@Gandhi2020]. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation [@Ackerberg2021; @Ackerberg2019].
 
 ### Identifying the production function parameters 
 
-Suppose the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon^Y_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon^Y_{it})$. Then, we can use the first-order conditions of the firms' cost minimization problem on the flexible input, as in @Gandhi2020, and assumption \ref{ass-non-ev} to recover the production function parameter $\beta$.
+The econometrician observes then the overreported inputs in the data, $M_{it}=M^*_{it}\exp\{e_{it}\}$[^linear-exp]. Assume the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})\exp\{\omega_{it}+\varepsilon_{it}\}=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp\{\omega_{it}+\varepsilon_{it}\}$. Then, for the case of Colombia, @eq-foc:ind applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get
+
+[^linear-exp]: Note we can always rewrite $M^*+e=M^*\exp\{a\}$, then $\exp\{a\}=\frac{e}{M^*}+1$.
 
 $$
 \begin{aligned}
-    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it} \\
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{Non-Evaders}\right]&=\ln\beta
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon_{it} \\
+    &\equiv \ln D^{\mathcal{E}}- \varepsilon_{it} 
 \end{aligned}
 $$ {#eq-foc-cd}
 
-$\mathcal{E}=\mathbb{E}[e^{\varepsilon_{it}^{Y}}|\mathcal{I}_{it}]$
 
-Note that this is the case because $\mathbb{E}[\varepsilon^Y_{it}|\Theta^{Non-Evaders}]=\mathbb{E}[\varepsilon^Y_{it}]=0$. That is, there is no selection on the output shock. Therefore, as long as our measure of size is not structurally related to  @eq-foc-cd --- like output or revenue in the same period---, the output elasticity of input, $\beta$, can be recovered.
+where, $\mathcal{E}\equiv \mathbb{E}[\exp(\varepsilon_{it})|\mathcal{I}_{it}]=\mathbb{E}[\exp(\varepsilon_{it})]$. 
+
+We can use @eq-foc-cd and assumption \ref{ass-non-ev} to recover the production function parameter $\beta$
+
+$$
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{NE}\right]=\ln D^{\mathcal{E}}
+$$ {#eq-foc-cd-exp}
+
+The constant $\mathcal{E}$ is also identified [@Gandhi2020],
+
+$$
+\mathcal{E}=\mathbb{E}[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}]=\mathbb{E}[\exp(\varepsilon_{it})|\theta^{NE}]=\mathbb{E}[\exp(\varepsilon_{it})]
+$$ {#eq-id-E}
+
+and, thus, the output elasticity of input, $\beta$, is also identified,
+
+$$
+\beta=\exp\left(\ln D^{\mathcal{E}}-\ln\mathcal{E}\right).
+$$ {#eq-id-beta}
 
 ### Identifying Tax Evasion
 
-I can form the following variable using observed variables and the production function parameter I recovered from the first stage. 
+Having recovered both the flexible input elasticity, $\beta$, and the constant $\mathcal{E}$, for all firms, I can form the following variable using observed data.
 
 $$
 \begin{aligned}
-    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta \notag \\
-    &=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta+e_{it} \notag \\
-    &=-\varepsilon^Y_{it} +e_{it}
+    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta -\ln\mathcal{E}\notag \\
+    &=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta-\ln\mathcal{E}+e_{it} \notag \\
+    &=-\varepsilon_{it} +e_{it}
+\end{aligned}
+$$ {#eq-ob-ev}
+
+By assumption \ref{ass-ind}, the tax evasion, $\varepsilon_{it}$ ,is independent of $e_{it}$. Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$ the distribution of $\varepsilon$. Tax evasion therefore can be recovered up to an independent random variable by using deconvolution methods.
+
+In particular, from probability theory,
+
+::: {.Definition title="Convolution"}
+
+The density of the sum of two **independent** random variables is equal to the **convolution** of the densities of both addends; hence
+
+$$
+h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
+$$
+
+where $f$ is the density of $\mathcal Z$ (Meister, 2009)
+
+:::
+
+### Identifying Productivity
+
+Here I show how to recover the rest of the parameters of the production function, including productivity, and the Markov process of productivity. We can do it in several ways, depending on our object of interest.
+
+In the literature, it is not uncommon to assume that productivity follows a Markov process. That is, 
+
+$$
+    \omega_{it}=h(\omega_{it-1})+\eta_{it}
+$$ {#eq-prod-markov}
+
+We can form the following observed variable for a guess of $\alpha=(\alpha_K,\alpha_L)$,
+
+$$
+\begin{aligned}
+    \mathcal W_{it}(\alpha) & \equiv \ln Y_{it} - \beta M_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it}+\beta\mathcal{V}_{it}\\
+    & = \omega_{it}(\alpha)+(1-\beta)\varepsilon_{it}
 \end{aligned}
 $$
 
-This is useful because I can recover the tax evasion up to a random variable, $\varepsilon^Y_{it}$, with mean zero and, by assumption \ref{ass-ind}, independent of $e_{it}$.
+If we are interested only in productivity, we could use deconvolution to learn $\alpha$ and the distribution of productivity.
+
+Alternatively, if we are interested in also identifying the Markov process of productivity, we can use the orthogonality we get from @eq-prod-markov, $\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0$. Orthoganility follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it-1},l_{it-1}$) being predetermined.
+
+Namely, substituting $\omega_{it}$ in @eq-prod-markov, we have
+
+$$
+ \mathbb{E}[\mathcal{W}_{it}(\alpha)|k_{it},l_{it},,k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=h(\mathcal{W}_{it-1}(\alpha))
+$$
+
+Thus, $\alpha$ and $h$ are identified.
+
+### Translog Production Function
+
+To relax the assumption of a CD production function, we would need a flexible input that firms do not overreport to identify tax evasion. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs. 
+
+Assume now that $L_{it}$ is a non-deductible flexible input and, without loss of generality, there are only two inputs ($L_{it}, M_{it}$). Let's assume the production function is now *translog* and let $\ln X_{it}=x_{it}$. We have, 
+
+$$
+ \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
+$$ 
+
+Then, equation @eq-foc-cd becomes
+
+$$
+\begin{aligned}
+    s_{it}^{L}&=\ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
+    &\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}+e_{it})- \varepsilon_{it} 
+\end{aligned}
+$$
+
+where $s_{it}^{L} \equiv\ln\left(\frac{\rho^{L}_t L_{it}}{P_{t}Y_{it}}\right)$.
+
+Note that by assumption \ref{ass-non-ev}, $D^{\mathcal{E}}$ and the density of $\varepsilon$ are still identified. To identify tax evasion, we can form the analog of @eq-ob-ev,
+
+$$
+\begin{aligned}
+\mathcal{V}_{it}^{TL} &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+    &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+    &+\left[\ln D^{\mathcal{E}}(l,m^*)\right]\\
+    &-\left[\ln D^{\mathcal{E}}(l,m^*)\right] \\
+    &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
+    &-\left[\ln D^{\mathcal{E}}(l,m^*+e)-\ln D^{\mathcal{E}}(l,m^*)\right]\\
+    &= -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
+\end{aligned}
+$$
+
+where in the case of the translog production function $\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)$. Note that is always positive $\delta(l,m^*,m^*+e)\ge0$ because $e_{it}\ge0$.  
+
+Because firms cannot use $l$ to deduct taxes, $l$ is orthogonal to $e$. Hence, conditional on $m^*$, $\varepsilon(l,m^*)$ and $\delta(l,m^*,m^*+e)$ are independent. Thus, we can apply deconvolution techniques again.
 
 ### Non-Parametric Identification
 
-$\ln\left(\frac{\rho M}{PY}\right)=D^{\mathcal{E}}(K,L,M)-\varepsilon^Y$
+The previous result also suggests a non-parametric identification strategy, as long as $\delta(l,m^*,m^*+e)$ is monotonic in its $m^*+e$ argument. This identification strategy is analogous to @Hu2022b, where the authors also require monotonicity and independence to recover a nonparametric function of $m^*$ with nonclassical measurement error. In our case, intuitively, if we know the density of $\varepsilon$ and the function $D^{\mathcal{E}}$, the variation left is due to $e$, which can be recovered as long as we can vary $\delta$ by moving $e$.
+
+To see why the non-deductible flexible input is needed to identify tax evasion consider the following. Suppose that only the input $M$ is flexible and deductible.
+
+$$
+\ln\left(\frac{\rho M}{PY}\right)=\ln D^{\mathcal{E}}(K,L,M)-\varepsilon
+$$
+
+$D^{\mathcal{E}}(K,L,M)$ is still identified by assumption \ref{ass-non-ev}, however, when we form the analogous of @eq-ob-ev, we now have
 
 $$
 \begin{aligned}
-\ln\left(\frac{\rho M}{PY}\right)-D^{\mathcal{E}}(K,L,M)& \\
-&=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
-&=\ln\left(\frac{\rho(M^*+e)}{PY}\right)-D^{\mathcal{E}}(K,L,M^*+e)\\
-&+\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right]\\
-&-\left[\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*)\right] \\
-&=\ln\left(\frac{\rho M^*}{PY}\right)-D^{\mathcal{E}}(K,L,M^*) \\
+\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)=&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
+=&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
+&+\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
+&-\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right] \\
+=&\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*) \\
 &+\left[\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln\left(\frac{\rho(M^*)}{PY}\right)\right]\\
-&-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
-&= -\varepsilon^Y \\
-&+\left[D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon^Y-D^{\mathcal{E}}(K,L,M^*)+\varepsilon^Y\right]\\
-&-\left[D^{\mathcal{E}}(K,L,M^*+e)-D^{\mathcal{E}}(K,L,M^*)\right]\\
-&= -\varepsilon^Y
+&-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
+=& -\varepsilon \\
+&+\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M^*)+\varepsilon\right]\\
+&-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
+&= -\varepsilon(K,L,M^*)
 \end{aligned}
 $$
 
-$\ln\left(\frac{\rho E}{PY}\right)=D^{\mathcal{E}}(K,L,E,M)-\varepsilon^Y$
-
-$$
-\begin{aligned}
-\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M)& \\
-&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
-&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*+e)\\
-&+\left[D^{\mathcal{E}}(K,L,E,M^*)\right]\\
-&-\left[D^{\mathcal{E}}(K,L,E,M^*)\right] \\
-&=\ln\left(\frac{\rho E}{PY}\right)-D^{\mathcal{E}}(K,L,E,M^*) \\
-&-\left[D^{\mathcal{E}}(K,L,E,M^*+e)-D^{\mathcal{E}}(K,L,E,M^*)\right]\\
-&= -\varepsilon^Y(M^*) - \delta(K,L,E,M^*+e)
-\end{aligned}
-$$
+Now, we are not able to separate the variation of $\varepsilon$ from $e$.

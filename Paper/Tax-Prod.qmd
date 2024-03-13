@@ -1,6 +1,7 @@
 ---
 title: "Tax evasion and productivity"
 number-sections: true
+shift-heading-level-by: -1
 format:
   jasa-pdf:
     keep-tex: true
@@ -8,8 +9,10 @@ format:
     journal:
       blinded: false
   jasa-html: default
+    # html-table-processing: none
   # html: 
   #   theme: pandoc
+  # pdf: default
 date: today #last-modified
 author:
   - name: Hans Martinez
@@ -34,6 +37,7 @@ bibliography:
   - biblio/b270123.bib
 filters:
   - custom-numbered-blocks
+  - latex-environment
 custom-numbered-blocks:
   groups:
     thmlike:
@@ -45,8 +49,89 @@ custom-numbered-blocks:
     Proposition:
       group: thmlike
     Assumption:
-      group: thmlike                  
+      group: thmlike
+    Definition:
+      group: thmlike
+environments: anfxnote
+commands: fxnote
 ---
+```{r}
+#| label: setup
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(ggplot2)
+library(modeest)
+library(fixest)
+library(kableExtra)
+
+load("../Code/Products/colombia_data.RData")
+load("../Code/Products/global_vars.RData")
+options(knitr.kable.NA = '')
+
+# The style of the table
+# my_style = style.tex("aer", model.format = "(i)")
+
+# markdown = TRUE is only useful in Rmarkdown documents
+setFixest_etable(markdown = TRUE)
+
+setFixest_dict(c(
+    share_sales_tax = "Sales Tax Rate",
+    `relevel(factor(juridical_organization),ref="3")0` = "Proprietorships",
+    `relevel(factor(juridical_organization),ref="3")1` = "Ld. Partnership",
+    `relevel(factor(juridical_organization),ref="3")2` = "Collective",
+    `relevel(factor(juridical_organization),ref="3")3` = "Corporation",
+    `relevel(factor(juridical_organization),ref="3")4` = "De Facto Corp.",
+    `relevel(factor(juridical_organization),ref="3")5` = "Joint Partnership",
+    `relevel(factor(juridical_organization),ref="3")6` = "Joint Stock Co.",
+    `relevel(factor(juridical_organization),ref="3")7` = "Cooperative",
+    `relevel(factor(juridical_organization),ref="3")8` = "Official Entity",
+    `relevel(factor(juridical_organization),ref="3")9` = "Religious Comm.",
+    `polym(m,k,l,degree=2,raw=TRUE)1.0.0` = "\\(m\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)2.0.0` = "\\(m^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.1.0` = "\\(k\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.2.0` = "\\(k^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.0.1` = "\\(l\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.0.2` = "\\(l^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.1.0` = "\\(mk\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.0.1` = "\\(ml\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.1.1` = "\\(kl\\)",
+    log_share = "\\(log(s)\\)",
+    sic_3 = "Industry",
+    year = "Year",
+    `log(consumed_energy/sales)` = "\\(log(Energy/Revenue)\\)",
+    `log(mats_serv/sales)` = "\\(log(Mats+Serv/Revenue)\\)",
+    `log(deductibles/sales)` = "Log Share of Deductibles",
+    metro_area_code = "Metro Area",
+    `factor(fiscal_period)83` = "84-86 F.P.",
+    `factor(fiscal_period)86` = "87-91 F.P.",
+    capital_share = "Capital",
+    consumed_energy_share = "Energy",
+    materials_share = "Materials",
+    skilled_labor_share = "Skilled Labor",
+    unskilled_labor_share = "Unskilled Labor",
+    total_expenses_share = "Total Expenditure",
+    serv_share_exp = "Services",
+    inds_exp_share_exp = "Industrial Expenditure",
+    deductible_expenses_share_exp = "Deductible Expenditure",
+    CorpOther = "Non-Corporation",
+    `factor(year)82`= "Year 82",
+    `factor(year)83`= "Year 83",
+    `factor(year)84`= "Year 84",
+    `factor(year)85`= "Year 85",
+    `factor(year)86`= "Year 86",
+    `factor(year)87`= "Year 87",
+    `factor(year)88`= "Year 88",
+    `factor(year)89`= "Year 89",
+    `factor(year)90`= "Year 90",
+    `factor(year)91`= "Year 91"
+    # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
+    # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
+))
+
+```
+
 
 ## Updates {-}
 
@@ -54,31 +139,45 @@ custom-numbered-blocks:
 - Colombian Corporate tax system
 - Identification strategy for Colombia
 
+## To Do {-}
+
+- Argue technology is the same for Corporations and other Juridical Organizations. Are firms changing JO in the data? Look into labor shares or statistics that show the same technology across types of firms
+- Translog PF identification
+- Revenue underreporting. Implications from Spanish paper, what's up with the rations? Can I introduce revenue underreporting?
+- Real effects vs. fake reporting. Can I tease them out?
+
+
 <!-- Intro -->
 <!-- {{< include sections/10-intro.rmd >}} -->
 
-<!-- Theoretical Model -->
+<!-- Theoretical Model *-->
 {{< include sections/45-model.qmd >}}
 
 <!-- Setting -->
 <!-- {{< include sections/35-setting.qmd >}} -->
 
 
-<!-- Identification strategy -->
+<!-- Identification strategy
 <!-- {{< include sections/55-id-strat.qmd >}} -->
 
-<!-- Colombia 1981-1991: tax system and reforms -->
+<!-- Colombia 1981-1991: tax system and reforms *-->
 {{< include sections/80-colombia.qmd >}}
 
-<!-- Colombia 1981-1991: data -->
+<!-- Colombia 1981-1991: data *-->
 {{< include sections/90-colombia-data.qmd >}}
 
-<!-- Identification strategy -->
+<!-- Same Techonology *-->
+{{< include sections/92-col-corp-tech.qmd >}}
+
+
+<!-- Identification strategy *-->
 {{< include sections/56-id-evasion.qmd >}}
 
 <!-- Colombia 1981-1991: an application (previous) -->
 <!-- {{< include sections/91-colombia-empiric.qmd >}} -->
 
+<!-- Revenue Misreporting *-->
+{{< include sections/110-revenue.qmd >}}
 
 ## References {-}
 
