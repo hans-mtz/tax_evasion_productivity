@@ -1,0 +1,84 @@
+## Implementation
+
+We are interested in the distribution of tax evasion $e$ but it cannot be observed. What is observed is the contaminated version 
+$\mathcal{V}$ [@eq-ob-ev]. Evasion $e$ and the output shock $\varepsilon$ are independent [\ref{ass-ind}] with probability density distributions $f_e$ and $f_{\varepsilon}$. Then, from @def-conv
+
+$$
+f_{\mathcal{V}}(\mathcal{V})=\int f_{\varepsilon}(e-\mathcal{V})f_e(e)\text{d}e
+$$
+
+where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$. 
+
+### Parametric MLE
+
+@Chen2007 @Yi2021
+Assume a functional form for $f_{\varepsilon}(\cdot;\gamma)$ that depends on known parameters $\gamma$. Assume a known functional form for the density $f_e(\cdot;\lambda)$ that depends on unknown parameters $\lambda$. We can estimate parameters $\gamma, \lambda$ by
+
+$$
+\arg \max_{\gamma,\lambda}=\frac{1}{n}\sum_{i=1}^n \log \left(\int f_{\varepsilon}(e-\mathcal{V};\gamma)f_e(e;\lambda)\text{d}e\right)
+$$
+
+
+### Non-Parametric MLE
+
+@Chen2007 and @Kang2021  Consider the following log-density model:
+
+
+$$
+f_{e|\Theta}(e)=\exp(s(e;\theta)-C(\theta))
+$$
+
+where, 
+
+$$
+s(e;\theta)=\sum_{j=1}^{k_n}\theta_j B_j(e),
+$$
+
+$\{B_j(E), j=1,2,\dots\}$ is a sequence of known basis functions, and 
+
+$$
+C(\theta) = \log\left(\int \exp(s(e;\theta)) \text{d}e \right)
+$$
+
+The log likelihood of the observed variable $\mathcal{V}$ is
+
+$$
+\begin{aligned}
+    l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\theta)-C(\theta))\text{d}e\right)\\
+    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\theta))\text{d}e\right)-nC(\theta)
+\end{aligned}
+$$
+
+The usual maximum likelihood estimate $\hat{\theta}$ is the maximizer of $l_{\mathcal{V}}(\theta)$.
+
+Laguerre polynomials can be used to approximate any function $L_2([0,\infty), leb)$ $L_2$ norm relative to the Lebesgue measure and domain $[0,\infty)$ [@Chen2007].
+
+@Kang2021 suggests using the EM algorithm. 
+
+The EM algorithm starts with an initial estimate $\hat{\mathbf{\theta}}^0$ and iteratively updates the estimate as follows.
+
+**Expectation-Step**: Given the current estimate $\hat{\mathbf{\theta}}^{(k)}$ of $\hat{\mathbf{\theta}}$, calculate
+
+$$
+ b_j \left(\hat{\mathbf{\theta}}^{(k)}\right) = \sum_{i=1}^{n}\int B_j(e)f_{e|\mathcal{V},\hat{\theta}^{(k)}}(e|\mathcal{V})\text{d}e
+$$
+
+where,
+
+$$
+f_{e|\mathcal{V},\hat{\theta}}(e|\mathcal{V}) = f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\theta)-C(\theta|\mathcal{V}))
+$$
+
+$$
+C(\theta|\mathcal{V})=\log\left(\int f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\theta))\text{d}e\right)
+$$
+
+**Maximization-Step**: Determine the updated estimate $\hat{\mathbf{\theta}}^{(k+1)}$ by maximizing
+
+$$
+Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\hat{\mathbf{\theta}}^{(k)}\right) - nC(\mathbf{\theta})
+$$
+
+The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}$.
+
+

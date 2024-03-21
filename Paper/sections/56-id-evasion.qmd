@@ -20,7 +20,7 @@ Assumption \ref{ass-ind} implies that input overreporting is independent of the 
 
 ### Identifying the production function parameters 
 
-The econometrician observes then the overreported inputs in the data, $M_{it}=M^*_{it}\exp\{e_{it}\}$[^linear-exp]. Assume the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})\exp\{\omega_{it}+\varepsilon_{it}\}=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp\{\omega_{it}+\varepsilon_{it}\}$. Then, for the case of Colombia, @eq-foc:ind applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get
+The econometrician observes then the overreported inputs in the data, $M_{it}=M^*_{it}\exp(e_{it})$[^linear-exp]. Assume the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})$. Then, for the case of Colombia, @eq-foc:ind applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get
 
 [^linear-exp]: Note we can always rewrite $M^*+e=M^*\exp\{a\}$, then $\exp\{a\}=\frac{e}{M^*}+1$.
 
@@ -43,7 +43,7 @@ $$ {#eq-foc-cd-exp}
 The constant $\mathcal{E}$ is also identified [@Gandhi2020],
 
 $$
-\mathcal{E}=\mathbb{E}[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}]=\mathbb{E}[\exp(\varepsilon_{it})|\theta^{NE}]=\mathbb{E}[\exp(\varepsilon_{it})]
+\mathcal{E}=\mathbb{E}\left[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}\right]=\mathbb{E}\left[\exp(\varepsilon_{it})|\theta^{NE}\right]=\mathbb{E}[\exp(\varepsilon_{it})]
 $$ {#eq-id-E}
 
 and, thus, the output elasticity of input, $\beta$, is also identified,
@@ -68,7 +68,7 @@ By assumption \ref{ass-ind}, the tax evasion, $\varepsilon_{it}$ ,is independent
 
 In particular, from probability theory,
 
-::: {.Definition title="Convolution"}
+::: {.Definition #def-conv title="Convolution"}
 
 The density of the sum of two **independent** random variables is equal to the **convolution** of the densities of both addends; hence
 
