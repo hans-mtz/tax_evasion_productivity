@@ -1,14 +1,340 @@
 ### Do Corporations in Colombia have different technologies than other juridical organizations?
 
+An implicit assumption in the identification strategy is that the subset of non-evaders has the same common technology as evaders. In the case of Colombia, this implies that Corporations have the same common technology as Proprietorships, Limited Companies, and Partnerships. However, we can think that firms with better technology are self-selecting into corporations, and thus, firms with low-performance technology will be mislabeled as evaders.
+
+The key question is how firms are choosing their juridical organization, and in particular, how firms are choosing to become corporations. I argue that choosing the juridical organization is a result of the capital needs of the firm and it is affected by the preferences of the owners over their corporate liability and their social connections.
+
+From the definitions of the juridical organizations, we can expect corporations to be the largests in terms of capital, followed by LLCs and Partnerships, and Proprietorships to be smallest. The reason is simply that more people can participate by contributing their capital to the firm. This ordering in turn would suggest a growth path for the firms.
+
+Turning to the data, I find some firms change their juridical organization type. I build a juridical organization transition matrix from the previous year to the next one at the firm level. @tbl-trans-mat shows the transition matrix. Although the transition matrix suggests that firms mostly stay in their juridical organization, a growth trend emerges. It looks like proprietorships turn into LLCs, and LLCs into Corporations.
+
+```{r}
+#| label: tbl-trans-mat
+#| tbl-cap: Transition Matrix
+#| echo: false
+#| warning: false
+
+jo_class <- tibble(
+    JO_code = 0:9,
+    JO_class = c(
+        "Proprietorship",
+        "Ltd. Co.",
+        "Partnership",
+        "Corporation",
+        "Partnership",
+        "Partnership",
+        "Corporation",
+        # "Stock Co. (Corp.)",
+        "Other",
+        "Other",
+        "Other"
+    )
+)
+
+
+transition_matrix <- colombia_data_frame %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    group_by(plant) %>%
+    mutate(
+        # JO_num = length(unique(juridical_organization)),
+        # JO_change = ifelse(
+        #     juridical_organization==lag(juridical_organization),
+        #     0,1),
+        num = 1,
+        # avg_total_owners = mean(total_owners, na.rm=TRUE),
+        jo_t = lag(JO_class, order_by = year)
+    ) %>%
+    filter(
+        sales > 0,
+        capital > 0,
+        # jo_t %in% c(0,1,3)
+    ) %>%
+    xtabs(num~jo_t+JO_class, data=.)
+# Proprietorships moving into LLCs
+# Only LLCs move consistently into Corporations
+
+transition_matrix %>%
+    kbl(
+        digits = 2,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") 
+
+```
+
+Looking into the capital distributions of proprietorships, LLCs, and corporations we find that corporations are the largest, followed by LLCs, and proprietorships are the smallest [@fig-k-rev-hist-1]. However, there are considerable overlaps. The same is true for revenues (in logs) [@fig-k-rev-hist-2]. This is not surprising, as the need for larger capital increases, the more people would need to participate. 
+
+However, when we look at the frequency distributions of the capital over revenue ratio in logs, the distributions perfectly overlap [@fig-k-rev-hist-3]. If corporations had different technologies we would expect to see two different distributions. In particular, the distribution of corporations would have been farther to the right than the distributions of proprietorships and LLCs.
+
+These patterns remain even after controlling for industry, metropolitan area, and year [@tbl-reg-choosing-jo]. 
+
+```{r}
+#| label: fig-k-rev-hist
+#| fig-cap: "Frequency historgrams of capital, revenue and capital/revenue (in logs) of Corporations, LLCs, and Proprietorships."
+#| fig-subcap:
+#|   - "Capital"
+#|   - "Revenue"
+#|   - "Capital/Revenue"
+#| layout: [[45, 45], [100]]
+#| echo: false
+#| warning: false
+
+colombia_data_frame %>%
+  ungroup() %>%
+  filter(sales > 0, capital > 0, juridical_organization %in% c(0, 1, 3)) %>%
+  mutate(juridical_organization = factor(juridical_organization, 
+                                         levels = c(0, 1, 3),
+                                         labels = c("Proprietorships", "LLCs", "Corporations"))) %>%
+  ggplot(aes(x=log(capital), fill=juridical_organization)) +
+  geom_histogram(aes(alpha=0.5), binwidth = 0.2, position = "identity") +
+  scale_fill_manual(values=c("Proprietorships"="red", "LLCs"="blue", "Corporations"="green")) + # Define your vivid colors here
+  guides(alpha="none", fill="none") + # Remove alpha legend
+  theme(legend.title = element_blank()) + # Optionally, remove the legend title
+  labs(fill="Juridical Organization Type", x=NULL, y=NULL) +# Label the legend appropriately
+  theme_classic()
+
+colombia_data_frame %>%
+  ungroup() %>%
+  filter(sales > 0, capital > 0, juridical_organization %in% c(0, 1, 3)) %>%
+  mutate(juridical_organization = factor(juridical_organization, 
+                                         levels = c(0, 1, 3),
+                                         labels = c("Proprietorships", "LLCs", "Corporations"))) %>%
+  ggplot(aes(x=log(sales), fill=juridical_organization)) +
+  geom_histogram(aes(alpha=0.5), binwidth = 0.2, position = "identity") +
+  scale_fill_manual(values=c("Proprietorships"="red", "LLCs"="blue", "Corporations"="green")) + # Define your vivid colors here
+  guides(alpha="none", fill="none") + # Remove alpha legend
+  theme(legend.title = element_blank()) + # Optionally, remove the legend title
+  labs(fill="Juridical Organization Type", x=NULL, y=NULL) +# Label the legend appropriately
+  theme_classic()
+
+colombia_data_frame %>%
+  ungroup() %>%
+  filter(sales > 0, capital > 0, juridical_organization %in% c(0, 1, 3)) %>%
+  mutate(juridical_organization = factor(juridical_organization, 
+                                         levels = c(0, 1, 3),
+                                         labels = c("Proprietorships", "LLCs", "Corporations"))) %>%
+  ggplot(aes(x=log(capital/sales), fill=juridical_organization)) +
+  geom_histogram(aes(alpha=0.5), binwidth = 0.2, position = "identity") +
+  scale_fill_manual(values=c("Proprietorships"="red", "LLCs"="blue", "Corporations"="green")) + # Define your vivid colors here
+  guides(alpha=FALSE) + # Remove alpha legend
+  labs(fill="Juridical Organization Type", x=NULL, y=NULL) +# Label the legend appropriately
+  theme_classic()+
+  theme(
+    legend.title = element_blank(),
+    legend.position = "top"
+) # Optionally, remove the legend title and place legend at the top
+
+
+
+```
+
+
+::: {#tbl-reg-choosing-jo layout=[[1]]}
+
+```{r}
+#| echo: false
+#| warning: false
+#| results: asis
+
+colombia_data_frame %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    ungroup() %>%  
+    filter(
+        sales>0,
+        capital>0,
+        juridical_organization %in% c(0,1,3)
+    ) %>%
+    mutate(juridical_organization = factor(juridical_organization, 
+                                         levels = c(3, 1, 0),
+                                         labels = c("Corporations", "LLCs", "Proprietorships"))) %>%
+    feols(
+        sw(
+            log(capital),
+            log(sales),
+            log(capital/sales)
+            ) ~ juridical_organization|
+        sic_3+metro_area_code+year,
+        data = ., cluster = ~sic_3+year
+    ) %>%
+    etable(
+        div.class = "table"
+    )
+
+```
+
+Testing Differences in the log of Capital, Revenue, and Capital/Revenue for Corporations and Other Juridical Organizations
+
+:::
+
+
+#### Model of firm (capital) growth (sketch)
+
+A limited liability company looking to acquire more capital had three options. 
+
+First, partners can increase their capital participation, using personal wealth or through a bank credit. This option however will increase the partners' liability. The more capital I bring the greater my liability is. 
+
+Second, the LLC might increase its capital by inviting additional partners. As the firm increases its capital, inviting more partners will become more difficult. The funding partners risk losing control of their firm, as more people participate in the firm's management and decision-making. 
+
+Third, the firm can incorporate. This will bring capital to the firm. Anyone in the market for the shares of the firm can participate. Shares can be traded. A CEO reporting to the shareholders might be appointed. Liability is limited to shares.
+
+The decision to incorporate is a decision on how to acquire capital. Firms still need to consider the stream of future productivity shocks, but the decision also depends on other unobservables such as risk-aversion (increasing the partners' liability), the partners' ability to convince more partners to join the LLC, and preferences over the control of the firm's management.
+
+Assume there's an unobserved scalar $\zeta_i$ that captures all of the owners' heterogeneity in preferences over liability risk, access to networks of potential investors, and preferences over the control of the firm's management. Let a higher value of $\zeta$ capture less risk aversion, a wider network of potential investors, or a higher preference for retaining control over the firm. Consider the case in which two LLCs firms are looking to optimally increase their capital by the same quantity, but the owners are different in $\zeta$. In particular, let the owner of firm 1 have a higher $\zeta_1>\zeta_2$ than the owner of firm 2. The firms also have the same technology and productivity shocks. The owner of firm 1 $\zeta_1$ would be able to convince additional investors to join their LLC, but the owner 2 $\zeta_2$ would not. $\zeta_2$ owner would have to choose to incorporate to get the capital for his firm or forgo growth.
+
+The 20 pp difference in CIT rate between LLCs and Corporations might have deterred firm growth. The CIT was homogenized to 30% in 1986. What was the capital misallocation due to the tax rate differential? Are more firms incorporating after the reform?
+
+#### Evasion vs. Production Technology
+
+Production technology is industry-specific, but evasion technology is the same across industries.
+
+Take the face value of the regressions and assume, without conceding, that corporations have different technologies. This will imply that corporations have technologies that are consistently 15% more productive than non-corporations regardless of the industry. In other words, it does not matter if the firms produce canned food, shoes or furniture, corporations have technologies consistently more productive. However, this is difficult to believe because there could be industries in which such an improvement in technology is difficult to imagine. For example, coffee grain mills (food products), steel foundries (steel basic products), plastic molding and extrusion (plastic products), or cement (non-metallic mineral products). 
+
+However, these cross-sectional differences across industries could be better explained by the evasion technology. We would expect the evasion technology to be the same across industries. It does not matter what I produce and what technology my firm employs, to overreport inputs all that is needed is a fake invoice. 
+
+
+#### Corporations by Industry
+
+Looking into industry sectors.
+
+```{r}
+#| label: tbl-corps-by-inds
+#| tbl-cap: Corporations by Industry. Top 20 Industries in Colombia by number of firms.
+#| echo: false
+#| warning: false
+
+candidate_inds<-colombia_data_frame %>%
+    group_by(sic_3) %>%
+    summarise(
+        n_sic = n(),
+        revenues = sum(sales, na.rm = TRUE),
+        corps_n = sum(juridical_organization==3, na.rm = TRUE)
+    ) %>%
+    arrange(desc(revenues)) %>%
+    mutate(
+        n_cum = cumsum(n_sic),
+        n_perc = n_sic / sum(n_sic) * 100,
+        perc_acc = n_cum / sum(n_sic) * 100,
+        market_share = revenues/ sum(revenues)*100,
+        # sic_3 = as.numeric(str_sub(as.character(sic), 1, 3)),
+        corps_share = corps_n/n_sic * 100
+    ) %>%
+    select(sic_3, n_sic, corps_n, corps_share, market_share, n_perc) %>%
+    arrange(desc(corps_share)) %>%
+    filter(n_perc>1.2)
+
+ciiu_data <- read.csv("../Data/Colombia/ciiu-rev2-en.csv", skip = 3)
+
+ciiu_3 <- ciiu_data %>%
+    filter(
+        Nivel == "Agrupaciones"
+    )
+
+candidate_inds %>%
+    left_join(
+        ciiu_3[,2:3],
+        by = join_by(sic_3 == `Código`)
+    ) %>%
+    kbl(
+        digits = 2,
+        # col.names = c("")
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
+<!-- #### Are firms switching Juridical Organization types in the data? -->
+
+<!-- Most firms did not change their J.O. in the sample. Very few changed one time and then stayed in their new J.O. Firms rarely changed more than once. Over time, around 2-3% of firms in an industry changed J.O. Across industries, around 2% of firms changed J.O. each year. Overall only 2.3% of firms changed J.O. -->
+
+```{r}
+#| label: tbl-jo-change
+#| tbl-cap: Changes of Juridical Organization per Firm (percentage) by year and top five biggest industries.
+#| echo: false
+#| warning: false
+#| eval: false
+#| include: false
+
+changes_inds<-colombia_data_frame %>%
+    group_by(plant) %>%
+    mutate(
+        JO_num = length(unique(juridical_organization)),
+        JO_change = ifelse(
+            juridical_organization==lag(juridical_organization),
+            0,1)
+    ) %>%
+    group_by(sic_3) %>%
+    summarise(
+        # JO_num_mean = mean(JO_num),
+        JO_changes_mean = mean(JO_change, na.rm=TRUE)
+    )
+
+changes_year<-colombia_data_frame %>%
+    group_by(plant) %>%
+    mutate(
+        JO_num = length(unique(juridical_organization)),
+        JO_change = ifelse(
+            juridical_organization==lag(juridical_organization),
+            0,1)
+    ) %>%
+    group_by(year) %>%
+    summarise(
+        # JO_num_mean = mean(JO_num),
+        JO_changes_mean = mean(JO_change, na.rm=TRUE)
+    )
+
+changes_year_main_inds<-colombia_data_frame %>%
+    group_by(plant) %>%
+    mutate(
+        JO_num = length(unique(juridical_organization)),
+        JO_change = ifelse(
+            juridical_organization==lag(juridical_organization),
+            0,1)
+    ) %>%
+    group_by(sic_3,year) %>%
+    summarise(
+        JO_change_mean = 100*sum(JO_change, na.rm=TRUE)/n()#mean(JO_change, na.rm=TRUE)
+    ) %>%
+    filter(sic_3 %in% big_industries) %>%
+    xtabs(JO_change_mean~year+sic_3, data=.)
+
+changes_tbl <- rbind(changes_year_main_inds[,1:5], `Industry average`=changes_inds[changes_inds$sic_3 %in% big_industries,][[2]]*100)
+changes_tbl<- cbind(changes_tbl, `Annual average`=c(changes_year[[2]]*100,100*mean(changes_year[[2]], na.rm=TRUE)))
+
+changes_tbl[2:12,] %>%
+    kbl(
+        # format = "html",
+        digits = 1,
+        table.attr = 'data-quarto-disable-processing="true"',
+        # col.names = c(
+        #     '',
+        #     'Sold/Purchased Price Ratio',
+        #     'Sold Energy (% of Total Sold Energy)',
+        #     'Sold Energy (% of Total Purchased Energy)',
+        #     'Generated Energy (% of Consumed Energy)'
+        # )
+    )%>%
+    kable_classic(full_width=F, html_font = "Cambria") 
+    # %>%
+    # collapse_rows(1, valign="top", latex_hline = "major")
+
+```
+
+
+#### Inputs Cost Share of Revenues
+
 The evidence suggests that Corporations have similar technologies to the rest of the firms. I look at the share of revenues of different input costs. In doing so, I consider the incentives generated by the fiscal environment in Colombia. Firms had the lowest incentives to evade taxes by misreporting capital, consumed energy, and skilled labor. The cost share of revenue of these inputs suggests that Corporations and the rest of the firms had the same technologies.
 
-#### Capital
+##### Capital
 
 Firms could not deduct capital goods from sales taxes. However, firms of capital-intensive industries might have had incentives to underreport capital because capital was used to set the minimum income tax. Income tax could not be less than 8 percent of the capital.
 
-#### Energy
+##### Energy
 
-Before the electrical energy reform in 1994, most of the market was supplied by municipality-owned companies with some participation of private firms. It is unlikely that firms overreported energy, as they have to purchase from a Corporation, or a municipality or region-owned company. Both of those organizations had no incentives to cooperate and provide fake invoices.
+Before the electrical energy reform in 1994, the power market was almost exclusively supplied by public companies with negligible participation from private firms. The public companies were inefficient and suffered financial distress due to poor management and low tariffs set by political actors. Two major blackouts in 1983 and 1992-1993 led to the 1994 reform that opened the sector to private participation.
+
+It is unlikely that firms overreported energy, as they have to purchase from a Corporation or a public company. Both of those organizations had no incentives to cooperate and provide fake invoices.
 
 In the data, energy sold by corporations accounted on average for 73% of the total energy sold, but only 1.7% of the total energy purchased. In addition, corporations sold energy at 12 times the market price on average [@tbl-energy]. The high price might suggest corporations had market power in the electric energy market, however, this is unlikely to be relevant to affect any estimations as their overall market share is small.
 
@@ -22,28 +348,14 @@ In the data, energy sold by corporations accounted on average for 73% of the tot
 
 
 colombia_data_frame %>% 
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
     ungroup() %>%
     mutate(
         # sold_energy = purchased_energy+generated_energy-consumed_energy
-        JO = factor(
-            juridical_organization, 
-            levels = 0:9, 
-            labels = c(
-                "Proprietorships",
-                "Ld. Partnership",
-                "Collective",
-                "Corporation",
-                "De Facto Corp.",
-                "Joint Partnership",
-                "Joint Stock Co.",
-                "Cooperative",
-                "Official Entity",
-                "Religious Community")
-        ),
         total_energy_sold = sum(sold_energy, na.rm=TRUE),
         total_energy_purchased = sum(purchased_energy, na.rm = TRUE)
     ) %>%
-    group_by(JO) %>% 
+    group_by(JO_class) %>% 
     summarise(
         # p_purchased = mean(p_energy_purchased, na.rm = TRUE), 
         p_sold_purchase = mean(p_energy_sold/p_energy_purchased, na.rm = TRUE),
@@ -54,7 +366,7 @@ colombia_data_frame %>%
         percent_energy_purchased_JO = sum(sold_energy/total_energy_purchased, na.rm = TRUE)*100,
         generated_energy_perc = mean(generated_energy/consumed_energy, na.rm=TRUE)*100
     ) %>%
-    filter(is.na(JO)==FALSE) %>%
+    filter(is.na(JO_class)==FALSE) %>%
     kbl(
         # format = "html",
         digits = 1,
@@ -72,13 +384,13 @@ colombia_data_frame %>%
 
 ```
 
-#### Labor
+##### Labor
 
 Firms might have incentives to underreport labor to evade Payroll Taxes (PRT) if the expected benefits of evading the PRT outweigh the opportunity costs of evading Corporate Income Tax (CIT) by overreporting labor costs and the expected cost of evading PRT [@Almunia2018].
 
 Firms are more likely to underreport unskilled rather than skilled labor. Skilled employees are less likely to cooperate with firms in underreporting their wages. Firms might offer employees cash compensations in order for employees to accept lower reported wages or report their wages at all. The cost for employees is that these payroll taxes provide them with social benefits such as social security or public health access. These benefits are not obvious in the short run. It is more likely that unskilled labor to be short-sighted and accept to cooperate with firms to underreport their wages. Skilled workers, on the other hand, are less likely to accept these conditions and to have outside options and move if the conditions are not favorable to them.
 
-#### Services and other expenditures
+##### Services and other expenditures
 
 The Colombian dataset allows, to some extent, separating expenditures, including services, into deductible and non-deductible expenses. In contrast to non-evading firms, evading firms should use a higher share of deductible expenses. The reason is that firms have incentives to overreport deductible expenditure to evade ICT and VAT.
 
@@ -91,13 +403,13 @@ I classify as deductible expenses the following industrial expenditures: purchas
 
 [^inds_exp]: After 1992, industrial expenditure included rent of machinery and property, payment for professional services, insurance (excluding employee benefits), water, mail, and telephone.
 
-#### Technical note
+##### Technical note
 
 According to the notes on the dataset, the quantity of energy consumed by firms is estimated as the difference between purchased plus generated energy and sold energy. In contrast, the value of consumed energy is the difference between the value of purchased and sold energy. Consequently, using the calculated value over the calculated quantity of consumed energy ignores the quantity of generated energy and the increase in the price of sold energy by corporations.
 
 In @Gandhi2020, services are defined as general expenditures minus machinery rental and interest payments. However, this approach does not include industrial expenditures which are closely linked to the production process. In the Colombian data, the intermediate consumption is defined as raw materials, purchased electric energy, and industrial expenditure. This definition is close to what is commonly defined as intermediate inputs.
 
-#### Results
+##### Results
 
 @tbl-reg-shares shows that in terms of the capital and consumed energy share of revenue, corporations are not different from other types of juridical organizations. Capital and consumed energy are reliable indicators that Corporations have similar technologies to other firms because firms have no incentives to overreport capital or consumed energy. On the other hand, the raw materials share of revenues is 3 percent higher for non-corporations. Firms have incentives to overreport raw materials to evade sales taxes and CIT. Hence, materials are not a good reference to compare technology between Corporations and other types of firms.
 
@@ -458,7 +770,8 @@ colombia_data_frame %>%
 colombia_data_frame %>%
     ungroup() %>%
     filter(
-        sales>0
+        sales>0,
+        capital>0
     ) %>%
     mutate(
         JO = factor(
@@ -520,9 +833,11 @@ Shares of Revenue for different inputs by Corporations and Non-Corporation.
 #| results: asis
 
 colombia_data_frame %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
     ungroup() %>%
     filter(
-        sales>0
+        sales>0,
+        capital>0
     ) %>%
     mutate(
         JO = factor(
@@ -558,8 +873,8 @@ colombia_data_frame %>%
     ) %>%
     feols(
         sw(
-            skilled_labor_share,
-            unskilled_labor_share,
+            skilled_wage_bill_share,
+            unskilled_wage_bill_share,
             total_expenses_share
             ) ~ Corp|
         sic_3+metro_area_code+year,
@@ -587,7 +902,8 @@ Shares of Revenue for different inputs by Corporations and Non-Corporation.
 colombia_data_frame %>%
     ungroup() %>%
     filter(
-        sales>0
+        sales>0,
+        capital>0
     ) %>%
     mutate(
         JO = factor(
@@ -640,78 +956,3 @@ colombia_data_frame %>%
 Shares of Total Expenses for different classifications of expenses by Corporations and Non-Corporation.
 
 :::
-
-#### Are firms switching Juridical Organization types in the data?
-
-Most firms did not change their J.O. in the sample. Very few changed one time and then stayed in their new J.O. Firms rarely changed more than once. Over time, around 2-3% of firms in an industry changed J.O. Across industries, around 2% of firms changed J.O. each year. Overall only 2.3% of firms changed J.O.
-
-```{r}
-#| label: tbl-jo-change
-#| tbl-cap: Changes of Juridical Organization per Firm (percentage) by year and top five biggest industries.
-#| echo: false
-#| warning: false
-
-changes_inds<-colombia_data_frame %>%
-    group_by(plant) %>%
-    mutate(
-        JO_num = length(unique(juridical_organization)),
-        JO_change = ifelse(
-            juridical_organization==lag(juridical_organization),
-            0,1)
-    ) %>%
-    group_by(sic_3) %>%
-    summarise(
-        # JO_num_mean = mean(JO_num),
-        JO_changes_mean = mean(JO_change, na.rm=TRUE)
-    )
-
-changes_year<-colombia_data_frame %>%
-    group_by(plant) %>%
-    mutate(
-        JO_num = length(unique(juridical_organization)),
-        JO_change = ifelse(
-            juridical_organization==lag(juridical_organization),
-            0,1)
-    ) %>%
-    group_by(year) %>%
-    summarise(
-        # JO_num_mean = mean(JO_num),
-        JO_changes_mean = mean(JO_change, na.rm=TRUE)
-    )
-
-changes_year_main_inds<-colombia_data_frame %>%
-    group_by(plant) %>%
-    mutate(
-        JO_num = length(unique(juridical_organization)),
-        JO_change = ifelse(
-            juridical_organization==lag(juridical_organization),
-            0,1)
-    ) %>%
-    group_by(sic_3,year) %>%
-    summarise(
-        JO_change_mean = 100*sum(JO_change, na.rm=TRUE)/n()#mean(JO_change, na.rm=TRUE)
-    ) %>%
-    filter(sic_3 %in% big_industries) %>%
-    xtabs(JO_change_mean~year+sic_3, data=.)
-
-changes_tbl <- rbind(changes_year_main_inds[,1:5], `Industry average`=changes_inds[changes_inds$sic_3 %in% big_industries,][[2]]*100)
-changes_tbl<- cbind(changes_tbl, `Annual average`=c(changes_year[[2]]*100,100*mean(changes_year[[2]], na.rm=TRUE)))
-
-changes_tbl[2:12,] %>%
-    kbl(
-        # format = "html",
-        digits = 1,
-        table.attr = 'data-quarto-disable-processing="true"',
-        # col.names = c(
-        #     '',
-        #     'Sold/Purchased Price Ratio',
-        #     'Sold Energy (% of Total Sold Energy)',
-        #     'Sold Energy (% of Total Purchased Energy)',
-        #     'Generated Energy (% of Consumed Energy)'
-        # )
-    )%>%
-    kable_classic(full_width=F, html_font = "Cambria") 
-    # %>%
-    # collapse_rows(1, valign="top", latex_hline = "major")
-
-```

@@ -212,14 +212,14 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 
 %%%% --- end foldboxy preamble ----- %%%%%
 %%==== colors from yaml ===%
-\definecolor{Proposition-color1}{HTML}{99CCFF}
-\definecolor{Proposition-color2}{HTML}{FFFFFF}
-\definecolor{Definition-color1}{HTML}{99CCFF}
-\definecolor{Definition-color2}{HTML}{FFFFFF}
-\definecolor{Assumption-color1}{HTML}{99CCFF}
-\definecolor{Assumption-color2}{HTML}{FFFFFF}
 \definecolor{Theorem-color1}{HTML}{99CCFF}
 \definecolor{Theorem-color2}{HTML}{FFFFFF}
+\definecolor{Definition-color1}{HTML}{99CCFF}
+\definecolor{Definition-color2}{HTML}{FFFFFF}
+\definecolor{Proposition-color1}{HTML}{99CCFF}
+\definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Assumption-color1}{HTML}{99CCFF}
+\definecolor{Assumption-color2}{HTML}{FFFFFF}
 %=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -252,7 +252,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{March 19, 2024}
+\date{April 4, 2024}
 \title{\bf Tax evasion and productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -651,48 +651,131 @@ Currently, only productivity. But, it can also be
 \subsection{Colombian Corporate Tax
 System}\label{colombian-corporate-tax-system}
 
-The relevant corporate taxes for input overreporting are the Corporate
-Income Tax and the Sales Tax. The Sales gradually transformed into a
-kind of Value-Added Tax.
+The relevant corporate taxes for input overreporting in Colombia during
+this period are the Corporate Income Tax (CIT) and the Sales Tax. The
+Sales Tax gradually transformed into a kind of Value-Added Tax (VAT).
+Also relevant for the CIT are the different juridical organizations that
+exist in Colombia.
 
-High levels of overall tax evasion during the period. No penalties, an
-inefficient monitoring system, overburdened authority, and legal
-loopholes.
+This period was characterized by high levels of overall tax evasion
+\citep{Sanchez1994}. The fiscal rules had a system of penalties and
+interest that encouraged false and delinquent returns
+\citep{McLure1989}. The fiscal authority was characterized by having an
+inefficient auditing system, being overburdened, and legal loopholes
+\citep{Perry1990}.
+
+\subsubsection{Juridical Organizations}\label{juridical-organizations}
+
+In Colombia, there are five types of juridical organizations:
+Corporations, Partnerships, Limited Liability Companies, and Individual
+Proprietorships.
+
+Corporations (\emph{sociedad anónima}) are the typical associations of
+capital. They are the counterpart of the US corporation. The capital of
+a corporation is provided by the shareholders (no less than 5) and is
+divided into tradable shares of equal value. Shareholders' liability is
+limited to the capital contributed. Corporations are subject to the
+Superintendent of Corporations and are closely supervised, being
+required to have an auditor.
+
+Joint Stock Companies (\emph{sociedad en comandita por acciones})are
+limited partnerships with the partnership interest represented by shares
+of stocks and taxed as Corporations. Its shares are tradable, like the
+shares of Corporations.
+
+Partnerships are associations of two or more persons. Partners are
+jointly and severally liable for the partnership's operations.
+Partnerships include general partnerships (\emph{sociedad colectiva}),
+de Facto partnerships (\emph{sociedades de hecho}), and ordinary limited
+partnerships (\emph{sociedad en comandita simple}).
+
+A limited liability company (\emph{sociedad de responsabilidad
+limitada}) is an association of two or more persons ---not exceeding 20
+(Fiscal Survey) or 25 (1992 \emph{EAM} survey documents)---, whose
+shares cannot be traded. The personal liability of the partners is
+limited to the capital contributed. The Limited Liability Company is
+quite important in Colombia (Fiscal Survey).
+
+Finally, proprietorships are individuals (natural persons) who allocate
+part of their assets to conduct commercial activities.
+
+There are other juridical organizations in the data that will be
+excluded from the final analysis. These organizations are non-profit,
+like cooperatives and community enterprises, or state industrial
+enterprises, the proceeds of which come from taxes, fees, or special
+contributions.
 
 \subsubsection{Corporate Income tax}\label{corporate-income-tax}
 
-The Corporate Income Tax depended on the type of juridical organization
-of the firm. For tax purposes, we can classify firms as Corporations,
-Partnerships, Limited Liability Companies, and Individual
-Proprietorships.
-
-Corporations were taxed at a fixed rate of 40\%, while Partnerships and
-Limited Liability companies at 20\%. Individual proprietors were subject
-to the graduated Individual Tax Schedule consisting of 56 rates, ranging
-from 0.50 to 51 percent.
+The juridical organizations were subject to different Corporate Income
+Tax rates. Corporations were taxed at a fixed rate of 40\%, while
+Partnerships and Limited Liability companies at 20\%. Individual
+proprietors were subject to the graduated Individual Tax Schedule
+consisting of 56 rates, ranging from 0.50 to 51 percent.
 
 Corporations were taxed on their distributed dividends, while
 partnerships and limited liability companies were taxed on their
 profits, whether or not distributed. Owners of juridical organizations
 were double taxed, at the firm and the individual level, whereas the
-income of proprietorships was taxed only once.
-
-Moreover, Corporations were subject to the Superintendent of
-Corporations and were closely supervised, being required to have an
-auditor.
+income of proprietorships was taxed only once, at the individual level.
 
 Since 1974, individuals and juridical organizations, except for limited
 liability companies, were subject to the minimum presumptive income.
 Rent (income and profits) was presumed to be no less than 8 percent of
 net wealth (assets less depreciation, real estate, livestock,
-securities). Firms with profits lower than 8 percent of their wealth had
-incentives to underreport capital. Firms with larger profits had
-incentives to overreport inputs and underreport sales.
+securities).
 
-Exemptions were granted for automobile producers, private electrical
-companies, airlines, publishing, and reforestation sectors, and various
-activities in selected regions (primarily ``frontier'' and other less
-developed ones).
+Certain industries like airlines, publishing, and reforestation sectors,
+and various activities in selected regions (primarily ``frontier'' and
+other less developed ones) had their income tax exempted, limited, or
+reduced.
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.3934}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.0820}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1803}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1475}}
+  >{\centering\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.1967}}@{}}
+\caption{Juridical Organizations in Colombia (1980s), A
+Summary}\label{tbl-jo-summary}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Juridical Organization
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+CIT
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Liability
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Capital
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Owners
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Juridical Organization
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+CIT
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Liability
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Capital
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Owners
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Corporation & 40\% (on distributed dividends) & Limited to capital
+participation & Tradable capital shares & \(N\ge5\) \\
+Limited Liability Company & 20\% (on profits) & Limited to capital
+participation & Non-tradable capital shares & \(2\le N \le 20 (25)\) \\
+Partnership & 20\% (on profits) & Full & Not a capital association &
+\(N\ge2\) \\
+Proprietorship & Individual Income Tax & Full & Owner & \(N=1\) \\
+\end{longtable}
 
 \subsubsection{Sales taxes}\label{sales-taxes}
 
@@ -701,31 +784,53 @@ finished goods and imports. Since 1974, manufacturers were allowed to
 credit taxes paid on any purchase made by the firm, except the
 acquisition of capital goods \citep{Perry1990}. The credits worked
 through a system of refunds. Consequently, the tax became a kind of
-value-added tax (VAT). The VAT was extended to many services.
+value-added tax (VAT).
 
 The basic rate was 15 percent. There was also a preferential rate of 6
-percent for ``wage goods'' (clothing, footwear, and major inputs used
-for building popular housing), and a rate of 35 percent for luxury
+percent for certain industries like clothing, footwear, and major inputs
+used for building popular housing, and a rate of 35 percent for luxury
 goods. Exports, foodstuff, drugs, and textbooks were excluded from the
 beginning. Also excluded were inputs, transportation equipment,
 agricultural machinery, and equipment.
 
-\subsubsection{Take-aways}\label{take-aways}
+\subsubsection{Discussion}\label{discussion}
 
 \begin{itemize}
 \tightlist
 \item
-  Corporations are the least likely to evade because the probability of
-  detection is higher for them.
+  Corporations are the least likely to evade by misreporting because
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    The Superintendent of Corporations closely monitored corporations by
+    requiring them to have an auditor. In the model, this implies that
+    the probability of detection is higher for them.
+  \item
+    Free Tradable shares impose an incentive to be profitable because
+    the market value of the shares might be negatively affected
+    otherwise. In other words, if a corporation fakely reports lower
+    profits, the value of its shares would likely decrease scaring away
+    shareholders and potential investors. Joint stock companies have
+    freely tradable shares too.
+  \item
+    Corporations paid CIT on distributed dividends, not on profits as
+    Partnerships and LLCs did.
+  \end{enumerate}
 \item
-  Firms' incentives to overreport inputs were heterogeneous within
-  industry sectors because it depended on the effective sales tax rate
-  which varied according to the firm's location and sales composition
-  (inputs to other firms, to consumers, to the foreign market), and the
-  type of juridical organization.
+  Proprietorships, Partnerships, and Limited Companies had incentives to
+  overreport inputs to evade VAT and CIT. The incentives to evade varied
+  across industries because the sales tax rate differed between
+  industries. The incentives to evade also varied within industry
+  sectors because juridical organizations within an industry were
+  subject to different CIT rates. There were additional sources of
+  variation depending on the firm's location due to local exemptions and
+  sales composition (inputs to other firms, to consumers, to the foreign
+  market).
 \item
-  Individual proprietorships (and maybe low revenue limited liability
-  companies) were likely to bunch at the individual income thresholds.
+  Individual proprietorships were likely to bunch at the individual
+  income thresholds.
 \end{itemize}
 
 \subsection{Fiscal Reforms}\label{fiscal-reforms}
@@ -753,7 +858,7 @@ The 1983 reform relatively unified the value-added tax (VAT) rates by
 combining previously taxed goods at 6\% and 15 percent into 10\%. The
 number of the products and services that were levied expanded.
 
-In 1984, exemptions for agricultural machinery, transportation
+In 1984, VAT exemptions for agricultural machinery, transportation
 equipment, and certain other goods were eliminated.
 
 \subsubsection{1986}\label{section-1}
@@ -771,15 +876,29 @@ tax reports to the banking system, among other things.
 
 \subsubsection{1990}\label{section-2}
 
-The 1990 reform increased the VAT from 10\% to 12\%. See section the
-appendix for more details on the fiscal reforms.
+The 1990 reform increased the VAT from 10\% to 12\%.
 
-Intuitively, we expect higher levels of tax evasion if tax rates
-increase. On the other hand, reporting more information to the authority
----like the firms required to report and pay profit taxes in 1983---, or
-having a third party reporting on your private information --- like the
-banking system being responsible for the collection and reception of tax
-reports in 1986--- would decrease tax evasion.
+In addition, the individual income obtained from the sale of shares
+through the stock market was exempted from taxation. Income tax was
+waived for investment funds, mutual funds, and securities, and the rates
+for remittances and income for foreign investment were reduced. Tax
+amnesties were granted, and the sanitation tax was reduced to encourage
+the repatriation of capital.
+
+\subsubsection{Discussion}\label{discussion-1}
+
+Increases in the VAT would increase the incentives to evade. Decreases
+in CIT would decrease them. Intuitively, we expect higher levels of tax
+evasion if tax rates increase.
+
+The CIT homogenization between Corporations and LLCs in 1986 would have
+motivated LLCs to incorporate. Likewise, the elimination of double
+taxation also in 1986 would have motivated proprietorships to become
+LLCs, Corporations, or Partnerships.
+
+On the other hand, reporting more information to the tax authority ---
+like the banking system being responsible for the collection and
+reception of tax reports in 1986--- would decrease tax evasion.
 
 \subsection{Data}\label{data}
 
@@ -841,7 +960,7 @@ and Sales Tax on the Log Share of Intermediate Inputs.}
                      & (0.1210)       & (0.0998)        & (0.0996)\\   
    Proprietorships   & 0.1551$^{***}$ & 0.1243$^{***}$  & 0.1208$^{***}$\\   
                      & (0.0290)       & (0.0219)        & (0.0215)\\   
-   Ld. Partnership   & 0.1707$^{***}$ & 0.1421$^{***}$  & 0.1370$^{***}$\\   
+   Ld. Liability Co. & 0.1707$^{***}$ & 0.1421$^{***}$  & 0.1370$^{***}$\\   
                      & (0.0302)       & (0.0239)        & (0.0240)\\   
    Collective        & 0.2159$^{***}$ & 0.1799$^{***}$  & 0.1829$^{***}$\\   
                      & (0.0556)       & (0.0510)        & (0.0505)\\   
@@ -990,7 +1109,7 @@ and Sales Tax on the Log Share of Consumed Energy.}
                      & (0.1359)       & (0.1075)       & (0.1124)\\   
    Proprietorships   & 0.1420$^{***}$ & 0.1090$^{***}$ & 0.1084$^{***}$\\   
                      & (0.0247)       & (0.0183)       & (0.0182)\\   
-   Ld. Partnership   & 0.1594$^{***}$ & 0.1284$^{***}$ & 0.1252$^{***}$\\   
+   Ld. Liability Co. & 0.1594$^{***}$ & 0.1284$^{***}$ & 0.1252$^{***}$\\   
                      & (0.0262)       & (0.0190)       & (0.0192)\\   
    Collective        & 0.1786$^{***}$ & 0.1389$^{***}$ & 0.1444$^{***}$\\   
                      & (0.0414)       & (0.0353)       & (0.0356)\\   
@@ -1061,7 +1180,7 @@ and Sales Tax on the Log Share of Deductible Expenses.}
                      & (0.1803)       & (0.1123)       & (0.1142)\\   
    Proprietorships   & 0.2203$^{***}$ & 0.1759$^{***}$ & 0.1735$^{***}$\\   
                      & (0.0301)       & (0.0215)       & (0.0216)\\   
-   Ld. Partnership   & 0.2122$^{***}$ & 0.1746$^{***}$ & 0.1736$^{***}$\\   
+   Ld. Liability Co. & 0.2122$^{***}$ & 0.1746$^{***}$ & 0.1736$^{***}$\\   
                      & (0.0319)       & (0.0224)       & (0.0224)\\   
    Collective        & 0.2312$^{***}$ & 0.1883$^{***}$ & 0.1924$^{***}$\\   
                      & (0.0418)       & (0.0334)       & (0.0355)\\   
@@ -1132,7 +1251,7 @@ Type and Sales Tax on the Log Share of Non-Deductible Expenses.}
                      & (0.1803)       & (0.1123)       & (0.1142)\\   
    Proprietorships   & 0.2203$^{***}$ & 0.1759$^{***}$ & 0.1735$^{***}$\\   
                      & (0.0301)       & (0.0215)       & (0.0216)\\   
-   Ld. Partnership   & 0.2122$^{***}$ & 0.1746$^{***}$ & 0.1736$^{***}$\\   
+   Ld. Liability Co. & 0.2122$^{***}$ & 0.1746$^{***}$ & 0.1736$^{***}$\\   
                      & (0.0319)       & (0.0224)       & (0.0224)\\   
    Collective        & 0.2312$^{***}$ & 0.1883$^{***}$ & 0.1924$^{***}$\\   
                      & (0.0418)       & (0.0334)       & (0.0355)\\   
@@ -1188,6 +1307,302 @@ Reference group is Corporations in 1981.
 other juridical
 organizations?}\label{do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations}
 
+An implicit assumption in the identification strategy is that the subset
+of non-evaders has the same common technology as evaders. In the case of
+Colombia, this implies that Corporations have the same common technology
+as Proprietorships, Limited Companies, and Partnerships. However, we can
+think that firms with better technology are self-selecting into
+corporations, and thus, firms with low-performance technology will be
+mislabeled as evaders.
+
+The key question is how firms are choosing their juridical organization,
+and in particular, how firms are choosing to become corporations. I
+argue that choosing the juridical organization is a result of the
+capital needs of the firm and it is affected by the preferences of the
+owners over their corporate liability and their social connections.
+
+From the definitions of the juridical organizations, we can expect
+corporations to be the largests in terms of capital, followed by LLCs
+and Partnerships, and Proprietorships to be smallest. The reason is
+simply that more people can participate by contributing their capital to
+the firm. This ordering in turn would suggest a growth path for the
+firms.
+
+Turning to the data, I find some firms change their juridical
+organization type. I build a juridical organization transition matrix
+from the previous year to the next one at the firm level.
+Table~\ref{tbl-trans-mat} shows the transition matrix. Although the
+transition matrix suggests that firms mostly stay in their juridical
+organization, a growth trend emerges. It looks like proprietorships turn
+into LLCs, and LLCs into Corporations.
+
+\begin{table}
+
+\caption{\label{tbl-trans-mat}Transition Matrix}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|r|r|r|r|r}
+\hline
+  & Corporation & Ltd. Co. & Other & Partnership & Proprietorship\\
+\hline
+Corporation & 7758 & 36 & 1 & 10 & 0\\
+\hline
+Ltd. Co. & 228 & 21843 & 5 & 32 & 46\\
+\hline
+Other & 1 & 5 & 446 & 0 & 1\\
+\hline
+Partnership & 16 & 69 & 0 & 1150 & 6\\
+\hline
+Proprietorship & 4 & 196 & 0 & 31 & 4173\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+Looking into the capital distributions of proprietorships, LLCs, and
+corporations we find that corporations are the largest, followed by
+LLCs, and proprietorships are the smallest
+Figure~\ref{fig-k-rev-hist-1}. However, there are considerable overlaps.
+The same is true for revenues (in logs) Figure~\ref{fig-k-rev-hist-2}.
+This is not surprising, as the need for larger capital increases, the
+more people would need to participate.
+
+However, when we look at the frequency distributions of the capital over
+revenue ratio in logs, the distributions perfectly overlap
+Figure~\ref{fig-k-rev-hist-3}. If corporations had different
+technologies we would expect to see two different distributions. In
+particular, the distribution of corporations would have been farther to
+the right than the distributions of proprietorships and LLCs.
+
+These patterns remain even after controlling for industry, metropolitan
+area, and year Table~\ref{tbl-reg-choosing-jo}.
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics{Tax-Prod_files/figure-pdf/fig-k-rev-hist-1.pdf}
+
+}
+
+\subcaption{\label{fig-k-rev-hist-1}Capital}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics{Tax-Prod_files/figure-pdf/fig-k-rev-hist-2.pdf}
+
+}
+
+\subcaption{\label{fig-k-rev-hist-2}Revenue}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics{Tax-Prod_files/figure-pdf/fig-k-rev-hist-3.pdf}
+
+}
+
+\subcaption{\label{fig-k-rev-hist-3}Capital/Revenue}
+
+\end{minipage}%
+
+\caption{\label{fig-k-rev-hist}Frequency historgrams of capital, revenue
+and capital/revenue (in logs) of Corporations, LLCs, and
+Proprietorships.}
+
+\end{figure}%
+
+\begin{table}
+
+\caption{\label{tbl-reg-choosing-jo}Testing Differences in the log of
+Capital, Revenue, and Capital/Revenue for Corporations and Other
+Juridical Organizations}
+
+\begin{minipage}{\linewidth}
+
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                    & log(capital)   & log(sales)     & log(capital/sales)\\  
+   Model:                                  & (1)            & (2)            & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   juridical\_organizationLLCs             & -2.446$^{***}$ & -2.424$^{***}$ & -0.0212\\   
+                                           & (0.0743)       & (0.0639)       & (0.0601)\\   
+   juridical\_organizationProprietorships  & -3.346$^{***}$ & -3.372$^{***}$ & 0.0265\\   
+                                           & (0.1672)       & (0.1220)       & (0.0897)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   Industry                                & Yes            & Yes            & Yes\\  
+   Metro Area                              & Yes            & Yes            & Yes\\  
+   Year                                    & Yes            & Yes            & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                            & 39,628         & 39,628         & 39,628\\  
+   R$^2$                                   & 0.44574        & 0.51147        & 0.12003\\  
+   Within R$^2$                            & 0.31430        & 0.39972        & 0.00025\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+
+\end{minipage}%
+
+\end{table}%
+
+\subsubsection{Model of firm (capital) growth
+(sketch)}\label{model-of-firm-capital-growth-sketch}
+
+A limited liability company looking to acquire more capital had three
+options.
+
+First, partners can increase their capital participation, using personal
+wealth or through a bank credit. This option however will increase the
+partners' liability. The more capital I bring the greater my liability
+is.
+
+Second, the LLC might increase its capital by inviting additional
+partners. As the firm increases its capital, inviting more partners will
+become more difficult. The funding partners risk losing control of their
+firm, as more people participate in the firm's management and
+decision-making.
+
+Third, the firm can incorporate. This will bring capital to the firm.
+Anyone in the market for the shares of the firm can participate. Shares
+can be traded. A CEO reporting to the shareholders might be appointed.
+Liability is limited to shares.
+
+The decision to incorporate is a decision on how to acquire capital.
+Firms still need to consider the stream of future productivity shocks,
+but the decision also depends on other unobservables such as
+risk-aversion (increasing the partners' liability), the partners'
+ability to convince more partners to join the LLC, and preferences over
+the control of the firm's management.
+
+Assume there's an unobserved scalar \(\zeta_i\) that captures all of the
+owners' heterogeneity in preferences over liability risk, access to
+networks of potential investors, and preferences over the control of the
+firm's management. Let a higher value of \(\zeta\) capture less risk
+aversion, a wider network of potential investors, or a higher preference
+for retaining control over the firm. Consider the case in which two LLCs
+firms are looking to optimally increase their capital by the same
+quantity, but the owners are different in \(\zeta\). In particular, let
+the owner of firm 1 have a higher \(\zeta_1>\zeta_2\) than the owner of
+firm 2. The firms also have the same technology and productivity shocks.
+The owner of firm 1 \(\zeta_1\) would be able to convince additional
+investors to join their LLC, but the owner 2 \(\zeta_2\) would not.
+\(\zeta_2\) owner would have to choose to incorporate to get the capital
+for his firm or forgo growth.
+
+The 20 pp difference in CIT rate between LLCs and Corporations might
+have deterred firm growth. The CIT was homogenized to 30\% in 1986. What
+was the capital misallocation due to the tax rate differential? Are more
+firms incorporating after the reform?
+
+\subsubsection{Evasion vs.~Production
+Technology}\label{evasion-vs.-production-technology}
+
+Production technology is industry-specific, but evasion technology is
+the same across industries.
+
+Take the face value of the regressions and assume, without conceding,
+that corporations have different technologies. This will imply that
+corporations have technologies that are consistently 15\% more
+productive than non-corporations regardless of the industry. In other
+words, it does not matter if the firms produce canned food, shoes or
+furniture, corporations have technologies consistently more productive.
+However, this is difficult to believe because there could be industries
+in which such an improvement in technology is difficult to imagine. For
+example, coffee grain mills (food products), steel foundries (steel
+basic products), plastic molding and extrusion (plastic products), or
+cement (non-metallic mineral products).
+
+However, these cross-sectional differences across industries could be
+better explained by the evasion technology. We would expect the evasion
+technology to be the same across industries. It does not matter what I
+produce and what technology my firm employs, to overreport inputs all
+that is needed is a fake invoice.
+
+\subsubsection{Corporations by Industry}\label{corporations-by-industry}
+
+Looking into industry sectors.
+
+\begin{table}
+
+\caption{\label{tbl-corps-by-inds}Corporations by Industry. Top 20
+Industries in Colombia by number of firms.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{r|r|r|r|r|r|l}
+\hline
+sic\_3 & n\_sic & corps\_n & corps\_share & market\_share & n\_perc & Descripción\\
+\hline
+313 & 1419 & 837 & 58.99 & 7.43 & 1.87 & Beverage industries\\
+\hline
+351 & 1360 & 740 & 54.41 & 6.97 & 1.79 & Manufacture of industrial chemicals\\
+\hline
+352 & 3274 & 1001 & 30.57 & 6.55 & 4.32 & Manufacture of other chemical products\\
+\hline
+341 & 1560 & 409 & 26.22 & 4.07 & 2.06 & Manufacture of paper and paper products\\
+\hline
+383 & 2174 & 532 & 24.47 & 3.03 & 2.87 & Manufacture of electrical machinery apparatus, appliances and supplies\\
+\hline
+369 & 3333 & 663 & 19.89 & 3.41 & 4.40 & Manufacture ot other non-metallic mineral products\\
+\hline
+312 & 2201 & 422 & 19.17 & 4.80 & 2.90 & Food manufacturing\\
+\hline
+384 & 2491 & 385 & 15.46 & 5.21 & 3.29 & Manufacture of transport equipment\\
+\hline
+321 & 5158 & 771 & 14.95 & 7.56 & 6.80 & Manufacture of textiles\\
+\hline
+311 & 11049 & 1613 & 14.60 & 20.40 & 14.57 & Food manufacturing\\
+\hline
+356 & 3400 & 491 & 14.44 & 2.96 & 4.48 & Manufacture of plastic products not elsewhere classified\\
+\hline
+381 & 6231 & 761 & 12.21 & 3.26 & 8.22 & Manufacture of fabricated metal products, except machinery and equipment\\
+\hline
+323 & 1086 & 129 & 11.88 & 0.97 & 1.43 & Manufacture of leather and products of leather, leather substitutes and fur, except footwear and wearing apparel\\
+\hline
+331 & 1971 & 220 & 11.16 & 0.61 & 2.60 & Manufacture of wood and wood and cork products, except furniture\\
+\hline
+382 & 3474 & 339 & 9.76 & 1.66 & 4.58 & Manufacture of machinery except electrical\\
+\hline
+342 & 3943 & 376 & 9.54 & 2.54 & 5.20 & Printing, publishing and allied industries\\
+\hline
+390 & 1726 & 130 & 7.53 & 0.81 & 2.28 & Other manufacturing industries\\
+\hline
+332 & 2225 & 73 & 3.28 & 0.37 & 2.93 & Manufacture of furniture and fixtures, except primarily of metal\\
+\hline
+324 & 2833 & 91 & 3.21 & 0.99 & 3.74 & Manufacture of footwear, except vulcanized ord moulded rubber or plastic footwear\\
+\hline
+322 & 10819 & 254 & 2.35 & 2.79 & 14.27 & Manufacture of wearing apparel, except footwear\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsubsection{Inputs Cost Share of
+Revenues}\label{inputs-cost-share-of-revenues}
+
 The evidence suggests that Corporations have similar technologies to the
 rest of the firms. I look at the share of revenues of different input
 costs. In doing so, I consider the incentives generated by the fiscal
@@ -1196,21 +1611,25 @@ by misreporting capital, consumed energy, and skilled labor. The cost
 share of revenue of these inputs suggests that Corporations and the rest
 of the firms had the same technologies.
 
-\subsubsection{Capital}\label{capital}
+\paragraph{Capital}\label{capital}
 
 Firms could not deduct capital goods from sales taxes. However, firms of
 capital-intensive industries might have had incentives to underreport
 capital because capital was used to set the minimum income tax. Income
 tax could not be less than 8 percent of the capital.
 
-\subsubsection{Energy}\label{energy}
+\paragraph{Energy}\label{energy}
 
-Before the electrical energy reform in 1994, most of the market was
-supplied by municipality-owned companies with some participation of
-private firms. It is unlikely that firms overreported energy, as they
-have to purchase from a Corporation, or a municipality or region-owned
-company. Both of those organizations had no incentives to cooperate and
-provide fake invoices.
+Before the electrical energy reform in 1994, the power market was almost
+exclusively supplied by public companies with negligible participation
+from private firms. The public companies were inefficient and suffered
+financial distress due to poor management and low tariffs set by
+political actors. Two major blackouts in 1983 and 1992-1993 led to the
+1994 reform that opened the sector to private participation.
+
+It is unlikely that firms overreported energy, as they have to purchase
+from a Corporation or a public company. Both of those organizations had
+no incentives to cooperate and provide fake invoices.
 
 In the data, energy sold by corporations accounted on average for 73\%
 of the total energy sold, but only 1.7\% of the total energy purchased.
@@ -1232,25 +1651,15 @@ overall market share is small.
 \hline
  & Sold/Purchased Price Ratio & Sold Energy (\% of Total Sold Energy) & Sold Energy (\% of Total Purchased Energy) & Generated Energy (\% of Consumed Energy)\\
 \hline
-Proprietorships & 1.0 & 0.0 & 0.0 & 0.1\\
+Corporation & 11.9 & 73.0 & 1.7 & 3.7\\
 \cline{1-5}
-Ld. Partnership & 7.4 & 2.1 & 0.0 & 0.2\\
+Ltd. Co. & 7.4 & 2.1 & 0.0 & 0.2\\
 \cline{1-5}
-Collective &  & 0.0 & 0.0 & 0.8\\
+Other & 2.5 & 24.8 & 0.6 & 5.3\\
 \cline{1-5}
-Corporation & 12.0 & 73.0 & 1.7 & 3.8\\
+Partnership & 1.0 & 0.0 & 0.0 & 0.7\\
 \cline{1-5}
-De Facto Corp. &  & 0.0 & 0.0 & 0.5\\
-\cline{1-5}
-Joint Partnership & 1.0 & 0.0 & 0.0 & 0.7\\
-\cline{1-5}
-Joint Stock Co. & 1.1 & 0.0 & 0.0 & 0.3\\
-\cline{1-5}
-Cooperative &  & 0.0 & 0.0 & 0.8\\
-\cline{1-5}
-Official Entity & 2.5 & 24.8 & 0.6 & 11.5\\
-\cline{1-5}
-Religious Community &  & 0.0 & 0.0 & 1.4\\
+Proprietorship & 1.0 & 0.0 & 0.0 & 0.1\\
 \hline
 \end{tabular}
 
@@ -1258,7 +1667,7 @@ Religious Community &  & 0.0 & 0.0 & 1.4\\
 
 \end{table}%
 
-\subsubsection{Labor}\label{labor}
+\paragraph{Labor}\label{labor}
 
 Firms might have incentives to underreport labor to evade Payroll Taxes
 (PRT) if the expected benefits of evading the PRT outweigh the
@@ -1277,7 +1686,7 @@ cooperate with firms to underreport their wages. Skilled workers, on the
 other hand, are less likely to accept these conditions and to have
 outside options and move if the conditions are not favorable to them.
 
-\subsubsection{Services and other
+\paragraph{Services and other
 expenditures}\label{services-and-other-expenditures}
 
 The Colombian dataset allows, to some extent, separating expenditures,
@@ -1312,7 +1721,7 @@ transformation; and the following general expenditures: machinery
 rental, insurance excluding employee benefits, and water, mail and
 telephone expenses.
 
-\subsubsection{Technical note}\label{technical-note}
+\paragraph{Technical note}\label{technical-note}
 
 According to the notes on the dataset, the quantity of energy consumed
 by firms is estimated as the difference between purchased plus generated
@@ -1330,7 +1739,7 @@ is defined as raw materials, purchased electric energy, and industrial
 expenditure. This definition is close to what is commonly defined as
 intermediate inputs.
 
-\subsubsection{Results}\label{results}
+\paragraph{Results}\label{results}
 
 Table~\ref{tbl-reg-shares} shows that in terms of the capital and
 consumed energy share of revenue, corporations are not different from
@@ -1387,22 +1796,22 @@ Corporations and Non-Corporation.}
 \centering
 \begin{tabular}{lccc}
    \tabularnewline \midrule \midrule
-   Dependent Variables: & Capital               & Energy   & Materials\\  
-   Model:               & (1)                   & (2)      & (3)\\  
+   Dependent Variables: & Capital               & Energy                & Materials\\  
+   Model:               & (1)                   & (2)                   & (3)\\  
    \midrule
    \emph{Variables}\\
-   Non-Corporation      & 0.1524                & -0.5499  & 0.0310$^{**}$\\   
-                        & (0.1063)              & (0.7201) & (0.0109)\\   
+   Non-Corporation      & 0.1524                & -0.1215               & 0.0252$^{**}$\\   
+                        & (0.1063)              & (0.7405)              & (0.0092)\\   
    \midrule
    \emph{Fixed-effects}\\
-   Industry             & Yes                   & Yes      & Yes\\  
-   Metro Area           & Yes                   & Yes      & Yes\\  
-   Year                 & Yes                   & Yes      & Yes\\  
+   Industry             & Yes                   & Yes                   & Yes\\  
+   Metro Area           & Yes                   & Yes                   & Yes\\  
+   Year                 & Yes                   & Yes                   & Yes\\  
    \midrule
    \emph{Fit statistics}\\
-   Observations         & 42,145                & 75,757   & 75,757\\  
-   R$^2$                & 0.00180               & 0.08307  & 0.01897\\  
-   Within R$^2$         & $5.74\times 10^{-5}$  & 0.00031  & 0.00034\\  
+   Observations         & 42,145                & 42,145                & 42,145\\  
+   R$^2$                & 0.00180               & 0.09753               & 0.01744\\  
+   Within R$^2$         & $5.74\times 10^{-5}$  & $1.97\times 10^{-5}$  & 0.00021\\  
    \midrule \midrule
    \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
    \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
@@ -1428,8 +1837,8 @@ by Corporations and Non-Corporation.}
    Model:               & (1)                   & (2)             & (3)\\  
    \midrule
    \emph{Variables}\\
-   Non-Corporation      & -3.971                & -14.78$^{***}$  & -0.0805$^{***}$\\   
-                        & (2.215)               & (3.843)         & (0.0097)\\   
+   Non-Corporation      & 0.2052                & 0.0740$^{***}$  & -0.0728$^{***}$\\   
+                        & (0.2082)              & (0.0090)        & (0.0076)\\   
    \midrule
    \emph{Fixed-effects}\\
    Industry             & Yes                   & Yes             & Yes\\  
@@ -1437,9 +1846,9 @@ by Corporations and Non-Corporation.}
    Year                 & Yes                   & Yes             & Yes\\  
    \midrule
    \emph{Fit statistics}\\
-   Observations         & 75,757                & 75,757          & 75,757\\  
-   R$^2$                & 0.00114               & 0.04582         & 0.02208\\  
-   Within R$^2$         & $1.95\times 10^{-5}$  & 0.02230         & 0.00421\\  
+   Observations         & 42,145                & 42,145          & 42,145\\  
+   R$^2$                & 0.00186               & 0.02102         & 0.01575\\  
+   Within R$^2$         & $1.91\times 10^{-5}$  & 0.00288         & 0.00416\\  
    \midrule \midrule
    \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
    \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
@@ -1465,8 +1874,8 @@ classifications of expenses by Corporations and Non-Corporation.}
    Model:               & (1)            & (2)                    & (3)\\  
    \midrule
    \emph{Variables}\\
-   Non-Corporation      & 0.0578$^{***}$ & -0.0035                & 0.0481$^{***}$\\   
-                        & (0.0095)       & (0.0103)               & (0.0088)\\   
+   Non-Corporation      & 0.0497$^{***}$ & -0.0012                & 0.0475$^{***}$\\   
+                        & (0.0079)       & (0.0095)               & (0.0087)\\   
    \midrule
    \emph{Fixed-effects}\\
    Industry             & Yes            & Yes                    & Yes\\  
@@ -1474,9 +1883,9 @@ classifications of expenses by Corporations and Non-Corporation.}
    Year                 & Yes            & Yes                    & Yes\\  
    \midrule
    \emph{Fit statistics}\\
-   Observations         & 75,745         & 75,745                 & 75,745\\  
-   R$^2$                & 0.12931        & 0.11763                & 0.10366\\  
-   Within R$^2$         & 0.00858        & $3.85\times 10^{-5}$   & 0.00976\\  
+   Observations         & 42,140         & 42,140                 & 42,140\\  
+   R$^2$                & 0.12339        & 0.13079                & 0.11923\\  
+   Within R$^2$         & 0.00825        & $5.6\times 10^{-6}$    & 0.01176\\  
    \midrule \midrule
    \multicolumn{4}{l}{\emph{Clustered (Industry \& Year) standard-errors in parentheses}}\\
    \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
@@ -1484,55 +1893,6 @@ classifications of expenses by Corporations and Non-Corporation.}
 \par\endgroup
 
 \end{minipage}%
-
-\end{table}%
-
-\subsubsection{Are firms switching Juridical Organization types in the
-data?}\label{are-firms-switching-juridical-organization-types-in-the-data}
-
-Most firms did not change their J.O. in the sample. Very few changed one
-time and then stayed in their new J.O. Firms rarely changed more than
-once. Over time, around 2-3\% of firms in an industry changed J.O.
-Across industries, around 2\% of firms changed J.O. each year. Overall
-only 2.3\% of firms changed J.O.
-
-\begin{table}
-
-\caption{\label{tbl-jo-change}Changes of Juridical Organization per Firm
-(percentage) by year and top five biggest industries.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{l|r|r|r|r|r|r}
-\hline
-  & 311 & 321 & 322 & 342 & 381 & Annual average\\
-\hline
-82 & 2.4 & 1.3 & 2.0 & 1.3 & 1.9 & 1.9\\
-\hline
-83 & 2.8 & 2.3 & 2.1 & 2.9 & 1.8 & 2.4\\
-\hline
-84 & 2.3 & 0.9 & 1.9 & 1.2 & 2.0 & 2.3\\
-\hline
-85 & 3.8 & 3.5 & 2.6 & 3.0 & 1.5 & 2.7\\
-\hline
-86 & 2.9 & 1.3 & 1.8 & 1.4 & 1.2 & 2.2\\
-\hline
-87 & 2.2 & 0.8 & 2.8 & 1.1 & 1.6 & 2.2\\
-\hline
-88 & 2.9 & 1.7 & 2.6 & 2.8 & 2.1 & 2.9\\
-\hline
-89 & 3.1 & 1.4 & 2.1 & 1.3 & 1.6 & 2.2\\
-\hline
-90 & 2.5 & 1.4 & 1.5 & 0.8 & 1.2 & 2.1\\
-\hline
-91 & 1.7 & 1.2 & 2.2 & 1.9 & 0.7 & 1.8\\
-\hline
-Industry average & 3.0 & 1.8 & 2.5 & 2.0 & 1.7 & 2.3\\
-\hline
-\end{tabular}
-
-}
 
 \end{table}%
 
@@ -1806,6 +2166,95 @@ Now, we are not able to separate the variation of \(\varepsilon\) from
 \(e\).
 
 \section{Revenue misreporting}\label{revenue-misreporting}
+
+Firms might also evade CIT and VAT by underreporting their revenues.
+Upstream firms, however, are less likely to engage in this kind of
+evasion \citep{Almunia2018}. Manufacturing firms in Colombia were mostly
+upstream; only 13\% of their sales were direct final consumers,
+according to a sample of firms surveyed in 1984 \citep{Perry1990}.
+
+As robustness checks, I can identify industries whose sale shares
+directed to final consumers are negligible from this historical document
+Table~\ref{tbl-1984-manu-sales}.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0672}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1681}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1345}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1092}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2773}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1176}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1261}}@{}}
+\caption{Distribution of Sales from Manufacturing Firms, by type of
+Purchaser (in percentage)
+\citep{Perry1990}}\label{tbl-1984-manu-sales}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+SIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total no. of firms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to retailers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to public
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% retailers and public combined
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% government
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% wholesalers
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+SIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total no. of firms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to retailers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to public
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% retailers and public combined
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% government
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% wholesalers
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+312 & 25 & 24.16 & 15.72 & 39.88 & 1.20 & 58.92 \\
+313 & 3 & - & 29.33 & 29.33 & 0 & 70.67 \\
+321 & 8 & 15.06 & 0.11 & 15.17 & 1.17 & 83.67 \\
+322 & 2 & 52.92 & 14.58 & 67.50 & 0 & 32.50 \\
+324 & 5 & 45.00 & 4.00 & 49.00 & 0 & 51.00 \\
+332 & 8 & 10.85 & 20.15 & 31.00 & 5.92 & 63.08 \\
+341 & 6 & 5.00 & 0 & 5.00 & 0 & 95.00 \\
+342 & 9 & 19.44 & 34.44 & 53.89 & 7.22 & 38.89 \\
+351 & 5 & 15.20 & 6.00 & 21.20 & 2.80 & 76.00 \\
+352 & 8 & 37.81 & 5.50 & 43.31 & 4.47 & 52.22 \\
+353 & 3 & 5.67 & 5.00 & 10.67 & 0 & 89.33 \\
+355 & 5 & 21.00 & 0 & 21.00 & 0 & 79.00 \\
+362 & 1 & 10.00 & 0 & 10.00 & 0 & 90.00 \\
+369 & 8 & 21.25 & 28.75 & 50.00 & 12.88 & 37.13 \\
+372 & 3 & 10.00 & 0 & 10.00 & 1.67 & 88.33 \\
+381 & 22 & 12.41 & 14.73 & 27.14 & 2.50 & 70.36 \\
+382 & 20 & 11.20 & 30.00 & 41.20 & 9.00 & 49.80 \\
+383 & 15 & 13.87 & 7.13 & 21.00 & 9.07 & 69.93 \\
+384 & 7 & 0 & 34.57 & 34.57 & 0 & 65.43 \\
+390 & 3 & 58.00 & 3.33 & 61.33 & 3.33 & 35.33 \\
+356 & 11 & 15.55 & 6.00 & 21.55 & 3.18 & 75.27 \\
+\end{longtable}
+
+In addition, the SIC definitions provide useful information about the
+nature of the products whether they are for final consumption or
+intermediate inputs for other industries. For example, the definition of
+industry \texttt{371} Iron and Steel Basic Industries includes the note
+``{[}\ldots{]}. The foundries included here are {[}..{]} primarily
+engaged in manufacturing castings and forgings to sale to others.''
 
 \subsection{Large Taxpayers Unit in
 Spain}\label{large-taxpayers-unit-in-spain}

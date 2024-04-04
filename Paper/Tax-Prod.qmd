@@ -79,7 +79,7 @@ setFixest_etable(markdown = TRUE)
 setFixest_dict(c(
     share_sales_tax = "Sales Tax Rate",
     `relevel(factor(juridical_organization),ref="3")0` = "Proprietorships",
-    `relevel(factor(juridical_organization),ref="3")1` = "Ld. Partnership",
+    `relevel(factor(juridical_organization),ref="3")1` = "Ld. Liability Co.",
     `relevel(factor(juridical_organization),ref="3")2` = "Collective",
     `relevel(factor(juridical_organization),ref="3")3` = "Corporation",
     `relevel(factor(juridical_organization),ref="3")4` = "De Facto Corp.",
@@ -109,8 +109,8 @@ setFixest_dict(c(
     capital_share = "Capital",
     consumed_energy_share = "Energy",
     materials_share = "Materials",
-    skilled_labor_share = "Skilled Labor",
-    unskilled_labor_share = "Unskilled Labor",
+    skilled_wage_bill_share = "Skilled Labor",
+    unskilled_wage_bill_share = "Unskilled Labor",
     total_expenses_share = "Total Expenditure",
     serv_share_exp = "Services",
     inds_exp_share_exp = "Industrial Expenditure",
@@ -129,6 +129,23 @@ setFixest_dict(c(
     # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
     # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
 ))
+
+jo_class <- tibble(
+    JO_code = 0:9,
+    JO_class = c(
+        "Proprietorship",
+        "Ltd. Co.",
+        "Partnership",
+        "Corporation",
+        "Partnership",
+        "Partnership",
+        "Corporation",
+        # "Stock Co. (Corp.)",
+        "Other",
+        "Other",
+        "Other"
+    )
+)
 
 ```
 

@@ -103,8 +103,8 @@ cdf <- col_df %>%
         real_raw_material_foreign = s11 / p_gdp_new,
         real_import_tax_raw_mat = t4 / p_gdp_new,
         share_sales_tax = real_sales_taxes / real_sales,
-        skilled_labor_share = (sklab * (skwages / p_gdp_new)) / real_sales,
-        unskilled_labor_share = (unsklab * (unskwages / p_gdp_new)) / real_sales
+        skilled_wage_bill_share = (skwages / p_gdp_new) / real_sales,
+        unskilled_wage_bill_share = (unskwages / p_gdp_new) / real_sales
     ) %>%
     select(
         plant,
@@ -163,8 +163,8 @@ cdf <- col_df %>%
         female_owners,
         skilled_labor = sklab,
         unskilled_labor = unsklab,
-        skilled_labor_share,
-        unskilled_labor_share,
+        skilled_wage_bill_share,
+        unskilled_wage_bill_share,
         p_energy_new,
         p_energy_sold,
         p_energy_purchased
