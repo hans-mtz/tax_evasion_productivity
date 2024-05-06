@@ -11,18 +11,18 @@ where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$.
 
 ### Parametric MLE
 
-@Chen2007 @Yi2021
+
 Assume a functional form for $f_{\varepsilon}(\cdot;\gamma)$ that depends on known parameters $\gamma$. Assume a known functional form for the density $f_e(\cdot;\lambda)$ that depends on unknown parameters $\lambda$. We can estimate parameters $\gamma, \lambda$ by
 
 $$
 \arg \max_{\gamma,\lambda}=\frac{1}{n}\sum_{i=1}^n \log \left(\int f_{\varepsilon}(e-\mathcal{V};\gamma)f_e(e;\lambda)\text{d}e\right)
 $$
 
+Properties of MLE with unobserved scalar heterogeneity have been derived elsewhere before [@Chen2007; @Yi2021].
 
 ### Non-Parametric MLE
 
-@Chen2007 and @Kang2021  Consider the following log-density model:
-
+Consider the following log-density model:
 
 $$
 f_{e|\Theta}(e)=\exp(s(e;\theta)-C(\theta))
@@ -53,9 +53,7 @@ The usual maximum likelihood estimate $\hat{\theta}$ is the maximizer of $l_{\ma
 
 Laguerre polynomials can be used to approximate any function $L_2([0,\infty), leb)$ $L_2$ norm relative to the Lebesgue measure and domain $[0,\infty)$ [@Chen2007].
 
-@Kang2021 suggests using the EM algorithm. 
-
-The EM algorithm starts with an initial estimate $\hat{\mathbf{\theta}}^0$ and iteratively updates the estimate as follows.
+The EM algorithm [@Kang2021] starts with an initial estimate $\hat{\mathbf{\theta}}^0$ and iteratively updates the estimate as follows.
 
 **Expectation-Step**: Given the current estimate $\hat{\mathbf{\theta}}^{(k)}$ of $\hat{\mathbf{\theta}}$, calculate
 
@@ -80,5 +78,3 @@ Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\h
 $$
 
 The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}$.
-
-

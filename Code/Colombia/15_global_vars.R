@@ -7,36 +7,36 @@ ex_name <- "night"#"select"#"tax"#"win" #"subsidies"#"share"#  "exp-ratio"#"sale
 
 ## Relevant variables ----
 
-size <- colombia_data_frame %>%
-    ungroup() %>%
-    select(
-        # !c(plant, year, sic_3, p_gdp),
-        # labor_employee_years, wages, capital, lag_sales, lag_taxes # original
-        # lag_M, lag_K, capital, lag_sales #capital
-        # lag_indirect_tax, lag_sales_tax, lag_consumption_tax, lag_imex_tax #tax
-        # lag_share_exports, share_exports, general_expenditure, lag_gen_exp #exp
-        # k, lag_k, lag_m, lag_log_sales, lag_log_gen_exp #not-win
-        # lag_k, lag_m, lag_log_consumption_tax, lag_log_sales_tax #win
-        # log_int_pym_lag_k, lag_log_sales_k, lag_log_sales_tax_sales #sales, 
-        # lag_log_gen_exp_k, lag_log_ind_exp_k, lag_log_exp_k, age #exp-capital ratio
-        # starts_with("share"),
-        # lag_log_int_pym_l, lag_log_sales_l, lag_log_gen_exp_l,lag_log_ind_exp_l,lag_log_exp_l# labor
-        # subsidies, subsidies_prod, subsidies_exp # sub
-        age, lag_log_ind_exp_k, lag_log_sales_tax , lag_log_sales_k, lag_log_sales, lag_k, share_exports#select
-        # lag_log_sales, lag_log_sales_tax, lag_log_sales_k, lag_log_sales_l
-    ) %>%
-    names()
+# size <- colombia_data_frame %>%
+#     ungroup() %>%
+#     select(
+#         # !c(plant, year, sic_3, p_gdp),
+#         # labor_employee_years, wages, capital, lag_sales, lag_taxes # original
+#         # lag_M, lag_K, capital, lag_sales #capital
+#         # lag_indirect_tax, lag_sales_tax, lag_consumption_tax, lag_imex_tax #tax
+#         # lag_share_exports, share_exports, general_expenditure, lag_gen_exp #exp
+#         # k, lag_k, lag_m, lag_log_sales, lag_log_gen_exp #not-win
+#         # lag_k, lag_m, lag_log_consumption_tax, lag_log_sales_tax #win
+#         # log_int_pym_lag_k, lag_log_sales_k, lag_log_sales_tax_sales #sales, 
+#         # lag_log_gen_exp_k, lag_log_ind_exp_k, lag_log_exp_k, age #exp-capital ratio
+#         # starts_with("share"),
+#         # lag_log_int_pym_l, lag_log_sales_l, lag_log_gen_exp_l,lag_log_ind_exp_l,lag_log_exp_l# labor
+#         # subsidies, subsidies_prod, subsidies_exp # sub
+#         age, lag_log_ind_exp_k, lag_log_sales_tax , lag_log_sales_k, lag_log_sales, lag_k, share_exports#select
+#         # lag_log_sales, lag_log_sales_tax, lag_log_sales_k, lag_log_sales_l
+#     ) %>%
+#     names()
 
-output <- c(
-    "gross_output", # real value of gross production
-    "sales" # real sales
-    # "va" #value added
-)
-input <- c(
-    "materials",
-    "intermediate_inputs",
-    "mats_serv"
-)
+# output <- c(
+#     "gross_output", # real value of gross production
+#     "sales" # real sales
+#     # "va" #value added
+# )
+# input <- c(
+#     "materials",
+#     "intermediate_inputs",
+#     "mats_serv"
+# )
 
 # Colombian big industries ----
 
@@ -224,7 +224,132 @@ tax_tresh_1983<-as.numeric(gsub(",","",tax_tresh[[1]]))[2:length(tax_tresh[[1]])
 deflators <-colombia_data_frame %>% ungroup() %>% select(year, p_gdp) %>% unique()
 real_tax_tresh_1983 <- tax_tresh_1983/(deflators[deflators$year==83, "p_gdp"][[1]]*1000)
 
+# JO Classes ------------
+jo_class <- tibble(
+    JO_code = 0:9,
+    JO_class = c(
+        "Proprietorship",
+        "Ltd. Co.",
+        "Partnership",
+        "Corporation",
+        "Partnership",
+        "Partnership",
+        "Corporation",
+        # "Stock Co. (Corp.)",
+        "Other",
+        "Other",
+        "Other"
+    )
+)
+# Split Plot Data for Tinytable --------
 
+
+
+sales_tax_change<-tribble(
+    ~sic_3, ~Change, ~Change_Year, ~Perry, ~Perry_inds_desc, 
+    311, "exempt", NA, " ", " ",# Exempt in data less than 0.3 %  food prods
+    312, "exempt", NA, " ", " ",# Exempt in data less than 0.3 % food prods
+    313, "increased", 85, "- to 35;10", "Beverages and Tobacco",# Beverages in data 5 -> 9 (6 -> 10)
+    314, "decreased", 84, "- to 35;10", "Beverages and Tobacco",# NO: Tobacco in data not significant decrease, maybe 82-83 vs 85 (not top 20)
+    321, "increased", 84, "6 to 10", "Textiles",# @Perry1990 6 -> 10 Textiles
+    322, "increased", 84, " ", " ",# @Perry1990 6 -> 10 Textiles
+    323, "no change", NA, " ", " ",# Leather products in data 8%, no change
+    324, "increased", 84, " ", " ",# Footwear in data 6->10
+    331, "no change", NA, " ", " ",# Wood and cork products
+    332, "decreased", 84, " ", " ",# Furniture, in data small decrease 11->9
+    341, "increased", 84, "15 to 10", "Paper",# Paper, data increase 7->9, Perry decreased 15->10
+    342, "decreased", 84, " ", " ",# Printing in small decrease 8->7
+    351, "decreased", 84, "15 to 10", "Other Chemical Products",# Chemical Products, no change in data 
+    352, "no change", NA, "6;15 to 10", "Soap",# Industrial Chemicals @Perry1990 data 8->6
+    353, "no change", NA, " ", " ",# Petroleum refineris NO: huge variation.  from 30% to 8% 83 and 2% 84
+    354, "no change", NA, "10 to 14", "Oil and Coal Derivatives",# Oil and Coal Derivatives NO:  4%
+    355, "no change", NA, " ", " ",# Rubber prods. No change, maybe 82 vs 86-91 
+    356, "no change", NA, "15 to 10", "Plastics",# Plastic products 
+    361, "increased", 85, " ", " ",# Pottery, china, earthware. NO: Increase 81-83 vs 85-88
+    362, "increased", 84, " ", " ",# Glass and glass products: In data significant increase 81-83 vs 84-91
+    369, "decreased", 84, " ", " ",# Non-Metallic mineral products; data significant decrease 81-83 vs 84-90
+    371, "increased", 84, "6;15 to 10", "Iron and Steel; Nickel Smelting",# Iron and Steel basic industries; significant increase indata 81-83 vs 84-91
+    372, "no change", NA, " ", " ",# Metal basic inds: NO. No significant change in data
+    381, "increased", 85, " ", " ",# Metal prods. no machinery. Minor significant increase 81-84 vs 85-91
+    382, "increased", 85, "6 to 10", "Equipment and Machinery",# Machinery mfg no electrical from 8% to 11% in 84, to 14% in 85
+    383, "increased", 85, "6 to 10", "Equipment and Machinery",# Electrical machinery, increase, from 81-83 vs 84-91
+    384, "increased", 85, "6 to 10", "Transportation",# Transport equipment, significant increase, 81-84 vs 85-91
+    385, "increased", 85, " ", " ",# Prof equipment, gradual increase, 81-83 vs 86-91
+    390, "decreased", 84, " ", " ",# Other mfg equipment, gradual decrease, 81-83 vs 88-90
+)
+
+
+candidate_inds<-colombia_data_frame %>%
+    filter(
+        sales > 0,
+        # !is.na(capital),
+        !is.na(k),!is.na(l), !is.na(m)
+        # n_sic > 500
+    ) %>%
+    group_by(sic_3) %>%
+    summarise(
+        n_sic = n(),
+        revenues = sum(sales, na.rm = TRUE),
+        corps_n = sum(juridical_organization==3, na.rm = TRUE)
+    ) %>%
+    arrange(desc(revenues)) %>%
+    mutate(
+        n_cum = cumsum(n_sic),
+        n_perc = n_sic / sum(n_sic) * 100,
+        perc_acc = n_cum / sum(n_sic) * 100,
+        market_share = revenues/ sum(revenues)*100,
+        # sic_3 = as.numeric(str_sub(as.character(sic), 1, 3)),
+        corps_share = corps_n/n_sic * 100
+    ) %>%
+    select(sic_3, n_sic, corps_n, corps_share, market_share, n_perc) %>%
+    arrange(desc(n_perc)) %>%
+    filter(n_sic>1000|sic_3==351)
+
+# SIC Data ---------------
+ciiu_data <- read.csv("Data/Colombia/ciiu-rev2-en.csv", skip = 3)
+
+ciiu_3 <- ciiu_data %>%
+    filter(
+        Nivel == "Agrupaciones"
+    )
+ciiu_4 <- ciiu_data %>%
+    filter(
+        Nivel == "Grupos"
+    )
+
+top_20_inds <- candidate_inds %>%
+    left_join(
+        ciiu_3[,2:3],
+        by = join_by(sic_3 == `Código`)
+    ) %>%
+    left_join(sales_tax_change) %>%
+    mutate(
+        description = str_remove(`Descripción`,"Manufacture of |Manufacture ot "),
+        description = str_replace_all(
+            str_to_title(description),
+            c(" And " = " and ", " Of " = " of ", " Or | Ord " = " or ")
+        ),
+        across(
+            corps_share:n_perc,
+            ~round(.x, digits = 2)
+        ),
+        Change = factor(Change, levels = c("exempt","increased","decreased","no change"))
+    ) %>%
+    arrange(Change) %>%
+    select(!`Descripción`)
+    
+plot_data <- colombia_data_frame %>%
+    ungroup() %>%
+    filter(
+        sic_3 %in% top_20_inds$sic_3
+    ) %>%
+    mutate(
+        sic_3 = factor(sic_3, levels = top_20_inds$sic_3)
+    ) %>%
+    select(plant, juridical_organization, sic_3, year, share_sales_tax)
+
+split_plot_data <- plot_data %>%
+    split(plot_data$sic_3)
 # Saving global variables -----------
 print("Saving global variables")
 save(

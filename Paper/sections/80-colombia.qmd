@@ -12,7 +12,7 @@ In Colombia, there are five types of juridical organizations: Corporations, Part
 
 Corporations (*sociedad anónima*) are the typical associations of capital. They are the counterpart of the US corporation. The capital of a corporation is provided by the shareholders (no less than 5) and is divided into tradable shares of equal value. Shareholders' liability is limited to the capital contributed. Corporations are subject to the Superintendent of Corporations and are closely supervised, being required to have an auditor.
 
-Joint Stock Companies (*sociedad en comandita por acciones*)are limited partnerships with the partnership interest represented by shares of stocks and taxed as Corporations. Its shares are tradable, like the shares of Corporations.
+Joint Stock Companies (*sociedad en comandita por acciones*) comprises two or more managing partners who are jointly and severally liable, and five or more limited partners whose liability is limited to their respective contributions. Joint Stock Companies are taxed as Corporations. Its shares are tradable, like the shares of Corporations. 
 
 Partnerships are associations of two or more persons. Partners are jointly and severally liable for the partnership's operations. Partnerships include general partnerships (*sociedad colectiva*), de Facto partnerships (*sociedades de hecho*), and ordinary limited partnerships (*sociedad en comandita simple*).
 
@@ -32,13 +32,21 @@ Since 1974, individuals and juridical organizations, except for limited liabilit
 
 Certain industries like airlines, publishing, and reforestation sectors, and various activities in selected regions (primarily "frontier" and other less developed ones) had their income tax exempted, limited, or reduced.
 
-| Juridical Organization | CIT | Liability | Capital | Owners |
+::: {#tbl-jo-sum-tbl}
+
+| Organization | Corporate Income Tax | Liability | Capital | Owners |
 |:----------------------:|:---:|:---------:|:-------:|:----------:|
 | Corporation           | 40% (on distributed dividends) | Limited to capital participation | Tradable capital shares | $N\ge5$ |
-| Limited Liability Company | 20% (on profits) | Limited to capital participation | Non-tradable capital shares | $2\le N \le 20 (25)$ |
+| Limited Co. | 20% (on profits) | Limited to capital participation | Non-tradable capital shares | $2\le N \le 20 (25)$ |
 | Partnership | 20% (on profits) | Full | Not a capital association | $N\ge2$ |
 | Proprietorship | Individual Income Tax | Full | Owner | $N=1$ |
-: Juridical Organizations in Colombia (1980s), A Summary {#tbl-jo-summary}
+
+
+Juridical Organizations in Colombia (1980s), A Summary 
+
+:::
+
+
 
 #### Sales taxes
 
@@ -48,12 +56,11 @@ The basic rate was 15 percent. There was also a preferential rate of 6 percent f
 
 #### Discussion
 
-- Corporations are the least likely to evade by misreporting because 
-    1. The Superintendent of Corporations closely monitored corporations by requiring them to have an auditor. In the model, this implies that the probability of detection is higher for them.
-    1. Free Tradable shares impose an incentive to be profitable because the market value of the shares might be negatively affected otherwise. In other words, if a corporation fakely reports lower profits, the value of its shares would likely decrease scaring away shareholders and potential investors. Joint stock companies have freely tradable shares too.
-    1. Corporations paid CIT on distributed dividends, not on profits as Partnerships and LLCs did.
-- Proprietorships, Partnerships, and Limited Companies had incentives to overreport inputs to evade VAT and CIT. The incentives to evade varied across industries because the sales tax rate differed between industries. The incentives to evade also varied within industry sectors because juridical organizations within an industry were subject to different CIT rates. There were additional sources of variation depending on the firm's location due to local exemptions and sales composition (inputs to other firms, to consumers, to the foreign market).
-- Individual proprietorships were likely to bunch at the individual income thresholds.
+From Colombia's tax system, we can conclude that corporations are the least likely to evade taxes by misreporting because of at least three reasons. One, the Superintendent of Corporations closely monitored corporations by requiring them to have an auditor. In the model, this implies that the probability of detection is higher for them. Second, free tradable shares impose an incentive to be profitable because the market value of the shares might be negatively affected otherwise. In other words, if a corporation fakely reports lower profits, the value of its shares would likely decrease scaring away shareholders and potential investors. Joint stock companies have freely tradable shares too. Three, corporations pay CIT on distributed dividends, not on profits as Partnerships and LLCs did. Corporations have an additional margin regarding the income tax they pay because they decide when to pay dividends. This might generate other types of incentives that might be influenced by the corporation's policy regarding their dividends and the demands of their shareholders. On the other hand, Proprietorships and LLCs are subject to the incentive to evade CIT by artificially reducing their profits.
+
+Moreover, Proprietorships, Partnerships, and Limited Companies had incentives to overreport inputs to evade VAT and CIT. The incentives to evade varied across industries because the sales tax rate differed between industries. The incentives to evade also varied within industry sectors because juridical organizations within an industry were subject to different CIT rates. There were additional sources of variation depending on the firm's location due to local exemptions and sales composition (inputs to other firms, to consumers, to the foreign market).
+
+Lastly, Individual proprietorships were likely to bunch at the individual income thresholds because they were subject to individual income tax which was increasing by brackets.
 
 
 ### Fiscal Reforms
@@ -62,9 +69,11 @@ During this period, Colombia went through three major fiscal reforms (1983, 1986
 
 #### 1983
 
-The 1983 reform tried to alleviate the double taxation by introducing a tax credit of 10% of dividends received for individuals.
+The 1983 reform tried to alleviate double taxation by introducing a tax credit of 10% of dividends received by shareholders of corporations.
 
-In addition, Law 9 of 1983 instituted a measure of presumptive income equal to 2 percent of gross receipts to supplement the measure based on net wealth. This reform was aimed specifically at the commerce and service sectors; the former was thought to evade the wealth-based presumptive tax by systematically understating inventories. In addition, it extended the presumptive income tax to limited liability companies.
+In addition, Law 9 of 1983 instituted a new measure of presumptive income equal to 2 percent of gross receipts to supplement the measure based on net wealth. This reform was aimed specifically at the commerce and service sectors; the former was thought to evade the wealth-based presumptive tax by systematically understating inventories. Under the original presumptive income, a juridical entity cannot declare income less than 8% of its capital (wealth).
+
+In addition, the 1983 reform extended the presumptive income tax to limited liability companies. Before this reform, all juridical organizations were subject to the presumptive income tax except for limited liability companies. 
 
 In 1983, the value-added tax (VAT) was extended to the retail level, with a *simplified system* being made available to small retailers to ease compliance costs and the administrative burden.
 
@@ -95,3 +104,69 @@ Increases in the VAT would increase the incentives to evade. Decreases in CIT wo
 The CIT homogenization between Corporations and LLCs in 1986 would have motivated LLCs to incorporate. Likewise, the elimination of double taxation also in 1986 would have motivated proprietorships to become LLCs, Corporations, or Partnerships.
 
 On the other hand, reporting more information to the tax authority — like the banking system being responsible for the collection and reception of tax reports in 1986— would decrease tax evasion.
+
+```{r}
+#| label: tbl-cit-summary
+#| tbl-cap: Income Tax Reforms in Colombia (1980-1986)
+#| echo: false
+#| warning: false
+
+
+income_tax_reforms <- tribble(
+    ~JO, ~Year,~Change,
+    "Individuals", 1983, "8% increase in most scales; Max tax rate was reduced from 56 to 49%",
+    "Ltd. Co.", 1983, "Reduction from 20 to 18%; Now subject to presumptive income",
+    "Individuals" , 1986, "Max tax rate applied was reduced from 49 to 30%",
+    "Ltd. Co.", 1986, "Increased from 18 to 30%",
+    "Corporations", 1986, "Decreased from 40 to 30%"
+)
+
+income_tax_reforms[,c(2,1,3)] %>%
+    kbl(
+        digits = 2,
+        col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") 
+
+```
+
+```{r}
+#| label: tbl-vat-summary
+#| tbl-cap: Sales Tax Reforms in Colombia (1980-1986)
+#| echo: false
+#| warning: false
+
+
+sales_tax_change %>%
+    left_join(
+        ciiu_3[,2:3],
+        by = join_by(sic_3 == `Código`)
+    ) %>% 
+    mutate(
+        description = str_remove(`Descripción`,"Manufacture of |Manufacture ot "),
+        description = str_replace_all(
+            str_to_title(description),
+            c(" And " = " and ", " Of " = " of ", " Or | Ord " = " or ")
+        ),
+    ) %>%
+    filter(
+        Perry != " "
+    ) %>%
+    select(
+        Perry_inds_desc, Perry,sic_3, description
+    ) %>%
+    kbl(
+        digits = 2,
+        col.names = c("Industry Description", "Sales Tax Change", "SIC","Industry"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    add_header_above(
+        c("P&T (1990)"=2," "=2)#,
+        # escape = F
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") 
+
+```
+
+

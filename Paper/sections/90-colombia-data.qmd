@@ -1,65 +1,117 @@
 ### Data
 
-The data is a well-known data set that has been used in the estimation of production functions and productivity before. The dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.
+The Colombian data is a well-known firm-level panel data set that has been used in the estimation of production functions and productivity before. The Colombian dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.
 
-Besides the information on output, intermediates, capital, and labor, the dataset includes the type of juridical organization, the sales taxes, and the metropolitan area and country region.
+Besides the information on output, intermediates, capital, and labor, the dataset includes the type of juridical organization and the sales taxes. @tbl-sum-stats offers some summary statistics.
+
+
 
 ```{r}
-#| label: fig-revenue-hist-bunch-0
-#| fig-cap: Revenue distribution Proprietorships (81-83)
-#| cap-location: top
+#| label: tbl-sum-stats
+#| tbl-cap: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 #| echo: false
 #| warning: false
 
 
+
+labels <- c(
+    'capital' = 'Capital',
+    'mats_serv' = 'Materials & Services',
+    'skilled_labor' = 'Labor (Skilled)',
+    'unskilled_labor' = 'Labor (Unskilled)',
+    'sales' = 'Revenue',
+    'sales_taxes' = 'Sales Taxes',
+    'JO_class' = 'J. Org.'#,
+    # intermediates_share = intermediate_inputs/sales,
+    # mats_serv_share = mats_serv/sales,
+    # mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+    # materials_share = materials/sales,
+    # capital_share = capital/sales,
+    # total_expenses_share = total_expenditure/sales,
+    # services_exp_share = services/total_expenditure,
+    # industrial_exp_share = industrial_expenditure/total_expenditure,
+    # deductible_exp_share = deductible_expenses/total_expenditure,
+)
+
+for (var in names(labels)) {
+  colombia_data_frame[[var]] <- haven::labelled(colombia_data_frame[[var]], label = labels[var])
+}
+
 colombia_data_frame %>%
     filter(
-        year<=83,
-        juridical_organization==0
+        sales > 0 ,
+        capital > 0,
+        unskilled_labor >0,
+        skilled_labor >0,
+        total_expenditure >0,
+        JO_class != "Other",
+        juridical_organization!= 6
+        # share_sales_tax <1
     ) %>%
-    pull(sales) %>%
-    hist(., 
-    breaks=30000,
-    xlim=c(0,5000),
-    main="")
-abline(v=real_tax_tresh_1983)
-title("")
+    mutate(
+        juridical_organization = factor(juridical_organization),
+        sic_3 = factor(sic_3),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership")),
+        intermediates_share = intermediate_inputs/sales,
+        mats_serv_share = mats_serv/sales,
+        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        materials_share = materials/sales,
+        capital_share = capital/sales,
+        total_expenses_share = total_expenditure/sales,
+        services_exp_share = services/total_expenditure,
+        industrial_exp_share = industrial_expenditure/total_expenditure,
+        deductible_exp_share = deductible_expenses/total_expenditure,
+    ) %>%
+    select(
+        # capital,
+        # mats_serv,
+        # skilled_labor,
+        # unskilled_labor,
+        # sales,
+        # sales_taxes,
+        # age,
+        # consumed_energy,
+        # deductible_expenses,
+        # year,
+        `J. Org.`= JO_class,
+        # sic_3,
+        # metro_area_code
+        ends_with("share") & !starts_with("log")
+    ) %>%
+    datasummary_skim(
+        fun_numeric = list(
+            Missing = PercentMissing, 
+            Mean = Mean, 
+            SD = SD, 
+            `Q1` = P25,
+            Median = Median,
+            `Q3` = P75
+        ),
+        fmt = 3
+        # output = 'kableExtra',
+        # table.attr = "data-quarto-disable-processing=\"true\""
+    )
 
 ```
 
-```{r}
-#| label: fig-revenue-hist-bunch-1
-#| fig-cap: Revenue distribution Limited Partnership (81-83)
-#| cap-location: top
-#| echo: false
-#| warning: false
+A simple graphical analysis shows that the average (of the log) intermediates cost share of sales started growing after 1983 and that it stabilized in 1988 after the policy changes of the 1986 reform settled in (@fig-logshare). The dataset does not capture any changes after the 1990 reform, although there is only one more year of data.
 
-# library(tidyverse)
-# library(ggplot2)
-# library(modeest)
-# library(fixest)
+![Input's cost share of sales, average by year of the logs.](../Results/Figures/Colombia/log_share_byy.png){#fig-logshare fig-align="center" width="100%"}
 
-# load("../Code/Products/colombia_data.RData")
-# load("../Code/Products/global_vars.RData")
-colombia_data_frame %>%
-    filter(
-        year<=83,
-        juridical_organization==1
-    ) %>%
-    pull(sales) %>%
-    hist(., 
-    breaks=30000,
-    xlim=c(0,5000),
-    main="")
-abline(v=real_tax_tresh_1983)
-title("")
+As a validation exercise, we can see that the VAT changes induced by the three fiscal reforms are captured in the dataset. @fig-vat shows that the sales tax increased to 10% after the 1983 reform, and then around 12% after the 1990 reform.
 
-```
+![Sale taxes paid as share of sales, average by year.](../Results/Figures/Colombia/share_sales_tax_byy.png){#fig-vat fig-align="center" width="100%"}
+
+Just as an exercise to see if other economic changes in this period were driving the apparent changes in overreporting, @fig-logsales shows that sales, for instance, were not exactly following the changes in fiscal policy. Sales started to grow during 1983, the year of the reform, whereas the cost share of sales started to grow the year after. Likewise, sales fell in 1986, while the cost share seems to reduce its growth after 1986.
+
+![Sales in logs, annual mean.](../Results/Figures/Colombia/log_sales_byy.png){#fig-logsales fig-align="center" width="100%"}
+
+Finally, in a preliminary empirical assessment, I observe that the sales tax rate is a significant determinant of the log share of revenue and that non-corporations consistently use 13-17 percent more intermediates than Corporations for a rich set of controls [@tbl-reg-jo-tax]. The results were estimated following @eq-reg-tax-jo
 
 $$
-log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \alpha_1Tax_{it}+\mathbf{\beta}_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
+log(s_{it})= \alpha_1Tax_{it}+\beta_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \beta_3'Z+ \varepsilon_{it}
 $$ {#eq-reg-tax-jo}
-
 
 ::: {#tbl-reg-jo-tax layout-ncol=1}
 
@@ -70,173 +122,108 @@ $$ {#eq-reg-tax-jo}
 #| results: asis
 
 colombia_data_frame %>%
+    mutate(
+        juridical_organization = factor(juridical_organization),
+        sic_3 = factor(sic_3),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(JO_class, levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership", "Other")),
+        year = factor(year)
+    ) %>%
     feols( log_share ~ share_sales_tax+
-        relevel(factor(juridical_organization),ref="3")*factor(year)+
+        JO_class*year+
         polym(m, k, l, degree = 2, raw = TRUE)
         | csw0(sic_3,metro_area_code),
         data = ., cluster=~sic_3+year
     ) %>% 
     etable(
-        drop = c("Year", "%poly", "Const"),
-        notes = "Reference group is Corporations in 1981.",
+        drop = c("%year", "%poly", "Const", "Other"),
+        # notes = "Reference group is Corporations in 1981.",
         div.class = "table"
     ) 
 
 
 ```
-
 
 Effect of the Juridical Organization Type and Sales Tax on the Log Share of Intermediate Inputs.
 
 :::
 
-$$
-log(s_{it})= \Phi(k_{it},l_{it},m_{it})+ \beta_1'JurOrg_i + \beta_2'FiscalPd+\beta_2'JurOrg_i\times FiscalPd + \gamma_t + \gamma_{ind} +\gamma_{metro} + \varepsilon_{it}
-$$ {#eq-reg-tax-fp}
+Although this is not deterministic evidence, it does not contradict the hypothesis that firms other than corporations have incentives to overreport intermediates to evade taxes and that the higher the taxes the higher the incentives to evade by misreporting.
 
-::: {#tbl-reg-fiscal-p layout-ncol=1}
+## Data and Fiscal Reform of 1983 by Industry
 
 ```{r}
+#| label: tbl-1983-by-inds
+#| tbl-cap: Fiscal reform of 1983. Sales tax share of revenue, mean by industry year. Top 20 industries with more firms.
 #| echo: false
 #| warning: false
-#| results: asis
 
 
-colombia_data_frame %>%
-    ungroup() %>%
+f <- function(d,...){
+    d %>%
+        filter(
+            # sic_3=="313",
+            year %in% 82:86
+        ) %>%
+        ggplot(
+            aes(
+                x = factor(year),
+                y = share_sales_tax,
+                color = factor(sic_3),
+            )
+        ) +
+        geom_vline(
+            xintercept = c("84","85"),
+            colour = "lightgray", 
+            linetype = "dotted",
+            size = 0.2
+        )+
+        stat_summary(
+            fun = "mean",
+            na.rm = TRUE,
+            geom = "point",
+            shape = 18,
+            size = 1
+        ) + # add mean points
+        stat_summary(
+            fun.data = mean_cl_normal,
+            geom = "errorbar",
+            width = 0.2,
+            size = 0.1,
+            show.legend = FALSE
+        ) + # add CI bars
+        scale_color_manual(values = "blue")+
+        theme_void() +
+        theme(legend.position = 'none')
+}
+
+top_20_inds %>%
     mutate(
-        fiscal_period = case_when(
-            year <= 83 ~ '74',
-            year <= 86 ~ '83',
-            .default = '86'
+        Change= str_to_title(Change)
+    ) %>%
+    select(
+        SIC = sic_3,
+        Industry = description,
+        `P&T (1990)`= Perry,
+        Change,
+        `Change Year` = Change_Year
+    )|>
+    cbind(
+        data.frame(
+            "Annual Sales Tax (82-86)" = "",
+            check.names = FALSE
         )
-    ) %>%
-    feols(
-        log_share ~ polym(m, k, l, degree = 2, raw = TRUE)+relevel(factor(juridical_organization), ref="3")*factor(year)| csw0(sic_3,metro_area_code),#factor(sic_3)+factor(metro_area_code)+factor(year),
-        data = . , cluster = ~sic_3+year
-    ) %>%
-    etable(
-        keep = "Proprietorship",
-        # drop = "%:",
-        notes = "Reference group is Corporations in 1981",
-        div.class = "table"
-        # tex = TRUE
-        # headers = c("(1)","(2)","(3)","(4)")
-    ) 
-    # %>%
-    # kbl(
-    #     escape = FALSE
-    # )
-    
-
-
-```
-
-Effect of the Type of Juridical Organization on the Log Share of Intermediate Inputs, per Fiscal Period.
-
-:::
-
-::: {#tbl-reg-energy layout-ncol=1}
-
-```{r}
-#| echo: false
-#| warning: false
-#| results: asis
-
-colombia_data_frame %>%
-    feols(
-        log(consumed_energy/sales) ~ share_sales_tax+
-        relevel(factor(juridical_organization), ref="3")*factor(year)+polym(log(mats_serv), k, l,log(consumed_energy), degree = 2, raw = TRUE) | csw0(sic_3,metro_area_code),
-        data = ., cluster = ~sic_3+year
-    ) %>%
-    etable(
-        # keep = c("Proprietorship"),
-        drop=c("Year","%:","%polym","Const"),
-        notes = "Reference group is Corporations in 1981.",
-        div.class = "table"
+    ) |>
+    tt() |>
+    plot_tt(j=6, fun = f, data = split_plot_data, height = 4) |>
+    style_tt(j=6, align = "c", width = 20) |>
+    format_tt() |>
+    style_tt(
+        j=1:6,
+        bootstrap_css = "font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;",
+    ) |>
+    style_tt(
+        bootstrap_class = " lightable-classic"
     )
 
-
 ```
-
-Effect of the Juridical Organization Type and Sales Tax on the Log Share of Consumed Energy.
-
-:::
-
-::: {#tbl-reg-ded layout-ncol=1}
-
-```{r}
-#| echo: false
-#| warning: false
-#| results: asis
-
-
-colombia_data_frame %>%
-    mutate(
-        deductibles = materials+deductible_expenses,
-        non_deductibles = consumed_energy+non_deductible_expenses
-    ) %>%
-    feols(
-        log(deductibles/sales) ~ share_sales_tax+
-        relevel(factor(juridical_organization), ref="3")*factor(year)+polym(log(deductibles), k, l,log(non_deductibles), degree = 2, raw = TRUE) | csw0(sic_3,metro_area_code),
-        data = ., cluster = ~sic_3+year
-    ) %>%
-    etable(
-        # keep = c("Sales","J. Org."),
-        # markdown = NULL,
-        # tex = FALSE,
-        drop=c("Year","%:","%polym","Const"),
-        notes = "Reference group is Corporations in 1981.",
-        div.class = "table"
-    ) 
-    # %>%
-    # kbl(
-    #     # format = "html"
-    #     table.attr = 'data-quarto-disable-processing="true"'
-    # )%>%
-    # kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-Effect of the Juridical Organization Type and Sales Tax on the Log Share of Deductible Expenses.
-
-:::
-
-::: {#tbl-reg-non-ded layout-ncol=1}
-
-```{r}
-#| echo: false
-#| warning: false
-#| results: asis
-
-
-colombia_data_frame %>%
-    mutate(
-        deductibles = materials+deductible_expenses,
-        non_deductibles = consumed_energy+non_deductible_expenses
-    ) %>%
-    feols(
-        log(non_deductibles/sales) ~ share_sales_tax+
-        relevel(factor(juridical_organization), ref="3")*factor(year)+polym(log(deductibles), k, l,log(non_deductibles), degree = 2, raw = TRUE) | csw0(sic_3,metro_area_code),
-        data = ., cluster = ~sic_3+year
-    ) %>%
-    etable(
-        # keep = c("Sales","J. Org."),
-        # markdown = NULL,
-        # tex = FALSE,
-        drop=c("Year","%:","%polym","Const"),
-        notes = "Reference group is Corporations in 1981.",
-        div.class = "table"
-    ) 
-    # %>%
-    # kbl(
-    #     # format = "html"
-    #     table.attr = 'data-quarto-disable-processing="true"'
-    # )%>%
-    # kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-Effect of the Juridical Organization Type and Sales Tax on the Log Share of Non-Deductible Expenses.
-
-:::

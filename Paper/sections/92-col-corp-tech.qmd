@@ -1,4 +1,4 @@
-### Do Corporations in Colombia have different technologies than other juridical organizations?
+## Do Corporations in Colombia have different technologies than other juridical organizations?
 
 An implicit assumption in the identification strategy is that the subset of non-evaders has the same common technology as evaders. In the case of Colombia, this implies that Corporations have the same common technology as Proprietorships, Limited Companies, and Partnerships. However, we can think that firms with better technology are self-selecting into corporations, and thus, firms with low-performance technology will be mislabeled as evaders.
 
@@ -14,46 +14,59 @@ Turning to the data, I find some firms change their juridical organization type.
 #| echo: false
 #| warning: false
 
-jo_class <- tibble(
-    JO_code = 0:9,
-    JO_class = c(
-        "Proprietorship",
-        "Ltd. Co.",
-        "Partnership",
-        "Corporation",
-        "Partnership",
-        "Partnership",
-        "Corporation",
-        # "Stock Co. (Corp.)",
-        "Other",
-        "Other",
-        "Other"
-    )
-)
+# jo_class <- tibble(
+#     JO_code = 0:9,
+#     JO_class = c(
+#         "Proprietorship",
+#         "Ltd. Co.",
+#         "Partnership",
+#         "Corporation",
+#         "Partnership",
+#         "Partnership",
+#         "Corporation",
+#         # "Stock Co. (Corp.)",
+#         "Other",
+#         "Other",
+#         "Other"
+#     )
+# )
 
 
-transition_matrix <- colombia_data_frame %>%
-    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+colombia_data_frame %>%
+    ungroup() %>%
+    mutate(
+        JO_class = factor(
+            JO_class, 
+            levels = c("Proprietorship","Partnership","Ltd. Co.","Corporation","Other")
+            ),
+        num = 1
+    ) %>%
     group_by(plant) %>%
     mutate(
-        # JO_num = length(unique(juridical_organization)),
-        # JO_change = ifelse(
-        #     juridical_organization==lag(juridical_organization),
-        #     0,1),
-        num = 1,
-        # avg_total_owners = mean(total_owners, na.rm=TRUE),
-        jo_t = lag(JO_class, order_by = year)
+        jo_t = lag(JO_class),
     ) %>%
     filter(
         sales > 0,
-        capital > 0,
-        # jo_t %in% c(0,1,3)
+        capital > 0
     ) %>%
-    xtabs(num~jo_t+JO_class, data=.)
-# Proprietorships moving into LLCs
-# Only LLCs move consistently into Corporations
-
-transition_matrix %>%
+    group_by(jo_t,JO_class) %>%
+    summarise(
+        n=n()
+    ) %>%
+    pivot_wider(
+        values_from = n,
+        names_from = JO_class,
+        values_fill = 0
+    ) %>%
+    mutate(
+        total = Corporation+`Ltd. Co.`+Other+Partnership+Proprietorship,
+        across(
+            1:5,
+            ~round(.x/total*100, digits = 1)
+        )#,
+    ) %>%
+    filter(!is.na(jo_t), jo_t!="Other") %>% 
+    select(!Other, ` `=jo_t, Total=total) %>%
     kbl(
         digits = 2,
         table.attr = 'data-quarto-disable-processing="true"'
@@ -202,41 +215,22 @@ Looking into industry sectors.
 #| echo: false
 #| warning: false
 
-candidate_inds<-colombia_data_frame %>%
-    group_by(sic_3) %>%
-    summarise(
-        n_sic = n(),
-        revenues = sum(sales, na.rm = TRUE),
-        corps_n = sum(juridical_organization==3, na.rm = TRUE)
-    ) %>%
-    arrange(desc(revenues)) %>%
-    mutate(
-        n_cum = cumsum(n_sic),
-        n_perc = n_sic / sum(n_sic) * 100,
-        perc_acc = n_cum / sum(n_sic) * 100,
-        market_share = revenues/ sum(revenues)*100,
-        # sic_3 = as.numeric(str_sub(as.character(sic), 1, 3)),
-        corps_share = corps_n/n_sic * 100
-    ) %>%
-    select(sic_3, n_sic, corps_n, corps_share, market_share, n_perc) %>%
-    arrange(desc(corps_share)) %>%
-    filter(n_perc>1.2)
-
-ciiu_data <- read.csv("../Data/Colombia/ciiu-rev2-en.csv", skip = 3)
-
-ciiu_3 <- ciiu_data %>%
-    filter(
-        Nivel == "Agrupaciones"
-    )
-
-candidate_inds %>%
-    left_join(
-        ciiu_3[,2:3],
-        by = join_by(sic_3 == `Código`)
+top_20_inds %>%
+    select(
+        # !Change:Perry,
+        description, sic_3, market_share, n_sic, n_perc, corps_n, corps_share, 
     ) %>%
     kbl(
         digits = 2,
-        # col.names = c("")
+        col.names = c(
+            "Industry",
+            "SIC",
+            "Market Share",
+            "N",
+            "N (%)",
+            "Corps. (N)",
+            "Corps. (%)"
+            ),
         table.attr = 'data-quarto-disable-processing="true"'
     ) %>%
     kable_classic(full_width=F, html_font = "Cambria")
@@ -348,7 +342,7 @@ In the data, energy sold by corporations accounted on average for 73% of the tot
 
 
 colombia_data_frame %>% 
-    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    # left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
     ungroup() %>%
     mutate(
         # sold_energy = purchased_energy+generated_energy-consumed_energy

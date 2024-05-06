@@ -1,5 +1,8 @@
 ---
-title: "Tax evasion and productivity"
+title: "Tax Evasion and Productivity"
+execute: 
+  echo: false
+  warning: false
 number-sections: true
 shift-heading-level-by: -1
 format:
@@ -35,6 +38,7 @@ bibliography:
   - biblio/export31072022.bib
   - biblio/b100422.bib
   - biblio/b270123.bib
+  - biblio/b100424.bib
 filters:
   - custom-numbered-blocks
   - latex-environment
@@ -65,6 +69,9 @@ library(ggplot2)
 library(modeest)
 library(fixest)
 library(kableExtra)
+library(modelsummary)
+library(tinytable)
+library(stringr)
 
 load("../Code/Products/colombia_data.RData")
 load("../Code/Products/global_vars.RData")
@@ -97,11 +104,13 @@ setFixest_dict(c(
     `polym(m,k,l,degree=2,raw=TRUE)1.1.0` = "\\(mk\\)",
     `polym(m,k,l,degree=2,raw=TRUE)1.0.1` = "\\(ml\\)",
     `polym(m,k,l,degree=2,raw=TRUE)0.1.1` = "\\(kl\\)",
-    log_share = "\\(log(s)\\)",
+    log_share = "Interm.",
     sic_3 = "Industry",
     year = "Year",
     `log(consumed_energy/sales)` = "\\(log(Energy/Revenue)\\)",
-    `log(mats_serv/sales)` = "\\(log(Mats+Serv/Revenue)\\)",
+    `log(mats_serv/sales)` = "Mats+Serv",
+    `log((materials+deductible_expenses)/sales)` = "Mats+Deduc",
+    `log(materials/sales)` = "Materials",
     `log(deductibles/sales)` = "Log Share of Deductibles",
     metro_area_code = "Metro Area",
     `factor(fiscal_period)83` = "84-86 F.P.",
@@ -125,27 +134,28 @@ setFixest_dict(c(
     `factor(year)88`= "Year 88",
     `factor(year)89`= "Year 89",
     `factor(year)90`= "Year 90",
-    `factor(year)91`= "Year 91"
+    `factor(year)91`= "Year 91",
+    JO_classProprietorship = "Proprietorship",
+    JO_classLtd.Co. = "LLC",
+    JO_classPartnership = "Partnership",
+    juridical_organizationLLCs = "LLC",
+    juridical_organizationProprietorships = "Proprietorship",
+    `treatNon-Corp` = "Non-Corp.",
+    year83 = "1983",
+    year84 = "1984",
+    year85 = "1985",
+    year86 = "1986",
+    `treat_3increased`="Increment",
+    `treat_3exempt`="Exempt",
+    `treat_3nochange`="No Change"
     # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
     # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
 ))
 
-jo_class <- tibble(
-    JO_code = 0:9,
-    JO_class = c(
-        "Proprietorship",
-        "Ltd. Co.",
-        "Partnership",
-        "Corporation",
-        "Partnership",
-        "Partnership",
-        "Corporation",
-        # "Stock Co. (Corp.)",
-        "Other",
-        "Other",
-        "Other"
-    )
-)
+
+colombia_data_frame <- colombia_data_frame %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code))
 
 ```
 
@@ -190,15 +200,14 @@ jo_class <- tibble(
 <!-- Colombia 1981-1991: data *-->
 {{< include sections/90-colombia-data.qmd >}}
 
+<!-- Colombia 1981-1991: an application -->
+{{< include sections/95-colombia-empiric2.qmd >}}
+
 <!-- Same Techonology *-->
 {{< include sections/92-col-corp-tech.qmd >}}
 
-
 <!-- Identification strategy *-->
 {{< include sections/56-id-evasion.qmd >}}
-
-<!-- Colombia 1981-1991: an application (previous) -->
-<!-- {{< include sections/91-colombia-empiric.qmd >}} -->
 
 <!-- Revenue Misreporting *-->
 {{< include sections/110-revenue.qmd >}}
@@ -206,7 +215,7 @@ jo_class <- tibble(
 <!-- Implementation -->
 {{< include sections/120-implementation.qmd >}}
 
-## References {-}
+## References {.appendix}
 
 ::: {#refs}
 :::

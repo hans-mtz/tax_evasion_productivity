@@ -27,6 +27,7 @@ change_base_81 <- function(data, vars) {
 
 cdf <- col_df %>%
     filter(datayear >= 81) %>%
+    ungroup() %>% rowwise() %>%
     mutate(
         p_energy_purchased = ifelse(e1 == 0, NA, e5 / e1),
         p_energy_sold = ifelse(e3 == 0, NA, e6 / e3),
@@ -36,6 +37,7 @@ cdf <- col_df %>%
             sum(e5, e6, na.rm = TRUE) / sum(e1, e3, na.rm = TRUE)
         )
     ) %>%
+    ungroup() %>%
     # Changing from GNR p_energy=e7/e4, because e4 = e1+e2-e3, and e7=e5-e6
     group_by(datayear) %>%
     change_base_81(
@@ -48,7 +50,8 @@ cdf <- col_df %>%
         rmach_80 = rmach_80 * p_machin / p_machin_new,
         rtrans_80 = rtrans_80 * p_transp / p_transp_new,
         roffice_80 = roffice_80 * p_machin / p_machin_new,
-        rcap80 = rland_80 + rbldg_80 + rmach_80 + rtrans_80 + roffice_80,
+        # rcap80 = rland_80 + rbldg_80 + rmach_80 + rtrans_80 + roffice_80, # This code generates NAs if a value is missing
+        rcap80 = rowSums(cbind(rland_80, rbldg_80, rmach_80, rtrans_80, roffice_80), na.rm = TRUE),
         real_gross_output = pg / p_gdp_new, # real gross output, base 1981
         real_capital = ifelse( # real capital stock, base 1981
             rcap80 > 0,
@@ -57,7 +60,7 @@ cdf <- col_df %>%
         ),
         labor_employees = sklab * (skwages / sklab) / (unskwages / unsklab) + unsklab,
         labor_employee_years = labor_employees * x7 / 12,
-        real_wages = (skwages + unskwages) / p_gdp_new,
+        real_wages = rowSums(cbind(skwages,unskwages), na.rm = TRUE) / p_gdp_new,
         real_energy = e7 / p_energy_new,
         consumed_energy = e4 * p_energy_new,
         generated_energy = e2 * p_energy_new,
@@ -66,8 +69,8 @@ cdf <- col_df %>%
         real_materials = s10 / p_gdp_new,
         # rserv is general expenses - machinery rental - interest payments; c17-c10-c14
         real_services = rserv * p_gdp / p_gdp_new,
-        real_mats_serv = real_materials + real_services,
-        real_intermediate_inputs = real_materials + real_services + real_energy,
+        real_mats_serv = rowSums(cbind(real_materials,real_services), na.rm = TRUE),
+        real_intermediate_inputs = rowSums(cbind(real_materials,real_services,real_energy), na.rm = TRUE),
         real_sales = s5 / p_gdp_new,
         sic_3 = as.numeric(str_sub(as.character(sic), 1, 3)),
         share = real_intermediate_inputs / real_sales,
@@ -80,16 +83,16 @@ cdf <- col_df %>%
         export_taxes = (t5) / p_gdp_new,
         real_general_expenditure = c17 / p_gdp_new,
         real_industrial_expenditure = c7 / p_gdp_new,
-        real_expenditure = real_general_expenditure + real_industrial_expenditure,
-        non_deductible_expenses = (c7 + c17 - c2 - c5 - c6 - c10 - c11 - c12 ) / p_gdp_new,
-        deductible_expenses = ((c7 + c17) / p_gdp_new) - non_deductible_expenses,
+        real_expenditure = rowSums(cbind(real_general_expenditure,real_industrial_expenditure), na.rm = TRUE),
+        deductible_expenses = rowSums(cbind(c2, c5, c6, c10, c11, c12), na.rm = TRUE) / p_gdp_new, #c14 interest payments deductible for Corporations ?
+        non_deductible_expenses = rowSums(cbind(real_general_expenditure,real_industrial_expenditure, -deductible_expenses), na.rm = TRUE),
         inds_exp_non_deductible = (c7 - c2 - c5 - c6) / p_gdp_new,
         inds_exp_deductible = (c7 / p_gdp_new) - inds_exp_non_deductible,
         share_fem_managers = k11 / (k3 + k11),
         male_owners = k2,
         female_owners = k10,
-        total_owners = k2 + k10,
-        share_fem_owners = k10 / (k2 + k10),
+        total_owners = rowSums(cbind(k2,k10), na.rm = TRUE),
+        share_fem_owners = k10 / total_owners,
         share_exports = s4 / s5,
         share_imports = s7 / s8,
         real_interest_payments = c14 / p_gdp_new,
@@ -224,5 +227,8 @@ colombia_data_frame <- cdf %>%
 #     colombia_data_table$lag_gross_output == colombia_data_frame$lag_gross_output,
 #     na.rm = TRUE
 # )
+
+## 
+## Saving data ---------------------------------
 print("Saving Colombia DF")
 save(colombia_data_frame, file = "Code/Products/colombia_data.RData")

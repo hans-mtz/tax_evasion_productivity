@@ -34,7 +34,7 @@ Comments:
 
 A corporation is a commercial entity whose capital is divided into tradable shares of equal value. The capital of a corporation is provided by the shareholders (no less than 5 shareholders). Shareholders's liability is limited to the capital contributed.
 
-- Limited Stock Partnership (Joint Stock Co. in Data: *Sociedad en Comandita por Acciones*): Limited partnerships with the partnership interests represented by shares of stocks and taxed as corporations (CIT). The capital of this company is divided into shares of equal nominal value, either nominative or bearer. The issuance, placement, issuance of securities, and negotiation of shares are subject to the provisions applicable to the corporation. It cannot be formed or operated with fewer than 5 shareholders. The firm name is treated similarly to that of a general partnership, but with the addition of the words "Sociedad Comandita por Acciones" or its abbreviation "SCA"
+- Limited Stock Partnership (Joint Stock Co. in Data: *Sociedad en Comandita por Acciones*): Comprises two or more managing partners who are jointly and severally liable, and five or more limited partners whose liability is limited to their respective contributions. Limited partnerships with the partnership interests represented by shares of stocks and taxed as corporations (CIT). The capital of this company is divided into shares of equal nominal value, either nominative or bearer. The issuance, placement, issuance of securities, and negotiation of shares are subject to the provisions applicable to the corporation. It cannot be formed or operated with fewer than 5 shareholders. The firm name is treated similarly to that of a general partnership, but with the addition of the words "Sociedad Comandita por Acciones" or its abbreviation "SCA"
 
 ### Limited Liability Company
 
@@ -84,6 +84,10 @@ The decision to incorporate is a decision on how to acquire capital. Firms still
 
 The increase of 20 pp in the CIT rate between LLC and Corporations might have deterred firm growth. The CIT was homogenized to 30% in 1986.
 
+There is a large body of literature around this question, however, after taking a peek at it I find that the studies are either reduced form or with a macroeconomics approach, in which authors assume a functional form for a utility function then they calibrate their model. The studies look mainly into the effects of tax differentials between individuals and corporations, the risk aversion due to the differences in liability, and financial/financial restrictions.
+
+The model I was designing has the additional component of a network of investors. Can I tease out risk aversion from the investor networks? The 1986 reform did two things: one, it eliminated double taxation, and, two, it homogenized the CIT rate between corporations and LLCs. The elimination of double taxation might have motivated individual proprietorships to form an LLC or a corporation. Having removed the incentive to pay double taxes, risk-averse individual proprietors should prefer to incorporate or form an LLC, both provide limited liability. The homogenization of the CIT between corporations and LLCs might capture the unobserved heterogeneity of the network of investors. Firms that grew in capital by adding owners have larger investor networks than firms that incorporate. Adding investors does not increase the original member's liability, so risk aversion is controlled. In addition, there is a potential number of firms that might have forgo growing in capital because they had small networks and the tax differential restricted their decision to incorporate.
+
 ## How was capital taxed in Colombia?
 
 - Net wealth tax
@@ -97,4 +101,15 @@ The increase of 20 pp in the CIT rate between LLC and Corporations might have de
 
 However, these cross-sectional differences across industries could be better explained by the evasion technology. We would expect the evasion technology to be the same across industries. It does not matter what I produce and what technology my firm employs, to overreport inputs all that is needed is a fake invoice. 
 
-- The current state of affairs. Researchers are not separating firms into juridical organizations. Differences in technology within an industry are being captured as persistent positive productivity shocks. In this line of thought, we can design a model in which firms self-select into corporations based on the expected stream of future productivity shocks. If this model is correct then my identification strategy is valid. If the model is not correct and corporations have different technologies then researchers can still identify the most productive firms — it's just a ranking. However, my identification strategy will mislabel the difference between corporation and non-corporation technology as evasion. This argument does not work. It's not compelling. 
+- The current state of affairs. Researchers are not separating firms into juridical organizations. Differences in technology within an industry are being captured as persistent positive productivity shocks. In this line of thought, we can design a model in which firms self-select into corporations based on the expected stream of future productivity shocks. If this model is correct then my identification strategy is valid. If the model is not correct and corporations have different technologies then researchers can still identify the most productive firms — it's just a ranking. However, my identification strategy will mislabel the difference between corporation and non-corporation technology as evasion. This argument does not work. It's not compelling.
+
+## Reduce Form Identification
+
+
+### Matching
+
+A Corporation and an LLC firm with similar levels of capital and revenues should have similar production technology and productivity, however, they have different incentives to evade taxes. Corporations have lower incentives to overreport their inputs than LLC firms.
+
+### 3x-Diff
+
+The first difference is over time because of the change in fiscal policy increasing the sales rate tax. Second, the sales tax rate increased from 6 to 10% for some industries; for others it was reduced from 15 to 10%; some other industries that were exempted got the exemption canceled while a few others kept their exemption. Third, only the LLCs and Proprietorships would react to the change in policy because Corporations have lower incentives to evade taxes.
