@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2024-05-06">
+<meta name="dcterms.date" content="2024-05-08">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax Evasion and Productivity</title>
@@ -60,15 +60,15 @@ div.csl-indent {
 <script src="Tax-Prod_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="Tax-Prod_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <style>
+.Proposition {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
 .Definition {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
 .Assumption {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
-.Proposition {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
@@ -151,17 +151,23 @@ window.Quarto = {
   <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2"><span class="header-section-number">2.2.3</span> 1990</a></li>
   <li><a href="#discussion-2" id="toc-discussion-2" class="nav-link" data-scroll-target="#discussion-2"><span class="header-section-number">2.2.4</span> Discussion</a></li>
   </ul></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2.3</span> Data</a></li>
   </ul></li>
-  <li><a href="#data-and-fiscal-reform-of-1983-by-industry" id="toc-data-and-fiscal-reform-of-1983-by-industry" class="nav-link" data-scroll-target="#data-and-fiscal-reform-of-1983-by-industry"><span class="header-section-number">3</span> Data and Fiscal Reform of 1983 by Industry</a></li>
-  <li><a href="#empirical-application" id="toc-empirical-application" class="nav-link" data-scroll-target="#empirical-application"><span class="header-section-number">4</span> Empirical Application</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">3</span> Data</a>
+  <ul class="collapse">
+  <li><a href="#corporations-by-industry" id="toc-corporations-by-industry" class="nav-link" data-scroll-target="#corporations-by-industry"><span class="header-section-number">3.1</span> Corporations by Industry</a></li>
+  <li><a href="#the-fiscal-reforms" id="toc-the-fiscal-reforms" class="nav-link" data-scroll-target="#the-fiscal-reforms"><span class="header-section-number">3.2</span> The Fiscal Reforms</a></li>
+  <li><a href="#the-fiscal-reform-of-1983-by-industry" id="toc-the-fiscal-reform-of-1983-by-industry" class="nav-link" data-scroll-target="#the-fiscal-reform-of-1983-by-industry"><span class="header-section-number">3.3</span> The Fiscal Reform of 1983 by Industry</a></li>
+  </ul></li>
+  <li><a href="#empirical-application" id="toc-empirical-application" class="nav-link" data-scroll-target="#empirical-application"><span class="header-section-number">4</span> Empirical Application</a>
+  <ul class="collapse">
+  <li><a href="#changes-in-composition-of-total-expenditure" id="toc-changes-in-composition-of-total-expenditure" class="nav-link" data-scroll-target="#changes-in-composition-of-total-expenditure"><span class="header-section-number">4.1</span> Changes in Composition of Total Expenditure</a></li>
+  </ul></li>
   
   <li><a href="#do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" id="toc-do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="nav-link" data-scroll-target="#do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations"><span class="header-section-number">6</span> Do Corporations in Colombia have different technologies than other juridical organizations?</a>
   <ul class="collapse">
   <li><a href="#model-of-firm-capital-growth-sketch" id="toc-model-of-firm-capital-growth-sketch" class="nav-link" data-scroll-target="#model-of-firm-capital-growth-sketch"><span class="header-section-number">6.0.1</span> Model of firm (capital) growth (sketch)</a></li>
   <li><a href="#evasion-vs.-production-technology" id="toc-evasion-vs.-production-technology" class="nav-link" data-scroll-target="#evasion-vs.-production-technology"><span class="header-section-number">6.0.2</span> Evasion vs.&nbsp;Production Technology</a></li>
-  <li><a href="#corporations-by-industry" id="toc-corporations-by-industry" class="nav-link" data-scroll-target="#corporations-by-industry"><span class="header-section-number">6.0.3</span> Corporations by Industry</a></li>
-  <li><a href="#inputs-cost-share-of-revenues" id="toc-inputs-cost-share-of-revenues" class="nav-link" data-scroll-target="#inputs-cost-share-of-revenues"><span class="header-section-number">6.0.4</span> Inputs Cost Share of Revenues</a></li>
+  <li><a href="#inputs-cost-share-of-revenues" id="toc-inputs-cost-share-of-revenues" class="nav-link" data-scroll-target="#inputs-cost-share-of-revenues"><span class="header-section-number">6.0.3</span> Inputs Cost Share of Revenues</a></li>
   </ul></li>
   <li><a href="#identification-strategy" id="toc-identification-strategy" class="nav-link" data-scroll-target="#identification-strategy"><span class="header-section-number">7</span> Identification Strategy</a>
   <ul class="collapse">
@@ -213,7 +219,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 6, 2024</p>
+      <p class="date">May 8, 2024</p>
     </div>
   </div>
   
@@ -645,8 +651,9 @@ Table&nbsp;3: Sales Tax Reforms in Colombia (1980-1986)
 <!-- Colombia 1981-1991: data *-->
 </section>
 </section>
-<section id="data" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="data"><span class="header-section-number">2.3</span> Data</h2>
+</section>
+<section id="data" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data</h1>
 <p>The Colombian data is a well-known firm-level panel data set that has been used in the estimation of production functions and productivity before. The Colombian dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.</p>
 <p>Besides the information on output, intermediates, capital, and labor, the dataset includes the type of juridical organization and the sales taxes. <a href="#tbl-sum-stats" class="quarto-xref">Table&nbsp;4</a> offers some summary statistics.</p>
 <div class="cell">
@@ -656,16 +663,20 @@ Table&nbsp;3: Sales Tax Reforms in Colombia (1980-1986)
 Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 </figcaption>
 <div aria-describedby="tbl-sum-stats-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
+<div class="cell-output-display" data-html-table-processing="none">
  
 
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_890l3npdu9hrg7ntpdep</title>
+    <title>tinytable_frnqizf2r79fl3sct3m5</title>
     <style>
-.table td.tinytable_css_9kxurig7c05akjbdbp75, .table th.tinytable_css_9kxurig7c05akjbdbp75 {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_ixhw83c3gvuscrc9qe8n, .table th.tinytable_css_ixhw83c3gvuscrc9qe8n {    border-top: solid 0.1em black; }
+.table td.tinytable_css_6dbgz15napre9xqj2vju, .table th.tinytable_css_6dbgz15napre9xqj2vju {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_2mbex2gofqh0udmsexqj, .table th.tinytable_css_2mbex2gofqh0udmsexqj {   padding-left: 1em; }
+.table td.tinytable_css_irwqyuwok5mf1nmsvu6c, .table th.tinytable_css_irwqyuwok5mf1nmsvu6c {    text-align: center; }
+.table td.tinytable_css_9ygsmbh8bhbwwk6sdw3v, .table th.tinytable_css_9ygsmbh8bhbwwk6sdw3v {    border-top: solid 0.1em black; }
+.table td.tinytable_css_wnzsnb5hfriz64b69msi, .table th.tinytable_css_wnzsnb5hfriz64b69msi {    font-weight: bold; border-bottom: solid 0.1em black; }
+.table td.tinytable_css_l6gg0lb9259uvx7t8nsx, .table th.tinytable_css_l6gg0lb9259uvx7t8nsx {    border-bottom: solid 0.1em white; }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -683,7 +694,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 
   
     <div class="container">
-      <table class="table table-borderless" id="tinytable_890l3npdu9hrg7ntpdep" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_frnqizf2r79fl3sct3m5" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -699,7 +710,16 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         
         <tbody>
                 <tr>
-                  <td>skilled_wage_bill_share</td>
+                  <td>Sales Taxes</td>
+                  <td>0</td>
+                  <td>0.066</td>
+                  <td>0.050</td>
+                  <td>0.007</td>
+                  <td>0.070</td>
+                  <td>0.100</td>
+                </tr>
+                <tr>
+                  <td>Skilled Labor (Wages)</td>
                   <td>0</td>
                   <td>0.165</td>
                   <td>17.777</td>
@@ -708,7 +728,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.103</td>
                 </tr>
                 <tr>
-                  <td>unskilled_wage_bill_share</td>
+                  <td>Unskilled Labor (Wages)</td>
                   <td>0</td>
                   <td>0.177</td>
                   <td>0.358</td>
@@ -717,7 +737,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.233</td>
                 </tr>
                 <tr>
-                  <td>intermediates_share</td>
+                  <td>Intermediates</td>
                   <td>0</td>
                   <td>0.630</td>
                   <td>0.249</td>
@@ -726,7 +746,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.747</td>
                 </tr>
                 <tr>
-                  <td>mats_serv_share</td>
+                  <td>Materials + Services</td>
                   <td>0</td>
                   <td>0.608</td>
                   <td>0.251</td>
@@ -735,7 +755,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.731</td>
                 </tr>
                 <tr>
-                  <td>mats_deduct_share</td>
+                  <td>Materials + Deductibles</td>
                   <td>0</td>
                   <td>0.545</td>
                   <td>0.203</td>
@@ -744,7 +764,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.672</td>
                 </tr>
                 <tr>
-                  <td>materials_share</td>
+                  <td>Materials</td>
                   <td>0</td>
                   <td>0.496</td>
                   <td>0.214</td>
@@ -753,7 +773,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.633</td>
                 </tr>
                 <tr>
-                  <td>capital_share</td>
+                  <td>Capital</td>
                   <td>0</td>
                   <td>0.485</td>
                   <td>7.484</td>
@@ -762,7 +782,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.498</td>
                 </tr>
                 <tr>
-                  <td>total_expenses_share</td>
+                  <td>Total Expenditure</td>
                   <td>0</td>
                   <td>0.203</td>
                   <td>0.425</td>
@@ -771,7 +791,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.258</td>
                 </tr>
                 <tr>
-                  <td>services_exp_share</td>
+                  <td>Services</td>
                   <td>0</td>
                   <td>0.600</td>
                   <td>0.216</td>
@@ -780,7 +800,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.770</td>
                 </tr>
                 <tr>
-                  <td>industrial_exp_share</td>
+                  <td>Industrial</td>
                   <td>0</td>
                   <td>0.243</td>
                   <td>0.201</td>
@@ -789,7 +809,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
                   <td>0.344</td>
                 </tr>
                 <tr>
-                  <td>deductible_exp_share</td>
+                  <td>Deductible</td>
                   <td>0</td>
                   <td>0.236</td>
                   <td>0.172</td>
@@ -847,12 +867,12 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
     </div>
 
     <script>
-      function styleCell_tinytable_chobgg6gpl5p2hlqsnb2(i, j, css_id) {
-        var table = document.getElementById("tinytable_890l3npdu9hrg7ntpdep");
+      function styleCell_tinytable_gccxz232m7lpzgkk9dh4(i, j, css_id) {
+        var table = document.getElementById("tinytable_frnqizf2r79fl3sct3m5");
         table.rows[i].cells[j].classList.add(css_id);
       }
-      function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_890l3npdu9hrg7ntpdep');
+      function insertSpanRow_xc1noewq2lxoaqf9pj87(i, colspan, content) {
+        var table = document.getElementById('tinytable_frnqizf2r79fl3sct3m5');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -860,8 +880,8 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_chobgg6gpl5p2hlqsnb2(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_890l3npdu9hrg7ntpdep");
+      function spanCell_tinytable_gccxz232m7lpzgkk9dh4(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_frnqizf2r79fl3sct3m5");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -888,20 +908,74 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 0, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 1, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 2, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 3, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 4, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 5, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(0, 6, 'tinytable_css_9kxurig7c05akjbdbp75') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 0, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 1, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 2, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 3, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 4, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 5, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
-window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2hlqsnb2(12, 6, 'tinytable_css_ixhw83c3gvuscrc9qe8n') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 0, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 1, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 2, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 3, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 4, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 5, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 6, 'tinytable_css_6dbgz15napre9xqj2vju') })
+window.addEventListener('load', function () { insertSpanRow_xc1noewq2lxoaqf9pj87(10, 7, 'Share of Total Expenditure') });
+window.addEventListener('load', function () { insertSpanRow_xc1noewq2lxoaqf9pj87(1, 7, 'Share of Revenues') });
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(2, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(3, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(4, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(5, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(6, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(7, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(8, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(9, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(10, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(14, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(16, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(17, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(18, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(19, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 0, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 1, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 2, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 3, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 4, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 5, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 6, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 0, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 1, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 2, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 3, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 4, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 5, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 6, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 0, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 0, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 0, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 1, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 1, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 1, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 2, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 2, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 2, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 3, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 3, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 3, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 4, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 4, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 4, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 5, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 5, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 5, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 6, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 6, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 6, 'tinytable_css_wnzsnb5hfriz64b69msi') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 0, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 1, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 2, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 3, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 4, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 5, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 6, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
     </script>
 
   
@@ -912,765 +986,14 @@ window.addEventListener('load', function () { styleCell_tinytable_chobgg6gpl5p2h
 </figure>
 </div>
 </div>
-<p>A simple graphical analysis shows that the average (of the log) intermediates cost share of sales started growing after 1983 and that it stabilized in 1988 after the policy changes of the 1986 reform settled in (<a href="#fig-logshare" class="quarto-xref">Figure&nbsp;1</a>). The dataset does not capture any changes after the 1990 reform, although there is only one more year of data.</p>
-<div id="fig-logshare" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-logshare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../Results/Figures/Colombia/log_share_byy.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logshare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Input’s cost share of sales, average by year of the logs.
-</figcaption>
-</figure>
-</div>
-<p>As a validation exercise, we can see that the VAT changes induced by the three fiscal reforms are captured in the dataset. <a href="#fig-vat" class="quarto-xref">Figure&nbsp;2</a> shows that the sales tax increased to 10% after the 1983 reform, and then around 12% after the 1990 reform.</p>
-<div id="fig-vat" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-vat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../Results/Figures/Colombia/share_sales_tax_byy.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Sale taxes paid as share of sales, average by year.
-</figcaption>
-</figure>
-</div>
-<p>Just as an exercise to see if other economic changes in this period were driving the apparent changes in overreporting, <a href="#fig-logsales" class="quarto-xref">Figure&nbsp;3</a> shows that sales, for instance, were not exactly following the changes in fiscal policy. Sales started to grow during 1983, the year of the reform, whereas the cost share of sales started to grow the year after. Likewise, sales fell in 1986, while the cost share seems to reduce its growth after 1986.</p>
-<div id="fig-logsales" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-logsales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="../Results/Figures/Colombia/log_sales_byy.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logsales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Sales in logs, annual mean.
-</figcaption>
-</figure>
-</div>
-<p>Finally, in a preliminary empirical assessment, I observe that the sales tax rate is a significant determinant of the log share of revenue and that non-corporations consistently use 13-17 percent more intermediates than Corporations for a rich set of controls <a href="#tbl-reg-jo-tax" class="quarto-xref">Table&nbsp;5</a>. The results were estimated following <a href="#eq-reg-tax-jo" class="quarto-xref">Equation&nbsp;7</a></p>
-<p><span id="eq-reg-tax-jo"><span class="math display">\[
-log(s_{it})= \alpha_1Tax_{it}+\beta_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \beta_3'Z+ \varepsilon_{it}
-\tag{7}\]</span></span></p>
-<div id="tbl-reg-jo-tax" class="quarto-layout-panel anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-jo-tax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5: Effect of the Juridical Organization Type and Sales Tax on the Log Share of Intermediate Inputs.
-</figcaption>
-<div aria-describedby="tbl-reg-jo-tax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_7133942719.png" class="figure-img">
-</div>
-</div>
-</div>
-</figure>
-</div>
-<p>Although this is not deterministic evidence, it does not contradict the hypothesis that firms other than corporations have incentives to overreport intermediates to evade taxes and that the higher the taxes the higher the incentives to evade by misreporting.</p>
-</section>
-</section>
-<section id="data-and-fiscal-reform-of-1983-by-industry" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Data and Fiscal Reform of 1983 by Industry</h1>
-<div class="cell">
-<div id="tbl-1983-by-inds" class="cell quarto-float anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-1983-by-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6: Fiscal reform of 1983. Sales tax share of revenue, mean by industry year. Top 20 industries with more firms.
-</figcaption>
-<div aria-describedby="tbl-1983-by-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
- 
-
-  
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_cj8h9d2j0cfc21ou2fws</title>
-    <style>
-.table td.tinytable_css_dymvdgvmqby6hdaa589p, .table th.tinytable_css_dymvdgvmqby6hdaa589p {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_an7du3w47ys85s1pz15a, .table th.tinytable_css_an7du3w47ys85s1pz15a {    text-align: center; width: 20em; }
-.table td.tinytable_css_uohgm0285uejow70ywph, .table th.tinytable_css_uohgm0285uejow70ywph {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
-    </style>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
-    </script>
-  
-
-  
-    <div class="container">
-      <table class=" lightable-classic" id="tinytable_cj8h9d2j0cfc21ou2fws" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        <thead>
-        
-              <tr>
-                <th scope="col">SIC</th>
-                <th scope="col">Industry</th>
-                <th scope="col">P&amp;T (1990)</th>
-                <th scope="col">Change</th>
-                <th scope="col">Change Year</th>
-                <th scope="col">Annual Sales Tax (82-86)</th>
-              </tr>
-        </thead>
-        
-        <tbody>
-                <tr>
-                  <td>311</td>
-                  <td>Food Manufacturing</td>
-                  <td> </td>
-                  <td>Exempt</td>
-                  <td></td>
-                  <td><img src="./tinytable_assets/idpiullham2k9pku2fuks2.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>312</td>
-                  <td>Food Manufacturing</td>
-                  <td> </td>
-                  <td>Exempt</td>
-                  <td></td>
-                  <td><img src="./tinytable_assets/idev49d97cgjwodw6bucgb.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>322</td>
-                  <td>Wearing Apparel, Except Footwear</td>
-                  <td> </td>
-                  <td>Increased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/id290lpwqfmcshxn13q7gd.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>381</td>
-                  <td>Fabricated Metal Products, Except Machinery and Equipment</td>
-                  <td> </td>
-                  <td>Increased</td>
-                  <td>85</td>
-                  <td><img src="./tinytable_assets/id5vw5b3jv92lovdr2uojn.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>321</td>
-                  <td>Textiles</td>
-                  <td>6 to 10</td>
-                  <td>Increased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/id3amygmbjs6v1c7nx1o59.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>382</td>
-                  <td>Machinery Except Electrical</td>
-                  <td>6 to 10</td>
-                  <td>Increased</td>
-                  <td>85</td>
-                  <td><img src="./tinytable_assets/id4rzcdf68ztxbnwdggya2.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>384</td>
-                  <td>Transport Equipment</td>
-                  <td>6 to 10</td>
-                  <td>Increased</td>
-                  <td>85</td>
-                  <td><img src="./tinytable_assets/idys0wiluv6zi4fhp4xmjc.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>383</td>
-                  <td>Electrical Machinery Apparatus, Appliances and Supplies</td>
-                  <td>6 to 10</td>
-                  <td>Increased</td>
-                  <td>85</td>
-                  <td><img src="./tinytable_assets/idjosdjhltlidcvabnki95.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>313</td>
-                  <td>Beverage Industries</td>
-                  <td>- to 35;10</td>
-                  <td>Increased</td>
-                  <td>85</td>
-                  <td><img src="./tinytable_assets/idk3gh9s1oaff7ih5ywtv6.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>341</td>
-                  <td>Paper and Paper Products</td>
-                  <td>15 to 10</td>
-                  <td>Increased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/idlrd2sqpc463f9mp9f88z.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>324</td>
-                  <td>Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear</td>
-                  <td> </td>
-                  <td>Increased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/idlp4fqc2rbdusdq5owadh.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>342</td>
-                  <td>Printing, Publishing and Allied Industries</td>
-                  <td> </td>
-                  <td>Decreased</td>
-                  <td></td>
-                  <td><img src="./tinytable_assets/id8iz1w4edkn29e3367vf6.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>369</td>
-                  <td>Other Non-Metallic Mineral Products</td>
-                  <td> </td>
-                  <td>Decreased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/idpuk7k6mcf1yyokqr0y9j.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>390</td>
-                  <td>Other Manufacturing Industries</td>
-                  <td> </td>
-                  <td>Decreased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/idw5bkjbgwhrt65m64ds3w.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>332</td>
-                  <td>Furniture and Fixtures, Except Primarily of Metal</td>
-                  <td> </td>
-                  <td>Decreased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/idxwdotg9lnaz6iwyvgjy0.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>351</td>
-                  <td>Industrial Chemicals</td>
-                  <td>15 to 10</td>
-                  <td>Decreased</td>
-                  <td>84</td>
-                  <td><img src="./tinytable_assets/idtxdow7ruln09t1oy2y3o.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>352</td>
-                  <td>Other Chemical Products</td>
-                  <td>6;15 to 10</td>
-                  <td>No Change</td>
-                  <td></td>
-                  <td><img src="./tinytable_assets/idyryn69evrutsyprhf8bl.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-                <tr>
-                  <td>356</td>
-                  <td>Plastic Products Not Elsewhere Classified</td>
-                  <td>15 to 10</td>
-                  <td>No Change</td>
-                  <td></td>
-                  <td><img src="./tinytable_assets/iddaow5idrdh532w3rf52f.png" style="height: 4em;" class="figure-img"></td>
-                </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <script>
-      function styleCell_tinytable_sbnggq39il8lqw6xfpa4(i, j, css_id) {
-        var table = document.getElementById("tinytable_cj8h9d2j0cfc21ou2fws");
-        table.rows[i].cells[j].classList.add(css_id);
-      }
-      function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_cj8h9d2j0cfc21ou2fws');
-        var newRow = table.insertRow(i);
-        var newCell = newRow.insertCell(0);
-        newCell.setAttribute("colspan", colspan);
-        // newCell.innerText = content;
-        // this may be unsafe, but innerText does not interpret <br>
-        newCell.innerHTML = content;
-      }
-      function spanCell_tinytable_sbnggq39il8lqw6xfpa4(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_cj8h9d2j0cfc21ou2fws");
-        const targetRow = table.rows[i];
-        const targetCell = targetRow.cells[j];
-        for (let r = 0; r < rowspan; r++) {
-          // Only start deleting cells to the right for the first row (r == 0)
-          if (r === 0) {
-            // Delete cells to the right of the target cell in the first row
-            for (let c = colspan - 1; c > 0; c--) {
-              if (table.rows[i + r].cells[j + c]) {
-                table.rows[i + r].deleteCell(j + c);
-              }
-            }
-          }
-          // For rows below the first, delete starting from the target column
-          if (r > 0) {
-            for (let c = colspan - 1; c >= 0; c--) {
-              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
-                table.rows[i + r].deleteCell(j);
-              }
-            }
-          }
-        }
-        // Set rowspan and colspan of the target cell
-        targetCell.rowSpan = rowspan;
-        targetCell.colSpan = colspan;
-      }
-
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 0, 'tinytable_css_dymvdgvmqby6hdaa589p') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 1, 'tinytable_css_dymvdgvmqby6hdaa589p') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 2, 'tinytable_css_dymvdgvmqby6hdaa589p') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 3, 'tinytable_css_dymvdgvmqby6hdaa589p') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 4, 'tinytable_css_dymvdgvmqby6hdaa589p') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 5, 'tinytable_css_dymvdgvmqby6hdaa589p') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 5, 'tinytable_css_an7du3w47ys85s1pz15a') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(0, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(1, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(2, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(3, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(4, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(5, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(6, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(7, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(8, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(9, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(10, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(11, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(12, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(13, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(14, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(15, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(16, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(17, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 0, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 1, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 2, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 3, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 4, 'tinytable_css_uohgm0285uejow70ywph') })
-window.addEventListener('load', function () { styleCell_tinytable_sbnggq39il8lqw6xfpa4(18, 5, 'tinytable_css_uohgm0285uejow70ywph') })
-    </script>
-
-  
-
-
-</div>
-</div>
-</figure>
-</div>
-</div>
-<!-- Colombia 1981-1991: an application -->
-</section>
-<section id="empirical-application" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Empirical Application</h1>
-<p>Given the fiscal reforms of 1983 and 1986 in Colombia, it is natural to think in a difference-in-difference empirical application to test if the fiscal reforms induced any change in the tax evasion behavior of the firms. We can expect that an increase in either the sales tax or corporate income tax rate would lead to higher levels of evasion.</p>
-<p>Among other changes, the fiscal law of 1983 tried to homogenize the sales taxes of the manufacturing industry. The reform reduced from 15 to 10% for some industries; for others, it increased the sales tax from 6 to 10%. Still, some others, like the Food Products industry were exempt and certain others were not affected. See <a href="#tbl-vat-summary" class="quarto-xref">Table&nbsp;3</a> for a description of the changes documented in <span class="citation" data-cites="Perry1990">Perry and Triana (<a href="#ref-Perry1990" role="doc-biblioref">1990</a>)</span>.</p>
-<p>The 1983 reform also adjusted the income tax rates for limited liability companies and individuals. For individuals, the income tax rate increased by 8% in most scales, while the maximum was reduced from 56 to 49%. For limited liability companies, the CIT was reduced from 10 to 18%.</p>
-<p>To evaluate the change in tax evasion by input cost overreporting, I first group industries into four groups depending on whether the sales tax of the industry was increased, decreased, exempted, or not changed. I use corporations in the decreased sales tax rate group as the control group.</p>
-<p>Formally, what I have is the following:</p>
-<p>Non-corporations in industry <span class="math inline">\(k\)</span>, which might have received an increment or decrement in their sales tax rate</p>
-<p><span class="math display">\[
-s_{1,j,t}^k=\alpha^k_t+\beta_1+e^{k,VAT}_{j,t}+e^{k,CIT}_{j,t}+\varepsilon_{jt}
-\]</span></p>
-<p>Corporations in industry <span class="math inline">\(k\)</span> <span class="math display">\[
-s_{0,j,t}^k=\alpha^k_t+\beta_0+\varepsilon_{jt}
-\]</span></p>
-<p>Likewise, Corporations and Non-corporations in an industry exempt of sales taxes</p>
-<p><span class="math display">\[
-\begin{aligned}
-    s_{1,j,t}^{E}&amp;=\alpha^{E}_t+\beta_1+e^{E,VAT}_{j,t}+e^{E,CIT}_{j,t}+\varepsilon_{jt}\\
-    s_{0,j,t}^E&amp;=\alpha^E_t+\beta_0+\varepsilon_{jt}
-\end{aligned}
-\]</span></p>
-<p>Taking the difference between time <span class="math inline">\(t'\)</span> and <span class="math inline">\(t\)</span>,</p>
-<p><span class="math display">\[
-\begin{aligned}
-    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&amp;=\Delta_\alpha+\Delta_{e^{VAT}}+\Delta_{e^{CIT}}\\
-    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&amp;=\Delta_\alpha
-\end{aligned}
-\]</span></p>
-<p>The diff-in-diff approach will recover the joint effect of both policy changes, <span class="math display">\[
-\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_{e^{VAT}}+\Delta_{e^{CIT}}
-\]</span></p>
-<p>The joint effect might be ambiguous because an increase in the sales tax rate will increase the incentive to overreport inputs cost but a decrease in the CIT might decrease the incentive.</p>
-<p>To recover the effect of the change in the sales tax rate, we can use the firms of the industries that are exempted from the sales tax. Intuitively, exempted firms would not react to the change in the sales tax —which is industry-specific—, but only to the CIT —which affects all industries.</p>
-<p>So we have,</p>
-<p><span class="math display">\[
-\begin{aligned}    
-    \mathbb{E}[s_{1,j,t'}^k]&amp;-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)\\
-    &amp;- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_{e^{VAT}}
-\end{aligned}
-\]</span></p>
-<p>In regression form,</p>
-<p><span class="math display">\[
-s_{jt}=\alpha \left\{ \mathbb{1}[t=t']\times\mathbb{1}[\text{treat}=\text{Non-Corp}]\times\mathbb{1}[k\not=E] \right\}+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
-\]</span></p>
-<div id="tbl-reg-didid" class="quarto-layout-panel anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-didid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;7: Log of Inputs Cost Share of Revenue by Industry. Triple diff-in-diff. The reference group is Corporations in industries exempted from the Tax Rate the year before the Reform of 1983 (1982).
-</figcaption>
-<div aria-describedby="tbl-reg-didid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1505704524.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_3719016085.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1107617409.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1.83005943.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1259045525.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1009381626.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1732033451.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1250630448.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_1027566799.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-06_6832078110.png" class="figure-img">
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[1]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[2]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[3]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[4]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[5]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[6]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[7]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[8]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[9]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[10]] NULL</p>
-</div>
-</div>
-</div>
-</figure>
-</div>
-</section>
-
-<section id="do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Do Corporations in Colombia have different technologies than other juridical organizations?</h1>
-<p>An implicit assumption in the identification strategy is that the subset of non-evaders has the same common technology as evaders. In the case of Colombia, this implies that Corporations have the same common technology as Proprietorships, Limited Companies, and Partnerships. However, we can think that firms with better technology are self-selecting into corporations, and thus, firms with low-performance technology will be mislabeled as evaders.</p>
-<p>The key question is how firms are choosing their juridical organization, and in particular, how firms are choosing to become corporations. I argue that choosing the juridical organization is a result of the capital needs of the firm and it is affected by the preferences of the owners over their corporate liability and their social connections.</p>
-<p>From the definitions of the juridical organizations, we can expect corporations to be the largests in terms of capital, followed by LLCs and Partnerships, and Proprietorships to be smallest. The reason is simply that more people can participate by contributing their capital to the firm. This ordering in turn would suggest a growth path for the firms.</p>
-<p>Turning to the data, I find some firms change their juridical organization type. I build a juridical organization transition matrix from the previous year to the next one at the firm level. <a href="#tbl-trans-mat" class="quarto-xref">Table&nbsp;9</a> shows the transition matrix. Although the transition matrix suggests that firms mostly stay in their juridical organization, a growth trend emerges. It looks like proprietorships turn into LLCs, and LLCs into Corporations.</p>
-<div class="cell">
-<div id="tbl-trans-mat" class="cell quarto-float anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-trans-mat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;9: Transition Matrix
-</figcaption>
-<div aria-describedby="tbl-trans-mat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table data-quarto-disable-processing="true" class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:left;">   </th>
-   <th style="text-align:right;"> Proprietorship </th>
-   <th style="text-align:right;"> Partnership </th>
-   <th style="text-align:right;"> Ltd. Co. </th>
-   <th style="text-align:right;"> Corporation </th>
-   <th style="text-align:right;"> Total </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> Proprietorship </td>
-   <td style="text-align:right;"> 94.8 </td>
-   <td style="text-align:right;"> 0.7 </td>
-   <td style="text-align:right;"> 4.5 </td>
-   <td style="text-align:right;"> 0.1 </td>
-   <td style="text-align:right;"> 4404 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Partnership </td>
-   <td style="text-align:right;"> 0.5 </td>
-   <td style="text-align:right;"> 92.7 </td>
-   <td style="text-align:right;"> 5.6 </td>
-   <td style="text-align:right;"> 1.3 </td>
-   <td style="text-align:right;"> 1241 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Ltd. Co. </td>
-   <td style="text-align:right;"> 0.2 </td>
-   <td style="text-align:right;"> 0.1 </td>
-   <td style="text-align:right;"> 98.6 </td>
-   <td style="text-align:right;"> 1.0 </td>
-   <td style="text-align:right;"> 22154 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Corporation </td>
-   <td style="text-align:right;"> 0.0 </td>
-   <td style="text-align:right;"> 0.1 </td>
-   <td style="text-align:right;"> 0.5 </td>
-   <td style="text-align:right;"> 99.4 </td>
-   <td style="text-align:right;"> 7805 </td>
-  </tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</figure>
-</div>
-</div>
-<p>Looking into the capital distributions of proprietorships, LLCs, and corporations we find that corporations are the largest, followed by LLCs, and proprietorships are the smallest <a href="#fig-k-rev-hist-1" class="quarto-xref">Figure&nbsp;4 (a)</a>. However, there are considerable overlaps. The same is true for revenues (in logs) <a href="#fig-k-rev-hist-2" class="quarto-xref">Figure&nbsp;4 (b)</a>. This is not surprising, as the need for larger capital increases, the more people would need to participate.</p>
-<p>However, when we look at the frequency distributions of the capital over revenue ratio in logs, the distributions perfectly overlap <a href="#fig-k-rev-hist-3" class="quarto-xref">Figure&nbsp;4 (c)</a>. If corporations had different technologies we would expect to see two different distributions. In particular, the distribution of corporations would have been farther to the right than the distributions of proprietorships and LLCs.</p>
-<p>These patterns remain even after controlling for industry, metropolitan area, and year <a href="#tbl-reg-choosing-jo" class="quarto-xref">Table&nbsp;10</a>.</p>
-<div class="cell" data-layout="[[45,45],[100]]">
-<div id="fig-k-rev-hist" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-k-rev-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-k-rev-hist" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-k-rev-hist-1" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-k-rev-hist-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Tax-Prod_files/figure-html/fig-k-rev-hist-1.png" class="img-fluid figure-img" data-ref-parent="fig-k-rev-hist" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-k-rev-hist-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a) Capital
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-k-rev-hist" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-k-rev-hist-2" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-k-rev-hist-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Tax-Prod_files/figure-html/fig-k-rev-hist-2.png" class="img-fluid figure-img" data-ref-parent="fig-k-rev-hist" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-k-rev-hist-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(b) Revenue
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-k-rev-hist" style="flex-basis: 100.0%;justify-content: flex-start;">
-<div id="fig-k-rev-hist-3" class="quarto-figure quarto-figure-center quarto-float anchored">
-<figure class="quarto-float quarto-subfloat-fig figure">
-<div aria-describedby="fig-k-rev-hist-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Tax-Prod_files/figure-html/fig-k-rev-hist-3.png" class="img-fluid figure-img" data-ref-parent="fig-k-rev-hist" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-k-rev-hist-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(c) Capital/Revenue
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-k-rev-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Frequency historgrams of capital, revenue and capital/revenue (in logs) of Corporations, LLCs, and Proprietorships.
-</figcaption>
-</figure>
-</div>
-</div>
-<div id="tbl-reg-choosing-jo" class="quarto-layout-panel anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-choosing-jo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;10: Testing Differences in the log of Capital, Revenue, and Capital/Revenue for Corporations and Other Juridical Organizations
-</figcaption>
-<div aria-describedby="tbl-reg-choosing-jo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-05-01_1.40271708.png" class="figure-img">
-</div>
-</div>
-</div>
-</figure>
-</div>
-<section id="model-of-firm-capital-growth-sketch" class="level3" data-number="6.0.1">
-<h3 data-number="6.0.1" class="anchored" data-anchor-id="model-of-firm-capital-growth-sketch"><span class="header-section-number">6.0.1</span> Model of firm (capital) growth (sketch)</h3>
-<p>A limited liability company looking to acquire more capital had three options.</p>
-<p>First, partners can increase their capital participation, using personal wealth or through a bank credit. This option however will increase the partners’ liability. The more capital I bring the greater my liability is.</p>
-<p>Second, the LLC might increase its capital by inviting additional partners. As the firm increases its capital, inviting more partners will become more difficult. The funding partners risk losing control of their firm, as more people participate in the firm’s management and decision-making.</p>
-<p>Third, the firm can incorporate. This will bring capital to the firm. Anyone in the market for the shares of the firm can participate. Shares can be traded. A CEO reporting to the shareholders might be appointed. Liability is limited to shares.</p>
-<p>The decision to incorporate is a decision on how to acquire capital. Firms still need to consider the stream of future productivity shocks, but the decision also depends on other unobservables such as risk-aversion (increasing the partners’ liability), the partners’ ability to convince more partners to join the LLC, and preferences over the control of the firm’s management.</p>
-<p>Assume there’s an unobserved scalar <span class="math inline">\(\zeta_i\)</span> that captures all of the owners’ heterogeneity in preferences over liability risk, access to networks of potential investors, and preferences over the control of the firm’s management. Let a higher value of <span class="math inline">\(\zeta\)</span> capture less risk aversion, a wider network of potential investors, or a higher preference for retaining control over the firm. Consider the case in which two LLCs firms are looking to optimally increase their capital by the same quantity, but the owners are different in <span class="math inline">\(\zeta\)</span>. In particular, let the owner of firm 1 have a higher <span class="math inline">\(\zeta_1&gt;\zeta_2\)</span> than the owner of firm 2. The firms also have the same technology and productivity shocks. The owner of firm 1 <span class="math inline">\(\zeta_1\)</span> would be able to convince additional investors to join their LLC, but the owner 2 <span class="math inline">\(\zeta_2\)</span> would not. <span class="math inline">\(\zeta_2\)</span> owner would have to choose to incorporate to get the capital for his firm or forgo growth.</p>
-<p>The 20 pp difference in CIT rate between LLCs and Corporations might have deterred firm growth. The CIT was homogenized to 30% in 1986. What was the capital misallocation due to the tax rate differential? Are more firms incorporating after the reform?</p>
-</section>
-<section id="evasion-vs.-production-technology" class="level3" data-number="6.0.2">
-<h3 data-number="6.0.2" class="anchored" data-anchor-id="evasion-vs.-production-technology"><span class="header-section-number">6.0.2</span> Evasion vs.&nbsp;Production Technology</h3>
-<p>Production technology is industry-specific, but evasion technology is the same across industries.</p>
-<p>Take the face value of the regressions and assume, without conceding, that corporations have different technologies. This will imply that corporations have technologies that are consistently 15% more productive than non-corporations regardless of the industry. In other words, it does not matter if the firms produce canned food, shoes or furniture, corporations have technologies consistently more productive. However, this is difficult to believe because there could be industries in which such an improvement in technology is difficult to imagine. For example, coffee grain mills (food products), steel foundries (steel basic products), plastic molding and extrusion (plastic products), or cement (non-metallic mineral products).</p>
-<p>However, these cross-sectional differences across industries could be better explained by the evasion technology. We would expect the evasion technology to be the same across industries. It does not matter what I produce and what technology my firm employs, to overreport inputs all that is needed is a fake invoice.</p>
-</section>
-<section id="corporations-by-industry" class="level3" data-number="6.0.3">
-<h3 data-number="6.0.3" class="anchored" data-anchor-id="corporations-by-industry"><span class="header-section-number">6.0.3</span> Corporations by Industry</h3>
+<section id="corporations-by-industry" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="corporations-by-industry"><span class="header-section-number">3.1</span> Corporations by Industry</h2>
 <p>Looking into industry sectors.</p>
 <div class="cell">
 <div id="tbl-corps-by-inds" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-corps-by-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;11: Corporations by Industry. Top 20 Industries in Colombia by number of firms.
+Table&nbsp;5: Corporations by Industry. Top 20 Industries in Colombia by number of firms.
 </figcaption>
 <div aria-describedby="tbl-corps-by-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1857,26 +1180,1045 @@ Table&nbsp;11: Corporations by Industry. Top 20 Industries in Colombia by number
 </figure>
 </div>
 </div>
+</section>
+<section id="the-fiscal-reforms" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="the-fiscal-reforms"><span class="header-section-number">3.2</span> The Fiscal Reforms</h2>
+<p>A simple graphical analysis shows that the average (of the log) intermediates cost share of sales started growing after 1983 and that it stabilized in 1988 after the policy changes of the 1986 reform settled in (<a href="#fig-logshare" class="quarto-xref">Figure&nbsp;1</a>). The dataset does not capture any changes after the 1990 reform, although there is only one more year of data.</p>
+<div id="fig-logshare" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-logshare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../Results/Figures/Colombia/log_share_byy.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logshare-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Input’s cost share of sales, average by year of the logs.
+</figcaption>
+</figure>
+</div>
+<p>As a validation exercise, we can see that the VAT changes induced by the three fiscal reforms are captured in the dataset. <a href="#fig-vat" class="quarto-xref">Figure&nbsp;2</a> shows that the sales tax increased to 10% after the 1983 reform, and then around 12% after the 1990 reform.</p>
+<div id="fig-vat" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../Results/Figures/Colombia/share_sales_tax_byy.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Sale taxes paid as share of sales, average by year.
+</figcaption>
+</figure>
+</div>
+<p>Just as an exercise to see if other economic changes in this period were driving the apparent changes in overreporting, <a href="#fig-logsales" class="quarto-xref">Figure&nbsp;3</a> shows that sales, for instance, were not exactly following the changes in fiscal policy. Sales started to grow during 1983, the year of the reform, whereas the cost share of sales started to grow the year after. Likewise, sales fell in 1986, while the cost share seems to reduce its growth after 1986.</p>
+<div id="fig-logsales" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-logsales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../Results/Figures/Colombia/log_sales_byy.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logsales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Sales in logs, annual mean.
+</figcaption>
+</figure>
+</div>
+<p>Finally, in a preliminary empirical assessment, I observe that the sales tax rate is a significant determinant of the log share of revenue and that non-corporations consistently use 13-17 percent more intermediates than Corporations for a rich set of controls <a href="#tbl-reg-jo-tax" class="quarto-xref">Table&nbsp;6</a>. The results were estimated following <a href="#eq-reg-tax-jo" class="quarto-xref">Equation&nbsp;7</a></p>
+<p><span id="eq-reg-tax-jo"><span class="math display">\[
+log(s_{it})= \alpha_1Tax_{it}+\beta_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \beta_3'Z+ \varepsilon_{it}
+\tag{7}\]</span></span></p>
+<div id="tbl-reg-jo-tax" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-jo-tax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;6: Effect of the Juridical Organization Type and Sales Tax on the Log Share of Intermediate Inputs.
+</figcaption>
+<div aria-describedby="tbl-reg-jo-tax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-06_7133942719.png" class="figure-img">
+</div>
+</div>
+</div>
+</figure>
+</div>
+<p>Although this is not deterministic evidence, it does not contradict the hypothesis that firms other than corporations have incentives to overreport intermediates to evade taxes and that the higher the taxes the higher the incentives to evade by misreporting.</p>
+</section>
+<section id="the-fiscal-reform-of-1983-by-industry" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="the-fiscal-reform-of-1983-by-industry"><span class="header-section-number">3.3</span> The Fiscal Reform of 1983 by Industry</h2>
+<div class="cell">
+<div id="tbl-1983-by-inds" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-1983-by-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industry year. Top 20 industries with more firms.
+</figcaption>
+<div aria-describedby="tbl-1983-by-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+ 
+
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tinytable_zvnnpcwz6i82r7gpha2v</title>
+    <style>
+.table td.tinytable_css_uewezjn9k5okei2gj8tm, .table th.tinytable_css_uewezjn9k5okei2gj8tm {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_wllsx3c9kp7c7iyhymsi, .table th.tinytable_css_wllsx3c9kp7c7iyhymsi {    text-align: center; width: 20em; }
+.table td.tinytable_css_a7hzvvhjnxucx13um3tj, .table th.tinytable_css_a7hzvvhjnxucx13um3tj {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+  
+
+  
+    <div class="container">
+      <table class=" lightable-classic" id="tinytable_zvnnpcwz6i82r7gpha2v" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col">SIC</th>
+                <th scope="col">Industry</th>
+                <th scope="col">P&amp;T (1990)</th>
+                <th scope="col">Change</th>
+                <th scope="col">Change Year</th>
+                <th scope="col">Annual Sales Tax (82-86)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td>311</td>
+                  <td>Food Manufacturing</td>
+                  <td> </td>
+                  <td>Exempt</td>
+                  <td></td>
+                  <td><img src="./tinytable_assets/id7b2tb0zjue823xoqcs6m.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>312</td>
+                  <td>Food Manufacturing</td>
+                  <td> </td>
+                  <td>Exempt</td>
+                  <td></td>
+                  <td><img src="./tinytable_assets/idx15pr4z4blo58ybxdzqf.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>322</td>
+                  <td>Wearing Apparel, Except Footwear</td>
+                  <td> </td>
+                  <td>Increased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/id20c5d4ib8xoujski9b0j.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>381</td>
+                  <td>Fabricated Metal Products, Except Machinery and Equipment</td>
+                  <td> </td>
+                  <td>Increased</td>
+                  <td>85</td>
+                  <td><img src="./tinytable_assets/id16je465kxotnjv4lfwq7.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>321</td>
+                  <td>Textiles</td>
+                  <td>6 to 10</td>
+                  <td>Increased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/id320s9uh76akj81g8rlmm.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>382</td>
+                  <td>Machinery Except Electrical</td>
+                  <td>6 to 10</td>
+                  <td>Increased</td>
+                  <td>85</td>
+                  <td><img src="./tinytable_assets/idj7c9ih8hwfmg371vn37z.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>384</td>
+                  <td>Transport Equipment</td>
+                  <td>6 to 10</td>
+                  <td>Increased</td>
+                  <td>85</td>
+                  <td><img src="./tinytable_assets/id3xx8stx9zau5gv5cun0b.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>383</td>
+                  <td>Electrical Machinery Apparatus, Appliances and Supplies</td>
+                  <td>6 to 10</td>
+                  <td>Increased</td>
+                  <td>85</td>
+                  <td><img src="./tinytable_assets/id0mld0s5s8lkhsvnhera4.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>313</td>
+                  <td>Beverage Industries</td>
+                  <td>- to 35;10</td>
+                  <td>Increased</td>
+                  <td>85</td>
+                  <td><img src="./tinytable_assets/id2n2a6px1we4py6e8ejvz.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>341</td>
+                  <td>Paper and Paper Products</td>
+                  <td>15 to 10</td>
+                  <td>Increased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/id7mz86uzdad01xyg5sr8n.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>324</td>
+                  <td>Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear</td>
+                  <td> </td>
+                  <td>Increased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/idnx1waowhxt262u6tfq0q.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>342</td>
+                  <td>Printing, Publishing and Allied Industries</td>
+                  <td> </td>
+                  <td>Decreased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/idpuatpt38hzjanrv6esug.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>369</td>
+                  <td>Other Non-Metallic Mineral Products</td>
+                  <td> </td>
+                  <td>Decreased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/idsn7d86h3cfplcvsby6wz.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>390</td>
+                  <td>Other Manufacturing Industries</td>
+                  <td> </td>
+                  <td>Decreased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/id7n8s4f00e42vvj7ftzqb.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>332</td>
+                  <td>Furniture and Fixtures, Except Primarily of Metal</td>
+                  <td> </td>
+                  <td>Decreased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/iduf7iikiw6tgiak4igff3.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>351</td>
+                  <td>Industrial Chemicals</td>
+                  <td>15 to 10</td>
+                  <td>Decreased</td>
+                  <td>84</td>
+                  <td><img src="./tinytable_assets/idi0texr0xl0sbzr6xdcn6.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>352</td>
+                  <td>Other Chemical Products</td>
+                  <td>6;15 to 10</td>
+                  <td>No Change</td>
+                  <td></td>
+                  <td><img src="./tinytable_assets/idazz2axjmoz3bhy27s879.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+                <tr>
+                  <td>356</td>
+                  <td>Plastic Products Not Elsewhere Classified</td>
+                  <td>15 to 10</td>
+                  <td>No Change</td>
+                  <td></td>
+                  <td><img src="./tinytable_assets/id70dr03laf9zl1w9fvgua.png" style="height: 4em;" class="figure-img"></td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function styleCell_tinytable_cohirurfpnw7swhi28lp(i, j, css_id) {
+        var table = document.getElementById("tinytable_zvnnpcwz6i82r7gpha2v");
+        table.rows[i].cells[j].classList.add(css_id);
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_zvnnpcwz6i82r7gpha2v');
+        var newRow = table.insertRow(i);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_tinytable_cohirurfpnw7swhi28lp(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_zvnnpcwz6i82r7gpha2v");
+        const targetRow = table.rows[i];
+        const targetCell = targetRow.cells[j];
+        for (let r = 0; r < rowspan; r++) {
+          // Only start deleting cells to the right for the first row (r == 0)
+          if (r === 0) {
+            // Delete cells to the right of the target cell in the first row
+            for (let c = colspan - 1; c > 0; c--) {
+              if (table.rows[i + r].cells[j + c]) {
+                table.rows[i + r].deleteCell(j + c);
+              }
+            }
+          }
+          // For rows below the first, delete starting from the target column
+          if (r > 0) {
+            for (let c = colspan - 1; c >= 0; c--) {
+              if (table.rows[i + r] && table.rows[i + r].cells[j]) {
+                table.rows[i + r].deleteCell(j);
+              }
+            }
+          }
+        }
+        // Set rowspan and colspan of the target cell
+        targetCell.rowSpan = rowspan;
+        targetCell.colSpan = colspan;
+      }
+
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 0, 'tinytable_css_uewezjn9k5okei2gj8tm') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 1, 'tinytable_css_uewezjn9k5okei2gj8tm') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 2, 'tinytable_css_uewezjn9k5okei2gj8tm') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 3, 'tinytable_css_uewezjn9k5okei2gj8tm') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 4, 'tinytable_css_uewezjn9k5okei2gj8tm') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 5, 'tinytable_css_uewezjn9k5okei2gj8tm') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+    </script>
+
+  
+
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<!-- Colombia 1981-1991: an application -->
+</section>
+</section>
+<section id="empirical-application" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Empirical Application</h1>
+<p>Given the fiscal reforms of 1983 and 1986 in Colombia, it is natural to think in a difference-in-difference empirical application to test if the fiscal reforms induced any change in the tax evasion behavior of the firms. We can expect that an increase in either the sales tax or corporate income tax rate would lead to higher levels of evasion.</p>
+<p>Among other changes, the fiscal law of 1983 tried to homogenize the sales taxes of the manufacturing industry. The reform reduced from 15 to 10% for some industries; for others, it increased the sales tax from 6 to 10%. Still, some others, like the Food Products industry were exempt and certain others were not affected. See <a href="#tbl-vat-summary" class="quarto-xref">Table&nbsp;3</a> for a description of the changes documented in <span class="citation" data-cites="Perry1990">Perry and Triana (<a href="#ref-Perry1990" role="doc-biblioref">1990</a>)</span>.</p>
+<p>The 1983 reform also adjusted the income tax rates for limited liability companies and individuals. For individuals, the income tax rate increased by 8% in most scales, while the maximum was reduced from 56 to 49%. For limited liability companies, the CIT was reduced from 10 to 18%.</p>
+<p>To evaluate the change in tax evasion by input cost overreporting due to the change in the sales tax, I apply a triple difference approach. I use corporations in the industries exempted from sales taxes the year before the policy change as the control group.</p>
+<p>Formally, non-corporations in industry <span class="math inline">\(k\)</span>, which might have received an increment or decrement in their sales tax rate,</p>
+<p><span class="math display">\[
+s_{1,j,t}^k=\lambda^k_t+\mu^k_1+e^{VAT}_{j,t}+e^{CIT}_{j,t}+\varepsilon_{jt}
+\]</span></p>
+<p>Corporations in industry <span class="math inline">\(k\)</span>, <span class="math display">\[
+s_{0,j,t}^k=\lambda^k_t+\mu^k_0+\varepsilon_{jt}
+\]</span></p>
+<p>Likewise, Non-corporations and Corporations in an industry exempt from sales taxes</p>
+<p><span class="math display">\[
+\begin{aligned}
+    s_{1,j,t}^{E}&amp;=\lambda^{E}_t+\mu^E_1+e^{CIT}_{j,t}+\varepsilon_{jt}\\
+    s_{0,j,t}^E&amp;=\lambda^E_t+\mu^E_0+\varepsilon_{jt}
+\end{aligned}
+\]</span></p>
+<p>Taking the difference between time <span class="math inline">\(t'\)</span> and <span class="math inline">\(t\)</span> in industry <span class="math inline">\(k\)</span> for both, corporations and non-corporations,</p>
+<p><span class="math display">\[
+\begin{aligned}
+    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&amp;=\Delta_\lambda^k+\Delta_e^{VAT}+\Delta_e^{CIT}\\
+    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&amp;=\Delta_\lambda^k
+\end{aligned}
+\]</span></p>
+<p>The diff-in-diff method will recover the joint effect of both policy changes, <span class="math display">\[
+\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_e^{VAT}+\Delta_e^{CIT}
+\]</span></p>
+<p>The joint effect might be ambiguous because an increase in the sales tax rate will increase the incentive to overreport inputs cost but a decrease in the CIT might decrease the incentive.</p>
+<p>To recover the effect of the change in the sales tax rate, we can use the firms of the industries that are exempted from the sales tax. Intuitively, exempted firms would not react to the change in the sales tax —which is industry-specific—, but only to the CIT —which affects all industries.</p>
+<p>So we have,</p>
+<p><span class="math display">\[
+\begin{aligned}    
+    \mathbb{E}[s_{1,j,t'}^k]&amp;-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)\\
+    &amp;- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_e^{VAT}
+\end{aligned}
+\]</span></p>
+<p>In regression form,</p>
+<p><span class="math display">\[
+s_{jt}=\alpha \left[ \mathbb{1}\{t=t'\}\times\mathbb{1}\{\text{treat}=\text{Non-Corp}\}\times\mathbb{1}\{k\not=E\} \right]+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
+\]</span></p>
+<div id="tbl-reg-didid" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-didid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;8: Log of Inputs Cost Share of Revenue by Industry. Triple diff-in-diff. The reference group is Corporations in industries exempted from the Tax Rate the year before the Reform of 1983 (1982).
+</figcaption>
+<div aria-describedby="tbl-reg-didid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_3941957837.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_5801198742.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1.18530987.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1181888946.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_7.72690501.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_3319860402.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1.11800477.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_6140833568.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_7500897417.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_2411468795.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>NULL</p>
+</div>
+</div>
+</div>
+</figure>
+</div>
+<section id="changes-in-composition-of-total-expenditure" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="changes-in-composition-of-total-expenditure"><span class="header-section-number">4.1</span> Changes in Composition of Total Expenditure</h2>
+<p>Depending on the industry, firms might be adjusting different margins, raw materials or other expenses. For example, firms in the non-metallic mineral products industry might not fake raw materials but they can adjust deductible expenses. Another example might be the textile industry. Although the available records and data might not allow for separating expenditures precisely, the evidence shows that firms are significantly adjusting these margins.</p>
+<p><span class="citation" data-cites="Gandhi2020">Gandhi et al. (<a href="#ref-Gandhi2020" role="doc-biblioref">2020</a>)</span> defines services as general expenditures minus machinery rental and interest payments. The Colombian survey uses industrial expenditure to calculate intermediate consumption. I identified potentially deductible expenses with information from <span class="citation" data-cites="Perry1990">Perry and Triana (<a href="#ref-Perry1990" role="doc-biblioref">1990</a>)</span>.</p>
+<div class="cell">
+<div id="tbl-expenses-type" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-expenses-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;9: Classifications of Expenditure.
+</figcaption>
+<div aria-describedby="tbl-expenses-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table data-quarto-disable-processing="true" class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Expenditure </th>
+   <th style="text-align:center;"> Code </th>
+   <th style="text-align:center;"> Services </th>
+   <th style="text-align:center;"> Industrial </th>
+   <th style="text-align:center;"> Deductible </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Purchases of accessories and replacement parts of less than one year duration </td>
+   <td style="text-align:center;"> c1 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Purchases of fuels and lubricants consumed by the establishment </td>
+   <td style="text-align:center;"> c2 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;"> $+$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Payments for industrial work by other establishments </td>
+   <td style="text-align:center;"> c3 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Payment of domestic workers </td>
+   <td style="text-align:center;"> c4 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Payments of third parties for repairs and maintenance </td>
+   <td style="text-align:center;"> c5 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;"> $+$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Purchases of raw materials and goods sold without transformation </td>
+   <td style="text-align:center;"> c6 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;"> $+$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> TOTAL Industrial Expenditures (c1:c6) </td>
+   <td style="text-align:center;font-weight: bold;"> c7 </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Rent of fixed property </td>
+   <td style="text-align:center;"> c8 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Payments for professional services </td>
+   <td style="text-align:center;"> c9 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Machinery rental </td>
+   <td style="text-align:center;"> c10 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Insurance, excl. employe benefits </td>
+   <td style="text-align:center;"> c11 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Water, mail, telephone, etc. </td>
+   <td style="text-align:center;"> c12 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;"> $+$ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Publicity and advertising </td>
+   <td style="text-align:center;"> c13 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Interest payments </td>
+   <td style="text-align:center;"> c14 </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Royalty payments </td>
+   <td style="text-align:center;"> c15 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Other expenditures </td>
+   <td style="text-align:center;"> c16 </td>
+   <td style="text-align:center;"> $+$ </td>
+   <td style="text-align:center;">  </td>
+   <td style="text-align:center;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> TOTAL General Expenditures (c8:c16) </td>
+   <td style="text-align:center;font-weight: bold;"> c17 </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> TOTAL Expenditure (c7+c17) </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+   <td style="text-align:center;font-weight: bold;">  </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div id="tbl-reg-exp-inds" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-exp-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;10: Log of Types of Expenses Share of Total Expenses by Industry. Triple diff-in-diff. The reference group is Corporations in industries exempted from the Tax Rate the year before the Reform of 1983 (1982).
+</figcaption>
+<div aria-describedby="tbl-reg-exp-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_8761910469.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1060407723.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_3200985256.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_2.23232743.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1623395448.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_9172364783.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1528717283.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1220318064.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1285061186.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-07_1099970409.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<p>NULL</p>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</section>
+</section>
+
+<section id="do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Do Corporations in Colombia have different technologies than other juridical organizations?</h1>
+<p>An implicit assumption in the identification strategy is that the subset of non-evaders has the same common technology as evaders. In the case of Colombia, this implies that Corporations have the same common technology as Proprietorships, Limited Companies, and Partnerships. However, we can think that firms with better technology are self-selecting into corporations, and thus, firms with low-performance technology will be mislabeled as evaders.</p>
+<p>The key question is how firms are choosing their juridical organization, and in particular, how firms are choosing to become corporations. I argue that choosing the juridical organization is a result of the capital needs of the firm and it is affected by the preferences of the owners over their corporate liability and their social connections.</p>
+<p>From the definitions of the juridical organizations, we can expect corporations to be the largests in terms of capital, followed by LLCs and Partnerships, and Proprietorships to be smallest. The reason is simply that more people can participate by contributing their capital to the firm. This ordering in turn would suggest a growth path for the firms.</p>
+<p>Turning to the data, I find some firms change their juridical organization type. I build a juridical organization transition matrix from the previous year to the next one at the firm level. <a href="#tbl-trans-mat" class="quarto-xref">Table&nbsp;12</a> shows the transition matrix. Although the transition matrix suggests that firms mostly stay in their juridical organization, a growth trend emerges. It looks like proprietorships turn into LLCs, and LLCs into Corporations.</p>
+<div class="cell">
+<div id="tbl-trans-mat" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-trans-mat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;12: Transition Matrix
+</figcaption>
+<div aria-describedby="tbl-trans-mat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table data-quarto-disable-processing="true" class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Proprietorship </th>
+   <th style="text-align:right;"> Partnership </th>
+   <th style="text-align:right;"> Ltd. Co. </th>
+   <th style="text-align:right;"> Corporation </th>
+   <th style="text-align:right;"> Total </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Proprietorship </td>
+   <td style="text-align:right;"> 94.8 </td>
+   <td style="text-align:right;"> 0.7 </td>
+   <td style="text-align:right;"> 4.5 </td>
+   <td style="text-align:right;"> 0.1 </td>
+   <td style="text-align:right;"> 4404 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Partnership </td>
+   <td style="text-align:right;"> 0.5 </td>
+   <td style="text-align:right;"> 92.7 </td>
+   <td style="text-align:right;"> 5.6 </td>
+   <td style="text-align:right;"> 1.3 </td>
+   <td style="text-align:right;"> 1241 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Ltd. Co. </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:right;"> 0.1 </td>
+   <td style="text-align:right;"> 98.6 </td>
+   <td style="text-align:right;"> 1.0 </td>
+   <td style="text-align:right;"> 22154 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Corporation </td>
+   <td style="text-align:right;"> 0.0 </td>
+   <td style="text-align:right;"> 0.1 </td>
+   <td style="text-align:right;"> 0.5 </td>
+   <td style="text-align:right;"> 99.4 </td>
+   <td style="text-align:right;"> 7805 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Looking into the capital distributions of proprietorships, LLCs, and corporations we find that corporations are the largest, followed by LLCs, and proprietorships are the smallest <a href="#fig-k-rev-hist-1" class="quarto-xref">Figure&nbsp;4 (a)</a>. However, there are considerable overlaps. The same is true for revenues (in logs) <a href="#fig-k-rev-hist-2" class="quarto-xref">Figure&nbsp;4 (b)</a>. This is not surprising, as the need for larger capital increases, the more people would need to participate.</p>
+<p>However, when we look at the frequency distributions of the capital over revenue ratio in logs, the distributions perfectly overlap <a href="#fig-k-rev-hist-3" class="quarto-xref">Figure&nbsp;4 (c)</a>. If corporations had different technologies we would expect to see two different distributions. In particular, the distribution of corporations would have been farther to the right than the distributions of proprietorships and LLCs.</p>
+<p>These patterns remain even after controlling for industry, metropolitan area, and year <a href="#tbl-reg-choosing-jo" class="quarto-xref">Table&nbsp;13</a>.</p>
+<div class="cell" data-layout="[[45,45],[100]]">
+<div id="fig-k-rev-hist" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-k-rev-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-k-rev-hist" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-k-rev-hist-1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-k-rev-hist-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Tax-Prod_files/figure-html/fig-k-rev-hist-1.png" class="img-fluid figure-img" data-ref-parent="fig-k-rev-hist" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-k-rev-hist-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Capital
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-k-rev-hist" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-k-rev-hist-2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-k-rev-hist-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Tax-Prod_files/figure-html/fig-k-rev-hist-2.png" class="img-fluid figure-img" data-ref-parent="fig-k-rev-hist" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-k-rev-hist-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Revenue
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-k-rev-hist" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-k-rev-hist-3" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-k-rev-hist-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Tax-Prod_files/figure-html/fig-k-rev-hist-3.png" class="img-fluid figure-img" data-ref-parent="fig-k-rev-hist" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-k-rev-hist-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Capital/Revenue
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-k-rev-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Frequency historgrams of capital, revenue and capital/revenue (in logs) of Corporations, LLCs, and Proprietorships.
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tbl-reg-choosing-jo" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-choosing-jo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;13: Testing Differences in the log of Capital, Revenue, and Capital/Revenue for Corporations and Other Juridical Organizations
+</figcaption>
+<div aria-describedby="tbl-reg-choosing-jo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+<img src="./images/etable/etable_tex_2024-05-08_1.40271708.png" class="figure-img">
+</div>
+</div>
+</div>
+</figure>
+</div>
+<section id="model-of-firm-capital-growth-sketch" class="level3" data-number="6.0.1">
+<h3 data-number="6.0.1" class="anchored" data-anchor-id="model-of-firm-capital-growth-sketch"><span class="header-section-number">6.0.1</span> Model of firm (capital) growth (sketch)</h3>
+<p>A limited liability company looking to acquire more capital had three options.</p>
+<p>First, partners can increase their capital participation, using personal wealth or through a bank credit. This option however will increase the partners’ liability. The more capital I bring the greater my liability is.</p>
+<p>Second, the LLC might increase its capital by inviting additional partners. As the firm increases its capital, inviting more partners will become more difficult. The funding partners risk losing control of their firm, as more people participate in the firm’s management and decision-making.</p>
+<p>Third, the firm can incorporate. This will bring capital to the firm. Anyone in the market for the shares of the firm can participate. Shares can be traded. A CEO reporting to the shareholders might be appointed. Liability is limited to shares.</p>
+<p>The decision to incorporate is a decision on how to acquire capital. Firms still need to consider the stream of future productivity shocks, but the decision also depends on other unobservables such as risk-aversion (increasing the partners’ liability), the partners’ ability to convince more partners to join the LLC, and preferences over the control of the firm’s management.</p>
+<p>Assume there’s an unobserved scalar <span class="math inline">\(\zeta_i\)</span> that captures all of the owners’ heterogeneity in preferences over liability risk, access to networks of potential investors, and preferences over the control of the firm’s management. Let a higher value of <span class="math inline">\(\zeta\)</span> capture less risk aversion, a wider network of potential investors, or a higher preference for retaining control over the firm. Consider the case in which two LLCs firms are looking to optimally increase their capital by the same quantity, but the owners are different in <span class="math inline">\(\zeta\)</span>. In particular, let the owner of firm 1 have a higher <span class="math inline">\(\zeta_1&gt;\zeta_2\)</span> than the owner of firm 2. The firms also have the same technology and productivity shocks. The owner of firm 1 <span class="math inline">\(\zeta_1\)</span> would be able to convince additional investors to join their LLC, but the owner 2 <span class="math inline">\(\zeta_2\)</span> would not. <span class="math inline">\(\zeta_2\)</span> owner would have to choose to incorporate to get the capital for his firm or forgo growth.</p>
+<p>The 20 pp difference in CIT rate between LLCs and Corporations might have deterred firm growth. The CIT was homogenized to 30% in 1986. What was the capital misallocation due to the tax rate differential? Are more firms incorporating after the reform?</p>
+</section>
+<section id="evasion-vs.-production-technology" class="level3" data-number="6.0.2">
+<h3 data-number="6.0.2" class="anchored" data-anchor-id="evasion-vs.-production-technology"><span class="header-section-number">6.0.2</span> Evasion vs.&nbsp;Production Technology</h3>
+<p>Production technology is industry-specific, but evasion technology is the same across industries.</p>
+<p>Take the face value of the regressions and assume, without conceding, that corporations have different technologies. This will imply that corporations have technologies that are consistently 15% more productive than non-corporations regardless of the industry. In other words, it does not matter if the firms produce canned food, shoes or furniture, corporations have technologies consistently more productive. However, this is difficult to believe because there could be industries in which such an improvement in technology is difficult to imagine. For example, coffee grain mills (food products), steel foundries (steel basic products), plastic molding and extrusion (plastic products), or cement (non-metallic mineral products).</p>
+<p>However, these cross-sectional differences across industries could be better explained by the evasion technology. We would expect the evasion technology to be the same across industries. It does not matter what I produce and what technology my firm employs, to overreport inputs all that is needed is a fake invoice.</p>
 <!-- #### Are firms switching Juridical Organization types in the data? -->
 <!-- Most firms did not change their J.O. in the sample. Very few changed one time and then stayed in their new J.O. Firms rarely changed more than once. Over time, around 2-3% of firms in an industry changed J.O. Across industries, around 2% of firms changed J.O. each year. Overall only 2.3% of firms changed J.O. -->
 </section>
-<section id="inputs-cost-share-of-revenues" class="level3" data-number="6.0.4">
-<h3 data-number="6.0.4" class="anchored" data-anchor-id="inputs-cost-share-of-revenues"><span class="header-section-number">6.0.4</span> Inputs Cost Share of Revenues</h3>
+<section id="inputs-cost-share-of-revenues" class="level3" data-number="6.0.3">
+<h3 data-number="6.0.3" class="anchored" data-anchor-id="inputs-cost-share-of-revenues"><span class="header-section-number">6.0.3</span> Inputs Cost Share of Revenues</h3>
 <p>The evidence suggests that Corporations have similar technologies to the rest of the firms. I look at the share of revenues of different input costs. In doing so, I consider the incentives generated by the fiscal environment in Colombia. Firms had the lowest incentives to evade taxes by misreporting capital, consumed energy, and skilled labor. The cost share of revenue of these inputs suggests that Corporations and the rest of the firms had the same technologies.</p>
-<section id="capital" class="level4" data-number="6.0.4.1">
-<h4 data-number="6.0.4.1" class="anchored" data-anchor-id="capital"><span class="header-section-number">6.0.4.1</span> Capital</h4>
+<section id="capital" class="level4" data-number="6.0.3.1">
+<h4 data-number="6.0.3.1" class="anchored" data-anchor-id="capital"><span class="header-section-number">6.0.3.1</span> Capital</h4>
 <p>Firms could not deduct capital goods from sales taxes. However, firms of capital-intensive industries might have had incentives to underreport capital because capital was used to set the minimum income tax. Income tax could not be less than 8 percent of the capital.</p>
 </section>
-<section id="energy" class="level4" data-number="6.0.4.2">
-<h4 data-number="6.0.4.2" class="anchored" data-anchor-id="energy"><span class="header-section-number">6.0.4.2</span> Energy</h4>
+<section id="energy" class="level4" data-number="6.0.3.2">
+<h4 data-number="6.0.3.2" class="anchored" data-anchor-id="energy"><span class="header-section-number">6.0.3.2</span> Energy</h4>
 <p>Before the electrical energy reform in 1994, the power market was almost exclusively supplied by public companies with negligible participation from private firms. The public companies were inefficient and suffered financial distress due to poor management and low tariffs set by political actors. Two major blackouts in 1983 and 1992-1993 led to the 1994 reform that opened the sector to private participation.</p>
 <p>It is unlikely that firms overreported energy, as they have to purchase from a Corporation or a public company. Both of those organizations had no incentives to cooperate and provide fake invoices.</p>
-<p>In the data, energy sold by corporations accounted on average for 73% of the total energy sold, but only 1.7% of the total energy purchased. In addition, corporations sold energy at 12 times the market price on average <a href="#tbl-energy" class="quarto-xref">Table&nbsp;12</a>. The high price might suggest corporations had market power in the electric energy market, however, this is unlikely to be relevant to affect any estimations as their overall market share is small.</p>
+<p>In the data, energy sold by corporations accounted on average for 73% of the total energy sold, but only 1.7% of the total energy purchased. In addition, corporations sold energy at 12 times the market price on average <a href="#tbl-energy" class="quarto-xref">Table&nbsp;14</a>. The high price might suggest corporations had market power in the electric energy market, however, this is unlikely to be relevant to affect any estimations as their overall market share is small.</p>
 <div class="cell">
 <div id="tbl-energy" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-energy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;12: Electric energy market in Colombia (1981-1991).
+Table&nbsp;14: Electric energy market in Colombia (1981-1991).
 </figcaption>
 <div aria-describedby="tbl-energy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1935,39 +2277,39 @@ Table&nbsp;12: Electric energy market in Colombia (1981-1991).
 </div>
 </div>
 </section>
-<section id="labor" class="level4" data-number="6.0.4.3">
-<h4 data-number="6.0.4.3" class="anchored" data-anchor-id="labor"><span class="header-section-number">6.0.4.3</span> Labor</h4>
+<section id="labor" class="level4" data-number="6.0.3.3">
+<h4 data-number="6.0.3.3" class="anchored" data-anchor-id="labor"><span class="header-section-number">6.0.3.3</span> Labor</h4>
 <p>Firms might have incentives to underreport labor to evade Payroll Taxes (PRT) if the expected benefits of evading the PRT outweigh the opportunity costs of evading Corporate Income Tax (CIT) by overreporting labor costs and the expected cost of evading PRT <span class="citation" data-cites="Almunia2018">(<a href="#ref-Almunia2018" role="doc-biblioref">Almunia and Lopez-Rodriguez 2018</a>)</span>.</p>
 <p>Firms are more likely to underreport unskilled rather than skilled labor. Skilled employees are less likely to cooperate with firms in underreporting their wages. Firms might offer employees cash compensations in order for employees to accept lower reported wages or report their wages at all. The cost for employees is that these payroll taxes provide them with social benefits such as social security or public health access. These benefits are not obvious in the short run. It is more likely that unskilled labor to be short-sighted and accept to cooperate with firms to underreport their wages. Skilled workers, on the other hand, are less likely to accept these conditions and to have outside options and move if the conditions are not favorable to them.</p>
 </section>
-<section id="services-and-other-expenditures" class="level4" data-number="6.0.4.4">
-<h4 data-number="6.0.4.4" class="anchored" data-anchor-id="services-and-other-expenditures"><span class="header-section-number">6.0.4.4</span> Services and other expenditures</h4>
+<section id="services-and-other-expenditures" class="level4" data-number="6.0.3.4">
+<h4 data-number="6.0.3.4" class="anchored" data-anchor-id="services-and-other-expenditures"><span class="header-section-number">6.0.3.4</span> Services and other expenditures</h4>
 <p>The Colombian dataset allows, to some extent, separating expenditures, including services, into deductible and non-deductible expenses. In contrast to non-evading firms, evading firms should use a higher share of deductible expenses. The reason is that firms have incentives to overreport deductible expenditure to evade ICT and VAT.</p>
 <p>The Colombian data separates firms’ total expenditures into general and industrial expenditures. Industrial expenditure is defined as the indirect costs and expenditures incurred by the firm in order to perform its industrial activity. The data lists the purchase of accessories and replacement parts, fuels and lubricants consumed by the establishment, industrial work by other establishments, and third-party repairs and maintenance, among others, as industrial expenditures<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. All other expenses, including insurance (excluding employee benefits) and machinery rentals, are considered general expenses.</p>
 <p>Most services were excluded from sales taxes. Some non-excluded services in this period were insurance premiums (excluding life insurance), repair and maintenance, national and international telegrams, telex, and telephone, and rental of goods and chattels, including financial leasing.</p>
 <p>I classify as deductible expenses the following industrial expenditures: purchase of fuels and lubricants, payments to third parties for repair and maintenance, purchase of raw materials and goods sold without transformation; and the following general expenditures: machinery rental, insurance excluding employee benefits, and water, mail and telephone expenses.</p>
 </section>
-<section id="technical-note" class="level4" data-number="6.0.4.5">
-<h4 data-number="6.0.4.5" class="anchored" data-anchor-id="technical-note"><span class="header-section-number">6.0.4.5</span> Technical note</h4>
+<section id="technical-note" class="level4" data-number="6.0.3.5">
+<h4 data-number="6.0.3.5" class="anchored" data-anchor-id="technical-note"><span class="header-section-number">6.0.3.5</span> Technical note</h4>
 <p>According to the notes on the dataset, the quantity of energy consumed by firms is estimated as the difference between purchased plus generated energy and sold energy. In contrast, the value of consumed energy is the difference between the value of purchased and sold energy. Consequently, using the calculated value over the calculated quantity of consumed energy ignores the quantity of generated energy and the increase in the price of sold energy by corporations.</p>
 <p>In <span class="citation" data-cites="Gandhi2020">Gandhi et al. (<a href="#ref-Gandhi2020" role="doc-biblioref">2020</a>)</span>, services are defined as general expenditures minus machinery rental and interest payments. However, this approach does not include industrial expenditures which are closely linked to the production process. In the Colombian data, the intermediate consumption is defined as raw materials, purchased electric energy, and industrial expenditure. This definition is close to what is commonly defined as intermediate inputs.</p>
 </section>
-<section id="results" class="level4" data-number="6.0.4.6">
-<h4 data-number="6.0.4.6" class="anchored" data-anchor-id="results"><span class="header-section-number">6.0.4.6</span> Results</h4>
-<p><a href="#tbl-reg-shares" class="quarto-xref">Table&nbsp;13</a> shows that in terms of the capital and consumed energy share of revenue, corporations are not different from other types of juridical organizations. Capital and consumed energy are reliable indicators that Corporations have similar technologies to other firms because firms have no incentives to overreport capital or consumed energy. On the other hand, the raw materials share of revenues is 3 percent higher for non-corporations. Firms have incentives to overreport raw materials to evade sales taxes and CIT. Hence, materials are not a good reference to compare technology between Corporations and other types of firms.</p>
-<p><a href="#tbl-reg-shares-2" class="quarto-xref">Table&nbsp;14</a> shows that the skilled labor share of revenue for corporations is not statistically different from other types of firms. On the other hand, unskilled labor is significantly lower for non-corporations. Unskilled workers are more likely to cooperate with non-corporations to underreport their employment/wages. An alternative explanation is that corporations employ more unskilled workers because they are bigger. Therefore, skilled labor is a more reliable indicator of technology and shows that corporations have similar technology to other firms.</p>
-<p><a href="#tbl-reg-shares-2" class="quarto-xref">Table&nbsp;14</a> also shows that the total expenditure share of revenue is 8 percent lower for non-corporations on average. On one hand, this might be due to size. Corporations tend to be larger than non-corporations. However, the composition of the expenditure matters.</p>
-<p><a href="#tbl-reg-shares-3" class="quarto-xref">Table&nbsp;15</a> shows that the deductible expenses share of total expenditure is 6 percent significantly higher for non-corporations. This is not the case if we classify expenditures by industrial and general expenses. Services as defined in GNR, that is general expenses minus machinery rental and interest payments, as a share of total expenditure is 5 percent higher for non-corporations. Services include deductible expenses such as insurance excluding employee benefits, and telegrams and telephone services.</p>
+<section id="results" class="level4" data-number="6.0.3.6">
+<h4 data-number="6.0.3.6" class="anchored" data-anchor-id="results"><span class="header-section-number">6.0.3.6</span> Results</h4>
+<p><a href="#tbl-reg-shares" class="quarto-xref">Table&nbsp;15</a> shows that in terms of the capital and consumed energy share of revenue, corporations are not different from other types of juridical organizations. Capital and consumed energy are reliable indicators that Corporations have similar technologies to other firms because firms have no incentives to overreport capital or consumed energy. On the other hand, the raw materials share of revenues is 3 percent higher for non-corporations. Firms have incentives to overreport raw materials to evade sales taxes and CIT. Hence, materials are not a good reference to compare technology between Corporations and other types of firms.</p>
+<p><a href="#tbl-reg-shares-2" class="quarto-xref">Table&nbsp;16</a> shows that the skilled labor share of revenue for corporations is not statistically different from other types of firms. On the other hand, unskilled labor is significantly lower for non-corporations. Unskilled workers are more likely to cooperate with non-corporations to underreport their employment/wages. An alternative explanation is that corporations employ more unskilled workers because they are bigger. Therefore, skilled labor is a more reliable indicator of technology and shows that corporations have similar technology to other firms.</p>
+<p><a href="#tbl-reg-shares-2" class="quarto-xref">Table&nbsp;16</a> also shows that the total expenditure share of revenue is 8 percent lower for non-corporations on average. On one hand, this might be due to size. Corporations tend to be larger than non-corporations. However, the composition of the expenditure matters.</p>
+<p><a href="#tbl-reg-shares-3" class="quarto-xref">Table&nbsp;17</a> shows that the deductible expenses share of total expenditure is 6 percent significantly higher for non-corporations. This is not the case if we classify expenditures by industrial and general expenses. Services as defined in GNR, that is general expenses minus machinery rental and interest payments, as a share of total expenditure is 5 percent higher for non-corporations. Services include deductible expenses such as insurance excluding employee benefits, and telegrams and telephone services.</p>
 <p>In summary, looking at the inputs that firms are less likely to misreport due to tax evasion incentives, the evidence suggests that Corporations have similar technologies to the other types of firms. In addition, I find that the cost share of inputs that are likely to be misreported due to tax evasion incentives are significantly different from corporations and in the expected direction. In particular, it looks like firms overreport materials and deductible expenses, and underreport unskilled labor.</p>
 <div id="tbl-reg-shares" class="quarto-layout-panel anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-shares-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;13: Shares of Revenue for different inputs by Corporations and Non-Corporation.
+Table&nbsp;15: Shares of Revenue for different inputs by Corporations and Non-Corporation.
 </figcaption>
 <div aria-describedby="tbl-reg-shares-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
 <div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-04-29_8045879425.png" class="figure-img">
+<img src="./images/etable/etable_tex_2024-05-08_8045879425.png" class="figure-img">
 </div>
 </div>
 </div>
@@ -1976,12 +2318,12 @@ Table&nbsp;13: Shares of Revenue for different inputs by Corporations and Non-Co
 <div id="tbl-reg-shares-2" class="quarto-layout-panel anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-shares-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;14: Shares of Revenue for different inputs by Corporations and Non-Corporation.
+Table&nbsp;16: Shares of Revenue for different inputs by Corporations and Non-Corporation.
 </figcaption>
 <div aria-describedby="tbl-reg-shares-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
 <div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-03-21_7008604292.png" class="figure-img">
+<img src="./images/etable/etable_tex_2024-05-08_7008604292.png" class="figure-img">
 </div>
 </div>
 </div>
@@ -1990,12 +2332,12 @@ Table&nbsp;14: Shares of Revenue for different inputs by Corporations and Non-Co
 <div id="tbl-reg-shares-3" class="quarto-layout-panel anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-shares-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;15: Shares of Total Expenses for different classifications of expenses by Corporations and Non-Corporation.
+Table&nbsp;17: Shares of Total Expenses for different classifications of expenses by Corporations and Non-Corporation.
 </figcaption>
 <div aria-describedby="tbl-reg-shares-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
 <div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<img src="./images/etable/etable_tex_2024-03-21_1496442709.png" class="figure-img">
+<img src="./images/etable/etable_tex_2024-05-08_1496442709.png" class="figure-img">
 </div>
 </div>
 </div>
@@ -2145,11 +2487,11 @@ h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
 <section id="revenue-misreporting" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> Revenue misreporting</h1>
 <p>Firms might also evade CIT and VAT by underreporting their revenues. Upstream firms, however, are less likely to engage in this kind of evasion <span class="citation" data-cites="Almunia2018">(<a href="#ref-Almunia2018" role="doc-biblioref">Almunia and Lopez-Rodriguez 2018</a>)</span>. Manufacturing firms in Colombia were mostly upstream; only 13% of their sales were direct final consumers, according to a sample of firms surveyed in 1984 <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>.</p>
-<p>As robustness checks, I can identify industries whose sale shares directed to final consumers are negligible from this historical document <a href="#tbl-1984-manu-sales" class="quarto-xref">Table&nbsp;16</a>.</p>
+<p>As robustness checks, I can identify industries whose sale shares directed to final consumers are negligible from this historical document <a href="#tbl-1984-manu-sales" class="quarto-xref">Table&nbsp;18</a>.</p>
 <div id="tbl-1984-manu-sales" class="quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-1984-manu-sales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;16: Distribution of Sales from Manufacturing Firms, by type of Purchaser (in percentage) <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>
+Table&nbsp;18: Distribution of Sales from Manufacturing Firms, by type of Purchaser (in percentage) <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>
 </figcaption>
 <div aria-describedby="tbl-1984-manu-sales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table">
@@ -2463,12 +2805,12 @@ Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\h
 
 <div id="quarto-appendix" class="default"><section id="empirical-appendix" class="level1 appendix" data-number="5"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">5</span> Empirical Appendix</h2><div class="quarto-appendix-contents">
 
-<section id="diff-in-diff-by-industry" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="diff-in-diff-by-industry"><span class="header-section-number">5.1</span> Diff-in-Diff by Industry</h2>
+<section id="changes-in-sales-tax" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="changes-in-sales-tax"><span class="header-section-number">5.1</span> Changes in Sales Tax</h2>
 <div id="tbl-reg-did-inds" class="quarto-layout-panel anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-did-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;8: DiD on Sales Taxes by Industry. The Control Group is Corporations in 1983 (1982)
+Table&nbsp;11: DiD on Sales Taxes by Industry. The Control Group is Corporations in 1983 (1982).
 </figcaption>
 <div aria-describedby="tbl-reg-did-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
@@ -2477,13 +2819,28 @@ Table&nbsp;8: DiD on Sales Taxes by Industry. The Control Group is Corporations 
 </div>
 </div>
 <div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
 <div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
 <img src="./images/etable/etable_tex_2024-05-06_7919392153.png" class="figure-img">
 </div>
 </div>
 <div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
+</div>
+</div>
+<div class="quarto-layout-row">
 <div class="table quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
 <img src="./images/etable/etable_tex_2024-05-06_1.82269273.png" class="figure-img">
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
+NULL
 </div>
 </div>
 <div class="quarto-layout-row">
@@ -2493,50 +2850,12 @@ Table&nbsp;8: DiD on Sales Taxes by Industry. The Control Group is Corporations 
 </div>
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[1]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[2]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[3]] NULL</p>
-</div>
-</div>
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: flex-start;">
-<p>[[4]] NULL</p>
+<p>NULL</p>
 </div>
 </div>
 </div>
 </figure>
 </div>
-<!-- 
-::: {#tbl-reg-did-inds-logs layout-ncol="1"}
-
-
-::: {#tbl-reg-did-inds-logs-1 .cell tbl-cap='DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).'}
-<div class = "table"><img src = "./images/etable/etable_tex_2024-05-06_1558039706.png"></div>
-:::
-
-::: {#tbl-reg-did-inds-logs-2 .cell tbl-cap='DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).'}
-<div class = "table"><img src = "./images/etable/etable_tex_2024-05-06_1189067943.png"></div>
-:::
-
-::: {#tbl-reg-did-inds-logs-3 .cell tbl-cap='DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).'}
-<div class = "table"><img src = "./images/etable/etable_tex_2024-05-06_9231699667.png"></div>
-:::
-
-::: {#tbl-reg-did-inds-logs-4 .cell tbl-cap='DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).'}
-<div class = "table"><img src = "./images/etable/etable_tex_2024-05-06_7478385050.png"></div>
-:::
-
-
-
-::: -->
 <!-- Same Techonology *-->
 </section>
 </div></section><section id="references" class="level1 appendix" data-number="10"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">10</span> References</h2><div class="quarto-appendix-contents">

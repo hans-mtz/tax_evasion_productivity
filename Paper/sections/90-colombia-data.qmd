@@ -1,4 +1,4 @@
-### Data
+## Data
 
 The Colombian data is a well-known firm-level panel data set that has been used in the estimation of production functions and productivity before. The Colombian dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.
 
@@ -9,35 +9,35 @@ Besides the information on output, intermediates, capital, and labor, the datase
 ```{r}
 #| label: tbl-sum-stats
 #| tbl-cap: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
+#| html-table-processing: none
 #| echo: false
 #| warning: false
 
 
 
 labels <- c(
-    'capital' = 'Capital',
-    'mats_serv' = 'Materials & Services',
-    'skilled_labor' = 'Labor (Skilled)',
-    'unskilled_labor' = 'Labor (Unskilled)',
-    'sales' = 'Revenue',
-    'sales_taxes' = 'Sales Taxes',
-    'JO_class' = 'J. Org.'#,
-    # intermediates_share = intermediate_inputs/sales,
-    # mats_serv_share = mats_serv/sales,
-    # mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
-    # materials_share = materials/sales,
-    # capital_share = capital/sales,
-    # total_expenses_share = total_expenditure/sales,
-    # services_exp_share = services/total_expenditure,
-    # industrial_exp_share = industrial_expenditure/total_expenditure,
-    # deductible_exp_share = deductible_expenses/total_expenditure,
+    # 'capital' = 'Capital',
+    # 'mats_serv' = 'Materials & Services',
+    # 'skilled_labor' = 'Labor (Skilled)',
+    # 'unskilled_labor' = 'Labor (Unskilled)',
+    # 'sales' = 'Revenue',
+    # 'sales_taxes' = 'Sales Taxes',
+    # 'JO_class' = 'J. Org.',
+    'skilled_wage_bill_share' = 'Skilled Labor (Wages)',
+    'unskilled_wage_bill_share' = 'Unskilled Labor (Wages)',
+    'share_sales_tax' = 'Sales Taxes',
+    'intermediates_share' = 'Intermediates',
+    'mats_serv_share' = 'Materials + Services',
+    'mats_deduct_share' = 'Materials + Deductibles',
+    'materials_share' = 'Materials',
+    'capital_share' = 'Capital',
+    'total_expenses_share' = 'Total Expenditure',
+    'services_exp_share' = 'Services',
+    'industrial_exp_share' = 'Industrial',
+    'deductible_exp_share' = 'Deductible'
 )
 
-for (var in names(labels)) {
-  colombia_data_frame[[var]] <- haven::labelled(colombia_data_frame[[var]], label = labels[var])
-}
-
-colombia_data_frame %>%
+tbl_data<-colombia_data_frame %>%
     filter(
         sales > 0 ,
         capital > 0,
@@ -75,25 +75,86 @@ colombia_data_frame %>%
         # deductible_expenses,
         # year,
         `J. Org.`= JO_class,
+        share_sales_tax,
         # sic_3,
         # metro_area_code
-        ends_with("share") & !starts_with("log")
-    ) %>%
-    datasummary_skim(
-        fun_numeric = list(
-            Missing = PercentMissing, 
-            Mean = Mean, 
-            SD = SD, 
-            `Q1` = P25,
-            Median = Median,
-            `Q3` = P75
-        ),
-        fmt = 3
-        # output = 'kableExtra',
-        # table.attr = "data-quarto-disable-processing=\"true\""
+        ends_with("share") & !starts_with("log") #& !contains("bill")
+    )
+
+for (var in names(labels)) {
+  tbl_data[[var]] <- haven::labelled(
+    tbl_data[[var]], label = labels[var]
+    )
+}
+
+datasummary_skim(
+    tbl_data,
+    fun_numeric = list(
+        Missing = PercentMissing, 
+        Mean = Mean, 
+        SD = SD, 
+        Q1 = P25,
+        Median = Median,
+        Q3 = P75
+    ),
+    fmt = 3,
+    # output = 'kableExtra',
+    # table.attr = 'data-quarto-disable-processing="true"'
+    ) |> 
+    group_tt(
+        i = list(
+            "Share of Revenues" = 1,
+            "Share of Total Expenditure" = 10
+        )
+    ) |>
+    style_tt(
+        i = c(1,11,15),
+        bold = TRUE,
+        line = "b"
+    ) |>
+    style_tt(
+        i = 12,
+        line = "b",
+        line_color = "white"
     )
 
 ```
+
+
+### Corporations by Industry
+
+Looking into industry sectors.
+
+```{r}
+#| label: tbl-corps-by-inds
+#| tbl-cap: Corporations by Industry. Top 20 Industries in Colombia by number of firms.
+#| echo: false
+#| warning: false
+
+top_20_inds %>%
+    select(
+        # !Change:Perry,
+        description, sic_3, market_share, n_sic, n_perc, corps_n, corps_share, 
+    ) %>%
+    kbl(
+        digits = 2,
+        col.names = c(
+            "Industry",
+            "SIC",
+            "Market Share",
+            "N",
+            "N (%)",
+            "Corps. (N)",
+            "Corps. (%)"
+            ),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
+### The Fiscal Reforms
 
 A simple graphical analysis shows that the average (of the log) intermediates cost share of sales started growing after 1983 and that it stabilized in 1988 after the policy changes of the 1986 reform settled in (@fig-logshare). The dataset does not capture any changes after the 1990 reform, although there is only one more year of data.
 
@@ -150,7 +211,7 @@ Effect of the Juridical Organization Type and Sales Tax on the Log Share of Inte
 
 Although this is not deterministic evidence, it does not contradict the hypothesis that firms other than corporations have incentives to overreport intermediates to evade taxes and that the higher the taxes the higher the incentives to evade by misreporting.
 
-## Data and Fiscal Reform of 1983 by Industry
+### The Fiscal Reform of 1983 by Industry
 
 ```{r}
 #| label: tbl-1983-by-inds

@@ -386,8 +386,6 @@ colombia_data_frame %>%
         materials_share = materials/sales,
         capital_share = capital/sales,
         total_expenses_share = total_expenditure/sales,
-        # skilled_wages_share = skilled_wage_bill_share/sales,
-        # unskilled_wages_share = unskilled_wage_bill_share/sales,
         services_exp_share = services/total_expenditure,
         industrial_exp_share = industrial_expenditure/total_expenditure,
         deductible_exp_share = deductible_expenses/total_expenditure,
@@ -412,7 +410,7 @@ colombia_data_frame %>%
         JO_class,
         # mats_deduct_share
         # ends_with("share"),
-        ends_with("share") & !starts_with("log")
+        ends_with("share")# & !starts_with("log")
     ) %>%
     datasummary_skim(
         # type = "numeric"

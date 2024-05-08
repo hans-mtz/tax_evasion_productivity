@@ -41,6 +41,12 @@ ex_name <- "night"#"select"#"tax"#"win" #"subsidies"#"share"#  "exp-ratio"#"sale
 # Colombian big industries ----
 
 industries <- colombia_data_frame %>%
+    filter(
+        sales > 0,
+        # !is.na(capital),
+        !is.na(k),!is.na(l), !is.na(m)
+        # n_sic > 500
+    ) %>%
     group_by(sic_3) %>%
     summarise(n_sic = n()) %>%
     arrange(desc(n_sic)) %>%
@@ -350,6 +356,29 @@ plot_data <- colombia_data_frame %>%
 
 split_plot_data <- plot_data %>%
     split(plot_data$sic_3)
+
+exps_tbl<-tribble(
+    ~Expenditure, ~Code, ~Services, ~Industrial, ~Deductible,
+    "Purchases of accessories and replacement parts of less than one year duration", "c1"," ", "$+$"," ",  
+    "Purchases of fuels and lubricants consumed by the establishment", "c2"," ", "$+$", "$+$",
+    "Payments for industrial work by other establishments", "c3"," ", "$+$", " ",
+    "Payment of domestic workers", "c4"," ","$+$", " ",
+    "Payments of third parties for repairs and maintenance", "c5"," ", "$+$", "$+$",
+    "Purchases of raw materials and goods sold without transformation", "c6"," ", "$+$", "$+$",
+    "TOTAL Industrial Expenditures (c1:c6)", "c7",  " "," ", " ",
+    "Rent of fixed property", "c8","$+$", " ", " ",
+    "Payments for professional services", "c9","$+$", " "," ", 
+    "Machinery rental", "c10", " ", " ", "$+$",
+    "Insurance, excl. employe benefits", "c11","$+$", " ", "$+$",
+    "Water, mail, telephone, etc.", "c12","$+$", " ", "$+$",
+    "Publicity and advertising", "c13","$+$", " ", " ",
+    "Interest payments", "c14", " "," ", " ", 
+    "Royalty payments", "c15" ,"$+$", " ", " ",
+    "Other expenditures", "c16","$+$", " ", " ",
+    "TOTAL General Expenditures (c8:c16)", "c17", " "," ", " ",
+    "TOTAL Expenditure (c7+c17)", " ", " ", " ", " ",
+)
+
 # Saving global variables -----------
 print("Saving global variables")
 save(

@@ -205,39 +205,6 @@ Take the face value of the regressions and assume, without conceding, that corpo
 However, these cross-sectional differences across industries could be better explained by the evasion technology. We would expect the evasion technology to be the same across industries. It does not matter what I produce and what technology my firm employs, to overreport inputs all that is needed is a fake invoice. 
 
 
-#### Corporations by Industry
-
-Looking into industry sectors.
-
-```{r}
-#| label: tbl-corps-by-inds
-#| tbl-cap: Corporations by Industry. Top 20 Industries in Colombia by number of firms.
-#| echo: false
-#| warning: false
-
-top_20_inds %>%
-    select(
-        # !Change:Perry,
-        description, sic_3, market_share, n_sic, n_perc, corps_n, corps_share, 
-    ) %>%
-    kbl(
-        digits = 2,
-        col.names = c(
-            "Industry",
-            "SIC",
-            "Market Share",
-            "N",
-            "N (%)",
-            "Corps. (N)",
-            "Corps. (%)"
-            ),
-        table.attr = 'data-quarto-disable-processing="true"'
-    ) %>%
-    kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-
 <!-- #### Are firms switching Juridical Organization types in the data? -->
 
 <!-- Most firms did not change their J.O. in the sample. Very few changed one time and then stayed in their new J.O. Firms rarely changed more than once. Over time, around 2-3% of firms in an industry changed J.O. Across industries, around 2% of firms changed J.O. each year. Overall only 2.3% of firms changed J.O. -->

@@ -220,14 +220,14 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 
 %%%% --- end foldboxy preamble ----- %%%%%
 %%==== colors from yaml ===%
-\definecolor{Proposition-color1}{HTML}{99CCFF}
-\definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Assumption-color1}{HTML}{99CCFF}
+\definecolor{Assumption-color2}{HTML}{FFFFFF}
 \definecolor{Definition-color1}{HTML}{99CCFF}
 \definecolor{Definition-color2}{HTML}{FFFFFF}
 \definecolor{Theorem-color1}{HTML}{99CCFF}
 \definecolor{Theorem-color2}{HTML}{FFFFFF}
-\definecolor{Assumption-color1}{HTML}{99CCFF}
-\definecolor{Assumption-color2}{HTML}{FFFFFF}
+\definecolor{Proposition-color1}{HTML}{99CCFF}
+\definecolor{Proposition-color2}{HTML}{FFFFFF}
 %=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{May 6, 2024}
+\date{May 8, 2024}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -945,15 +945,15 @@ reception of tax reports in 1986--- would decrease tax evasion.
 \hline
 Reform Year & J.O. Affected & Income Tax Change\\
 \hline
-1983 & Individuals & 8\% increase in most scales; Max tax rate was reduced from 56 to 49\%\\
-\hline
-1983 & Ltd. Co. & Reduction from 20 to 18\%; Now subject to presumptive income\\
-\hline
-1986 & Individuals & Max tax rate applied was reduced from 49 to 30\%\\
-\hline
-1986 & Ltd. Co. & Increased from 18 to 30\%\\
-\hline
-1986 & Corporations & Decreased from 40 to 30\%\\
+ & Individuals & 8\% increase in most scales; Max tax rate was reduced from 56 to 49\%\\
+\cline{2-3}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 1983} & Ltd. Co. & Reduction from 20 to 18\%; Now subject to presumptive income\\
+\cline{1-3}
+ & Individuals & Max tax rate applied was reduced from 49 to 30\%\\
+\cline{2-3}
+ & Ltd. Co. & Increased from 18 to 30\%\\
+\cline{2-3}
+\multirow[t]{-3}{*}{\raggedleft\arraybackslash 1986} & Corporations & Decreased from 40 to 30\%\\
 \hline
 \end{tabular}
 
@@ -975,28 +975,28 @@ Reform Year & J.O. Affected & Income Tax Change\\
 \cline{1-2}
 Industry Description & Sales Tax Change & SIC & Industry\\
 \hline
-Beverages and Tobacco & - to 35;10 & 313 & Beverage Industries\\
-\hline
-Beverages and Tobacco & - to 35;10 & 314 & Tobacco Manufactures\\
-\hline
+ & - to 35;10 & 313 & Beverage Industries\\
+\cline{2-4}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash Beverages and Tobacco} & - to 35;10 & 314 & Tobacco Manufactures\\
+\cline{1-4}
 Textiles & 6 to 10 & 321 & Textiles\\
-\hline
+\cline{1-4}
 Paper & 15 to 10 & 341 & Paper and Paper Products\\
-\hline
+\cline{1-4}
 Other Chemical Products & 15 to 10 & 351 & Industrial Chemicals\\
-\hline
+\cline{1-4}
 Soap & 6;15 to 10 & 352 & Other Chemical Products\\
-\hline
+\cline{1-4}
 Oil and Coal Derivatives & 10 to 14 & 354 & Miscellaneous Products of Petroleum and Coal\\
-\hline
+\cline{1-4}
 Plastics & 15 to 10 & 356 & Plastic Products Not Elsewhere Classified\\
-\hline
+\cline{1-4}
 Iron and Steel; Nickel Smelting & 6;15 to 10 & 371 & Iron and Steel Basic Industries\\
-\hline
-Equipment and Machinery & 6 to 10 & 382 & Machinery Except Electrical\\
-\hline
-Equipment and Machinery & 6 to 10 & 383 & Electrical Machinery Apparatus, Appliances and Supplies\\
-\hline
+\cline{1-4}
+ & 6 to 10 & 382 & Machinery Except Electrical\\
+\cline{2-4}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash Equipment and Machinery} & 6 to 10 & 383 & Electrical Machinery Apparatus, Appliances and Supplies\\
+\cline{1-4}
 Transportation & 6 to 10 & 384 & Transport Equipment\\
 \hline
 \end{tabular}
@@ -1005,7 +1005,7 @@ Transportation & 6 to 10 & 384 & Transport Equipment\\
 
 \end{table}%
 
-\subsection{Data}\label{data}
+\section{Data}\label{data}
 
 The Colombian data is a well-known firm-level panel data set that has
 been used in the estimation of production functions and productivity
@@ -1029,21 +1029,48 @@ Colombia (1981-1991)}
 ]                     %% tabularray outer close
 {                     %% tabularray inner open
 colspec={Q[]Q[]Q[]Q[]Q[]Q[]Q[]},
-hline{13}={1,2,3,4,5,6,7}{solid, 0.1em, black},
+cell{2}{1}={c=7}{},cell{12}{1}={c=7}{},
+cell{3}{1}={preto={\hspace{1em}}},
+cell{4}{1}={preto={\hspace{1em}}},
+cell{5}{1}={preto={\hspace{1em}}},
+cell{6}{1}={preto={\hspace{1em}}},
+cell{7}{1}={preto={\hspace{1em}}},
+cell{8}{1}={preto={\hspace{1em}}},
+cell{9}{1}={preto={\hspace{1em}}},
+cell{10}{1}={preto={\hspace{1em}}},
+cell{11}{1}={preto={\hspace{1em}}},
+cell{13}{1}={preto={\hspace{1em}}},
+cell{14}{1}={preto={\hspace{1em}}},
+cell{15}{1}={preto={\hspace{1em}}},
+cell{16}{1}={preto={\hspace{1em}}},
+cell{17}{1}={preto={\hspace{1em}}},
+cell{18}{1}={preto={\hspace{1em}}},
+cell{19}{1}={preto={\hspace{1em}}},
+cell{20}{1}={preto={\hspace{1em}}},
+cell{21}{1}={preto={\hspace{1em}}},
+hline{14}={1,2,3,4,5,6,7}{solid, 0.1em, black},
+row{2}={,cmd=\bfseries,},
+row{12}={,cmd=\bfseries,},
+row{16}={,cmd=\bfseries,},
+hline{3,13,17}={1,2,3,4,5,6,7}{solid, 0.1em, black},
+hline{14}={1,2,3,4,5,6,7}{solid, 0.1em, white},
 }                     %% tabularray inner close
 \toprule
 & Missing & Mean & SD & Q1 & Median & Q3 \\ \midrule %% TinyTableHeader
-skilled\_wage\_bill\_share & 0 & 0.165 & 17.777 & 0.032 & 0.061 & 0.103 \\
-unskilled\_wage\_bill\_share & 0 & 0.177 & 0.358 & 0.073 & 0.140 & 0.233 \\
-intermediates\_share & 0 & 0.630 & 0.249 & 0.516 & 0.635 & 0.747 \\
-mats\_serv\_share & 0 & 0.608 & 0.251 & 0.493 & 0.616 & 0.731 \\
-mats\_deduct\_share & 0 & 0.545 & 0.203 & 0.420 & 0.545 & 0.672 \\
-materials\_share & 0 & 0.496 & 0.214 & 0.365 & 0.500 & 0.633 \\
-capital\_share & 0 & 0.485 & 7.484 & 0.126 & 0.261 & 0.498 \\
-total\_expenses\_share & 0 & 0.203 & 0.425 & 0.104 & 0.167 & 0.258 \\
-services\_exp\_share & 0 & 0.600 & 0.216 & 0.446 & 0.615 & 0.770 \\
-industrial\_exp\_share & 0 & 0.243 & 0.201 & 0.088 & 0.186 & 0.344 \\
-deductible\_exp\_share & 0 & 0.236 & 0.172 & 0.112 & 0.187 & 0.306 \\
+Share of Revenues &&&&&&& \\
+Sales Taxes & 0 & 0.066 & 0.050 & 0.007 & 0.070 & 0.100 \\
+Skilled Labor (Wages) & 0 & 0.165 & 17.777 & 0.032 & 0.061 & 0.103 \\
+Unskilled Labor (Wages) & 0 & 0.177 & 0.358 & 0.073 & 0.140 & 0.233 \\
+Intermediates & 0 & 0.630 & 0.249 & 0.516 & 0.635 & 0.747 \\
+Materials + Services & 0 & 0.608 & 0.251 & 0.493 & 0.616 & 0.731 \\
+Materials + Deductibles & 0 & 0.545 & 0.203 & 0.420 & 0.545 & 0.672 \\
+Materials & 0 & 0.496 & 0.214 & 0.365 & 0.500 & 0.633 \\
+Capital & 0 & 0.485 & 7.484 & 0.126 & 0.261 & 0.498 \\
+Total Expenditure & 0 & 0.203 & 0.425 & 0.104 & 0.167 & 0.258 \\
+Share of Total Expenditure &&&&&&& \\
+Services & 0 & 0.600 & 0.216 & 0.446 & 0.615 & 0.770 \\
+Industrial & 0 & 0.243 & 0.201 & 0.088 & 0.186 & 0.344 \\
+Deductible & 0 & 0.236 & 0.172 & 0.112 & 0.187 & 0.306 \\
 J. Org. & N & \% &  &  &  &  \\
 Proprietorship & 5380 & 13.184 &  &  &  &  \\
 Ltd. Co. & 25643 & 62.840 &  &  &  &  \\
@@ -1055,6 +1082,66 @@ Partnership & 1460 & 3.578 &  &  &  &  \\
 }
 
 \end{table}%
+
+\subsection{Corporations by Industry}\label{corporations-by-industry}
+
+Looking into industry sectors.
+
+\begin{table}
+
+\caption{\label{tbl-corps-by-inds}Corporations by Industry. Top 20
+Industries in Colombia by number of firms.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|r|r|r|r|r|r}
+\hline
+Industry & SIC & Market Share & N & N (\%) & Corps. (N) & Corps. (\%)\\
+\hline
+Food Manufacturing & 311 & 20.08 & 6238 & 14.91 & 1154 & 18.50\\
+\hline
+Food Manufacturing & 312 & 4.52 & 1267 & 3.03 & 297 & 23.44\\
+\hline
+Wearing Apparel, Except Footwear & 322 & 2.17 & 4526 & 10.82 & 138 & 3.05\\
+\hline
+Fabricated Metal Products, Except Machinery and Equipment & 381 & 3.35 & 3724 & 8.90 & 629 & 16.89\\
+\hline
+Textiles & 321 & 6.32 & 2911 & 6.96 & 535 & 18.38\\
+\hline
+Machinery Except Electrical & 382 & 1.66 & 2180 & 5.21 & 260 & 11.93\\
+\hline
+Transport Equipment & 384 & 5.84 & 1476 & 3.53 & 320 & 21.68\\
+\hline
+Electrical Machinery Apparatus, Appliances and Supplies & 383 & 3.31 & 1414 & 3.38 & 450 & 31.82\\
+\hline
+Beverage Industries & 313 & 8.25 & 1129 & 2.70 & 708 & 62.71\\
+\hline
+Paper and Paper Products & 341 & 4.33 & 1079 & 2.58 & 302 & 27.99\\
+\hline
+Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear & 324 & 0.86 & 1075 & 2.57 & 59 & 5.49\\
+\hline
+Printing, Publishing and Allied Industries & 342 & 2.47 & 2100 & 5.02 & 264 & 12.57\\
+\hline
+Other Non-Metallic Mineral Products & 369 & 3.14 & 1950 & 4.66 & 473 & 24.26\\
+\hline
+Other Manufacturing Industries & 390 & 0.75 & 1009 & 2.41 & 115 & 11.40\\
+\hline
+Furniture and Fixtures, Except Primarily of Metal & 332 & 0.28 & 1009 & 2.41 & 57 & 5.65\\
+\hline
+Industrial Chemicals & 351 & 6.36 & 817 & 1.95 & 534 & 65.36\\
+\hline
+Other Chemical Products & 352 & 7.20 & 2250 & 5.38 & 824 & 36.62\\
+\hline
+Plastic Products Not Elsewhere Classified & 356 & 2.89 & 1682 & 4.02 & 328 & 19.50\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsection{The Fiscal Reforms}\label{the-fiscal-reforms}
 
 A simple graphical analysis shows that the average (of the log)
 intermediates cost share of sales started growing after 1983 and that it
@@ -1170,8 +1257,8 @@ hypothesis that firms other than corporations have incentives to
 overreport intermediates to evade taxes and that the higher the taxes
 the higher the incentives to evade by misreporting.
 
-\section{Data and Fiscal Reform of 1983 by
-Industry}\label{data-and-fiscal-reform-of-1983-by-industry}
+\subsection{The Fiscal Reform of 1983 by
+Industry}\label{the-fiscal-reform-of-1983-by-industry}
 
 \begin{table}
 
@@ -1189,24 +1276,24 @@ column{6}={wd=20em,halign=c,},
 }                     %% tabularray inner close
 \toprule
 SIC & Industry & P&T (1990) & Change & Change Year & Annual Sales Tax (82-86) \\ \midrule %% TinyTableHeader
-311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idi4zfgnx5fslz1v5k1rwl.png} \\
-312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/iddf3lsh10neiyj1gie7zl.png} \\
-322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idd5p6jcwdhyvkd8b87eev.png} \\
-381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id5h84ml6s038y227yegm6.png} \\
-321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id24phy0sdtabe2zzx3avg.png} \\
-382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idtamns8ap1vqyxr3tlag5.png} \\
-384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idq1wgwpybbwwnc5jpqpi4.png} \\
-383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/iddll0zecmru0xs9ck6aw9.png} \\
-313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idi7ka42ke9dq3cx5ys1se.png} \\
-341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idc41rwmqc2acvrcr9vo8n.png} \\
-324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id6k668n0kgzm11ghy56xd.png} \\
-342 & Printing, Publishing and Allied Industries &   & Decreased &  & \includegraphics[height=4em]{tinytable_assets/idvgxvtfgoy0d2bxf7bmj0.png} \\
-369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id5r6oivgfk3juad35pb01.png} \\
-390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idgsjay9do4yutm1p858uo.png} \\
-332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idkiht9czuhf5sdrj62cgt.png} \\
-351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idxkqy8xhqbsnb76xn0btk.png} \\
-352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idbycphwer6evujzi59wg1.png} \\
-356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/id5yaaq0s898cziog9veob.png} \\
+311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idv605hnh7exsc9hqpufzb.png} \\
+312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idb0do14g6iewt82tepbwn.png} \\
+322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idjvrajch6fxz9ijws9qju.png} \\
+381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idow4nxvgz9hwmjvg4x07q.png} \\
+321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idtemt9vwwyxe9lgi50n6k.png} \\
+382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id8ovmej5daxw86x40kco1.png} \\
+384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/ids85viw886ej8trcvwt6r.png} \\
+383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idyj4xb4ta9mj940khnl1e.png} \\
+313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idwjvrqtik4zvx6yez0um2.png} \\
+341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idxcsz890ulbgmerwy4xxw.png} \\
+324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idr4u0clg0wc9medyxhc2i.png} \\
+342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idhsoh1k25aacyfpw8bnir.png} \\
+369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id7axdpo8mj61qe7oqgi63.png} \\
+390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idtrer6f6dsvpgctqnd94d.png} \\
+332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id0gmngey5sdtah9q0xi1q.png} \\
+351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idlntqc31z1xz4xjqp9xqr.png} \\
+352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idzwolxt4bwvf6inwvr59i.png} \\
+356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idnpa3d5es6pad52wqpzfu.png} \\
 \bottomrule
 \end{tblr}
 
@@ -1235,47 +1322,45 @@ increased by 8\% in most scales, while the maximum was reduced from 56
 to 49\%. For limited liability companies, the CIT was reduced from 10 to
 18\%.
 
-To evaluate the change in tax evasion by input cost overreporting, I
-first group industries into four groups depending on whether the sales
-tax of the industry was increased, decreased, exempted, or not changed.
-I use corporations in the decreased sales tax rate group as the control
-group.
+To evaluate the change in tax evasion by input cost overreporting due to
+the change in the sales tax, I apply a triple difference approach. I use
+corporations in the industries exempted from sales taxes the year before
+the policy change as the control group.
 
-Formally, what I have is the following:
-
-Non-corporations in industry \(k\), which might have received an
-increment or decrement in their sales tax rate
+Formally, non-corporations in industry \(k\), which might have received
+an increment or decrement in their sales tax rate,
 
 \[
-s_{1,j,t}^k=\alpha^k_t+\beta_1+e^{k,VAT}_{j,t}+e^{k,CIT}_{j,t}+\varepsilon_{jt}
+s_{1,j,t}^k=\lambda^k_t+\mu^k_1+e^{VAT}_{j,t}+e^{CIT}_{j,t}+\varepsilon_{jt}
 \]
 
-Corporations in industry \(k\) \[
-s_{0,j,t}^k=\alpha^k_t+\beta_0+\varepsilon_{jt}
+Corporations in industry \(k\), \[
+s_{0,j,t}^k=\lambda^k_t+\mu^k_0+\varepsilon_{jt}
 \]
 
-Likewise, Corporations and Non-corporations in an industry exempt of
+Likewise, Non-corporations and Corporations in an industry exempt from
 sales taxes
 
 \[
 \begin{aligned}
-    s_{1,j,t}^{E}&=\alpha^{E}_t+\beta_1+e^{E,VAT}_{j,t}+e^{E,CIT}_{j,t}+\varepsilon_{jt}\\
-    s_{0,j,t}^E&=\alpha^E_t+\beta_0+\varepsilon_{jt}
+    s_{1,j,t}^{E}&=\lambda^{E}_t+\mu^E_1+e^{CIT}_{j,t}+\varepsilon_{jt}\\
+    s_{0,j,t}^E&=\lambda^E_t+\mu^E_0+\varepsilon_{jt}
 \end{aligned}
 \]
 
-Taking the difference between time \(t'\) and \(t\),
+Taking the difference between time \(t'\) and \(t\) in industry \(k\)
+for both, corporations and non-corporations,
 
 \[
 \begin{aligned}
-    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&=\Delta_\alpha+\Delta_{e^{VAT}}+\Delta_{e^{CIT}}\\
-    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&=\Delta_\alpha
+    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&=\Delta_\lambda^k+\Delta_e^{VAT}+\Delta_e^{CIT}\\
+    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&=\Delta_\lambda^k
 \end{aligned}
 \]
 
-The diff-in-diff approach will recover the joint effect of both policy
+The diff-in-diff method will recover the joint effect of both policy
 changes, \[
-\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_{e^{VAT}}+\Delta_{e^{CIT}}
+\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_e^{VAT}+\Delta_e^{CIT}
 \]
 
 The joint effect might be ambiguous because an increase in the sales tax
@@ -1293,14 +1378,14 @@ So we have,
 \[
 \begin{aligned}    
     \mathbb{E}[s_{1,j,t'}^k]&-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)\\ 
-    &- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_{e^{VAT}}
+    &- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_e^{VAT}
 \end{aligned}
 \]
 
 In regression form,
 
 \[
-s_{jt}=\alpha \left\{ \mathbb{1}[t=t']\times\mathbb{1}[\text{treat}=\text{Non-Corp}]\times\mathbb{1}[k\not=E] \right\}+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
+s_{jt}=\alpha \left[ \mathbb{1}\{t=t'\}\times\mathbb{1}\{\text{treat}=\text{Non-Corp}\}\times\mathbb{1}\{k\not=E\} \right]+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
 \]
 
 \begin{table}
@@ -1312,16 +1397,12 @@ industries exempted from the Tax Rate the year before the Reform of 1983
 
 \begin{minipage}{\linewidth}
 
-{[}{[}1{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{322} \\ 
+   Industry & \multicolumn{4}{c}{Wearing Apparel, Except Footwe...} \\ 
    Tax Change & \multicolumn{4}{c}{Increased} \\ 
    Model:                                        & (1)            & (2)            & (3)            & (4)\\  
    \midrule
@@ -1346,21 +1427,12 @@ industries exempted from the Tax Rate the year before the Reform of 1983
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}2{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{381} \\ 
+   Industry & \multicolumn{4}{c}{Fabricated Metal Products, Exc...} \\ 
    Tax Change & \multicolumn{4}{c}{Increased} \\ 
    Model:                                        & (1)            & (2)            & (3)            & (4)\\  
    \midrule
@@ -1385,21 +1457,12 @@ industries exempted from the Tax Rate the year before the Reform of 1983
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}3{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{321} \\ 
+   Industry & \multicolumn{4}{c}{Textiles...} \\ 
    Tax Change & \multicolumn{4}{c}{Increased} \\ 
    Model:                                        & (1)            & (2)            & (3)            & (4)\\  
    \midrule
@@ -1424,177 +1487,12 @@ industries exempted from the Tax Rate the year before the Reform of 1983
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}4{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-\begin{tabular}{lcccc}
-   \tabularnewline \midrule \midrule
-   Dependent Variables:                          & Interm.         & Mats+Serv      & Mats+Deduc & Materials\\  
-   Industry & \multicolumn{4}{c}{342} \\ 
-   Tax Change & \multicolumn{4}{c}{Decreased} \\ 
-   Model:                                        & (1)             & (2)            & (3)        & (4)\\  
-   \midrule
-   \emph{Variables}\\
-   1984 $\times$ Non-Corp. $\times$ sic\_3342    & -0.0297$^{***}$ & -0.0165        & -0.0050    & -0.0175\\   
-                                                 & (0.0085)        & (0.0096)       & (0.0151)   & (0.0177)\\   
-   1985 $\times$ Non-Corp. $\times$ sic\_3342    & 0.0591$^{***}$  & 0.0765$^{***}$ & 0.0391     & 0.1218$^{***}$\\   
-                                                 & (0.0127)        & (0.0138)       & (0.0228)   & (0.0381)\\   
-   1986 $\times$ Non-Corp. $\times$ sic\_3342    & -0.0257$^{*}$   & -0.0131        & -0.0181    & 0.0509\\   
-                                                 & (0.0130)        & (0.0152)       & (0.0228)   & (0.0390)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   plant                                         & Yes             & Yes            & Yes        & Yes\\  
-   Year                                          & Yes             & Yes            & Yes        & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                                  & 8,077           & 8,077          & 8,077      & 8,011\\  
-   R$^2$                                         & 0.69072         & 0.69288        & 0.78107    & 0.75331\\  
-   Within R$^2$                                  & 0.01778         & 0.01784        & 0.01839    & 0.00755\\  
-   \midrule \midrule
-   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
-   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
-\end{tabular}
-\par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}5{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-\begin{tabular}{lcccc}
-   \tabularnewline \midrule \midrule
-   Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc    & Materials\\  
-   Industry & \multicolumn{4}{c}{382} \\ 
-   Tax Change & \multicolumn{4}{c}{Increased} \\ 
-   Model:                                        & (1)            & (2)            & (3)           & (4)\\  
-   \midrule
-   \emph{Variables}\\
-   1984 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0223$^{**}$  & 0.0313$^{***}$ & 0.0560$^{*}$  & 0.0101\\   
-                                                 & (0.0072)       & (0.0078)       & (0.0253)      & (0.0095)\\   
-   1985 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0765$^{***}$ & 0.0905$^{***}$ & 0.0832$^{**}$ & 0.1142$^{***}$\\   
-                                                 & (0.0073)       & (0.0076)       & (0.0277)      & (0.0328)\\   
-   1986 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0126         & 0.0184$^{*}$   & 0.0318        & 0.0002\\   
-                                                 & (0.0098)       & (0.0091)       & (0.0241)      & (0.0286)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   plant                                         & Yes            & Yes            & Yes           & Yes\\  
-   Year                                          & Yes            & Yes            & Yes           & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                                  & 8,228          & 8,228          & 8,228         & 8,162\\  
-   R$^2$                                         & 0.69369        & 0.69907        & 0.79186       & 0.75493\\  
-   Within R$^2$                                  & 0.02158        & 0.02180        & 0.02780       & 0.00914\\  
-   \midrule \midrule
-   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
-   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
-\end{tabular}
-\par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}6{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-\begin{tabular}{lcccc}
-   \tabularnewline \midrule \midrule
-   Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{356} \\ 
-   Tax Change & \multicolumn{4}{c}{No Change} \\ 
-   Model:                                        & (1)            & (2)            & (3)            & (4)\\  
-   \midrule
-   \emph{Variables}\\
-   1984 $\times$ Non-Corp. $\times$ sic\_3356    & 0.0485$^{***}$ & 0.0643$^{***}$ & 0.0763$^{***}$ & 0.0902$^{***}$\\   
-                                                 & (0.0068)       & (0.0084)       & (0.0069)       & (0.0165)\\   
-   1985 $\times$ Non-Corp. $\times$ sic\_3356    & 0.1274$^{***}$ & 0.1402$^{***}$ & 0.1405$^{***}$ & 0.1940$^{***}$\\   
-                                                 & (0.0179)       & (0.0209)       & (0.0176)       & (0.0426)\\   
-   1986 $\times$ Non-Corp. $\times$ sic\_3356    & 0.0562$^{***}$ & 0.0553$^{***}$ & 0.0937$^{***}$ & 0.1195$^{***}$\\   
-                                                 & (0.0137)       & (0.0162)       & (0.0154)       & (0.0300)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   plant                                         & Yes            & Yes            & Yes            & Yes\\  
-   Year                                          & Yes            & Yes            & Yes            & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                                  & 7,706          & 7,706          & 7,706          & 7,640\\  
-   R$^2$                                         & 0.66852        & 0.68342        & 0.77015        & 0.74766\\  
-   Within R$^2$                                  & 0.01058        & 0.01157        & 0.01810        & 0.00493\\  
-   \midrule \midrule
-   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
-   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
-\end{tabular}
-\par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}7{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-\begin{tabular}{lcccc}
-   \tabularnewline \midrule \midrule
-   Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{369} \\ 
-   Tax Change & \multicolumn{4}{c}{Decreased} \\ 
-   Model:                                        & (1)            & (2)            & (3)            & (4)\\  
-   \midrule
-   \emph{Variables}\\
-   1984 $\times$ Non-Corp. $\times$ sic\_3369    & 0.0024         & 0.0022         & 0.1505$^{***}$ & 0.1175$^{*}$\\   
-                                                 & (0.0046)       & (0.0030)       & (0.0088)       & (0.0536)\\   
-   1985 $\times$ Non-Corp. $\times$ sic\_3369    & 0.1081$^{***}$ & 0.0767$^{***}$ & 0.1132$^{***}$ & -0.0790\\   
-                                                 & (0.0052)       & (0.0043)       & (0.0126)       & (0.0556)\\   
-   1986 $\times$ Non-Corp. $\times$ sic\_3369    & 0.0666$^{***}$ & 0.0348$^{***}$ & 0.0892$^{***}$ & 0.1110\\   
-                                                 & (0.0076)       & (0.0063)       & (0.0163)       & (0.0917)\\   
-   \midrule
-   \emph{Fixed-effects}\\
-   plant                                         & Yes            & Yes            & Yes            & Yes\\  
-   Year                                          & Yes            & Yes            & Yes            & Yes\\  
-   \midrule
-   \emph{Fit statistics}\\
-   Observations                                  & 8,006          & 8,006          & 8,006          & 7,855\\  
-   R$^2$                                         & 0.80640        & 0.82899        & 0.82723        & 0.78671\\  
-   Within R$^2$                                  & 0.01571        & 0.02012        & 0.02414        & 0.01981\\  
-   \midrule \midrule
-   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
-   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
-\end{tabular}
-\par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}8{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variables:                          & Interm.         & Mats+Serv       & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{352} \\ 
+   Industry & \multicolumn{4}{c}{Other Chemical Products...} \\ 
    Tax Change & \multicolumn{4}{c}{No Change} \\ 
    Model:                                        & (1)             & (2)             & (3)            & (4)\\  
    \midrule
@@ -1619,60 +1517,132 @@ industries exempted from the Tax Rate the year before the Reform of 1983
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}9{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc    & Materials\\  
+   Industry & \multicolumn{4}{c}{Machinery Except Electrical...} \\ 
+   Tax Change & \multicolumn{4}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)            & (3)           & (4)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0223$^{**}$  & 0.0313$^{***}$ & 0.0560$^{*}$  & 0.0101\\   
+                                                 & (0.0072)       & (0.0078)       & (0.0253)      & (0.0095)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0765$^{***}$ & 0.0905$^{***}$ & 0.0832$^{**}$ & 0.1142$^{***}$\\   
+                                                 & (0.0073)       & (0.0076)       & (0.0277)      & (0.0328)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0126         & 0.0184$^{*}$   & 0.0318        & 0.0002\\   
+                                                 & (0.0098)       & (0.0091)       & (0.0241)      & (0.0286)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes            & Yes           & Yes\\  
+   Year                                          & Yes            & Yes            & Yes           & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 8,228          & 8,228          & 8,228         & 8,162\\  
+   R$^2$                                         & 0.69369        & 0.69907        & 0.79186       & 0.75493\\  
+   Within R$^2$                                  & 0.02158        & 0.02180        & 0.02780       & 0.00914\\  
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Interm.         & Mats+Serv      & Mats+Deduc & Materials\\  
+   Industry & \multicolumn{4}{c}{Printing, Publishing and Allie...} \\ 
+   Tax Change & \multicolumn{4}{c}{Decreased} \\ 
+   Model:                                        & (1)             & (2)            & (3)        & (4)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3342    & -0.0297$^{***}$ & -0.0165        & -0.0050    & -0.0175\\   
+                                                 & (0.0085)        & (0.0096)       & (0.0151)   & (0.0177)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3342    & 0.0591$^{***}$  & 0.0765$^{***}$ & 0.0391     & 0.1218$^{***}$\\   
+                                                 & (0.0127)        & (0.0138)       & (0.0228)   & (0.0381)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3342    & -0.0257$^{*}$   & -0.0131        & -0.0181    & 0.0509\\   
+                                                 & (0.0130)        & (0.0152)       & (0.0228)   & (0.0390)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes             & Yes            & Yes        & Yes\\  
+   Year                                          & Yes             & Yes            & Yes        & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 8,077           & 8,077          & 8,077      & 8,011\\  
+   R$^2$                                         & 0.69072         & 0.69288        & 0.78107    & 0.75331\\  
+   Within R$^2$                                  & 0.01778         & 0.01784        & 0.01839    & 0.00755\\  
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{324} \\ 
-   Tax Change & \multicolumn{4}{c}{Increased} \\ 
+   Industry & \multicolumn{4}{c}{Other Non-Metallic Mineral Pro...} \\ 
+   Tax Change & \multicolumn{4}{c}{Decreased} \\ 
    Model:                                        & (1)            & (2)            & (3)            & (4)\\  
    \midrule
    \emph{Variables}\\
-   1984 $\times$ Non-Corp. $\times$ sic\_3324    & 0.1366$^{***}$ & 0.1470$^{***}$ & 0.1307$^{***}$ & 0.2016$^{***}$\\   
-                                                 & (0.0125)       & (0.0142)       & (0.0200)       & (0.0218)\\   
-   1985 $\times$ Non-Corp. $\times$ sic\_3324    & 0.1428$^{***}$ & 0.1534$^{***}$ & 0.0710$^{**}$  & 0.2215$^{***}$\\   
-                                                 & (0.0256)       & (0.0275)       & (0.0307)       & (0.0323)\\   
-   1986 $\times$ Non-Corp. $\times$ sic\_3324    & 0.1001$^{***}$ & 0.1059$^{***}$ & 0.0382         & 0.1678$^{***}$\\   
-                                                 & (0.0224)       & (0.0242)       & (0.0292)       & (0.0248)\\   
+   1984 $\times$ Non-Corp. $\times$ sic\_3369    & 0.0024         & 0.0022         & 0.1505$^{***}$ & 0.1175$^{*}$\\   
+                                                 & (0.0046)       & (0.0030)       & (0.0088)       & (0.0536)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3369    & 0.1081$^{***}$ & 0.0767$^{***}$ & 0.1132$^{***}$ & -0.0790\\   
+                                                 & (0.0052)       & (0.0043)       & (0.0126)       & (0.0556)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3369    & 0.0666$^{***}$ & 0.0348$^{***}$ & 0.0892$^{***}$ & 0.1110\\   
+                                                 & (0.0076)       & (0.0063)       & (0.0163)       & (0.0917)\\   
    \midrule
    \emph{Fixed-effects}\\
    plant                                         & Yes            & Yes            & Yes            & Yes\\  
    Year                                          & Yes            & Yes            & Yes            & Yes\\  
    \midrule
    \emph{Fit statistics}\\
-   Observations                                  & 7,148          & 7,148          & 7,148          & 7,082\\  
-   R$^2$                                         & 0.67446        & 0.68197        & 0.77281        & 0.75487\\  
-   Within R$^2$                                  & 0.01154        & 0.01254        & 0.01880        & 0.00600\\  
+   Observations                                  & 8,006          & 8,006          & 8,006          & 7,855\\  
+   R$^2$                                         & 0.80640        & 0.82899        & 0.82723        & 0.78671\\  
+   Within R$^2$                                  & 0.01571        & 0.02012        & 0.02414        & 0.01981\\  
    \midrule \midrule
    \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}10{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
-   Industry & \multicolumn{4}{c}{384} \\ 
+   Industry & \multicolumn{4}{c}{Plastic Products Not Elsewhere...} \\ 
+   Tax Change & \multicolumn{4}{c}{No Change} \\ 
+   Model:                                        & (1)            & (2)            & (3)            & (4)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3356    & 0.0485$^{***}$ & 0.0643$^{***}$ & 0.0763$^{***}$ & 0.0902$^{***}$\\   
+                                                 & (0.0068)       & (0.0084)       & (0.0069)       & (0.0165)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3356    & 0.1274$^{***}$ & 0.1402$^{***}$ & 0.1405$^{***}$ & 0.1940$^{***}$\\   
+                                                 & (0.0179)       & (0.0209)       & (0.0176)       & (0.0426)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3356    & 0.0562$^{***}$ & 0.0553$^{***}$ & 0.0937$^{***}$ & 0.1195$^{***}$\\   
+                                                 & (0.0137)       & (0.0162)       & (0.0154)       & (0.0300)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes            & Yes            & Yes\\  
+   Year                                          & Yes            & Yes            & Yes            & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 7,706          & 7,706          & 7,706          & 7,640\\  
+   R$^2$                                         & 0.66852        & 0.68342        & 0.77015        & 0.74766\\  
+   Within R$^2$                                  & 0.01058        & 0.01157        & 0.01810        & 0.00493\\  
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
+   Industry & \multicolumn{4}{c}{Transport Equipment...} \\ 
    Tax Change & \multicolumn{4}{c}{Increased} \\ 
    Model:                                        & (1)            & (2)            & (3)            & (4)\\  
    \midrule
@@ -1697,6 +1667,423 @@ industries exempted from the Tax Rate the year before the Reform of 1983
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lcccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Interm.        & Mats+Serv      & Mats+Deduc     & Materials\\  
+   Industry & \multicolumn{4}{c}{Electrical Machinery Apparatus...} \\ 
+   Tax Change & \multicolumn{4}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)            & (3)            & (4)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3383    & 0.0002         & 0.0132$^{**}$  & 0.0033         & 0.0541$^{***}$\\   
+                                                 & (0.0038)       & (0.0054)       & (0.0038)       & (0.0107)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3383    & 0.0690$^{***}$ & 0.0777$^{***}$ & 0.0352$^{***}$ & 0.1140$^{***}$\\   
+                                                 & (0.0066)       & (0.0077)       & (0.0078)       & (0.0263)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3383    & 0.0476$^{***}$ & 0.0517$^{***}$ & 0.0555$^{***}$ & 0.1197$^{***}$\\   
+                                                 & (0.0049)       & (0.0051)       & (0.0059)       & (0.0212)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes            & Yes            & Yes\\  
+   Year                                          & Yes            & Yes            & Yes            & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 7,465          & 7,465          & 7,465          & 7,400\\  
+   R$^2$                                         & 0.67462        & 0.68353        & 0.77175        & 0.74902\\  
+   Within R$^2$                                  & 0.01175        & 0.01353        & 0.01353        & 0.00479\\  
+   \midrule \midrule
+   \multicolumn{5}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+
+\end{minipage}%
+
+\end{table}%
+
+\subsection{Changes in Composition of Total
+Expenditure}\label{changes-in-composition-of-total-expenditure}
+
+Depending on the industry, firms might be adjusting different margins,
+raw materials or other expenses. For example, firms in the non-metallic
+mineral products industry might not fake raw materials but they can
+adjust deductible expenses. Another example might be the textile
+industry. Although the available records and data might not allow for
+separating expenditures precisely, the evidence shows that firms are
+significantly adjusting these margins.
+
+\citet{Gandhi2020} defines services as general expenditures minus
+machinery rental and interest payments. The Colombian survey uses
+industrial expenditure to calculate intermediate consumption. I
+identified potentially deductible expenses with information from
+\citet{Perry1990}.
+
+\begin{table}
+
+\caption{\label{tbl-expenses-type}Classifications of Expenditure.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|c|c|c|c}
+\hline
+Expenditure & Code & Services & Industrial & Deductible\\
+\hline
+Purchases of accessories and replacement parts of less than one year duration & c1 &  & \$+\$ & \\
+\hline
+Purchases of fuels and lubricants consumed by the establishment & c2 &  & \$+\$ & \$+\$\\
+\hline
+Payments for industrial work by other establishments & c3 &  & \$+\$ & \\
+\hline
+Payment of domestic workers & c4 &  & \$+\$ & \\
+\hline
+Payments of third parties for repairs and maintenance & c5 &  & \$+\$ & \$+\$\\
+\hline
+Purchases of raw materials and goods sold without transformation & c6 &  & \$+\$ & \$+\$\\
+\hline
+\textbf{TOTAL Industrial Expenditures (c1:c6)} & \textbf{c7} & \textbf{} & \textbf{} & \textbf{}\\
+\hline
+\hline
+Rent of fixed property & c8 & \$+\$ &  & \\
+\hline
+Payments for professional services & c9 & \$+\$ &  & \\
+\hline
+Machinery rental & c10 &  &  & \$+\$\\
+\hline
+Insurance, excl. employe benefits & c11 & \$+\$ &  & \$+\$\\
+\hline
+Water, mail, telephone, etc. & c12 & \$+\$ &  & \$+\$\\
+\hline
+Publicity and advertising & c13 & \$+\$ &  & \\
+\hline
+Interest payments & c14 &  &  & \\
+\hline
+Royalty payments & c15 & \$+\$ &  & \\
+\hline
+Other expenditures & c16 & \$+\$ &  & \\
+\hline
+\textbf{TOTAL General Expenditures (c8:c16)} & \textbf{c17} & \textbf{} & \textbf{} & \textbf{}\\
+\hline
+\hline
+\textbf{TOTAL Expenditure (c7+c17)} & \textbf{} & \textbf{} & \textbf{} & \textbf{}\\
+\hline
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-reg-exp-inds}Log of Types of Expenses Share of Total
+Expenses by Industry. Triple diff-in-diff. The reference group is
+Corporations in industries exempted from the Tax Rate the year before
+the Reform of 1983 (1982).}
+
+\begin{minipage}{\linewidth}
+
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services        & Industrial & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Wearing Apparel, Except Footwe...} \\ 
+   Tax Change & \multicolumn{3}{c}{Increased} \\ 
+   Model:                                        & (1)             & (2)        & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3322    & -0.3682$^{***}$ & -0.0152    & 0.3872$^{***}$\\   
+                                                 & (0.0469)        & (0.1146)   & (0.0568)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3322    & -0.2730$^{***}$ & 0.0718     & 0.3707$^{***}$\\   
+                                                 & (0.0589)        & (0.1109)   & (0.0655)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3322    & -0.3345$^{***}$ & -0.0201    & 0.3840$^{***}$\\   
+                                                 & (0.0628)        & (0.1129)   & (0.0646)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes             & Yes        & Yes\\  
+   Year                                          & Yes             & Yes        & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 10,508          & 10,473     & 10,515\\  
+   R$^2$                                         & 0.64376         & 0.68683    & 0.65492\\  
+   Within R$^2$                                  & 0.02511         & 0.01562    & 0.02503\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services       & Industrial      & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Fabricated Metal Products, Exc...} \\ 
+   Tax Change & \multicolumn{3}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)             & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3381    & 0.0830$^{***}$ & -0.0597$^{***}$ & -0.0162\\   
+                                                 & (0.0093)       & (0.0160)        & (0.0165)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3381    & 0.2061$^{***}$ & -0.1386$^{***}$ & -0.0859$^{***}$\\   
+                                                 & (0.0138)       & (0.0231)        & (0.0178)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3381    & 0.0194         & -0.0204         & -0.0255\\   
+                                                 & (0.0176)       & (0.0252)        & (0.0168)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes             & Yes\\  
+   Year                                          & Yes            & Yes             & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 9,741          & 9,707           & 9,751\\  
+   R$^2$                                         & 0.63486        & 0.64810         & 0.62982\\  
+   Within R$^2$                                  & 0.01756        & 0.01596         & 0.01645\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services       & Industrial      & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Textiles...} \\ 
+   Tax Change & \multicolumn{3}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)             & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3321    & 0.0351$^{***}$ & -0.3551$^{***}$ & -0.2085$^{***}$\\   
+                                                 & (0.0085)       & (0.0228)        & (0.0163)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3321    & 0.1174$^{***}$ & -0.4322$^{***}$ & -0.2210$^{***}$\\   
+                                                 & (0.0142)       & (0.0362)        & (0.0294)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3321    & 0.0792$^{***}$ & -0.4998$^{***}$ & -0.1356$^{***}$\\   
+                                                 & (0.0163)       & (0.0398)        & (0.0377)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes             & Yes\\  
+   Year                                          & Yes            & Yes             & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 8,843          & 8,823           & 8,852\\  
+   R$^2$                                         & 0.65769        & 0.66407         & 0.65211\\  
+   Within R$^2$                                  & 0.02332        & 0.02343         & 0.02920\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services        & Industrial & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Other Chemical Products...} \\ 
+   Tax Change & \multicolumn{3}{c}{No Change} \\ 
+   Model:                                        & (1)             & (2)        & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3352    & -0.0222$^{*}$   & 0.0135     & 0.0308$^{**}$\\   
+                                                 & (0.0103)        & (0.0132)   & (0.0124)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3352    & 0.0504$^{**}$   & 0.0243     & -0.0373$^{**}$\\   
+                                                 & (0.0186)        & (0.0187)   & (0.0146)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3352    & -0.0628$^{***}$ & 0.0118     & 0.1154$^{***}$\\   
+                                                 & (0.0138)        & (0.0321)   & (0.0185)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes             & Yes        & Yes\\  
+   Year                                          & Yes             & Yes        & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 8,287           & 8,273      & 8,296\\  
+   R$^2$                                         & 0.66432         & 0.71721    & 0.67879\\  
+   Within R$^2$                                  & 0.01828         & 0.01654    & 0.01789\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services       & Industrial      & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Machinery Except Electrical...} \\ 
+   Tax Change & \multicolumn{3}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)             & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3382    & -0.0068        & -0.3231$^{***}$ & -0.1168$^{***}$\\   
+                                                 & (0.0150)       & (0.0276)        & (0.0246)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3382    & 0.1362$^{***}$ & -0.5571$^{***}$ & -0.1647$^{***}$\\   
+                                                 & (0.0168)       & (0.0380)        & (0.0352)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3382    & 0.0155         & -0.4362$^{***}$ & -0.0877$^{*}$\\   
+                                                 & (0.0248)       & (0.0456)        & (0.0447)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes             & Yes\\  
+   Year                                          & Yes            & Yes             & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 8,217          & 8,206           & 8,222\\  
+   R$^2$                                         & 0.64200        & 0.67006         & 0.63551\\  
+   Within R$^2$                                  & 0.01440        & 0.02100         & 0.02049\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services        & Industrial     & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Printing, Publishing and Allie...} \\ 
+   Tax Change & \multicolumn{3}{c}{Decreased} \\ 
+   Model:                                        & (1)             & (2)            & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3342    & -0.0503$^{***}$ & 0.0109         & -0.1862$^{***}$\\   
+                                                 & (0.0138)        & (0.0914)       & (0.0227)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3342    & 0.0713$^{***}$  & 0.0379         & -0.1884$^{***}$\\   
+                                                 & (0.0145)        & (0.0309)       & (0.0441)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3342    & -0.0319$^{**}$  & 0.1428$^{***}$ & -0.3053$^{***}$\\   
+                                                 & (0.0118)        & (0.0278)       & (0.0514)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes             & Yes            & Yes\\  
+   Year                                          & Yes             & Yes            & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 8,066           & 8,042          & 8,075\\  
+   R$^2$                                         & 0.62890         & 0.66651        & 0.64092\\  
+   Within R$^2$                                  & 0.01899         & 0.02898        & 0.01938\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services        & Industrial      & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Other Non-Metallic Mineral Pro...} \\ 
+   Tax Change & \multicolumn{3}{c}{Decreased} \\ 
+   Model:                                        & (1)             & (2)             & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3369    & -0.0876$^{***}$ & -0.0683$^{**}$  & 0.0586$^{***}$\\   
+                                                 & (0.0145)        & (0.0259)        & (0.0160)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3369    & 0.1890$^{***}$  & 0.0385          & -0.0273\\   
+                                                 & (0.0352)        & (0.0351)        & (0.0187)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3369    & 0.1119$^{**}$   & -0.1049$^{***}$ & -0.0387\\   
+                                                 & (0.0369)        & (0.0304)        & (0.0233)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes             & Yes             & Yes\\  
+   Year                                          & Yes             & Yes             & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 7,995           & 7,976           & 8,005\\  
+   R$^2$                                         & 0.65026         & 0.69953         & 0.63750\\  
+   Within R$^2$                                  & 0.01044         & 0.02873         & 0.01890\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services       & Industrial    & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Plastic Products Not Elsewhere...} \\ 
+   Tax Change & \multicolumn{3}{c}{No Change} \\ 
+   Model:                                        & (1)            & (2)           & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3356    & -0.0039        & -0.0248       & -0.0598$^{*}$\\   
+                                                 & (0.0199)       & (0.0482)      & (0.0289)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3356    & 0.1164$^{***}$ & -0.0713       & -0.1696$^{**}$\\   
+                                                 & (0.0300)       & (0.0735)      & (0.0708)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3356    & 0.0060         & 0.1609$^{**}$ & -0.0808\\   
+                                                 & (0.0340)       & (0.0698)      & (0.0537)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes           & Yes\\  
+   Year                                          & Yes            & Yes           & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 7,695          & 7,689         & 7,705\\  
+   R$^2$                                         & 0.63840        & 0.68046       & 0.64280\\  
+   Within R$^2$                                  & 0.02261        & 0.02668       & 0.02770\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services       & Industrial      & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Transport Equipment...} \\ 
+   Tax Change & \multicolumn{3}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)             & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3384    & 0.0684$^{***}$ & -0.2055$^{***}$ & -0.0618$^{*}$\\   
+                                                 & (0.0175)       & (0.0419)        & (0.0329)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3384    & 0.1019$^{***}$ & -0.0899$^{**}$  & 0.0519\\   
+                                                 & (0.0267)       & (0.0336)        & (0.0294)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3384    & 0.0438$^{*}$   & -0.2995$^{***}$ & -0.0660$^{**}$\\   
+                                                 & (0.0231)       & (0.0466)        & (0.0282)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes             & Yes\\  
+   Year                                          & Yes            & Yes             & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 7,496          & 7,488           & 7,506\\  
+   R$^2$                                         & 0.63368        & 0.67351         & 0.64375\\  
+   Within R$^2$                                  & 0.01434        & 0.02566         & 0.02021\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
+\begingroup
+\centering
+\begin{tabular}{lccc}
+   \tabularnewline \midrule \midrule
+   Dependent Variables:                          & Services       & Industrial      & Deductibles\\  
+   Industry & \multicolumn{3}{c}{Electrical Machinery Apparatus...} \\ 
+   Tax Change & \multicolumn{3}{c}{Increased} \\ 
+   Model:                                        & (1)            & (2)             & (3)\\  
+   \midrule
+   \emph{Variables}\\
+   1984 $\times$ Non-Corp. $\times$ sic\_3383    & 0.0215$^{**}$  & -0.1718$^{***}$ & -0.2265$^{***}$\\   
+                                                 & (0.0088)       & (0.0146)        & (0.0115)\\   
+   1985 $\times$ Non-Corp. $\times$ sic\_3383    & 0.0988$^{***}$ & -0.1606$^{***}$ & -0.2194$^{***}$\\   
+                                                 & (0.0131)       & (0.0233)        & (0.0223)\\   
+   1986 $\times$ Non-Corp. $\times$ sic\_3383    & 0.0785$^{***}$ & -0.0969$^{***}$ & -0.2279$^{***}$\\   
+                                                 & (0.0150)       & (0.0270)        & (0.0235)\\   
+   \midrule
+   \emph{Fixed-effects}\\
+   plant                                         & Yes            & Yes             & Yes\\  
+   Year                                          & Yes            & Yes             & Yes\\  
+   \midrule
+   \emph{Fit statistics}\\
+   Observations                                  & 7,454          & 7,440           & 7,464\\  
+   R$^2$                                         & 0.63812        & 0.66680         & 0.63727\\  
+   Within R$^2$                                  & 0.01077        & 0.01684         & 0.02054\\  
+   \midrule \midrule
+   \multicolumn{4}{l}{\emph{Clustered (Year) standard-errors in parentheses}}\\
+   \multicolumn{4}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
+\end{tabular}
+\par\endgroup
 
 \end{minipage}%
 
@@ -1704,21 +2091,17 @@ industries exempted from the Tax Rate the year before the Reform of 1983
 
 \section{Empirical Appendix}\label{empirical-appendix}
 
-\subsection{Diff-in-Diff by Industry}\label{diff-in-diff-by-industry}
+\subsection{Changes in Sales Tax}\label{changes-in-sales-tax}
 
 \begin{table}
 
 \caption{\label{tbl-reg-did-inds}DiD on Sales Taxes by Industry. The
-Control Group is Corporations in 1983 (1982)}
+Control Group is Corporations in 1983 (1982).}
 
 \begin{minipage}{\linewidth}
 
-{[}{[}1{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variable: & \multicolumn{4}{c}{Sales Tax Rate}\\
@@ -1754,17 +2137,8 @@ Control Group is Corporations in 1983 (1982)}
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}2{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variable: & \multicolumn{4}{c}{Sales Tax Rate}\\
@@ -1800,17 +2174,8 @@ Control Group is Corporations in 1983 (1982)}
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}3{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variable: & \multicolumn{4}{c}{Sales Tax Rate}\\
@@ -1846,17 +2211,8 @@ Control Group is Corporations in 1983 (1982)}
    \multicolumn{5}{l}{\emph{Signif. Codes: ***: 0.01, **: 0.05, *: 0.1}}\\
 \end{tabular}
 \par\endgroup
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
-{[}{[}4{]}{]} \begingroup \centering
-
-\end{minipage}%
-\newline
-\begin{minipage}{\linewidth}
-
+\begingroup
+\centering
 \begin{tabular}{lcccc}
    \tabularnewline \midrule \midrule
    Dependent Variable: & \multicolumn{4}{c}{Sales Tax Rate}\\
@@ -2129,64 +2485,6 @@ better explained by the evasion technology. We would expect the evasion
 technology to be the same across industries. It does not matter what I
 produce and what technology my firm employs, to overreport inputs all
 that is needed is a fake invoice.
-
-\subsubsection{Corporations by Industry}\label{corporations-by-industry}
-
-Looking into industry sectors.
-
-\begin{table}
-
-\caption{\label{tbl-corps-by-inds}Corporations by Industry. Top 20
-Industries in Colombia by number of firms.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{l|r|r|r|r|r|r}
-\hline
-Industry & SIC & Market Share & N & N (\%) & Corps. (N) & Corps. (\%)\\
-\hline
-Food Manufacturing & 311 & 20.08 & 6238 & 14.91 & 1154 & 18.50\\
-\hline
-Food Manufacturing & 312 & 4.52 & 1267 & 3.03 & 297 & 23.44\\
-\hline
-Wearing Apparel, Except Footwear & 322 & 2.17 & 4526 & 10.82 & 138 & 3.05\\
-\hline
-Fabricated Metal Products, Except Machinery and Equipment & 381 & 3.35 & 3724 & 8.90 & 629 & 16.89\\
-\hline
-Textiles & 321 & 6.32 & 2911 & 6.96 & 535 & 18.38\\
-\hline
-Machinery Except Electrical & 382 & 1.66 & 2180 & 5.21 & 260 & 11.93\\
-\hline
-Transport Equipment & 384 & 5.84 & 1476 & 3.53 & 320 & 21.68\\
-\hline
-Electrical Machinery Apparatus, Appliances and Supplies & 383 & 3.31 & 1414 & 3.38 & 450 & 31.82\\
-\hline
-Beverage Industries & 313 & 8.25 & 1129 & 2.70 & 708 & 62.71\\
-\hline
-Paper and Paper Products & 341 & 4.33 & 1079 & 2.58 & 302 & 27.99\\
-\hline
-Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear & 324 & 0.86 & 1075 & 2.57 & 59 & 5.49\\
-\hline
-Printing, Publishing and Allied Industries & 342 & 2.47 & 2100 & 5.02 & 264 & 12.57\\
-\hline
-Other Non-Metallic Mineral Products & 369 & 3.14 & 1950 & 4.66 & 473 & 24.26\\
-\hline
-Other Manufacturing Industries & 390 & 0.75 & 1009 & 2.41 & 115 & 11.40\\
-\hline
-Furniture and Fixtures, Except Primarily of Metal & 332 & 0.28 & 1009 & 2.41 & 57 & 5.65\\
-\hline
-Industrial Chemicals & 351 & 6.36 & 817 & 1.95 & 534 & 65.36\\
-\hline
-Other Chemical Products & 352 & 7.20 & 2250 & 5.38 & 824 & 36.62\\
-\hline
-Plastic Products Not Elsewhere Classified & 356 & 2.89 & 1682 & 4.02 & 328 & 19.50\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
 
 \subsubsection{Inputs Cost Share of
 Revenues}\label{inputs-cost-share-of-revenues}

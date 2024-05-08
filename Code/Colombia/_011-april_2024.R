@@ -249,8 +249,8 @@ colombia_data_frame %>%
         aes(
             x = factor(year),
             y = share_sales_tax,
-            # group = factor(sic_3),
-            color = factor(sic_3),
+            group = factor(sic_3),
+            # colour = factor(year),
             # alpha = sic_3_alpha
         )
     ) +
@@ -264,19 +264,81 @@ colombia_data_frame %>%
         na.rm = TRUE,
         geom = "point",
         shape = 18,
-        size = 4#,
-        # color = my_colors[["purple"]]
+        size = 4,
+        colour = "blue"
     ) + # add mean points
     stat_summary(
         fun.data = mean_cl_normal,
         geom = "errorbar",
         width = 0.1,
+        colour = "blue",
         # color = my_colors[["purple"]],
         show.legend = FALSE
     ) + # add CI bars
-    scale_color_manual(values = "blue")+
+    # scale_color_manual(values = "blue")+
+    stat_summary(
+        fun = "mean",
+        na.rm = TRUE,
+        geom = "line",
+        # linewidth = 2,
+        # group = factor(year),
+        colour = "blue"
+        # linetype = ""
+    )+
     theme_void() +
     theme(legend.position = 'none')
+
+# Calcular la media del primer año
+mean_first_year <- colombia_data_frame %>%
+    filter(year == 82, sic_3=="390") %>%
+    ungroup %>%
+    summarise(mean_share_sales_tax = mean(share_sales_tax, na.rm = TRUE)) %>%
+    pull(mean_share_sales_tax)
+
+colombia_data_frame %>%
+    filter(sic_3=="390", year %in% 82:86) %>%
+    ggplot(
+        aes(
+            x = factor(year),
+            y = share_sales_tax,
+            group = factor(sic_3)
+        )
+    ) +
+    # geom_hline(yintercept = mean_first_year, color = "lightgray", linetype = "dashed") + # Agregar la media del primer año
+    stat_summary(
+        fun = "mean",
+        na.rm = TRUE,
+        geom = "point",
+        shape = 18,
+        size = 4,
+        colour = "blue"
+    ) + 
+    stat_summary(
+        fun.data = mean_cl_normal,
+        geom = "errorbar",
+        width = 0.1,
+        colour = "blue",
+        show.legend = FALSE
+    ) + 
+    stat_summary(
+        fun = "mean",
+        na.rm = TRUE,
+        geom = "line",
+        colour = "blue"
+    ) +
+    annotate(
+        "text", 
+        x = min(as.numeric(factor(colombia_data_frame$year))), 
+        y = mean_first_year, 
+        label = paste(round(mean_first_year, 2)), 
+        hjust = 2
+    ) +
+    theme_void() +
+    theme(legend.position = 'none')#+
+    # scale_y_continuous(
+    #     breaks = mean_first_year, #c(min(colombia_data_frame$share_sales_tax, na.rm = TRUE), mean_first_year, max(colombia_data_frame$share_sales_tax, na.rm = TRUE)),
+    #     labels = paste0(mean_first_year),#c(min(colombia_data_frame$share_sales_tax, na.rm = TRUE), "Media del primer año", max(colombia_data_frame$share_sales_tax, na.rm = TRUE))
+    # )
 
 ### Creating function for Tinytable
 
@@ -317,6 +379,7 @@ f <- function(d,...){
         theme_void() +
         theme(legend.position = 'none')
 }
+
 
 ## Tinytable ##### 
 
@@ -563,7 +626,9 @@ reg_ta_tbls<-lapply(
     # div.class = "table"
     )
 )
-reg_ta_tbls[[1]]
+
+for (i in 1:4) print(reg_ta_tbls[[i]])
+
 log_s_inds_regs<-lapply(
     unique(colombia_data_frame$sic_3),
     \(x)
@@ -618,7 +683,7 @@ lapply(
             Industry=paste0(unique(colombia_data_frame$sic_3))[x]#,
             # `Tax Change`=paste0(top_20_inds$Change)[x]
         )
-    )
+    ) |> print()
 )
 lapply(
     seq(1,16,2),
@@ -648,7 +713,7 @@ did_3_inds <- lapply(
         juridical_organization != 6,
         # juridical_organization %in% c(0, 1, 3)
         # year >= 83
-        sic_3 %in% c(x,311)#c(x,311,312) #
+        sic_3 %in% c(x,311,312) #c(x,311)#
     ) %>%
     mutate(
         juridical_organization = factor(juridical_organization),
@@ -671,7 +736,7 @@ did_3_inds <- lapply(
         sic_3 = relevel(factor(sic_3), ref="311"),
         treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
     ) %>%
-    feols( sw(log_share,log(mats_serv/sales),log((materials+deductible_expenses)/sales),log(materials/sales))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+    feols( sw(log_share,log(mats_serv/sales),log((materials+deductible_expenses)/sales),log(materials/sales))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
         | plant+year,
         data = ., cluster=~year#~plant+year
     )
@@ -679,17 +744,136 @@ did_3_inds <- lapply(
 
 names(did_3_inds)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
 lapply(
-   paste0(setdiff(industries$sic_3,c(311,312)))[1:5], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
+   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
     \(x) etable(
         did_3_inds[x],
         keep = c(
-            "^share",
-            "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
+            "%^share",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
             # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
-            "^treatNon-Corp$"
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+",
+            "%^treatNon-Corp$"
         ),
         headers = list(
-            Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,25
+                ),
+                "-"
+            ),
+            # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
+        )
+    )
+)
+
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]) etable(did_3_inds[x]) |> print()
+
+
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
+    industry <- paste0(
+        str_sub(
+            top_20_inds[top_20_inds$sic_3==x,'description'][[1]],
+            1,30
+        ),
+        "-"
+    )
+    etable(
+        did_3_inds[x],
+        keep = c(
+            "%^share",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+",
+            "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=industry,#x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=str_to_title(
+                paste0(
+                    top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]
+                )
+            )
+        )
+        # div.class = "table"
+    ) |> print()
+}
+
+paste0(
+    str_sub(
+        paste0(
+            top_20_inds[top_20_inds$sic_3=="322",'description'][[1]]
+        ),
+        1,30
+    ))
+did_3_inds_exp <- lapply(
+    setdiff(top_20_inds$sic_3,c(311,312)),
+    \(x)
+    colombia_data_frame %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    left_join(sales_tax_change) %>%
+    filter(
+        # year <= 86,
+        JO_class != "Other",
+        juridical_organization != 6,
+        # juridical_organization %in% c(0, 1, 3)
+        # year >= 83
+        sic_3 %in% c(x,311,312) #c(x,311)#
+    ) %>%
+    mutate(
+        services_exp_share = services/total_expenditure,
+        industrial_exp_share = industrial_expenditure/total_expenditure,
+        deductible_exp_share = deductible_expenses/total_expenditure,
+        juridical_organization = factor(juridical_organization),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(
+            JO_class, 
+            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
+        ),
+        time = case_when(
+            year <= 83 ~ "before",
+            .default = as.character(year),
+        ),
+        time = factor(time, levels = c("before","84","85","86")),
+        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
+        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
+        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
+        treat = factor(treat, levels = c("Corp","Non-Corp")),
+        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
+        year = relevel(factor(year), ref="83"),
+        sic_3 = relevel(factor(sic_3), ref="311"),
+        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
+    ) %>%
+    feols( sw(log(services_exp_share), log(industrial_exp_share), log(deductible_exp_share))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+        | plant+year,
+        data = ., cluster=~year#~plant+year
+    )
+)
+names(did_3_inds_exp)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
+lapply(
+   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
+    \(x) etable(
+        did_3_inds_exp[x],
+        keep = c(
+            "%^share",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,25
+                ),
+                "-"
+            ),
+            # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
             `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
         )
     )
@@ -993,3 +1177,13 @@ colombia_data_frame %>%
     sum_na_rows_tidy(c("deductible_expenses", "non_deductible_expenses"),expenses)
 # Uso de la función
 df <- sum_rows_tidy(df, c("rland_80", "rbldg_80", "rmach_80", "rtrans_80", "roffice_80"))
+
+paste0(
+    str_sub(
+        paste0(
+            top_20_inds[top_20_inds$sic_3==324,'description'][[1]]
+        ),
+        1,25
+    ),
+    "-"
+)

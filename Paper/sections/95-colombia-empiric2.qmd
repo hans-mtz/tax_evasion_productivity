@@ -6,42 +6,40 @@ Among other changes, the fiscal law of 1983 tried to homogenize the sales taxes 
 
 The 1983 reform also adjusted the income tax rates for limited liability companies and individuals. For individuals, the income tax rate increased by 8% in most scales, while the maximum was reduced from 56 to 49%. For limited liability companies, the CIT was reduced from 10 to 18%.
 
-To evaluate the change in tax evasion by input cost overreporting, I first group industries into four groups depending on whether the sales tax of the industry was increased, decreased, exempted, or not changed. I use corporations in the decreased sales tax rate group as the control group. 
+To evaluate the change in tax evasion by input cost overreporting due to the change in the sales tax, I apply a triple difference approach. I use corporations in the industries exempted from sales taxes the year before the policy change as the control group. 
 
-Formally, what I have is the following:
-
-Non-corporations in industry $k$, which might have received an increment or decrement in their sales tax rate
+Formally, non-corporations in industry $k$, which might have received an increment or decrement in their sales tax rate,
 
 $$
-s_{1,j,t}^k=\alpha^k_t+\beta_1+e^{k,VAT}_{j,t}+e^{k,CIT}_{j,t}+\varepsilon_{jt}
+s_{1,j,t}^k=\lambda^k_t+\mu^k_1+e^{VAT}_{j,t}+e^{CIT}_{j,t}+\varepsilon_{jt}
 $$
 
-Corporations in industry $k$
+Corporations in industry $k$,
 $$
-s_{0,j,t}^k=\alpha^k_t+\beta_0+\varepsilon_{jt}
+s_{0,j,t}^k=\lambda^k_t+\mu^k_0+\varepsilon_{jt}
 $$
 
-Likewise, Corporations and Non-corporations in an industry exempt of sales taxes
+Likewise, Non-corporations and Corporations in an industry exempt from sales taxes
 
 $$
 \begin{aligned}
-    s_{1,j,t}^{E}&=\alpha^{E}_t+\beta_1+e^{E,VAT}_{j,t}+e^{E,CIT}_{j,t}+\varepsilon_{jt}\\
-    s_{0,j,t}^E&=\alpha^E_t+\beta_0+\varepsilon_{jt}
+    s_{1,j,t}^{E}&=\lambda^{E}_t+\mu^E_1+e^{CIT}_{j,t}+\varepsilon_{jt}\\
+    s_{0,j,t}^E&=\lambda^E_t+\mu^E_0+\varepsilon_{jt}
 \end{aligned}
 $$
 
-Taking the difference between time $t'$ and $t$, 
+Taking the difference between time $t'$ and $t$ in industry $k$ for both, corporations and non-corporations,
 
 $$
 \begin{aligned}
-    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&=\Delta_\alpha+\Delta_{e^{VAT}}+\Delta_{e^{CIT}}\\
-    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&=\Delta_\alpha
+    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&=\Delta_\lambda^k+\Delta_e^{VAT}+\Delta_e^{CIT}\\
+    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&=\Delta_\lambda^k
 \end{aligned}
 $$
 
-The diff-in-diff approach will recover the joint effect of both policy changes,
+The diff-in-diff method will recover the joint effect of both policy changes,
 $$
-\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_{e^{VAT}}+\Delta_{e^{CIT}}
+\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_e^{VAT}+\Delta_e^{CIT}
 $$
 
 The joint effect might be ambiguous because an increase in the sales tax rate will increase the incentive to overreport inputs cost but a decrease in the CIT might decrease the incentive. 
@@ -53,14 +51,14 @@ So we have,
 $$
 \begin{aligned}    
     \mathbb{E}[s_{1,j,t'}^k]&-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)\\ 
-    &- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_{e^{VAT}}
+    &- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_e^{VAT}
 \end{aligned}
 $$
 
 In regression form,
 
 $$
-s_{jt}=\alpha \left\{ \mathbb{1}[t=t']\times\mathbb{1}[\text{treat}=\text{Non-Corp}]\times\mathbb{1}[k\not=E] \right\}+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
+s_{jt}=\alpha \left[ \mathbb{1}\{t=t'\}\times\mathbb{1}\{\text{treat}=\text{Non-Corp}\}\times\mathbb{1}\{k\not=E\} \right]+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
 $$
 
 ::: {#tbl-reg-didid layout-ncol="1"}
@@ -86,6 +84,7 @@ did_3_inds <- lapply(
     mutate(
         juridical_organization = factor(juridical_organization),
         metro_area_code = factor(metro_area_code),
+        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
         JO_class = factor(
             JO_class, 
             levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
@@ -104,17 +103,17 @@ did_3_inds <- lapply(
         sic_3 = relevel(factor(sic_3), ref="311"),
         treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
     ) %>%
-    feols( sw(log_share,log(mats_serv/sales),log((materials+deductible_expenses)/sales),log(materials/sales))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+    feols( sw(log_share,log(mats_serv/sales),log(mats_deduct_share),log(materials/sales))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
         | plant+year,
         data = ., cluster=~year#~plant+year
     )
 )
 
 names(did_3_inds)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
-reg_tabls<-lapply(
-   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
-    \(x) etable(
-        did_3_inds[x],
+
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
+    etable(
+        did_3_inds[[x]],
         keep = c(
             # "%^share",
             "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
@@ -122,14 +121,25 @@ reg_tabls<-lapply(
             # "%^treatNon-Corp$"
         ),
         headers = list(
-            Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
-            `Tax Change`=str_to_title(paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]))
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,30
+                ),
+                "..."
+            ),#x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=str_to_title(
+                paste0(
+                    top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]
+                )
+            )
         ),
         div.class = "table"
-    )
-)
+    ) |> print()
+}
 
-reg_tabls
 
 ```
 
@@ -137,13 +147,121 @@ Log of Inputs Cost Share of Revenue by Industry. Triple diff-in-diff. The refere
 
 :::
 
+
+### Changes in Composition of Total Expenditure
+
+Depending on the industry, firms might be adjusting different margins, raw materials or other expenses. For example, firms in the non-metallic mineral products industry might not fake raw materials but they can adjust deductible expenses. Another example might be the textile industry. Although the available records and data might not allow for separating expenditures precisely, the evidence shows that firms are significantly adjusting these margins.
+
+@Gandhi2020 defines services as general expenditures minus machinery rental and interest payments. The Colombian survey uses industrial expenditure to calculate intermediate consumption. I identified potentially deductible expenses with information from @Perry1990.
+
+
+```{r}
+#| label: tbl-expenses-type
+#| tbl-cap: Classifications of Expenditure.
+
+kbl(
+    exps_tbl,
+    align = 'lcccc',
+    table.attr = 'data-quarto-disable-processing="true"'
+) %>% 
+kable_classic(full_width=F, html_font = "Cambria") %>%
+# row_spec(c(7,17,18), bold = T, hline_after = T) %>%
+row_spec(7, bold = T, hline_after = T) %>%
+row_spec(17, bold = T, hline_after = T) %>%
+row_spec(18, bold = T, hline_after = T)
+
+```
+
+::: {#tbl-reg-exp-inds layout-ncol="1"}
+
+```{r}
+#| results: asis
+
+did_3_inds_exp <- lapply(
+    setdiff(top_20_inds$sic_3,c(311,312)),
+    \(x)
+    colombia_data_frame %>%
+    left_join(sales_tax_change) %>%
+    filter(
+        # year <= 86,
+        JO_class != "Other",
+        juridical_organization != 6,
+        # juridical_organization %in% c(0, 1, 3)
+        # year >= 83
+        sic_3 %in% c(x,311)#c(x,311,312) #
+    ) %>%
+    mutate(
+        services_exp_share = services/total_expenditure,
+        industrial_exp_share = industrial_expenditure/total_expenditure,
+        deductible_exp_share = deductible_expenses/total_expenditure,
+        juridical_organization = factor(juridical_organization),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(
+            JO_class, 
+            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
+        ),
+        time = case_when(
+            year <= 83 ~ "before",
+            .default = as.character(year),
+        ),
+        time = factor(time, levels = c("before","84","85","86")),
+        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
+        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
+        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
+        treat = factor(treat, levels = c("Corp","Non-Corp")),
+        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
+        year = relevel(factor(year), ref="83"),
+        sic_3 = relevel(factor(sic_3), ref="311"),
+        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
+    ) %>%
+    feols( sw(log(services_exp_share), log(industrial_exp_share), log(deductible_exp_share))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+        | plant+year,
+        data = ., cluster=~year#~plant+year
+    )
+)
+names(did_3_inds_exp)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
+    etable(
+        did_3_inds_exp[[x]],
+        keep = c(
+            # "%^share",
+            "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
+            # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            # "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,30
+                ),
+                "..."
+            ),#x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=str_to_title(
+                paste0(
+                    top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]
+                )
+            )
+        ),
+        div.class = "table"
+    )|> print()
+}
+
+
+```
+
+
+Log of Types of Expenses Share of Total Expenses by Industry. Triple diff-in-diff. The reference group is Corporations in industries exempted from the Tax Rate the year before the Reform of 1983 (1982).
+
+:::
+
 ## Empirical Appendix {.appendix}
 
+### Changes in Sales Tax
 
-### Diff-in-Diff by Industry
-
-::: {#tbl-reg-did-inds layout-ncol=1}
-
+::: {#tbl-reg-did-inds layout-ncol="1"}
 
 ```{r}
 #| echo: false
@@ -191,139 +309,23 @@ tax_changes_inds_regs<-lapply(
 
 )
 
-lapply(
-    seq(1,16,4),
-    \(x) etable(
-    tax_changes_inds_regs[x:(x+3)],
-    keep = c("%year8(4|5|6)","%^treatNon-Corp"),
-    headers = list(
-            Industry=paste0(top_20_inds$sic_3)[x:(x+3)],
-            `Tax Change`=paste0(top_20_inds$Change)[x:(x+3)]
-    ),
-    div.class = "table"
-    )
-)
+for (x in seq(1,16,4)) {
+    etable(
+        tax_changes_inds_regs[x:(x+3)],
+        keep = c("%year8(4|5|6)","%^treatNon-Corp"),
+        headers = list(
+                Industry=paste0(top_20_inds$sic_3)[x:(x+3)],
+                `Tax Change`=paste0(top_20_inds$Change)[x:(x+3)]
+        ),
+        div.class = "table"
+    )|> print()
+}
 
 
 ```
 
 
-DiD on Sales Taxes by Industry. The Control Group is Corporations in 1983 (1982)
+DiD on Sales Taxes by Industry. The Control Group is Corporations in 1983 (1982).
 
 :::
 
-<!-- 
-::: {#tbl-reg-did-inds-logs layout-ncol="1"}
-
-```{r}
-#| label: tbl-reg-did-inds-logs-1
-#| tbl-cap: DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).
-#| results: asis
-
-log_s_inds_regs<-lapply(
-    top_20_inds$sic_3,
-    \(x)
-    colombia_data_frame %>%
-        left_join(sales_tax_change) %>%
-        filter(
-            # year <= 86,
-            JO_class != "Other",
-            juridical_organization != 6,
-            # year >= 82
-        ) %>%
-        mutate(
-            juridical_organization = factor(juridical_organization),
-            metro_area_code = factor(metro_area_code),
-            JO_class = factor(
-                JO_class, 
-                levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
-            ),
-            time = case_when(
-                year <= 83 ~ "before",
-                .default = as.character(year),
-            ),
-            time = factor(time, levels = c("before","84","85","86")),
-            treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
-            treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
-            treat = factor(treat, levels = c("Corp","Non-Corp")),
-            treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
-            year = relevel(factor(year), ref="82")
-        ) %>%
-        filter(
-            # Change == "decreased",
-            sic_3 == x
-        ) %>%
-        feols( log_share~ year*treat+share_sales_tax+polym(m, k, l, degree = 2, raw = TRUE)
-            | metro_area_code,
-            data = ., cluster=~plant+year
-        )
-)
-
-etable(
-    log_s_inds_regs[1:4],
-    keep = c("%^treatNon-Corp","%year8(3|4|5)", "%^share"),
-    headers = list(
-            Industry=paste0(top_20_inds$sic_3)[1:4],
-            `Tax Change`=paste0(top_20_inds$Change)[1:4]
-    ),
-    div.class = "table"
-)
-
-```
-
-```{r}
-#| label: tbl-reg-did-inds-logs-2
-#| tbl-cap: DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).
-#| results: asis
-
-etable(
-    log_s_inds_regs[5:8],
-    keep = c("%^treatNon-Corp","%year8(3|4|5)", "%^share"),
-    headers = list(
-            Industry=paste0(top_20_inds$sic_3)[5:8],
-            `Tax Change`=paste0(top_20_inds$Change)[5:8]
-    ),
-    div.class = "table"
-)
-
-```
-
-
-```{r}
-#| label: tbl-reg-did-inds-logs-3
-#| tbl-cap: DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).
-#| results: asis
-
-etable(
-    log_s_inds_regs[9:12],
-    keep = c("%^treatNon-Corp","%year8(3|4|5)", "%^share"),
-    headers = list(
-            Industry=paste0(top_20_inds$sic_3)[9:12],
-            `Tax Change`=paste0(top_20_inds$Change)[9:12]
-    ),
-    div.class = "table"
-)
-
-```
-
-
-
-```{r}
-#| label: tbl-reg-did-inds-logs-4
-#| tbl-cap: DiD on Log Intermediates Cost Share of Revenue by Industry. Reference Group is Corporations in 1982 (1981).
-#| results: asis
-
-etable(
-    log_s_inds_regs[13:17],
-    keep = c("%^treatNon-Corp","%year8(3|4|5)", "%^share"),
-    headers = list(
-            Industry=paste0(top_20_inds$sic_3)[13:17],
-            `Tax Change`=paste0(top_20_inds$Change)[13:17]
-    ),
-    div.class = "table"
-)
-
-```
-
-
-::: -->

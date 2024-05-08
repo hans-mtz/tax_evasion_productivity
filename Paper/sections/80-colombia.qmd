@@ -127,7 +127,8 @@ income_tax_reforms[,c(2,1,3)] %>%
         col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
         table.attr = 'data-quarto-disable-processing="true"'
     ) %>%
-    kable_classic(full_width=F, html_font = "Cambria") 
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    collapse_rows(columns = 1, valign = "top")
 
 ```
 
@@ -165,7 +166,8 @@ sales_tax_change %>%
         c("P&T (1990)"=2," "=2)#,
         # escape = F
     ) %>%
-    kable_classic(full_width=F, html_font = "Cambria") 
+    kable_classic(full_width=F, html_font = "Cambria")  %>% 
+    collapse_rows(columns = 1, valign = "top")
 
 ```
 
