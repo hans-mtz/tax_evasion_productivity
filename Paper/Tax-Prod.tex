@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{May 8, 2024}
+\date{May 10, 2024}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -371,9 +371,9 @@ probability of detection \(q(e_{it}|\theta_{it})\).
 Firms solve Equation~\ref{eq-eva}
 \begin{equation}\phantomsection\label{eq-eva}{
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  \max_{M_{it}, e_{it}\in [0,\infty)} [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
   +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
-  \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 }\end{equation}
 
@@ -405,13 +405,13 @@ The optimal decision of the firm will depend on the fiscal environment
 of detection, and the probability of detection.
 
 The firms' problem (Equation~\ref{eq-eva}) can be rewritten as follows,
-\[
+\begin{equation}\phantomsection\label{eq-eva-2}{
 \begin{aligned}
   \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
   -q(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
-\]
+}\end{equation}
 
 Intuitively, if the firm overreports her inputs' cost, she will get the
 share of the value she overreported with probability \((1-q)\) and she
@@ -1276,24 +1276,24 @@ column{6}={wd=20em,halign=c,},
 }                     %% tabularray inner close
 \toprule
 SIC & Industry & P&T (1990) & Change & Change Year & Annual Sales Tax (82-86) \\ \midrule %% TinyTableHeader
-311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idv605hnh7exsc9hqpufzb.png} \\
-312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idb0do14g6iewt82tepbwn.png} \\
-322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idjvrajch6fxz9ijws9qju.png} \\
-381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idow4nxvgz9hwmjvg4x07q.png} \\
-321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idtemt9vwwyxe9lgi50n6k.png} \\
-382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id8ovmej5daxw86x40kco1.png} \\
-384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/ids85viw886ej8trcvwt6r.png} \\
-383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idyj4xb4ta9mj940khnl1e.png} \\
-313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idwjvrqtik4zvx6yez0um2.png} \\
-341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idxcsz890ulbgmerwy4xxw.png} \\
-324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idr4u0clg0wc9medyxhc2i.png} \\
-342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idhsoh1k25aacyfpw8bnir.png} \\
-369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id7axdpo8mj61qe7oqgi63.png} \\
-390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idtrer6f6dsvpgctqnd94d.png} \\
-332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id0gmngey5sdtah9q0xi1q.png} \\
-351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idlntqc31z1xz4xjqp9xqr.png} \\
-352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idzwolxt4bwvf6inwvr59i.png} \\
-356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idnpa3d5es6pad52wqpzfu.png} \\
+311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idlwnyfbajffjseul86j4s.png} \\
+312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/id5bfmp3k65xwowpislkgj.png} \\
+322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id9j7qhvrgncese4ursizq.png} \\
+381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idh50gr3g76wwb45cjnngb.png} \\
+321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idkr8lfypizdj3mc4p3tja.png} \\
+382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idnqpory4dc911nu3o8plg.png} \\
+384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idmpxz44jq3eenlern0vem.png} \\
+383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idpg6cts1avklgrl7hwhkm.png} \\
+313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idc2fqq0955mrpemmoh24d.png} \\
+341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id49x6j1xvbgwqt4b0a4vt.png} \\
+324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idi39geun3ptkoq41o87w0.png} \\
+342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idm7i9g3d4ccitkx0pf0ja.png} \\
+369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id47z1kk31oym0x8zifsc3.png} \\
+390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idgrysl1oilwix2l2x0pmt.png} \\
+332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/iddquj3atue98algw4udp3.png} \\
+351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idcwdpdps5qsqx6u2fiytz.png} \\
+352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/id7u99m4wrmndmpcnb96zq.png} \\
+356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/iddosxz8v4fdyacqdtxvmb.png} \\
 \bottomrule
 \end{tblr}
 
@@ -2253,6 +2253,96 @@ Control Group is Corporations in 1983 (1982).}
 
 \end{table}%
 
+\section{Changes in Relative Prices}\label{changes-in-relative-prices}
+
+An alternative hypothesis is that changes in the sales taxes change the
+relative prices of inputs. It could be that the regressions are
+capturing not the changes in evasion by overreporting but the changes in
+relative prices.
+
+Suppose we have two flexible inputs \(M\) and \(L\). \(M\) is deductible
+but \(L\) is not. Equation~\ref{eq-eva} becomes then,
+
+\begin{equation}\phantomsection\label{eq-eva-non-deduct}{
+\begin{aligned}
+  \max_{M_{it}, L_{it},e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}-w_{t} L_{it}-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-w_{t} L_{it}-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+}\end{equation}
+
+In the case of Colombia, \(\theta\) is their juridical organization.
+Assume firms choose their \(\theta\) before the start of the period.
+I'll come to this decision later, but for now, it follows that
+\(q(e|\theta)=q(e)\). In other words, firms cannot affect their
+detection probability when choosing inputs.
+
+The first-order conditions now yield the following. For deductible
+flexible inputs, the optimality condition remains the same as
+Equation~\ref{eq-foc:ind},
+
+\begin{equation}\phantomsection\label{eq-foc:deduct}{
+G_M(M_{it}, L_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
+}\end{equation}
+
+However, for non-deductible flexible inputs, the sales tax induces a
+distortion in the optimality condition.
+
+\begin{equation}\phantomsection\label{eq-foc:non-deduct}{
+G_L(M_{it}, L_{it})\exp(\omega_{it})\mathcal{E}=\frac{w_{t}}{(1-\tau)P_t}
+}\end{equation}
+
+Finally, the optimality condition for tax evasion becomes,
+
+\begin{equation}\phantomsection\label{eq-foc-cont-e}{
+[1-q(e_{it})]\frac{\rho_t}{P_t}\tau-q(e_{it})\kappa'(e_{it})=q'(e_{it})\left[\frac{\rho_t}{P_t}\tau e_{it} + \kappa(e_{it})\right]
+}\end{equation}
+
+What can we conclude? First, if the production function is a
+Cobb-Douglas, then we can independently solve for each input. In this
+case, changes in VAT or CIT would not affect the optimality condition of
+deductible flexible inputs because it would not affect the relative
+prices. Therefore, changes in the consumption of deductible flexible
+inputs due to changes in VAT or CIT can only be explained by an increase
+in the incentives to evade taxes by overreporting.
+
+On the other hand, an increase in the VAT or CIT would increase the
+relative prices of non-deductible flexible inputs, leading to a decrease
+in their consumption.
+
+Alternatively, if non-deductible flexible inputs become deductible the
+distortion in the optimality condition induced by the VAT and CIT would
+be eliminated. Eliminating the distortion would lead to a reduction of
+the relative prices inducing a higher consumption of these inputs.
+
+Second, if the production function is not Cobb-Douglas, then the firm
+has to solve the system of equations. Theoretically, the changes in the
+relative prices of the non-deductible flexible inputs might affect the
+consumption of the deductible flexible inputs depending on whether these
+inputs are complements or substitutes.
+
+Empirically, however, if I can observe deductible inputs separately from
+non-deductible inputs, I can still be able to run the share regression
+to recover the input elasticity of output. The observed consumed
+non-deductible inputs will capture the changes in relative prices.
+
+If I want to run the share regression using the non-deductible flexible
+inputs, I have to be careful to account for the distortion induced by
+the changes in taxes. If I observe the sales taxes, I can still be able
+to control for changes in sales taxes and run this regression.
+
+Theoretically, we would have,
+
+\[
+\begin{aligned}
+    \ln\left(\frac{\rho_{t}M_{it}}{P_tY_{it}}\right)&=\ln D^{\mathcal{E}}_M(M_{it}, L_{it})-\varepsilon_{it} \\
+    \ln\left(\frac{w_{t}L_{it}}{(1-\tau)P_tY_{it}}\right)&=\ln D^{\mathcal{E}}_L(M_{it}, L_{it})-\varepsilon_{it}
+\end{aligned}
+\]
+
+However, we observe \(\ln M=\ln M^*+e\). In section
+Section~\ref{sec-id-strat}, I show how to recover these functions.
+
 \section{Do Corporations in Colombia have different technologies than
 other juridical
 organizations?}\label{do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations}
@@ -2782,7 +2872,7 @@ classifications of expenses by Corporations and Non-Corporation.}
 
 \end{table}%
 
-\section{Identification Strategy}\label{identification-strategy}
+\section{Identification Strategy}\label{sec-id-strat}
 
 Because the firms' optimization decisions depend on the fiscal
 environment, the identification strategy should be motivated by the
@@ -2793,7 +2883,7 @@ of Spain, the firms above the revenue LTU threshold. In the case of
 Colombia, the corporations.
 
 \phantomsection\label{ass-non-ev}
-\begin{fbx}{Assumption}{Assumption 7.1: }{Non-Evaders}
+\begin{fbx}{Assumption}{Assumption 8.1: }{Non-Evaders}
 \phantomsection\label{ass-non-ev}
 Based on the fiscal environment \(\Gamma\), the researcher can identify
 a subset of firms \(\theta_i\in\Theta^{NE}\subset \Theta\) that does not
@@ -2806,14 +2896,14 @@ For those firms, then \(\mathbb{E}[e_{it}|\theta_i\in\Theta^{NE}]=0\)
 In addition, I impose the following timing assumption.
 
 \phantomsection\label{ass-ind}
-\begin{fbx}{Assumption}{Assumption 7.2: }{Independence}
+\begin{fbx}{Assumption}{Assumption 8.2: }{Independence}
 \phantomsection\label{ass-ind}
 Firms choose overreporting \(e_{it}\) \emph{before }the output shock
 \(\varepsilon_{it}\)
 
 \end{fbx}
 
-Assumption \hyperref[ass-ind]{7.2} implies that input overreporting is
+Assumption \hyperref[ass-ind]{8.2} implies that input overreporting is
 independent of the current period output shock,
 \(e_{it} \perp \varepsilon_{it}\). In the literature is not rare to
 assume that the output shock is not part of the information set of the
@@ -2846,7 +2936,7 @@ where,
 \(\mathcal{E}\equiv \mathbb{E}[\exp(\varepsilon_{it})|\mathcal{I}_{it}]=\mathbb{E}[\exp(\varepsilon_{it})]\).
 
 We can use Equation~\ref{eq-foc-cd} and assumption
-\hyperref[ass-non-ev]{7.1} to recover the production function parameter
+\hyperref[ass-non-ev]{8.1} to recover the production function parameter
 \(\beta\)
 
 \begin{equation}\phantomsection\label{eq-foc-cd-exp}{
@@ -2880,7 +2970,7 @@ variable using observed data.
 \end{aligned}
 }\end{equation}
 
-By assumption \hyperref[ass-ind]{7.2}, the tax evasion,
+By assumption \hyperref[ass-ind]{8.2}, the tax evasion,
 \(\varepsilon_{it}\) ,is independent of \(e_{it}\). Note that, from
 Equation~\ref{eq-foc-cd}, we also recovered
 \(f_{\varepsilon}(\varepsilon)\) the distribution of \(\varepsilon\).
@@ -2921,12 +3011,13 @@ follows a Markov process. That is,
     \omega_{it}=h(\omega_{it-1})+\eta_{it}
 }\end{equation}
 
-We can form the following observed variable for a guess of
-\(\alpha=(\alpha_K,\alpha_L)\),
+Let \(\ln X_{it}=x_{it}\). For a guess of
+\(\alpha=(\alpha_K,\alpha_L)\), we can form the following observed
+variable,
 
 \[
 \begin{aligned}
-    \mathcal W_{it}(\alpha) & \equiv \ln Y_{it} - \beta M_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it}+\beta\mathcal{V}_{it}\\
+    \mathcal W_{it}(\alpha) & \equiv y_{it} - \beta (m^*_{it}+e_{it})-\alpha_K k_{it}-\alpha_L l_{it}+\beta\mathcal{V}_{it}\\
     & = \omega_{it}(\alpha)+(1-\beta)\varepsilon_{it}
 \end{aligned}
 \]
@@ -2937,7 +3028,11 @@ learn \(\alpha\) and the distribution of productivity.
 Alternatively, if we are interested in also identifying the Markov
 process of productivity, we can use the orthogonality we get from
 Equation~\ref{eq-prod-markov},
-\(\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0\).
+
+\[
+\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0.
+\]
+
 Orthoganility follows from (\(k_{it-1},l_{it-1},\mathcal{W}_{it-1}\))
 being known to the firm at period \(t-1\), and (\(k_{it-1},l_{it-1}\))
 being predetermined.
@@ -2963,7 +3058,7 @@ incentives to overreport non-deductible flexible inputs.
 Assume now that \(L_{it}\) is a non-deductible flexible input and,
 without loss of generality, there are only two inputs
 (\(L_{it}, M_{it}\)). Let's assume the production function is now
-\emph{translog} and let \(\ln X_{it}=x_{it}\). We have,
+\emph{translog}. We have,
 
 \[
  \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
@@ -2979,28 +3074,29 @@ Then, equation Equation~\ref{eq-foc-cd} becomes
 \]
 
 where
-\(s_{it}^{L} \equiv\ln\left(\frac{\rho^{L}_t L_{it}}{P_{t}Y_{it}}\right)\).
+\(s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)\).
 
-Note that by assumption \hyperref[ass-non-ev]{7.1}, \(D^{\mathcal{E}}\)
-and the density of \(\varepsilon\) are still identified. To identify tax
+Note that by assumption \hyperref[ass-non-ev]{8.1}, \(D^{\mathcal{E}}\)
+and the density of \(\varepsilon\) are still identified. To recover tax
 evasion, we can form the analog of Equation~\ref{eq-ob-ev},
 
 \[
 \begin{aligned}
-\mathcal{V}_{it}^{TL} &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
-    &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+\mathcal{V}_{it}^{TL} =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+    =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
     &+\left[\ln D^{\mathcal{E}}(l,m^*)\right]\\
     &-\left[\ln D^{\mathcal{E}}(l,m^*)\right] \\
-    &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
+    =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
     &-\left[\ln D^{\mathcal{E}}(l,m^*+e)-\ln D^{\mathcal{E}}(l,m^*)\right]\\
-    &= -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
+    =& -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
 \end{aligned}
 \]
 
-where in the case of the translog production function
+where in the case of the translog production function,
 \(\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)\).
-Note that is always positive \(\delta(l,m^*,m^*+e)\ge0\) because
-\(e_{it}\ge0\).
+
+Note that \(\delta\) is always positive, \(\delta(l,m^*,m^*+e)\ge0\),
+because \(e_{it}\ge0\).
 
 Because firms cannot use \(l\) to deduct taxes, \(l\) is orthogonal to
 \(e\). Hence, conditional on \(m^*\), \(\varepsilon(l,m^*)\) and
@@ -3029,12 +3125,13 @@ flexible and deductible.
 \]
 
 \(D^{\mathcal{E}}(K,L,M)\) is still identified by assumption
-\hyperref[ass-non-ev]{7.1}, however, when we form the analogous of
+\hyperref[ass-non-ev]{8.1}, however, when we form the analogous of
 Equation~\ref{eq-ob-ev}, we now have
 
 \[
 \begin{aligned}
-\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)=&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
+\ln\left(\frac{\rho M}{PY}\right)-&\ln D^{\mathcal{E}}(K,L,M)=\\
+&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
 =&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
 &+\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
 &-\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right] \\
@@ -3044,7 +3141,7 @@ Equation~\ref{eq-ob-ev}, we now have
 =& -\varepsilon \\
 &+\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M^*)+\varepsilon\right]\\
 &-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
-&= -\varepsilon(K,L,M^*)
+=& -\varepsilon(K,L,M^*)
 \end{aligned}
 \]
 
@@ -3199,7 +3296,7 @@ Under CD production function and revenue underreporting,
 Note that both, revenue underreporting and input overreporting,
 artificially increase the input cost share of revenue.
 
-It is natural to extend \hyperref[ass-non-ev]{7.1} to revenue
+It is natural to extend \hyperref[ass-non-ev]{8.1} to revenue
 underreporting. Non-evaders will also not underreport revenue because of
 the same reasons incentivizing them to not overreport inputs.
 
@@ -3211,7 +3308,7 @@ from input misreporting.
 Formally,
 
 \phantomsection\label{ass-non-ev-2}
-\begin{fbx}{Assumption}{Assumption 8.1: }{Non-Evaders II}
+\begin{fbx}{Assumption}{Assumption 9.1: }{Non-Evaders II}
 \phantomsection\label{ass-non-ev-2}
 The subset of firms \(\theta_i\in\Theta^{NE}\subset \Theta\) do not
 evade taxes by underreporting revenue or overreporting inputs.
@@ -3219,7 +3316,7 @@ evade taxes by underreporting revenue or overreporting inputs.
 \end{fbx}
 
 \phantomsection\label{ass-upstream}
-\begin{fbx}{Assumption}{Assumption 8.2: }{Upstream Firms}
+\begin{fbx}{Assumption}{Assumption 9.2: }{Upstream Firms}
 \phantomsection\label{ass-upstream}
 Upstream firms \(\theta_i\in\Theta^{UP}\subset \Theta\) do not evade
 taxes by underreporting revenue but do evade taxes by overreporting
@@ -3228,7 +3325,7 @@ inputs.
 \end{fbx}
 
 \phantomsection\label{ass-upstream}
-\begin{fbx}{Assumption}{Assumption 8.3: }{Misreporting Technology}
+\begin{fbx}{Assumption}{Assumption 9.3: }{Misreporting Technology}
 \phantomsection\label{ass-upstream}
 Misreporting technology is the same across industries.
 
@@ -3239,7 +3336,7 @@ Misreporting technology is the same across industries.
 We are interested in the distribution of tax evasion \(e\) but it cannot
 be observed. What is observed is the contaminated version
 \(\mathcal{V}\) Equation~\ref{eq-ob-ev}. Evasion \(e\) and the output
-shock \(\varepsilon\) are independent {[}\hyperref[ass-ind]{7.2}{]} with
+shock \(\varepsilon\) are independent {[}\hyperref[ass-ind]{8.2}{]} with
 probability density distributions \(f_e\) and \(f_{\varepsilon}\). Then,
 from Definition~\ref{def-conv}
 

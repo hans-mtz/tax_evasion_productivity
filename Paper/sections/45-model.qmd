@@ -6,16 +6,16 @@ $$
 Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 $$ {#eq-prod-fn}
 
-As standard in the literature, productivity $\omega_{it}$ is known to firms when they take input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock $\varepsilon_{it}$ is not part of the firms' information set. 
+As standard in the literature, productivity $\omega_{it}$ is known to firms when they make input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock $\varepsilon_{it}$ is not part of the firms' information set. 
 
 The model departs from the literature by allowing firms to overreport their inputs $e_{it}$ to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax $\tau$, the evasion penalty/cost $\kappa(e)$, and the probability of detection $q(e_{it}|\theta_{it})$.
 
 Firms solve @eq-eva
 $$
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  \max_{M_{it}, e_{it}\in [0,\infty)} [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
   +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
-  \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$ {#eq-eva}
 
@@ -37,7 +37,7 @@ $$
   -q(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
-$$
+$$ {#eq-eva-2}
 
 Intuitively, if the firm overreports her inputs' cost, she will get the share of the value she overreported with probability $(1-q)$ and she will be penalized with probability $q$.
 

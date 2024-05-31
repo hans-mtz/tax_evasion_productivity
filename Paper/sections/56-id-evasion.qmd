@@ -1,4 +1,4 @@
-## Identification Strategy
+## Identification Strategy {#sec-id-strat}
 
 Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations.
 
@@ -90,18 +90,24 @@ $$
     \omega_{it}=h(\omega_{it-1})+\eta_{it}
 $$ {#eq-prod-markov}
 
-We can form the following observed variable for a guess of $\alpha=(\alpha_K,\alpha_L)$,
+Let $\ln X_{it}=x_{it}$. For a guess of $\alpha=(\alpha_K,\alpha_L)$, we can form the following observed variable,
 
 $$
 \begin{aligned}
-    \mathcal W_{it}(\alpha) & \equiv \ln Y_{it} - \beta M_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it}+\beta\mathcal{V}_{it}\\
+    \mathcal W_{it}(\alpha) & \equiv y_{it} - \beta (m^*_{it}+e_{it})-\alpha_K k_{it}-\alpha_L l_{it}+\beta\mathcal{V}_{it}\\
     & = \omega_{it}(\alpha)+(1-\beta)\varepsilon_{it}
 \end{aligned}
 $$
 
 If we are interested only in productivity, we could use deconvolution to learn $\alpha$ and the distribution of productivity.
 
-Alternatively, if we are interested in also identifying the Markov process of productivity, we can use the orthogonality we get from @eq-prod-markov, $\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0$. Orthoganility follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it-1},l_{it-1}$) being predetermined.
+Alternatively, if we are interested in also identifying the Markov process of productivity, we can use the orthogonality we get from @eq-prod-markov, 
+
+$$
+\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0.
+$$
+
+Orthoganility follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it-1},l_{it-1}$) being predetermined.
 
 Namely, substituting $\omega_{it}$ in @eq-prod-markov, we have
 
@@ -115,7 +121,7 @@ Thus, $\alpha$ and $h$ are identified.
 
 To relax the assumption of a CD production function, we would need a flexible input that firms do not overreport to identify tax evasion. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs. 
 
-Assume now that $L_{it}$ is a non-deductible flexible input and, without loss of generality, there are only two inputs ($L_{it}, M_{it}$). Let's assume the production function is now *translog* and let $\ln X_{it}=x_{it}$. We have, 
+Assume now that $L_{it}$ is a non-deductible flexible input and, without loss of generality, there are only two inputs ($L_{it}, M_{it}$). Let's assume the production function is now *translog*. We have, 
 
 $$
  \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
@@ -130,23 +136,25 @@ $$
 \end{aligned}
 $$
 
-where $s_{it}^{L} \equiv\ln\left(\frac{\rho^{L}_t L_{it}}{P_{t}Y_{it}}\right)$.
+where $s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)$.
 
-Note that by assumption \ref{ass-non-ev}, $D^{\mathcal{E}}$ and the density of $\varepsilon$ are still identified. To identify tax evasion, we can form the analog of @eq-ob-ev,
+Note that by assumption \ref{ass-non-ev}, $D^{\mathcal{E}}$ and the density of $\varepsilon$ are still identified. To recover tax evasion, we can form the analog of @eq-ob-ev,
 
 $$
 \begin{aligned}
-\mathcal{V}_{it}^{TL} &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
-    &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+\mathcal{V}_{it}^{TL} =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+    =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
     &+\left[\ln D^{\mathcal{E}}(l,m^*)\right]\\
     &-\left[\ln D^{\mathcal{E}}(l,m^*)\right] \\
-    &=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
+    =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
     &-\left[\ln D^{\mathcal{E}}(l,m^*+e)-\ln D^{\mathcal{E}}(l,m^*)\right]\\
-    &= -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
+    =& -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
 \end{aligned}
 $$
 
-where in the case of the translog production function $\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)$. Note that is always positive $\delta(l,m^*,m^*+e)\ge0$ because $e_{it}\ge0$.  
+where in the case of the translog production function, $\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)$. 
+
+Note that $\delta$ is always positive, $\delta(l,m^*,m^*+e)\ge0$, because $e_{it}\ge0$.
 
 Because firms cannot use $l$ to deduct taxes, $l$ is orthogonal to $e$. Hence, conditional on $m^*$, $\varepsilon(l,m^*)$ and $\delta(l,m^*,m^*+e)$ are independent. Thus, we can apply deconvolution techniques again.
 
@@ -164,7 +172,8 @@ $D^{\mathcal{E}}(K,L,M)$ is still identified by assumption \ref{ass-non-ev}, how
 
 $$
 \begin{aligned}
-\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)=&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
+\ln\left(\frac{\rho M}{PY}\right)-&\ln D^{\mathcal{E}}(K,L,M)=\\
+&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
 =&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
 &+\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
 &-\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right] \\
@@ -174,7 +183,7 @@ $$
 =& -\varepsilon \\
 &+\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M^*)+\varepsilon\right]\\
 &-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
-&= -\varepsilon(K,L,M^*)
+=& -\varepsilon(K,L,M^*)
 \end{aligned}
 $$
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2024-05-08">
+<meta name="dcterms.date" content="2024-05-10">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax Evasion and Productivity</title>
@@ -60,7 +60,11 @@ div.csl-indent {
 <script src="Tax-Prod_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="Tax-Prod_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <style>
-.Proposition {
+.Assumption {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Theorem {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
@@ -68,11 +72,7 @@ div.csl-indent {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
-.Assumption {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
-.Theorem {
+.Proposition {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
@@ -163,29 +163,30 @@ window.Quarto = {
   <li><a href="#changes-in-composition-of-total-expenditure" id="toc-changes-in-composition-of-total-expenditure" class="nav-link" data-scroll-target="#changes-in-composition-of-total-expenditure"><span class="header-section-number">4.1</span> Changes in Composition of Total Expenditure</a></li>
   </ul></li>
   
-  <li><a href="#do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" id="toc-do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="nav-link" data-scroll-target="#do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations"><span class="header-section-number">6</span> Do Corporations in Colombia have different technologies than other juridical organizations?</a>
+  <li><a href="#changes-in-relative-prices" id="toc-changes-in-relative-prices" class="nav-link" data-scroll-target="#changes-in-relative-prices"><span class="header-section-number">6</span> Changes in Relative Prices</a></li>
+  <li><a href="#do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" id="toc-do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="nav-link" data-scroll-target="#do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations"><span class="header-section-number">7</span> Do Corporations in Colombia have different technologies than other juridical organizations?</a>
   <ul class="collapse">
-  <li><a href="#model-of-firm-capital-growth-sketch" id="toc-model-of-firm-capital-growth-sketch" class="nav-link" data-scroll-target="#model-of-firm-capital-growth-sketch"><span class="header-section-number">6.0.1</span> Model of firm (capital) growth (sketch)</a></li>
-  <li><a href="#evasion-vs.-production-technology" id="toc-evasion-vs.-production-technology" class="nav-link" data-scroll-target="#evasion-vs.-production-technology"><span class="header-section-number">6.0.2</span> Evasion vs.&nbsp;Production Technology</a></li>
-  <li><a href="#inputs-cost-share-of-revenues" id="toc-inputs-cost-share-of-revenues" class="nav-link" data-scroll-target="#inputs-cost-share-of-revenues"><span class="header-section-number">6.0.3</span> Inputs Cost Share of Revenues</a></li>
+  <li><a href="#model-of-firm-capital-growth-sketch" id="toc-model-of-firm-capital-growth-sketch" class="nav-link" data-scroll-target="#model-of-firm-capital-growth-sketch"><span class="header-section-number">7.0.1</span> Model of firm (capital) growth (sketch)</a></li>
+  <li><a href="#evasion-vs.-production-technology" id="toc-evasion-vs.-production-technology" class="nav-link" data-scroll-target="#evasion-vs.-production-technology"><span class="header-section-number">7.0.2</span> Evasion vs.&nbsp;Production Technology</a></li>
+  <li><a href="#inputs-cost-share-of-revenues" id="toc-inputs-cost-share-of-revenues" class="nav-link" data-scroll-target="#inputs-cost-share-of-revenues"><span class="header-section-number">7.0.3</span> Inputs Cost Share of Revenues</a></li>
   </ul></li>
-  <li><a href="#identification-strategy" id="toc-identification-strategy" class="nav-link" data-scroll-target="#identification-strategy"><span class="header-section-number">7</span> Identification Strategy</a>
+  <li><a href="#sec-id-strat" id="toc-sec-id-strat" class="nav-link" data-scroll-target="#sec-id-strat"><span class="header-section-number">8</span> Identification Strategy</a>
   <ul class="collapse">
-  <li><a href="#identifying-the-production-function-parameters" id="toc-identifying-the-production-function-parameters" class="nav-link" data-scroll-target="#identifying-the-production-function-parameters"><span class="header-section-number">7.1</span> Identifying the production function parameters</a></li>
-  <li><a href="#identifying-tax-evasion" id="toc-identifying-tax-evasion" class="nav-link" data-scroll-target="#identifying-tax-evasion"><span class="header-section-number">7.2</span> Identifying Tax Evasion</a></li>
-  <li><a href="#identifying-productivity" id="toc-identifying-productivity" class="nav-link" data-scroll-target="#identifying-productivity"><span class="header-section-number">7.3</span> Identifying Productivity</a></li>
-  <li><a href="#translog-production-function" id="toc-translog-production-function" class="nav-link" data-scroll-target="#translog-production-function"><span class="header-section-number">7.4</span> Translog Production Function</a></li>
-  <li><a href="#non-parametric-identification" id="toc-non-parametric-identification" class="nav-link" data-scroll-target="#non-parametric-identification"><span class="header-section-number">7.5</span> Non-Parametric Identification</a></li>
+  <li><a href="#identifying-the-production-function-parameters" id="toc-identifying-the-production-function-parameters" class="nav-link" data-scroll-target="#identifying-the-production-function-parameters"><span class="header-section-number">8.1</span> Identifying the production function parameters</a></li>
+  <li><a href="#identifying-tax-evasion" id="toc-identifying-tax-evasion" class="nav-link" data-scroll-target="#identifying-tax-evasion"><span class="header-section-number">8.2</span> Identifying Tax Evasion</a></li>
+  <li><a href="#identifying-productivity" id="toc-identifying-productivity" class="nav-link" data-scroll-target="#identifying-productivity"><span class="header-section-number">8.3</span> Identifying Productivity</a></li>
+  <li><a href="#translog-production-function" id="toc-translog-production-function" class="nav-link" data-scroll-target="#translog-production-function"><span class="header-section-number">8.4</span> Translog Production Function</a></li>
+  <li><a href="#non-parametric-identification" id="toc-non-parametric-identification" class="nav-link" data-scroll-target="#non-parametric-identification"><span class="header-section-number">8.5</span> Non-Parametric Identification</a></li>
   </ul></li>
-  <li><a href="#revenue-misreporting" id="toc-revenue-misreporting" class="nav-link" data-scroll-target="#revenue-misreporting"><span class="header-section-number">8</span> Revenue misreporting</a>
+  <li><a href="#revenue-misreporting" id="toc-revenue-misreporting" class="nav-link" data-scroll-target="#revenue-misreporting"><span class="header-section-number">9</span> Revenue misreporting</a>
   <ul class="collapse">
-  <li><a href="#large-taxpayers-unit-in-spain" id="toc-large-taxpayers-unit-in-spain" class="nav-link" data-scroll-target="#large-taxpayers-unit-in-spain"><span class="header-section-number">8.1</span> Large Taxpayers Unit in Spain</a></li>
-  <li><a href="#how-to-deal-with-revenue-underreporting" id="toc-how-to-deal-with-revenue-underreporting" class="nav-link" data-scroll-target="#how-to-deal-with-revenue-underreporting"><span class="header-section-number">8.2</span> How to Deal with Revenue Underreporting</a></li>
+  <li><a href="#large-taxpayers-unit-in-spain" id="toc-large-taxpayers-unit-in-spain" class="nav-link" data-scroll-target="#large-taxpayers-unit-in-spain"><span class="header-section-number">9.1</span> Large Taxpayers Unit in Spain</a></li>
+  <li><a href="#how-to-deal-with-revenue-underreporting" id="toc-how-to-deal-with-revenue-underreporting" class="nav-link" data-scroll-target="#how-to-deal-with-revenue-underreporting"><span class="header-section-number">9.2</span> How to Deal with Revenue Underreporting</a></li>
   </ul></li>
-  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">9</span> Implementation</a>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">10</span> Implementation</a>
   <ul class="collapse">
-  <li><a href="#parametric-mle" id="toc-parametric-mle" class="nav-link" data-scroll-target="#parametric-mle"><span class="header-section-number">9.1</span> Parametric MLE</a></li>
-  <li><a href="#non-parametric-mle" id="toc-non-parametric-mle" class="nav-link" data-scroll-target="#non-parametric-mle"><span class="header-section-number">9.2</span> Non-Parametric MLE</a></li>
+  <li><a href="#parametric-mle" id="toc-parametric-mle" class="nav-link" data-scroll-target="#parametric-mle"><span class="header-section-number">10.1</span> Parametric MLE</a></li>
+  <li><a href="#non-parametric-mle" id="toc-non-parametric-mle" class="nav-link" data-scroll-target="#non-parametric-mle"><span class="header-section-number">10.2</span> Non-Parametric MLE</a></li>
   </ul></li>
   
   </ul>
@@ -219,7 +220,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 8, 2024</p>
+      <p class="date">May 10, 2024</p>
     </div>
   </div>
   
@@ -281,45 +282,45 @@ Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 <p>The model departs from the literature by allowing firms to overreport their inputs <span class="math inline">\(e_{it}\)</span> to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax <span class="math inline">\(\tau\)</span>, the evasion penalty/cost <span class="math inline">\(\kappa(e)\)</span>, and the probability of detection <span class="math inline">\(q(e_{it}|\theta_{it})\)</span>.</p>
 <p>Firms solve <a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a> <span id="eq-eva"><span class="math display">\[
 \begin{aligned}
-  \max_{M_{it}, e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&amp;\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  \max_{M_{it}, e_{it}\in [0,\infty)} [1-q(e_{it}|\theta_{it})]&amp;\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
   +q(e_{it}|\theta_{it})&amp;\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
-  \text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
+  \text{s.t. }\; Y_{it}=G(M_{it})&amp;\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 \tag{2}\]</span></span></p>
 <p>The probability of detection <span class="math inline">\(q(e_{it}|\theta_{it})\)</span> is monotonically increasing in the amount evaded <span class="math inline">\(e_{it}\)</span>, conditional on the type of the firm <span class="math inline">\(\theta_{it}\)</span>. Intuitively, for a given type, firms that evade more are more likely to get caught.</p>
 <p>The type of the firm <span class="math inline">\(\theta_{it}\)</span> might be discrete, like the type of juridical organization, or continuous, like the level of revenue<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Some types might be more likely to be detected if the firm engages in tax evasion. For example, in contrast to other types of juridical organizations in Colombia, corporations are closely supervised and are required to have an auditor. That is, for a given level of tax evasion <span class="math inline">\(e_0\)</span> and two different types <span class="math inline">\(\theta' \not= \theta \in \mathbfcal{\Theta}\)</span>, then <span class="math inline">\(q(e_0|\theta')\ge q(e_0|\theta)\)</span>.</p>
 <p>If the type <span class="math inline">\(\theta\)</span> is continuous, it might be a function of inputs; for example, level of revenue. Firms will then affect their probability of detection <span class="math inline">\(q(e|\theta)\)</span> in two ways: directly, by choosing how much they evade <span class="math inline">\(e\)</span>; and indirectly, when choosing inputs <span class="math inline">\(M\)</span>.</p>
 <p>The optimal decision of the firm will depend on the fiscal environment <span class="math inline">\(\Gamma=\{\tau, \kappa, q \}\)</span>, namely the tax rates, the penalty/cost of detection, and the probability of detection.</p>
-<p>The firms’ problem (<a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a>) can be rewritten as follows, <span class="math display">\[
+<p>The firms’ problem (<a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a>) can be rewritten as follows, <span id="eq-eva-2"><span class="math display">\[
 \begin{aligned}
   \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &amp;(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)+[1-q(e_{it}|\theta_{it})]\left(\frac{\rho_{t}}{P_t}e_{it}\tau\right)
   -q(e_{it}|\theta_{it})\kappa(e_{it}) \\
   &amp;\text{s.t. }\; Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
-\]</span></p>
+\tag{3}\]</span></span></p>
 <p>Intuitively, if the firm overreports her inputs’ cost, she will get the share of the value she overreported with probability <span class="math inline">\((1-q)\)</span> and she will be penalized with probability <span class="math inline">\(q\)</span>.</p>
 <p>Assuming well-behaved functions and no corner solutions, the first-order conditions lead to the following system of differential equations,</p>
 <p><span id="eq-foc-cont-m"><span class="math display">\[
 G_M(M_{it})\exp(\omega_{it})\mathcal{E}-\frac{\rho_{t}}{P_t} = \frac{1}{(1-\tau)}\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}\left[\frac{\rho_t}{P_t}e_{it}\tau+\kappa(e_{it})\right]
-\tag{3}\]</span></span></p>
+\tag{4}\]</span></span></p>
 <p><span id="eq-foc-cont-e"><span class="math display">\[
 [1-q(e_{it}|\theta_{it})]\frac{\rho_t}{P_t}\tau-q(e_{it}|\theta_{it})\kappa'(e_{it})=q'(e_{it}|\theta_{it})\left[\frac{\rho_t}{P_t}\tau e_{it} + \kappa(e_{it})\right]
-\tag{4}\]</span></span></p>
+\tag{5}\]</span></span></p>
 <p>where <span class="math inline">\(\mathbfcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)</span>. The type of firms is continuous and increasing on the input. The probability of detection is increasing in the type continuum. In particular, <span class="math inline">\(\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}\ge0\)</span>.</p>
-<p>The left-hand side of <a href="#eq-foc-cont-m" class="quarto-xref">Equation&nbsp;3</a> is the familiar marginal output of inputs and the price ratio. In the absence of incentives’ distortions induced by the fiscal environment, they are equal. But now, the equality holds no more. There’s a wedge arising from the fiscal environment. The right-hand side of the equation is positive by the assumptions of the model.</p>
-<p><a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;4</a> solves the optimal evasion decision. The left-hand side is the marginal benefit net of the marginal cost of evasion. The right-hand side is the rate of change of the probability of detection due to a change in evasion weighted by the benefit and cost of evading.</p>
+<p>The left-hand side of <a href="#eq-foc-cont-m" class="quarto-xref">Equation&nbsp;4</a> is the familiar marginal output of inputs and the price ratio. In the absence of incentives’ distortions induced by the fiscal environment, they are equal. But now, the equality holds no more. There’s a wedge arising from the fiscal environment. The right-hand side of the equation is positive by the assumptions of the model.</p>
+<p><a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;12</a> solves the optimal evasion decision. The left-hand side is the marginal benefit net of the marginal cost of evasion. The right-hand side is the rate of change of the probability of detection due to a change in evasion weighted by the benefit and cost of evading.</p>
 <section id="case-1-independence-qethetaqe-and-kappaekappa_0" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="case-1-independence-qethetaqe-and-kappaekappa_0"><span class="header-section-number">1.1</span> Case 1 (Independence): <span class="math inline">\(q(e|\theta)=q(e)\)</span> and <span class="math inline">\(\kappa(e)=\kappa_0\)</span></h2>
 <p>Consider the case when the probability of detection is independent of type, <span class="math inline">\(q(e|\theta)=q(e)\)</span>. This could be the case if the type is the juridical organization of the firm. Hence, the type of the firm, and thus the probability of detection, does not change with the firm’s input decisions, <span class="math inline">\(\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}=0\)</span>. In addition, assume the evasion cost is constant, <span class="math inline">\(\kappa(e)=\kappa_0\)</span>, for simplicity.</p>
 <p>In this case, the first-order conditions of <a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a> with respect to the input <span class="math inline">\(M_{it}\)</span> and the tax evasion <span class="math inline">\(e_{it}\)</span> yield the following</p>
 <p><span id="eq-foc:ind"><span class="math display">\[
 G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
-\tag{5}\]</span></span></p>
+\tag{6}\]</span></span></p>
 <p><span id="eq-foc:eva:ind"><span class="math display">\[
 e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
-\tag{6}\]</span></span></p>
-<p><a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;5</a>, the well-known optimality condition, says that the price ratio is equal to the marginal product of the inputs.</p>
-<p>Likewise, <a href="#eq-foc:eva:ind" class="quarto-xref">Equation&nbsp;6</a> reveals the firms’ optimal tax evasion decision decreases if the probability of detection <span class="math inline">\(q(e_{it})\)</span> or the penalty of evading <span class="math inline">\(\kappa\)</span> increases. Tax evasion also depends on how sensitive the probability of detection is to the level of evasion <span class="math inline">\(q'(e)\)</span>. In particular, greater sensibility will result in lower levels of evasion.</p>
+\tag{7}\]</span></span></p>
+<p><a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;6</a>, the well-known optimality condition, says that the price ratio is equal to the marginal product of the inputs.</p>
+<p>Likewise, <a href="#eq-foc:eva:ind" class="quarto-xref">Equation&nbsp;7</a> reveals the firms’ optimal tax evasion decision decreases if the probability of detection <span class="math inline">\(q(e_{it})\)</span> or the penalty of evading <span class="math inline">\(\kappa\)</span> increases. Tax evasion also depends on how sensitive the probability of detection is to the level of evasion <span class="math inline">\(q'(e)\)</span>. In particular, greater sensibility will result in lower levels of evasion.</p>
 <p>Note that the net change of tax evasion due to an increase in the relative prices <span class="math inline">\(\frac{\rho_{t}}{P_t}\)</span> or the tax rate <span class="math inline">\(\tau\)</span> is not evident at first sight. The net effect will also depend on the change in the detection probability induced by the changes in the relative prices or the tax rate. In particular, an increase in relative prices <span class="math inline">\(\frac{\rho_{t}}{P_t}\)</span> or the tax rate <span class="math inline">\(\tau\)</span> will incentivize a higher tax evasion level, however, a higher tax evasion level will increase the probability of detection —depending on the shape of the probability as a function of <span class="math inline">\(e\)</span>—, so it will deter higher levels of evasion. An increase in the tax rate, for instance, will only increase tax evasion if the change in the tax rates increases the incentives to evade more than the decrease in the incentives due to the changes in the detection probability.</p>
 <p>Formally, suppose a firm increases its tax evasion, <span class="math inline">\(e_1-e_0&gt;0\)</span> because of an increase in taxes <span class="math inline">\(\tau_1&gt;\tau_0\)</span>. Then, it follows that</p>
 <p><span class="math display">\[
@@ -334,11 +335,11 @@ e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
 <p>In this scenario, depending on the productivity shock, the firm might be better off choosing not to produce past the revenue threshold. Indeed, for a relevant range of productivity draws <span class="math inline">\(\Omega^B=[\omega^L, \omega^H]\)</span>, the firms will not choose to grow past the revenue threshold if the expected after-tax profits of staying small are greater than the expected after-tax profits of growing.</p>
 <p>In the model, there is now a threshold of revenue <span class="math inline">\(\theta^L\)</span> after which the probability of detection increases discretely. To make things simpler, assume that before the threshold, the probability changes as a function of evasion but does not vary conditional on size. After the threshold, the probability increases for every level of evasion but does not vary conditional on size.</p>
 <p>Formally, let <span class="math inline">\(\Theta_{L} = \{\theta_i : \theta_{i} &lt; \theta^L \}\)</span> and <span class="math inline">\(\Theta_{H} = \{\theta_i : \theta_{i} \ge \theta^L \}\)</span>, then for all <span class="math inline">\(e_0\)</span> and <span class="math inline">\(\theta'_i\not=\theta_i\)</span>, <span class="math inline">\(q(e_0|\theta_i \in \Theta_k)=q(e_0|\theta'_i \in \Theta_k)\)</span> with <span class="math inline">\(k=\{L,H\}\)</span>, but <span class="math inline">\(q(e_0|\theta'_i \in \Theta_H)\ge q(e_0|\theta_i \in \Theta_L)\)</span>.</p>
-<p>Firms’ revenue with productivity draw <span class="math inline">\(\omega^L\)</span> corresponds exactly to the enforcement threshold <span class="math inline">\(\theta^L\)</span>. Production and reporting decisions of firms with productivity draws below <span class="math inline">\(\omega^L\)</span> are not affected by the change in the probability of detection. Firms choose their inputs according to <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;5</a> and their evasion decision according to <a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;4</a>. Firms with productivity draws above <span class="math inline">\(\omega^U\)</span></p>
+<p>Firms’ revenue with productivity draw <span class="math inline">\(\omega^L\)</span> corresponds exactly to the enforcement threshold <span class="math inline">\(\theta^L\)</span>. Production and reporting decisions of firms with productivity draws below <span class="math inline">\(\omega^L\)</span> are not affected by the change in the probability of detection. Firms choose their inputs according to <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;6</a> and their evasion decision according to <a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;12</a>. Firms with productivity draws above <span class="math inline">\(\omega^U\)</span></p>
 <p>Firms with productivity <span class="math inline">\(\omega_{i}\in \Omega^B\)</span> will choose the input level <span class="math inline">\(\tilde{M}_{i}\)</span> resulting in an expected revenue below the threshold <span class="math inline">\(\theta_{i}&lt;\theta^L\)</span>, if the expected after-tax profit of staying small are greater than growing, <span class="math inline">\(\mathbb{E}[\pi_{i}|\Theta_L, \Omega^B]-\mathbb{E}[\pi_{i}|\Theta_H, \Omega^B]\ge0\)</span>.</p>
 <p>The optimal input choice <span class="math inline">\(M^*_{i}\)</span> for firms with productivity <span class="math inline">\(\omega_i\in\Omega^B\)</span> implies an expected revenue greater than or equal to the threshold <span class="math inline">\(\theta^*_{i}\ge \theta^L\)</span>. Let the expected profits given <span class="math inline">\(M^*_{i}\)</span> and the optimal tax evasion in the range of size <span class="math inline">\(\theta_l\)</span>, <span class="math inline">\(e^*_{it}\)</span>, is <span class="math inline">\(\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|\theta_l]\)</span>. Let <span class="math inline">\(\tilde{M}_{it}\)</span> be the input level such that the expected revenue is below the threshold <span class="math inline">\(\tilde{s}_{it}&lt;\theta^L\)</span> and <span class="math inline">\(\tilde{e}_{it}\)</span> be the optimal tax evasion in the range of size <span class="math inline">\(\theta_s\)</span>. Let also the expected profits of staying small are <span class="math inline">\(\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|\theta_s]\)</span>.</p>
 <p>In this second case, therefore, firms might optimally choose to remain small if, for a low productivity shock, the expected profits of not growing are greater than the expected profits of growing <span class="math inline">\(\pi_l&lt;\pi_s\)</span>. Firms choosing to remain small will lead to a bunching below the threshold in the size distribution of firms.</p>
-<p>Besides the higher levels of evasion before the threshold —simply because of the higher probability of detection—, we can also expect bunching firms to evade more than their similar-sized peers. At <span class="math inline">\(\tilde{M}_{it}\)</span>, the optimization condition of <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;5</a> no longer holds, hence, the marginal product of the input is now greater than the relative prices. Therefore, according to <a href="#eq-foc:eva:ind" class="quarto-xref">Equation&nbsp;6</a>, bunching firms would compensate for their <em>higher</em> costs by increasing overreporting.</p>
+<p>Besides the higher levels of evasion before the threshold —simply because of the higher probability of detection—, we can also expect bunching firms to evade more than their similar-sized peers. At <span class="math inline">\(\tilde{M}_{it}\)</span>, the optimization condition of <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;6</a> no longer holds, hence, the marginal product of the input is now greater than the relative prices. Therefore, according to <a href="#eq-foc:eva:ind" class="quarto-xref">Equation&nbsp;7</a>, bunching firms would compensate for their <em>higher</em> costs by increasing overreporting.</p>
 <section id="discussion" class="level3" data-number="1.2.1">
 <h3 data-number="1.2.1" class="anchored" data-anchor-id="discussion"><span class="header-section-number">1.2.1</span> Discussion</h3>
 <p>What is new in this paper relative to the literature is that it focuses on the production function framework using public data whereas <span class="citation" data-cites="Almunia2018">Almunia and Lopez-Rodriguez (<a href="#ref-Almunia2018" role="doc-biblioref">2018</a>)</span> and other papers use a bunching estimator with government administrative data which is difficult to access. Second, the paper focuses on input overreporting rather than on revenue underreporting, which is the relevant margin of evasion for manufacturing firms. More on this point in the revenue underreporting section. Finally, in contrast to <span class="citation" data-cites="Almunia2018">Almunia and Lopez-Rodriguez (<a href="#ref-Almunia2018" role="doc-biblioref">2018</a>)</span> where the authors conclude that misreporting does not imply real losses in production but only fictitious reduction of the real sales, firms might optimally forgo higher revenue levels if the expected profits of staying small and evade taxes by misreporting are greater than the expected profits of growing and avoid misreporting.</p>
@@ -669,14 +670,14 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_frnqizf2r79fl3sct3m5</title>
+    <title>tinytable_19uvreew9c6p068unign</title>
     <style>
-.table td.tinytable_css_6dbgz15napre9xqj2vju, .table th.tinytable_css_6dbgz15napre9xqj2vju {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_2mbex2gofqh0udmsexqj, .table th.tinytable_css_2mbex2gofqh0udmsexqj {   padding-left: 1em; }
-.table td.tinytable_css_irwqyuwok5mf1nmsvu6c, .table th.tinytable_css_irwqyuwok5mf1nmsvu6c {    text-align: center; }
-.table td.tinytable_css_9ygsmbh8bhbwwk6sdw3v, .table th.tinytable_css_9ygsmbh8bhbwwk6sdw3v {    border-top: solid 0.1em black; }
-.table td.tinytable_css_wnzsnb5hfriz64b69msi, .table th.tinytable_css_wnzsnb5hfriz64b69msi {    font-weight: bold; border-bottom: solid 0.1em black; }
-.table td.tinytable_css_l6gg0lb9259uvx7t8nsx, .table th.tinytable_css_l6gg0lb9259uvx7t8nsx {    border-bottom: solid 0.1em white; }
+.table td.tinytable_css_8akwd81v5dqyjcs48ib6, .table th.tinytable_css_8akwd81v5dqyjcs48ib6 {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_qjh6ovy2ajdag3j17abv, .table th.tinytable_css_qjh6ovy2ajdag3j17abv {   padding-left: 1em; }
+.table td.tinytable_css_960faai583q8rvbwfb61, .table th.tinytable_css_960faai583q8rvbwfb61 {    text-align: center; }
+.table td.tinytable_css_yexp6gxrgwzlhb5dda68, .table th.tinytable_css_yexp6gxrgwzlhb5dda68 {    border-top: solid 0.1em black; }
+.table td.tinytable_css_k9biu54cuzeimezf2s99, .table th.tinytable_css_k9biu54cuzeimezf2s99 {    font-weight: bold; border-bottom: solid 0.1em black; }
+.table td.tinytable_css_tt43s5k40dvog03rtltt, .table th.tinytable_css_tt43s5k40dvog03rtltt {    border-bottom: solid 0.1em white; }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -694,7 +695,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 
   
     <div class="container">
-      <table class="table table-borderless" id="tinytable_frnqizf2r79fl3sct3m5" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_19uvreew9c6p068unign" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -867,12 +868,12 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
     </div>
 
     <script>
-      function styleCell_tinytable_gccxz232m7lpzgkk9dh4(i, j, css_id) {
-        var table = document.getElementById("tinytable_frnqizf2r79fl3sct3m5");
+      function styleCell_tinytable_7ewruzrvxcs9p8qhryqn(i, j, css_id) {
+        var table = document.getElementById("tinytable_19uvreew9c6p068unign");
         table.rows[i].cells[j].classList.add(css_id);
       }
-      function insertSpanRow_xc1noewq2lxoaqf9pj87(i, colspan, content) {
-        var table = document.getElementById('tinytable_frnqizf2r79fl3sct3m5');
+      function insertSpanRow_88l7hc2yxxevtlr5kj35(i, colspan, content) {
+        var table = document.getElementById('tinytable_19uvreew9c6p068unign');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -880,8 +881,8 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_gccxz232m7lpzgkk9dh4(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_frnqizf2r79fl3sct3m5");
+      function spanCell_tinytable_7ewruzrvxcs9p8qhryqn(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_19uvreew9c6p068unign");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -908,74 +909,74 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 0, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 1, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 2, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 3, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 4, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 5, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(0, 6, 'tinytable_css_6dbgz15napre9xqj2vju') })
-window.addEventListener('load', function () { insertSpanRow_xc1noewq2lxoaqf9pj87(10, 7, 'Share of Total Expenditure') });
-window.addEventListener('load', function () { insertSpanRow_xc1noewq2lxoaqf9pj87(1, 7, 'Share of Revenues') });
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(2, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(3, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(4, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(5, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(6, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(7, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(8, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(9, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(10, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(14, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(16, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(17, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(18, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(19, 0, 'tinytable_css_2mbex2gofqh0udmsexqj') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 0, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 1, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 2, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 3, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 4, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 5, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(-1, 6, 'tinytable_css_irwqyuwok5mf1nmsvu6c') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 0, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 1, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 2, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 3, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 4, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 5, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(13, 6, 'tinytable_css_9ygsmbh8bhbwwk6sdw3v') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 0, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 0, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 0, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 1, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 1, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 1, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 2, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 2, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 2, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 3, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 3, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 3, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 4, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 4, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 4, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 5, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 5, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 5, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(1, 6, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(11, 6, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(15, 6, 'tinytable_css_wnzsnb5hfriz64b69msi') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 0, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 1, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 2, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 3, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 4, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 5, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
-window.addEventListener('load', function () { styleCell_tinytable_gccxz232m7lpzgkk9dh4(12, 6, 'tinytable_css_l6gg0lb9259uvx7t8nsx') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 0, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 1, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 2, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 3, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 4, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 5, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 6, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
+window.addEventListener('load', function () { insertSpanRow_88l7hc2yxxevtlr5kj35(10, 7, 'Share of Total Expenditure') });
+window.addEventListener('load', function () { insertSpanRow_88l7hc2yxxevtlr5kj35(1, 7, 'Share of Revenues') });
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(2, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(3, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(4, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(5, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(6, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(7, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(8, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(9, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(10, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(14, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(16, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(17, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(18, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(19, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 0, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 1, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 2, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 3, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 4, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 5, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 6, 'tinytable_css_960faai583q8rvbwfb61') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 0, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 1, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 2, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 3, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 4, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 5, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 6, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 0, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 0, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 0, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 1, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 1, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 1, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 2, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 2, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 2, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 3, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 3, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 3, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 4, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 4, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 4, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 5, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 5, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 5, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 6, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 6, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 6, 'tinytable_css_k9biu54cuzeimezf2s99') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 0, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 1, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 2, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 3, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 4, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 5, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 6, 'tinytable_css_tt43s5k40dvog03rtltt') })
     </script>
 
   
@@ -1216,10 +1217,10 @@ Figure&nbsp;3: Sales in logs, annual mean.
 </figcaption>
 </figure>
 </div>
-<p>Finally, in a preliminary empirical assessment, I observe that the sales tax rate is a significant determinant of the log share of revenue and that non-corporations consistently use 13-17 percent more intermediates than Corporations for a rich set of controls <a href="#tbl-reg-jo-tax" class="quarto-xref">Table&nbsp;6</a>. The results were estimated following <a href="#eq-reg-tax-jo" class="quarto-xref">Equation&nbsp;7</a></p>
+<p>Finally, in a preliminary empirical assessment, I observe that the sales tax rate is a significant determinant of the log share of revenue and that non-corporations consistently use 13-17 percent more intermediates than Corporations for a rich set of controls <a href="#tbl-reg-jo-tax" class="quarto-xref">Table&nbsp;6</a>. The results were estimated following <a href="#eq-reg-tax-jo" class="quarto-xref">Equation&nbsp;8</a></p>
 <p><span id="eq-reg-tax-jo"><span class="math display">\[
 log(s_{it})= \alpha_1Tax_{it}+\beta_1'JurOrg_i + \beta_2'JurOrg_i\times\gamma_t+ \gamma_t + \gamma_{ind} +\gamma_{metro} + \beta_3'Z+ \varepsilon_{it}
-\tag{7}\]</span></span></p>
+\tag{8}\]</span></span></p>
 <div id="tbl-reg-jo-tax" class="quarto-layout-panel anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-reg-jo-tax-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1251,11 +1252,11 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_zvnnpcwz6i82r7gpha2v</title>
+    <title>tinytable_s47fouxngsmzw0ko9rlc</title>
     <style>
-.table td.tinytable_css_uewezjn9k5okei2gj8tm, .table th.tinytable_css_uewezjn9k5okei2gj8tm {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_wllsx3c9kp7c7iyhymsi, .table th.tinytable_css_wllsx3c9kp7c7iyhymsi {    text-align: center; width: 20em; }
-.table td.tinytable_css_a7hzvvhjnxucx13um3tj, .table th.tinytable_css_a7hzvvhjnxucx13um3tj {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
+.table td.tinytable_css_qs0fq8eodo4qq3wbh9up, .table th.tinytable_css_qs0fq8eodo4qq3wbh9up {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_bymniizulrj95blxe10z, .table th.tinytable_css_bymniizulrj95blxe10z {    text-align: center; width: 20em; }
+.table td.tinytable_css_5v60l19gnpe97xbh7z5c, .table th.tinytable_css_5v60l19gnpe97xbh7z5c {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -1273,7 +1274,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
 
   
     <div class="container">
-      <table class=" lightable-classic" id="tinytable_zvnnpcwz6i82r7gpha2v" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class=" lightable-classic" id="tinytable_s47fouxngsmzw0ko9rlc" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1293,7 +1294,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Exempt</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/id7b2tb0zjue823xoqcs6m.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id0h7byhjzamgeha7guqe3.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>312</td>
@@ -1301,7 +1302,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Exempt</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idx15pr4z4blo58ybxdzqf.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idqjfcgdq8ksom250ui5gm.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>322</td>
@@ -1309,7 +1310,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id20c5d4ib8xoujski9b0j.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/ids0upwzy1m8u4u7kxgzyi.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>381</td>
@@ -1317,7 +1318,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id16je465kxotnjv4lfwq7.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id8woydwp9qj46dp9zydjm.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>321</td>
@@ -1325,7 +1326,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id320s9uh76akj81g8rlmm.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id34foaxkr55l9k2udlqg2.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>382</td>
@@ -1333,7 +1334,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/idj7c9ih8hwfmg371vn37z.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id1kopvq57f0egyv29e2xl.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>384</td>
@@ -1341,7 +1342,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id3xx8stx9zau5gv5cun0b.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idjdhjirvrdgy4763cpvg3.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>383</td>
@@ -1349,7 +1350,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id0mld0s5s8lkhsvnhera4.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idkjrk9rlb53fgxt5v1fcb.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>313</td>
@@ -1357,7 +1358,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>- to 35;10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id2n2a6px1we4py6e8ejvz.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id3cvg0ij65o8xiw84mnq7.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>341</td>
@@ -1365,7 +1366,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id7mz86uzdad01xyg5sr8n.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id9q0ebcen2v1mr8aqtbzt.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>324</td>
@@ -1373,7 +1374,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idnx1waowhxt262u6tfq0q.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idwko9msotecuwyhj204ld.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>342</td>
@@ -1381,7 +1382,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idpuatpt38hzjanrv6esug.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idx5590m5ho2h4p1ohew1t.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>369</td>
@@ -1389,7 +1390,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idsn7d86h3cfplcvsby6wz.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idee9z44kxw447tbqm17r9.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>390</td>
@@ -1397,7 +1398,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id7n8s4f00e42vvj7ftzqb.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idi8mmsetvvo3t4y1gf37l.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>332</td>
@@ -1405,7 +1406,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/iduf7iikiw6tgiak4igff3.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idxdr0y678w3ry2ukc42eq.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>351</td>
@@ -1413,7 +1414,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idi0texr0xl0sbzr6xdcn6.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id43mynp0pdpwhmwfw6z25.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>352</td>
@@ -1421,7 +1422,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6;15 to 10</td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idazz2axjmoz3bhy27s879.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idqawdin12x3ba0s36fqe5.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>356</td>
@@ -1429,19 +1430,19 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/id70dr03laf9zl1w9fvgua.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id85ki4n0f6jxb2f492bbq.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
         </tbody>
       </table>
     </div>
 
     <script>
-      function styleCell_tinytable_cohirurfpnw7swhi28lp(i, j, css_id) {
-        var table = document.getElementById("tinytable_zvnnpcwz6i82r7gpha2v");
+      function styleCell_tinytable_06z3jfw9h0r0hv3byhjs(i, j, css_id) {
+        var table = document.getElementById("tinytable_s47fouxngsmzw0ko9rlc");
         table.rows[i].cells[j].classList.add(css_id);
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_zvnnpcwz6i82r7gpha2v');
+        var table = document.getElementById('tinytable_s47fouxngsmzw0ko9rlc');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1449,8 +1450,8 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_cohirurfpnw7swhi28lp(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_zvnnpcwz6i82r7gpha2v");
+      function spanCell_tinytable_06z3jfw9h0r0hv3byhjs(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_s47fouxngsmzw0ko9rlc");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1477,145 +1478,145 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 0, 'tinytable_css_uewezjn9k5okei2gj8tm') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 1, 'tinytable_css_uewezjn9k5okei2gj8tm') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 2, 'tinytable_css_uewezjn9k5okei2gj8tm') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 3, 'tinytable_css_uewezjn9k5okei2gj8tm') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 4, 'tinytable_css_uewezjn9k5okei2gj8tm') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 5, 'tinytable_css_uewezjn9k5okei2gj8tm') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 5, 'tinytable_css_wllsx3c9kp7c7iyhymsi') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(0, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(1, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(2, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(3, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(4, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(5, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(6, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(7, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(8, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(9, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(10, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(11, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(12, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(13, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(14, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(15, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(16, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(17, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 0, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 1, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 2, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 3, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 4, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
-window.addEventListener('load', function () { styleCell_tinytable_cohirurfpnw7swhi28lp(18, 5, 'tinytable_css_a7hzvvhjnxucx13um3tj') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 0, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 1, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 2, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 3, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 4, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 5, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 5, 'tinytable_css_bymniizulrj95blxe10z') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
     </script>
 
   
@@ -2050,8 +2051,48 @@ NULL
 </section>
 </section>
 
-<section id="do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Do Corporations in Colombia have different technologies than other juridical organizations?</h1>
+<section id="changes-in-relative-prices" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Changes in Relative Prices</h1>
+<p>An alternative hypothesis is that changes in the sales taxes change the relative prices of inputs. It could be that the regressions are capturing not the changes in evasion by overreporting but the changes in relative prices.</p>
+<p>Suppose we have two flexible inputs <span class="math inline">\(M\)</span> and <span class="math inline">\(L\)</span>. <span class="math inline">\(M\)</span> is deductible but <span class="math inline">\(L\)</span> is not. <a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a> becomes then,</p>
+<p><span id="eq-eva-non-deduct"><span class="math display">\[
+\begin{aligned}
+  \max_{M_{it}, L_{it},e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&amp;\left[P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}-w_{t} L_{it}-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&amp;\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-w_{t} L_{it}-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})&amp;\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+\tag{9}\]</span></span></p>
+<p>In the case of Colombia, <span class="math inline">\(\theta\)</span> is their juridical organization. Assume firms choose their <span class="math inline">\(\theta\)</span> before the start of the period. I’ll come to this decision later, but for now, it follows that <span class="math inline">\(q(e|\theta)=q(e)\)</span>. In other words, firms cannot affect their detection probability when choosing inputs.</p>
+<p>The first-order conditions now yield the following. For deductible flexible inputs, the optimality condition remains the same as <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;6</a>,</p>
+<p><span id="eq-foc:deduct"><span class="math display">\[
+G_M(M_{it}, L_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
+\tag{10}\]</span></span></p>
+<p>However, for non-deductible flexible inputs, the sales tax induces a distortion in the optimality condition.</p>
+<p><span id="eq-foc:non-deduct"><span class="math display">\[
+G_L(M_{it}, L_{it})\exp(\omega_{it})\mathcal{E}=\frac{w_{t}}{(1-\tau)P_t}
+\tag{11}\]</span></span></p>
+<p>Finally, the optimality condition for tax evasion becomes,</p>
+<p><span id="eq-foc-cont-e"><span class="math display">\[
+[1-q(e_{it})]\frac{\rho_t}{P_t}\tau-q(e_{it})\kappa'(e_{it})=q'(e_{it})\left[\frac{\rho_t}{P_t}\tau e_{it} + \kappa(e_{it})\right]
+\tag{12}\]</span></span></p>
+<p>What can we conclude? First, if the production function is a Cobb-Douglas, then we can independently solve for each input. In this case, changes in VAT or CIT would not affect the optimality condition of deductible flexible inputs because it would not affect the relative prices. Therefore, changes in the consumption of deductible flexible inputs due to changes in VAT or CIT can only be explained by an increase in the incentives to evade taxes by overreporting.</p>
+<p>On the other hand, an increase in the VAT or CIT would increase the relative prices of non-deductible flexible inputs, leading to a decrease in their consumption.</p>
+<p>Alternatively, if non-deductible flexible inputs become deductible the distortion in the optimality condition induced by the VAT and CIT would be eliminated. Eliminating the distortion would lead to a reduction of the relative prices inducing a higher consumption of these inputs.</p>
+<p>Second, if the production function is not Cobb-Douglas, then the firm has to solve the system of equations. Theoretically, the changes in the relative prices of the non-deductible flexible inputs might affect the consumption of the deductible flexible inputs depending on whether these inputs are complements or substitutes.</p>
+<p>Empirically, however, if I can observe deductible inputs separately from non-deductible inputs, I can still be able to run the share regression to recover the input elasticity of output. The observed consumed non-deductible inputs will capture the changes in relative prices.</p>
+<p>If I want to run the share regression using the non-deductible flexible inputs, I have to be careful to account for the distortion induced by the changes in taxes. If I observe the sales taxes, I can still be able to control for changes in sales taxes and run this regression.</p>
+<p>Theoretically, we would have,</p>
+<p><span class="math display">\[
+\begin{aligned}
+    \ln\left(\frac{\rho_{t}M_{it}}{P_tY_{it}}\right)&amp;=\ln D^{\mathcal{E}}_M(M_{it}, L_{it})-\varepsilon_{it} \\
+    \ln\left(\frac{w_{t}L_{it}}{(1-\tau)P_tY_{it}}\right)&amp;=\ln D^{\mathcal{E}}_L(M_{it}, L_{it})-\varepsilon_{it}
+\end{aligned}
+\]</span></p>
+<p>However, we observe <span class="math inline">\(\ln M=\ln M^*+e\)</span>. In section <a href="#sec-id-strat" class="quarto-xref">Section&nbsp;8</a>, I show how to recover these functions.</p>
+<!-- Same Techonology *-->
+</section>
+<section id="do-corporations-in-colombia-have-different-technologies-than-other-juridical-organizations" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Do Corporations in Colombia have different technologies than other juridical organizations?</h1>
 <p>An implicit assumption in the identification strategy is that the subset of non-evaders has the same common technology as evaders. In the case of Colombia, this implies that Corporations have the same common technology as Proprietorships, Limited Companies, and Partnerships. However, we can think that firms with better technology are self-selecting into corporations, and thus, firms with low-performance technology will be mislabeled as evaders.</p>
 <p>The key question is how firms are choosing their juridical organization, and in particular, how firms are choosing to become corporations. I argue that choosing the juridical organization is a result of the capital needs of the firm and it is affected by the preferences of the owners over their corporate liability and their social connections.</p>
 <p>From the definitions of the juridical organizations, we can expect corporations to be the largests in terms of capital, followed by LLCs and Partnerships, and Proprietorships to be smallest. The reason is simply that more people can participate by contributing their capital to the firm. This ordering in turn would suggest a growth path for the firms.</p>
@@ -2184,8 +2225,8 @@ Table&nbsp;13: Testing Differences in the log of Capital, Revenue, and Capital/R
 </div>
 </figure>
 </div>
-<section id="model-of-firm-capital-growth-sketch" class="level3" data-number="6.0.1">
-<h3 data-number="6.0.1" class="anchored" data-anchor-id="model-of-firm-capital-growth-sketch"><span class="header-section-number">6.0.1</span> Model of firm (capital) growth (sketch)</h3>
+<section id="model-of-firm-capital-growth-sketch" class="level3" data-number="7.0.1">
+<h3 data-number="7.0.1" class="anchored" data-anchor-id="model-of-firm-capital-growth-sketch"><span class="header-section-number">7.0.1</span> Model of firm (capital) growth (sketch)</h3>
 <p>A limited liability company looking to acquire more capital had three options.</p>
 <p>First, partners can increase their capital participation, using personal wealth or through a bank credit. This option however will increase the partners’ liability. The more capital I bring the greater my liability is.</p>
 <p>Second, the LLC might increase its capital by inviting additional partners. As the firm increases its capital, inviting more partners will become more difficult. The funding partners risk losing control of their firm, as more people participate in the firm’s management and decision-making.</p>
@@ -2194,23 +2235,23 @@ Table&nbsp;13: Testing Differences in the log of Capital, Revenue, and Capital/R
 <p>Assume there’s an unobserved scalar <span class="math inline">\(\zeta_i\)</span> that captures all of the owners’ heterogeneity in preferences over liability risk, access to networks of potential investors, and preferences over the control of the firm’s management. Let a higher value of <span class="math inline">\(\zeta\)</span> capture less risk aversion, a wider network of potential investors, or a higher preference for retaining control over the firm. Consider the case in which two LLCs firms are looking to optimally increase their capital by the same quantity, but the owners are different in <span class="math inline">\(\zeta\)</span>. In particular, let the owner of firm 1 have a higher <span class="math inline">\(\zeta_1&gt;\zeta_2\)</span> than the owner of firm 2. The firms also have the same technology and productivity shocks. The owner of firm 1 <span class="math inline">\(\zeta_1\)</span> would be able to convince additional investors to join their LLC, but the owner 2 <span class="math inline">\(\zeta_2\)</span> would not. <span class="math inline">\(\zeta_2\)</span> owner would have to choose to incorporate to get the capital for his firm or forgo growth.</p>
 <p>The 20 pp difference in CIT rate between LLCs and Corporations might have deterred firm growth. The CIT was homogenized to 30% in 1986. What was the capital misallocation due to the tax rate differential? Are more firms incorporating after the reform?</p>
 </section>
-<section id="evasion-vs.-production-technology" class="level3" data-number="6.0.2">
-<h3 data-number="6.0.2" class="anchored" data-anchor-id="evasion-vs.-production-technology"><span class="header-section-number">6.0.2</span> Evasion vs.&nbsp;Production Technology</h3>
+<section id="evasion-vs.-production-technology" class="level3" data-number="7.0.2">
+<h3 data-number="7.0.2" class="anchored" data-anchor-id="evasion-vs.-production-technology"><span class="header-section-number">7.0.2</span> Evasion vs.&nbsp;Production Technology</h3>
 <p>Production technology is industry-specific, but evasion technology is the same across industries.</p>
 <p>Take the face value of the regressions and assume, without conceding, that corporations have different technologies. This will imply that corporations have technologies that are consistently 15% more productive than non-corporations regardless of the industry. In other words, it does not matter if the firms produce canned food, shoes or furniture, corporations have technologies consistently more productive. However, this is difficult to believe because there could be industries in which such an improvement in technology is difficult to imagine. For example, coffee grain mills (food products), steel foundries (steel basic products), plastic molding and extrusion (plastic products), or cement (non-metallic mineral products).</p>
 <p>However, these cross-sectional differences across industries could be better explained by the evasion technology. We would expect the evasion technology to be the same across industries. It does not matter what I produce and what technology my firm employs, to overreport inputs all that is needed is a fake invoice.</p>
 <!-- #### Are firms switching Juridical Organization types in the data? -->
 <!-- Most firms did not change their J.O. in the sample. Very few changed one time and then stayed in their new J.O. Firms rarely changed more than once. Over time, around 2-3% of firms in an industry changed J.O. Across industries, around 2% of firms changed J.O. each year. Overall only 2.3% of firms changed J.O. -->
 </section>
-<section id="inputs-cost-share-of-revenues" class="level3" data-number="6.0.3">
-<h3 data-number="6.0.3" class="anchored" data-anchor-id="inputs-cost-share-of-revenues"><span class="header-section-number">6.0.3</span> Inputs Cost Share of Revenues</h3>
+<section id="inputs-cost-share-of-revenues" class="level3" data-number="7.0.3">
+<h3 data-number="7.0.3" class="anchored" data-anchor-id="inputs-cost-share-of-revenues"><span class="header-section-number">7.0.3</span> Inputs Cost Share of Revenues</h3>
 <p>The evidence suggests that Corporations have similar technologies to the rest of the firms. I look at the share of revenues of different input costs. In doing so, I consider the incentives generated by the fiscal environment in Colombia. Firms had the lowest incentives to evade taxes by misreporting capital, consumed energy, and skilled labor. The cost share of revenue of these inputs suggests that Corporations and the rest of the firms had the same technologies.</p>
-<section id="capital" class="level4" data-number="6.0.3.1">
-<h4 data-number="6.0.3.1" class="anchored" data-anchor-id="capital"><span class="header-section-number">6.0.3.1</span> Capital</h4>
+<section id="capital" class="level4" data-number="7.0.3.1">
+<h4 data-number="7.0.3.1" class="anchored" data-anchor-id="capital"><span class="header-section-number">7.0.3.1</span> Capital</h4>
 <p>Firms could not deduct capital goods from sales taxes. However, firms of capital-intensive industries might have had incentives to underreport capital because capital was used to set the minimum income tax. Income tax could not be less than 8 percent of the capital.</p>
 </section>
-<section id="energy" class="level4" data-number="6.0.3.2">
-<h4 data-number="6.0.3.2" class="anchored" data-anchor-id="energy"><span class="header-section-number">6.0.3.2</span> Energy</h4>
+<section id="energy" class="level4" data-number="7.0.3.2">
+<h4 data-number="7.0.3.2" class="anchored" data-anchor-id="energy"><span class="header-section-number">7.0.3.2</span> Energy</h4>
 <p>Before the electrical energy reform in 1994, the power market was almost exclusively supplied by public companies with negligible participation from private firms. The public companies were inefficient and suffered financial distress due to poor management and low tariffs set by political actors. Two major blackouts in 1983 and 1992-1993 led to the 1994 reform that opened the sector to private participation.</p>
 <p>It is unlikely that firms overreported energy, as they have to purchase from a Corporation or a public company. Both of those organizations had no incentives to cooperate and provide fake invoices.</p>
 <p>In the data, energy sold by corporations accounted on average for 73% of the total energy sold, but only 1.7% of the total energy purchased. In addition, corporations sold energy at 12 times the market price on average <a href="#tbl-energy" class="quarto-xref">Table&nbsp;14</a>. The high price might suggest corporations had market power in the electric energy market, however, this is unlikely to be relevant to affect any estimations as their overall market share is small.</p>
@@ -2277,25 +2318,25 @@ Table&nbsp;14: Electric energy market in Colombia (1981-1991).
 </div>
 </div>
 </section>
-<section id="labor" class="level4" data-number="6.0.3.3">
-<h4 data-number="6.0.3.3" class="anchored" data-anchor-id="labor"><span class="header-section-number">6.0.3.3</span> Labor</h4>
+<section id="labor" class="level4" data-number="7.0.3.3">
+<h4 data-number="7.0.3.3" class="anchored" data-anchor-id="labor"><span class="header-section-number">7.0.3.3</span> Labor</h4>
 <p>Firms might have incentives to underreport labor to evade Payroll Taxes (PRT) if the expected benefits of evading the PRT outweigh the opportunity costs of evading Corporate Income Tax (CIT) by overreporting labor costs and the expected cost of evading PRT <span class="citation" data-cites="Almunia2018">(<a href="#ref-Almunia2018" role="doc-biblioref">Almunia and Lopez-Rodriguez 2018</a>)</span>.</p>
 <p>Firms are more likely to underreport unskilled rather than skilled labor. Skilled employees are less likely to cooperate with firms in underreporting their wages. Firms might offer employees cash compensations in order for employees to accept lower reported wages or report their wages at all. The cost for employees is that these payroll taxes provide them with social benefits such as social security or public health access. These benefits are not obvious in the short run. It is more likely that unskilled labor to be short-sighted and accept to cooperate with firms to underreport their wages. Skilled workers, on the other hand, are less likely to accept these conditions and to have outside options and move if the conditions are not favorable to them.</p>
 </section>
-<section id="services-and-other-expenditures" class="level4" data-number="6.0.3.4">
-<h4 data-number="6.0.3.4" class="anchored" data-anchor-id="services-and-other-expenditures"><span class="header-section-number">6.0.3.4</span> Services and other expenditures</h4>
+<section id="services-and-other-expenditures" class="level4" data-number="7.0.3.4">
+<h4 data-number="7.0.3.4" class="anchored" data-anchor-id="services-and-other-expenditures"><span class="header-section-number">7.0.3.4</span> Services and other expenditures</h4>
 <p>The Colombian dataset allows, to some extent, separating expenditures, including services, into deductible and non-deductible expenses. In contrast to non-evading firms, evading firms should use a higher share of deductible expenses. The reason is that firms have incentives to overreport deductible expenditure to evade ICT and VAT.</p>
 <p>The Colombian data separates firms’ total expenditures into general and industrial expenditures. Industrial expenditure is defined as the indirect costs and expenditures incurred by the firm in order to perform its industrial activity. The data lists the purchase of accessories and replacement parts, fuels and lubricants consumed by the establishment, industrial work by other establishments, and third-party repairs and maintenance, among others, as industrial expenditures<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. All other expenses, including insurance (excluding employee benefits) and machinery rentals, are considered general expenses.</p>
 <p>Most services were excluded from sales taxes. Some non-excluded services in this period were insurance premiums (excluding life insurance), repair and maintenance, national and international telegrams, telex, and telephone, and rental of goods and chattels, including financial leasing.</p>
 <p>I classify as deductible expenses the following industrial expenditures: purchase of fuels and lubricants, payments to third parties for repair and maintenance, purchase of raw materials and goods sold without transformation; and the following general expenditures: machinery rental, insurance excluding employee benefits, and water, mail and telephone expenses.</p>
 </section>
-<section id="technical-note" class="level4" data-number="6.0.3.5">
-<h4 data-number="6.0.3.5" class="anchored" data-anchor-id="technical-note"><span class="header-section-number">6.0.3.5</span> Technical note</h4>
+<section id="technical-note" class="level4" data-number="7.0.3.5">
+<h4 data-number="7.0.3.5" class="anchored" data-anchor-id="technical-note"><span class="header-section-number">7.0.3.5</span> Technical note</h4>
 <p>According to the notes on the dataset, the quantity of energy consumed by firms is estimated as the difference between purchased plus generated energy and sold energy. In contrast, the value of consumed energy is the difference between the value of purchased and sold energy. Consequently, using the calculated value over the calculated quantity of consumed energy ignores the quantity of generated energy and the increase in the price of sold energy by corporations.</p>
 <p>In <span class="citation" data-cites="Gandhi2020">Gandhi et al. (<a href="#ref-Gandhi2020" role="doc-biblioref">2020</a>)</span>, services are defined as general expenditures minus machinery rental and interest payments. However, this approach does not include industrial expenditures which are closely linked to the production process. In the Colombian data, the intermediate consumption is defined as raw materials, purchased electric energy, and industrial expenditure. This definition is close to what is commonly defined as intermediate inputs.</p>
 </section>
-<section id="results" class="level4" data-number="6.0.3.6">
-<h4 data-number="6.0.3.6" class="anchored" data-anchor-id="results"><span class="header-section-number">6.0.3.6</span> Results</h4>
+<section id="results" class="level4" data-number="7.0.3.6">
+<h4 data-number="7.0.3.6" class="anchored" data-anchor-id="results"><span class="header-section-number">7.0.3.6</span> Results</h4>
 <p><a href="#tbl-reg-shares" class="quarto-xref">Table&nbsp;15</a> shows that in terms of the capital and consumed energy share of revenue, corporations are not different from other types of juridical organizations. Capital and consumed energy are reliable indicators that Corporations have similar technologies to other firms because firms have no incentives to overreport capital or consumed energy. On the other hand, the raw materials share of revenues is 3 percent higher for non-corporations. Firms have incentives to overreport raw materials to evade sales taxes and CIT. Hence, materials are not a good reference to compare technology between Corporations and other types of firms.</p>
 <p><a href="#tbl-reg-shares-2" class="quarto-xref">Table&nbsp;16</a> shows that the skilled labor share of revenue for corporations is not statistically different from other types of firms. On the other hand, unskilled labor is significantly lower for non-corporations. Unskilled workers are more likely to cooperate with non-corporations to underreport their employment/wages. An alternative explanation is that corporations employ more unskilled workers because they are bigger. Therefore, skilled labor is a more reliable indicator of technology and shows that corporations have similar technology to other firms.</p>
 <p><a href="#tbl-reg-shares-2" class="quarto-xref">Table&nbsp;16</a> also shows that the total expenditure share of revenue is 8 percent lower for non-corporations on average. On one hand, this might be due to size. Corporations tend to be larger than non-corporations. However, the composition of the expenditure matters.</p>
@@ -2347,45 +2388,45 @@ Table&nbsp;17: Shares of Total Expenses for different classifications of expense
 </section>
 </section>
 </section>
-<section id="identification-strategy" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Identification Strategy</h1>
+<section id="sec-id-strat" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Identification Strategy</h1>
 <p>Because the firms’ optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment <span class="math inline">\(\Gamma\)</span>. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations.</p>
 <div id="ass-non-ev" class="Assumption" title="Non-Evaders">
-<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 7.1: </strong>Non-Evaders</summary><div>Based on the fiscal environment <span class="math inline">\(\Gamma\)</span>, the researcher can identify a subset of firms <span class="math inline">\(\theta_i\in\Theta^{NE}\subset \Theta\)</span> that does not evade taxes by overreporting inputs.<p></p>
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 8.1: </strong>Non-Evaders</summary><div>Based on the fiscal environment <span class="math inline">\(\Gamma\)</span>, the researcher can identify a subset of firms <span class="math inline">\(\theta_i\in\Theta^{NE}\subset \Theta\)</span> that does not evade taxes by overreporting inputs.<p></p>
 </div></details>
 </div>
 <p>For those firms, then <span class="math inline">\(\mathbb{E}[e_{it}|\theta_i\in\Theta^{NE}]=0\)</span></p>
 <p>In addition, I impose the following timing assumption.</p>
 <div id="ass-ind" class="Assumption" title="Independence" data-number="II">
-<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 7.2: </strong>Independence</summary><div>Firms choose overreporting <span class="math inline">\(e_{it}\)</span> <em>before </em>the output shock <span class="math inline">\(\varepsilon_{it}\)</span><p></p>
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 8.2: </strong>Independence</summary><div>Firms choose overreporting <span class="math inline">\(e_{it}\)</span> <em>before </em>the output shock <span class="math inline">\(\varepsilon_{it}\)</span><p></p>
 </div></details>
 </div>
-<p>Assumption <a href="#ass-ind">7.2</a> implies that input overreporting is independent of the current period output shock, <span class="math inline">\(e_{it} \perp \varepsilon_{it}\)</span>. In the literature is not rare to assume that the output shock is not part of the information set of the firms, <span class="math inline">\(\varepsilon_{it}\not\in \mathcal{I}_t\)</span> <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation <span class="citation" data-cites="Ackerberg2021 Ackerberg2019">(<a href="#ref-Ackerberg2021" role="doc-biblioref">Ackerberg et al. 2021</a>; <a href="#ref-Ackerberg2019" role="doc-biblioref">Ackerberg 2019</a>)</span>.</p>
-<section id="identifying-the-production-function-parameters" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="identifying-the-production-function-parameters"><span class="header-section-number">7.1</span> Identifying the production function parameters</h2>
-<p>The econometrician observes then the overreported inputs in the data, <span class="math inline">\(M_{it}=M^*_{it}\exp(e_{it})\)</span><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Assume the production function is Cobb-Douglas, <span class="math inline">\(G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})\)</span>. Then, for the case of Colombia, <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;5</a> applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get</p>
+<p>Assumption <a href="#ass-ind">8.2</a> implies that input overreporting is independent of the current period output shock, <span class="math inline">\(e_{it} \perp \varepsilon_{it}\)</span>. In the literature is not rare to assume that the output shock is not part of the information set of the firms, <span class="math inline">\(\varepsilon_{it}\not\in \mathcal{I}_t\)</span> <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation <span class="citation" data-cites="Ackerberg2021 Ackerberg2019">(<a href="#ref-Ackerberg2021" role="doc-biblioref">Ackerberg et al. 2021</a>; <a href="#ref-Ackerberg2019" role="doc-biblioref">Ackerberg 2019</a>)</span>.</p>
+<section id="identifying-the-production-function-parameters" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="identifying-the-production-function-parameters"><span class="header-section-number">8.1</span> Identifying the production function parameters</h2>
+<p>The econometrician observes then the overreported inputs in the data, <span class="math inline">\(M_{it}=M^*_{it}\exp(e_{it})\)</span><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Assume the production function is Cobb-Douglas, <span class="math inline">\(G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})\)</span>. Then, for the case of Colombia, <a href="#eq-foc:ind" class="quarto-xref">Equation&nbsp;6</a> applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get</p>
 <p><span id="eq-foc-cd"><span class="math display">\[
 \begin{aligned}
     \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&amp;=\ln\beta + \ln \mathcal{E}- \varepsilon_{it} \\
     &amp;\equiv \ln D^{\mathcal{E}}- \varepsilon_{it}
 \end{aligned}
-\tag{8}\]</span></span></p>
+\tag{13}\]</span></span></p>
 <p>where, <span class="math inline">\(\mathcal{E}\equiv \mathbb{E}[\exp(\varepsilon_{it})|\mathcal{I}_{it}]=\mathbb{E}[\exp(\varepsilon_{it})]\)</span>.</p>
-<p>We can use <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;8</a> and assumption <a href="#ass-non-ev">7.1</a> to recover the production function parameter <span class="math inline">\(\beta\)</span></p>
+<p>We can use <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;13</a> and assumption <a href="#ass-non-ev">8.1</a> to recover the production function parameter <span class="math inline">\(\beta\)</span></p>
 <p><span id="eq-foc-cd-exp"><span class="math display">\[
     \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{NE}\right]=\ln D^{\mathcal{E}}
-\tag{9}\]</span></span></p>
+\tag{14}\]</span></span></p>
 <p>The constant <span class="math inline">\(\mathcal{E}\)</span> is also identified <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>,</p>
 <p><span id="eq-id-E"><span class="math display">\[
 \mathcal{E}=\mathbb{E}\left[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}\right]=\mathbb{E}\left[\exp(\varepsilon_{it})|\theta^{NE}\right]=\mathbb{E}[\exp(\varepsilon_{it})]
-\tag{10}\]</span></span></p>
+\tag{15}\]</span></span></p>
 <p>and, thus, the output elasticity of input, <span class="math inline">\(\beta\)</span>, is also identified,</p>
 <p><span id="eq-id-beta"><span class="math display">\[
 \beta=\exp\left(\ln D^{\mathcal{E}}-\ln\mathcal{E}\right).
-\tag{11}\]</span></span></p>
+\tag{16}\]</span></span></p>
 </section>
-<section id="identifying-tax-evasion" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="identifying-tax-evasion"><span class="header-section-number">7.2</span> Identifying Tax Evasion</h2>
+<section id="identifying-tax-evasion" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="identifying-tax-evasion"><span class="header-section-number">8.2</span> Identifying Tax Evasion</h2>
 <p>Having recovered both the flexible input elasticity, <span class="math inline">\(\beta\)</span>, and the constant <span class="math inline">\(\mathcal{E}\)</span>, for all firms, I can form the following variable using observed data.</p>
 <p><span id="eq-ob-ev"><span class="math display">\[
 \begin{aligned}
@@ -2393,8 +2434,8 @@ Table&nbsp;17: Shares of Total Expenses for different classifications of expense
     &amp;=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta-\ln\mathcal{E}+e_{it} \notag \\
     &amp;=-\varepsilon_{it} +e_{it}
 \end{aligned}
-\tag{12}\]</span></span></p>
-<p>By assumption <a href="#ass-ind">7.2</a>, the tax evasion, <span class="math inline">\(\varepsilon_{it}\)</span> ,is independent of <span class="math inline">\(e_{it}\)</span>. Note that, from <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;8</a>, we also recovered <span class="math inline">\(f_{\varepsilon}(\varepsilon)\)</span> the distribution of <span class="math inline">\(\varepsilon\)</span>. Tax evasion therefore can be recovered up to an independent random variable by using deconvolution methods.</p>
+\tag{17}\]</span></span></p>
+<p>By assumption <a href="#ass-ind">8.2</a>, the tax evasion, <span class="math inline">\(\varepsilon_{it}\)</span> ,is independent of <span class="math inline">\(e_{it}\)</span>. Note that, from <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;13</a>, we also recovered <span class="math inline">\(f_{\varepsilon}(\varepsilon)\)</span> the distribution of <span class="math inline">\(\varepsilon\)</span>. Tax evasion therefore can be recovered up to an independent random variable by using deconvolution methods.</p>
 <p>In particular, from probability theory,</p>
 <div id="def-conv" class="Definition theorem definition" title="Convolution">
 <p><span class="theorem-title"><strong>Definition 1</strong></span> </p><details class="Definition fbx-default closebutton" open=""><summary><strong>Definition: </strong>Convolution</summary><div>The density of the sum of two <strong>independent</strong> random variables is equal to the <strong>convolution</strong> of the densities of both addends; hence<p></p>
@@ -2405,69 +2446,75 @@ h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
 </div></details>
 </div>
 </section>
-<section id="identifying-productivity" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="identifying-productivity"><span class="header-section-number">7.3</span> Identifying Productivity</h2>
+<section id="identifying-productivity" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="identifying-productivity"><span class="header-section-number">8.3</span> Identifying Productivity</h2>
 <p>Here I show how to recover the rest of the parameters of the production function, including productivity, and the Markov process of productivity. We can do it in several ways, depending on our object of interest.</p>
 <p>In the literature, it is not uncommon to assume that productivity follows a Markov process. That is,</p>
 <p><span id="eq-prod-markov"><span class="math display">\[
     \omega_{it}=h(\omega_{it-1})+\eta_{it}
-\tag{13}\]</span></span></p>
-<p>We can form the following observed variable for a guess of <span class="math inline">\(\alpha=(\alpha_K,\alpha_L)\)</span>,</p>
+\tag{18}\]</span></span></p>
+<p>Let <span class="math inline">\(\ln X_{it}=x_{it}\)</span>. For a guess of <span class="math inline">\(\alpha=(\alpha_K,\alpha_L)\)</span>, we can form the following observed variable,</p>
 <p><span class="math display">\[
 \begin{aligned}
-    \mathcal W_{it}(\alpha) &amp; \equiv \ln Y_{it} - \beta M_{it}-\alpha_K \ln K_{it}-\alpha_L \ln L_{it}+\beta\mathcal{V}_{it}\\
+    \mathcal W_{it}(\alpha) &amp; \equiv y_{it} - \beta (m^*_{it}+e_{it})-\alpha_K k_{it}-\alpha_L l_{it}+\beta\mathcal{V}_{it}\\
     &amp; = \omega_{it}(\alpha)+(1-\beta)\varepsilon_{it}
 \end{aligned}
 \]</span></p>
 <p>If we are interested only in productivity, we could use deconvolution to learn <span class="math inline">\(\alpha\)</span> and the distribution of productivity.</p>
-<p>Alternatively, if we are interested in also identifying the Markov process of productivity, we can use the orthogonality we get from <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;13</a>, <span class="math inline">\(\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0\)</span>. Orthoganility follows from (<span class="math inline">\(k_{it-1},l_{it-1},\mathcal{W}_{it-1}\)</span>) being known to the firm at period <span class="math inline">\(t-1\)</span>, and (<span class="math inline">\(k_{it-1},l_{it-1}\)</span>) being predetermined.</p>
-<p>Namely, substituting <span class="math inline">\(\omega_{it}\)</span> in <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;13</a>, we have</p>
+<p>Alternatively, if we are interested in also identifying the Markov process of productivity, we can use the orthogonality we get from <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;18</a>,</p>
+<p><span class="math display">\[
+\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0.
+\]</span></p>
+<p>Orthoganility follows from (<span class="math inline">\(k_{it-1},l_{it-1},\mathcal{W}_{it-1}\)</span>) being known to the firm at period <span class="math inline">\(t-1\)</span>, and (<span class="math inline">\(k_{it-1},l_{it-1}\)</span>) being predetermined.</p>
+<p>Namely, substituting <span class="math inline">\(\omega_{it}\)</span> in <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;18</a>, we have</p>
 <p><span class="math display">\[
 \mathbb{E}[\mathcal{W}_{it}(\alpha)|k_{it},l_{it},,k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=h(\mathcal{W}_{it-1}(\alpha))
 \]</span></p>
 <p>Thus, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(h\)</span> are identified.</p>
 </section>
-<section id="translog-production-function" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="translog-production-function"><span class="header-section-number">7.4</span> Translog Production Function</h2>
+<section id="translog-production-function" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="translog-production-function"><span class="header-section-number">8.4</span> Translog Production Function</h2>
 <p>To relax the assumption of a CD production function, we would need a flexible input that firms do not overreport to identify tax evasion. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs.</p>
-<p>Assume now that <span class="math inline">\(L_{it}\)</span> is a non-deductible flexible input and, without loss of generality, there are only two inputs (<span class="math inline">\(L_{it}, M_{it}\)</span>). Let’s assume the production function is now <em>translog</em> and let <span class="math inline">\(\ln X_{it}=x_{it}\)</span>. We have,</p>
+<p>Assume now that <span class="math inline">\(L_{it}\)</span> is a non-deductible flexible input and, without loss of generality, there are only two inputs (<span class="math inline">\(L_{it}, M_{it}\)</span>). Let’s assume the production function is now <em>translog</em>. We have,</p>
 <p><span class="math display">\[
 \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
 \]</span></p>
-<p>Then, equation <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;8</a> becomes</p>
+<p>Then, equation <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;13</a> becomes</p>
 <p><span class="math display">\[
 \begin{aligned}
     s_{it}^{L}&amp;=\ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
     &amp;\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}+e_{it})- \varepsilon_{it}
 \end{aligned}
 \]</span></p>
-<p>where <span class="math inline">\(s_{it}^{L} \equiv\ln\left(\frac{\rho^{L}_t L_{it}}{P_{t}Y_{it}}\right)\)</span>.</p>
-<p>Note that by assumption <a href="#ass-non-ev">7.1</a>, <span class="math inline">\(D^{\mathcal{E}}\)</span> and the density of <span class="math inline">\(\varepsilon\)</span> are still identified. To identify tax evasion, we can form the analog of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;12</a>,</p>
+<p>where <span class="math inline">\(s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)\)</span>.</p>
+<p>Note that by assumption <a href="#ass-non-ev">8.1</a>, <span class="math inline">\(D^{\mathcal{E}}\)</span> and the density of <span class="math inline">\(\varepsilon\)</span> are still identified. To recover tax evasion, we can form the analog of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a>,</p>
 <p><span class="math display">\[
 \begin{aligned}
-\mathcal{V}_{it}^{TL} &amp;=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
-    &amp;=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+\mathcal{V}_{it}^{TL} =&amp;\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
+    =&amp;\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
     &amp;+\left[\ln D^{\mathcal{E}}(l,m^*)\right]\\
     &amp;-\left[\ln D^{\mathcal{E}}(l,m^*)\right] \\
-    &amp;=\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
+    =&amp;\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
     &amp;-\left[\ln D^{\mathcal{E}}(l,m^*+e)-\ln D^{\mathcal{E}}(l,m^*)\right]\\
-    &amp;= -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
+    =&amp; -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
 \end{aligned}
 \]</span></p>
-<p>where in the case of the translog production function <span class="math inline">\(\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)\)</span>. Note that is always positive <span class="math inline">\(\delta(l,m^*,m^*+e)\ge0\)</span> because <span class="math inline">\(e_{it}\ge0\)</span>.</p>
+<p>where in the case of the translog production function, <span class="math inline">\(\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)\)</span>.</p>
+<p>Note that <span class="math inline">\(\delta\)</span> is always positive, <span class="math inline">\(\delta(l,m^*,m^*+e)\ge0\)</span>, because <span class="math inline">\(e_{it}\ge0\)</span>.</p>
 <p>Because firms cannot use <span class="math inline">\(l\)</span> to deduct taxes, <span class="math inline">\(l\)</span> is orthogonal to <span class="math inline">\(e\)</span>. Hence, conditional on <span class="math inline">\(m^*\)</span>, <span class="math inline">\(\varepsilon(l,m^*)\)</span> and <span class="math inline">\(\delta(l,m^*,m^*+e)\)</span> are independent. Thus, we can apply deconvolution techniques again.</p>
 </section>
-<section id="non-parametric-identification" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="non-parametric-identification"><span class="header-section-number">7.5</span> Non-Parametric Identification</h2>
+<section id="non-parametric-identification" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="non-parametric-identification"><span class="header-section-number">8.5</span> Non-Parametric Identification</h2>
 <p>The previous result also suggests a non-parametric identification strategy, as long as <span class="math inline">\(\delta(l,m^*,m^*+e)\)</span> is monotonic in its <span class="math inline">\(m^*+e\)</span> argument. This identification strategy is analogous to <span class="citation" data-cites="Hu2022b">Hu et al. (<a href="#ref-Hu2022b" role="doc-biblioref">2022</a>)</span>, where the authors also require monotonicity and independence to recover a nonparametric function of <span class="math inline">\(m^*\)</span> with nonclassical measurement error. In our case, intuitively, if we know the density of <span class="math inline">\(\varepsilon\)</span> and the function <span class="math inline">\(D^{\mathcal{E}}\)</span>, the variation left is due to <span class="math inline">\(e\)</span>, which can be recovered as long as we can vary <span class="math inline">\(\delta\)</span> by moving <span class="math inline">\(e\)</span>.</p>
 <p>To see why the non-deductible flexible input is needed to identify tax evasion consider the following. Suppose that only the input <span class="math inline">\(M\)</span> is flexible and deductible.</p>
 <p><span class="math display">\[
 \ln\left(\frac{\rho M}{PY}\right)=\ln D^{\mathcal{E}}(K,L,M)-\varepsilon
 \]</span></p>
-<p><span class="math inline">\(D^{\mathcal{E}}(K,L,M)\)</span> is still identified by assumption <a href="#ass-non-ev">7.1</a>, however, when we form the analogous of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;12</a>, we now have</p>
+<p><span class="math inline">\(D^{\mathcal{E}}(K,L,M)\)</span> is still identified by assumption <a href="#ass-non-ev">8.1</a>, however, when we form the analogous of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a>, we now have</p>
 <p><span class="math display">\[
 \begin{aligned}
-\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)=&amp;\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
+\ln\left(\frac{\rho M}{PY}\right)-&amp;\ln D^{\mathcal{E}}(K,L,M)=\\
+&amp;\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
 =&amp;\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
 &amp;+\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
 &amp;-\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right] \\
@@ -2477,15 +2524,15 @@ h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
 =&amp; -\varepsilon \\
 &amp;+\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M^*)+\varepsilon\right]\\
 &amp;-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
-&amp;= -\varepsilon(K,L,M^*)
+=&amp; -\varepsilon(K,L,M^*)
 \end{aligned}
 \]</span></p>
 <p>Now, we are not able to separate the variation of <span class="math inline">\(\varepsilon\)</span> from <span class="math inline">\(e\)</span>.</p>
 <!-- Revenue Misreporting *-->
 </section>
 </section>
-<section id="revenue-misreporting" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Revenue misreporting</h1>
+<section id="revenue-misreporting" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Revenue misreporting</h1>
 <p>Firms might also evade CIT and VAT by underreporting their revenues. Upstream firms, however, are less likely to engage in this kind of evasion <span class="citation" data-cites="Almunia2018">(<a href="#ref-Almunia2018" role="doc-biblioref">Almunia and Lopez-Rodriguez 2018</a>)</span>. Manufacturing firms in Colombia were mostly upstream; only 13% of their sales were direct final consumers, according to a sample of firms surveyed in 1984 <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>.</p>
 <p>As robustness checks, I can identify industries whose sale shares directed to final consumers are negligible from this historical document <a href="#tbl-1984-manu-sales" class="quarto-xref">Table&nbsp;18</a>.</p>
 <div id="tbl-1984-manu-sales" class="quarto-float anchored">
@@ -2711,55 +2758,55 @@ Table&nbsp;18: Distribution of Sales from Manufacturing Firms, by type of Purcha
 </figure>
 </div>
 <p>In addition, the SIC definitions provide useful information about the nature of the products whether they are for final consumption or intermediate inputs for other industries. For example, the definition of industry <code>371</code> Iron and Steel Basic Industries includes the note “[…]. The foundries included here are [..] primarily engaged in manufacturing castings and forgings to sale to others.”</p>
-<section id="large-taxpayers-unit-in-spain" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="large-taxpayers-unit-in-spain"><span class="header-section-number">8.1</span> Large Taxpayers Unit in Spain</h2>
+<section id="large-taxpayers-unit-in-spain" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="large-taxpayers-unit-in-spain"><span class="header-section-number">9.1</span> Large Taxpayers Unit in Spain</h2>
 <p>I argue that upstream firms are likely to misreport only inputs but not revenue. Although <span class="citation" data-cites="Almunia2018">Almunia and Lopez-Rodriguez (<a href="#ref-Almunia2018" role="doc-biblioref">2018</a>)</span> conclude that Spanish firms misreport both revenue and inputs, the authors do not discard the case where firms bunch below the LTU threshold, report their true output, and only misreport inputs. While buying firms have incentives to overreport input expenses, selling (upstream) firms have incentives to underreport sales. Hence, due to opposite incentives with their clients, upstream firms might find it hard to underreport their revenue. If the expected benefits of staying below the LTU threshold and evading taxes outweigh the opportunity costs of forgone production and the expected cost of evasion, upstream firms are likely to bunch below the LTU threshold —by reducing their output— and misreport their inputs.</p>
 <p>Unlike downstream firms, upstream firms are less likely to underreport their revenue. To underreport revenue, selling firms need to coordinate with the buying party. The buying party must agree to not require an invoice, to avoid leaving a paper trail. This is likely to happen with downstream firms —firms that sell to final customers. Customers might get a discount to accept cooperating with downstream firms. However, with upstream firms —firms selling to other firms—, this is unlikely the case. The reason is that, unlike final customers, buying firms have incentives to overreport their input consumption and reduce their VAT and CIT.</p>
 <p>The authors do find upstream firms bunching below the LTU threshold. Upstream firm bunching is lower than for downstream firms. This makes sense because downstream firms do not have to consider in their decision the additional opportunity cost of forgone production. This additional cost might render bunching less profitable for upstream firms leading to a lower number of firms reducing their output to stay below the LTU threshold and evade taxes.</p>
 <p>Moreover, the authors show evidence suggesting upstream firms misreport inputs. In the online appendix, the authors show that the ratios of intermediate expenses over revenue and labor expenses over revenue of wholesale (upstream) and retail (downstream) firms follow what they identify as general evasion patterns. The intermediates’ cost share of revenue follows an upward-sloping trend and then drops off at the cutoff. The labor’s cost share of revenue follows a downward-sloping trend and then jumps up at the cutoff.</p>
 </section>
-<section id="how-to-deal-with-revenue-underreporting" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="how-to-deal-with-revenue-underreporting"><span class="header-section-number">8.2</span> How to Deal with Revenue Underreporting</h2>
-<p>Under CD production function and revenue underreporting, <span class="math inline">\(Y_{it}=Y^*_{it}\exp^{-u_{it}}\)</span>, <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;8</a> becomes</p>
+<section id="how-to-deal-with-revenue-underreporting" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="how-to-deal-with-revenue-underreporting"><span class="header-section-number">9.2</span> How to Deal with Revenue Underreporting</h2>
+<p>Under CD production function and revenue underreporting, <span class="math inline">\(Y_{it}=Y^*_{it}\exp^{-u_{it}}\)</span>, <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;13</a> becomes</p>
 <p><span id="eq-rev-under"><span class="math display">\[
     \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y^*_{it}}\right)+e_{it}+u_{it}=\ln D^{\mathcal{E}}- \varepsilon^Y_{it}
-\tag{14}\]</span></span></p>
+\tag{19}\]</span></span></p>
 <p>Note that both, revenue underreporting and input overreporting, artificially increase the input cost share of revenue.</p>
-<p>It is natural to extend <a href="#ass-non-ev">7.1</a> to revenue underreporting. Non-evaders will also not underreport revenue because of the same reasons incentivizing them to not overreport inputs.</p>
+<p>It is natural to extend <a href="#ass-non-ev">8.1</a> to revenue underreporting. Non-evaders will also not underreport revenue because of the same reasons incentivizing them to not overreport inputs.</p>
 <p>Moreover, as discussed previously, upstream firms are likely to find it harder than downstream firms to underreport revenue. Assuming the evasion technology is the same across industries, we can separate output from input misreporting.</p>
 <p>Formally,</p>
 <div id="ass-non-ev-2" class="Assumption" title="Non-Evaders II">
-<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 8.1: </strong>Non-Evaders II</summary><div>The subset of firms <span class="math inline">\(\theta_i\in\Theta^{NE}\subset \Theta\)</span> do not evade taxes by underreporting revenue or overreporting inputs.<p></p>
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 9.1: </strong>Non-Evaders II</summary><div>The subset of firms <span class="math inline">\(\theta_i\in\Theta^{NE}\subset \Theta\)</span> do not evade taxes by underreporting revenue or overreporting inputs.<p></p>
 </div></details>
 </div>
 <div id="ass-upstream" class="Assumption" title="Upstream Firms">
-<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 8.2: </strong>Upstream Firms</summary><div>Upstream firms <span class="math inline">\(\theta_i\in\Theta^{UP}\subset \Theta\)</span> do not evade taxes by underreporting revenue but do evade taxes by overreporting inputs.<p></p>
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 9.2: </strong>Upstream Firms</summary><div>Upstream firms <span class="math inline">\(\theta_i\in\Theta^{UP}\subset \Theta\)</span> do not evade taxes by underreporting revenue but do evade taxes by overreporting inputs.<p></p>
 </div></details>
 </div>
 <div id="ass-upstream" class="Assumption" title="Misreporting Technology">
-<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 8.3: </strong>Misreporting Technology</summary><div>Misreporting technology is the same across industries.<p></p>
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 9.3: </strong>Misreporting Technology</summary><div>Misreporting technology is the same across industries.<p></p>
 </div></details>
 </div>
 <!-- Implementation -->
 </section>
 </section>
-<section id="implementation" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Implementation</h1>
-<p>We are interested in the distribution of tax evasion <span class="math inline">\(e\)</span> but it cannot be observed. What is observed is the contaminated version <span class="math inline">\(\mathcal{V}\)</span> <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;12</a>. Evasion <span class="math inline">\(e\)</span> and the output shock <span class="math inline">\(\varepsilon\)</span> are independent [<a href="#ass-ind">7.2</a>] with probability density distributions <span class="math inline">\(f_e\)</span> and <span class="math inline">\(f_{\varepsilon}\)</span>. Then, from <a href="#def-conv" class="quarto-xref">Definition&nbsp;1</a></p>
+<section id="implementation" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Implementation</h1>
+<p>We are interested in the distribution of tax evasion <span class="math inline">\(e\)</span> but it cannot be observed. What is observed is the contaminated version <span class="math inline">\(\mathcal{V}\)</span> <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a>. Evasion <span class="math inline">\(e\)</span> and the output shock <span class="math inline">\(\varepsilon\)</span> are independent [<a href="#ass-ind">8.2</a>] with probability density distributions <span class="math inline">\(f_e\)</span> and <span class="math inline">\(f_{\varepsilon}\)</span>. Then, from <a href="#def-conv" class="quarto-xref">Definition&nbsp;1</a></p>
 <p><span class="math display">\[
 f_{\mathcal{V}}(\mathcal{V})=\int f_{\varepsilon}(e-\mathcal{V})f_e(e)\text{d}e
 \]</span></p>
 <p>where <span class="math inline">\(f_{\mathcal{V}}\)</span> denotes the density of <span class="math inline">\(\mathcal{V}\)</span>.</p>
-<section id="parametric-mle" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="parametric-mle"><span class="header-section-number">9.1</span> Parametric MLE</h2>
+<section id="parametric-mle" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="parametric-mle"><span class="header-section-number">10.1</span> Parametric MLE</h2>
 <p>Assume a functional form for <span class="math inline">\(f_{\varepsilon}(\cdot;\gamma)\)</span> that depends on known parameters <span class="math inline">\(\gamma\)</span>. Assume a known functional form for the density <span class="math inline">\(f_e(\cdot;\lambda)\)</span> that depends on unknown parameters <span class="math inline">\(\lambda\)</span>. We can estimate parameters <span class="math inline">\(\gamma, \lambda\)</span> by</p>
 <p><span class="math display">\[
 \arg \max_{\gamma,\lambda}=\frac{1}{n}\sum_{i=1}^n \log \left(\int f_{\varepsilon}(e-\mathcal{V};\gamma)f_e(e;\lambda)\text{d}e\right)
 \]</span></p>
 <p>Properties of MLE with unobserved scalar heterogeneity have been derived elsewhere before <span class="citation" data-cites="Chen2007 Yi2021">(<a href="#ref-Chen2007" role="doc-biblioref">Chen 2007</a>; <a href="#ref-Yi2021" role="doc-biblioref">Yi 2021</a>)</span>.</p>
 </section>
-<section id="non-parametric-mle" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="non-parametric-mle"><span class="header-section-number">9.2</span> Non-Parametric MLE</h2>
+<section id="non-parametric-mle" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="non-parametric-mle"><span class="header-section-number">10.2</span> Non-Parametric MLE</h2>
 <p>Consider the following log-density model:</p>
 <p><span class="math display">\[
 f_{e|\Theta}(e)=\exp(s(e;\theta)-C(\theta))
@@ -2856,9 +2903,9 @@ NULL
 </div>
 </figure>
 </div>
-<!-- Same Techonology *-->
+<!-- Relative Prices -->
 </section>
-</div></section><section id="references" class="level1 appendix" data-number="10"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">10</span> References</h2><div class="quarto-appendix-contents">
+</div></section><section id="references" class="level1 appendix" data-number="11"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">11</span> References</h2><div class="quarto-appendix-contents">
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Ackerberg2019" class="csl-entry" role="listitem">

@@ -125,3 +125,168 @@ datasummary_skim(
         line = "b",
         line_color = "white"
     )
+
+
+## Saving data for fortran -----
+
+fort_data<-colombia_data_frame %>%
+    group_by(plant) %>%
+    filter(
+        sales>0,
+        # k>0,
+        # m>0,
+        labor_employee_years>0,
+        labor_employee_years<Inf,
+        unskilled_labor>0,
+        unskilled_wage_bill_share>0,
+        # !is.na(l),
+        # !is.na(k),
+        # !is.na(m),
+        !is.na(lag_l),
+        lag_l<Inf,
+        lag_l>-Inf,
+        # !is.na(lag_ml),
+        # !is.na(lag_ll),
+        # !is.na(lag_kl)
+    ) %>%
+    mutate(
+        ll=l*l,
+        mm=m*m,
+        mk=m*k,
+        ml=m*l,
+        kk=k*k,
+        kl=k*l,
+        y=log(gross_output),
+        s=log_share,
+        across(
+            ll:s,
+            ~lag(.x, order_by = year),
+            .names = "lag_{.col}"
+        )
+    ) %>%
+    filter(sic_3==311) %>%
+    group_by(plant,year) %>% 
+    select(
+        y,
+        s,
+        m,
+        k,
+        l,
+        matches("^[[:lower:]]{2}$"),
+        matches("^lag_[[:lower:]]{1,2}$") &  !lag_K &!lag_M
+    )
+fort_data
+fort_data<-fort_data[complete.cases(fort_data), , drop=FALSE]
+fort_data
+fort_data |> datasummary_skim()
+
+write_delim(
+    fort_data,
+    "/Volumes/SSD Hans 1/Github/gnr/Data/colombia.raw",
+    append = FALSE,
+    col_names = FALSE
+)
+variable_names<-names(fort_data)
+write.table(
+    variable_names,
+    "/Volumes/SSD Hans 1/Github/gnr/Data/variables.raw",
+    col.names = FALSE,
+    row.names = FALSE
+    # append = FALSE
+)
+
+feols(s~m+k+l+ll+mm+mk+ml+kk+kl,fort_data)
+X<-read.csv(
+    '/Volumes/SSD Hans 1/Github/gnr/Data/fortran_data_X.out',
+    header = FALSE
+)
+y<-read.csv(
+    '/Volumes/SSD Hans 1/Github/gnr/Data/fortran_data_y.out',
+    header = FALSE
+)
+
+lm(y[[1]]~as.matrix(X)) |> summary()
+
+## GNR Productivity estimates
+
+
+gnr<-read.csv(
+    '/Volumes/SSD Hans 1/Github/gnr/Data/productivity.out',
+    header = FALSE
+)
+names(gnr)<-c("productivity","flex_elasticity")
+colombia_311<-read.table(
+    '/Volumes/SSD Hans 1/Github/gnr/Data/colombia_R.raw',
+    header = FALSE
+)
+names_colombia_311<-read.table(
+    '/Volumes/SSD Hans 1/Github/gnr/Data/variables_R.raw',
+    header = FALSE
+)
+names(colombia_311)<-names_colombia_311[[1]]
+data_311<-cbind(colombia_311,gnr)
+data_311 |> head()
+
+data<-left_join(data_311,colombia_data_frame[,c("sic_3","juridical_organization","year","plant")])
+
+data %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    # filter(
+    #     JO_class != c("Other","Partnership")
+    # ) %>%
+    group_by(JO_class,year) %>%
+    ggplot(
+        aes(
+            x = factor(year),
+            y = productivity,
+            # group = factor(JO_class),
+            color = factor(JO_class)#,
+            # alpha = 
+        )
+    ) +
+    # geom_vline(
+    #     xintercept = c("83","86","90"),
+    #     colour = "lightgray", #my_colors[["gray"]],
+    #     linetype = "dashed"
+    # )+
+    stat_summary(
+        fun = "mean",
+        na.rm = TRUE,
+        geom = "point",
+        shape = 18,
+        size = 4#,
+        # color = my_colors[["purple"]]
+    ) + # add mean points
+    stat_summary(
+        fun.data = mean_cl_normal,
+        geom = "errorbar",
+        width = 0.1,
+        # color = my_colors[["purple"]],
+        show.legend = FALSE
+    ) + # add CI bars
+    scale_color_manual(values = c("Ltd. Co."="blue","Corporation"="red","Proprietorship"="purple" ))+
+    theme_classic()# +
+    # theme(legend.position = 'none')
+
+## GNR in R 
+install.packages("devtools")
+library(devtools)
+devtools::install_github("davidjin0/gnrprod")
+library(gnrprod)
+
+# load Colombian plant-level data
+data <- colombian
+
+# estimate production function parameters and productivity
+gnr_fit <- gnrprod(output = "RGO", fixed = c("L", "K"), flex = "RI",
+                   share = "share", id = "id", time = "year", data = data)
+
+gnr_fit$data$productivity
+
+data<-cbind(data,gnr_fit$data$productivity)
+data$plant<-data$id
+data<-left_join(data,colombia_data_frame[,c("sic_3","juridical_organization","year","plant")])
+data |> names()
+data |> head()
+data$productivity <-gnr_fit$data$productivity

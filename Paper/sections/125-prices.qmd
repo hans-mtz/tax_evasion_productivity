@@ -1,0 +1,58 @@
+## Changes in Relative Prices
+
+An alternative hypothesis is that changes in the sales taxes change the relative prices of inputs. It could be that the regressions are capturing not the changes in evasion by overreporting but the changes in relative prices.
+
+Suppose we have two flexible inputs $M$ and $L$. $M$ is deductible but $L$ is not. @eq-eva becomes then,
+
+$$
+\begin{aligned}
+  \max_{M_{it}, L_{it},e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}-w_{t} L_{it}-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-w_{t} L_{it}-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$ {#eq-eva-non-deduct}
+
+
+In the case of Colombia, $\theta$ is their juridical organization. Assume firms choose their $\theta$ before the start of the period. I'll come to this decision later, but for now, it follows that $q(e|\theta)=q(e)$. In other words, firms cannot affect their detection probability when choosing inputs.
+
+The first-order conditions now yield the following. For deductible flexible inputs, the optimality condition remains the same as @eq-foc:ind,
+
+$$
+G_M(M_{it}, L_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
+$$ {#eq-foc:deduct}
+
+
+However, for non-deductible flexible inputs, the sales tax induces a distortion in the optimality condition.
+
+$$
+G_L(M_{it}, L_{it})\exp(\omega_{it})\mathcal{E}=\frac{w_{t}}{(1-\tau)P_t}
+$$ {#eq-foc:non-deduct}
+
+Finally, the optimality condition for tax evasion becomes,
+
+$$
+[1-q(e_{it})]\frac{\rho_t}{P_t}\tau-q(e_{it})\kappa'(e_{it})=q'(e_{it})\left[\frac{\rho_t}{P_t}\tau e_{it} + \kappa(e_{it})\right]
+$$ {#eq-foc-cont-e}
+
+What can we conclude? First, if the production function is a Cobb-Douglas, then we can independently solve for each input. In this case, changes in VAT or CIT would not affect the optimality condition of deductible flexible inputs because it would not affect the relative prices. Therefore, changes in the consumption of deductible flexible inputs due to changes in VAT or CIT can only be explained by an increase in the incentives to evade taxes by overreporting. 
+
+On the other hand, an increase in the VAT or CIT would increase the relative prices of non-deductible flexible inputs, leading to a decrease in their consumption.
+
+Alternatively, if non-deductible flexible inputs become deductible the distortion in the optimality condition induced by the VAT and CIT would be eliminated. Eliminating the distortion would lead to a reduction of the relative prices inducing a higher consumption of these inputs.
+
+Second, if the production function is not Cobb-Douglas, then the firm has to solve the system of equations. Theoretically, the changes in the relative prices of the non-deductible flexible inputs might affect the consumption of the deductible flexible inputs depending on whether these inputs are complements or substitutes.
+
+Empirically, however, if I can observe deductible inputs separately from non-deductible inputs, I can still be able to run the share regression to recover the input elasticity of output. The observed consumed non-deductible inputs will capture the changes in relative prices.
+
+If I want to run the share regression using the non-deductible flexible inputs, I have to be careful to account for the distortion induced by the changes in taxes. If I observe the sales taxes, I can still be able to control for changes in sales taxes and run this regression.
+
+Theoretically, we would have,
+
+$$
+\begin{aligned}
+    \ln\left(\frac{\rho_{t}M_{it}}{P_tY_{it}}\right)&=\ln D^{\mathcal{E}}_M(M_{it}, L_{it})-\varepsilon_{it} \\
+    \ln\left(\frac{w_{t}L_{it}}{(1-\tau)P_tY_{it}}\right)&=\ln D^{\mathcal{E}}_L(M_{it}, L_{it})-\varepsilon_{it}
+\end{aligned}
+$$
+
+However, we observe $\ln M=\ln M^*+e$. In section @sec-id-strat, I show how to recover these functions.
