@@ -128,6 +128,7 @@ datasummary_skim(
 
 
 ## Saving data for fortran -----
+for (inds in c(311,321,322,331,381)){
 
 fort_data<-colombia_data_frame %>%
     group_by(plant) %>%
@@ -135,36 +136,39 @@ fort_data<-colombia_data_frame %>%
         sales>0,
         # k>0,
         # m>0,
-        labor_employee_years>0,
-        labor_employee_years<Inf,
-        unskilled_labor>0,
-        unskilled_wage_bill_share>0,
-        # !is.na(l),
+        # labor_employee_years>0,
+        # labor_employee_years<Inf,
+        # unskilled_labor>0,
+        # unskilled_wage_bill_share>0,
+        !is.na(l),
+        l < Inf,
+        l > -Inf,
         # !is.na(k),
         # !is.na(m),
-        !is.na(lag_l),
-        lag_l<Inf,
-        lag_l>-Inf,
+        # !is.na(lag_l),
+        # lag_l<Inf,
+        # lag_l> -Inf,
         # !is.na(lag_ml),
         # !is.na(lag_ll),
         # !is.na(lag_kl)
     ) %>%
     mutate(
+        y=log(gross_output),
+        s=log_share,
         ll=l*l,
         mm=m*m,
         mk=m*k,
         ml=m*l,
         kk=k*k,
         kl=k*l,
-        y=log(gross_output),
-        s=log_share,
-        across(
-            ll:s,
-            ~lag(.x, order_by = year),
-            .names = "lag_{.col}"
-        )
+        klm=k*l*m#,
+        # across(
+        #     ll:s,
+        #     ~lag(.x, order_by = year),
+        #     .names = "lag_{.col}"
+        # )
     ) %>%
-    filter(sic_3==311) %>%
+    filter(sic_3==inds) %>%
     group_by(plant,year) %>% 
     select(
         y,
@@ -173,23 +177,89 @@ fort_data<-colombia_data_frame %>%
         k,
         l,
         matches("^[[:lower:]]{2}$"),
-        matches("^lag_[[:lower:]]{1,2}$") &  !lag_K &!lag_M
+        klm
+        # matches("^lag_[[:lower:]]{1,2}$") &  !lag_K &!lag_M
     )
-fort_data
+# fort_data
 fort_data<-fort_data[complete.cases(fort_data), , drop=FALSE]
 fort_data
+fort_data |> datasummary_skim() |>
+print(dim(fort_data))
+write_delim(
+    fort_data,
+    paste0("/Volumes/SSD Hans 1/Github/gnr/Data/data_",inds,".raw"),
+    append = FALSE,
+    col_names = FALSE
+)
+
+}
+fort_data<-colombia_data_frame %>%
+    group_by(plant) %>%
+    filter(
+        sales>0,
+        # k>0,
+        # m>0,
+        # labor_employee_years>0,
+        # labor_employee_years<Inf,
+        # unskilled_labor>0,
+        # unskilled_wage_bill_share>0,
+        !is.na(l),
+        l < Inf,
+        l > -Inf,
+        # !is.na(k),
+        # !is.na(m),
+        # !is.na(lag_l),
+        # lag_l<Inf,
+        # lag_l> -Inf,
+        # !is.na(lag_ml),
+        # !is.na(lag_ll),
+        # !is.na(lag_kl)
+    ) %>%
+    mutate(
+        y=log(gross_output),
+        s=log_share,
+        ll=l*l,
+        mm=m*m,
+        mk=m*k,
+        ml=m*l,
+        kk=k*k,
+        kl=k*l,
+        klm=k*l*m#,
+        # across(
+        #     ll:s,
+        #     ~lag(.x, order_by = year),
+        #     .names = "lag_{.col}"
+        # )
+    ) %>%
+    # filter(sic_3==inds) %>%
+    group_by(plant,year) %>% 
+    select(
+        y,
+        s,
+        m,
+        k,
+        l,
+        matches("^[[:lower:]]{2}$"),
+        klm
+        # matches("^lag_[[:lower:]]{1,2}$") &  !lag_K &!lag_M
+    )
+# fort_data
+fort_data<-fort_data[complete.cases(fort_data), , drop=FALSE]
+fort_data
+
 fort_data |> datasummary_skim()
 
 write_delim(
     fort_data,
-    "/Volumes/SSD Hans 1/Github/gnr/Data/colombia.raw",
+    "/Volumes/SSD Hans 1/Github/gnr/Data/data_999.raw",
     append = FALSE,
     col_names = FALSE
 )
+
 variable_names<-names(fort_data)
 write.table(
     variable_names,
-    "/Volumes/SSD Hans 1/Github/gnr/Data/variables.raw",
+    "/Volumes/SSD Hans 1/Github/gnr/Data/variables_all.raw",
     col.names = FALSE,
     row.names = FALSE
     # append = FALSE

@@ -78,3 +78,47 @@ Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\h
 $$
 
 The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}$.
+
+### Fortran GNR
+
+```{r}
+#| label: tbl-fortran-gnr
+#| tbl-cap: GNR Fortran implementation. Bias-corrected Bootstrap confidence intervals, 95% significance level, 250 repetitions.
+#| echo: false
+#| warning: false
+
+fortran_gnr <- tribble(
+    ~Industry, ~Implementation,~Estimate,~m, ~l, ~k, 
+    "311", "Stata", "mean elasticity", 0.67, 0.22, 0.12,
+    "311", "Fortran", "mean elasticity",.68867344,.22215679,.10996130, 
+    "311", "Fortran","LCI",.68566285,.21960601,.10817073,
+    "311", "Fortran","UCI",.69203629,.22445365,.11165320,
+    "321", "Stata", "mean elasticity", 0.54, 0.32, 0.16,
+    "321", "Fortran", "mean elasticity", .58772782,.33504245,.12100036,
+    "321", "Fortran", "LCI",.58354659,.33116173,.11778809,
+    "321", "Fortran", "UCI",.59176468,.33894814,.12374840,
+    "322", "Stata", "mean elasticity", 0.52, 0.42, 0.05,
+    "322", "Fortran", "mean elasticity", .57329557,.40757876,.36815224E-01,
+    "322", "Fortran", "LCI",.56875683,.40279332,.36412139E-01,
+    "322", "Fortran", "UCI",.57829406,.41189006,.37263870E-01,
+    "331", "Stata", "mean elasticity", 0.51, 0.44, 0.04,
+    "331", "Fortran", "mean elasticity",.54696732,.42890784,.28400284E-01,
+    "331", "Fortran", "LCI",.53953007,.42114309,.24590548E-01,
+    "331", "Fortran", "UCI",.55516056,.43715581,.31658542E-01,
+    "381", "Stata", "mean elasticity", 0.53, 0.29, 0.03,
+    "381", "Fortran", "mean elasticity",.59271906,.38956320,.84889960E-01,
+    "381", "Fortran", "LCI",.58963970,.38596049,.83332520E-01,
+    "381", "Fortran", "UCI",.59598513,.39287295,.86487109E-01
+) 
+
+fortran_gnr %>%
+    kbl(
+        digits = 3,
+        # col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    collapse_rows(columns = 1:2, valign = "top")
+
+
+```

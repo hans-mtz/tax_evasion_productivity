@@ -224,10 +224,10 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 \definecolor{Assumption-color2}{HTML}{FFFFFF}
 \definecolor{Definition-color1}{HTML}{99CCFF}
 \definecolor{Definition-color2}{HTML}{FFFFFF}
-\definecolor{Theorem-color1}{HTML}{99CCFF}
-\definecolor{Theorem-color2}{HTML}{FFFFFF}
 \definecolor{Proposition-color1}{HTML}{99CCFF}
 \definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Theorem-color1}{HTML}{99CCFF}
+\definecolor{Theorem-color2}{HTML}{FFFFFF}
 %=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{May 10, 2024}
+\date{June 13, 2024}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -300,16 +300,23 @@ Estimation, Productivity
 \begin{itemize}
 \tightlist
 \item
-  Colombian Corporate Tax System and Juridical Organizations
+  Diff in diff
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Relative prices
+  \item
+    Pre-trends
+  \end{itemize}
 \item
-  How are firms selecting into Corporations? Sketch of a Model
-\item
-  Evasion vs Production Technology
-\item
-  Corporations by Industry
-\item
-  Colombian Manufacturing Firms are Moslty Upstream (Revenue
-  Misreporting)
+  Deconvolution implementation strategy
+
+  \begin{itemize}
+  \tightlist
+  \item
+    GNR implementation in Fortran
+  \end{itemize}
 \end{itemize}
 
 \section*{To Do}\label{to-do}
@@ -318,29 +325,18 @@ Estimation, Productivity
 \begin{itemize}
 \tightlist
 \item
-  Data Summary Statistics
-\item
-  Look into differences between Corporations and Other JOs at the
-  industry level
+  Deconvolution implementation
 
-  \begin{itemize}
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
   \tightlist
   \item
-    Pick 4 biggest industries
+    CD GNR in Fortran
   \item
-    Pick industries with a fair share of corporations
-  \item
-    Pick industries with simple technology (to reduce concerns about
-    differences in technology), such as sugar refining, cement, steel
-    furnaces, or others (Daniel)
-  \end{itemize}
+    Implement deconvolution
+  \end{enumerate}
 \item
-  Capital Misallocation due to CIT rate differentials between
-  Corporations and LLCs
-\item
-  How Can I Use Policy Changes in Identification?
-\item
-  Adapt the Model to the Colombian Specific Setting (Daniel)
+  Ecuador dataset
 \end{itemize}
 
 \section{A parsimonious model of tax evasion through input
@@ -357,7 +353,7 @@ Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 }\end{equation}
 
 As standard in the literature, productivity \(\omega_{it}\) is known to
-firms when they take input decisions. This is the well-known endogeneity
+firms when they make input decisions. This is the well-known endogeneity
 problem of simultaneity. On the other hand, firms face output shocks.
 The output shock \(\varepsilon_{it}\) is not part of the firms'
 information set.
@@ -1276,24 +1272,24 @@ column{6}={wd=20em,halign=c,},
 }                     %% tabularray inner close
 \toprule
 SIC & Industry & P&T (1990) & Change & Change Year & Annual Sales Tax (82-86) \\ \midrule %% TinyTableHeader
-311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idlwnyfbajffjseul86j4s.png} \\
-312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/id5bfmp3k65xwowpislkgj.png} \\
-322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id9j7qhvrgncese4ursizq.png} \\
-381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idh50gr3g76wwb45cjnngb.png} \\
-321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idkr8lfypizdj3mc4p3tja.png} \\
-382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idnqpory4dc911nu3o8plg.png} \\
-384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idmpxz44jq3eenlern0vem.png} \\
-383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idpg6cts1avklgrl7hwhkm.png} \\
-313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idc2fqq0955mrpemmoh24d.png} \\
-341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id49x6j1xvbgwqt4b0a4vt.png} \\
-324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idi39geun3ptkoq41o87w0.png} \\
-342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idm7i9g3d4ccitkx0pf0ja.png} \\
-369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id47z1kk31oym0x8zifsc3.png} \\
-390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idgrysl1oilwix2l2x0pmt.png} \\
-332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/iddquj3atue98algw4udp3.png} \\
-351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idcwdpdps5qsqx6u2fiytz.png} \\
-352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/id7u99m4wrmndmpcnb96zq.png} \\
-356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/iddosxz8v4fdyacqdtxvmb.png} \\
+311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/id3u1q3drg824i37qe854s.png} \\
+312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idd159fz2wiudt706utwb4.png} \\
+322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idukz2xvytw3a4x26t8kcx.png} \\
+381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idz516c76pyf4z5i1ptozh.png} \\
+321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id6zmf0m19jc5uplwfkb2v.png} \\
+382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id8rxnxzn4kq32duwrn4pw.png} \\
+384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id5bfw96msyuwyewftboud.png} \\
+383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/iddvsukf52y0has3go5y4g.png} \\
+313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id13gcpju50cbc84tanen1.png} \\
+341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id5u3z8x9rlnn2obob2dji.png} \\
+324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/iduc5axua0fix2c5zug4gt.png} \\
+342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idtiqlklu8ri47kc6os6nl.png} \\
+369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idgqvci0lmbgd6fmx14rqs.png} \\
+390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idaw2o4egzhad34ev6s2v6.png} \\
+332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idrxzth16iqje69qzfjxch.png} \\
+351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id1fxnbf3pex1wsu1zed3i.png} \\
+352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/id7il5ssb2d4418o5qfx1p.png} \\
+356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idb6u5x4xsly3htucncgzv.png} \\
 \bottomrule
 \end{tblr}
 
@@ -2088,6 +2084,432 @@ the Reform of 1983 (1982).}
 \end{minipage}%
 
 \end{table}%
+
+\subsection{Parallel Trends}\label{parallel-trends}
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-1.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-2.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-3.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-4.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-5.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-6.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-7.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-8.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-9.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-10.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-11.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-12.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-13.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-14.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-15.pdf}
+
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-11-16.pdf}
+
+\begin{verbatim}
+[[1]]
+[[1]]$rect
+[[1]]$rect$w
+[1] 3.314337
+
+[[1]]$rect$h
+[1] 2.969189
+
+[[1]]$rect$left
+[1] 7.920463
+
+[[1]]$rect$top
+[1] 2.129577
+
+
+[[1]]$text
+[[1]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[1]]$text$y
+[1]  1.5357391  0.9419013  0.3480635 -0.2457743
+
+
+
+[[2]]
+[[2]]$rect
+[[2]]$rect$w
+[1] 3.314337
+
+[[2]]$rect$h
+[1] 0.2959581
+
+[[2]]$rect$left
+[1] 7.920463
+
+[[2]]$rect$top
+[1] 0.3343439
+
+
+[[2]]$text
+[[2]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[2]]$text$y
+[1] 0.27515227 0.21596065 0.15676903 0.09757741
+
+
+
+[[3]]
+[[3]]$rect
+[[3]]$rect$w
+[1] 3.314337
+
+[[3]]$rect$h
+[1] 0.2610565
+
+[[3]]$rect$left
+[1] 7.920463
+
+[[3]]$rect$top
+[1] 0.2417754
+
+
+[[3]]$text
+[[3]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[3]]$text$y
+[1] 0.18956407 0.13735276 0.08514146 0.03293015
+
+
+
+[[4]]
+[[4]]$rect
+[[4]]$rect$w
+[1] 3.314337
+
+[[4]]$rect$h
+[1] 0.2319281
+
+[[4]]$rect$left
+[1] 7.920463
+
+[[4]]$rect$top
+[1] 0.2116573
+
+
+[[4]]$text
+[[4]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[4]]$text$y
+[1] 0.16527169 0.11888607 0.07250045 0.02611482
+
+
+
+[[5]]
+[[5]]$rect
+[[5]]$rect$w
+[1] 3.314337
+
+[[5]]$rect$h
+[1] 0.2636388
+
+[[5]]$rect$left
+[1] 7.920463
+
+[[5]]$rect$top
+[1] 0.2752743
+
+
+[[5]]$text
+[[5]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[5]]$text$y
+[1] 0.22254654 0.16981878 0.11709102 0.06436327
+
+
+
+[[6]]
+[[6]]$rect
+[[6]]$rect$w
+[1] 3.314337
+
+[[6]]$rect$h
+[1] 0.2456083
+
+[[6]]$rect$left
+[1] 7.920463
+
+[[6]]$rect$top
+[1] 0.2832148
+
+
+[[6]]$text
+[[6]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[6]]$text$y
+[1] 0.23409318 0.18497153 0.13584988 0.08672822
+
+
+
+[[7]]
+[[7]]$rect
+[[7]]$rect$w
+[1] 3.314337
+
+[[7]]$rect$h
+[1] 0.2774801
+
+[[7]]$rect$left
+[1] 7.920463
+
+[[7]]$rect$top
+[1] 0.1686806
+
+
+[[7]]$text
+[[7]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[7]]$text$y
+[1]  0.113184635  0.057688623  0.002192611 -0.053303400
+
+
+
+[[8]]
+[[8]]$rect
+[[8]]$rect$w
+[1] 3.314337
+
+[[8]]$rect$h
+[1] 0.2175717
+
+[[8]]$rect$left
+[1] 7.920463
+
+[[8]]$rect$top
+[1] 0.3103957
+
+
+[[8]]$text
+[[8]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[8]]$text$y
+[1] 0.2668814 0.2233670 0.1798527 0.1363383
+
+
+
+[[9]]
+[[9]]$rect
+[[9]]$rect$w
+[1] 3.314337
+
+[[9]]$rect$h
+[1] 0.3882114
+
+[[9]]$rect$left
+[1] 7.920463
+
+[[9]]$rect$top
+[1] 0.3873096
+
+
+[[9]]$text
+[[9]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[9]]$text$y
+[1] 0.30966736 0.23202508 0.15438280 0.07674052
+
+
+
+[[10]]
+[[10]]$rect
+[[10]]$rect$w
+[1] 3.314337
+
+[[10]]$rect$h
+[1] 0.2739883
+
+[[10]]$rect$left
+[1] 7.920463
+
+[[10]]$rect$top
+[1] 0.2783863
+
+
+[[10]]$text
+[[10]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[10]]$text$y
+[1] 0.22358863 0.16879097 0.11399330 0.05919564
+
+
+
+[[11]]
+[[11]]$rect
+[[11]]$rect$w
+[1] 3.314337
+
+[[11]]$rect$h
+[1] 0.5362883
+
+[[11]]$rect$left
+[1] 7.920463
+
+[[11]]$rect$top
+[1] 0.654397
+
+
+[[11]]$text
+[[11]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[11]]$text$y
+[1] 0.5471393 0.4398816 0.3326240 0.2253663
+
+
+
+[[12]]
+[[12]]$rect
+[[12]]$rect$w
+[1] 3.314337
+
+[[12]]$rect$h
+[1] 0.3216847
+
+[[12]]$rect$left
+[1] 7.920463
+
+[[12]]$rect$top
+[1] 0.3721627
+
+
+[[12]]$text
+[[12]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[12]]$text$y
+[1] 0.3078257 0.2434888 0.1791518 0.1148149
+
+
+
+[[13]]
+[[13]]$rect
+[[13]]$rect$w
+[1] 3.314337
+
+[[13]]$rect$h
+[1] 0.5873857
+
+[[13]]$rect$left
+[1] 7.920463
+
+[[13]]$rect$top
+[1] 0.6077664
+
+
+[[13]]$text
+[[13]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[13]]$text$y
+[1] 0.4902893 0.3728121 0.2553350 0.1378578
+
+
+
+[[14]]
+[[14]]$rect
+[[14]]$rect$w
+[1] 3.314337
+
+[[14]]$rect$h
+[1] 0.3098653
+
+[[14]]$rect$left
+[1] 7.920463
+
+[[14]]$rect$top
+[1] 0.3507427
+
+
+[[14]]$text
+[[14]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[14]]$text$y
+[1] 0.2887696 0.2267966 0.1648235 0.1028504
+
+
+
+[[15]]
+[[15]]$rect
+[[15]]$rect$w
+[1] 3.314337
+
+[[15]]$rect$h
+[1] 0.3255284
+
+[[15]]$rect$left
+[1] 7.920463
+
+[[15]]$rect$top
+[1] 0.300501
+
+
+[[15]]$text
+[[15]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[15]]$text$y
+[1] 0.23539533 0.17028965 0.10518397 0.04007829
+
+
+
+[[16]]
+[[16]]$rect
+[[16]]$rect$w
+[1] 3.314337
+
+[[16]]$rect$h
+[1] 0.2407145
+
+[[16]]$rect$left
+[1] 7.920463
+
+[[16]]$rect$top
+[1] 0.3036422
+
+
+[[16]]$text
+[[16]]$text$x
+[1] 9.535899 9.535899 9.535899 9.535899
+
+[[16]]$text$y
+[1] 0.2554993 0.2073564 0.1592135 0.1110706
+\end{verbatim}
+
+\end{minipage}%
+
+\end{figure}%
 
 \section{Empirical Appendix}\label{empirical-appendix}
 
@@ -3427,6 +3849,67 @@ Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\h
 
 The EM algorithm stops when
 \(l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}\).
+
+\subsection{Fortran GNR}\label{fortran-gnr}
+
+\begin{table}
+
+\caption{\label{tbl-fortran-gnr}GNR Fortran implementation.
+Bias-corrected Bootstrap confidence intervals, 95\% significance level,
+250 repetitions.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|l|l|r|r|r}
+\hline
+Industry & Implementation & Estimate & m & l & k\\
+\hline
+ & Stata & mean elasticity & 0.670 & 0.220 & 0.120\\
+\cline{2-6}
+ &  & mean elasticity & 0.689 & 0.222 & 0.110\\
+\cline{3-6}
+ &  & LCI & 0.686 & 0.220 & 0.108\\
+\cline{3-6}
+\multirow[t]{-4}{*}{\raggedright\arraybackslash 311} & \multirow[t]{-3}{*}{\raggedright\arraybackslash Fortran} & UCI & 0.692 & 0.224 & 0.112\\
+\cline{1-6}
+ & Stata & mean elasticity & 0.540 & 0.320 & 0.160\\
+\cline{2-6}
+ &  & mean elasticity & 0.588 & 0.335 & 0.121\\
+\cline{3-6}
+ &  & LCI & 0.584 & 0.331 & 0.118\\
+\cline{3-6}
+\multirow[t]{-4}{*}{\raggedright\arraybackslash 321} & \multirow[t]{-3}{*}{\raggedright\arraybackslash Fortran} & UCI & 0.592 & 0.339 & 0.124\\
+\cline{1-6}
+ & Stata & mean elasticity & 0.520 & 0.420 & 0.050\\
+\cline{2-6}
+ &  & mean elasticity & 0.573 & 0.408 & 0.037\\
+\cline{3-6}
+ &  & LCI & 0.569 & 0.403 & 0.036\\
+\cline{3-6}
+\multirow[t]{-4}{*}{\raggedright\arraybackslash 322} & \multirow[t]{-3}{*}{\raggedright\arraybackslash Fortran} & UCI & 0.578 & 0.412 & 0.037\\
+\cline{1-6}
+ & Stata & mean elasticity & 0.510 & 0.440 & 0.040\\
+\cline{2-6}
+ &  & mean elasticity & 0.547 & 0.429 & 0.028\\
+\cline{3-6}
+ &  & LCI & 0.540 & 0.421 & 0.025\\
+\cline{3-6}
+\multirow[t]{-4}{*}{\raggedright\arraybackslash 331} & \multirow[t]{-3}{*}{\raggedright\arraybackslash Fortran} & UCI & 0.555 & 0.437 & 0.032\\
+\cline{1-6}
+ & Stata & mean elasticity & 0.530 & 0.290 & 0.030\\
+\cline{2-6}
+ &  & mean elasticity & 0.593 & 0.390 & 0.085\\
+\cline{3-6}
+ &  & LCI & 0.590 & 0.386 & 0.083\\
+\cline{3-6}
+\multirow[t]{-4}{*}{\raggedright\arraybackslash 381} & \multirow[t]{-3}{*}{\raggedright\arraybackslash Fortran} & UCI & 0.596 & 0.393 & 0.086\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
 
 \section{References}\label{references}
 

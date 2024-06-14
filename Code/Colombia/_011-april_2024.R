@@ -699,185 +699,7 @@ lapply(
 
 
 
-# top_20_inds %>% View()
-did_3_inds <- lapply(
-    setdiff(top_20_inds$sic_3,c(311,312)),
-    \(x)
-    colombia_data_frame %>%
-    ungroup() %>%
-    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
-    left_join(sales_tax_change) %>%
-    filter(
-        # year <= 86,
-        JO_class != "Other",
-        juridical_organization != 6,
-        # juridical_organization %in% c(0, 1, 3)
-        # year >= 83
-        sic_3 %in% c(x,311,312) #c(x,311)#
-    ) %>%
-    mutate(
-        juridical_organization = factor(juridical_organization),
-        metro_area_code = factor(metro_area_code),
-        JO_class = factor(
-            JO_class, 
-            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
-        ),
-        time = case_when(
-            year <= 83 ~ "before",
-            .default = as.character(year),
-        ),
-        time = factor(time, levels = c("before","84","85","86")),
-        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
-        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
-        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
-        treat = factor(treat, levels = c("Corp","Non-Corp")),
-        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
-        year = relevel(factor(year), ref="83"),
-        sic_3 = relevel(factor(sic_3), ref="311"),
-        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
-    ) %>%
-    feols( sw(log_share,log(mats_serv/sales),log((materials+deductible_expenses)/sales),log(materials/sales))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
-        | plant+year,
-        data = ., cluster=~year#~plant+year
-    )
-)
 
-names(did_3_inds)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
-lapply(
-   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
-    \(x) etable(
-        did_3_inds[x],
-        keep = c(
-            "%^share",
-            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
-            # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
-            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+",
-            "%^treatNon-Corp$"
-        ),
-        headers = list(
-            Industry=paste0(
-                str_sub(
-                    paste0(
-                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
-                    ),
-                    1,25
-                ),
-                "-"
-            ),
-            # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
-            `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
-        )
-    )
-)
-
-for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]) etable(did_3_inds[x]) |> print()
-
-
-for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
-    industry <- paste0(
-        str_sub(
-            top_20_inds[top_20_inds$sic_3==x,'description'][[1]],
-            1,30
-        ),
-        "-"
-    )
-    etable(
-        did_3_inds[x],
-        keep = c(
-            "%^share",
-            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
-            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+",
-            "%^treatNon-Corp$"
-        ),
-        headers = list(
-            Industry=industry,#x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
-            `Tax Change`=str_to_title(
-                paste0(
-                    top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]
-                )
-            )
-        )
-        # div.class = "table"
-    ) |> print()
-}
-
-paste0(
-    str_sub(
-        paste0(
-            top_20_inds[top_20_inds$sic_3=="322",'description'][[1]]
-        ),
-        1,30
-    ))
-did_3_inds_exp <- lapply(
-    setdiff(top_20_inds$sic_3,c(311,312)),
-    \(x)
-    colombia_data_frame %>%
-    ungroup() %>%
-    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
-    left_join(sales_tax_change) %>%
-    filter(
-        # year <= 86,
-        JO_class != "Other",
-        juridical_organization != 6,
-        # juridical_organization %in% c(0, 1, 3)
-        # year >= 83
-        sic_3 %in% c(x,311,312) #c(x,311)#
-    ) %>%
-    mutate(
-        services_exp_share = services/total_expenditure,
-        industrial_exp_share = industrial_expenditure/total_expenditure,
-        deductible_exp_share = deductible_expenses/total_expenditure,
-        juridical_organization = factor(juridical_organization),
-        metro_area_code = factor(metro_area_code),
-        JO_class = factor(
-            JO_class, 
-            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
-        ),
-        time = case_when(
-            year <= 83 ~ "before",
-            .default = as.character(year),
-        ),
-        time = factor(time, levels = c("before","84","85","86")),
-        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
-        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
-        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
-        treat = factor(treat, levels = c("Corp","Non-Corp")),
-        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
-        year = relevel(factor(year), ref="83"),
-        sic_3 = relevel(factor(sic_3), ref="311"),
-        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
-    ) %>%
-    feols( sw(log(services_exp_share), log(industrial_exp_share), log(deductible_exp_share))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
-        | plant+year,
-        data = ., cluster=~year#~plant+year
-    )
-)
-names(did_3_inds_exp)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
-lapply(
-   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
-    \(x) etable(
-        did_3_inds_exp[x],
-        keep = c(
-            "%^share",
-            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
-            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
-            "%^treatNon-Corp$"
-        ),
-        headers = list(
-            Industry=paste0(
-                str_sub(
-                    paste0(
-                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
-                    ),
-                    1,25
-                ),
-                "-"
-            ),
-            # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
-            `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
-        )
-    )
-)
 ### Diff-in-Diff by tax rate change ######
 colombia_data_frame %>%
     ungroup() %>%
@@ -1014,7 +836,9 @@ log_s_tax_change_regs<-lapply(
 #     log_s_tax_change_regs,
 #     keep = c("sales","year8(3|4|5|6)")
 # )
-## Diff-in-Diff-in-Diff
+## Diff-in-Diff-in-Diff ####
+# Testing pre-trends time=1 before the treatment period, 0 otherwise
+# including lags
 
 DiDiD<-colombia_data_frame %>%
     ungroup() %>%
@@ -1115,10 +939,234 @@ etable(
     #     ),
 )
 
-colombia_data_frame |> names()
+### top_20_inds %>% View()
+did_3_inds <- lapply(
+    setdiff(top_20_inds$sic_3,c(311,312)),
+    \(x)
+    colombia_data_frame %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    left_join(sales_tax_change) %>%
+    filter(
+        # year <= 86,
+        JO_class != "Other",
+        juridical_organization != 6,
+        # juridical_organization %in% c(0, 1, 3)
+        # year >= 83
+        sic_3 %in% c(x,311,312) #c(x,311)#
+    ) %>%
+    mutate(
+        juridical_organization = factor(juridical_organization),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(
+            JO_class, 
+            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
+        ),
+        time = case_when(
+            year <= 83 ~ "before",
+            .default = as.character(year),
+        ),
+        time = factor(time, levels = c("before","84","85","86")),
+        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
+        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
+        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
+        treat = factor(treat, levels = c("Corp","Non-Corp")),
+        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
+        year = relevel(factor(year), ref="83"),
+        sic_3 = relevel(factor(sic_3), ref="311"),
+        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
+    ) %>%
+    feols( sw(log_share,log(mats_serv/sales),log((materials+deductible_expenses)/sales),log(materials/sales))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+        | plant+year,
+        data = ., cluster=~year#~plant+year
+    )
+)
+
+names(did_3_inds)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
+lapply(
+#    paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
+    names(did_3_inds),
+    \(x) etable(
+        did_3_inds[x],
+        keep = c(
+            "%^share",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
+            # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            # "%^year8(1|2|4|5|6):treatNon-Corp:treat_3\\w+_\\w+",
+            "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+             "%^year\\d{2}:treatNon-Corp$",
+            "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,25
+                ),
+                "-"
+            ),
+            # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
+        )
+    )
+)
+coefplot(did_3_inds["322"][[1]], keep="%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+")
+etable(did_3_inds[[1]], keep="%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+")
+lapply(
+   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
+    # names(did_3_inds),
+    function(x) {
+        # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
+        coefplot(
+            did_3_inds[x][[1]],
+            # x = NULL,#rep(c(-2,-1,1:8), each=4),
+            # horiz=TRUE,
+            keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+            main = paste0(
+                    str_sub(
+                        paste0(
+                            top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                        ),
+                        1,25
+                    ),
+                    "-"
+                )
+        )
+        legend("topright", col=1:4,lwd=2,legend=c("share","m+serv","m+ded","m"))
+        # dev.off()
+    }
+)
+# ,
+#         headers = list(
+#             Industry=paste0(
+#                 str_sub(
+#                     paste0(
+#                         top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+#                     ),
+#                     1,25
+#                 ),
+#                 "-"
+#             ),
+#             # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+#             `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
+#         )
+#     )
+# )
+## Some do not look bad, others do
+
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]) etable(did_3_inds[x]) |> print()
+
+
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
+    industry <- paste0(
+        str_sub(
+            top_20_inds[top_20_inds$sic_3==x,'description'][[1]],
+            1,30
+        ),
+        "-"
+    )
+    etable(
+        did_3_inds[x],
+        keep = c(
+            "%^share",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+",
+            "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=industry,#x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=str_to_title(
+                paste0(
+                    top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]
+                )
+            )
+        )
+        # div.class = "table"
+    ) |> print()
+}
+
+paste0(
+    str_sub(
+        paste0(
+            top_20_inds[top_20_inds$sic_3=="322",'description'][[1]]
+        ),
+        1,30
+    ))
+did_3_inds_exp <- lapply(
+    setdiff(top_20_inds$sic_3,c(311,312)),
+    \(x)
+    colombia_data_frame %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    left_join(sales_tax_change) %>%
+    filter(
+        # year <= 86,
+        JO_class != "Other",
+        juridical_organization != 6,
+        # juridical_organization %in% c(0, 1, 3)
+        # year >= 83
+        sic_3 %in% c(x,311,312) #c(x,311)#
+    ) %>%
+    mutate(
+        services_exp_share = services/total_expenditure,
+        industrial_exp_share = industrial_expenditure/total_expenditure,
+        deductible_exp_share = deductible_expenses/total_expenditure,
+        juridical_organization = factor(juridical_organization),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(
+            JO_class, 
+            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
+        ),
+        time = case_when(
+            year <= 83 ~ "before",
+            .default = as.character(year),
+        ),
+        time = factor(time, levels = c("before","84","85","86")),
+        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
+        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
+        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
+        treat = factor(treat, levels = c("Corp","Non-Corp")),
+        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
+        year = relevel(factor(year), ref="83"),
+        sic_3 = relevel(factor(sic_3), ref="311"),
+        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
+    ) %>%
+    feols( sw(log(services_exp_share), log(industrial_exp_share), log(deductible_exp_share))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+        | plant+year,
+        data = ., cluster=~year#~plant+year
+    )
+)
+names(did_3_inds_exp)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
+lapply(
+   paste0(setdiff(industries$sic_3,c(311,312)))[1:10], #11:15,#6:10,#1:5,#26:27,#21:25,#16:20,#
+    \(x) etable(
+        did_3_inds_exp[x],
+        keep = c(
+            "%^share",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}",
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,25
+                ),
+                "-"
+            ),
+            # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
+        )
+    )
+)
 
     
-##
+## Tax Changes tables #####
 
 sales_tax_change %>%
     left_join(

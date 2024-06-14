@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2024-05-10">
+<meta name="dcterms.date" content="2024-06-13">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax Evasion and Productivity</title>
@@ -60,19 +60,19 @@ div.csl-indent {
 <script src="Tax-Prod_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="Tax-Prod_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <style>
-.Assumption {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
-.Theorem {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
 .Definition {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
 .Proposition {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Assumption {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Theorem {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
@@ -161,6 +161,7 @@ window.Quarto = {
   <li><a href="#empirical-application" id="toc-empirical-application" class="nav-link" data-scroll-target="#empirical-application"><span class="header-section-number">4</span> Empirical Application</a>
   <ul class="collapse">
   <li><a href="#changes-in-composition-of-total-expenditure" id="toc-changes-in-composition-of-total-expenditure" class="nav-link" data-scroll-target="#changes-in-composition-of-total-expenditure"><span class="header-section-number">4.1</span> Changes in Composition of Total Expenditure</a></li>
+  <li><a href="#parallel-trends" id="toc-parallel-trends" class="nav-link" data-scroll-target="#parallel-trends"><span class="header-section-number">4.2</span> Parallel Trends</a></li>
   </ul></li>
   
   <li><a href="#changes-in-relative-prices" id="toc-changes-in-relative-prices" class="nav-link" data-scroll-target="#changes-in-relative-prices"><span class="header-section-number">6</span> Changes in Relative Prices</a></li>
@@ -187,6 +188,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#parametric-mle" id="toc-parametric-mle" class="nav-link" data-scroll-target="#parametric-mle"><span class="header-section-number">10.1</span> Parametric MLE</a></li>
   <li><a href="#non-parametric-mle" id="toc-non-parametric-mle" class="nav-link" data-scroll-target="#non-parametric-mle"><span class="header-section-number">10.2</span> Non-Parametric MLE</a></li>
+  <li><a href="#fortran-gnr" id="toc-fortran-gnr" class="nav-link" data-scroll-target="#fortran-gnr"><span class="header-section-number">10.3</span> Fortran GNR</a></li>
   </ul></li>
   
   </ul>
@@ -220,7 +222,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 10, 2024</p>
+      <p class="date">June 13, 2024</p>
     </div>
   </div>
   
@@ -247,26 +249,26 @@ window.Quarto = {
 <section id="updates" class="level1 unnumbered">
 <h1 class="unnumbered">Updates</h1>
 <ul>
-<li>Colombian Corporate Tax System and Juridical Organizations</li>
-<li>How are firms selecting into Corporations? Sketch of a Model</li>
-<li>Evasion vs Production Technology</li>
-<li>Corporations by Industry</li>
-<li>Colombian Manufacturing Firms are Moslty Upstream (Revenue Misreporting)</li>
+<li>Diff in diff
+<ul>
+<li>Relative prices</li>
+<li>Pre-trends</li>
+</ul></li>
+<li>Deconvolution implementation strategy
+<ul>
+<li>GNR implementation in Fortran</li>
+</ul></li>
 </ul>
 </section>
 <section id="to-do" class="level1 unnumbered">
 <h1 class="unnumbered">To Do</h1>
 <ul>
-<li>Data Summary Statistics</li>
-<li>Look into differences between Corporations and Other JOs at the industry level
-<ul>
-<li>Pick 4 biggest industries</li>
-<li>Pick industries with a fair share of corporations</li>
-<li>Pick industries with simple technology (to reduce concerns about differences in technology), such as sugar refining, cement, steel furnaces, or others (Daniel)</li>
-</ul></li>
-<li>Capital Misallocation due to CIT rate differentials between Corporations and LLCs</li>
-<li>How Can I Use Policy Changes in Identification?</li>
-<li>Adapt the Model to the Colombian Specific Setting (Daniel)</li>
+<li>Deconvolution implementation
+<ol type="1">
+<li>CD GNR in Fortran</li>
+<li>Implement deconvolution</li>
+</ol></li>
+<li>Ecuador dataset</li>
 </ul>
 <!-- Intro -->
 <!--  -->
@@ -278,7 +280,7 @@ window.Quarto = {
 <p><span id="eq-prod-fn"><span class="math display">\[
 Y_{it}=G(M_{it})\exp(\omega_{it}+\varepsilon_{it})
 \tag{1}\]</span></span></p>
-<p>As standard in the literature, productivity <span class="math inline">\(\omega_{it}\)</span> is known to firms when they take input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock <span class="math inline">\(\varepsilon_{it}\)</span> is not part of the firms’ information set.</p>
+<p>As standard in the literature, productivity <span class="math inline">\(\omega_{it}\)</span> is known to firms when they make input decisions. This is the well-known endogeneity problem of simultaneity. On the other hand, firms face output shocks. The output shock <span class="math inline">\(\varepsilon_{it}\)</span> is not part of the firms’ information set.</p>
 <p>The model departs from the literature by allowing firms to overreport their inputs <span class="math inline">\(e_{it}\)</span> to reduce their tax burden and optimize after-tax profits. Firms, then, consider in their optimization problem the profit tax <span class="math inline">\(\tau\)</span>, the evasion penalty/cost <span class="math inline">\(\kappa(e)\)</span>, and the probability of detection <span class="math inline">\(q(e_{it}|\theta_{it})\)</span>.</p>
 <p>Firms solve <a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a> <span id="eq-eva"><span class="math display">\[
 \begin{aligned}
@@ -670,14 +672,14 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_19uvreew9c6p068unign</title>
+    <title>tinytable_7a1of03bxhgbo3kela5m</title>
     <style>
-.table td.tinytable_css_8akwd81v5dqyjcs48ib6, .table th.tinytable_css_8akwd81v5dqyjcs48ib6 {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_qjh6ovy2ajdag3j17abv, .table th.tinytable_css_qjh6ovy2ajdag3j17abv {   padding-left: 1em; }
-.table td.tinytable_css_960faai583q8rvbwfb61, .table th.tinytable_css_960faai583q8rvbwfb61 {    text-align: center; }
-.table td.tinytable_css_yexp6gxrgwzlhb5dda68, .table th.tinytable_css_yexp6gxrgwzlhb5dda68 {    border-top: solid 0.1em black; }
-.table td.tinytable_css_k9biu54cuzeimezf2s99, .table th.tinytable_css_k9biu54cuzeimezf2s99 {    font-weight: bold; border-bottom: solid 0.1em black; }
-.table td.tinytable_css_tt43s5k40dvog03rtltt, .table th.tinytable_css_tt43s5k40dvog03rtltt {    border-bottom: solid 0.1em white; }
+.table td.tinytable_css_euhojk12nku1m7xneymy, .table th.tinytable_css_euhojk12nku1m7xneymy {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_zv5iitx0uswi8cg6hnr1, .table th.tinytable_css_zv5iitx0uswi8cg6hnr1 {   padding-left: 1em; }
+.table td.tinytable_css_ioysccvlnmkw0dg096is, .table th.tinytable_css_ioysccvlnmkw0dg096is {    text-align: center; }
+.table td.tinytable_css_s5fof8mmlq1ikj9simvd, .table th.tinytable_css_s5fof8mmlq1ikj9simvd {    border-top: solid 0.1em black; }
+.table td.tinytable_css_cipsolwa1weslajz20hl, .table th.tinytable_css_cipsolwa1weslajz20hl {    font-weight: bold; border-bottom: solid 0.1em black; }
+.table td.tinytable_css_lvz46wz0rgacf373zpd9, .table th.tinytable_css_lvz46wz0rgacf373zpd9 {    border-bottom: solid 0.1em white; }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -695,7 +697,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 
   
     <div class="container">
-      <table class="table table-borderless" id="tinytable_19uvreew9c6p068unign" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_7a1of03bxhgbo3kela5m" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -868,12 +870,12 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
     </div>
 
     <script>
-      function styleCell_tinytable_7ewruzrvxcs9p8qhryqn(i, j, css_id) {
-        var table = document.getElementById("tinytable_19uvreew9c6p068unign");
+      function styleCell_tinytable_88gzrh4y579oaa24vg0l(i, j, css_id) {
+        var table = document.getElementById("tinytable_7a1of03bxhgbo3kela5m");
         table.rows[i].cells[j].classList.add(css_id);
       }
-      function insertSpanRow_88l7hc2yxxevtlr5kj35(i, colspan, content) {
-        var table = document.getElementById('tinytable_19uvreew9c6p068unign');
+      function insertSpanRow_tc3bwpivp2f8csjota5k(i, colspan, content) {
+        var table = document.getElementById('tinytable_7a1of03bxhgbo3kela5m');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -881,8 +883,8 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_7ewruzrvxcs9p8qhryqn(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_19uvreew9c6p068unign");
+      function spanCell_tinytable_88gzrh4y579oaa24vg0l(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_7a1of03bxhgbo3kela5m");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -909,74 +911,74 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 0, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 1, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 2, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 3, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 4, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 5, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(0, 6, 'tinytable_css_8akwd81v5dqyjcs48ib6') })
-window.addEventListener('load', function () { insertSpanRow_88l7hc2yxxevtlr5kj35(10, 7, 'Share of Total Expenditure') });
-window.addEventListener('load', function () { insertSpanRow_88l7hc2yxxevtlr5kj35(1, 7, 'Share of Revenues') });
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(2, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(3, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(4, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(5, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(6, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(7, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(8, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(9, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(10, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(14, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(16, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(17, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(18, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(19, 0, 'tinytable_css_qjh6ovy2ajdag3j17abv') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 0, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 1, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 2, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 3, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 4, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 5, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(-1, 6, 'tinytable_css_960faai583q8rvbwfb61') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 0, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 1, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 2, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 3, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 4, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 5, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(13, 6, 'tinytable_css_yexp6gxrgwzlhb5dda68') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 0, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 0, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 0, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 1, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 1, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 1, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 2, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 2, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 2, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 3, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 3, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 3, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 4, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 4, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 4, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 5, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 5, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 5, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(1, 6, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(11, 6, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(15, 6, 'tinytable_css_k9biu54cuzeimezf2s99') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 0, 'tinytable_css_tt43s5k40dvog03rtltt') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 1, 'tinytable_css_tt43s5k40dvog03rtltt') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 2, 'tinytable_css_tt43s5k40dvog03rtltt') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 3, 'tinytable_css_tt43s5k40dvog03rtltt') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 4, 'tinytable_css_tt43s5k40dvog03rtltt') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 5, 'tinytable_css_tt43s5k40dvog03rtltt') })
-window.addEventListener('load', function () { styleCell_tinytable_7ewruzrvxcs9p8qhryqn(12, 6, 'tinytable_css_tt43s5k40dvog03rtltt') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 0, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 1, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 2, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 3, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 4, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 5, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(0, 6, 'tinytable_css_euhojk12nku1m7xneymy') })
+window.addEventListener('load', function () { insertSpanRow_tc3bwpivp2f8csjota5k(10, 7, 'Share of Total Expenditure') });
+window.addEventListener('load', function () { insertSpanRow_tc3bwpivp2f8csjota5k(1, 7, 'Share of Revenues') });
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(2, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(3, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(4, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(5, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(6, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(7, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(8, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(9, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(10, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(14, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(16, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(17, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(18, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(19, 0, 'tinytable_css_zv5iitx0uswi8cg6hnr1') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 0, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 1, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 2, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 3, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 4, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 5, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(-1, 6, 'tinytable_css_ioysccvlnmkw0dg096is') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 0, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 1, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 2, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 3, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 4, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 5, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(13, 6, 'tinytable_css_s5fof8mmlq1ikj9simvd') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 0, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 0, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 0, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 1, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 1, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 1, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 2, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 2, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 2, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 3, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 3, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 3, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 4, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 4, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 4, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 5, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 5, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 5, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(1, 6, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(11, 6, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(15, 6, 'tinytable_css_cipsolwa1weslajz20hl') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 0, 'tinytable_css_lvz46wz0rgacf373zpd9') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 1, 'tinytable_css_lvz46wz0rgacf373zpd9') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 2, 'tinytable_css_lvz46wz0rgacf373zpd9') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 3, 'tinytable_css_lvz46wz0rgacf373zpd9') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 4, 'tinytable_css_lvz46wz0rgacf373zpd9') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 5, 'tinytable_css_lvz46wz0rgacf373zpd9') })
+window.addEventListener('load', function () { styleCell_tinytable_88gzrh4y579oaa24vg0l(12, 6, 'tinytable_css_lvz46wz0rgacf373zpd9') })
     </script>
 
   
@@ -1252,11 +1254,11 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_s47fouxngsmzw0ko9rlc</title>
+    <title>tinytable_n1ugi7zhiyyn3n11prxr</title>
     <style>
-.table td.tinytable_css_qs0fq8eodo4qq3wbh9up, .table th.tinytable_css_qs0fq8eodo4qq3wbh9up {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_bymniizulrj95blxe10z, .table th.tinytable_css_bymniizulrj95blxe10z {    text-align: center; width: 20em; }
-.table td.tinytable_css_5v60l19gnpe97xbh7z5c, .table th.tinytable_css_5v60l19gnpe97xbh7z5c {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
+.table td.tinytable_css_g4ogpovq2al6h5pjjzke, .table th.tinytable_css_g4ogpovq2al6h5pjjzke {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_tyggc41ddu2ukykbj5gf, .table th.tinytable_css_tyggc41ddu2ukykbj5gf {    text-align: center; width: 20em; }
+.table td.tinytable_css_gtj3lgcox3pb6hfmmyl0, .table th.tinytable_css_gtj3lgcox3pb6hfmmyl0 {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -1274,7 +1276,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
 
   
     <div class="container">
-      <table class=" lightable-classic" id="tinytable_s47fouxngsmzw0ko9rlc" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class=" lightable-classic" id="tinytable_n1ugi7zhiyyn3n11prxr" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1294,7 +1296,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Exempt</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/id0h7byhjzamgeha7guqe3.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idb2ar55w229rusxj26cbm.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>312</td>
@@ -1302,7 +1304,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Exempt</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idqjfcgdq8ksom250ui5gm.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idt205fyk95ch15o495k8u.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>322</td>
@@ -1310,7 +1312,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/ids0upwzy1m8u4u7kxgzyi.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id7tgmmsvtaf6om0zhg30a.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>381</td>
@@ -1318,7 +1320,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id8woydwp9qj46dp9zydjm.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idli4el30i99m1nqg9toqy.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>321</td>
@@ -1326,7 +1328,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id34foaxkr55l9k2udlqg2.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idyz31hr9y2vlam7qt8atd.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>382</td>
@@ -1334,7 +1336,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id1kopvq57f0egyv29e2xl.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idv1efq3ij5antz5wdlbgq.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>384</td>
@@ -1342,7 +1344,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/idjdhjirvrdgy4763cpvg3.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idso79q0wpkbxdxbbmjulb.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>383</td>
@@ -1350,7 +1352,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/idkjrk9rlb53fgxt5v1fcb.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id7h7wc63wdmqz0qjz7f76.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>313</td>
@@ -1358,7 +1360,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>- to 35;10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id3cvg0ij65o8xiw84mnq7.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idwijm6t3wgbu7ueb16ir4.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>341</td>
@@ -1366,7 +1368,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id9q0ebcen2v1mr8aqtbzt.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idblf6q0o4949habqpb1zc.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>324</td>
@@ -1374,7 +1376,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idwko9msotecuwyhj204ld.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idpki7622cgtw14d9jrryg.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>342</td>
@@ -1382,7 +1384,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idx5590m5ho2h4p1ohew1t.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id4dphzouf5iom6c79ce4x.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>369</td>
@@ -1390,7 +1392,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idee9z44kxw447tbqm17r9.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idoevfewrc9zeinmlvslqz.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>390</td>
@@ -1398,7 +1400,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idi8mmsetvvo3t4y1gf37l.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idz4gxvj3kdai7n5p13erg.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>332</td>
@@ -1406,7 +1408,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idxdr0y678w3ry2ukc42eq.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idh5i39r9mm7ol11juarx2.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>351</td>
@@ -1414,7 +1416,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id43mynp0pdpwhmwfw6z25.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id3na6qddatx9ysm20k8f2.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>352</td>
@@ -1422,7 +1424,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6;15 to 10</td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idqawdin12x3ba0s36fqe5.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idlw0w63j9wgcx3mxn4bb1.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>356</td>
@@ -1430,19 +1432,19 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/id85ki4n0f6jxb2f492bbq.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idni5s8b6mw9b58pgd2r1j.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
         </tbody>
       </table>
     </div>
 
     <script>
-      function styleCell_tinytable_06z3jfw9h0r0hv3byhjs(i, j, css_id) {
-        var table = document.getElementById("tinytable_s47fouxngsmzw0ko9rlc");
+      function styleCell_tinytable_96pq00bshmmg1mc3ahi4(i, j, css_id) {
+        var table = document.getElementById("tinytable_n1ugi7zhiyyn3n11prxr");
         table.rows[i].cells[j].classList.add(css_id);
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_s47fouxngsmzw0ko9rlc');
+        var table = document.getElementById('tinytable_n1ugi7zhiyyn3n11prxr');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1450,8 +1452,8 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_06z3jfw9h0r0hv3byhjs(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_s47fouxngsmzw0ko9rlc");
+      function spanCell_tinytable_96pq00bshmmg1mc3ahi4(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_n1ugi7zhiyyn3n11prxr");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1478,145 +1480,145 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 0, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 1, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 2, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 3, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 4, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 5, 'tinytable_css_qs0fq8eodo4qq3wbh9up') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 5, 'tinytable_css_bymniizulrj95blxe10z') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(0, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(1, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(2, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(3, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(4, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(5, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(6, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(7, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(8, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(9, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(10, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(11, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(12, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(13, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(14, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(15, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(16, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(17, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 0, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 1, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 2, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 3, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 4, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
-window.addEventListener('load', function () { styleCell_tinytable_06z3jfw9h0r0hv3byhjs(18, 5, 'tinytable_css_5v60l19gnpe97xbh7z5c') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 0, 'tinytable_css_g4ogpovq2al6h5pjjzke') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 1, 'tinytable_css_g4ogpovq2al6h5pjjzke') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 2, 'tinytable_css_g4ogpovq2al6h5pjjzke') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 3, 'tinytable_css_g4ogpovq2al6h5pjjzke') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 4, 'tinytable_css_g4ogpovq2al6h5pjjzke') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 5, 'tinytable_css_g4ogpovq2al6h5pjjzke') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 5, 'tinytable_css_tyggc41ddu2ukykbj5gf') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(0, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(1, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(2, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(3, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(4, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(5, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(6, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(7, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(8, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(9, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(10, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(11, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(12, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(13, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(14, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(15, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(16, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(17, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 0, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 1, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 2, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 3, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 4, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
+window.addEventListener('load', function () { styleCell_tinytable_96pq00bshmmg1mc3ahi4(18, 5, 'tinytable_css_gtj3lgcox3pb6hfmmyl0') })
     </script>
 
   
@@ -2049,6 +2051,517 @@ NULL
 </figure>
 </div>
 </section>
+<section id="parallel-trends" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="parallel-trends"><span class="header-section-number">4.2</span> Parallel Trends</h2>
+<div id="fig-reg-exp-inds" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-reg-exp-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" data-fig-label="Parallel trends" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-15.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tax-Prod_files/figure-html/unnamed-chunk-11-16.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[[1]]$rect
+[[1]]$rect$w
+[1] 2.441323
+
+[[1]]$rect$h
+[1] 1.559764
+
+[[1]]$rect$left
+[1] 8.793477
+
+[[1]]$rect$top
+[1] 2.129577
+
+
+[[1]]$text
+[[1]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[1]]$text$y
+[1] 1.8176241 1.5056714 1.1937186 0.8817658
+
+
+
+[[2]]
+[[2]]$rect
+[[2]]$rect$w
+[1] 2.441323
+
+[[2]]$rect$h
+[1] 0.1554717
+
+[[2]]$rect$left
+[1] 8.793477
+
+[[2]]$rect$top
+[1] 0.3343439
+
+
+[[2]]$text
+[[2]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[2]]$text$y
+[1] 0.3032496 0.2721552 0.2410609 0.2099666
+
+
+
+[[3]]
+[[3]]$rect
+[[3]]$rect$w
+[1] 2.441323
+
+[[3]]$rect$h
+[1] 0.1371373
+
+[[3]]$rect$left
+[1] 8.793477
+
+[[3]]$rect$top
+[1] 0.2417754
+
+
+[[3]]$text
+[[3]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[3]]$text$y
+[1] 0.2143479 0.1869205 0.1594930 0.1320655
+
+
+
+[[4]]
+[[4]]$rect
+[[4]]$rect$w
+[1] 2.441323
+
+[[4]]$rect$h
+[1] 0.1218357
+
+[[4]]$rect$left
+[1] 8.793477
+
+[[4]]$rect$top
+[1] 0.2116573
+
+
+[[4]]$text
+[[4]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[4]]$text$y
+[1] 0.1872902 0.1629231 0.1385559 0.1141888
+
+
+
+[[5]]
+[[5]]$rect
+[[5]]$rect$w
+[1] 2.441323
+
+[[5]]$rect$h
+[1] 0.1384938
+
+[[5]]$rect$left
+[1] 8.793477
+
+[[5]]$rect$top
+[1] 0.2752743
+
+
+[[5]]$text
+[[5]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[5]]$text$y
+[1] 0.2475755 0.2198768 0.1921780 0.1644793
+
+
+
+[[6]]
+[[6]]$rect
+[[6]]$rect$w
+[1] 2.441323
+
+[[6]]$rect$h
+[1] 0.1290221
+
+[[6]]$rect$left
+[1] 8.793477
+
+[[6]]$rect$top
+[1] 0.2832148
+
+
+[[6]]$text
+[[6]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[6]]$text$y
+[1] 0.2574104 0.2316060 0.2058016 0.1799972
+
+
+
+[[7]]
+[[7]]$rect
+[[7]]$rect$w
+[1] 2.441323
+
+[[7]]$rect$h
+[1] 0.1457648
+
+[[7]]$rect$left
+[1] 8.793477
+
+[[7]]$rect$top
+[1] 0.1686806
+
+
+[[7]]$text
+[[7]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[7]]$text$y
+[1] 0.13952768 0.11037471 0.08122174 0.05206877
+
+
+
+[[8]]
+[[8]]$rect
+[[8]]$rect$w
+[1] 2.441323
+
+[[8]]$rect$h
+[1] 0.114294
+
+[[8]]$rect$left
+[1] 8.793477
+
+[[8]]$rect$top
+[1] 0.3103957
+
+
+[[8]]$text
+[[8]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[8]]$text$y
+[1] 0.2875369 0.2646781 0.2418193 0.2189605
+
+
+
+[[9]]
+[[9]]$rect
+[[9]]$rect$w
+[1] 2.441323
+
+[[9]]$rect$h
+[1] 0.2039338
+
+[[9]]$rect$left
+[1] 8.793477
+
+[[9]]$rect$top
+[1] 0.3873096
+
+
+[[9]]$text
+[[9]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[9]]$text$y
+[1] 0.3465229 0.3057361 0.2649493 0.2241626
+
+
+
+[[10]]
+[[10]]$rect
+[[10]]$rect$w
+[1] 2.441323
+
+[[10]]$rect$h
+[1] 0.1439306
+
+[[10]]$rect$left
+[1] 8.793477
+
+[[10]]$rect$top
+[1] 0.2783863
+
+
+[[10]]$text
+[[10]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[10]]$text$y
+[1] 0.2496002 0.2208141 0.1920280 0.1632418
+
+
+
+[[11]]
+[[11]]$rect
+[[11]]$rect$w
+[1] 2.441323
+
+[[11]]$rect$h
+[1] 0.2817211
+
+[[11]]$rect$left
+[1] 8.793477
+
+[[11]]$rect$top
+[1] 0.654397
+
+
+[[11]]$text
+[[11]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[11]]$text$y
+[1] 0.5980527 0.5417085 0.4853643 0.4290201
+
+
+
+[[12]]
+[[12]]$rect
+[[12]]$rect$w
+[1] 2.441323
+
+[[12]]$rect$h
+[1] 0.1689863
+
+[[12]]$rect$left
+[1] 8.793477
+
+[[12]]$rect$top
+[1] 0.3721627
+
+
+[[12]]$text
+[[12]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[12]]$text$y
+[1] 0.3383654 0.3045682 0.2707709 0.2369736
+
+
+
+[[13]]
+[[13]]$rect
+[[13]]$rect$w
+[1] 2.441323
+
+[[13]]$rect$h
+[1] 0.3085634
+
+[[13]]$rect$left
+[1] 8.793477
+
+[[13]]$rect$top
+[1] 0.6077664
+
+
+[[13]]$text
+[[13]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[13]]$text$y
+[1] 0.5460537 0.4843411 0.4226284 0.3609157
+
+
+
+[[14]]
+[[14]]$rect
+[[14]]$rect$w
+[1] 2.441323
+
+[[14]]$rect$h
+[1] 0.1627774
+
+[[14]]$rect$left
+[1] 8.793477
+
+[[14]]$rect$top
+[1] 0.3507427
+
+
+[[14]]$text
+[[14]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[14]]$text$y
+[1] 0.3181872 0.2856318 0.2530763 0.2205208
+
+
+
+[[15]]
+[[15]]$rect
+[[15]]$rect$w
+[1] 2.441323
+
+[[15]]$rect$h
+[1] 0.1710054
+
+[[15]]$rect$left
+[1] 8.793477
+
+[[15]]$rect$top
+[1] 0.300501
+
+
+[[15]]$text
+[[15]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[15]]$text$y
+[1] 0.2662999 0.2320988 0.1978978 0.1636967
+
+
+
+[[16]]
+[[16]]$rect
+[[16]]$rect$w
+[1] 2.441323
+
+[[16]]$rect$h
+[1] 0.1264513
+
+[[16]]$rect$left
+[1] 8.793477
+
+[[16]]$rect$top
+[1] 0.3036422
+
+
+[[16]]$text
+[[16]]$text$x
+[1] 9.988227 9.988227 9.988227 9.988227
+
+[[16]]$text$y
+[1] 0.2783520 0.2530617 0.2277715 0.2024812</code></pre>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-reg-exp-inds-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4
+</figcaption>
+</figure>
+</div>
+</section>
 </section>
 
 <section id="changes-in-relative-prices" class="level1" data-number="6">
@@ -2157,8 +2670,8 @@ Table&nbsp;12: Transition Matrix
 </figure>
 </div>
 </div>
-<p>Looking into the capital distributions of proprietorships, LLCs, and corporations we find that corporations are the largest, followed by LLCs, and proprietorships are the smallest <a href="#fig-k-rev-hist-1" class="quarto-xref">Figure&nbsp;4 (a)</a>. However, there are considerable overlaps. The same is true for revenues (in logs) <a href="#fig-k-rev-hist-2" class="quarto-xref">Figure&nbsp;4 (b)</a>. This is not surprising, as the need for larger capital increases, the more people would need to participate.</p>
-<p>However, when we look at the frequency distributions of the capital over revenue ratio in logs, the distributions perfectly overlap <a href="#fig-k-rev-hist-3" class="quarto-xref">Figure&nbsp;4 (c)</a>. If corporations had different technologies we would expect to see two different distributions. In particular, the distribution of corporations would have been farther to the right than the distributions of proprietorships and LLCs.</p>
+<p>Looking into the capital distributions of proprietorships, LLCs, and corporations we find that corporations are the largest, followed by LLCs, and proprietorships are the smallest <a href="#fig-k-rev-hist-1" class="quarto-xref">Figure&nbsp;5 (a)</a>. However, there are considerable overlaps. The same is true for revenues (in logs) <a href="#fig-k-rev-hist-2" class="quarto-xref">Figure&nbsp;5 (b)</a>. This is not surprising, as the need for larger capital increases, the more people would need to participate.</p>
+<p>However, when we look at the frequency distributions of the capital over revenue ratio in logs, the distributions perfectly overlap <a href="#fig-k-rev-hist-3" class="quarto-xref">Figure&nbsp;5 (c)</a>. If corporations had different technologies we would expect to see two different distributions. In particular, the distribution of corporations would have been farther to the right than the distributions of proprietorships and LLCs.</p>
 <p>These patterns remain even after controlling for industry, metropolitan area, and year <a href="#tbl-reg-choosing-jo" class="quarto-xref">Table&nbsp;13</a>.</p>
 <div class="cell" data-layout="[[45,45],[100]]">
 <div id="fig-k-rev-hist" class="quarto-layout-panel">
@@ -2206,7 +2719,7 @@ Table&nbsp;12: Transition Matrix
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-k-rev-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Frequency historgrams of capital, revenue and capital/revenue (in logs) of Corporations, LLCs, and Proprietorships.
+Figure&nbsp;5: Frequency historgrams of capital, revenue and capital/revenue (in logs) of Corporations, LLCs, and Proprietorships.
 </figcaption>
 </figure>
 </div>
@@ -2845,6 +3358,197 @@ C(\theta|\mathcal{V})=\log\left(\int f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\the
 Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\hat{\mathbf{\theta}}^{(k)}\right) - nC(\mathbf{\theta})
 \]</span></p>
 <p>The EM algorithm stops when <span class="math inline">\(l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})&lt;10^{-6}\)</span>.</p>
+</section>
+<section id="fortran-gnr" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="fortran-gnr"><span class="header-section-number">10.3</span> Fortran GNR</h2>
+<div class="cell">
+<div id="tbl-fortran-gnr" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fortran-gnr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;19: GNR Fortran implementation. Bias-corrected Bootstrap confidence intervals, 95% significance level, 250 repetitions.
+</figcaption>
+<div aria-describedby="tbl-fortran-gnr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table data-quarto-disable-processing="true" class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Industry </th>
+   <th style="text-align:left;"> Implementation </th>
+   <th style="text-align:left;"> Estimate </th>
+   <th style="text-align:right;"> m </th>
+   <th style="text-align:right;"> l </th>
+   <th style="text-align:right;"> k </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 311 </td>
+   <td style="text-align:left;"> Stata </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.670 </td>
+   <td style="text-align:right;"> 0.220 </td>
+   <td style="text-align:right;"> 0.120 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 311 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.689 </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> 0.110 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 311 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> LCI </td>
+   <td style="text-align:right;"> 0.686 </td>
+   <td style="text-align:right;"> 0.220 </td>
+   <td style="text-align:right;"> 0.108 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 311 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> UCI </td>
+   <td style="text-align:right;"> 0.692 </td>
+   <td style="text-align:right;"> 0.224 </td>
+   <td style="text-align:right;"> 0.112 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 321 </td>
+   <td style="text-align:left;"> Stata </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.540 </td>
+   <td style="text-align:right;"> 0.320 </td>
+   <td style="text-align:right;"> 0.160 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 321 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.588 </td>
+   <td style="text-align:right;"> 0.335 </td>
+   <td style="text-align:right;"> 0.121 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 321 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> LCI </td>
+   <td style="text-align:right;"> 0.584 </td>
+   <td style="text-align:right;"> 0.331 </td>
+   <td style="text-align:right;"> 0.118 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 321 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> UCI </td>
+   <td style="text-align:right;"> 0.592 </td>
+   <td style="text-align:right;"> 0.339 </td>
+   <td style="text-align:right;"> 0.124 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 322 </td>
+   <td style="text-align:left;"> Stata </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.520 </td>
+   <td style="text-align:right;"> 0.420 </td>
+   <td style="text-align:right;"> 0.050 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 322 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.573 </td>
+   <td style="text-align:right;"> 0.408 </td>
+   <td style="text-align:right;"> 0.037 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 322 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> LCI </td>
+   <td style="text-align:right;"> 0.569 </td>
+   <td style="text-align:right;"> 0.403 </td>
+   <td style="text-align:right;"> 0.036 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 322 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> UCI </td>
+   <td style="text-align:right;"> 0.578 </td>
+   <td style="text-align:right;"> 0.412 </td>
+   <td style="text-align:right;"> 0.037 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 331 </td>
+   <td style="text-align:left;"> Stata </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.510 </td>
+   <td style="text-align:right;"> 0.440 </td>
+   <td style="text-align:right;"> 0.040 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 331 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.547 </td>
+   <td style="text-align:right;"> 0.429 </td>
+   <td style="text-align:right;"> 0.028 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 331 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> LCI </td>
+   <td style="text-align:right;"> 0.540 </td>
+   <td style="text-align:right;"> 0.421 </td>
+   <td style="text-align:right;"> 0.025 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 331 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> UCI </td>
+   <td style="text-align:right;"> 0.555 </td>
+   <td style="text-align:right;"> 0.437 </td>
+   <td style="text-align:right;"> 0.032 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 381 </td>
+   <td style="text-align:left;"> Stata </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.530 </td>
+   <td style="text-align:right;"> 0.290 </td>
+   <td style="text-align:right;"> 0.030 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 381 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> mean elasticity </td>
+   <td style="text-align:right;"> 0.593 </td>
+   <td style="text-align:right;"> 0.390 </td>
+   <td style="text-align:right;"> 0.085 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 381 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> LCI </td>
+   <td style="text-align:right;"> 0.590 </td>
+   <td style="text-align:right;"> 0.386 </td>
+   <td style="text-align:right;"> 0.083 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 381 </td>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:left;"> UCI </td>
+   <td style="text-align:right;"> 0.596 </td>
+   <td style="text-align:right;"> 0.393 </td>
+   <td style="text-align:right;"> 0.086 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</figure>
+</div>
+</div>
 </section>
 </section>
 

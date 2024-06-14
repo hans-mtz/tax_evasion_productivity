@@ -257,6 +257,45 @@ Log of Types of Expenses Share of Total Expenses by Industry. Triple diff-in-dif
 
 :::
 
+### Parallel Trends
+
+::: {#fig-reg-exp-inds layout-ncol="1"}
+```{r}
+#| fig-label: Parallel trends
+#| echo: false
+#| warning: false
+#| error: false
+#| output: true
+
+lapply(
+    names(did_3_inds),
+    function(x) {
+        # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
+        coefplot(
+            did_3_inds[x][[1]],
+            # x = NULL,#rep(c(-2,-1,1:8), each=4),
+            # horiz=TRUE,
+            # keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+            keep="%^year\\d{2}:treatNon-Corp:sic_\\d{4}",
+            main = paste0(
+                    str_sub(
+                        paste0(
+                            top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                        ),
+                        1,25
+                    ),
+                    "-"
+                )
+        )
+        legend("topright", col=1:4,lwd=2,legend=c("share","m+serv","m+ded","m"))
+        # dev.off()
+    }
+)
+
+```
+
+:::
+
 ## Empirical Appendix {.appendix}
 
 ### Changes in Sales Tax
