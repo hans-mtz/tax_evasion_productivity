@@ -64,7 +64,7 @@ $$
 \end{aligned}
 $$ {#eq-ob-ev}
 
-By assumption \ref{ass-ind}, the tax evasion, $\varepsilon_{it}$ ,is independent of $e_{it}$. Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$ the distribution of $\varepsilon$. Tax evasion therefore can be recovered up to an independent random variable by using deconvolution methods.
+Tax evasion therefore can be recovered up to an independent random variable. We can do better however. By assumption \ref{ass-ind}, the tax evasion, $\varepsilon_{it}$ ,is independent of $e_{it}$. Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$ the distribution of $\varepsilon$. By using deconvolution methods, I can recover the tax evasion apart from the output shock.
 
 In particular, from probability theory,
 
@@ -82,7 +82,7 @@ where $f$ is the density of $\mathcal Z$ (Meister, 2009)
 
 ### Identifying Productivity
 
-Here I show how to recover the rest of the parameters of the production function, including productivity, and the Markov process of productivity. We can do it in several ways, depending on our object of interest.
+Here, I show how to recover the rest of the parameters of the production function, including productivity and its Markov process. We can do it in several ways, depending on our object of interest.
 
 In the literature, it is not uncommon to assume that productivity follows a Markov process. That is, 
 
@@ -90,36 +90,53 @@ $$
     \omega_{it}=h(\omega_{it-1})+\eta_{it}
 $$ {#eq-prod-markov}
 
-Let $\ln X_{it}=x_{it}$. For a guess of $\alpha=(\alpha_K,\alpha_L)$, we can form the following observed variable,
+Let $\ln X_{it}=x_{it}$. With @eq-ob-ev, we can form the following observed variable,
 
 $$
 \begin{aligned}
-    \mathcal W_{it}(\alpha) & \equiv y_{it} - \beta (m^*_{it}+e_{it})-\alpha_K k_{it}-\alpha_L l_{it}+\beta\mathcal{V}_{it}\\
-    & = \omega_{it}(\alpha)+(1-\beta)\varepsilon_{it}
+    \mathcal W_{it} & \equiv y_{it} - \beta (m_{it}-\mathcal{V}_{it})\\
+    & = y_{it} - \beta (m^*_{it}+e_{it}-\mathcal{V}_{it})\\
+    & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+$$ {#eq-big-w}
+
+Here, intuitively, we are trading unobservables, the unobserved tax evasion for the output shock, just to make our lives easier. We could have use use directly $m^*$ since we know the distribution of tax evasion $e$, which is equivalent to the distribution of $f_{m^*|m}(m^*|m)$.
+
+By replacing $\omega_{it}$ from @eq-big-w in @eq-prod-markov, we get
+
+$$
+\begin{aligned}
+    \mathcal W_{it}=(1-\beta)\varepsilon_{it}+\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})+\eta_{it}
+\end{aligned}
+$$ {#eq-big-w-reg}
+
+To learn $\alpha$ and $h$, we can use the orthogonality we get from @eq-prod-markov.
+$$
+\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0.
+$$ {#eq-eta-moments}
+
+Orthoganility follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it},l_{it}$) being predetermined.
+
+To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$,
+
+$$
+\begin{aligned}    
+ \mathbb{E}[&\mathcal{W}_{it}|Z_{it}]\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}_{\varepsilon_{t-1}}\left[\mathbb{E}[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it},\varepsilon_{t-1}]|Z_{it}\right]\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}\left[\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\varepsilon_{it-1}|Z_{it}\right]\\
+&=\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})
 \end{aligned}
 $$
 
-If we are interested only in productivity, we could use deconvolution to learn $\alpha$ and the distribution of productivity.
+The first line follows from the orthogonality of the output shock $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$ and the law of iterated expectations. The second line follows from the definition of expectation and the independence of the output shock of the previous period. The third line follows from the interchangeability of integrals. Thus, $\alpha$ and $h$ are identified.
 
-Alternatively, if we are interested in also identifying the Markov process of productivity, we can use the orthogonality we get from @eq-prod-markov, 
-
-$$
-\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0.
-$$
-
-Orthoganility follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it-1},l_{it-1}$) being predetermined.
-
-Namely, substituting $\omega_{it}$ in @eq-prod-markov, we have
-
-$$
- \mathbb{E}[\mathcal{W}_{it}(\alpha)|k_{it},l_{it},,k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=h(\mathcal{W}_{it-1}(\alpha))
-$$
-
-Thus, $\alpha$ and $h$ are identified.
+Also note that is it not necessary to learn tax evasion to recover productivity. This is useful if a practicioner is only interested in productivity and not on tax evasion.
 
 ### Translog Production Function
 
-To relax the assumption of a CD production function, we would need a flexible input that firms do not overreport to identify tax evasion. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs. 
+To identify tax evasion and relaxing the assumption of a CD production function, we would need a flexible input for which firms have no inventives to overreport. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs. 
 
 Assume now that $L_{it}$ is a non-deductible flexible input and, without loss of generality, there are only two inputs ($L_{it}, M_{it}$). Let's assume the production function is now *translog*. We have, 
 
@@ -127,40 +144,58 @@ $$
  \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
 $$ 
 
-Then, equation @eq-foc-cd becomes
+Then, equation @eq-foc:non-deduct becomes
 
 $$
 \begin{aligned}
-    s_{it}^{L}&=\ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
+    s_{it}^{L}&=\ln \left(\beta_3+2\beta_4l_{it}+\beta_1(m^*_{it}+e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
     &\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}+e_{it})- \varepsilon_{it} 
 \end{aligned}
-$$
+$$ {#eq-translog-share}
 
-where $s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)$.
+where $s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)$. 
 
-Note that by assumption \ref{ass-non-ev}, $D^{\mathcal{E}}$ and the density of $\varepsilon$ are still identified. To recover tax evasion, we can form the analog of @eq-ob-ev,
+Note that by assumption \ref{ass-non-ev}, $D^{\mathcal{E}}$ and the density of $\varepsilon$ are still identified. 
+
+#### Testing for Tax Evasion
+
+We can design a test for tax evasion by forming the analog of @eq-ob-ev,
 
 $$
 \begin{aligned}
-\mathcal{V}_{it}^{TL} =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
-    =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*+e)\\
-    &+\left[\ln D^{\mathcal{E}}(l,m^*)\right]\\
-    &-\left[\ln D^{\mathcal{E}}(l,m^*)\right] \\
-    =&\ln\left(\frac{\rho L}{PY}\right)-\ln D^{\mathcal{E}}(l,m^*) \\
-    &-\left[\ln D^{\mathcal{E}}(l,m^*+e)-\ln D^{\mathcal{E}}(l,m^*)\right]\\
-    =& -\varepsilon(l,m^*) - \delta(l,m^*,m^*+e)
+\mathcal{V}_{it}^{L} =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*+e_{it})-s_{it}^L\\
+    =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*+e_{it})-\ln D^{\mathcal{E}}(l_{it},m_{it}^*)+\varepsilon_{it}\\
+    =&\ln\left(\frac{D^{\mathcal{E}}(l_{it},m_{it}^*+e_{it})}{D^{\mathcal{E}}(l_{it},m_{it}^*)}\right)+\varepsilon_{it}\\
 \end{aligned}
 $$
 
-where in the case of the translog production function, $\delta(l,m^*,m^*+e)\equiv \ln \left(\beta_0+\beta_1l_{it}+\beta_2(m^*_{it}+e_{it})\right)-\ln \left(\beta_0+\beta_1l_{it}+\beta_2m^*_{it}\right)$. 
 
-Note that $\delta$ is always positive, $\delta(l,m^*,m^*+e)\ge0$, because $e_{it}\ge0$.
+Note that $\ln\left(\frac{D^{\mathcal{E}}(l,m^*+e)}{D^{\mathcal{E}}(l,m^*)}\right)\ge0$ is always positive because $e_{it}\ge0$ and $D^{\mathcal{E}}$ is strictly increasing in $m$. Thus, $\frac{D^{\mathcal{E}}(l,m^*+e)}{D^{\mathcal{E}}(l,m^*)}\ge1$.
 
-Because firms cannot use $l$ to deduct taxes, $l$ is orthogonal to $e$. Hence, conditional on $m^*$, $\varepsilon(l,m^*)$ and $\delta(l,m^*,m^*+e)$ are independent. Thus, we can apply deconvolution techniques again.
+#### Identifying Tax Evasion
 
-### Non-Parametric Identification
+Once we recovered the parameters of @eq-translog-share, we can invert it to solve for the true inputs $m^*$ as a function of observed data and the output. Then, the difference between the observed and true inputs is by definition the tax evasion by overreporting.
 
-The previous result also suggests a non-parametric identification strategy, as long as $\delta(l,m^*,m^*+e)$ is monotonic in its $m^*+e$ argument. This identification strategy is analogous to @Hu2022b, where the authors also require monotonicity and independence to recover a nonparametric function of $m^*$ with nonclassical measurement error. In our case, intuitively, if we know the density of $\varepsilon$ and the function $D^{\mathcal{E}}$, the variation left is due to $e$, which can be recovered as long as we can vary $\delta$ by moving $e$.
+$$
+\begin{aligned}
+    m_{it}-&D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
+    &= m_{it}^*+e_{it} -D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
+    &= m_{it}^*+e_{it} -D^{-1}(D(l_{it},m_{it}^*),l_{it})\\
+    &=e_{it}
+\end{aligned}
+$$
+
+Again, having recovered the distribution of the output shock $f_{\varepsilon}(\varepsilon)$, we can use deconvolution techniques to learn the distribution of $e$. In particular, to learn the p.d.f of tax evasion $f_e(e)$, we can deconvolute it by
+
+$$
+    \int f_e(m_{it}-D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})) f_{\varepsilon}(\varepsilon)d\varepsilon
+$$
+
+### Non-Parametric Identification of Tax Evasion
+
+The previous result also suggests a non-parametric identification strategy, as long as $D^{\mathcal{E}}$ is monotonic in $m$. This identification strategy is analogous to @Hu2022b, where the authors also require monotonicity and independence to recover a nonparametric function of $m^*$ with nonclassical measurement error. 
+
+In our case, intuitively, if we know the density of $\varepsilon$ and the function $D^{\mathcal{E}}$, the variation left is due to $e$, which can be recovered as long as we can vary $D^{\mathcal{E}}$ by moving $e$.
 
 To see why the non-deductible flexible input is needed to identify tax evasion consider the following. Suppose that only the input $M$ is flexible and deductible.
 

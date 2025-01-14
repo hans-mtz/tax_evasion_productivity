@@ -4,19 +4,18 @@ We are interested in the distribution of tax evasion $e$ but it cannot be observ
 $\mathcal{V}$ [@eq-ob-ev]. Evasion $e$ and the output shock $\varepsilon$ are independent [\ref{ass-ind}] with probability density distributions $f_e$ and $f_{\varepsilon}$. Then, from @def-conv
 
 $$
-f_{\mathcal{V}}(\mathcal{V})=\int f_{\varepsilon}(e-\mathcal{V})f_e(e)\text{d}e
+f_{\mathcal{V}}(\mathcal{V})=\int f_e(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\text{d}\varepsilon
 $$
 
 where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$. 
 
 ### Parametric MLE
 
-
-Assume a functional form for $f_{\varepsilon}(\cdot;\gamma)$ that depends on known parameters $\gamma$. Assume a known functional form for the density $f_e(\cdot;\lambda)$ that depends on unknown parameters $\lambda$. We can estimate parameters $\gamma, \lambda$ by
+Assume a functional form for $f_{\varepsilon}(\cdot;\gamma)$ that depends on known parameters $\gamma$. Assume a known functional form for the density $f_e(\cdot;\lambda)$ that depends on unknown parameters $\lambda$. We can estimate parameters $\lambda$ by
 
 $$
-\arg \max_{\gamma,\lambda}=\frac{1}{n}\sum_{i=1}^n \log \left(\int f_{\varepsilon}(e-\mathcal{V};\gamma)f_e(e;\lambda)\text{d}e\right)
-$$
+\hat \lambda = \arg \max_{\lambda}\sum_{i=1}^n \log \left(\int f_e(\mathcal{V}+\varepsilon;\lambda)f_{\varepsilon}(\varepsilon;\gamma)\text{d}\varepsilon\right)
+$$ {#eq-mle}
 
 Properties of MLE with unobserved scalar heterogeneity have been derived elsewhere before [@Chen2007; @Yi2021].
 
@@ -80,6 +79,28 @@ $$
 The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}$.
 
 ### Fortran GNR
+
+```{r}
+#| label: tbl-CD-Stata-Fortran
+#| tbl-cap: Cobb-Douglas production function parameters estimates using GNR Stata data and estimator vs. the Fortran GNR estimator.
+
+# load("../Code/Products/deconv_prod_fun.RData")
+load("../Code/Products/Fortran_CD_GNR.RData")
+
+left_join(Stata_results,CD_fortran_tbl[,c(1,3,2,4)], by=c("INDS"="inds")) %>%
+  kbl(
+    col.names = c("Industry", "m","k","l","m","k","l"),
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  add_header_above(
+      c(" "=1,"Stata GNR"=3, "Fortran GNR"=3)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
 
 ```{r}
 #| label: tbl-fortran-gnr

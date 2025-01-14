@@ -27,14 +27,16 @@ labels <- c(
     'unskilled_wage_bill_share' = 'Unskilled Labor (Wages)',
     'share_sales_tax' = 'Sales Taxes',
     'intermediates_share' = 'Intermediates',
-    'mats_serv_share' = 'Materials + Services',
+    # 'mats_serv_share' = 'Materials + Services',
     'mats_deduct_share' = 'Materials + Deductibles',
     'materials_share' = 'Materials',
+    'energy_share' = 'Energy',
     'capital_share' = 'Capital',
     'total_expenses_share' = 'Total Expenditure',
     'services_exp_share' = 'Services',
     'industrial_exp_share' = 'Industrial',
-    'deductible_exp_share' = 'Deductible'
+    'deductible_exp_share' = 'Deductible',
+    'energy_nondeductibles_share' = 'Energy + Non-Deductibles'
 )
 
 tbl_data<-colombia_data_frame %>%
@@ -53,15 +55,17 @@ tbl_data<-colombia_data_frame %>%
         sic_3 = factor(sic_3),
         metro_area_code = factor(metro_area_code),
         JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership")),
-        intermediates_share = intermediate_inputs/sales,
-        mats_serv_share = mats_serv/sales,
-        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
-        materials_share = materials/sales,
-        capital_share = capital/sales,
-        total_expenses_share = total_expenditure/sales,
-        services_exp_share = services/total_expenditure,
-        industrial_exp_share = industrial_expenditure/total_expenditure,
-        deductible_exp_share = deductible_expenses/total_expenditure,
+        # intermediates_share = intermediate_inputs/sales,
+        # # mats_serv_share = mats_serv/sales,
+        # mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        # energy_nondeductibles_share = rowSums(cbind(consumed_energy/1000,non_deductible_expenses), na.rm = TRUE)/sales,
+        # materials_share = materials/sales,
+        # energy_share = consumed_energy/(sales*1000),
+        # capital_share = capital/sales,
+        # total_expenses_share = total_expenditure/sales,
+        # services_exp_share = services/total_expenditure,
+        # industrial_exp_share = industrial_expenditure/total_expenditure,
+        # deductible_exp_share = deductible_expenses/total_expenditure
     ) %>%
     select(
         # capital,
@@ -104,16 +108,16 @@ datasummary_skim(
     group_tt(
         i = list(
             "Share of Revenues" = 1,
-            "Share of Total Expenditure" = 10
+            "Share of Total Expenditure" = 11
         )
     ) |>
     style_tt(
-        i = c(1,11,15),
+        i = c(1,12,16),
         bold = TRUE,
         line = "b"
     ) |>
     style_tt(
-        i = 12,
+        i = 13,
         line = "b",
         line_color = "white"
     )
@@ -131,21 +135,20 @@ Looking into industry sectors.
 #| echo: false
 #| warning: false
 
-top_20_inds %>%
-    select(
-        # !Change:Perry,
-        description, sic_3, market_share, n_sic, n_perc, corps_n, corps_share, 
-    ) %>%
+top_20_inds_table[1:20,] %>%
+    # select(
+    #     # !Change:Perry,
+    #     description, sic_3, market_share, n_sic, n_perc, corps_n, corps_share, 
+    # ) %>%
     kbl(
-        digits = 2,
+        digits = 1,
         col.names = c(
             "Industry",
             "SIC",
-            "Market Share",
             "N",
-            "N (%)",
             "Corps. (N)",
-            "Corps. (%)"
+            "Corps. (%)",
+            "Market Share (Corps.)"
             ),
         table.attr = 'data-quarto-disable-processing="true"'
     ) %>%
@@ -277,7 +280,7 @@ top_20_inds %>%
     ) |>
     tt() |>
     plot_tt(j=6, fun = f, data = split_plot_data, height = 4) |>
-    style_tt(j=6, align = "c", width = 20) |>
+    style_tt(j=6, align = "c") |> #, width = 20
     format_tt() |>
     style_tt(
         j=1:6,

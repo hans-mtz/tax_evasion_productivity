@@ -84,7 +84,8 @@ did_3_inds <- lapply(
     mutate(
         juridical_organization = factor(juridical_organization),
         metro_area_code = factor(metro_area_code),
-        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        # mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        # energy_non_deduct_share = energy_nondeductibles_share,
         JO_class = factor(
             JO_class, 
             levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
@@ -103,7 +104,7 @@ did_3_inds <- lapply(
         sic_3 = relevel(factor(sic_3), ref="311"),
         treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
     ) %>%
-    feols( sw(log_share,log(mats_serv/sales),log(mats_deduct_share),log(materials/sales))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+    feols( sw(log_share, log(mats_deduct_share), log(materials/sales)) ~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
         | plant+year,
         data = ., cluster=~year#~plant+year
     )
@@ -111,13 +112,14 @@ did_3_inds <- lapply(
 
 names(did_3_inds)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
 
+invisible(
 for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
     etable(
         did_3_inds[[x]],
         keep = c(
             # "%^share",
-            "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
-            # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+"#,
             # "%^treatNon-Corp$"
         ),
         headers = list(
@@ -139,7 +141,7 @@ for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
         div.class = "table"
     ) |> print()
 }
-
+)
 
 ```
 
@@ -191,9 +193,9 @@ did_3_inds_exp <- lapply(
         sic_3 %in% c(x,311)#c(x,311,312) #
     ) %>%
     mutate(
-        services_exp_share = services/total_expenditure,
-        industrial_exp_share = industrial_expenditure/total_expenditure,
-        deductible_exp_share = deductible_expenses/total_expenditure,
+        # services_exp_share = services/total_expenditure,
+        # industrial_exp_share = industrial_expenditure/total_expenditure,
+        # deductible_exp_share = deductible_expenses/total_expenditure,
         juridical_organization = factor(juridical_organization),
         metro_area_code = factor(metro_area_code),
         JO_class = factor(
@@ -214,7 +216,7 @@ did_3_inds_exp <- lapply(
         sic_3 = relevel(factor(sic_3), ref="311"),
         treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
     ) %>%
-    feols( sw(log(services_exp_share), log(industrial_exp_share), log(deductible_exp_share))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+    feols( sw(log(services_exp_share), log(industrial_exp_share), log(deductible_exp_share))~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
         | plant+year,
         data = ., cluster=~year#~plant+year
     )
@@ -225,14 +227,16 @@ for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
         did_3_inds_exp[[x]],
         keep = c(
             # "%^share",
-            "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
-            # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            # "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
+            "%^year8(4|5|6):treatNon-Corp:treat_3\\w+_\\w+"
+            # "%^year\\d{2}:treatNon-Corp:treat.*",
             # "%^treatNon-Corp$"
         ),
         headers = list(
             Industry=paste0(
                 str_sub(
                     paste0(
+                        x,"–",
                         top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
                     ),
                     1,30
@@ -267,30 +271,49 @@ Log of Types of Expenses Share of Total Expenses by Industry. Triple diff-in-dif
 #| error: false
 #| output: true
 
-lapply(
-    names(did_3_inds),
-    function(x) {
-        # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
-        coefplot(
-            did_3_inds[x][[1]],
-            # x = NULL,#rep(c(-2,-1,1:8), each=4),
-            # horiz=TRUE,
-            # keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
-            keep="%^year\\d{2}:treatNon-Corp:sic_\\d{4}",
-            main = paste0(
-                    str_sub(
-                        paste0(
-                            top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
-                        ),
-                        1,25
+for( x in names(did_3_inds)){
+    # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
+    pos_83<- did_3_inds[[x]] |> 
+                coef() |> names()|> 
+                grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE) |> 
+                grep("^year82:treatNon-Corp:treat.*",x=_) 
+    coefplot(
+        did_3_inds[[x]],
+        # x = NULL,#rep(c(-2,-1,1:8), each=4),
+        # horiz=TRUE,
+        # keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+        keep = "^\\d{2}",
+        # keep="%^year\\d{2}:treatNon-Corp:sic_\\d{4}",
+        main = paste0(
+                str_sub(
+                    paste0(
+                        x,"–",
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
                     ),
-                    "-"
-                )
-        )
-        legend("topright", col=1:4,lwd=2,legend=c("share","m+serv","m+ded","m"))
-        # dev.off()
-    }
-)
+                    1,25
+                ),
+                "-"
+            ),
+        dict = c(
+            "reset",
+            `year81:treatNon-Corp:treat_3tax_treat` = "81",
+            `year82:treatNon-Corp:treat_3tax_treat` = "82",
+            `year84:treatNon-Corp:treat_3tax_treat` = "84",
+            `year85:treatNon-Corp:treat_3tax_treat` = "85",
+            `year86:treatNon-Corp:treat_3tax_treat` = "86",
+            `year87:treatNon-Corp:treat_3tax_treat` = "87",
+            `year88:treatNon-Corp:treat_3tax_treat` = "88",
+            `year89:treatNon-Corp:treat_3tax_treat` = "89",
+            `year90:treatNon-Corp:treat_3tax_treat` = "90",
+            `year91:treatNon-Corp:treat_3tax_treat` = "91"
+        ),
+        grid = FALSE,
+        ref = list(`83`=pos_83+1),
+        ref.line = TRUE
+    )
+    legend("topright", col=1:4,lwd=2,legend=c("inter","mats+ded","mats"))
+    # dev.off()
+}
 
 ```
 

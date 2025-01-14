@@ -1001,6 +1001,7 @@ lapply(
             Industry=paste0(
                 str_sub(
                     paste0(
+                        x,"-",
                         top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
                     ),
                     1,25
@@ -1019,11 +1020,16 @@ lapply(
     # names(did_3_inds),
     function(x) {
         # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
+        # x_ax <- did_3_inds[x][[1]] |> coef() |> names()|> grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE)  |>sub(".*year([0-9]{2}).*", "\\1", x=_)
+        pos_83<-did_3_inds[3][[1]] |> coef() |> names()|> grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE)  |> grep("^year82:treatNon-Corp:treat.*",x=_) 
+
         coefplot(
-            did_3_inds[x][[1]],
+            did_3_inds[[x]],
             # x = NULL,#rep(c(-2,-1,1:8), each=4),
             # horiz=TRUE,
-            keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+            # keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+            keep = "^\\d{2}",
+            # keep = "%^year\\d{2}:treatNon-Corp:sic_\\d{4}",
             main = paste0(
                     str_sub(
                         paste0(
@@ -1032,28 +1038,76 @@ lapply(
                         1,25
                     ),
                     "-"
-                )
+                ),
+            dict = c(
+                "reset",
+                `year81:treatNon-Corp:treat_3tax_treat` = "81",
+                `year82:treatNon-Corp:treat_3tax_treat` = "82",
+                `year84:treatNon-Corp:treat_3tax_treat` = "84",
+                `year85:treatNon-Corp:treat_3tax_treat` = "85",
+                `year86:treatNon-Corp:treat_3tax_treat` = "86",
+                `year87:treatNon-Corp:treat_3tax_treat` = "87",
+                `year88:treatNon-Corp:treat_3tax_treat` = "88",
+                `year89:treatNon-Corp:treat_3tax_treat` = "89",
+                `year90:treatNon-Corp:treat_3tax_treat` = "90",
+                `year91:treatNon-Corp:treat_3tax_treat` = "91"
+            ),
+            grid = FALSE,
+            ref = list(`83`=pos_83),
+            ref.line = TRUE
+            # x = x_ax
         )
         legend("topright", col=1:4,lwd=2,legend=c("share","m+serv","m+ded","m"))
         # dev.off()
     }
 )
-# ,
-#         headers = list(
-#             Industry=paste0(
-#                 str_sub(
-#                     paste0(
-#                         top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
-#                     ),
-#                     1,25
-#                 ),
-#                 "-"
-#             ),
-#             # Industry=x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
-#             `Tax Change`=paste0(top_20_inds[top_20_inds$sic_3==x,'Change'][[1]])
-#         )
-#     )
-# )
+
+for( x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]){
+    # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
+    # x_ax <- did_3_inds[x][[1]] |> coef() |> names()|> grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE)  |>sub(".*year([0-9]{2}).*", "\\1", x=_)
+    pos_83<-did_3_inds[3][[1]] |> coef() |> names()|> grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE)  |> grep("^year82:treatNon-Corp:treat.*",x=_) 
+
+    coefplot(
+        did_3_inds[[x]],
+        # x = NULL,#rep(c(-2,-1,1:8), each=4),
+        # horiz=TRUE,
+        # keep = "%^year\\d{2}:treatNon-Corp:treat_3\\w+_\\w+",
+        keep = "^\\d{2}",
+        # keep = "%^year\\d{2}:treatNon-Corp:sic_\\d{4}",
+        main = paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,25
+                ),
+                "-"
+            ),
+        dict = c(
+            "reset",
+            `year81:treatNon-Corp:treat_3tax_treat` = "81",
+            `year82:treatNon-Corp:treat_3tax_treat` = "82",
+            `year84:treatNon-Corp:treat_3tax_treat` = "84",
+            `year85:treatNon-Corp:treat_3tax_treat` = "85",
+            `year86:treatNon-Corp:treat_3tax_treat` = "86",
+            `year87:treatNon-Corp:treat_3tax_treat` = "87",
+            `year88:treatNon-Corp:treat_3tax_treat` = "88",
+            `year89:treatNon-Corp:treat_3tax_treat` = "89",
+            `year90:treatNon-Corp:treat_3tax_treat` = "90",
+            `year91:treatNon-Corp:treat_3tax_treat` = "91"
+        ),
+        grid = FALSE,
+        ref = list(`83`=pos_83),
+        ref.line = TRUE
+        # x = x_ax
+    )
+    legend("topright", col=1:4,lwd=2,legend=c("share","m+serv","m+ded","m"))
+    # dev.off()
+}
+
+did_3_inds[1][[1]] |> coef() |> names()|> grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE)  |> sub(".*year([0-9]{2}).*", "\\1", x=_) 
+did_3_inds[3][[1]] |> coef() |> names()|> grep("^(?!.*(id|lhs)).*",x=_, value=TRUE, perl=TRUE)  |> grep("^year82:treatNon-Corp:treat.*",x=_) 
+
 ## Some do not look bad, others do
 
 for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:10]) etable(did_3_inds[x]) |> print()

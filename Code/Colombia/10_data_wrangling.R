@@ -32,16 +32,16 @@ cdf <- col_df %>%
         p_energy_purchased = ifelse(e1 == 0, NA, e5 / e1),
         p_energy_sold = ifelse(e3 == 0, NA, e6 / e3),
         p_energy = ifelse(
-            sum(e1, e3, na.rm = TRUE) == 0,
+            rowSums(cbind(e1, e3), na.rm = TRUE) == 0,
             NA,
-            sum(e5, e6, na.rm = TRUE) / sum(e1, e3, na.rm = TRUE)
+            rowSums(cbind(e5, e6), na.rm = TRUE) / rowSums(cbind(e1, e3), na.rm = TRUE)
         )
     ) %>%
     ungroup() %>%
     # Changing from GNR p_energy=e7/e4, because e4 = e1+e2-e3, and e7=e5-e6
     group_by(datayear) %>%
     change_base_81(
-        c(p_machin, p_struc, p_transp, p_gdp, p_energy)
+        c(p_machin, p_struc, p_transp, p_gdp, p_energy, p_energy_purchased)
     ) %>%
     ungroup() %>%
     mutate(
@@ -61,11 +61,11 @@ cdf <- col_df %>%
         labor_employees = sklab * (skwages / sklab) / (unskwages / unsklab) + unsklab,
         labor_employee_years = labor_employees * x7 / 12,
         real_wages = rowSums(cbind(skwages,unskwages), na.rm = TRUE) / p_gdp_new,
-        real_energy = e7 / p_energy_new,
-        consumed_energy = e4 * p_energy_new,
-        generated_energy = e2 * p_energy_new,
-        purchased_energy = e5 / p_energy_new,
-        sold_energy = e6 / p_energy_new,
+        real_energy = e7 / p_energy_purchased_new,
+        consumed_energy = e4 * p_energy_purchased_new,
+        generated_energy = e2 * p_energy_purchased_new,
+        purchased_energy = e5 / p_energy_purchased_new,
+        sold_energy = e6 / p_energy_purchased_new,
         real_materials = s10 / p_gdp_new,
         # rserv is general expenses - machinery rental - interest payments; c17-c10-c14
         real_services = rserv * p_gdp / p_gdp_new,
@@ -168,8 +168,9 @@ cdf <- col_df %>%
         unskilled_labor = unsklab,
         skilled_wage_bill_share,
         unskilled_wage_bill_share,
-        p_energy_new,
+        p_energy_purchased_new,
         p_energy_sold,
+        p_energy_new,
         p_energy_purchased
     )
 
@@ -184,6 +185,7 @@ cdf <- col_df %>%
 # Using tidyverse
 colombia_data_frame <- cdf %>%
     group_by(plant) %>%
+    arrange(year) %>%
     mutate(
         lag_gross_output = lag(gross_output, 1, order_by = year),
         lag_sales = lag(sales, 1, order_by = year),
@@ -198,11 +200,23 @@ colombia_data_frame <- cdf %>%
         k = log(capital),
         l = log(labor_employee_years),
         m = log(intermediate_inputs),
-        lag_k = log(lag_K),
-        lag_m = log(lag_M),
+        lag_k = lag(k, order_by = year),
+        lag_m = lag(m, order_by = year),
         lag_l = lag(l, order_by = year),
         log_sales = log(sales),
-        lag_log_sales = log(lag_sales),
+        lag_log_sales = lag(log_sales, order_by = year),
+        intermediates_share = intermediate_inputs/sales,
+        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        energy_nondeductibles_share = rowSums(cbind(consumed_energy/1000,non_deductible_expenses), na.rm = TRUE)/sales,
+        materials_share = materials/sales,
+        energy_share = consumed_energy/(sales*1000),
+        capital_share = capital/sales,
+        total_expenses_share = total_expenditure/sales,
+        services_exp_share = services/total_expenditure,
+        industrial_exp_share = industrial_expenditure/total_expenditure,
+        deductible_exp_share = deductible_expenses/total_expenditure,
+        log_ded_share = log(mats_deduct_share),
+        log_mats_share = log(materials_share)
         # log_gen_ex = log(general_expenditure),
         # lag_log_gen_exp = log(lag_gen_exp),
         # # lag_log_consumption_tax = log(lag_consumption_tax),
@@ -228,7 +242,30 @@ colombia_data_frame <- cdf %>%
 #     na.rm = TRUE
 # )
 
-## 
-## Saving data ---------------------------------
+# Adding JO Classes ---------------
+
+## JO Classes ------------
+jo_class <- tibble(
+    JO_code = 0:9,
+    JO_class = c(
+        "Proprietorship",
+        "Ltd. Co.",
+        "Partnership",
+        "Corporation",
+        "Partnership",
+        "Partnership",
+        "Corporation",
+        # "Stock Co. (Corp.)",
+        "Other",
+        "Other",
+        "Other"
+    )
+)
+
+colombia_data_frame <- colombia_data_frame %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code))
+
+# Saving data ---------------------------------
 print("Saving Colombia DF")
-save(colombia_data_frame, file = "Code/Products/colombia_data.RData")
+save(colombia_data_frame, jo_class, file = "Code/Products/colombia_data.RData")

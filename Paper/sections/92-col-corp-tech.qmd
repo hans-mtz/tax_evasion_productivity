@@ -150,7 +150,7 @@ colombia_data_frame %>%
 #| results: asis
 
 colombia_data_frame %>%
-    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    # left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
     ungroup() %>%  
     filter(
         sales>0,
@@ -310,11 +310,16 @@ In the data, energy sold by corporations accounted on average for 73% of the tot
 
 colombia_data_frame %>% 
     # left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    filter(!is.na(JO_class)) %>%
     ungroup() %>%
     mutate(
         # sold_energy = purchased_energy+generated_energy-consumed_energy
         total_energy_sold = sum(sold_energy, na.rm=TRUE),
-        total_energy_purchased = sum(purchased_energy, na.rm = TRUE)
+        total_energy_purchased = sum(purchased_energy, na.rm = TRUE),
+        # JO_class = factor(
+        #     JO_class, 
+        #     levels = c("Proprietorship","Partnership","Ltd. Co.","Corporation","Other")
+        #     ),
     ) %>%
     group_by(JO_class) %>% 
     summarise(
@@ -327,7 +332,6 @@ colombia_data_frame %>%
         percent_energy_purchased_JO = sum(sold_energy/total_energy_purchased, na.rm = TRUE)*100,
         generated_energy_perc = mean(generated_energy/consumed_energy, na.rm=TRUE)*100
     ) %>%
-    filter(is.na(JO_class)==FALSE) %>%
     kbl(
         # format = "html",
         digits = 1,
@@ -340,8 +344,8 @@ colombia_data_frame %>%
             'Generated Energy (% of Consumed Energy)'
         )
     )%>%
-    kable_classic(full_width=F, html_font = "Cambria") %>%
-    collapse_rows(1, valign="top", latex_hline = "major")
+    kable_classic(full_width=F, html_font = "Cambria") #%>%
+    # collapse_rows(1, valign="top", latex_hline = "major")
 
 ```
 
@@ -414,8 +418,8 @@ colombia_data_frame %>%
                 "Official Entity",
                 "Religious Comm.")
         ),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
+        # capital_share = capital/sales,
+        consumed_energy_share = energy_share,
         `Corp.` = ifelse(juridical_organization==3,"Corp","Other"),
         mats_serv_share = mats_serv/sales,
         labor_employee_years_share = labor_employee_years/sales
@@ -490,8 +494,8 @@ colombia_data_frame %>%
                 "Official Entity",
                 "Religious Community")
         ),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
+        # capital_share = capital/sales,
+        consumed_energy_share = energy_share,
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
         mats_serv_share = mats_serv/sales,
         labor_employee_years_share = labor_employee_years/sales,
@@ -582,8 +586,8 @@ colombia_data_frame %>%
                 "Official Entity",
                 "Religious Comm.")
         ),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
+        # capital_share = capital/sales,
+        consumed_energy_share = energy_share,
         `Corp.` = ifelse(juridical_organization==3,"Corp.","Other"),
         mats_serv_share = mats_serv/sales,
         labor_employee_years_share = labor_employee_years/sales
@@ -658,8 +662,8 @@ colombia_data_frame %>%
                 "Official Entity",
                 "Religious Community")
         ),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
+        # capital_share = capital/sales,
+        consumed_energy_share = energy_share,
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
         mats_serv_share = mats_serv/sales,
         labor_employee_years_share = labor_employee_years/sales,
@@ -751,10 +755,10 @@ colombia_data_frame %>%
                 "Religious Community")
         ),
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
+        # capital_share = capital/sales,
+        consumed_energy_share = energy_share,
         mats_serv_share = mats_serv/sales,
-        materials_share = materials/sales,
+        # materials_share = materials/sales,
         labor_employee_years_share = labor_employee_years/sales,
         gen_exp_share = general_expenditure/sales,
         inds_exp_share_exp = industrial_expenditure/total_expenditure,
@@ -794,7 +798,7 @@ Shares of Revenue for different inputs by Corporations and Non-Corporation.
 #| results: asis
 
 colombia_data_frame %>%
-    left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
+    # left_join(jo_class, by = join_by( juridical_organization == JO_code)) %>%
     ungroup() %>%
     filter(
         sales>0,
@@ -817,8 +821,8 @@ colombia_data_frame %>%
                 "Religious Community")
         ),
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
+        # capital_share = capital/sales,
+        consumed_energy_share = energy_share,
         mats_serv_share = mats_serv/sales,
         materials_share = materials/sales,
         labor_employee_years_share = labor_employee_years/sales,
@@ -828,7 +832,7 @@ colombia_data_frame %>%
         deductible_expenses_share_exp = deductible_expenses/total_expenditure,
         inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
         inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
-        total_expenses_share = total_expenditure/sales,
+        # total_expenses_share = total_expenditure/sales,
         serv_share_exp = services/total_expenditure,
         energy_serv_share = (consumed_energy+industrial_expenditure)/sales
     ) %>%
@@ -883,20 +887,20 @@ colombia_data_frame %>%
                 "Religious Community")
         ),
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
-        capital_share = capital/sales,
-        consumed_energy_share = consumed_energy/sales,
-        mats_serv_share = mats_serv/sales,
-        materials_share = materials/sales,
-        labor_employee_years_share = labor_employee_years/sales,
-        gen_exp_share = general_expenditure/sales,
+        # capital_share = capital/sales,
+        # consumed_energy_share = energy_share,
+        # mats_serv_share = mats_serv/sales,
+        # # materials_share = materials/sales,
+        # labor_employee_years_share = labor_employee_years/sales,
+        # gen_exp_share = general_expenditure/sales,
         inds_exp_share_exp = industrial_expenditure/total_expenditure,
-        non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
+        # non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
         deductible_expenses_share_exp = deductible_expenses/total_expenditure,
-        inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
-        inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
-        total_expenses_share = total_expenditure/sales,
+        # inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
+        # inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
+        # total_expenses_share = total_expenditure/sales,
         serv_share_exp = services/total_expenditure,
-        energy_serv_share = (consumed_energy+industrial_expenditure)/sales
+        # energy_serv_share = (consumed_energy+industrial_expenditure)/sales
     ) %>%
     feols(
         sw(

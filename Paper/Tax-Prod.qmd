@@ -151,32 +151,51 @@ setFixest_dict(c(
     `log(services_exp_share)` = "Services",
     `log(industrial_exp_share)` = "Industrial",
     `log(deductible_exp_share)` = "Deductibles"#,
+    # `year81:treatNon-Corp:treat_3tax_treat` = "81",
+    # `year82:treatNon-Corp:treat_3tax_treat` = "82",
+    # `year84:treatNon-Corp:treat_3tax_treat` = "84",
+    # `year85:treatNon-Corp:treat_3tax_treat` = "85",
+    # `year86:treatNon-Corp:treat_3tax_treat` = "86",
+    # `year87:treatNon-Corp:treat_3tax_treat` = "87",
+    # `year88:treatNon-Corp:treat_3tax_treat` = "88",
+    # `year89:treatNon-Corp:treat_3tax_treat` = "89",
+    # `year90:treatNon-Corp:treat_3tax_treat` = "90",
+    # `year91:treatNon-Corp:treat_3tax_treat` = "91"
     # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
     # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
 ))
 
 
-colombia_data_frame <- colombia_data_frame %>%
-    ungroup() %>%
-    left_join(jo_class, by = join_by( juridical_organization == JO_code))
+# colombia_data_frame <- colombia_data_frame %>%
+#     ungroup() %>%
+#     left_join(jo_class, by = join_by( juridical_organization == JO_code))
 
 ```
 
 
 ## Updates {-}
 
-- Diff in diff
-  - Relative prices
-  - Pre-trends
-- Deconvolution implementation strategy
-  - GNR implementation in Fortran
+- Tax Evasion and Productivity: Using PF to identify tax evasion through input overreporting
+  - CD
+    - Preliminary results of Tax Evasion: Moments, MLE (Normal and LogNormal)
+    - Preliminary results of PF parameters
+  - TransLog
+    - Identification strategy for tax evasion
 
-## To Do {-}
+- Leveraging Tax Policy change to identify changes in tax evasion
+  - Why? Relax common technology assumption
+  - Triple difference identification strategy (with CD)
 
-- Deconvolution implementation
-  1. CD GNR in Fortran
-  2. Implement deconvolution
-- Ecuador dataset
+## Next Steps {-}
+
+- Tax Evasion and Productivity
+  - CD Productivity results comparison
+  - CD with two flexible inputs (Deductibles & Non-Deductibles, Materials & Services + Energy)
+  - Translog results
+  - Non-parametric Deconvolution
+  - Non-parametric PF
+- DiD
+  - Relaxing parallel trends: Linear trends that in the absence of policy change would have continue
 
 
 
@@ -211,10 +230,14 @@ colombia_data_frame <- colombia_data_frame %>%
 {{< include sections/56-id-evasion.qmd >}}
 
 <!-- Revenue Misreporting *-->
-{{< include sections/110-revenue.qmd >}}
+<!-- {{< include sections/110-revenue.qmd >}} -->
 
 <!-- Implementation -->
 {{< include sections/120-implementation.qmd >}}
+
+<!-- Deconvolution Moments -->
+{{< include sections/200-deconv.qmd >}}
+
 
 ## References {.appendix}
 

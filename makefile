@@ -1,7 +1,8 @@
 # Usually, only these lines need changing
 QPAPFILE = Tax-Prod
 QSLIFILE = JMP-update
-RDIR = ./Code/Colombia
+# RDIR = ./Code/Colombia
+RDIR = ./Code/Deconvolution
 QPAPDIR = ./Paper
 QSLIDIR = ./Quarto-Slides
 
