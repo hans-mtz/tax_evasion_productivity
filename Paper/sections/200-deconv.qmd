@@ -8,28 +8,104 @@ I test for the presence of tax evasion for different classifications of intermed
 
 ```{r}
 #| label: tbl-evasion-test-CD
-#| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different classifications of flexible inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
+#| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
 
-load("../Code/Products/deconv.RData")
-test_tbl_CD[,-5] %>%
-  arrange(Industry) %>%
+inds_sales_tax <- tribble(
+    ~ sic_3, ~ Category,
+    311, "Exempt Product",
+    312, "Exempt Product",
+    382, "Exempt Product",
+    383, "Exempt Product",
+    384, "Exempt Product",
+    369, "Exempt Material",
+    323, "Exempt Material",
+    356, "Imported Material"
+)
+
+
+tax_ev_test_tbl %>%
+  # left_join(
+  #     top_20_inds
+  # ) %>%
+  left_join(
+      inds_sales_tax
+  ) %>%
+  arrange(desc(Category),sic_3) %>%
+  select(
+      # Category,
+      sic_3,
+      # description,
+      log_mats_share:log_repair_maint_share
+  ) %>%
   kbl(
+    col.names = c("SIC", "Materials", "Electricity", "Fuels", "R&M"),
     table.attr = 'data-quarto-disable-processing="true"'
     ) %>%
-    kable_classic(full_width=F, html_font = "Cambria")
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    # collapse_rows(columns = 1, latex_hline = "major") 
+    pack_rows(
+      index=c(
+        "Specialized Material"=1,
+        "Exempt Product"=5,
+        "Exempt Material"=2,
+        "Other Industries"= 12)
+    )
 
 ```
 
 
-@tbl-evasion-test-CD shows that the null hypothesis of no tax evasion is rejected at the 1% significance level for twelve of the top twenty manufacturing industries. The evice is stronger particularly for the materials and deductible expenses.
+@tbl-evasion-test-CD shows that the null hypothesis of no tax evasion is rejected at the 1% significance level for twelve of the top twenty manufacturing industries. 
 
-There is no evidence of tax evasion for industries 323 (Leather Products), 332 (Non-Metal Furniture), 384 (Transport Equipment), 369 (Non-Metallic Mineral Products), 383 (Electrical Machinery), 312 (Food Manufacturing, other than 311), and 382 (Non-Electrical Machinery), and 356 (Plastic Products).
+In particular, there is no evidence of tax evasion for most industries in which products or raw materials are exempt of sales taxes, such as 312 (Other Food Products), 382 (Non-Electrical Machinery), 384 (Transport Equipment), 323 (Leather Products), and 369 (Non-Metallic Mineral Products); there is also no evidence of materials overreporting for 356 (Plastic Products)industry, whose main raw materials are likely to be specialized and supplied by few local and international suppliers.
 
-Why? 
+Among the industries with exempted products, 311 (Food Products) and 383 (Electrical Machinery) there is evidence of tax evasion but as we'll see later the average overreporting is low compared to other industries. 
 
-Food products (311 & 312) are exempt industries, low incentives to evade. 312 no evidence; 311 small value. How does the VAT credit worked with exempt industries? Most like refund from government because they did not charged VAT.
+As expected, the evice is stronger particularly for the other industries that do not fall in the previous categories. Namely, there is evidence of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood Products except Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342 (Publishing);  351 (Industrial Chemicals) and 352 (Other Chemicals); 381 (Metal Products Except Machinery), and 390 (Other Manufacturing Industries). 
 
-Plastic products (356) mostly using raw materials (pellets) for manufacturing, few international sellers of raw materials (mainly importing raw material?)
+### Expenditure Swapping Tax Evasion
+
+Although we found evidence of evasion through raw materials overreporting, the previous table would suggest that other intermediate materials could have been underreported as indicated by the negative sign and the tight standard errors. 
+
+A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority's radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expeneses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.
+
+Firms reserving valid expenses is known in the literature. It has been documented elsewhere, in particular in tax evasion studies focusing on revenue underreporting, that when authorities challenged firms' records, firms came back increasing their sales but also their expenses resulting in a zero net gain in terms of tax revenue for authorities.
+
+
+```{r}
+#| label: tbl-evasion-test-CD-gnr
+#| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
+
+
+tax_ev_test_tbl_gnr %>%
+  # left_join(
+  #     top_20_inds
+  # ) %>%
+  left_join(
+      inds_sales_tax
+  ) %>%
+  arrange(desc(Category),sic_3) %>%
+  select(
+      # Category,
+      sic_3,
+      # description,
+      log_share:log_services_share
+  ) %>%
+  kbl(
+    col.names = c("SIC", "M+E+S", "Materials","Electricity", "Services"),
+    table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    # collapse_rows(columns = 1, latex_hline = "major") %>%
+    pack_rows(
+      index=c(
+        "Specialized Material"=1,
+        "Exempt Product"=5,
+        "Exempt Material"=2,
+        "Other Industries"= 12)
+    )
+
+```
+
 
 ### Deconvoluting Tax Evasion Using Moments
 
@@ -37,26 +113,45 @@ One simple way to start with the deconvulution is using moments. In particular, 
 
 Therefore, any moment of the tax evasion $e_{it}$ distribution $\forall t\in T$ can be estimated in theory.
 
-Namely, from @eq-ob-ev,
+Namely, from @eq-ob-ev, we can estimate the average tax evasion by
 $$
 \begin{aligned}
   \mathbb{E}[e_{it}|t]&=\mathbb{E}[\mathcal V_{it}|t]+\mathbb{E}[\varepsilon_{it}]\\
   &=\mathbb{E}[\mathcal V_{it}|t]+\mu_{\varepsilon}
-  \\
-  \mathbb{V}[e_{it}|t]&=\mathbb{V}[\mathcal V_{it}|t]-\mathbb{V}[\varepsilon_{it}]\\
-  &=\mathbb{V}[\mathcal V_{it}|t]-\sigma^2_{\varepsilon}
+  % \\
+  % \mathbb{V}[e_{it}|t]&=\mathbb{V}[\mathcal V_{it}|t]-\mathbb{V}[\varepsilon_{it}]\\
+  % &=\mathbb{V}[\mathcal V_{it}|t]-\sigma^2_{\varepsilon}
 \end{aligned}
 $$
 
-We learned the distribution $f_\varepsilon(\varepsilon)$ of $\varepsilon$ from the first stage.
+Note that we learned the distribution $f_\varepsilon(\varepsilon)$ of $\varepsilon$ from the first stage, so $\mu_{\varepsilon}$ and $\sigma_{\varepsilon}$ are known.
 
-@fig-deconv-mmt presents the results of the first and second moments of tax evasion for the top ten industries with the highest rates of cost overreporting for different measures of inputs. Intermediates include materials, deductible and non-deductible expenses. Deductibles include materials and deductible expenses, while materials only include raw materials.
+@tbl-tax-ev-deconv-moments displays the estimated average of the log fraction that firms increase their costs of raw materials to evade taxes by claiming a greater deductible amount of their owed sales taxes.
+
+```{r}
+#| label: tbl-tax-ev-deconv-moments
+#| tbl-cap: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in @eq-ob-ev.  LCI and UCI are the bias-corrected bootsrap confidence intervals at the 95\% significance level with 200 bootstrap replicates.
+
+load("../Code/Products/boot_tax_ev_mmt.RData")
+
+tax_ev_boot_tbl %>%
+  kbl(
+    col.names = c("SIC","$\\mathbb{E}[e_{it}]$", "LCI", "UCI"),
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+<!-- @fig-deconv-mmt presents the results of the first and second moments of tax evasion for the top ten industries with the highest rates of cost overreporting for different measures of inputs. Intermediates include materials, deductible and non-deductible expenses. Deductibles include materials and deductible expenses, while materials only include raw materials. -->
 
 ```{r}
 #| label: fig-deconv-mmt
 #| fig-cap: First and second moments of deconvoluting tax evasion from the output shock. The second moment is included in the form of the 95% confidence interval. The absolute value of the variance was used in estimating the confidence intervals because some variances were negative.
+#| eval: false
 
-# load("../Code/Products/deconv.RData")
+load("../Code/Products/deconv.RData")
 
 order_sic<-deconv_mmt_long%>%
     group_by(sic_3) %>%
@@ -76,19 +171,22 @@ deconv_mmt_long%>%
 
 ```
 
-Overall, deductible expenses and materials display a higher logmean cost overreporting than when looking at intermediate inputs. This implies that altough the logshare of intermediates might be closer or even lower than non-evading firms, evading firms report a higher share of deductible expenses. Depending on the industry, firms might overreport either materials or other deductible expenses to evade taxes.
+<!-- Overall, deductible expenses and materials display a higher logmean cost overreporting than when looking at intermediate inputs. This implies that altough the logshare of intermediates might be closer or even lower than non-evading firms, evading firms report a higher share of deductible expenses. Depending on the industry, firms might overreport either materials or other deductible expenses to evade taxes. -->
 
-Among the top ten tax evading industries, 331 (Wood Products), 351 (Industrial Chemicals), 321 (Textiles), 313 (Beverages), 342 (Publishing), 324 (Rubber/Plastic Footwear), and 322 (Wearing Apparel) display a log-average evasion $e$ equal or greater than 12%, which is non-trivial.
+The top five tax evading industries, 322 (Wearing Apparel), 342 (Publishing), 313 (Beverages), 351 (Industrial Chemicals), and 331 (Wood Products), display an average tax evasion $e$ greater than 12%, which is non-trivial.
 
-Some variances result negative when using moments. The absolute value of the variance was used to estimate the confidence intervals.
+Although deconvolution by moments is the simplest method, it displays the undesirable characteristic that estimate of variances frequently result with a negative sign. In the next section, I adress this problem by using parametric MLE. 
 
 ### Deconvoluting by Parametric MLE
 
-I use parametric MLE to obtain better estimates of the variances using equation @eq-mle. I assume that the error term $\varepsilon$ follows a normal distribution. For tax-evasion, I first use a normal distribution restricting variances to be positive and compare to the previous estimates using moments. The estimates are shown in @tbl-deconv-mle
+I use parametric MLE to obtain better estimates of the variances using equation @eq-mle. I assume that the error term $\varepsilon$ follows a normal distribution. 
 
+
+<!-- 
 ```{r}
 #| label: tbl-deconv-mle
 #| tbl-cap: Estimates of the first and second moments of the evasion distribution using a parametric MLE approach assuming a Normal distribution.
+#| eval: false
 
 load("../Code/Products/deconv_mle.RData")
 
@@ -104,13 +202,16 @@ sapply(
   kable_classic(full_width=F, html_font = "Cambria")
 
 
-```
+``` 
+-->
 
-In @tbl-deconv-mle, the means coincide with the previous estimates using moments, but now the variances are positive. The corresponding confindence intervals suggest that using the absolute value of the variances obtained using moments is not unreasonable and in fact they are good approximations.
+<!-- In @tbl-deconv-mle, the means coincide with the previous estimates using moments, but now the variances are positive. The corresponding confindence intervals suggest that using the absolute value of the variances obtained using moments is not unreasonable and in fact they are good approximations. -->
 
-Although these estimates seem reasonable, theory suggess that firms only have incentives to overreport costs, not to underreport them. Therefore, as explaines elsewhere, it might be expected that overreporting $e\ge0$ is non-negative. In addition, it might also be expectd that most firms overreport a similar amount and a few might overreport high proportions. Therefore, a lognormal distribution  might be more appropriate. 
+<!-- For tax-evasion, I first use a log-normal distribution restricting variances to be positive and compare to the previous estimates using moments. The estimates are shown in @tbl-deconv-mle -->
 
-@tbl-deconv-mle-lognormal displays the results of a parametric MLE using a lognormal distribution for the evasion random variable.
+For tax-evasion, theory suggests that firms only have incentives to overreport costs, not to underreport them. Therefore, as explained elsewhere, it might be expected that overreporting $e\ge0$ is non-negative. In addition, it might also be expected that most firms overreport a little and a few firms overreport greater amounts. Therefore, a lognormal or a truncated normal distribution might be more appropriate.
+
+<!-- @tbl-deconv-mle-lognormal displays the results of a parametric MLE using a lognormal distribution for the evasion random variable. -->
 
 By definition, if a random variable $U$ is lognormal distributed, then $log(U)\sim N(\mu, \sigma)$. Thus, we cannot directly compare the parameters of the lognormal distribution to our previous estimates. We can however, used the parameters to compute any moment of the log-nomarlly distributed variable $U$ by
 
@@ -118,9 +219,17 @@ $$
 E[U^n]=e^{n\mu+\frac{1}{2}n^2\sigma^2}
 $$
 
-In particular, the first moment $E[U]=e^{\mu+\frac{1}{2}\sigma^2}$, the variance $Var[U]=E[U^2]-E[U]^2=e^{2\mu+\sigma^2}(e^{\sigma^2}-1)$.
+In particular, the first moment and the variance are computed as follows,
 
-In addtion, we can compute the mode and the mean by
+$$
+\begin{aligned}  
+E[U]&=e^{\mu+\frac{1}{2}\sigma^2}\\
+Var[U]&=E[U^2]-E[U]^2=e^{2\mu+\sigma^2}(e^{\sigma^2}-1).
+\end{aligned}
+$$
+
+
+In addtion, the mode and the mean by
 
 $$
 \begin{aligned}
@@ -129,18 +238,24 @@ $$
 \end{aligned}
 $$
 
+<!-- 
+
 To compute the confidence intervals for the mean, one practical method to approximate them is the Cox method,
 
 $$
 CI(E[U]): e^{\left(\mu+\frac{1}{2}\sigma^2 \pm z_{1-\frac{\alpha}{2}}\sqrt{\frac{\sigma^2}{N}+\frac{\sigma^4}{2(N-1)}}\right)}
-$$
+$$ 
 
-@tbl-deconv-mle-lognormal displays the mean, variance, mode, median and the approximated 95% CI intervals for the mean using the Cox method.
+-->
 
 
+<!-- @tbl-deconv-mle displays the mean, variance, mode, median and the approximated 95% CI intervals for the mean using the Cox method. -->
+
+<!-- 
 ```{r}
 #| label: tbl-deconv-mle-lognormal
 #| tbl-cap: Estimates of the first and second moments of the evasion distribution using a parametric MLE approach assuming a Log-Normal distribution.
+#| eval: false
 
 sapply(
   names(lognorm_res_list),
@@ -154,57 +269,157 @@ sapply(
   kable_classic(full_width=F, html_font = "Cambria")
 
 ```
+ 
+ -->
+
+Likewise, the probability density function of random variable $U$ with a normal distribution with parameters $\tilde\mu$ and $\tilde\sigma$ and truncated from below at zero is
+
+$$
+  f(u\\;\tilde\mu,\tilde\sigma) = \frac{\varphi(\frac{u-\tilde\mu}{\tilde\sigma})}{\tilde\sigma (1-\Phi(\alpha))}
+$$
 
 
-Do these results make sense? The mean of the log-normal distribution is higher. However, when looking at the mode, the value is closer to the mean of the normal distribution. This can be explained by the fact that the log-normal distribution is restricted to positive values while the normal distribution is not. Were we to take the average of only the positive values the mean of the normal distribution would be higher and closer to the log-normal distribution. In addition, when looking at the plots of both distributions (@fig-density-plots), it is clear that both are pointing to a mass around the mode of the log-normal and the mean of the normal distribution. This is shown in @fig-density-plots for the intermediate inputs of the 322 Wearing Apparel industry.
+where 
+
+$$
+\varphi(\xi)=\frac{1}{2\pi}\exp(-\frac{1}{2}\xi^2)
+$$
+
+is the probability density function of the standard normal distribution, $\Phi(\centerdot)$ is its cumulative distribution function, and $\alpha=-\tilde\mu/\tilde\sigma$
+
+Then, the mean becomes
+
+$$
+E[U|U>0]=\tilde\mu+\tilde\sigma\frac{\varphi(\alpha)}{1-\Phi(\alpha)}
+$$
+
+and the variance, median, and mode become
+
+$$
+\begin{aligned}  
+Var[U|U>0]&=\sigma^2[1+\alpha\varphi(\alpha)/(1-\Phi(\alpha))-(\varphi(\alpha)/[1-\Phi(\alpha)])^2]\\
+\text{Median}[U|U>0]&=\tilde\mu+\Phi^{-1}\left(\frac{\Phi(\alpha)+1}{2}\right)\tilde\sigma \\ 
+\text{Mode}[U|U>0]&=\tilde\mu
+\end{aligned}
+$$
+
+
+
+@tbl-deconv-mle-both displays the estimates of the parameters for both the lognormal and truncated normal distributions using an MLE approach. Other moments of the densities are computed as explained previously and shown for reference.
+
+```{r}
+#| label: tbl-deconv-mle-both
+#| tbl-cap: Estimates of Deconvoluting Tax Evasion from the Output Shock in @eq-ob-ev by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. $\mu$ and $\sigma$ are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above.
+
+load("../Code/Products/boot_deconv_mle.RData")
+
+mle_deconv_tbl %>%
+  kable(
+    digits = 4,
+    col.names = c("SIC","Density","$\\mu$","$\\sigma$","Mean","SD","Mode","Median"),
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")%>%
+  collapse_rows(columns = 1, valign = "top")
+
+```
+
+@tbl-deconv-mle-boot shows the bias corrected bootstrap confidence intervals for the mean of each distribution by industry using 200 replicates. 
+
+
+```{r}
+#| label: tbl-deconv-mle-boot
+#| tbl-cap: Estimates of Deconvoluting Tax Evasion from the Output Shock in @eq-ob-ev by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 95 percent significance level using 200 replicates.
+
+# load("../Code/Products/boot_deconv_mle.RData")
+
+boot_mle_deconv_tbl %>%
+  mutate(
+    across(
+      !c(SIC,Distribution),
+      ~round(.x,4)
+    ),
+    Mean = glue::glue("{mean} [{CI_mean_LCI}, {CI_mean_UCI}]"),
+    SD = glue::glue("{sd} [{CI_sd_LCI}, {CI_sd_UCI}]")
+  ) %>%
+  select(SIC,Density=Distribution,Mean, SD) %>%
+  kable(
+    # col.names = c("SIC","Density","Mean","[","]")
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(columns = 1, valign = "top")
+  
+```
+
+
+Both distributions show higher estimates of the average overreporting in logs than using only moments. Now it looks like firms evade taxes by inflating their cost of their materials by 40 percent or more. 
+
+The difference between our previous estimates using moments can be explained by the fact that the log-normal and runcated distribution are restricted to positive values while we did not applied the restriction when using moments. Were we to take the average of only the positive values the mean of the moments method would be higher and closer to the log-normal and truncated normal distributions. 
+
+From the perspective of theory, firms would have inventives to overreport their materials. Therefore, using moments to estimate overreporting without restricting to positive values like in the case of the MLE method using a lognormal or truncated distribution might underestimate tax evasion through cost overreporting. 
+
+Both the lognormal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of ther probability density functions. The standard devitaion is larger in the lognormal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the lognormal. Finally, the median is lower than the mean in the case of the lognormal, but higher than the mean in the case of the truncated normal because of the truncation from below.
+
 
 ::: {#fig-density-plots layout-ncol="1" }
 
 ```{r}
-#| label: fig-density-plot-ind
-#| fig-cap: Normal and Log-Normal distribution of the overreporting of deductible intermediate inputs
 #| warning: false
 #| error: false
+#| eval: true
 
-invisible(
-  density_plots<-lapply(
-  # paste0(order_sic[1:3]," log_ded_share"),
-  c("322 log_share", "324 log_ded_share", "342 log_mats_share"),
-  function(x){
-    if(x!="342 log_ded_share"){
-      x_ax <- seq(0,2,by=0.01)
+density_plots<-lapply(
+    unique(mle_deconv_tbl$sic_3),
+    function(i){
+
+      if (i==322){
+        x<-seq(0,2,by=0.01)
+      } else {
+        x<-seq(0,1.5,by=0.01) 
       }
-    else{
-      x_ax <- seq(0,1,by=0.01)
-      }
-    plot(
-        x_ax,
-        dlnorm(
-            x_ax,
-            lognorm_res_list[[x]]$ev_params[1],
-            lognorm_res_list[[x]]$ev_params[2]
-        ),
-        type="l",
-        col="blue",
-        xlab = "", ylab = "",
-        main = x
-    )
-    lines(
-        x_ax,
-        dnorm(
-            x_ax,
-            norm_res_list[[x]]$ev_params[1],
-            norm_res_list[[x]]$ev_params[2]
-        ),
-        col = "red",
-        xlab = "", ylab = ""
-        
-    )
-  }
-)
+
+
+        mu<-mle_deconv_tbl %>% 
+            filter(sic_3==i, dist=="lognormal") %>%
+            pull(mu.mu)
+        sigma<-mle_deconv_tbl %>% 
+            filter(sic_3==i, dist=="lognormal") %>%
+            pull(sigma.sigma)
+        mu2<-mle_deconv_tbl %>% 
+            filter(sic_3==i, dist=="truncated normal") %>%
+            pull(mu.mu)
+        sigma2<-mle_deconv_tbl %>% 
+            filter(sic_3==i, dist=="truncated normal") %>%
+            pull(sigma.sigma)
+
+        plot(
+            x,
+            dnorm(x,mu2,sigma2),
+            type = "l", col="red",
+                    xlab = "", ylab = "",
+            main = paste(
+                i,
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==i,'description'][[1]]
+                    ),
+                    1,30
+                ),
+                "..."
+            )
+        )
+        lines(
+            x,
+            dlnorm(x,mu,sigma),
+            type = "l", col="blue"
+        )
+    }
 )
 
-par(mfrow = c(6, 1)) # Establecer la disposición de la cuadrícula
+
+par(mfrow = c(5, 1)) # Establecer la disposición de la cuadrícula
 
 for (plot in density_plots) {
    print(plot)
@@ -214,7 +429,7 @@ par(mfrow = c(1, 1))
 
 ```
 
-Normal and Log-Normal distribution of the overreporting of deductible intermediate inputs for the top tax-evading industries
+Truncated Normal (red) and Log-Normal (blue) distribution of the overreporting of raw materials for the top tax-evading industries.
 
 :::
 
@@ -222,21 +437,20 @@ Normal and Log-Normal distribution of the overreporting of deductible intermedia
 
 ```{r}
 #| label: tbl-CD-comparision
-#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —as defined in GNR— for tax evasion vs. naive estimation. One flexible input, Intermediates.
+#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is a third degree polynomial. $Z=\\{k_{it},l_{it}\\}$.
+#| eval: true
 
 load("../Code/Products/deconv_prod_fun.RData")
-load("../Code/Products/Fortran_CD_GNR.RData")
-
-evasion_tbl<-sapply(paste0(order_sic[1:6]," log_share"),\(x)prod_fun_list[[x]]$coeffs) |> t() |> round(4)
+# load("../Code/Products/Fortran_CD_GNR.RData")
 
 
-cbind(evasion_tbl,CD_fortran_tbl_R[CD_fortran_tbl_R$inds %in% order_sic[1:6],c(1,3,2)]) %>%
+cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
   kbl(
     digits = 4,
     table.attr = 'data-quarto-disable-processing="true"'
   ) %>%
   add_header_above(
-      c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3)#
+      c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3,"OLS"=3)#
   ) %>%
   kable_classic(full_width=F, html_font = "Cambria")
 
@@ -248,11 +462,12 @@ cbind(evasion_tbl,CD_fortran_tbl_R[CD_fortran_tbl_R$inds %in% order_sic[1:6],c(1
 ```{r}
 #| label: fig-deconv-mmt-year
 #| fig-cap: First and second moments of deconvoluting tax evasion from the output shock by industry and year. The second moment is included in the form of the 95% confidence interval. The absolute value of the variance was used in estimating the confidence intervals because some variances were negative.
+#| eval: false
 
 
 load("../Code/Products/deconv_year.RData")
 
-plots_year<-lapply(order_sic[1:6],\(x)
+plots_year<-lapply(top_evading_inds[1:6],\(x)
     deconv_mmt_long_y%>%
         filter(sic_3==x) %>%
         ggplot(aes(x=factor(year), y=mean, group=share,color=share, fill=share))+

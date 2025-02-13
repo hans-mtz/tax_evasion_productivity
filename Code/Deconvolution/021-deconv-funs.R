@@ -7,10 +7,164 @@ library(parallel)
 # load("Code/Products/colombia_data.RData")
 # load("Code/Products/global_vars.RData")
 
+
+
 # Use Gaus-Hermite -----------------------
 
 gauss_hermite<-gauss.quad(10,"hermite")
 gauss_laguerre<-gauss.quad(10,"laguerre")
+
+# Deconvolution using Moments ---------------
+## Deconvolution functions ----------------------------
+
+
+mmt_deconv_year <- function(sic, var, data) {
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                juridical_organization == 3,
+                !is.na(.data[[var]]),
+                .data[[var]] < Inf,
+                .data[[var]] > -Inf
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                !is.na(.data[[var]]),
+                .data[[var]] < Inf,
+                .data[[var]] > -Inf
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log(beta) - log(big_E)
+            ) %>%
+            group_by(year) %>%
+            summarise(
+                mean_evasion = mean(cal_V, na.rm = TRUE) + mean_epsilon,
+                variance_evasion = var(cal_V, na.rm = TRUE) - variance_epsilon,
+                n = n()
+            ) %>%
+            mutate(
+                sic_3 = sic
+            )
+        return(tbl)
+    }
+
+mmt_deconv <- function(sic, var, data) {
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                juridical_organization == 3,
+                !is.na(.data[[var]]),
+                .data[[var]] < Inf,
+                .data[[var]] > -Inf
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                !is.na(.data[[var]]),
+                .data[[var]] < Inf,
+                .data[[var]] > -Inf
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log(beta) - log(big_E)
+            ) %>%
+            summarise(
+                mean_evasion = mean(cal_V, na.rm = TRUE) + mean_epsilon,
+                variance_evasion = var(cal_V, na.rm = TRUE) - variance_epsilon,
+                n = n()
+            ) %>%
+            mutate(
+                sic_3 = sic
+            )
+        return(tbl)
+    }
+
+# Testing the presence of Evasion by Overreporting -----------------
+
+test_ev_cd <- function(sic, var, data) {
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                juridical_organization == 3,
+                !is.na(.data[[var]]),
+                .data[[var]] < Inf,
+                .data[[var]] > -Inf
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                !is.na(.data[[var]]),
+                .data[[var]] < Inf,
+                .data[[var]] > -Inf
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log(beta) - log(big_E)
+            ) %>%
+            summarise(
+                mean_V = mean(cal_V, na.rm = TRUE),
+                n = n(),
+                # se = sqrt(abs(variance_epsilon)/n)
+                se = sd(cal_V)/sqrt(n)
+            ) %>%
+            mutate(
+                t_stat = (mean_V)/se,
+                rej_rule = t_stat > 1.645,
+                test_result = ifelse(
+                    rej_rule>=1,
+                    "Reject H_0: cal_V==0, H_a: cal_V>0", 
+                    "Fail to reject H_0: cav_V==0"
+                ),
+                sic_3 = sic
+            )
+        return(tbl)
+    }
+
+
 
 # Expectation of a function over a normal random variable with
 # mean mu and variance sigma
@@ -67,6 +221,11 @@ f_e_ln<-function(epsilon,v,mu,sigma){
         f_e<-exp(-0.5*num_2/den)/(x*sigma*sqrt(2*pi))
     }
     return(f_e)
+}
+
+eval_llh_fun<-function(v,f,mu,sigma,params){
+    log_lh<-log(E_nrv(f,params$epsilon_mu,params$epsilon_sigma,params$gauss_int,v,mu,sigma))
+    return(log_lh)
 }
 
 eval_llh<-function(v,mu,sigma,params){
@@ -198,9 +357,9 @@ first_stage_panel <- function(sic, var, data) {
             .data[[var]] > -Inf
         ) %>%
         mutate(
-            y = log(gross_output),
+            # y = log(gross_output),
             cal_V = .data[[var]] - log(beta) - log(big_E),
-            cal_W = log(gross_output)-beta*(m-cal_V)
+            cal_W = y-beta*(.data[[var]]-cal_V)
         ) %>%
         select(
             sic_3, year, plant, cal_V, cal_W, k, l, y
@@ -285,6 +444,54 @@ obj_fun_markov<-function(alpha,data,params){
     obj <- t(moments) %*% moments
     return(sqrt(obj[1]))
 
+}
+
+## Truncated Normal Distribution funs -----------------------------------
+
+f_trc_norm <- function(epsilon,v,mu,sigma){
+    x<-sum(epsilon,v)
+    if (x>=0){
+        num<-f_e(epsilon,v,mu,sigma)
+        den<- (1-pnorm(0,mean=mu, sd=sigma))
+        return((1/sigma)*(num/den))
+    } else {
+       return(1e-300)
+    }
+}
+
+eval_llh_fun<-function(v,f,mu,sigma,params){
+    log_lh<-log(E_nrv(f,params$epsilon_mu,params$epsilon_sigma,params$gauss_int,v,mu,sigma))
+    return(log_lh)
+}
+
+obj_fun_f<- function(theta,f,V,params){
+    mu<-theta[1]
+    sigma<-1.3^(theta[2])
+    sum_llh<-sapply(V,eval_llh_fun,f,mu,sigma,params) |> sum()
+    return(sum_llh)
+}
+
+## Bootstrapping -----------------------
+
+resample_by_group<-function(data,...){
+
+    sampled_plants_by_corp <- data %>%
+        ungroup() %>%
+        mutate(
+            Corp = ifelse(juridical_organization==3,"Corp","Other")
+        ) %>%
+        group_by(...,Corp) %>%
+        reframe(
+            plant = sample(unique(plant), replace = TRUE)
+        ) 
+
+    resampled_data <-sampled_plants_by_corp %>% 
+        left_join(
+            data,
+            by = c("plant","sic_3"),
+            relationship = "many-to-many"
+        )
+    return(resampled_data)
 }
 
 

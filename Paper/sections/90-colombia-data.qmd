@@ -15,109 +15,134 @@ Besides the information on output, intermediates, capital, and labor, the datase
 
 
 
-labels <- c(
-    # 'capital' = 'Capital',
-    # 'mats_serv' = 'Materials & Services',
-    # 'skilled_labor' = 'Labor (Skilled)',
-    # 'unskilled_labor' = 'Labor (Unskilled)',
-    # 'sales' = 'Revenue',
-    # 'sales_taxes' = 'Sales Taxes',
-    # 'JO_class' = 'J. Org.',
-    'skilled_wage_bill_share' = 'Skilled Labor (Wages)',
-    'unskilled_wage_bill_share' = 'Unskilled Labor (Wages)',
-    'share_sales_tax' = 'Sales Taxes',
-    'intermediates_share' = 'Intermediates',
-    # 'mats_serv_share' = 'Materials + Services',
-    'mats_deduct_share' = 'Materials + Deductibles',
-    'materials_share' = 'Materials',
-    'energy_share' = 'Energy',
-    'capital_share' = 'Capital',
-    'total_expenses_share' = 'Total Expenditure',
-    'services_exp_share' = 'Services',
-    'industrial_exp_share' = 'Industrial',
-    'deductible_exp_share' = 'Deductible',
-    'energy_nondeductibles_share' = 'Energy + Non-Deductibles'
-)
+# labels <- c(
+#     # 'capital' = 'Capital',
+#     # 'mats_serv' = 'Materials & Services',
+#     # 'skilled_labor' = 'Labor (Skilled)',
+#     # 'unskilled_labor' = 'Labor (Unskilled)',
+#     # 'sales' = 'Revenue',
+#     # 'sales_taxes' = 'Sales Taxes',
+#     # 'JO_class' = 'J. Org.',
+#     'skilled_wage_bill_share' = 'Skilled Labor (Wages)',
+#     'unskilled_wage_bill_share' = 'Unskilled Labor (Wages)',
+#     'share_sales_tax' = 'Sales Taxes',
+#     'intermediates_share' = 'GNR Intermediates',
+#     # 'mats_serv_share' = 'Materials + Services',
+#     'mats_deduct_share' = 'Materials + Deductibles',
+#     'materials_share' = 'Materials',
+#     'energy_share' = 'Electricity',
+#     'capital_share' = 'Capital',
+#     'gnr_ded_share' = 'Deductible GNR Intermediates',
+#     'lp_share' = 'LP Intermediates',
+#     'lp_ded_share' = 'Deductible LP Intermediates',
+#     'inds_int_share' = 'EAM Intermediates',
+#     'inds_ded_share' = 'Deductible EAM Intermediates',
+#     'total_expenses_share' = 'Total Expenditure',
+#     'services_exp_share' = 'General Services',
+#     'industrial_exp_share' = 'Industrial Services',
+#     'deductible_exp_share' = 'Deductible Services',
+#     'energy_nondeductibles_share' = 'Electricity + Non-Deductibles',
+#     'fuels_share' = 'Fuels',
+#     'deductible_services_share' = 'Deductible Gen. Services',
+#     'industrial_ded_exp_share' = 'Deductible Inds. Services'
+# )
 
-tbl_data<-colombia_data_frame %>%
-    filter(
-        sales > 0 ,
-        capital > 0,
-        unskilled_labor >0,
-        skilled_labor >0,
-        total_expenditure >0,
-        JO_class != "Other",
-        juridical_organization!= 6
-        # share_sales_tax <1
-    ) %>%
+# tbl_data<-colombia_data_frame %>%
+#     filter(
+#         # sales > 0 ,
+#         # capital > 0,
+#         # unskilled_labor >0,
+#         # skilled_labor >0,
+#         # total_expenditure >0,
+#         JO_class != "Other",
+#         juridical_organization!= 6
+#         # share_sales_tax <1
+#     ) %>%
+#     mutate(
+#         juridical_organization = factor(juridical_organization),
+#         sic_3 = factor(sic_3),
+#         metro_area_code = factor(metro_area_code),
+#         JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership")),
+#         # intermediates_share = intermediate_inputs/sales,
+#         # # mats_serv_share = mats_serv/sales,
+#         # mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+#         # energy_nondeductibles_share = rowSums(cbind(consumed_energy/1000,non_deductible_expenses), na.rm = TRUE)/sales,
+#         # materials_share = materials/sales,
+#         # energy_share = consumed_energy/(sales*1000),
+#         # capital_share = capital/sales,
+#         # total_expenses_share = total_expenditure/sales,
+#         # services_exp_share = services/total_expenditure,
+#         # industrial_exp_share = industrial_expenditure/total_expenditure,
+#         # deductible_exp_share = deductible_expenses/total_expenditure
+#     ) %>%
+#     select(
+#         # capital,
+#         # mats_serv,
+#         # skilled_labor,
+#         # unskilled_labor,
+#         # sales,
+#         # sales_taxes,
+#         # age,
+#         # consumed_energy,
+#         # deductible_expenses,
+#         # year,
+#         `J. Org.`= JO_class,
+#         share_sales_tax,
+#         # sic_3,
+#         # metro_area_code
+#         ends_with("share") & !starts_with("log") & !contains("nded")
+#     )
+# print(names(tbl_data))
+
+for (var in names(labels)) {
+    # print(var)
+    colombia_data_frame[[var]] <- haven::labelled(
+        colombia_data_frame[[var]], label = labels[var]
+        )
+}
+
+colombia_data_frame %>%
     mutate(
         juridical_organization = factor(juridical_organization),
         sic_3 = factor(sic_3),
         metro_area_code = factor(metro_area_code),
-        JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership")),
-        # intermediates_share = intermediate_inputs/sales,
-        # # mats_serv_share = mats_serv/sales,
-        # mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
-        # energy_nondeductibles_share = rowSums(cbind(consumed_energy/1000,non_deductible_expenses), na.rm = TRUE)/sales,
-        # materials_share = materials/sales,
-        # energy_share = consumed_energy/(sales*1000),
-        # capital_share = capital/sales,
-        # total_expenses_share = total_expenditure/sales,
-        # services_exp_share = services/total_expenditure,
-        # industrial_exp_share = industrial_expenditure/total_expenditure,
-        # deductible_exp_share = deductible_expenses/total_expenditure
+        JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership"))
     ) %>%
     select(
-        # capital,
-        # mats_serv,
-        # skilled_labor,
-        # unskilled_labor,
-        # sales,
-        # sales_taxes,
-        # age,
-        # consumed_energy,
-        # deductible_expenses,
-        # year,
         `J. Org.`= JO_class,
         share_sales_tax,
-        # sic_3,
-        # metro_area_code
-        ends_with("share") & !starts_with("log") #& !contains("bill")
-    )
-
-for (var in names(labels)) {
-  tbl_data[[var]] <- haven::labelled(
-    tbl_data[[var]], label = labels[var]
-    )
-}
-
-datasummary_skim(
-    tbl_data,
+        ends_with("share") & !starts_with("log_") & !contains("nded")
+        # all_of() %in% names(labels)
+    ) %>%
+    datasummary_skim(
     fun_numeric = list(
-        Missing = PercentMissing, 
+        `Missing (%)` = PercentMissing, #(x)sum(!is.na(x))/length(x), 
         Mean = Mean, 
         SD = SD, 
+        # Min = Min,
         Q1 = P25,
         Median = Median,
-        Q3 = P75
+        Q3 = P75#,
+        # Max = Max
     ),
     fmt = 3,
     # output = 'kableExtra',
     # table.attr = 'data-quarto-disable-processing="true"'
-    ) |> 
+    )|> 
     group_tt(
         i = list(
             "Share of Revenues" = 1,
-            "Share of Total Expenditure" = 11
+            "Intermediates" = 5#,
+            # "Share of Total Services" = 15
         )
     ) |>
     style_tt(
-        i = c(1,12,16),
+        i = c(1,6,13),
         bold = TRUE,
         line = "b"
     ) |>
     style_tt(
-        i = 13,
+        i = 10,
         line = "b",
         line_color = "white"
     )

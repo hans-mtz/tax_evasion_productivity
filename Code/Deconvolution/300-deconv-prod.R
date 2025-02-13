@@ -4,8 +4,9 @@ library(parallel)
 load("Code/Products/colombia_data.RData")
 load("Code/Products/global_vars.RData")
 load("Code/Products/deconv_funs.Rdata")
-load("Code/Products/deconv.RData")
-load("Code/Products/deconv_mle.RData")
+# load("Code/Products/deconv.RData")
+load("Code/Products/boot_tax_ev_mmt.RData")
+load("Code/Products/boot_deconv_mle.RData")
 
 # Data Wrangling ------------------------------------
 # colombia_data_frame<-colombia_data_frame %>%
@@ -68,9 +69,55 @@ mc_cores <- detectCores()-2
 
 names(prod_fun_list)<-names(fs_list)
 
+## Collecting Results ------------------------------
+
+evasion_tbl<-sapply(names(prod_fun_list),\(x)prod_fun_list[[x]]$coeffs) |> t() |> round(4)
+rownames(evasion_tbl) <- paste0(top_evading_inds[1:5])
+## Reading Results from Fortran GNR CD to Compare -------------
+
+# Setting up folders and vars ----------------
+
+Stata_GNR_results_folder <- "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+
+(CD_fortran_R <- lapply(
+    # union(evasion_inds,gnr_inds),
+    top_evading_inds[1:5],
+    \(x){
+        temp_coeff<-read.csv(paste0(folder_results,"CD_coeffs_R_",x,".out"))
+        temp_coeff$inds <- x
+        return(temp_coeff)
+    }
+)
+)
+
+CD_fortran_tbl_R <- do.call(rbind,CD_fortran_R)
+CD_fortran_tbl_R
+
+## OLS Results -------------------------------------
+
+(ols_CD<-sapply(
+    top_evading_inds[1:5],
+    function(x){
+        reg<-colombia_data_frame %>%
+        select(!m) %>%
+        filter(sic_3==x) %>%
+        mutate(
+            m= log(materials)
+        ) %>%
+        fixest::feols(
+            y~m+k+l, data = .
+        )
+        return(coef(reg)[c("m","k","l")])
+    },
+    USE.NAMES = TRUE
+)|> t())
+
+rownames(ols_CD)<-paste0(top_evading_inds[1:5])
+
+
 ## Saving results -----------------------------------
 
 save(
-    prod_fun_list,
+    prod_fun_list, evasion_tbl, CD_fortran_tbl_R, ols_CD,
     file="Code/Products/deconv_prod_fun.RData"
 )

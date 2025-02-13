@@ -755,25 +755,25 @@ colombia_data_frame %>%
                 "Religious Community")
         ),
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
-        # capital_share = capital/sales,
-        consumed_energy_share = energy_share,
-        mats_serv_share = mats_serv/sales,
-        # materials_share = materials/sales,
-        labor_employee_years_share = labor_employee_years/sales,
-        gen_exp_share = general_expenditure/sales,
-        inds_exp_share_exp = industrial_expenditure/total_expenditure,
-        non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
-        deductible_expenses_share_exp = deductible_expenses/total_expenditure,
-        inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
-        inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
-        total_expenses_share = total_expenditure/sales,
-        serv_share_exp = services/total_expenditure,
-        energy_serv_share = (consumed_energy+industrial_expenditure)/sales
+        # # capital_share = capital/sales,
+        # consumed_energy_share = energy_share,
+        # mats_serv_share = mats_serv/sales,
+        # # materials_share = materials/sales,
+        # labor_employee_years_share = labor_employee_years/sales,
+        # gen_exp_share = general_expenditure/sales,
+        # inds_exp_share_exp = industrial_expenditure/total_expenditure,
+        # non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
+        # deductible_expenses_share_exp = deductible_expenses/total_expenditure,
+        # inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
+        # inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
+        # total_expenses_share = total_expenditure/sales,
+        # serv_share_exp = services/total_expenditure,
+        # energy_serv_share = (consumed_energy+industrial_expenditure)/sales
     ) %>%
     feols(
         sw(
             capital_share,
-            consumed_energy_share,
+            energy_share,
             materials_share
             ) ~ Corp|
         sic_3+metro_area_code+year,
@@ -822,25 +822,25 @@ colombia_data_frame %>%
         ),
         Corp = ifelse(juridical_organization==3,"Corp","Other"),
         # capital_share = capital/sales,
-        consumed_energy_share = energy_share,
-        mats_serv_share = mats_serv/sales,
-        materials_share = materials/sales,
-        labor_employee_years_share = labor_employee_years/sales,
-        gen_exp_share = general_expenditure/sales,
-        inds_exp_share_exp = industrial_expenditure/total_expenditure,
-        non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
-        deductible_expenses_share_exp = deductible_expenses/total_expenditure,
-        inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
-        inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
-        # total_expenses_share = total_expenditure/sales,
-        serv_share_exp = services/total_expenditure,
-        energy_serv_share = (consumed_energy+industrial_expenditure)/sales
+        # consumed_energy_share = energy_share,
+        # mats_serv_share = mats_serv/sales,
+        # materials_share = materials/sales,
+        # labor_employee_years_share = labor_employee_years/sales,
+        # gen_exp_share = general_expenditure/sales,
+        # inds_exp_share_exp = industrial_expenditure/total_expenditure,
+        # non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
+        # deductible_expenses_share_exp = deductible_expenses/total_expenditure,
+        # inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
+        # inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
+        # # total_expenses_share = total_expenditure/sales,
+        # serv_share_exp = services/total_expenditure,
+        # energy_serv_share = (consumed_energy+industrial_expenditure)/sales
     ) %>%
     feols(
         sw(
             skilled_wage_bill_share,
             unskilled_wage_bill_share,
-            total_expenses_share
+            fuels_share
             ) ~ Corp|
         sic_3+metro_area_code+year,
         data = ., cluster = ~sic_3+year
@@ -893,20 +893,20 @@ colombia_data_frame %>%
         # # materials_share = materials/sales,
         # labor_employee_years_share = labor_employee_years/sales,
         # gen_exp_share = general_expenditure/sales,
-        inds_exp_share_exp = industrial_expenditure/total_expenditure,
-        # non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
-        deductible_expenses_share_exp = deductible_expenses/total_expenditure,
-        # inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
-        # inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
-        # total_expenses_share = total_expenditure/sales,
-        serv_share_exp = services/total_expenditure,
+        # inds_exp_share_exp = industrial_expenditure/total_expenditure,
+        # # non_deductible_expenses_share_exp = non_deductible_expenses/total_expenditure,
+        # deductible_expenses_share_exp = deductible_expenses/total_expenditure,
+        # # inds_exp_non_deductible_share = inds_exp_non_deductible/industrial_expenditure,
+        # # inds_exp_deductible_share = inds_exp_deductible/industrial_expenditure,
+        # # total_expenses_share = total_expenditure/sales,
+        # serv_share_exp = services/total_expenditure,
         # energy_serv_share = (consumed_energy+industrial_expenditure)/sales
     ) %>%
     feols(
         sw(
-            serv_share_exp,
-            inds_exp_share_exp,
-            deductible_expenses_share_exp
+            repair_maint_share,
+            services_share,
+            inds_nded_share
             ) ~ Corp|
         sic_3+metro_area_code+year,
         data = ., cluster = ~sic_3+year

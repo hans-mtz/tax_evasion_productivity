@@ -213,6 +213,41 @@ size_desc <- c(
     # intermediate_inputs = "Intermediates"
 )
 
+labels <- c(
+    # 'capital' = 'Capital',
+    # 'mats_serv' = 'Materials & Services',
+    # 'skilled_labor' = 'Labor (Skilled)',
+    # 'unskilled_labor' = 'Labor (Unskilled)',
+    # 'sales' = 'Revenue',
+    # 'sales_taxes' = 'Sales Taxes',
+    # 'JO_class' = 'J. Org.',
+    'skilled_wage_bill_share' = 'Skilled Labor (Wages)',
+    'unskilled_wage_bill_share' = 'Unskilled Labor (Wages)',
+    'share_sales_tax' = 'Sales Taxes',
+    'gnr_int_share' = 'GNR (M+E+S)',
+    # 'mats_serv_share' = 'Materials + Services',
+    # 'mats_deduct_share' = 'Materials + Deductible T.S.',
+    'materials_share' = 'Materials (M)',
+    'energy_share' = 'Electricity (E)',
+    'capital_share' = 'Capital',
+    'fuels_share' = 'Fuels (F)',
+    'services_share' = 'Services (S)',
+    'repair_maint_share' = 'Repair & Maintenance'#,
+    # 'gnr_ded_share' = 'Deductible GNR',
+    # 'lp_share' = 'LP (M+E+F)',
+    # 'lp_ded_share' = 'Deductible LP',
+    # 'inds_int_share' = 'EAM (M+E+I.S.)',
+    # 'inds_nded_share' = 'Non-Deductible Industrial',
+    # 'total_expenses_share' = 'Total Services (G.S.+I.S.)',
+    # 'industrial_exp_share' = 'Industrial Services (I.S.)',
+    # 'deductible_exp_share' = 'Deductible T.S.',
+    # 'energy_nondeductibles_share' = 'Electricity + \nNon-Deductibles T.S.',
+    # 'deductible_services_share' = 'Deductible G.S.',
+    # 'industrial_ded_exp_share' = 'Deductible I.S.',
+
+)
+
+
 # unrelated_size <- results_df %>%
 #     ungroup() %>%
 #     select(Size, Structurally.related) %>%

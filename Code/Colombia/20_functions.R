@@ -4,6 +4,17 @@ library(ggplot2)
 
 # Declaring functions -----------------
 
+sum_rows <- function(data) {
+  apply(data, 1, function(row) {
+    if (all(is.na(row))) {
+      return(NA)
+    } else {
+      return(sum(row, na.rm = TRUE))
+    }
+  })
+}
+
+
 ## get_beta_diff() --------------
 # returns the difference between the non-evaders' and evaders
 # beta. For all firms using fixed effects by industry

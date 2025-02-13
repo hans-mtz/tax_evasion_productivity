@@ -64,6 +64,7 @@ commands: fxnote
 #| echo: false
 #| warning: false
 
+
 library(tidyverse)
 library(ggplot2)
 library(modeest)
@@ -75,6 +76,7 @@ library(stringr)
 
 load("../Code/Products/colombia_data.RData")
 load("../Code/Products/global_vars.RData")
+load("../Code/Products/intermediates.RData")
 options(knitr.kable.NA = '')
 
 # The style of the table
@@ -234,6 +236,9 @@ setFixest_dict(c(
 
 <!-- Implementation -->
 {{< include sections/120-implementation.qmd >}}
+
+<!-- Implementation -->
+{{< include sections/150-intermediates.qmd >}}
 
 <!-- Deconvolution Moments -->
 {{< include sections/200-deconv.qmd >}}

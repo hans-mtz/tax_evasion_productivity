@@ -23,6 +23,18 @@ change_base_81 <- function(data, vars) {
         )
 }
 
+
+# Sum rows across columns ignoring NAs unless all are NAs
+sum_rows <- function(data) {
+  apply(data, 1, function(row) {
+    if (all(is.na(row))) {
+      return(NA)
+    } else {
+      return(sum(row, na.rm = TRUE))
+    }
+  })
+}
+
 ## Real vars base 81 ----
 
 cdf <- col_df %>%
@@ -31,11 +43,12 @@ cdf <- col_df %>%
     mutate(
         p_energy_purchased = ifelse(e1 == 0, NA, e5 / e1),
         p_energy_sold = ifelse(e3 == 0, NA, e6 / e3),
-        p_energy = ifelse(
-            rowSums(cbind(e1, e3), na.rm = TRUE) == 0,
-            NA,
-            rowSums(cbind(e5, e6), na.rm = TRUE) / rowSums(cbind(e1, e3), na.rm = TRUE)
-        )
+        p_energy = sum_rows(cbind(e5, e6)) / sum_rows(cbind(e1, e3))
+        # p_energy = ifelse(
+        #     rowSums(cbind(e1, e3), na.rm = TRUE) == 0,
+        #     NA,
+        #     rowSums(cbind(e5, e6), na.rm = TRUE) / rowSums(cbind(e1, e3), na.rm = TRUE)
+        # )
     ) %>%
     ungroup() %>%
     # Changing from GNR p_energy=e7/e4, because e4 = e1+e2-e3, and e7=e5-e6
@@ -51,7 +64,7 @@ cdf <- col_df %>%
         rtrans_80 = rtrans_80 * p_transp / p_transp_new,
         roffice_80 = roffice_80 * p_machin / p_machin_new,
         # rcap80 = rland_80 + rbldg_80 + rmach_80 + rtrans_80 + roffice_80, # This code generates NAs if a value is missing
-        rcap80 = rowSums(cbind(rland_80, rbldg_80, rmach_80, rtrans_80, roffice_80), na.rm = TRUE),
+        rcap80 = sum_rows(cbind(rland_80, rbldg_80, rmach_80, rtrans_80, roffice_80)),
         real_gross_output = pg / p_gdp_new, # real gross output, base 1981
         real_capital = ifelse( # real capital stock, base 1981
             rcap80 > 0,
@@ -60,7 +73,7 @@ cdf <- col_df %>%
         ),
         labor_employees = sklab * (skwages / sklab) / (unskwages / unsklab) + unsklab,
         labor_employee_years = labor_employees * x7 / 12,
-        real_wages = rowSums(cbind(skwages,unskwages), na.rm = TRUE) / p_gdp_new,
+        real_wages = sum_rows(cbind(skwages,unskwages)) / p_gdp_new,
         real_energy = e7 / p_energy_purchased_new,
         consumed_energy = e4 * p_energy_purchased_new,
         generated_energy = e2 * p_energy_purchased_new,
@@ -68,10 +81,13 @@ cdf <- col_df %>%
         sold_energy = e6 / p_energy_purchased_new,
         real_materials = s10 / p_gdp_new,
         # rserv is general expenses - machinery rental - interest payments; c17-c10-c14
-        real_services = rserv * p_gdp / p_gdp_new,
-        real_mats_serv = rowSums(cbind(real_materials,real_services), na.rm = TRUE),
-        real_intermediate_inputs = rowSums(cbind(real_materials,real_services,real_energy), na.rm = TRUE),
-        real_sales = s5 / p_gdp_new,
+        # real_services = rserv * p_gdp / p_gdp_new,
+        real_services = sum_rows(cbind(c17,-c10,-c14)) / p_gdp_new,
+        deductible_services = real_services-sum_rows(cbind(c8,c9,c13,c15,c16))/p_gdp_new,
+        non_deductible_services = real_services-sum_rows(cbind(c11,c12))/p_gdp_new,
+        real_mats_serv = sum_rows(cbind(real_materials,real_services)),
+        real_intermediate_inputs = sum_rows(cbind(real_materials,real_services,real_energy)),
+        real_sales = ifelse(s5>0,s5 / p_gdp_new,NA),
         sic_3 = as.numeric(str_sub(as.character(sic), 1, 3)),
         share = real_intermediate_inputs / real_sales,
         log_share = log(real_intermediate_inputs / real_sales),
@@ -83,18 +99,19 @@ cdf <- col_df %>%
         export_taxes = (t5) / p_gdp_new,
         real_general_expenditure = c17 / p_gdp_new,
         real_industrial_expenditure = c7 / p_gdp_new,
-        real_expenditure = rowSums(cbind(real_general_expenditure,real_industrial_expenditure), na.rm = TRUE),
-        deductible_expenses = rowSums(cbind(c2, c5, c6, c10, c11, c12), na.rm = TRUE) / p_gdp_new, #c14 interest payments deductible for Corporations ?
-        non_deductible_expenses = rowSums(cbind(real_general_expenditure,real_industrial_expenditure, -deductible_expenses), na.rm = TRUE),
-        inds_exp_non_deductible = (c7 - c2 - c5 - c6) / p_gdp_new,
-        inds_exp_deductible = (c7 / p_gdp_new) - inds_exp_non_deductible,
-        share_fem_managers = k11 / (k3 + k11),
+        real_expenditure = sum_rows(cbind(real_general_expenditure,real_industrial_expenditure)),
+        deductible_expenses = sum_rows(cbind(c2, c5, c6, c10, c11, c12)) / p_gdp_new, #c14 interest payments deductible for Corporations ?
+        non_deductible_expenses = sum_rows(cbind(real_expenditure, -deductible_expenses)),
+        non_deductible_inds_exp = sum_rows(cbind(c7, -c2, -c5, -c6)) / p_gdp_new,
+        deductible_inds_exp = sum_rows(cbind(c7,-c1,-c3,-c4 ))/ p_gdp_new,
+        share_fem_managers = k11 / sum_rows(cbind(k3,k11)),
         male_owners = k2,
         female_owners = k10,
-        total_owners = rowSums(cbind(k2,k10), na.rm = TRUE),
+        total_owners = sum_rows(cbind(k2,k10)),
         share_fem_owners = k10 / total_owners,
         share_exports = s4 / s5,
         share_imports = s7 / s8,
+        share_imports_materials = s11 / s10,
         real_interest_payments = c14 / p_gdp_new,
         age = datayear - x6,
         real_subsidies = t9 / p_gdp_new,
@@ -107,7 +124,10 @@ cdf <- col_df %>%
         real_import_tax_raw_mat = t4 / p_gdp_new,
         share_sales_tax = real_sales_taxes / real_sales,
         skilled_wage_bill_share = (skwages / p_gdp_new) / real_sales,
-        unskilled_wage_bill_share = (unskwages / p_gdp_new) / real_sales
+        unskilled_wage_bill_share = (unskwages / p_gdp_new) / real_sales,
+        fuels = c2/p_gdp_new,
+        repair_maintenance = c5/p_gdp_new
+
     ) %>%
     select(
         plant,
@@ -124,7 +144,7 @@ cdf <- col_df %>%
         sold_energy,
         services = real_services,
         mats_serv = real_mats_serv,
-        intermediate_inputs = real_intermediate_inputs,
+        intermediates = real_intermediate_inputs,
         labor_employees,
         labor_employee_years,
         wages = real_wages,
@@ -143,10 +163,11 @@ cdf <- col_df %>%
         total_expenditure = real_expenditure,
         non_deductible_expenses,
         deductible_expenses,
-        inds_exp_non_deductible,
-        inds_exp_deductible,
+        non_deductible_inds_exp,
+        deductible_inds_exp,
         share_fem_managers,
         share_imports,
+        share_imports_materials,
         interest_payments = real_interest_payments,
         age,
         subsidies = real_subsidies,
@@ -171,7 +192,12 @@ cdf <- col_df %>%
         p_energy_purchased_new,
         p_energy_sold,
         p_energy_new,
-        p_energy_purchased
+        p_energy_purchased,
+        fuels,
+        deductible_services,
+        non_deductible_services,
+        repair_maintenance#,
+        # share
     )
 
 ## Adding size variables March 20, 2023 ----
@@ -190,33 +216,62 @@ colombia_data_frame <- cdf %>%
         lag_gross_output = lag(gross_output, 1, order_by = year),
         lag_sales = lag(sales, 1, order_by = year),
         lag_indirect_tax = lag(indirect_taxes, order_by = year),
-        lag_M = lag(intermediate_inputs, order_by = year),
+        # lag_M = lag(intermediate_inputs, order_by = year),
         lag_K = lag(capital, order_by = year),
         lag_sales_tax = lag(sales_taxes, order_by = year),
         # lag_imex_tax = lag(imex_taxes, order_by = year),
         # lag_consumption_tax = lag(consumption_taxes, order_by = year),
         # lag_gen_exp = lag(general_expenditure, order_by = year),
         # lag_share_exports = lag(share_exports, order_by = year),
+        y = log(gross_output),
         k = log(capital),
         l = log(labor_employee_years),
-        m = log(intermediate_inputs),
+        m = log(intermediates),
         lag_k = lag(k, order_by = year),
         lag_m = lag(m, order_by = year),
         lag_l = lag(l, order_by = year),
         log_sales = log(sales),
         lag_log_sales = lag(log_sales, order_by = year),
-        intermediates_share = intermediate_inputs/sales,
-        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
-        energy_nondeductibles_share = rowSums(cbind(consumed_energy/1000,non_deductible_expenses), na.rm = TRUE)/sales,
+        capital_share = capital/sales,
         materials_share = materials/sales,
         energy_share = consumed_energy/(sales*1000),
-        capital_share = capital/sales,
-        total_expenses_share = total_expenditure/sales,
-        services_exp_share = services/total_expenditure,
-        industrial_exp_share = industrial_expenditure/total_expenditure,
-        deductible_exp_share = deductible_expenses/total_expenditure,
-        log_ded_share = log(mats_deduct_share),
-        log_mats_share = log(materials_share)
+        fuels_share = fuels/sales,
+        repair_maint_share = repair_maintenance/sales,
+        services_share = services/sales,
+        inds_nded_share =  non_deductible_inds_exp/sales,
+        gnr_int_share = intermediates/sales,
+        # gnr_other_share = sum_rows(cbind(energy_share,services_share)),
+        # intermediates_share = intermediates/sales,
+        log_mats_share = log(materials_share),
+        log_energy_share = log(energy_share),
+        log_fuels_share = log(fuels/sales),
+        log_repair_maint_share = log(repair_maint_share),
+        log_services_share = log(services/sales),
+        log_inds_nded_share =  log(inds_nded_share),
+        # log_gnr_other_share = log(gnr_other_share)
+        # lp_share = sum_rows(cbind(materials,fuels,consumed_energy/1000))/sales,
+        # inds_int_share = sum_rows(cbind(materials,consumed_energy/1000,industrial_expenditure))/sales,
+        # mats_deduct_share = sum_rows(cbind(materials,deductible_expenses))/sales,
+        # energy_nondeductibles_share = sum_rows(cbind(consumed_energy/1000,non_deductible_expenses))/sales,
+        # log_ded_share = log(mats_deduct_share),
+        # gnr_nded_share = sum_rows(cbind(consumed_energy/1000,non_deductible_services))/sales,
+        # lp_ded_share = sum_rows(cbind(materials,fuels))/sales,
+        # lp_nded_share = sum_rows(cbind(consumed_energy/1000))/sales,
+        # inds_ded_share =  sum_rows(cbind(materials,deductible_inds_exp))/sales,
+        # inds_nded_share =  sum_rows(cbind(consumed_energy/1000,non_deductible_inds_exp))/sales,
+        # log_gnr_ded = log(gnr_ded_share),
+        # log_gnr_nded = log(gnr_nded_share),
+        # log_lp = log(lp_share),
+        # log_lp_ded = log(lp_ded_share),
+        # log_lp_nded = log(lp_nded_share),
+        # log_inds_int = log(inds_int_share),
+        # log_inds_ded =  log(inds_ded_share),
+        # total_expenses_share = total_expenditure/sales,
+        # industrial_exp_share = industrial_expenditure/total_expenditure,
+        # deductible_exp_share = deductible_expenses/total_expenditure,
+        # deductible_services_share = deductible_services/total_expenditure,
+        # industrial_ded_exp_share = deductible_inds_exp/total_expenditure,
+        # inds_exp_non_deductible = non_deductible_inds_exp
         # log_gen_ex = log(general_expenditure),
         # lag_log_gen_exp = log(lag_gen_exp),
         # # lag_log_consumption_tax = log(lag_consumption_tax),
@@ -268,4 +323,4 @@ colombia_data_frame <- colombia_data_frame %>%
 
 # Saving data ---------------------------------
 print("Saving Colombia DF")
-save(colombia_data_frame, jo_class, file = "Code/Products/colombia_data.RData")
+save(colombia_data_frame, jo_class, sum_rows, file = "Code/Products/colombia_data.RData")

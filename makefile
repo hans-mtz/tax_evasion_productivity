@@ -1,19 +1,22 @@
 # Usually, only these lines need changing
 QPAPFILE = Tax-Prod
 QSLIFILE = JMP-update
-# RDIR = ./Code/Colombia
-RDIR = ./Code/Deconvolution
+RDIR = ./Code/Colombia
+RDIR2 = ./Code/Deconvolution
+
 QPAPDIR = ./Paper
 QSLIDIR = ./Quarto-Slides
-
 # list all R files
 RFILES := $(wildcard $(RDIR)/*.R)
 EXCLUDE := $(wildcard $(RDIR)/_*.R)
+RFILES2 := $(wildcard $(RDIR2)/*.R)
+EXCLUDE2 := $(wildcard $(RDIR2)/_*.R)
 QFILES := $(wildcard $(QPAPDIR)/*.qmd)
 QEXCLUDE := $(wildcard $(QPAPDIR)/_*.qmd)
 RDEP := $(wildcard $(RDIR)/*beta_diff.R)
 # excluding files that start with "_" during development
 RFILES := $(filter-out $(EXCLUDE),$(RFILES))
+RFILES2 := $(filter-out $(EXCLUDE2),$(RFILES2))
 QFILES := $(filter-out $(QEXCLUDE),$(QPAPFILES))
 QFILES := $(filter-out $(QPAPFILE).qmd,$(QPAPFILES))
 RIND := $(filter-out $(RDEP),$(RFILES))
@@ -21,6 +24,7 @@ RIND := $(filter-out $(RDEP),$(RFILES))
 
 # Indicator files to show R file has run
 OUT_FILES := $(RFILES:.R=.Rout)
+OUT_FILES_DEC := $(RFILES2:.R=.Rout)
 RDEPOUT := $(RIND:.R=.Rout)
 # Targets
 ## Default target
@@ -30,7 +34,9 @@ main: $(RDIR)/main.Rout #$(filter-out $(RDIR)/main.Rout, $(OUT_FILES))
 all: main paper slides
 
 ## Run R files
-R: $(OUT_FILES)
+R: $(OUT_FILES) $(OUT_FILES_DEC)
+
+R-code: $(OUT_FILES)
 
 ## Make paper
 paper: #$(QPAPDIR)/$(QPAPFILE).pdf
@@ -50,6 +56,9 @@ slides: #$(QSlIFILE).html
 
 # Rules
 $(RDIR)/%.Rout: $(RDIR)/%.R 
+	R CMD BATCH --no-save --no-restore-data $< $@
+
+$(RDIR2)/%.Rout: $(RDIR2)/%.R 
 	R CMD BATCH --no-save --no-restore-data $< $@
 
 # # Compile main tex file and show errors

@@ -100,7 +100,7 @@ $$
 \end{aligned}
 $$ {#eq-big-w}
 
-Here, intuitively, we are trading unobservables, the unobserved tax evasion for the output shock, just to make our lives easier. We could have use use directly $m^*$ since we know the distribution of tax evasion $e$, which is equivalent to the distribution of $f_{m^*|m}(m^*|m)$.
+Here, intuitively, we are trading unobservables, the unobserved tax evasion for the output shock, just to make our lives easier. We could have use use directly $m^*$ since we know the distribution of tax evasion $e$, which is equivalent to the distribution of $f_{m^*|m}(m^*|m)$. Also note that is it not necessary to learn tax evasion to recover productivity. This is useful if a practicioner is only interested in productivity and not on tax evasion.
 
 By replacing $\omega_{it}$ from @eq-big-w in @eq-prod-markov, we get
 
@@ -110,15 +110,7 @@ $$
 \end{aligned}
 $$ {#eq-big-w-reg}
 
-To learn $\alpha$ and $h$, we can use the orthogonality we get from @eq-prod-markov.
-$$
-\mathbb{E}[\eta_{it}|k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}]=0.
-$$ {#eq-eta-moments}
-
-Orthoganility follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it},l_{it}$) being predetermined.
-
-To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$,
-
+To learn $\alpha$ and $h$, we need to find instruments $Z$ such that,
 $$
 \begin{aligned}    
  \mathbb{E}[&\mathcal{W}_{it}|Z_{it}]\\
@@ -130,9 +122,29 @@ $$
 \end{aligned}
 $$
 
-The first line follows from the orthogonality of the output shock $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$ and the law of iterated expectations. The second line follows from the definition of expectation and the independence of the output shock of the previous period. The third line follows from the interchangeability of integrals. Thus, $\alpha$ and $h$ are identified.
 
-Also note that is it not necessary to learn tax evasion to recover productivity. This is useful if a practicioner is only interested in productivity and not on tax evasion.
+The first line should follow from the orthogonality of the output shock $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$ and the law of iterated expectations. The second line should follow from the definition of expectation and the independence of the output shock of the previous period. The third line follows from the interchangeability of integrals. Thus, $\alpha$ and $h$ are identified.
+
+|     |  Orthogonality     |
+|:----|:----------------:|
+|$\eta_{it}$ | $k_{it},l_{it},\varepsilon_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
+| $\varepsilon_{it}$ | $k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
+| $\varepsilon_{it-1}$ | $k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}$|
+
+
+Orthoganility of $\eta_{it}$ follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it},l_{it}$) being predetermined.
+
+<!-- To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$, -->
+
+Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}\}$ 
+
+Clearly, if $h(\xi)=\delta_0 +\delta_1\xi$, then
+
+$$
+\mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\delta_1(1-\beta)\varepsilon_{it-1}|Z]=0.
+$$ {#eq-eta-moments}
+
+
 
 ### Translog Production Function
 
