@@ -180,6 +180,7 @@ tax_ev_boot_tbl <- do.call(rbind,boot_tax_ev_mmt) %>%
 ## Save ----------------------------------------
 
 save(
-    boot_tax_ev_mmt, tax_ev_mmt_deconv_tbl,tax_ev_boot_tbl,top_evading_inds,run_vars,
+    boot_tax_ev_mmt, tax_ev_mmt_deconv_tbl,
+    tax_ev_boot_tbl,top_evading_inds,run_vars,
     file="Code/Products/boot_tax_ev_mmt.RData"
 )

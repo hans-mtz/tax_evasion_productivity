@@ -35,54 +35,61 @@ names(fs_list)<-paste(run_vars[,"inds"],run_vars[,"input"])
 
 lognorm_res_list<-mclapply(
     names(fs_list),
-    function(x){
-        params<-list(
-            gauss_int=gauss_hermite,
-            epsilon_mu=fs_list[[x]]$epsilon_mu,
-            epsilon_sigma=fs_list[[x]]$epsilon_sigma
-        )
-
-        init<-c(
-            mu=mean(fs_list[[x]]$data$cal_V, na.rm = TRUE), 
-            sigma=1.3^(sd(fs_list[[x]]$data$cal_V, na.rm = TRUE))
-        )
-
-        res<-optim(
-            init,
-            obj_fun_ln,
-            NULL,
-            fs_list[[x]]$data$cal_V,
-            params,
-            method = "BFGS",
-            control=list(fnscale=-1) #Maximizing instead of minimizing
-        )
-
-        mu<-res$par[1]
-        sigma<-1.3^(res$par[2])|> round(6)
-        mean_lognorm<-exp(mu+0.5*sigma^2) |> round(6)
-        sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1) |> round(6)
-        mode<-exp(mu-sigma^2) |> round(6)
-        # n<-length(fs_list[[x]]$data$cal_V)
-        # me<- 1.96*sqrt((sd_lognorm^2)/n+(sd_lognorm^4)/(2*(n-1)))
-        ev_params<-c(
-            mu = mu,
-            sigma = sigma,
-            mean=mean_lognorm,
-            sd=sd_lognorm,
-            mode=mode,
-            median=exp(mu) |> round(6),
-            convergence = res$convergence,
-            id = x,
-            dist = "lognormal"
-            # n = n,
-            # mu_LCI = mu_hat*exp(-me),
-            # mu_UCI = mu_hat*exp(me)
-
-        )
-        return(ev_params)
-    },
+    deconvolute_lognorm,
+    fs_list=fs_list,
     mc.cores = mc_cores
 )
+
+# lognorm_res_list<-mclapply(
+#     names(fs_list),
+#     function(x){
+#         params<-list(
+#             gauss_int=gauss_hermite,
+#             epsilon_mu=fs_list[[x]]$epsilon_mu,
+#             epsilon_sigma=fs_list[[x]]$epsilon_sigma
+#         )
+
+#         init<-c(
+#             mu=mean(fs_list[[x]]$data$cal_V, na.rm = TRUE), 
+#             sigma=1.3^(sd(fs_list[[x]]$data$cal_V, na.rm = TRUE))
+#         )
+
+#         res<-optim(
+#             init,
+#             obj_fun_ln,
+#             NULL,
+#             fs_list[[x]]$data$cal_V,
+#             params,
+#             method = "BFGS",
+#             control=list(fnscale=-1) #Maximizing instead of minimizing
+#         )
+
+#         mu<-res$par[1]
+#         sigma<-1.3^(res$par[2])|> round(6)
+#         mean_lognorm<-exp(mu+0.5*sigma^2) |> round(6)
+#         sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1) |> round(6)
+#         mode<-exp(mu-sigma^2) |> round(6)
+#         # n<-length(fs_list[[x]]$data$cal_V)
+#         # me<- 1.96*sqrt((sd_lognorm^2)/n+(sd_lognorm^4)/(2*(n-1)))
+#         ev_params<-c(
+#             mu = mu,
+#             sigma = sigma,
+#             mean=mean_lognorm,
+#             sd=sd_lognorm,
+#             mode=mode,
+#             median=exp(mu) |> round(6),
+#             convergence = res$convergence,
+#             id = x,
+#             dist = "lognormal"
+#             # n = n,
+#             # mu_LCI = mu_hat*exp(-me),
+#             # mu_UCI = mu_hat*exp(me)
+
+#         )
+#         return(ev_params)
+#     },
+#     mc.cores = mc_cores
+# )
 
 # names(lognorm_res_list)<-names(fs_list)
 lognorm_tbl<-do.call(rbind,lognorm_res_list)
@@ -91,55 +98,62 @@ lognorm_tbl<-do.call(rbind,lognorm_res_list)
 
 trc_norm_res_list<-mclapply(
     names(fs_list),
-    function(x){
-        params<-list(
-            gauss_int=gauss_hermite,
-            epsilon_mu=fs_list[[x]]$epsilon_mu,
-            epsilon_sigma=fs_list[[x]]$epsilon_sigma
-        )
-        init<-c(
-            mu=mean(fs_list[[x]]$data$cal_V, na.rm = TRUE), 
-            sigma=1.3^(sd(fs_list[[x]]$data$cal_V, na.rm = TRUE))
-        )
-        res<-optim(
-            init,
-            obj_fun_f,
-            NULL,
-            f_trc_norm,
-            fs_list[[x]]$data$cal_V,
-            params,
-            method = "BFGS",
-            control=list(fnscale=-1)
-        )
-        mu<-res$par[1]
-        sigma<-1.3^res$par[2]
-        alpha <- -mu/sigma
-        Z = 1 - pnorm(0,mean=mu, sd=sigma)
-        num = dnorm(0,mean=mu,sd=sigma)
-        mean_trcnorm = mu+sigma*num/Z
-        num_median = pnorm(0,mean=mu,sd=sigma)+1
-        median_trcnorm = mu+qnorm(num_median/2, mean=mu, sd=sigma)*sigma
-        variance_trcnorm = sigma*sigma*(1+alpha*num/Z-(num/Z)^2)
-        # n<-sum(!is.na(fs_list[[x]]$data$cal_V))
-        # me<-1.96*sigma/sqrt(n)
-        ev_params<-c(
-            mu = mu,
-            sigma = sigma,
-            mean=mean_trcnorm, 
-            sd= sqrt(variance_trcnorm),
-            mode = mu,
-            median = median_trcnorm,
-            convergence = res$convergence,
-            id = x,
-            dist = "truncated normal"
-            # n = n#,
-            # mu_LCI = mu-1.96*sigma/sqrt(n),
-            # mu_UCI = mu+1.96*sigma/sqrt(n)
-        )
-        return(ev_params)
-    },
+    deconvolute_trcnorm,
+    fs_list=fs_list,
     mc.cores = mc_cores
 )
+
+# trc_norm_res_list<-mclapply(
+#     names(fs_list),
+#     function(x){
+#         params<-list(
+#             gauss_int=gauss_hermite,
+#             epsilon_mu=fs_list[[x]]$epsilon_mu,
+#             epsilon_sigma=fs_list[[x]]$epsilon_sigma
+#         )
+#         init<-c(
+#             mu=mean(fs_list[[x]]$data$cal_V, na.rm = TRUE), 
+#             sigma=1.3^(sd(fs_list[[x]]$data$cal_V, na.rm = TRUE))
+#         )
+#         res<-optim(
+#             init,
+#             obj_fun_f,
+#             NULL,
+#             f_trc_norm,
+#             fs_list[[x]]$data$cal_V,
+#             params,
+#             method = "BFGS",
+#             control=list(fnscale=-1)
+#         )
+#         mu<-res$par[1]
+#         sigma<-1.3^res$par[2]
+#         alpha <- -mu/sigma
+#         Z = 1 - pnorm(0,mean=mu, sd=sigma)
+#         num = dnorm(0,mean=mu,sd=sigma)
+#         mean_trcnorm = mu+sigma*num/Z
+#         num_median = pnorm(0,mean=mu,sd=sigma)+1
+#         median_trcnorm = mu+qnorm(num_median/2, mean=mu, sd=sigma)*sigma
+#         variance_trcnorm = sigma*sigma*(1+alpha*num/Z-(num/Z)^2)
+#         # n<-sum(!is.na(fs_list[[x]]$data$cal_V))
+#         # me<-1.96*sigma/sqrt(n)
+#         ev_params<-c(
+#             mu = mu,
+#             sigma = sigma,
+#             mean=mean_trcnorm, 
+#             sd= sqrt(variance_trcnorm),
+#             mode = mu,
+#             median = median_trcnorm,
+#             convergence = res$convergence,
+#             id = x,
+#             dist = "truncated normal"
+#             # n = n#,
+#             # mu_LCI = mu-1.96*sigma/sqrt(n),
+#             # mu_UCI = mu+1.96*sigma/sqrt(n)
+#         )
+#         return(ev_params)
+#     },
+#     mc.cores = mc_cores
+# )
 
 # names(trc_norm_res_list)<-names(fs_list)
 
@@ -147,6 +161,7 @@ trc_norm_res_list<-mclapply(
 
 lognorm_tbl<-do.call(rbind,lognorm_res_list)
 trcnorm_tbl<-do.call(rbind,trc_norm_res_list)
+
 # rbind(
 #     lognorm_tbl,
 #     cbind(trcnorm_tbl,mode=NA, median=NA)[,c(1,2,3,4,8,9,5,6,7)]
@@ -168,6 +183,7 @@ mle_deconv_tbl <-rbind(lognorm_tbl,trcnorm_tbl) |>
         sic_3,dist,mu.mu:median.mu
     ) %>%
     arrange(desc(sic_3),dist)
+
 # mle_deconv_tbl<-mle_deconv_tbl |> as.data.frame() %>%
 #     mutate(
 #         across(
@@ -193,8 +209,11 @@ save(
 
 col_df <- colombia_data_frame %>%
     select(
-        sic_3, log_mats_share, juridical_organization, gross_output, year, plant, k, l, y
+        sic_3, log_mats_share, juridical_organization, 
+        gross_output, year, plant, k, l, y,
+        log_sales
     )
+
 
 boot_res_list<-mclapply(
     1:200,
@@ -202,7 +221,7 @@ boot_res_list<-mclapply(
     resampled_data<-resample_by_group(col_df,sic_3)
     ### First Stage -------------------------
     fs_list_temp<-mapply(
-        first_stage_panel, #sic_3, log_mats_share, juridical_organization, gross_output, year, plant, k, l
+        first_stage_panel, #sic_3,log_mats_share, juridical_organization, gross_output, year, plant, k, l
         run_vars[,"inds"],
         run_vars[,"input"],
         MoreArgs = list(data=resampled_data),
@@ -211,124 +230,167 @@ boot_res_list<-mclapply(
     )
 
     names(fs_list_temp)<-paste(run_vars[,"inds"],run_vars[,"input"])
-    # names(fs_list)<-run_vars[,"inds"] #Only one Intermediate materials
     ### Deconvluting LogNormal Distribution ---------------
 
     lognorm_temp<-lapply(
         names(fs_list_temp),
-        function(x){
-            params<-list(
-                gauss_int=gauss_hermite,
-                epsilon_mu=fs_list_temp[[x]]$epsilon_mu,
-                epsilon_sigma=fs_list_temp[[x]]$epsilon_sigma
-            )
-
-            init<-c(
-                mu=mean(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE), 
-                sigma=1.3^(sd(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE))
-            )
-
-            res<-optim(
-                init,
-                obj_fun_ln,
-                NULL,
-                fs_list_temp[[x]]$data$cal_V,
-                params,
-                method = "BFGS",
-                control=list(fnscale=-1) #Maximizing instead of minimizing
-            )
-
-            mu<-res$par[1]
-            sigma<-1.3^(res$par[2])|> round(6)
-            mean_lognorm<-exp(mu+0.5*sigma^2) |> round(6)
-            sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1) |> round(6)
-            mode<-exp(mu-sigma^2) |> round(6)
-            # n<-length(fs_list[[x]]$data$cal_V)
-            # me<- 1.96*sqrt((sd_lognorm^2)/n+(sd_lognorm^4)/(2*(n-1)))
-            ev_params<-c(
-                mu = mu,
-                sigma = sigma,
-                mean=mean_lognorm,
-                sd=sd_lognorm,
-                mode=mode,
-                median=exp(mu) |> round(6),
-                convergence = res$convergence,
-                id = x,
-                dist = "lognormal"
-                # n = n,
-                # mu_LCI = mu_hat*exp(-me),
-                # mu_UCI = mu_hat*exp(me)
-
-            )
-            return(ev_params)
-        }#,
-        # mc.cores = mc_cores
+        deconvolute_lognorm,
+        fs_list=fs_list_temp
     )
 
-    # names(lognorm_res_list)<-names(fs_list_temp)
     lognorm_tbl_temp<-do.call(rbind,lognorm_temp)
 
     ### Truncated Normal ---------------------
 
     trc_norm_temp<-lapply(
         names(fs_list_temp),
-        function(x){
-            params<-list(
-                gauss_int=gauss_hermite,
-                epsilon_mu=fs_list_temp[[x]]$epsilon_mu,
-                epsilon_sigma=fs_list_temp[[x]]$epsilon_sigma
-            )
-            init<-c(
-                mu=mean(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE), 
-                sigma=1.3^(sd(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE))
-            )
-            res<-optim(
-                init,
-                obj_fun_f,
-                NULL,
-                f_trc_norm,
-                fs_list_temp[[x]]$data$cal_V,
-                params,
-                method = "BFGS",
-                control=list(fnscale=-1)
-            )
-            mu<-res$par[1]
-            sigma<-1.3^res$par[2]
-            alpha <- -mu/sigma
-            Z = 1 - pnorm(0,mean=mu, sd=sigma)
-            num = dnorm(0,mean=mu,sd=sigma)
-            mean_trcnorm = mu+sigma*num/Z
-            num_median = pnorm(0,mean=mu,sd=sigma)+1
-            median_trcnorm = mu+qnorm(num_median/2, mean=mu, sd=sigma)*sigma
-            variance_trcnorm = sigma*sigma*(1+alpha*num/Z-(num/Z)^2)
-            # n<-sum(!is.na(fs_list[[x]]$data$cal_V))
-            # me<-1.96*sigma/sqrt(n)
-            ev_params<-c(
-                mu = mu,
-                sigma = sigma,
-                mean=mean_trcnorm, 
-                sd= sqrt(variance_trcnorm),
-                mode = mu,
-                median = median_trcnorm,
-                convergence = res$convergence,
-                id = x,
-                dist = "truncated normal"
-                # n = n#,
-                # mu_LCI = mu-1.96*sigma/sqrt(n),
-                # mu_UCI = mu+1.96*sigma/sqrt(n)
-            )
-            return(ev_params)
-        }#,
-        # mc.cores = mc_cores
+        deconvolute_trcnorm,
+        fs_list=fs_list_temp
     )
 
-    # names(trc_norm_res_list)<-names(fs_list_temp)
     trunc_norm_tbl_temp<-do.call(rbind,trc_norm_temp)
+
     if(i %% 20==0){cat("Done with bootstrap replicate:",i,"\n")}
+
     return(rbind(lognorm_tbl_temp,trunc_norm_tbl_temp))
     },
     mc.cores = mc_cores
 )
+
+# boot_res_list<-mclapply(
+#     1:200,
+#     function(i){
+#     resampled_data<-resample_by_group(col_df,sic_3)
+#     ### First Stage -------------------------
+#     fs_list_temp<-mapply(
+#         first_stage_panel, #sic_3,log_mats_share, juridical_organization, gross_output, year, plant, k, l
+#         run_vars[,"inds"],
+#         run_vars[,"input"],
+#         MoreArgs = list(data=resampled_data),
+#         SIMPLIFY = FALSE#,
+#         # mc.cores = mc_cores
+#     )
+
+#     names(fs_list_temp)<-paste(run_vars[,"inds"],run_vars[,"input"])
+#     # names(fs_list)<-run_vars[,"inds"] #Only one Intermediate materials
+    
+#     ### Deconvluting LogNormal Distribution ---------------
+
+#     lognorm_temp<-lapply(
+#         names(fs_list_temp),
+#         function(x){
+#             params<-list(
+#                 gauss_int=gauss_hermite,
+#                 epsilon_mu=fs_list_temp[[x]]$epsilon_mu,
+#                 epsilon_sigma=fs_list_temp[[x]]$epsilon_sigma
+#             )
+
+#             init<-c(
+#                 mu=mean(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE), 
+#                 sigma=1.3^(sd(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE))
+#             )
+
+#             res<-optim(
+#                 init,
+#                 obj_fun_ln,
+#                 NULL,
+#                 fs_list_temp[[x]]$data$cal_V,
+#                 params,
+#                 method = "BFGS",
+#                 control=list(fnscale=-1) #Maximizing instead of minimizing
+#             )
+
+#             mu<-res$par[1]
+#             sigma<-1.3^(res$par[2])|> round(6)
+#             mean_lognorm<-exp(mu+0.5*sigma^2) |> round(6)
+#             sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1) |> round(6)
+#             mode<-exp(mu-sigma^2) |> round(6)
+#             # n<-length(fs_list[[x]]$data$cal_V)
+#             # me<- 1.96*sqrt((sd_lognorm^2)/n+(sd_lognorm^4)/(2*(n-1)))
+#             ev_params<-c(
+#                 mu = mu,
+#                 sigma = sigma,
+#                 mean=mean_lognorm,
+#                 sd=sd_lognorm,
+#                 mode=mode,
+#                 median=exp(mu) |> round(6),
+#                 convergence = res$convergence,
+#                 id = x,
+#                 dist = "lognormal"
+#                 # n = n,
+#                 # mu_LCI = mu_hat*exp(-me),
+#                 # mu_UCI = mu_hat*exp(me)
+
+#             )
+#             return(ev_params)
+#         }#,
+#         # mc.cores = mc_cores
+#     )
+
+#     # names(lognorm_res_list)<-names(fs_list_temp)
+#     lognorm_tbl_temp<-do.call(rbind,lognorm_temp)
+
+#     ### Truncated Normal ---------------------
+
+#     trc_norm_temp<-lapply(
+#         names(fs_list_temp),
+#         function(x){
+#             params<-list(
+#                 gauss_int=gauss_hermite,
+#                 epsilon_mu=fs_list_temp[[x]]$epsilon_mu,
+#                 epsilon_sigma=fs_list_temp[[x]]$epsilon_sigma
+#             )
+#             init<-c(
+#                 mu=mean(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE), 
+#                 sigma=1.3^(sd(fs_list_temp[[x]]$data$cal_V, na.rm = TRUE))
+#             )
+#             res<-optim(
+#                 init,
+#                 obj_fun_f,
+#                 NULL,
+#                 f_trc_norm,
+#                 fs_list_temp[[x]]$data$cal_V,
+#                 params,
+#                 method = "BFGS",
+#                 control=list(fnscale=-1)
+#             )
+#             mu<-res$par[1]
+#             sigma<-1.3^res$par[2]
+#             alpha <- -mu/sigma
+#             Z = 1 - pnorm(0,mean=mu, sd=sigma)
+#             num = dnorm(0,mean=mu,sd=sigma)
+#             mean_trcnorm = mu+sigma*num/Z
+#             num_median = pnorm(0,mean=mu,sd=sigma)+1
+#             median_trcnorm = mu+qnorm(num_median/2, mean=mu, sd=sigma)*sigma
+#             variance_trcnorm = sigma*sigma*(1+alpha*num/Z-(num/Z)^2)
+#             # n<-sum(!is.na(fs_list[[x]]$data$cal_V))
+#             # me<-1.96*sigma/sqrt(n)
+#             ev_params<-c(
+#                 mu = mu,
+#                 sigma = sigma,
+#                 mean=mean_trcnorm, 
+#                 sd= sqrt(variance_trcnorm),
+#                 mode = mu,
+#                 median = median_trcnorm,
+#                 convergence = res$convergence,
+#                 id = x,
+#                 dist = "truncated normal"
+#                 # n = n#,
+#                 # mu_LCI = mu-1.96*sigma/sqrt(n),
+#                 # mu_UCI = mu+1.96*sigma/sqrt(n)
+#             )
+#             return(ev_params)
+#         }#,
+#         # mc.cores = mc_cores
+#     )
+
+#     # names(trc_norm_res_list)<-names(fs_list_temp)
+#     trunc_norm_tbl_temp<-do.call(rbind,trc_norm_temp)
+#     if(i %% 20==0){cat("Done with bootstrap replicate:",i,"\n")}
+#     return(rbind(lognorm_tbl_temp,trunc_norm_tbl_temp))
+#     },
+#     mc.cores = mc_cores
+# )
 
 ## Saving Prelim Results ---------------------------------
 

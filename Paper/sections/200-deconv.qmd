@@ -136,7 +136,7 @@ load("../Code/Products/boot_tax_ev_mmt.RData")
 
 tax_ev_boot_tbl %>%
   kbl(
-    col.names = c("SIC","$\\mathbb{E}[e_{it}]$", "LCI", "UCI"),
+    col.names = c("SIC","Mean", "LCI", "UCI"),
     digits = 4,
     table.attr = 'data-quarto-disable-processing="true"'
   ) %>%
@@ -324,6 +324,10 @@ mle_deconv_tbl %>%
 
 ```
 
+Both the lognormal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of ther probability density functions. The standard devitaion is larger in the lognormal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the lognormal. Finally, the median is lower than the mean in the case of the lognormal, but higher than the mean in the case of the truncated normal because of the truncation from below.
+
+Both distributions show higher estimates of the average overreporting in logs than using only moments. Now it looks like firms evade taxes by inflating their cost of their materials by 40 percent or more. 
+
 @tbl-deconv-mle-boot shows the bias corrected bootstrap confidence intervals for the mean of each distribution by industry using 200 replicates. 
 
 
@@ -354,13 +358,9 @@ boot_mle_deconv_tbl %>%
 ```
 
 
-Both distributions show higher estimates of the average overreporting in logs than using only moments. Now it looks like firms evade taxes by inflating their cost of their materials by 40 percent or more. 
-
 The difference between our previous estimates using moments can be explained by the fact that the log-normal and runcated distribution are restricted to positive values while we did not applied the restriction when using moments. Were we to take the average of only the positive values the mean of the moments method would be higher and closer to the log-normal and truncated normal distributions. 
 
 From the perspective of theory, firms would have inventives to overreport their materials. Therefore, using moments to estimate overreporting without restricting to positive values like in the case of the MLE method using a lognormal or truncated distribution might underestimate tax evasion through cost overreporting. 
-
-Both the lognormal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of ther probability density functions. The standard devitaion is larger in the lognormal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the lognormal. Finally, the median is lower than the mean in the case of the lognormal, but higher than the mean in the case of the truncated normal because of the truncation from below.
 
 
 ::: {#fig-density-plots layout-ncol="1" }
@@ -435,6 +435,8 @@ Truncated Normal (red) and Log-Normal (blue) distribution of the overreporting o
 
 ### Production Function
 
+@tbl-CD-comparision displays the results using the identifcation strategy 
+
 ```{r}
 #| label: tbl-CD-comparision
 #| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is a third degree polynomial. $Z=\\{k_{it},l_{it}\\}$.
@@ -455,6 +457,8 @@ cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
   kable_classic(full_width=F, html_font = "Cambria")
 
 ```
+
+
 
 
 ### By Year

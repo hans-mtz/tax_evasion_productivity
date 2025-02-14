@@ -359,10 +359,11 @@ first_stage_panel <- function(sic, var, data) {
         mutate(
             # y = log(gross_output),
             cal_V = .data[[var]] - log(beta) - log(big_E),
-            cal_W = y-beta*(.data[[var]]-cal_V)
+            m  = .data[[var]] + log_sales, #log(materials/sales)+log(sales)=log(materials)
+            cal_W = y-beta*(m-cal_V)
         ) %>%
         select(
-            sic_3, year, plant, cal_V, cal_W, k, l, y
+            sic_3, year, plant, cal_V, cal_W, m, k, l, y
         )
 
     result_list <- list(
@@ -374,6 +375,10 @@ first_stage_panel <- function(sic, var, data) {
     )
     return(result_list)
 }
+
+## LogNormal and Truncated
+
+## Production Function & Productivity -----------------
 
 E_h <- function(W,params=params){
 
@@ -495,7 +500,143 @@ resample_by_group<-function(data,...){
 }
 
 
+## MLE Deconvulution Functions -------------------
+
+
+deconvolute_lognorm<-function(x,fs_list){
+    params<-list(
+        gauss_int=gauss_hermite,
+        epsilon_mu=fs_list[[x]]$epsilon_mu,
+        epsilon_sigma=fs_list[[x]]$epsilon_sigma
+    )
+
+    init<-c(
+        mu=mean(fs_list[[x]]$data$cal_V, na.rm = TRUE), 
+        sigma=1.3^(sd(fs_list[[x]]$data$cal_V, na.rm = TRUE))
+    )
+
+    res<-optim(
+        init,
+        obj_fun_ln,
+        NULL,
+        fs_list[[x]]$data$cal_V,
+        params,
+        method = "BFGS",
+        control=list(fnscale=-1) #Maximizing instead of minimizing
+    )
+
+    mu<-res$par[1]
+    sigma<-1.3^(res$par[2])|> round(6)
+    mean_lognorm<-exp(mu+0.5*sigma^2) |> round(6)
+    sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1) |> round(6)
+    mode<-exp(mu-sigma^2) |> round(6)
+    # n<-length(fs_list[[x]]$data$cal_V)
+    # me<- 1.96*sqrt((sd_lognorm^2)/n+(sd_lognorm^4)/(2*(n-1)))
+    ev_params<-c(
+        mu = mu,
+        sigma = sigma,
+        mean=mean_lognorm,
+        sd=sd_lognorm,
+        mode=mode,
+        median=exp(mu) |> round(6),
+        convergence = res$convergence,
+        id = x,
+        dist = "lognormal"
+        # n = n,
+        # mu_LCI = mu_hat*exp(-me),
+        # mu_UCI = mu_hat*exp(me)
+
+    )
+    return(ev_params)
+}
+
+deconvolute_trcnorm<-function(x,fs_list){
+    params<-list(
+        gauss_int=gauss_hermite,
+        epsilon_mu=fs_list[[x]]$epsilon_mu,
+        epsilon_sigma=fs_list[[x]]$epsilon_sigma
+    )
+    init<-c(
+        mu=mean(fs_list[[x]]$data$cal_V, na.rm = TRUE), 
+        sigma=1.3^(sd(fs_list[[x]]$data$cal_V, na.rm = TRUE))
+    )
+    res<-optim(
+        init,
+        obj_fun_f,
+        NULL,
+        f_trc_norm,
+        fs_list[[x]]$data$cal_V,
+        params,
+        method = "BFGS",
+        control=list(fnscale=-1)
+    )
+    mu<-res$par[1]
+    sigma<-1.3^res$par[2]
+    alpha <- -mu/sigma
+    Z = 1 - pnorm(0,mean=mu, sd=sigma)
+    num = dnorm(0,mean=mu,sd=sigma)
+    mean_trcnorm = mu+sigma*num/Z
+    num_median = pnorm(0,mean=mu,sd=sigma)+1
+    median_trcnorm = mu+qnorm(num_median/2, mean=mu, sd=sigma)*sigma
+    variance_trcnorm = sigma*sigma*(1+alpha*num/Z-(num/Z)^2)
+    # n<-sum(!is.na(fs_list[[x]]$data$cal_V))
+    # me<-1.96*sigma/sqrt(n)
+    ev_params<-c(
+        mu = mu,
+        sigma = sigma,
+        mean=mean_trcnorm, 
+        sd= sqrt(variance_trcnorm),
+        mode = mu,
+        median = median_trcnorm,
+        convergence = res$convergence,
+        id = x,
+        dist = "truncated normal"
+        # n = n#,
+        # mu_LCI = mu-1.96*sigma/sqrt(n),
+        # mu_UCI = mu+1.96*sigma/sqrt(n)
+    )
+    return(ev_params)
+}
+
+estimate_prod_fn<-function(x,fs_list){
+    params<-list(
+        gauss_int=gauss_hermite,
+        epsilon_mu=fs_list[[x]]$epsilon_mu,
+        epsilon_sigma=fs_list[[x]]$epsilon_sigma,
+        beta = fs_list[[x]]$beta
+    )
+
+    alpha0<-coef(
+        lm(
+            cal_W ~ k+l,
+            fs_list[[x]]$data
+        )
+    )
+
+    res<-optim(
+        alpha0[-1],
+        obj_fun_markov,
+        NULL,
+        fs_list[[x]]$data,
+        params,
+        method = "BFGS",
+        control = list(
+            maxit = 300
+        )
+    )
+    return(
+        list(
+            coeffs=c(
+                m=fs_list[[x]]$beta,
+                res$par
+                ),
+            convergence = res$convergence
+            )
+    )
+}
+
 
 ## Saving functions --------------------
+
 print("Saving functions")
 save(list=ls(), file="Code/Products/deconv_funs.Rdata")

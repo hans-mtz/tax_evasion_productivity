@@ -110,40 +110,53 @@ $$
 \end{aligned}
 $$ {#eq-big-w-reg}
 
-To learn $\alpha$ and $h$, we need to find instruments $Z$ such that,
-$$
-\begin{aligned}    
- \mathbb{E}[&\mathcal{W}_{it}|Z_{it}]\\
- &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}_{\varepsilon_{t-1}}\left[\mathbb{E}[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it},\varepsilon_{t-1}]|Z_{it}\right]\\
- &=\alpha_K k_{it}+\alpha_L l_{it}\\
- &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
- &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}\left[\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\varepsilon_{it-1}|Z_{it}\right]\\
-&=\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})
-\end{aligned}
-$$
-
-
-The first line should follow from the orthogonality of the output shock $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$ and the law of iterated expectations. The second line should follow from the definition of expectation and the independence of the output shock of the previous period. The third line follows from the interchangeability of integrals. Thus, $\alpha$ and $h$ are identified.
-
-|     |  Orthogonality     |
-|:----|:----------------:|
-|$\eta_{it}$ | $k_{it},l_{it},\varepsilon_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
-| $\varepsilon_{it}$ | $k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
-| $\varepsilon_{it-1}$ | $k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}$|
-
-
-Orthoganility of $\eta_{it}$ follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it},l_{it}$) being predetermined.
-
-<!-- To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$, -->
-
-Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}\}$ 
-
-Clearly, if $h(\xi)=\delta_0 +\delta_1\xi$, then
+If $h(\xi)=\delta_0 +\delta_1\xi$, to learn $\alpha$ and $h$, we need to find instruments $Z$ such that,
 
 $$
 \mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\delta_1(1-\beta)\varepsilon_{it-1}|Z]=0.
 $$ {#eq-eta-moments}
 
+Alternatively, when $h$ is non-linear,
+$$
+\begin{aligned}    
+ \mathbb{E}[&\mathcal{W}_{it}|Z_{it}]\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}_{\varepsilon_{t-1}}\left[\mathbb{E}[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it},\varepsilon_{t-1}]|Z_{it}\right]\\
+  &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it},\varepsilon_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1}|Z_{it})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it},\varepsilon_{it-1}}(\mathcal{W}_{it},\varepsilon_{it-1}|Z_{it})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
+  &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})d\mathcal{W}_{it}\\
+&=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}\left[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it}\right]\\
+&=\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})
+\end{aligned}
+$$
+
+
+The first line should follow from the orthogonality of the output shock $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$ and the law of iterated expectations. The second line uses the definition of expectation. The third line should follow from the independence of the output shock of the previous period $\varepsilon_{it-1}$ with respect $\mathcal{W}_{it}$ and $Z_{it}$. The fourth line follows from the property of independent varibles, their joint distribution is the multiplication of their marginal distributions. The fifth line integrates $\varepsilon_{it-1}$ from the joint distribution of $\mathcal{W}_{it}$ and $\varepsilon_{it-1}$ resulting in the marginal of $\mathcal{W}_{it}$. The sixth line uses the definition of the expectation again. Thus, $\alpha$ and $h$ are identified.
+
+@tbl-orth displays candidates for $Z$
+
+|     |  Orthogonality     |
+|:----|:----------------:|
+|$\eta_{it}$ | $k_{it},l_{it},\varepsilon_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
+| $\varepsilon_{it}$ | $k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
+| $\varepsilon_{it-1}$ | $k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}$| 
+
+: Orthogonality by Residuals {#tbl-orth}
+
+
+<!-- Orthoganility of $\eta_{it}$ follows from ($k_{it-1},l_{it-1},\mathcal{W}_{it-1}$) being known to the firm at period $t-1$, and ($k_{it},l_{it}$) being predetermined. -->
+
+<!-- To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$, -->
+
+The intercept set of available instruments could then be defined as $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m_{it_1}\}$.
+
+How many instruments are needed in practice? 
+
+In GNR code, one per element in constant of integration. Then, for Cobb-Douglas case, I use $Z_{it}=\{k_{it},l_{it}\}$, with $h$ as a third degree polynomial.
 
 
 ### Translog Production Function

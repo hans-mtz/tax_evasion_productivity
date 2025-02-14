@@ -8,12 +8,25 @@ load("Code/Products/deconv_funs.Rdata")
 load("Code/Products/boot_tax_ev_mmt.RData")
 load("Code/Products/boot_deconv_mle.RData")
 
+folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
+
 # Data Wrangling ------------------------------------
 # colombia_data_frame<-colombia_data_frame %>%
 #     mutate(
 #         log_ded_share = log(((materials+deductible_expenses)/sales)),
 #         log_mats_share = log((materials/sales))
 #     )
+
+# First Stage Panel ---------------------------------
+
+# fs_list<-mcmapply(
+#     first_stage_panel, #sic_3, log_mats_share, juridical_organization, gross_output, year, plant, k, l
+#     run_vars[,"inds"],
+#     run_vars[,"input"],
+#     MoreArgs = list(data=colombia_data_frame),
+#     SIMPLIFY = FALSE,
+#     mc.cores = mc_cores
+# )
 
 ## Setting up cores----------------------------------
 
@@ -25,59 +38,71 @@ mc_cores <- detectCores()-2
 
 ## Estimation ------------------------------------------
 
-
 (prod_fun_list<-mclapply(
     names(fs_list),
-    function(x){
-        params<-list(
-            gauss_int=gauss_hermite,
-            epsilon_mu=fs_list[[x]]$epsilon_mu,
-            epsilon_sigma=fs_list[[x]]$epsilon_sigma,
-            beta = fs_list[[x]]$beta
-        )
-
-        alpha0<-coef(
-            lm(
-                cal_W ~ k+l,
-                fs_list[[x]]$data
-            )
-        )
-
-        res<-optim(
-            alpha0[-1],
-            obj_fun_markov,
-            NULL,
-            fs_list[[x]]$data,
-            params,
-            method = "BFGS",
-            control = list(
-                maxit = 300
-            )
-        )
-        return(
-            list(
-                coeffs=c(
-                    m=fs_list[[x]]$beta,
-                    res$par
-                    ),
-                convergence = res$convergence==0
-                )
-        )
-    },
+    estimate_prod_fn,
+    fs_list=fs_list,
     mc.cores = mc_cores
 ))
+
+
+# (prod_fun_list<-mclapply(
+#     names(fs_list),
+#     function(x){
+#         params<-list(
+#             gauss_int=gauss_hermite,
+#             epsilon_mu=fs_list[[x]]$epsilon_mu,
+#             epsilon_sigma=fs_list[[x]]$epsilon_sigma,
+#             beta = fs_list[[x]]$beta
+#         )
+
+#         alpha0<-coef(
+#             lm(
+#                 cal_W ~ k+l,
+#                 fs_list[[x]]$data
+#             )
+#         )
+
+#         res<-optim(
+#             alpha0[-1],
+#             obj_fun_markov,
+#             NULL,
+#             fs_list[[x]]$data,
+#             params,
+#             method = "BFGS",
+#             control = list(
+#                 maxit = 300
+#             )
+#         )
+#         return(
+#             list(
+#                 coeffs=c(
+#                     m=fs_list[[x]]$beta,
+#                     res$par
+#                     ),
+#                 convergence = res$convergence==0
+#                 )
+#         )
+#     },
+#     mc.cores = mc_cores
+# ))
 
 names(prod_fun_list)<-names(fs_list)
 
 ## Collecting Results ------------------------------
 
-evasion_tbl<-sapply(names(prod_fun_list),\(x)prod_fun_list[[x]]$coeffs) |> t() |> round(4)
+evasion_tbl<-sapply(
+    names(prod_fun_list),
+    \(x)prod_fun_list[[x]]$coeffs
+) |> t() |> round(4)
+
 rownames(evasion_tbl) <- paste0(top_evading_inds[1:5])
+
 ## Reading Results from Fortran GNR CD to Compare -------------
 
 # Setting up folders and vars ----------------
 
-Stata_GNR_results_folder <- "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+# Stata_GNR_results_folder <- "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
 
 (CD_fortran_R <- lapply(
     # union(evasion_inds,gnr_inds),
