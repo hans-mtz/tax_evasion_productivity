@@ -435,11 +435,36 @@ Truncated Normal (red) and Log-Normal (blue) distribution of the overreporting o
 
 ### Production Function
 
-@tbl-CD-comparision displays the results using the identifcation strategy 
+@tbl-CD-ar1-comparision and [-@tbl-CD-comparision] display the results of estimating the production function parameters following the identification strategy described above. In @tbl-CD-ar1-comparision, I use an AR(1) model for the markov process of productivity and a third degree polynomial in [table @tbl-CD-comparision ]. In both cases, I employed $Z=\\{k_{it},l_{it}\\}$ as instruments.
+
+To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the markov process of productivity is a third degree polynomial and capital and labor the instruments.
+
+```{r}
+#| label: tbl-CD-ar1-comparision
+#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is an AR(1) process for 'Tax Evasion + GNR' but a third degree polynomial for 'GNR'. $Z=\\{k_{it},l_{it}\\}$.
+#| eval: true
+
+load("../Code/Products/deconv_prod_fun.RData")
+# load("../Code/Products/Fortran_CD_GNR.RData")
+
+
+cbind(evasion_tbl_ar1,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
+  kbl(
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  add_header_above(
+      c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3,"OLS"=3)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
 
 ```{r}
 #| label: tbl-CD-comparision
-#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is a third degree polynomial. $Z=\\{k_{it},l_{it}\\}$.
+#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is a third degree polynomial for both 'Tax Evasion + GNR' and 'GNR'. $Z=\\{k_{it},l_{it}\\}$.
 #| eval: true
 
 load("../Code/Products/deconv_prod_fun.RData")
@@ -458,6 +483,7 @@ cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
 
 ```
 
+In both tables, the estimates of correcting the production function parameters are similar. This provides evidence of the robustness of the results to misspecification in the markov process. 
 
 
 

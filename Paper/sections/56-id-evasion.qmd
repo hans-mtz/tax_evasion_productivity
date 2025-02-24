@@ -95,7 +95,9 @@ Let $\ln X_{it}=x_{it}$. With @eq-ob-ev, we can form the following observed vari
 $$
 \begin{aligned}
     \mathcal W_{it} & \equiv y_{it} - \beta (m_{it}-\mathcal{V}_{it})\\
-    & = y_{it} - \beta (m^*_{it}+e_{it}-\mathcal{V}_{it})\\
+    & = y_{it} - \beta (m^*_{it}+e_{it}-e_{it}+\varepsilon_{it})\\
+    % & = y_{it} - \beta (m^*_{it}+\varepsilon_{it})\\
+    & = y_{it} - \beta m^*_{it}-\beta\varepsilon_{it}\\
     & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
 \end{aligned}
 $$ {#eq-big-w}
@@ -120,30 +122,34 @@ Alternatively, when $h$ is non-linear,
 $$
 \begin{aligned}    
  \mathbb{E}[&\mathcal{W}_{it}|Z_{it}]\\
- &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}_{\varepsilon_{t-1}}\left[\mathbb{E}[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it},\varepsilon_{t-1}]|Z_{it}\right]\\
-  &=\alpha_K k_{it}+\alpha_L l_{it}\\
- &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it},\varepsilon_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1}|Z_{it})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
  &=\alpha_K k_{it}+\alpha_L l_{it}\\
- &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
+ &+\mathbb{E}\left[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it}\right]\\
  &=\alpha_K k_{it}+\alpha_L l_{it}\\
- &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it},\varepsilon_{it-1}}(\mathcal{W}_{it},\varepsilon_{it-1}|Z_{it})d\mathcal{W}_{it}d\varepsilon_{it-1}\\
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it-1},\varepsilon_{it-1}}(\mathcal{W}_{it-1},\varepsilon_{it-1}|Z_{it})d\mathcal{W}_{it-1}d\varepsilon_{it-1}\\
   &=\alpha_K k_{it}+\alpha_L l_{it}\\
- &+\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})d\mathcal{W}_{it}\\
-&=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}\left[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it}\right]\\
-&=\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it-1}}(\mathcal{W}_{it-1}|Z_{it},\varepsilon_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1}|Z_{it})d\mathcal{W}_{it-1}d\varepsilon_{it-1}\\
+  &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\int\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})f_{\mathcal{W}_{it-1}}(\mathcal{W}_{it-1}|Z_{it},\varepsilon_{it-1})d\varepsilon_{it-1} d\mathcal{W}_{it-1}\\
+ &=\alpha_K k_{it}+\alpha_L l_{it}\\
+ &+\mathbb{E}\left[\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\varepsilon_{it-1}}(\varepsilon_{it-1})d\varepsilon_{it-1}|Z_{it},\varepsilon_{it-1}\right]\\
+%   &=\alpha_K k_{it}+\alpha_L l_{it}\\
+%  &+\int h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})f_{\mathcal{W}_{it}}(\mathcal{W}_{it}|Z_{it})d\mathcal{W}_{it}\\
+% &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}\left[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})|Z_{it}\right]\\
+% &=\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})
+ &=\alpha_K k_{it}+\alpha_L l_{it}+\mathbb{E}\left[\mathbb{E}_{\varepsilon_{t-1}}[ h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})]|Z_{it},\varepsilon_{t-1}\right]\\
 \end{aligned}
 $$
 
 
-The first line should follow from the orthogonality of the output shock $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$ and the law of iterated expectations. The second line uses the definition of expectation. The third line should follow from the independence of the output shock of the previous period $\varepsilon_{it-1}$ with respect $\mathcal{W}_{it}$ and $Z_{it}$. The fourth line follows from the property of independent varibles, their joint distribution is the multiplication of their marginal distributions. The fifth line integrates $\varepsilon_{it-1}$ from the joint distribution of $\mathcal{W}_{it}$ and $\varepsilon_{it-1}$ resulting in the marginal of $\mathcal{W}_{it}$. The sixth line uses the definition of the expectation again. Thus, $\alpha$ and $h$ are identified.
+The first line follows from the orthogonality of the output shock of the current period $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$. The second line uses the definition of expectation. The third line decomposes the joint distribution of $\mathcal W_{it-1}$ and $\varepsilon_{it-1}$ using the Bayes' theorem. The fourth and fifth lines follow from the independence of the output shock of the previous period $\varepsilon_{it-1}$ with respect to $Z_{it}$ and the interchangeability of integrals. The sixth line uses the definition of the expectation again. Thus, $\alpha$ and $h$ are identified. Line six shows that we can take the expectation of $h(\cdot)$ with respect $\varepsilon_{t-1}$ and then form the moments using the intstruments $Z_{it}$. In principle, we can also use $\varepsilon_{it-1}$ as instrument. This identification works great for [polynomials](https://github.com/hans-mtz/tax_evasion_productivity/main/Paper/Tax-Prod.html).
 
 @tbl-orth displays candidates for $Z$
 
 |     |  Orthogonality     |
 |:----|:----------------:|
-|$\eta_{it}$ | $k_{it},l_{it},\varepsilon_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
-| $\varepsilon_{it}$ | $k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
-| $\varepsilon_{it-1}$ | $k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}$ $k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}$| 
+|$\eta_{it}$ | $k_{it},l_{it},\varepsilon_{it}$, $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
+| $\varepsilon_{it}$ | $k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}$, $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
+| $\varepsilon_{it-1}$ | $k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}$, $k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}$| 
 
 : Orthogonality by Residuals {#tbl-orth}
 
@@ -152,12 +158,19 @@ The first line should follow from the orthogonality of the output shock $\mathbb
 
 <!-- To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$, -->
 
-The intercept set of available instruments could then be defined as $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m_{it_1}\}$.
+The ideal instruments are $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m_{it-1}\}$.
 
-How many instruments are needed in practice? 
+How many instruments are needed in practice? I use one per element in constant of integration to be just-identified. Then, for Cobb-Douglas case, I use $Z_{it}=\{k_{it},l_{it}\}$, with $h$ as a third degree polynomial.
 
-In GNR code, one per element in constant of integration. Then, for Cobb-Douglas case, I use $Z_{it}=\{k_{it},l_{it}\}$, with $h$ as a third degree polynomial.
 
+Once the paramaters of the production function are identified, we can use the following observed variable to recover $\omega_{it}$
+
+$$
+\begin{aligned}
+    \widetilde{\mathcal W_{it}} & \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
+    & = \omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+$$ {#eq-big-w}
 
 ### Translog Production Function
 

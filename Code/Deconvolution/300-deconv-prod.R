@@ -38,10 +38,25 @@ mc_cores <- detectCores()-2
 
 ## Estimation ------------------------------------------
 
+### h- AR(1)
+
+(prod_fun_list_ar1<-mclapply(
+    names(fs_list),
+    estimate_prod_fn,
+    fs_list=fs_list,
+    f=obj_fun_ar1,
+    mc.cores = mc_cores
+))
+
+names(prod_fun_list_ar1)<-names(fs_list)
+
+### h - third degree polynomial
+
 (prod_fun_list<-mclapply(
     names(fs_list),
     estimate_prod_fn,
     fs_list=fs_list,
+    f=obj_fun_markov,
     mc.cores = mc_cores
 ))
 
@@ -98,6 +113,13 @@ evasion_tbl<-sapply(
 
 rownames(evasion_tbl) <- paste0(top_evading_inds[1:5])
 
+evasion_tbl_ar1<-sapply(
+    names(prod_fun_list_ar1),
+    \(x)prod_fun_list_ar1[[x]]$coeffs
+) |> t() |> round(4)
+
+rownames(evasion_tbl_ar1) <- paste0(top_evading_inds[1:5])
+
 ## Reading Results from Fortran GNR CD to Compare -------------
 
 # Setting up folders and vars ----------------
@@ -143,6 +165,6 @@ rownames(ols_CD)<-paste0(top_evading_inds[1:5])
 ## Saving results -----------------------------------
 
 save(
-    prod_fun_list, evasion_tbl, CD_fortran_tbl_R, ols_CD,
+    prod_fun_list, prod_fun_list_ar1, evasion_tbl, evasion_tbl_ar1,CD_fortran_tbl_R, ols_CD,
     file="Code/Products/deconv_prod_fun.RData"
 )

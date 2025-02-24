@@ -91,3 +91,8 @@ colombia_data_frame %>%
         desc(`Material Imports`),
         desc(Materials)
     )
+
+
+## prod fun estimates -----------------
+
+load("Code/Products/deconv_prod_fun.RData")

@@ -451,6 +451,32 @@ obj_fun_markov<-function(alpha,data,params){
 
 }
 
+obj_fun_ar1<-function(alpha,data,params){
+
+    eta <-data %>% 
+        ungroup() %>%
+        group_by(plant) %>%
+        mutate(
+            w_eps = cal_W - alpha[1]*k-alpha[2]*l,
+            lag_w_eps = lag(w_eps, order_by = year)
+        ) %>%
+        lm(w_eps~lag_w_eps, data=., na.action = na.exclude) |>
+        residuals()
+
+
+    moments<-apply(
+        data[c("k","l")],
+        2, 
+        function(i){
+        mean(i*eta, na.rm = TRUE)
+        }
+    )
+
+    obj <- t(moments) %*% moments
+    return(sqrt(obj[1]))
+
+}
+
 ## Truncated Normal Distribution funs -----------------------------------
 
 f_trc_norm <- function(epsilon,v,mu,sigma){
@@ -598,7 +624,7 @@ deconvolute_trcnorm<-function(x,fs_list){
     return(ev_params)
 }
 
-estimate_prod_fn<-function(x,fs_list){
+estimate_prod_fn<-function(x,fs_list,f){
     params<-list(
         gauss_int=gauss_hermite,
         epsilon_mu=fs_list[[x]]$epsilon_mu,
@@ -615,7 +641,7 @@ estimate_prod_fn<-function(x,fs_list){
 
     res<-optim(
         alpha0[-1],
-        obj_fun_markov,
+        f,
         NULL,
         fs_list[[x]]$data,
         params,
