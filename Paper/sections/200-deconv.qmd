@@ -369,6 +369,7 @@ From the perspective of theory, firms would have incentives to overreport their 
 #| warning: false
 #| error: false
 #| eval: true
+#| cache: true
 
 density_plots<-lapply(
     unique(mle_deconv_tbl$sic_3),
@@ -494,7 +495,7 @@ Examining the elasticities of capital and labor reveals variation across industr
 ### Productivity 
 
 
-I use @eq-big-w-squiggle assuming $\omega$ follows a normal distribution to deconvolute it from the output shock $\varepsilon$. @tbl-omega displays the estimates of the distribution parameters of $\omega$ assuming a parametric specification of an AR(1) and a third degree polynomial for the Markov process of $\omega$.
+Assuming $\omega$ follows a normal distribution and @eq-w-squiggle, I deconvolute it from the output shock $\varepsilon$. @tbl-omega displays the estimates of the distribution parameters of $\omega$ assuming a parametric specification of an AR(1) and a third degree polynomial for the Markov process of $\omega$.
 
 ```{r}
 #| label: tbl-omega
@@ -528,7 +529,7 @@ kbl(
 
 ```
 
-To compare my estimates of productivity without correcting for tax evasion, I simulated data by employing 1000 independent draws from $\omega$ and $\varepsilon$ using the estimated parameters in @tbl-omega. Then, I computed productivity, $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
+To compare productivity estimates corrected for tax-evasion to uncorrected, I simulated data by employing 1000 independent draws from $\omega$ and $\varepsilon$ using the parameters estimated for the 3D poly specification [@tbl-omega]. Then, I computed productivity, $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
 
 @tbl-prod-comparison compares summary statistics the simulated productivity using the estimated parameters after correcting for tax evasion with the summary statistics of the productivity estimates of GNR.
 
@@ -557,6 +558,8 @@ kbl(
 
 
 ```
+
+The corrected productivity estimates have lower means and smaller standard deviations than uncorrected estimates. Industries 322 and 342 sell half or more of their output to retailers and directly to consumers (see @sec-inter).
 
 ### By Year
 
