@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2025-02-24">
+<meta name="dcterms.date" content="2025-03-04">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax Evasion and Productivity</title>
@@ -60,19 +60,19 @@ div.csl-indent {
 <script src="Tax-Prod_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="Tax-Prod_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <style>
-.Definition {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
-.Theorem {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
 .Assumption {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
 .Proposition {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Definition {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
+.Theorem {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
@@ -198,12 +198,13 @@ window.Quarto = {
   <li><a href="#deconvoluting-tax-evasion-using-moments" id="toc-deconvoluting-tax-evasion-using-moments" class="nav-link" data-scroll-target="#deconvoluting-tax-evasion-using-moments"><span class="header-section-number">12.3</span> Deconvoluting Tax Evasion Using Moments</a></li>
   <li><a href="#deconvoluting-by-parametric-mle" id="toc-deconvoluting-by-parametric-mle" class="nav-link" data-scroll-target="#deconvoluting-by-parametric-mle"><span class="header-section-number">12.4</span> Deconvoluting by Parametric MLE</a></li>
   <li><a href="#production-function" id="toc-production-function" class="nav-link" data-scroll-target="#production-function"><span class="header-section-number">12.5</span> Production Function</a></li>
-  <li><a href="#by-year" id="toc-by-year" class="nav-link" data-scroll-target="#by-year"><span class="header-section-number">12.6</span> By Year</a></li>
+  <li><a href="#productivity" id="toc-productivity" class="nav-link" data-scroll-target="#productivity"><span class="header-section-number">12.6</span> Productivity</a></li>
+  <li><a href="#by-year" id="toc-by-year" class="nav-link" data-scroll-target="#by-year"><span class="header-section-number">12.7</span> By Year</a></li>
   </ul></li>
-  <li><a href="#tax-evasion-and-resource-misallocation" id="toc-tax-evasion-and-resource-misallocation" class="nav-link" data-scroll-target="#tax-evasion-and-resource-misallocation"><span class="header-section-number">13</span> Tax Evasion and Resource Misallocation</a></li>
+  <li><a href="#tax-evasion-and-resource-missallocation" id="toc-tax-evasion-and-resource-missallocation" class="nav-link" data-scroll-target="#tax-evasion-and-resource-missallocation"><span class="header-section-number">13</span> Tax Evasion and Resource Missallocation</a></li>
   
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../../Paper/Output/Tax-Prod.pdf"><i class="bi bi-file-pdf"></i>PDF (jasa)</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../../Output/Tax-Prod.pdf"><i class="bi bi-file-pdf"></i>PDF (jasa)</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -233,7 +234,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 24, 2025</p>
+      <p class="date">March 4, 2025</p>
     </div>
   </div>
   
@@ -264,8 +265,10 @@ window.Quarto = {
 <ul>
 <li>CD
 <ul>
-<li>Preliminary results of Tax Evasion: Moments, MLE (Normal and LogNormal)</li>
+<li>Preliminary results of Tax Evasion: Moments, MLE (Truncated Normal and LogNormal)</li>
+<li><strong>New</strong> Identification of PF parameters when <span class="math inline">\(h\)</span> is polynomial</li>
 <li>Preliminary results of PF parameters</li>
+<li><strong>New</strong> Productivity results</li>
 </ul></li>
 <li>TransLog
 <ul>
@@ -284,15 +287,15 @@ window.Quarto = {
 <ul>
 <li>Tax Evasion and Productivity
 <ul>
-<li>CD Productivity results comparison</li>
-<li>CD with two flexible inputs (Deductibles &amp; Non-Deductibles, Materials &amp; Services + Energy)</li>
+<li>Back of Envelope estimates for Gov Losses in Tax Revenue</li>
+<li>App of Productivity: Aggregate Productivity and Resource Misallocations</li>
 <li>Translog results</li>
 <li>Non-parametric Deconvolution</li>
 <li>Non-parametric PF</li>
 </ul></li>
 <li>DiD
 <ul>
-<li>Relaxing parallel trends: Linear trends that in the absence of policy change would have continue</li>
+<li>Relaxing parallel trends: Linear trends that in the absence of policy change would have continued</li>
 </ul></li>
 </ul>
 <!-- Intro -->
@@ -697,14 +700,14 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_asmiivwm7k7pm0muntvn</title>
+    <title>tinytable_049ep1iycrqffgk75qnp</title>
     <style>
-.table td.tinytable_css_x7l5qmfrs1x04pmd5yd2, .table th.tinytable_css_x7l5qmfrs1x04pmd5yd2 {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_kttvigprmt0lmy2r8ezj, .table th.tinytable_css_kttvigprmt0lmy2r8ezj {   padding-left: 1em; }
-.table td.tinytable_css_tlqyzqub3mctj0th4jst, .table th.tinytable_css_tlqyzqub3mctj0th4jst {    text-align: center; }
-.table td.tinytable_css_6gx1m6xlniwjv3xa7wd5, .table th.tinytable_css_6gx1m6xlniwjv3xa7wd5 {    border-top: solid 0.1em black; }
-.table td.tinytable_css_5xfcitd1kmbw7aquijl6, .table th.tinytable_css_5xfcitd1kmbw7aquijl6 {    font-weight: bold; border-bottom: solid 0.1em black; }
-.table td.tinytable_css_fsa2ry9f3hqevsj5i16i, .table th.tinytable_css_fsa2ry9f3hqevsj5i16i {    border-bottom: solid 0.1em white; }
+.table td.tinytable_css_7andduww96mjyjwevemy, .table th.tinytable_css_7andduww96mjyjwevemy {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_7ly55syjraxp8h53zfua, .table th.tinytable_css_7ly55syjraxp8h53zfua {   padding-left: 1em; }
+.table td.tinytable_css_r7eqb9fc8x99oa2jtq78, .table th.tinytable_css_r7eqb9fc8x99oa2jtq78 {    text-align: center; }
+.table td.tinytable_css_fmh9ihzlwpc6rm8vdux0, .table th.tinytable_css_fmh9ihzlwpc6rm8vdux0 {    border-top: solid 0.1em black; }
+.table td.tinytable_css_kh8dm8v7r1kr73dqnnxd, .table th.tinytable_css_kh8dm8v7r1kr73dqnnxd {    font-weight: bold; border-bottom: solid 0.1em black; }
+.table td.tinytable_css_fa04inl1y0ts54kta3tl, .table th.tinytable_css_fa04inl1y0ts54kta3tl {    border-bottom: solid 0.1em white; }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -722,7 +725,7 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 
   
     <div class="container">
-      <table class="table table-borderless" id="tinytable_asmiivwm7k7pm0muntvn" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_049ep1iycrqffgk75qnp" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -877,12 +880,12 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
     </div>
 
     <script>
-      function styleCell_tinytable_xiebkgchtxaefzjorh7y(i, j, css_id) {
-        var table = document.getElementById("tinytable_asmiivwm7k7pm0muntvn");
+      function styleCell_tinytable_1iivi6o5vepg05byn011(i, j, css_id) {
+        var table = document.getElementById("tinytable_049ep1iycrqffgk75qnp");
         table.rows[i].cells[j].classList.add(css_id);
       }
-      function insertSpanRow_83exvekyuief3oztrjlc(i, colspan, content) {
-        var table = document.getElementById('tinytable_asmiivwm7k7pm0muntvn');
+      function insertSpanRow_k3jfyddmhopm1mvyataq(i, colspan, content) {
+        var table = document.getElementById('tinytable_049ep1iycrqffgk75qnp');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -890,8 +893,8 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_xiebkgchtxaefzjorh7y(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_asmiivwm7k7pm0muntvn");
+      function spanCell_tinytable_1iivi6o5vepg05byn011(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_049ep1iycrqffgk75qnp");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -918,72 +921,72 @@ Table&nbsp;4: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 0, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 1, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 2, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 3, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 4, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 5, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(0, 6, 'tinytable_css_x7l5qmfrs1x04pmd5yd2') })
-window.addEventListener('load', function () { insertSpanRow_83exvekyuief3oztrjlc(5, 7, 'Intermediates') });
-window.addEventListener('load', function () { insertSpanRow_83exvekyuief3oztrjlc(1, 7, 'Share of Revenues') });
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(2, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(3, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(4, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(5, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(7, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(8, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(9, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(12, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(14, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(15, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(16, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(17, 0, 'tinytable_css_kttvigprmt0lmy2r8ezj') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 0, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 1, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 2, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 3, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 4, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 5, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(-1, 6, 'tinytable_css_tlqyzqub3mctj0th4jst') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 0, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 1, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 2, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 3, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 4, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 5, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(11, 6, 'tinytable_css_6gx1m6xlniwjv3xa7wd5') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 0, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 0, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 0, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 1, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 1, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 1, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 2, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 2, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 2, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 3, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 3, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 3, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 4, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 4, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 4, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 5, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 5, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 5, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(1, 6, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(6, 6, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(13, 6, 'tinytable_css_5xfcitd1kmbw7aquijl6') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 0, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 1, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 2, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 3, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 4, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 5, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
-window.addEventListener('load', function () { styleCell_tinytable_xiebkgchtxaefzjorh7y(10, 6, 'tinytable_css_fsa2ry9f3hqevsj5i16i') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 0, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 1, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 2, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 3, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 4, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 5, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(0, 6, 'tinytable_css_7andduww96mjyjwevemy') })
+window.addEventListener('load', function () { insertSpanRow_k3jfyddmhopm1mvyataq(5, 7, 'Intermediates') });
+window.addEventListener('load', function () { insertSpanRow_k3jfyddmhopm1mvyataq(1, 7, 'Share of Revenues') });
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(2, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(3, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(4, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(5, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(7, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(8, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(9, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(12, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(14, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(15, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(16, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(17, 0, 'tinytable_css_7ly55syjraxp8h53zfua') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 0, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 1, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 2, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 3, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 4, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 5, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(-1, 6, 'tinytable_css_r7eqb9fc8x99oa2jtq78') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 0, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 1, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 2, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 3, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 4, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 5, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(11, 6, 'tinytable_css_fmh9ihzlwpc6rm8vdux0') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 0, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 0, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 0, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 1, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 1, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 1, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 2, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 2, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 2, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 3, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 3, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 3, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 4, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 4, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 4, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 5, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 5, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 5, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(1, 6, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(6, 6, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(13, 6, 'tinytable_css_kh8dm8v7r1kr73dqnnxd') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 0, 'tinytable_css_fa04inl1y0ts54kta3tl') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 1, 'tinytable_css_fa04inl1y0ts54kta3tl') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 2, 'tinytable_css_fa04inl1y0ts54kta3tl') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 3, 'tinytable_css_fa04inl1y0ts54kta3tl') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 4, 'tinytable_css_fa04inl1y0ts54kta3tl') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 5, 'tinytable_css_fa04inl1y0ts54kta3tl') })
+window.addEventListener('load', function () { styleCell_tinytable_1iivi6o5vepg05byn011(10, 6, 'tinytable_css_fa04inl1y0ts54kta3tl') })
     </script>
 
   
@@ -1256,11 +1259,11 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_xfa868ok4a4h7iqo7jg0</title>
+    <title>tinytable_y6gx0bm2qkbsnu43spf5</title>
     <style>
-.table td.tinytable_css_pvqcq0tg021g6x5w9pp8, .table th.tinytable_css_pvqcq0tg021g6x5w9pp8 {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_h8kr80xkugrmeihatx09, .table th.tinytable_css_h8kr80xkugrmeihatx09 {    text-align: center; }
-.table td.tinytable_css_pwfa5agf81ujxf3a5pir, .table th.tinytable_css_pwfa5agf81ujxf3a5pir {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
+.table td.tinytable_css_o9vt47fknaa7w4is5ohb, .table th.tinytable_css_o9vt47fknaa7w4is5ohb {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_1jy9jkmsjjuaqd53h0y1, .table th.tinytable_css_1jy9jkmsjjuaqd53h0y1 {    text-align: center; }
+.table td.tinytable_css_fudbmyivb9f7htvhkqfr, .table th.tinytable_css_fudbmyivb9f7htvhkqfr {  font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;  }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -1278,7 +1281,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
 
   
     <div class="container">
-      <table class=" lightable-classic" id="tinytable_xfa868ok4a4h7iqo7jg0" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class=" lightable-classic" id="tinytable_y6gx0bm2qkbsnu43spf5" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -1298,7 +1301,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Exempt</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idccnvjsytwmqn7bwuiwol.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idnsxkm6dp8qr0dxd4qtb2.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>312</td>
@@ -1306,7 +1309,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Exempt</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idcao1y4goxrb32zj8pg2o.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idolfu0ng2k6ijxvbr4z21.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>322</td>
@@ -1314,7 +1317,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/ido7nja6lkaicx1ear8umq.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idtrmcnnefs2bz34obkcf6.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>381</td>
@@ -1322,7 +1325,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/ida24ik64bsjio9qp7cjd5.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/iddzbmzzynhj883r8fe9iz.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>321</td>
@@ -1330,7 +1333,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id78vq13v7gzsz5f3rfoe6.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idxwslnrrcht0wmkizdmmw.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>382</td>
@@ -1338,7 +1341,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/idvo2tirwv829y8ehx5xz8.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idtmfko54ko03n83fi239a.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>384</td>
@@ -1346,7 +1349,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/idv4zz1f63id7rtjv1gle7.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idjp91j8jh7w1u864tpgo4.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>383</td>
@@ -1354,7 +1357,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6 to 10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/id22k8b5sro1zlzlbl9ch3.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idr8moqi5bwxtqz7awxmum.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>313</td>
@@ -1362,7 +1365,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>- to 35;10</td>
                   <td>Increased</td>
                   <td>85</td>
-                  <td><img src="./tinytable_assets/idmivm85xvn8bad8c3rp2z.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idgqs561o5zgtbo9xyew4a.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>341</td>
@@ -1370,7 +1373,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idv3ep7hanvag7ozlojn5k.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id1iyuu3t7t8tww1afvm1c.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>324</td>
@@ -1378,7 +1381,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Increased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idvb053h2u0af6qib02w1k.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idcs0gvnoiq9j2u1ne7wmd.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>342</td>
@@ -1386,7 +1389,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idntl90f1opckc2zzd3ykb.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/ide7iuqg3l1sbed8qqtyjg.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>369</td>
@@ -1394,7 +1397,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idyibz8swg56858zia6fww.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idkho22w619p5n8lpwvf92.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>390</td>
@@ -1402,7 +1405,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idw8fu620memd7fy548yi5.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id4zwn15vtfclguq0mgj9r.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>332</td>
@@ -1410,7 +1413,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/idw5g2tzfha796bhyucmix.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idm09euvd55f92839fy2a6.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>351</td>
@@ -1418,7 +1421,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>Decreased</td>
                   <td>84</td>
-                  <td><img src="./tinytable_assets/id4wg5h9g2gh1o26u6h1ko.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idv3uok852j4dejgpbk7qd.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>352</td>
@@ -1426,7 +1429,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>6;15 to 10</td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idpwcbofsagufa9soh699y.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id8f0ps72mps17r4lhuzeo.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>356</td>
@@ -1434,7 +1437,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td>15 to 10</td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idc7f38pzm935fn7edy73b.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id1iq8a46nswmgpaqgqxs7.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>331</td>
@@ -1442,7 +1445,7 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/id112gwmfl7glx94mfok6o.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/id9w8ttrgqjsh8z2x42vwk.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
                 <tr>
                   <td>323</td>
@@ -1450,19 +1453,19 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
                   <td> </td>
                   <td>No Change</td>
                   <td></td>
-                  <td><img src="./tinytable_assets/idyikyhwsam4aoqlg3kmsy.png" style="height: 4em;" class="figure-img"></td>
+                  <td><img src="./tinytable_assets/idm7hp6d7tpejygaom6dfp.png" style="height: 4em;" class="figure-img"></td>
                 </tr>
         </tbody>
       </table>
     </div>
 
     <script>
-      function styleCell_tinytable_w0pgq8mf5ab9c5arclwp(i, j, css_id) {
-        var table = document.getElementById("tinytable_xfa868ok4a4h7iqo7jg0");
+      function styleCell_tinytable_mendlrunxatmcqae5giu(i, j, css_id) {
+        var table = document.getElementById("tinytable_y6gx0bm2qkbsnu43spf5");
         table.rows[i].cells[j].classList.add(css_id);
       }
       function insertSpanRow(i, colspan, content) {
-        var table = document.getElementById('tinytable_xfa868ok4a4h7iqo7jg0');
+        var table = document.getElementById('tinytable_y6gx0bm2qkbsnu43spf5');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -1470,8 +1473,8 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_w0pgq8mf5ab9c5arclwp(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_xfa868ok4a4h7iqo7jg0");
+      function spanCell_tinytable_mendlrunxatmcqae5giu(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_y6gx0bm2qkbsnu43spf5");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -1498,159 +1501,159 @@ Table&nbsp;7: Fiscal reform of 1983. Sales tax share of revenue, mean by industr
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 0, 'tinytable_css_pvqcq0tg021g6x5w9pp8') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 1, 'tinytable_css_pvqcq0tg021g6x5w9pp8') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 2, 'tinytable_css_pvqcq0tg021g6x5w9pp8') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 3, 'tinytable_css_pvqcq0tg021g6x5w9pp8') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 4, 'tinytable_css_pvqcq0tg021g6x5w9pp8') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 5, 'tinytable_css_pvqcq0tg021g6x5w9pp8') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 5, 'tinytable_css_h8kr80xkugrmeihatx09') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(0, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(1, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(2, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(3, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(4, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(5, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(6, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(7, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(8, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(9, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(10, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(11, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(12, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(13, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(14, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(15, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(16, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(17, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(18, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(19, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 0, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 1, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 2, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 3, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 4, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
-window.addEventListener('load', function () { styleCell_tinytable_w0pgq8mf5ab9c5arclwp(20, 5, 'tinytable_css_pwfa5agf81ujxf3a5pir') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 0, 'tinytable_css_o9vt47fknaa7w4is5ohb') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 1, 'tinytable_css_o9vt47fknaa7w4is5ohb') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 2, 'tinytable_css_o9vt47fknaa7w4is5ohb') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 3, 'tinytable_css_o9vt47fknaa7w4is5ohb') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 4, 'tinytable_css_o9vt47fknaa7w4is5ohb') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 5, 'tinytable_css_o9vt47fknaa7w4is5ohb') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 5, 'tinytable_css_1jy9jkmsjjuaqd53h0y1') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(0, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(1, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(2, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(3, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(4, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(5, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(6, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(7, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(8, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(9, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(10, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(11, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(12, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(13, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(14, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(15, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(16, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(17, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(18, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(19, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 0, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 1, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 2, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 3, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 4, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
+window.addEventListener('load', function () { styleCell_tinytable_mendlrunxatmcqae5giu(20, 5, 'tinytable_css_fudbmyivb9f7htvhkqfr') })
     </script>
 
   
@@ -2641,7 +2644,7 @@ h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
 \end{aligned}
 \tag{19}\]</span></span></p>
 <p>Here, intuitively, we are trading unobservables, the unobserved tax evasion for the output shock, just to make our lives easier. We could have use use directly <span class="math inline">\(m^*\)</span> since we know the distribution of tax evasion <span class="math inline">\(e\)</span>, which is equivalent to the distribution of <span class="math inline">\(f_{m^*|m}(m^*|m)\)</span>. Also note that is it not necessary to learn tax evasion to recover productivity. This is useful if a practicioner is only interested in productivity and not on tax evasion.</p>
-<p>By replacing <span class="math inline">\(\omega_{it}\)</span> from <a href="#eq-big-w" class="quarto-xref">Equation&nbsp;22</a> in <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;18</a>, we get</p>
+<p>By replacing <span class="math inline">\(\omega_{it}\)</span> from <a href="#eq-big-w" class="quarto-xref">Equation&nbsp;19</a> in <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;18</a>, we get</p>
 <p><span id="eq-big-w-reg"><span class="math display">\[
 \begin{aligned}
     \mathcal W_{it}=(1-\beta)\varepsilon_{it}+\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})+\eta_{it}
@@ -2713,7 +2716,7 @@ Table&nbsp;18: Orthogonality by Residuals
 <p>The ideal instruments are <span class="math inline">\(Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m_{it-1}\}\)</span>.</p>
 <p>How many instruments are needed in practice? I use one per element in constant of integration to be just-identified. Then, for Cobb-Douglas case, I use <span class="math inline">\(Z_{it}=\{k_{it},l_{it}\}\)</span>, with <span class="math inline">\(h\)</span> as a third degree polynomial.</p>
 <p>Once the paramaters of the production function are identified, we can use the following observed variable to recover <span class="math inline">\(\omega_{it}\)</span></p>
-<p><span id="eq-big-w"><span class="math display">\[
+<p><span id="eq-big-w-squiggle"><span class="math display">\[
 \begin{aligned}
     \widetilde{\mathcal W_{it}} &amp; \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
     &amp; = \omega_{it}+(1-\beta)\varepsilon_{it}
@@ -3150,30 +3153,254 @@ Table&nbsp;20: GNR Fortran implementation. Bias-corrected Bootstrap confidence i
 </tbody>
 </table>
 <p>First, firms have incentives to overreport production expenses to evade CIT, but only VAT deductible intermediates reduce their VAT burden. In fact, Colombia used system of refunds to companies with VAT tax balances in their favor. Raw materials are VAT deductible during the whole period of out data, 1981-1991. In addition, materials are the greater share of the firm’s expenses among the other intermediate inputs.</p>
-<p>Electricity was mainly provided by government companies during this period. Even though there were private participation in the market, the data shows that corportaions sold most of the private electricity. In our paper, we argue that Corporations are the firms with the lowest incentives to misreport their commercial activity. Therefore, it could have been relatively riskier to fake an electric bill than other inputs. Why? Because any electricity bill not coming from a Corporation or a Government company might look suspicious. In addition, it is unclear that firms could deduct from their taxes their electric bill. Finally, electricity is a small share of the firm’s expenses in the data.</p>
-<p>Fuels consumed in production were deductible however these represent a non significant share of the firms’ expenses.</p>
-<p>Finally, only repair and maintenance services were taxed from the begining during this period. The authority gradually introduced services they could control easily like telephone and telecommunication, insurances, airline tiquets, and parking, among others. The rest of the services look more like fixed costs and not like intermediate inputs for production, or at least they do not necessarily increase with production. Take for instance, telephone bills. They might increase if an increase of output comes from handling more clients, but they might keep the same and production might increase if current clients increase their volume of demanded products.</p>
+<p>Electricity was mainly provided by government companies during this period. Even though there were private participation in the market, the data shows that corporations sold most of the private electricity. In our paper, we argue that Corporations are the firms with the lowest incentives to misreport their commercial activity. Therefore, it could have been relatively riskier to fake an electric bill than other inputs. Why? Because any electricity bill not coming from a Corporation or a Government company might look suspicious. In addition, it is unclear that firms could deduct from their taxes their electric bill. Finally, electricity is a small share of the firm’s expenses in the data.</p>
+<p>Fuels consumed in production were deductible however these represent a non-significant share of the firms’ expenses.</p>
+<p>Finally, only repair and maintenance services were taxed from the beginning during this period. The authority gradually introduced services they could control easily like telephone and telecommunication, insurances, airline tickets, and parking, among others. The rest of the services look more like fixed costs and not like intermediate inputs for production, or at least they do not necessarily increase with production. Take for instance, telephone bills. They might increase if an increase of output comes from handling more clients, but they might keep the same and production might increase if current clients increase their volume of demanded products.</p>
 </section>
 <section id="industries" class="level1" data-number="11">
 <h1 data-number="11"><span class="header-section-number">11</span> Industries</h1>
 <p>Given that I’ll focus on materials, the industries I pick would have to make sense. Meaning, that firms should have nontrivial incentives to overreport raw materials to evade taxes and raw materials should represent a nontrivial share of their total production expenses.</p>
-<p>To start, unprocessed primary goods such as mining, agricultural, fishing, and forestry were exempt of sales taxes. If the main raw materials of an industry is a primary good, then firms in that industry would have no invcentive to overreport their raw materials because they are not paying sales taxes on their raw material that could be credited towards the taxes they have to pay for their sales. Industries like concrete and clay used in construction (369-Non-Metallic Minerals) and leather products (323-Leather tanning and dyeing, Furskins) might fall into this category.</p>
-<p>For other industries, few specialized suppliers provide their main raw materials. These firms might have to import a non-trivial share of their materials. It would be highly suspicious to fake invoices of raw materials that come from few known local and international suppliers. For example, plastic pellets the main raw material in injection molding and plastic products (356) are supplied internationally by a handful of suppliers located in the US and Europe.</p>
-<p>Finally, industries exempt of sales tax would have relative lower incentives to evade than non-exempt. In Colombia, firms producing foodstuffs (311 and 312), drugs, textbooks, transportation equipment (384), agricultural machinery (382-Non-Electrical Machinery incluiding Farm Machinery), and equipment (383-Electrical Equipment) were exempt of sales taxes since 1974. Exemption to Agricultural machinery and transportation equipment was eliminated in 1984. Almost half-way through the data.</p>
+<p>To start, unprocessed primary goods such as mining, agricultural, fishing, and forestry were exempt of sales taxes. If the main raw materials of an industry is a primary good, then firms in that industry would have no incentive to overreport their raw materials because they are not paying sales taxes on their raw material that could be credited towards the taxes they have to pay for their sales. Industries like concrete and clay used in construction (369-Non-Metallic Minerals) and leather products (323-Leather tanning and dyeing, Fur skins) might fall into this category.</p>
+<p>For other industries, few specialized suppliers provide their main raw materials. These firms might have to import a non-trivial share of their materials. It would be highly suspicious to fake invoices for raw materials that come from few known local and international suppliers. For example, plastic pellets the main raw material in injection molding and plastic products (356) are supplied internationally by a handful of suppliers located in the US and Europe.</p>
+<p>Likewise, industries exempt of sales tax would have relative lower incentives to evade than non-exempt. In Colombia, firms producing foodstuffs (311 and 312), drugs, textbooks, transportation equipment (384), agricultural machinery (382-Non-Electrical Machinery including Farm Machinery), and equipment (383-Electrical Equipment) were exempt of sales taxes since 1974. Exemption to Agricultural machinery and transportation equipment was eliminated in 1984. Almost half-way through the data.</p>
 <p>(In addition, exporters were exempted from sales taxes. )</p>
+<p>Lastly, it would be better to avoid industries selling a significant share of their output directly to consumers and retailers. Tax evasion through underreporting of sales severely affected Colombia during this time <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>. It has been documented elsewhere that revenue underreporting is most significant for firms selling directly consumers. Why? Firms might offer consumers a discount if they do not request an invoice. Since the consumer is the final payer of the sales tax, they are more like to cooperate. On the other hand, firms selling to other firms face counterincentives. The firm buying the product is interested in having an invoice to report the sales tax pay to reduce the balance of the sales tax they collect when selling. In addition, during this period there was a tendency to create fictitious distributors to reduce the tax base.</p>
+<p>A report based on a sample from that period in <span class="citation" data-cites="Perry1990">Perry and Triana (<a href="#ref-Perry1990" role="doc-biblioref">1990</a>)</span> reveals that industries 322 (Wearing Apparel — 67.5%), 324 (Footwear — 49%), 342 (Publishing — 53.9%), 369 (Non-Metallic — 50%), and 390 (Other Manufacturing — 61.3%) sell half or more of their output to retailers and directly to consumers.</p>
+<div id="tbl-1984-manu-sales" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-1984-manu-sales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;21: Distribution of Sales from Manufacturing Firms, by type of Purchaser (in percentage) <span class="citation" data-cites="Perry1990">(<a href="#ref-Perry1990" role="doc-biblioref">Perry and Triana 1990</a>)</span>
+</figcaption>
+<div aria-describedby="tbl-1984-manu-sales-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 16%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 27%">
+<col style="width: 11%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>SIC</th>
+<th style="text-align: right;">Total no. of firms</th>
+<th style="text-align: right;">% to retailers</th>
+<th style="text-align: right;">% to public</th>
+<th style="text-align: right;">% retailers and public combined</th>
+<th style="text-align: right;">% government</th>
+<th style="text-align: right;">% wholesalers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>312</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">24.16</td>
+<td style="text-align: right;">15.72</td>
+<td style="text-align: right;">39.88</td>
+<td style="text-align: right;">1.20</td>
+<td style="text-align: right;">58.92</td>
+</tr>
+<tr class="even">
+<td>313</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">29.33</td>
+<td style="text-align: right;">29.33</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">70.67</td>
+</tr>
+<tr class="odd">
+<td>321</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">15.06</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">15.17</td>
+<td style="text-align: right;">1.17</td>
+<td style="text-align: right;">83.67</td>
+</tr>
+<tr class="even">
+<td>322</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">52.92</td>
+<td style="text-align: right;">14.58</td>
+<td style="text-align: right;">67.50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">32.50</td>
+</tr>
+<tr class="odd">
+<td>324</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">45.00</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">49.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">51.00</td>
+</tr>
+<tr class="even">
+<td>332</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">10.85</td>
+<td style="text-align: right;">20.15</td>
+<td style="text-align: right;">31.00</td>
+<td style="text-align: right;">5.92</td>
+<td style="text-align: right;">63.08</td>
+</tr>
+<tr class="odd">
+<td>341</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">95.00</td>
+</tr>
+<tr class="even">
+<td>342</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">19.44</td>
+<td style="text-align: right;">34.44</td>
+<td style="text-align: right;">53.89</td>
+<td style="text-align: right;">7.22</td>
+<td style="text-align: right;">38.89</td>
+</tr>
+<tr class="odd">
+<td>351</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">15.20</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">21.20</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">76.00</td>
+</tr>
+<tr class="even">
+<td>352</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">37.81</td>
+<td style="text-align: right;">5.50</td>
+<td style="text-align: right;">43.31</td>
+<td style="text-align: right;">4.47</td>
+<td style="text-align: right;">52.22</td>
+</tr>
+<tr class="odd">
+<td>353</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5.67</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">10.67</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">89.33</td>
+</tr>
+<tr class="even">
+<td>355</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">79.00</td>
+</tr>
+<tr class="odd">
+<td>362</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">90.00</td>
+</tr>
+<tr class="even">
+<td>369</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">21.25</td>
+<td style="text-align: right;">28.75</td>
+<td style="text-align: right;">50.00</td>
+<td style="text-align: right;">12.88</td>
+<td style="text-align: right;">37.13</td>
+</tr>
+<tr class="odd">
+<td>372</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">88.33</td>
+</tr>
+<tr class="even">
+<td>381</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">12.41</td>
+<td style="text-align: right;">14.73</td>
+<td style="text-align: right;">27.14</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">70.36</td>
+</tr>
+<tr class="odd">
+<td>382</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">11.20</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">41.20</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">49.80</td>
+</tr>
+<tr class="even">
+<td>383</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">13.87</td>
+<td style="text-align: right;">7.13</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">9.07</td>
+<td style="text-align: right;">69.93</td>
+</tr>
+<tr class="odd">
+<td>384</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">34.57</td>
+<td style="text-align: right;">34.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">65.43</td>
+</tr>
+<tr class="even">
+<td>390</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">58.00</td>
+<td style="text-align: right;">3.33</td>
+<td style="text-align: right;">61.33</td>
+<td style="text-align: right;">3.33</td>
+<td style="text-align: right;">35.33</td>
+</tr>
+<tr class="odd">
+<td>356</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">15.55</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">21.55</td>
+<td style="text-align: right;">3.18</td>
+<td style="text-align: right;">75.27</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
 <!-- Deconvolution -->
 </section>
 <section id="results-1" class="level1" data-number="12">
 <h1 data-number="12"><span class="header-section-number">12</span> Results</h1>
 <section id="testing-for-the-presence-of-tax-evasion-through-overreporting" class="level2" data-number="12.1">
 <h2 data-number="12.1" class="anchored" data-anchor-id="testing-for-the-presence-of-tax-evasion-through-overreporting"><span class="header-section-number">12.1</span> Testing for the Presence of Tax Evasion Through Overreporting</h2>
-<p><a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> suggest a way to test the presence of tax evasion through cost overreporting. Let <span class="math inline">\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\)</span>. Define the the null hypothesis as the absence of cost overreporting, <span class="math inline">\(H_0: \mu_{\mathcal{V}}=0\)</span>, and the alternative hypothesis as the presence of cost overreporting, <span class="math inline">\(H_1: \mu_{\mathcal{V}}&gt;0\)</span>. Consequently, we can use a one sided t-test to verify for the presence of tax evasion by overreporting.</p>
-<p>I test for the presence of tax evasion for different classifications of intermediates. Intermediates includes raw materials, energy and services. Deductibles includes raw materials and deductible expenses. Materials includes only raw materials. The items included as deductible expenses or services are detailed in <a href="#tbl-expenses-type" class="quarto-xref">Table&nbsp;9</a></p>
+<p><a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> suggest a way to test the presence of tax evasion through cost overreporting. Let <span class="math inline">\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\)</span>. Define the null hypothesis as the absence of cost overreporting, <span class="math inline">\(H_0: \mu_{\mathcal{V}}=0\)</span>, and the alternative hypothesis as the presence of cost overreporting, <span class="math inline">\(H_1: \mu_{\mathcal{V}}&gt;0\)</span>. Consequently, we can use a one-sided t-test to verify for the presence of tax evasion by overreporting.</p>
+<p>I test for the presence of tax evasion for different classifications of intermediates. Intermediates include raw materials, energy and services. Deductibles include raw materials and deductible expenses. Materials include only raw materials. The items included as deductible expenses or services are detailed in <a href="#tbl-expenses-type" class="quarto-xref">Table&nbsp;9</a></p>
 <div class="cell">
 <div id="tbl-evasion-test-CD" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-evasion-test-CD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;21: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
+Table&nbsp;22: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
 </figcaption>
 <div aria-describedby="tbl-evasion-test-CD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -3340,21 +3567,21 @@ Table&nbsp;21: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industr
 </figure>
 </div>
 </div>
-<p><a href="#tbl-evasion-test-CD" class="quarto-xref">Table&nbsp;21</a> shows that the null hypothesis of no tax evasion is rejected at the 1% significance level for twelve of the top twenty manufacturing industries.</p>
+<p><a href="#tbl-evasion-test-CD" class="quarto-xref">Table&nbsp;22</a> shows that the null hypothesis of no tax evasion is rejected at the 1% significance level for twelve of the top twenty manufacturing industries.</p>
 <p>In particular, there is no evidence of tax evasion for most industries in which products or raw materials are exempt of sales taxes, such as 312 (Other Food Products), 382 (Non-Electrical Machinery), 384 (Transport Equipment), 323 (Leather Products), and 369 (Non-Metallic Mineral Products); there is also no evidence of materials overreporting for 356 (Plastic Products)industry, whose main raw materials are likely to be specialized and supplied by few local and international suppliers.</p>
 <p>Among the industries with exempted products, 311 (Food Products) and 383 (Electrical Machinery) there is evidence of tax evasion but as we’ll see later the average overreporting is low compared to other industries.</p>
-<p>As expected, the evice is stronger particularly for the other industries that do not fall in the previous categories. Namely, there is evidence of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood Products except Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342 (Publishing); 351 (Industrial Chemicals) and 352 (Other Chemicals); 381 (Metal Products Except Machinery), and 390 (Other Manufacturing Industries).</p>
+<p>As expected, the evidence is stronger particularly for the other industries that do not fall in the previous categories. Namely, there is evidence of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood Products except Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342 (Publishing); 351 (Industrial Chemicals) and 352 (Other Chemicals); 381 (Metal Products Except Machinery), and 390 (Other Manufacturing Industries).</p>
 </section>
 <section id="expenditure-swapping-tax-evasion" class="level2" data-number="12.2">
 <h2 data-number="12.2" class="anchored" data-anchor-id="expenditure-swapping-tax-evasion"><span class="header-section-number">12.2</span> Expenditure Swapping Tax Evasion</h2>
 <p>Although we found evidence of evasion through raw materials overreporting, the previous table would suggest that other intermediate materials could have been underreported as indicated by the negative sign and the tight standard errors.</p>
-<p>A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority’s radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expeneses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.</p>
+<p>A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority’s radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expenses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.</p>
 <p>Firms reserving valid expenses is known in the literature. It has been documented elsewhere, in particular in tax evasion studies focusing on revenue underreporting, that when authorities challenged firms’ records, firms came back increasing their sales but also their expenses resulting in a zero net gain in terms of tax revenue for authorities.</p>
 <div class="cell">
 <div id="tbl-evasion-test-CD-gnr" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-evasion-test-CD-gnr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;22: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
+Table&nbsp;23: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
 </figcaption>
 <div aria-describedby="tbl-evasion-test-CD-gnr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -3524,7 +3751,7 @@ Table&nbsp;22: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industr
 </section>
 <section id="deconvoluting-tax-evasion-using-moments" class="level2" data-number="12.3">
 <h2 data-number="12.3" class="anchored" data-anchor-id="deconvoluting-tax-evasion-using-moments"><span class="header-section-number">12.3</span> Deconvoluting Tax Evasion Using Moments</h2>
-<p>One simple way to start with the deconvulution is using moments. In particular, for every <span class="math inline">\(n\)</span>-th moment <span class="math inline">\(\mathbb{E}[\varepsilon_{it}^n|\Theta^{NE}]=\mathbb{E}[\varepsilon_{it}^n|t]=\mathbb{E}[\varepsilon_{it}^n]\)</span></p>
+<p>One simple way to start with the deconvolution is using moments. In particular, for every <span class="math inline">\(n\)</span>-th moment <span class="math inline">\(\mathbb{E}[\varepsilon_{it}^n|\Theta^{NE}]=\mathbb{E}[\varepsilon_{it}^n|t]=\mathbb{E}[\varepsilon_{it}^n]\)</span></p>
 <p>Therefore, any moment of the tax evasion <span class="math inline">\(e_{it}\)</span> distribution <span class="math inline">\(\forall t\in T\)</span> can be estimated in theory.</p>
 <p>Namely, from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a>, we can estimate the average tax evasion by <span class="math display">\[
 \begin{aligned}
@@ -3536,12 +3763,12 @@ Table&nbsp;22: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industr
 \end{aligned}
 \]</span></p>
 <p>Note that we learned the distribution <span class="math inline">\(f_\varepsilon(\varepsilon)\)</span> of <span class="math inline">\(\varepsilon\)</span> from the first stage, so <span class="math inline">\(\mu_{\varepsilon}\)</span> and <span class="math inline">\(\sigma_{\varepsilon}\)</span> are known.</p>
-<p><a href="#tbl-tax-ev-deconv-moments" class="quarto-xref">Table&nbsp;23</a> displays the estimated average of the log fraction that firms increase their costs of raw materials to evade taxes by claiming a greater deductible amount of their owed sales taxes.</p>
+<p><a href="#tbl-tax-ev-deconv-moments" class="quarto-xref">Table&nbsp;24</a> displays the estimated average of the log fraction that firms increase their costs of raw materials to evade taxes by claiming a greater deductible amount of their owed sales taxes.</p>
 <div class="cell">
 <div id="tbl-tax-ev-deconv-moments" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tax-ev-deconv-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;23: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a>. LCI and UCI are the bias-corrected bootsrap confidence intervals at the 95% significance level with 200 bootstrap replicates.
+Table&nbsp;24: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a>. LCI and UCI are the bias-corrected bootsrap confidence intervals at the 95% significance level with 200 bootstrap replicates.
 </figcaption>
 <div aria-describedby="tbl-tax-ev-deconv-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -3596,7 +3823,7 @@ Table&nbsp;23: Average tax evasion by Industry. Estimates show the average tax e
 <!-- @fig-deconv-mmt presents the results of the first and second moments of tax evasion for the top ten industries with the highest rates of cost overreporting for different measures of inputs. Intermediates include materials, deductible and non-deductible expenses. Deductibles include materials and deductible expenses, while materials only include raw materials. -->
 <!-- Overall, deductible expenses and materials display a higher logmean cost overreporting than when looking at intermediate inputs. This implies that altough the logshare of intermediates might be closer or even lower than non-evading firms, evading firms report a higher share of deductible expenses. Depending on the industry, firms might overreport either materials or other deductible expenses to evade taxes. -->
 <p>The top five tax evading industries, 322 (Wearing Apparel), 342 (Publishing), 313 (Beverages), 351 (Industrial Chemicals), and 331 (Wood Products), display an average tax evasion <span class="math inline">\(e\)</span> greater than 12%, which is non-trivial.</p>
-<p>Although deconvolution by moments is the simplest method, it displays the undesirable characteristic that estimate of variances frequently result with a negative sign. In the next section, I adress this problem by using parametric MLE.</p>
+<p>Although deconvolution by moments is the simplest method, it displays the undesirable characteristic that estimate of variances frequently result with a negative sign. In the next section, I address this problem by using parametric MLE.</p>
 </section>
 <section id="deconvoluting-by-parametric-mle" class="level2" data-number="12.4">
 <h2 data-number="12.4" class="anchored" data-anchor-id="deconvoluting-by-parametric-mle"><span class="header-section-number">12.4</span> Deconvoluting by Parametric MLE</h2>
@@ -3612,7 +3839,7 @@ Table&nbsp;23: Average tax evasion by Industry. Estimates show the average tax e
 <!-- For tax-evasion, I first use a log-normal distribution restricting variances to be positive and compare to the previous estimates using moments. The estimates are shown in @tbl-deconv-mle -->
 <p>For tax-evasion, theory suggests that firms only have incentives to overreport costs, not to underreport them. Therefore, as explained elsewhere, it might be expected that overreporting <span class="math inline">\(e\ge0\)</span> is non-negative. In addition, it might also be expected that most firms overreport a little and a few firms overreport greater amounts. Therefore, a lognormal or a truncated normal distribution might be more appropriate.</p>
 <!-- @tbl-deconv-mle-lognormal displays the results of a parametric MLE using a lognormal distribution for the evasion random variable. -->
-<p>By definition, if a random variable <span class="math inline">\(U\)</span> is lognormal distributed, then <span class="math inline">\(log(U)\sim N(\mu, \sigma)\)</span>. Thus, we cannot directly compare the parameters of the lognormal distribution to our previous estimates. We can however, used the parameters to compute any moment of the log-nomarlly distributed variable <span class="math inline">\(U\)</span> by</p>
+<p>By definition, if a random variable <span class="math inline">\(U\)</span> is log-normal distributed, then <span class="math inline">\(log(U)\sim N(\mu, \sigma)\)</span>. Thus, we cannot directly compare the parameters of the log-normal distribution to our previous estimates. We can however, used the parameters to compute any moment of the log-normally distributed variable <span class="math inline">\(U\)</span> by</p>
 <p><span class="math display">\[
 E[U^n]=e^{n\mu+\frac{1}{2}n^2\sigma^2}
 \]</span></p>
@@ -3623,7 +3850,7 @@ E[U]&amp;=e^{\mu+\frac{1}{2}\sigma^2}\\
 Var[U]&amp;=E[U^2]-E[U]^2=e^{2\mu+\sigma^2}(e^{\sigma^2}-1).
 \end{aligned}
 \]</span></p>
-<p>In addtion, the mode and the mean by</p>
+<p>In addition, the mode and the mean by</p>
 <p><span class="math display">\[
 \begin{aligned}
   \text{Mode}[U]&amp;=e^{\mu-\sigma^2} \\
@@ -3669,12 +3896,12 @@ Var[U|U&gt;0]&amp;=\sigma^2[1+\alpha\varphi(\alpha)/(1-\Phi(\alpha))-(\varphi(\a
 \text{Mode}[U|U&gt;0]&amp;=\tilde\mu
 \end{aligned}
 \]</span></p>
-<p><a href="#tbl-deconv-mle-both" class="quarto-xref">Table&nbsp;24</a> displays the estimates of the parameters for both the lognormal and truncated normal distributions using an MLE approach. Other moments of the densities are computed as explained previously and shown for reference.</p>
+<p><a href="#tbl-deconv-mle-both" class="quarto-xref">Table&nbsp;25</a> displays the estimates of the parameters for both the log-normal and truncated normal distributions using an MLE approach. Other moments of the densities are computed as explained previously and shown for reference.</p>
 <div class="cell">
 <div id="tbl-deconv-mle-both" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deconv-mle-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;24: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above.
+Table&nbsp;25: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above.
 </figcaption>
 <div aria-describedby="tbl-deconv-mle-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -3800,14 +4027,14 @@ Table&nbsp;24: Estimates of Deconvoluting Tax Evasion from the Output Shock in <
 </figure>
 </div>
 </div>
-<p>Both the lognormal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of ther probability density functions. The standard devitaion is larger in the lognormal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the lognormal. Finally, the median is lower than the mean in the case of the lognormal, but higher than the mean in the case of the truncated normal because of the truncation from below.</p>
+<p>Both the log-normal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of their probability density functions. The standard deviation is larger in the log-normal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the log-normal. Finally, the median is lower than the mean in the case of the log-normal, but higher than the mean in the case of the truncated normal because of the truncation from below.</p>
 <p>Both distributions show higher estimates of the average overreporting in logs than using only moments. Now it looks like firms evade taxes by inflating their cost of their materials by 40 percent or more.</p>
-<p><a href="#tbl-deconv-mle-boot" class="quarto-xref">Table&nbsp;25</a> shows the bias corrected bootstrap confidence intervals for the mean of each distribution by industry using 200 replicates.</p>
+<p><a href="#tbl-deconv-mle-boot" class="quarto-xref">Table&nbsp;26</a> shows the bias corrected bootstrap confidence intervals for the mean of each distribution by industry using 200 replicates.</p>
 <div class="cell">
 <div id="tbl-deconv-mle-boot" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deconv-mle-boot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;25: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 95 percent significance level using 200 replicates.
+Table&nbsp;26: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;17</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 95 percent significance level using 200 replicates.
 </figcaption>
 <div aria-describedby="tbl-deconv-mle-boot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -3889,8 +4116,8 @@ Table&nbsp;25: Estimates of Deconvoluting Tax Evasion from the Output Shock in <
 </figure>
 </div>
 </div>
-<p>The difference between our previous estimates using moments can be explained by the fact that the log-normal and runcated distribution are restricted to positive values while we did not applied the restriction when using moments. Were we to take the average of only the positive values the mean of the moments method would be higher and closer to the log-normal and truncated normal distributions.</p>
-<p>From the perspective of theory, firms would have inventives to overreport their materials. Therefore, using moments to estimate overreporting without restricting to positive values like in the case of the MLE method using a lognormal or truncated distribution might underestimate tax evasion through cost overreporting.</p>
+<p>The difference between our previous estimates using moments can be explained by the fact that the log-normal and truncated distribution are restricted to positive values while we did not apply the restriction when using moments. Were we to take the average of only the positive values, the mean of the moments’ method would be higher and closer to the log-normal and truncated normal distributions.</p>
+<p>From the perspective of theory, firms would have incentives to overreport their materials. Therefore, using moments to estimate overreporting without restricting to positive values like in the case of the MLE method using a log-normal or truncated distribution might underestimate tax evasion through cost overreporting.</p>
 <div id="fig-density-plots" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-density-plots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -3949,13 +4176,13 @@ Figure&nbsp;6: Truncated Normal (red) and Log-Normal (blue) distribution of the 
 </section>
 <section id="production-function" class="level2" data-number="12.5">
 <h2 data-number="12.5" class="anchored" data-anchor-id="production-function"><span class="header-section-number">12.5</span> Production Function</h2>
-<p><a href="#tbl-CD-ar1-comparision" class="quarto-xref">Table&nbsp;26</a> and <a href="#tbl-CD-comparision" class="quarto-xref">27</a> display the results of estimating the production function parameters following the identification strategy described above. In <a href="#tbl-CD-ar1-comparision" class="quarto-xref">Table&nbsp;26</a>, I use an AR(1) model for the markov process of productivity and a third degree polynomial in <a href="#tbl-CD-comparision" class="quarto-xref">table&nbsp;27</a>. In both cases, I employed <span class="math inline">\(Z=\\{k_{it},l_{it}\\}\)</span> as instruments.</p>
-<p>To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the markov process of productivity is a third degree polynomial and capital and labor the instruments.</p>
+<p><a href="#tbl-CD-ar1-comparision" class="quarto-xref">Table&nbsp;27</a> and <a href="#tbl-CD-comparision" class="quarto-xref">28</a> display the results of estimating the production function parameters following the identification strategy described above. In <a href="#tbl-CD-ar1-comparision" class="quarto-xref">Table&nbsp;27</a>, I use an AR(1) model for the Markov process of productivity and a third degree polynomial in <a href="#tbl-CD-comparision" class="quarto-xref">table&nbsp;28</a>. In both cases, I employed <span class="math inline">\(Z=\{k_{it},l_{it}\}\)</span> as instruments.</p>
+<p>To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the Markov process of productivity is a third degree polynomial and capital and labor the instruments.</p>
 <div class="cell">
 <div id="tbl-CD-ar1-comparision" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-CD-ar1-comparision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;26: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs.&nbsp;naive estimation and OLS. <span class="math inline">\(h\)</span> is an AR(1) process for ‘Tax Evasion + GNR’ but a third degree polynomial for ‘GNR’. <span class="math inline">\(Z=\{k_{it},l_{it}\}\)</span>.
+Table&nbsp;27: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs.&nbsp;naive estimation and OLS. <span class="math inline">\(h\)</span> is an AR(1) process for ‘Tax Evasion + GNR’ but a third degree polynomial for ‘GNR’. <span class="math inline">\(Z=\{k_{it},l_{it}\}\)</span>.
 </figcaption>
 <div aria-describedby="tbl-CD-ar1-comparision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -4053,7 +4280,7 @@ Table&nbsp;26: Cobb-Douglas production function parameters estimates, correcting
 <div id="tbl-CD-comparision" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-CD-comparision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;27: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs.&nbsp;naive estimation and OLS. <span class="math inline">\(h\)</span> is a third degree polynomial for both ‘Tax Evasion + GNR’ and ‘GNR’. <span class="math inline">\(Z=\{k_{it},l_{it}\}\)</span>.
+Table&nbsp;28: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs.&nbsp;naive estimation and OLS. <span class="math inline">\(h\)</span> is a third degree polynomial for both ‘Tax Evasion + GNR’ and ‘GNR’. <span class="math inline">\(Z=\{k_{it},l_{it}\}\)</span>.
 </figcaption>
 <div aria-describedby="tbl-CD-comparision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -4147,33 +4374,227 @@ Table&nbsp;27: Cobb-Douglas production function parameters estimates, correcting
 </figure>
 </div>
 </div>
-<p>In both tables, the estimates of correcting the production function parameters are similar. This provides evidence of the robustness of the results to misspecification in the markov process.</p>
+<p>First, <a href="#tbl-CD-ar1-comparision" class="quarto-xref">Table&nbsp;27</a> and <a href="#tbl-CD-comparision" class="quarto-xref">28</a> show that assuming and AR(1) or third degree polynomial functional form for the Markov process of productivity yield similar estimates of the production function parameters when correcting for tax evasion. Reassuring that results are robust to this parametric specification of the Markov process of productivity (<span class="math inline">\(h(\cdot)\)</span>).</p>
+<p>Second, comparing Tax-Evasion corrected results with GNR, the output elasticity of intermediates is significant smaller in most cases except in industry 331 (Wood Products). Lower output elasticities for intermediates were expected. The one that is higher might be due to the fact that CD estimates might be subject to omitted variable bias because it implicitly assumes that cross-elasticities are zero. In other words, complementarity or substitutability of the inputs is ignored.</p>
+<p>Examining the elasticities of capital and labor reveals variation across industries, with some being lower, some higher, and others quite similar. There is no clear pattern or expectation regarding how tax evasion on intermediate inputs might bias the elasticities of non-flexible inputs. Why would these elasticities change when correcting for tax evasion? One possible explanation is that the Cobb-Douglas (CD) production function omits cross-elasticities. Depending on the industry, the cross-elasticity between intermediates and capital and labor may vary in significance. Therefore, overreporting of intermediates might bias the cross-elasticities. Since these cross-elasticities are not included in the CD production function, the elasticities of capital and labor could reflect different degrees of these variations once intermediates are corrected for overreporting.</p>
 </section>
-<section id="by-year" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="by-year"><span class="header-section-number">12.6</span> By Year</h2>
+<section id="productivity" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="productivity"><span class="header-section-number">12.6</span> Productivity</h2>
+<p>I use <strong>?@eq-big-W-squiggle</strong> assuming <span class="math inline">\(\omega\)</span> follows a normal distribution to deconvolute it from the output shock <span class="math inline">\(\varepsilon\)</span>. <a href="#tbl-omega" class="quarto-xref">Table&nbsp;29</a> displays the estimates of the distribution parameters of <span class="math inline">\(\omega\)</span> assuming a parametric specification of an AR(1) and a third degree polynomial for the Markov process of <span class="math inline">\(\omega\)</span>.</p>
+<div class="cell">
+<div id="tbl-omega" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-omega-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;29: Estimates Omega Distribution by Industry after Deconvoluting from the Output Shock.
+</figcaption>
+<div aria-describedby="tbl-omega-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table data-quarto-disable-processing="true" class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">AR(1)</div></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">3D Poly</div></th>
+</tr>
+  <tr>
+   <th style="text-align:right;">   </th>
+   <th style="text-align:right;"> $\mu$ </th>
+   <th style="text-align:right;"> $\sigma$ </th>
+   <th style="text-align:right;"> $\mu$  </th>
+   <th style="text-align:right;"> $\sigma$  </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 322 </td>
+   <td style="text-align:right;"> 5.4275 </td>
+   <td style="text-align:right;"> 0.5837 </td>
+   <td style="text-align:right;"> 5.4729 </td>
+   <td style="text-align:right;"> 0.5864 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 342 </td>
+   <td style="text-align:right;"> 4.2497 </td>
+   <td style="text-align:right;"> 0.4676 </td>
+   <td style="text-align:right;"> 4.2724 </td>
+   <td style="text-align:right;"> 0.4673 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 313 </td>
+   <td style="text-align:right;"> 3.2858 </td>
+   <td style="text-align:right;"> 0.4527 </td>
+   <td style="text-align:right;"> 3.3253 </td>
+   <td style="text-align:right;"> 0.4516 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 3.4666 </td>
+   <td style="text-align:right;"> 0.6503 </td>
+   <td style="text-align:right;"> 3.3535 </td>
+   <td style="text-align:right;"> 0.6475 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 331 </td>
+   <td style="text-align:right;"> 4.0412 </td>
+   <td style="text-align:right;"> 0.3818 </td>
+   <td style="text-align:right;"> 4.0567 </td>
+   <td style="text-align:right;"> 0.3818 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>To compare my estimates of productivity without correcting for tax evasion, I simulated data by employing 1000 independent draws from <span class="math inline">\(\omega\)</span> and <span class="math inline">\(\varepsilon\)</span> using the estimated parameters in <a href="#tbl-omega" class="quarto-xref">Table&nbsp;29</a>. Then, I computed productivity, <span class="math inline">\(\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}\)</span>.</p>
+<p><a href="#tbl-prod-comparison" class="quarto-xref">Table&nbsp;30</a> compares summary statistics the simulated productivity using the estimated parameters after correcting for tax evasion with the summary statistics of the productivity estimates of GNR.</p>
+<div class="cell">
+<div id="tbl-prod-comparison" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-prod-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;30: Summary statistics of the productivity estimates using GNR correcting and not correcting for tax evasion. Tax-evasion corrected estimates were simulated using the parameters of <a href="#tbl-omega" class="quarto-xref">Table&nbsp;29</a>.
+</figcaption>
+<div aria-describedby="tbl-prod-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table data-quarto-disable-processing="true" class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> inds </th>
+   <th style="text-align:left;"> Method </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> SD </th>
+   <th style="text-align:right;"> Q1 </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> Q3 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;vertical-align: top !important;" rowspan="2"> 313 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 42.8 </td>
+   <td style="text-align:right;"> 24.3 </td>
+   <td style="text-align:right;"> 28.2 </td>
+   <td style="text-align:right;"> 36.7 </td>
+   <td style="text-align:right;"> 50.0 </td>
+  </tr>
+  <tr>
+   
+   <td style="text-align:left;"> Tax Evasion + GNR </td>
+   <td style="text-align:right;"> 33.4 </td>
+   <td style="text-align:right;"> 19.7 </td>
+   <td style="text-align:right;"> 19.7 </td>
+   <td style="text-align:right;"> 28.4 </td>
+   <td style="text-align:right;"> 41.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;vertical-align: top !important;" rowspan="2"> 322 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 172.6 </td>
+   <td style="text-align:right;"> 122.1 </td>
+   <td style="text-align:right;"> 93.2 </td>
+   <td style="text-align:right;"> 143.3 </td>
+   <td style="text-align:right;"> 215.8 </td>
+  </tr>
+  <tr>
+   
+   <td style="text-align:left;"> Tax Evasion + GNR </td>
+   <td style="text-align:right;"> 52263.4 </td>
+   <td style="text-align:right;"> 1182304.1 </td>
+   <td style="text-align:right;"> 29.3 </td>
+   <td style="text-align:right;"> 226.5 </td>
+   <td style="text-align:right;"> 1883.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;vertical-align: top !important;" rowspan="2"> 331 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 210.7 </td>
+   <td style="text-align:right;"> 113.5 </td>
+   <td style="text-align:right;"> 137.2 </td>
+   <td style="text-align:right;"> 185.3 </td>
+   <td style="text-align:right;"> 251.7 </td>
+  </tr>
+  <tr>
+   
+   <td style="text-align:left;"> Tax Evasion + GNR </td>
+   <td style="text-align:right;"> 74.5 </td>
+   <td style="text-align:right;"> 55.8 </td>
+   <td style="text-align:right;"> 35.7 </td>
+   <td style="text-align:right;"> 58.9 </td>
+   <td style="text-align:right;"> 96.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;vertical-align: top !important;" rowspan="2"> 342 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 24.5 </td>
+   <td style="text-align:right;"> 9.1 </td>
+   <td style="text-align:right;"> 19.0 </td>
+   <td style="text-align:right;"> 22.9 </td>
+   <td style="text-align:right;"> 27.9 </td>
+  </tr>
+  <tr>
+   
+   <td style="text-align:left;"> Tax Evasion + GNR </td>
+   <td style="text-align:right;"> 110.8 </td>
+   <td style="text-align:right;"> 116.7 </td>
+   <td style="text-align:right;"> 38.3 </td>
+   <td style="text-align:right;"> 76.0 </td>
+   <td style="text-align:right;"> 136.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;vertical-align: top !important;" rowspan="2"> 351 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 4585.8 </td>
+   <td style="text-align:right;"> 4749.1 </td>
+   <td style="text-align:right;"> 1523.7 </td>
+   <td style="text-align:right;"> 2864.5 </td>
+   <td style="text-align:right;"> 5716.3 </td>
+  </tr>
+  <tr>
+   
+   <td style="text-align:left;"> Tax Evasion + GNR </td>
+   <td style="text-align:right;"> 53.0 </td>
+   <td style="text-align:right;"> 72.0 </td>
+   <td style="text-align:right;"> 12.5 </td>
+   <td style="text-align:right;"> 28.4 </td>
+   <td style="text-align:right;"> 64.0 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="by-year" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="by-year"><span class="header-section-number">12.7</span> By Year</h2>
 <!-- Misallocation -->
 </section>
 </section>
-<section id="tax-evasion-and-resource-misallocation" class="level1" data-number="13">
-<h1 data-number="13"><span class="header-section-number">13</span> Tax Evasion and Resource Misallocation</h1>
-<p>A popular way to decompose total productivity introduced by Olley and Pakes (1996) is the following :</p>
+<section id="tax-evasion-and-resource-missallocation" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Tax Evasion and Resource Missallocation</h1>
+<p>A popular way to decompose total productivity introduced by <span class="citation" data-cites="Olley1996">Olley et al. (<a href="#ref-Olley1996" role="doc-biblioref">1996</a>)</span> is the following :</p>
 <p><span class="math display">\[
 \varphi_t = \bar\varphi_t + \sum_{i=1}^I \left(s_{it}-\bar s_{t}\right)\left(\varphi_{it}-\bar\varphi_t\right)
 \]</span></p>
 <p>where <span class="math inline">\(\varphi_{it}=\exp\{\omega_{it}+\varepsilon_{it}\}\)</span> is the firm-level productivity, <span class="math inline">\(s_{it}\)</span> is firm’ <span class="math inline">\(i\)</span> share of output at time <span class="math inline">\(t\)</span>. <span class="math inline">\(\bar\varphi_t\)</span> and <span class="math inline">\(\bar s_t\)</span> represent the unweighted mean productivity and unweighted mean share.</p>
 <p>Intuitively, the more output is allocated to high productivity firms the higher the total productivity will be. Alternatively, the smaller the shares allocated to low productivity firms the greater the total productivity.</p>
 <p>Ideally, we would like resources to be allocated to high productivity firms. Hence, the link between the decomposition of total aggregate productivity and missallocation.</p>
-<p>In the tax evasion context, the productivity of misreporting firms would look lower than it really is. How would this affect our measures of total productivity? If misrrerporting firms have small shares, their corrected productivity measure might be closer to the mean reducing their contribution to total producvity, leading to lower measured levels of total producvity.</p>
+<p>In the tax evasion context, the productivity of misreporting firms would look lower than it really is. How would this affect our measures of total productivity? If misreporting firms have small shares, their corrected productivity measure might be closer to the mean reducing their contribution to total productivity, leading to lower measured levels of total productivity.</p>
 <p>In other words, tax evasion through cost overreporting might lead to biased measures of total aggregate productivity.</p>
-<p>However, if we think about the marginal firm that is struggling to stay in the market, the additional income gained through misreporting might help her survive longer. Therefore, tax evasion increases misallocation in the sense that a share of the output is allocated to firms that otherwise would not be in the market.</p>
-<p>There are alternative ways to decompose total productivity that account for the entry and exit of firms (Foster et al.&nbsp;2008). In addition, alternative measures to aggregate productivity have been used elsewhere (e.g.&nbsp;aggregate demand shocks in Eslava et al.&nbsp;2004).</p>
+<p>However, if we think about the marginal firm that is struggling to stay in the market, the additional income gained through misreporting might help her survive longer. Therefore, tax evasion increases missallocation in the sense that a share of the output is allocated to firms that otherwise would not be in the market.</p>
+<p>There are alternative ways to decompose total productivity that account for the entry and exit of firms (Foster et al.&nbsp;2008). In addition, alternative measures to aggregate productivity have been used elsewhere (e.g.&nbsp;aggregate demand shocks in <span class="citation" data-cites="Eslava2004">Eslava et al. (<a href="#ref-Eslava2004" role="doc-biblioref">2004</a>)</span>).</p>
 <p>For example, we can decompose aggregate productivity like this</p>
 <p><span class="math display">\[
 \Delta\varphi_t = \sum_{i \in C}\bar s_i \Delta\varphi_{it} + \sum_{i\in C}(\bar\varphi_i-\bar\varphi)\Delta s_{it}+\sum_{i\in N} s_{it}\left(\varphi_{it}-\bar\varphi\right)-\sum_{i\in X}s_{it-1}\left(\varphi_{it-1}-\bar \varphi\right)
 \]</span></p>
 <p>where <span class="math inline">\(\Delta\)</span> is the change from <span class="math inline">\(t-1\)</span> to <span class="math inline">\(t\)</span>, and the sets <span class="math inline">\(C\)</span>,<span class="math inline">\(N\)</span>, and <span class="math inline">\(X\)</span> represent the continuing, entering, and exiting firms.</p>
-<p>In the case of corporate tax evasion a relevant measure could be aggregate profitability. Low productivity firms are surviving not because they are technologically efficient but because their profitatibility is marginally higher when they evade taxes. Decomposing an aggregate profitability measure by market shares and firm dynamics would indicate how exiting firms are contributing to the aggregate measure. Intuitively, again higher levels of aggregate profitability correspond to larger shares of the market being allocated to high profitability firms.</p>
-<p>In the absence of tax evasion, firms overreporting costs would have lower after-tax profits. The aggregate profitability level would be higher if these firms have small market shares and remain in the sample. On the other hand, the aggregate profitatibility level woud decrease if the small-share and low-profitability firms were to exit the market.</p>
+<p>In the case of corporate tax evasion a relevant measure could be aggregate profitability. Low productivity firms are surviving not because they are technologically efficient but because their profitability is marginally higher when they evade taxes. Decomposing an aggregate profitability measure by market shares and firm dynamics would indicate how exiting firms are contributing to the aggregate measure. Intuitively, again higher levels of aggregate profitability correspond to larger shares of the market being allocated to high profitability firms.</p>
+<p>In the absence of tax evasion, firms overreporting costs would have lower after-tax profits. The aggregate profitability level would be higher if these firms have small market shares and remain in the sample. On the other hand, the aggregate profitability level would decrease if the small-share and low-profitability firms were to exit the market.</p>
 <p>Therefore, in the case of tax evasion, the key aspect of aggregate profitability is the counterfactual decision of low-profitability firms to exit the market in addition to the corrected profits if firms were not to overreport their costs.</p>
 <p>Consequently, the economic model should account for firm entry and exit along with tax evasion.</p>
 </section>
@@ -4250,6 +4671,9 @@ Almunia, M., and Lopez-Rodriguez, D. (2018), <span>“Under the radar: The effec
 <div id="ref-Chen2007" class="csl-entry" role="listitem">
 Chen, X. (2007), <span>“LARGE SAMPLE SIEVE ESTIMATION OF SEMI-NONPARAMETRIC MODELS *.”</span> <a href="https://doi.org/10.1016/S1573-4412(07)06076-X">https://doi.org/10.1016/S1573-4412(07)06076-X</a>.
 </div>
+<div id="ref-Eslava2004" class="csl-entry" role="listitem">
+Eslava, M., Haltiwanger, J., Kugler, A., and Kugler, M. (2004), <span>“The effects of structural reforms on productivity and profitability enhancing reallocation: Evidence from colombia,”</span> <em>Journal of Development Economics</em>, North-Holland, 75, 333–371. <a href="https://doi.org/10.1016/J.JDEVECO.2004.06.002">https://doi.org/10.1016/J.JDEVECO.2004.06.002</a>.
+</div>
 <div id="ref-Gandhi2020" class="csl-entry" role="listitem">
 Gandhi, A., Navarro, S., and Rivers, D. A. (2020), <span>“On the identification of gross output production functions.”</span>
 </div>
@@ -4261,6 +4685,9 @@ Kang, Y., and Qiu, P. (2021), <span>“Nonparametric deconvolution by fourier tr
 </div>
 <div id="ref-McLure1989" class="csl-entry" role="listitem">
 Mclure, C. E. (1989), <span>“<a href="https://pdf.usaid.gov/pdf\_docs/pnabp729.pdf">Analysis and reform of the colombian tax system</a>,”</span> in <em>Tax reform in developing countries</em>, ed. M. Gillis, Durham; London: Duke University Press.
+</div>
+<div id="ref-Olley1996" class="csl-entry" role="listitem">
+Olley, G. S., Pakes, A., and Steven, G. (1996), <span>“The dynamics of productivity in the telecommunications equipment industry,”</span> <em>Econometrica</em>, 64, 1263–1297.
 </div>
 <div id="ref-Perry1990" class="csl-entry" role="listitem">
 Perry, G., and Triana, L. O. de (1990), <em>The VAT in colombia</em>, (M. Gillis, C. S. Shoup, and G. P. Sicat, eds.), Washington, D.C.: The World Bank, pp. 180–194.

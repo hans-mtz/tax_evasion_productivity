@@ -20,8 +20,8 @@ gnr_inds<-c(311,321,322,331,381)
 # Wrangling data to save to raw ---------
 
 ## Saving data for fortran -----
-# for (inds in union(gnr_inds,evasion_inds)){
-for (inds in evasion_inds){
+for (inds in union(gnr_inds,evasion_inds)){
+# for (inds in evasion_inds){
 fort_data<-colombia_data_frame %>%
     ungroup() %>%
     select(

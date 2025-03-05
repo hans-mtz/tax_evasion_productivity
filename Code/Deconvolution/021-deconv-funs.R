@@ -490,15 +490,20 @@ f_trc_norm <- function(epsilon,v,mu,sigma){
     }
 }
 
-eval_llh_fun<-function(v,f,mu,sigma,params){
-    log_lh<-log(E_nrv(f,params$epsilon_mu,params$epsilon_sigma,params$gauss_int,v,mu,sigma))
+f_w_n<-function(epsilon,v,mu,sigma,beta){
+    x<-sum(v,-(1-beta)*epsilon)
+    return(dnorm(x,mean = mu, sd=sigma))
+}
+
+eval_llh_fun<-function(v,f,mu,sigma,params,...){
+    log_lh<-log(E_nrv(f,params$epsilon_mu,params$epsilon_sigma,params$gauss_int,v,mu,sigma,...))
     return(log_lh)
 }
 
-obj_fun_f<- function(theta,f,V,params){
+obj_fun_f<- function(theta,f,V,params,...){
     mu<-theta[1]
     sigma<-1.3^(theta[2])
-    sum_llh<-sapply(V,eval_llh_fun,f,mu,sigma,params) |> sum()
+    sum_llh<-sapply(V,eval_llh_fun,f,mu,sigma,params,...) |> sum()
     return(sum_llh)
 }
 
@@ -528,6 +533,59 @@ resample_by_group<-function(data,...){
 
 ## MLE Deconvulution Functions -------------------
 
+deconvolute_norm<-function(x,prod_fun_list,fs_list){
+    alpha <- prod_fun_list[[x]]$coeffs
+
+    params<-list(
+        gauss_int=gauss_hermite,
+        epsilon_mu=fs_list[[x]]$epsilon_mu,
+        epsilon_sigma=fs_list[[x]]$epsilon_sigma
+    )
+
+    temp_df <- fs_list[[x]]$data %>%
+        filter(
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l)
+        ) %>%
+        mutate(
+            W_squiggle = cal_W - alpha[["k"]]*k-alpha[["l"]]*l
+        )
+
+    init<-c(
+        mu=mean(temp_df$W_squiggle, na.rm = TRUE), 
+        sigma=1.3^(sd(temp_df$W_squiggle, na.rm = TRUE))
+    )
+
+    res<-optim(
+        init,
+        obj_fun_f,
+        NULL,
+        f_w_n,
+        temp_df$W_squiggle,
+        params,
+        alpha[["m"]],
+        method = "BFGS",
+        control=list(fnscale=-1) #Maximizing instead of minimizing
+    )
+
+    mu<-res$par[1]
+    sigma<-1.3^(res$par[2])#|> round(6)
+    # n<-length(fs_list[[x]]$data$cal_V)
+    ev_params<-c(
+        mu = mu,
+        sigma = sigma,
+        mean=mu,
+        sd=sigma,
+        mode=mu,
+        median=mu,
+        convergence = res$convergence,
+        id = x,
+        dist = "normal"
+    )
+    return(ev_params)
+}
+
 
 deconvolute_lognorm<-function(x,fs_list){
     params<-list(
@@ -552,10 +610,10 @@ deconvolute_lognorm<-function(x,fs_list){
     )
 
     mu<-res$par[1]
-    sigma<-1.3^(res$par[2])|> round(6)
-    mean_lognorm<-exp(mu+0.5*sigma^2) |> round(6)
-    sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1) |> round(6)
-    mode<-exp(mu-sigma^2) |> round(6)
+    sigma<-1.3^(res$par[2])#|> round(6)
+    mean_lognorm<-exp(mu+0.5*sigma^2)# |> round(6)
+    sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1)# |> round(6)
+    mode<-exp(mu-sigma^2)# |> round(6)
     # n<-length(fs_list[[x]]$data$cal_V)
     # me<- 1.96*sqrt((sd_lognorm^2)/n+(sd_lognorm^4)/(2*(n-1)))
     ev_params<-c(
@@ -564,7 +622,7 @@ deconvolute_lognorm<-function(x,fs_list){
         mean=mean_lognorm,
         sd=sd_lognorm,
         mode=mode,
-        median=exp(mu) |> round(6),
+        median=exp(mu),# |> round(6),
         convergence = res$convergence,
         id = x,
         dist = "lognormal"

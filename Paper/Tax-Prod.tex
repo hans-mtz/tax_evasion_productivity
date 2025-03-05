@@ -222,12 +222,12 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 %%==== colors from yaml ===%
 \definecolor{Proposition-color1}{HTML}{99CCFF}
 \definecolor{Proposition-color2}{HTML}{FFFFFF}
-\definecolor{Definition-color1}{HTML}{99CCFF}
-\definecolor{Definition-color2}{HTML}{FFFFFF}
-\definecolor{Theorem-color1}{HTML}{99CCFF}
-\definecolor{Theorem-color2}{HTML}{FFFFFF}
 \definecolor{Assumption-color1}{HTML}{99CCFF}
 \definecolor{Assumption-color2}{HTML}{FFFFFF}
+\definecolor{Theorem-color1}{HTML}{99CCFF}
+\definecolor{Theorem-color2}{HTML}{FFFFFF}
+\definecolor{Definition-color1}{HTML}{99CCFF}
+\definecolor{Definition-color2}{HTML}{FFFFFF}
 %=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{February 24, 2025}
+\date{March 4, 2025}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -311,10 +311,15 @@ Estimation, Productivity
     \begin{itemize}
     \tightlist
     \item
-      Preliminary results of Tax Evasion: Moments, MLE (Normal and
-      LogNormal)
+      Preliminary results of Tax Evasion: Moments, MLE (Truncated Normal
+      and LogNormal)
+    \item
+      \textbf{New} Identification of PF parameters when \(h\) is
+      polynomial
     \item
       Preliminary results of PF parameters
+    \item
+      \textbf{New} Productivity results
     \end{itemize}
   \item
     TransLog
@@ -348,10 +353,10 @@ Estimation, Productivity
   \begin{itemize}
   \tightlist
   \item
-    CD Productivity results comparison
+    Back of Envelope estimates for Gov Losses in Tax Revenue
   \item
-    CD with two flexible inputs (Deductibles \& Non-Deductibles,
-    Materials \& Services + Energy)
+    App of Productivity: Aggregate Productivity and Resource
+    Misallocations
   \item
     Translog results
   \item
@@ -366,7 +371,7 @@ Estimation, Productivity
   \tightlist
   \item
     Relaxing parallel trends: Linear trends that in the absence of
-    policy change would have continue
+    policy change would have continued
   \end{itemize}
 \end{itemize}
 
@@ -1303,26 +1308,26 @@ column{6}={halign=c,},
 }                     %% tabularray inner close
 \toprule
 SIC & Industry & P&T (1990) & Change & Change Year & Annual Sales Tax (82-86) \\ \midrule %% TinyTableHeader
-311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idlq3tg0chf1c2j28xug0d.png} \\
-312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/id5ab21ye8yqp4scospouc.png} \\
-322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idgsaqnty0m28cgf874g85.png} \\
-381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id44u1yb8wctmiu6mg4l6i.png} \\
-321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idjz57aq8wvlp9b96lq2sk.png} \\
-382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idfgnjeosp3aplxyv2bbpg.png} \\
-384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idlxeiht91q6ezmisj1b5j.png} \\
-383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id09xchvhfidd09103l2r7.png} \\
-313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idud3uoiz1ze8lagdl86rv.png} \\
-341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idgdyagfxhl7llfocnfjjz.png} \\
-324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idvgdqhhieawrl3xn8xza9.png} \\
-342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id2z7m5nkpahihbakyfz8t.png} \\
-369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id634kaxiko7a4wvwbji6l.png} \\
-390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idmu9j4c06jg15uyfbu0wi.png} \\
-332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id8wf20bl9pwab639q9ft8.png} \\
-351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idn61jzpl56k1u8n71wpzc.png} \\
-352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idieckadc3m0khurivt5ex.png} \\
-356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/id2bdo1e2d7xj10rsveesj.png} \\
-331 & Wood and Wood and Cork Products, Except Furniture &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/idz804ktjfppij95odgjro.png} \\
-323 & Leather and Products of Leather, Leather Substitutes and Fur, Except Footwear and Wearing Apparel &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/id6drnzbszzhi0kw82vwe4.png} \\
+311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idq1x5bf1bbolp7r1of673.png} \\
+312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/iddxr74glc2uf791uhnrip.png} \\
+322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idtnmb5awx4dkbehbsleg3.png} \\
+381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/iddipphg5c45w3dy9y9pxt.png} \\
+321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idczaztxutnbjzc9q1irw6.png} \\
+382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idhe4cum18x8vw9erluyuy.png} \\
+384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id0se11ev403pbrogllau6.png} \\
+383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idvju1dlb85ujcb4lj4tgz.png} \\
+313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idmr1kspluqwvti6c602hf.png} \\
+341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idsrzzypqd0n4olpfh6jd1.png} \\
+324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id6w29540pf34eqy8gnl5a.png} \\
+342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idfl0weatfnljsjjla1zi7.png} \\
+369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/iduf3sfhzk252wafdt57wm.png} \\
+390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id8ar6n5jtvl5t2iziezvx.png} \\
+332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/ido3t1xbv94od1ocw35134.png} \\
+351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/ido8v9yzi4ybyg3q4kcaxb.png} \\
+352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/id5axg8f2r8hmssudtou5f.png} \\
+356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idb16ugzggbcjd8qcs2a5m.png} \\
+331 & Wood and Wood and Cork Products, Except Furniture &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/id3732de3lsv23xguuhefm.png} \\
+323 & Leather and Products of Leather, Leather Substitutes and Fur, Except Footwear and Wearing Apparel &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/idw64bvc41bqtukpjccynj.png} \\
 \bottomrule
 \end{tblr}
 
@@ -3207,7 +3212,7 @@ polynomial.
 Once the paramaters of the production function are identified, we can
 use the following observed variable to recover \(\omega_{it}\)
 
-\begin{equation}\phantomsection\label{eq-big-w}{
+\begin{equation}\phantomsection\label{eq-big-w-squiggle}{
 \begin{aligned}
     \widetilde{\mathcal W_{it}} & \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
     & = \omega_{it}+(1-\beta)\varepsilon_{it}
@@ -3561,7 +3566,7 @@ the firm's expenses among the other intermediate inputs.
 
 Electricity was mainly provided by government companies during this
 period. Even though there were private participation in the market, the
-data shows that corportaions sold most of the private electricity. In
+data shows that corporations sold most of the private electricity. In
 our paper, we argue that Corporations are the firms with the lowest
 incentives to misreport their commercial activity. Therefore, it could
 have been relatively riskier to fake an electric bill than other inputs.
@@ -3571,12 +3576,12 @@ that firms could deduct from their taxes their electric bill. Finally,
 electricity is a small share of the firm's expenses in the data.
 
 Fuels consumed in production were deductible however these represent a
-non significant share of the firms' expenses.
+non-significant share of the firms' expenses.
 
 Finally, only repair and maintenance services were taxed from the
-begining during this period. The authority gradually introduced services
-they could control easily like telephone and telecommunication,
-insurances, airline tiquets, and parking, among others. The rest of the
+beginning during this period. The authority gradually introduced
+services they could control easily like telephone and telecommunication,
+insurances, airline tickets, and parking, among others. The rest of the
 services look more like fixed costs and not like intermediate inputs for
 production, or at least they do not necessarily increase with
 production. Take for instance, telephone bills. They might increase if
@@ -3594,31 +3599,123 @@ represent a nontrivial share of their total production expenses.
 To start, unprocessed primary goods such as mining, agricultural,
 fishing, and forestry were exempt of sales taxes. If the main raw
 materials of an industry is a primary good, then firms in that industry
-would have no invcentive to overreport their raw materials because they
+would have no incentive to overreport their raw materials because they
 are not paying sales taxes on their raw material that could be credited
 towards the taxes they have to pay for their sales. Industries like
 concrete and clay used in construction (369-Non-Metallic Minerals) and
-leather products (323-Leather tanning and dyeing, Furskins) might fall
+leather products (323-Leather tanning and dyeing, Fur skins) might fall
 into this category.
 
 For other industries, few specialized suppliers provide their main raw
 materials. These firms might have to import a non-trivial share of their
-materials. It would be highly suspicious to fake invoices of raw
+materials. It would be highly suspicious to fake invoices for raw
 materials that come from few known local and international suppliers.
 For example, plastic pellets the main raw material in injection molding
 and plastic products (356) are supplied internationally by a handful of
 suppliers located in the US and Europe.
 
-Finally, industries exempt of sales tax would have relative lower
+Likewise, industries exempt of sales tax would have relative lower
 incentives to evade than non-exempt. In Colombia, firms producing
 foodstuffs (311 and 312), drugs, textbooks, transportation equipment
-(384), agricultural machinery (382-Non-Electrical Machinery incluiding
+(384), agricultural machinery (382-Non-Electrical Machinery including
 Farm Machinery), and equipment (383-Electrical Equipment) were exempt of
 sales taxes since 1974. Exemption to Agricultural machinery and
 transportation equipment was eliminated in 1984. Almost half-way through
 the data.
 
 (In addition, exporters were exempted from sales taxes. )
+
+Lastly, it would be better to avoid industries selling a significant
+share of their output directly to consumers and retailers. Tax evasion
+through underreporting of sales severely affected Colombia during this
+time \citep{Perry1990}. It has been documented elsewhere that revenue
+underreporting is most significant for firms selling directly consumers.
+Why? Firms might offer consumers a discount if they do not request an
+invoice. Since the consumer is the final payer of the sales tax, they
+are more like to cooperate. On the other hand, firms selling to other
+firms face counterincentives. The firm buying the product is interested
+in having an invoice to report the sales tax pay to reduce the balance
+of the sales tax they collect when selling. In addition, during this
+period there was a tendency to create fictitious distributors to reduce
+the tax base.
+
+A report based on a sample from that period in \citet{Perry1990} reveals
+that industries 322 (Wearing Apparel --- 67.5\%), 324 (Footwear ---
+49\%), 342 (Publishing --- 53.9\%), 369 (Non-Metallic --- 50\%), and 390
+(Other Manufacturing --- 61.3\%) sell half or more of their output to
+retailers and directly to consumers.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0672}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1681}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1345}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1092}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2773}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1176}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1261}}@{}}
+\caption{Distribution of Sales from Manufacturing Firms, by type of
+Purchaser (in percentage)
+\citep{Perry1990}}\label{tbl-1984-manu-sales}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+SIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total no. of firms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to retailers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to public
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% retailers and public combined
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% government
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% wholesalers
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+SIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Total no. of firms
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to retailers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% to public
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% retailers and public combined
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% government
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% wholesalers
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+312 & 25 & 24.16 & 15.72 & 39.88 & 1.20 & 58.92 \\
+313 & 3 & - & 29.33 & 29.33 & 0 & 70.67 \\
+321 & 8 & 15.06 & 0.11 & 15.17 & 1.17 & 83.67 \\
+322 & 2 & 52.92 & 14.58 & 67.50 & 0 & 32.50 \\
+324 & 5 & 45.00 & 4.00 & 49.00 & 0 & 51.00 \\
+332 & 8 & 10.85 & 20.15 & 31.00 & 5.92 & 63.08 \\
+341 & 6 & 5.00 & 0 & 5.00 & 0 & 95.00 \\
+342 & 9 & 19.44 & 34.44 & 53.89 & 7.22 & 38.89 \\
+351 & 5 & 15.20 & 6.00 & 21.20 & 2.80 & 76.00 \\
+352 & 8 & 37.81 & 5.50 & 43.31 & 4.47 & 52.22 \\
+353 & 3 & 5.67 & 5.00 & 10.67 & 0 & 89.33 \\
+355 & 5 & 21.00 & 0 & 21.00 & 0 & 79.00 \\
+362 & 1 & 10.00 & 0 & 10.00 & 0 & 90.00 \\
+369 & 8 & 21.25 & 28.75 & 50.00 & 12.88 & 37.13 \\
+372 & 3 & 10.00 & 0 & 10.00 & 1.67 & 88.33 \\
+381 & 22 & 12.41 & 14.73 & 27.14 & 2.50 & 70.36 \\
+382 & 20 & 11.20 & 30.00 & 41.20 & 9.00 & 49.80 \\
+383 & 15 & 13.87 & 7.13 & 21.00 & 9.07 & 69.93 \\
+384 & 7 & 0 & 34.57 & 34.57 & 0 & 65.43 \\
+390 & 3 & 58.00 & 3.33 & 61.33 & 3.33 & 35.33 \\
+356 & 11 & 15.55 & 6.00 & 21.55 & 3.18 & 75.27 \\
+\end{longtable}
 
 \section{Results}\label{results-1}
 
@@ -3627,18 +3724,18 @@ Overreporting}\label{testing-for-the-presence-of-tax-evasion-through-overreporti
 
 Equation~\ref{eq-ob-ev} suggest a way to test the presence of tax
 evasion through cost overreporting. Let
-\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\). Define the the
+\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\). Define the
 null hypothesis as the absence of cost overreporting,
 \(H_0: \mu_{\mathcal{V}}=0\), and the alternative hypothesis as the
 presence of cost overreporting, \(H_1: \mu_{\mathcal{V}}>0\).
-Consequently, we can use a one sided t-test to verify for the presence
+Consequently, we can use a one-sided t-test to verify for the presence
 of tax evasion by overreporting.
 
 I test for the presence of tax evasion for different classifications of
-intermediates. Intermediates includes raw materials, energy and
-services. Deductibles includes raw materials and deductible expenses.
-Materials includes only raw materials. The items included as deductible
-expenses or services are detailed in Table~\ref{tbl-expenses-type}
+intermediates. Intermediates include raw materials, energy and services.
+Deductibles include raw materials and deductible expenses. Materials
+include only raw materials. The items included as deductible expenses or
+services are detailed in Table~\ref{tbl-expenses-type}
 
 \begin{table}
 
@@ -3726,14 +3823,14 @@ Among the industries with exempted products, 311 (Food Products) and 383
 (Electrical Machinery) there is evidence of tax evasion but as we'll see
 later the average overreporting is low compared to other industries.
 
-As expected, the evice is stronger particularly for the other industries
-that do not fall in the previous categories. Namely, there is evidence
-of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322
-(Wearing Apparel), and 324 (Footwear); 331 (Wood Products except
-Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342
-(Publishing); 351 (Industrial Chemicals) and 352 (Other Chemicals); 381
-(Metal Products Except Machinery), and 390 (Other Manufacturing
-Industries).
+As expected, the evidence is stronger particularly for the other
+industries that do not fall in the previous categories. Namely, there is
+evidence of tax evasion for industries 313 (Beverages); for 321
+(Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood
+Products except Furniture) and 332 (Wood Furniture); for industry 341
+(Paper) and 342 (Publishing); 351 (Industrial Chemicals) and 352 (Other
+Chemicals); 381 (Metal Products Except Machinery), and 390 (Other
+Manufacturing Industries).
 
 \subsection{Expenditure Swapping Tax
 Evasion}\label{expenditure-swapping-tax-evasion}
@@ -3749,7 +3846,7 @@ expenditure swapping In Colombia, firms were subject to submitting tax
 declarations bimonthly. This constant reporting made misreporting
 difficult. If firms wanted to fly unnoticed under the authority's radar
 their bimonthly reports had to add up as a non-evading firm. Firms could
-exchange non-deductible expeneses for deductible expenses. That way, if
+exchange non-deductible expenses for deductible expenses. That way, if
 the authority challenged their fake expenses, they could come back with
 valid unreported expenses and only pay the sales tax owed and leave the
 corporate income tax unaffected.
@@ -3833,7 +3930,7 @@ SIC & M+E+S & Materials & Electricity & Services\\
 \subsection{Deconvoluting Tax Evasion Using
 Moments}\label{deconvoluting-tax-evasion-using-moments}
 
-One simple way to start with the deconvulution is using moments. In
+One simple way to start with the deconvolution is using moments. In
 particular, for every \(n\)-th moment
 \(\mathbb{E}[\varepsilon_{it}^n|\Theta^{NE}]=\mathbb{E}[\varepsilon_{it}^n|t]=\mathbb{E}[\varepsilon_{it}^n]\)
 
@@ -3898,7 +3995,7 @@ is non-trivial.
 
 Although deconvolution by moments is the simplest method, it displays
 the undesirable characteristic that estimate of variances frequently
-result with a negative sign. In the next section, I adress this problem
+result with a negative sign. In the next section, I address this problem
 by using parametric MLE.
 
 \subsection{Deconvoluting by Parametric
@@ -3916,11 +4013,11 @@ overreport a little and a few firms overreport greater amounts.
 Therefore, a lognormal or a truncated normal distribution might be more
 appropriate.
 
-By definition, if a random variable \(U\) is lognormal distributed, then
-\(log(U)\sim N(\mu, \sigma)\). Thus, we cannot directly compare the
-parameters of the lognormal distribution to our previous estimates. We
+By definition, if a random variable \(U\) is log-normal distributed,
+then \(log(U)\sim N(\mu, \sigma)\). Thus, we cannot directly compare the
+parameters of the log-normal distribution to our previous estimates. We
 can however, used the parameters to compute any moment of the
-log-nomarlly distributed variable \(U\) by
+log-normally distributed variable \(U\) by
 
 \[
 E[U^n]=e^{n\mu+\frac{1}{2}n^2\sigma^2}
@@ -3936,7 +4033,7 @@ Var[U]&=E[U^2]-E[U]^2=e^{2\mu+\sigma^2}(e^{\sigma^2}-1).
 \end{aligned}
 \]
 
-In addtion, the mode and the mean by
+In addition, the mode and the mean by
 
 \[
 \begin{aligned}
@@ -3980,7 +4077,7 @@ Var[U|U>0]&=\sigma^2[1+\alpha\varphi(\alpha)/(1-\Phi(\alpha))-(\varphi(\alpha)/[
 \]
 
 Table~\ref{tbl-deconv-mle-both} displays the estimates of the parameters
-for both the lognormal and truncated normal distributions using an MLE
+for both the log-normal and truncated normal distributions using an MLE
 approach. Other moments of the densities are computed as explained
 previously and shown for reference.
 
@@ -4020,17 +4117,17 @@ SIC & Density & \$\textbackslash{}mu\$ & \$\textbackslash{}sigma\$ & Mean & SD &
 
 \end{longtable}
 
-Both the lognormal and the truncated normal distributions point to
+Both the log-normal and the truncated normal distributions point to
 similar means. The differences between the other moments of the
-distributions can be explained by the differences in the shapes of ther
-probability density functions. The standard devitaion is larger in the
-lognormal distribution than in the truncated normal distribution which
+distributions can be explained by the differences in the shapes of their
+probability density functions. The standard deviation is larger in the
+log-normal distribution than in the truncated normal distribution which
 can be explained by the asymmetry of the log normal distribution which
 is skewed to the right. With respect to the mode, it is the same to the
 mean in the case of the truncated normal distribution, while it is lower
-than the median for the lognormal. Finally, the median is lower than the
-mean in the case of the lognormal, but higher than the mean in the case
-of the truncated normal because of the truncation from below.
+than the median for the log-normal. Finally, the median is lower than
+the mean in the case of the log-normal, but higher than the mean in the
+case of the truncated normal because of the truncation from below.
 
 Both distributions show higher estimates of the average overreporting in
 logs than using only moments. Now it looks like firms evade taxes by
@@ -4077,16 +4174,16 @@ SIC & Density & Mean & SD\\
 \end{longtable}
 
 The difference between our previous estimates using moments can be
-explained by the fact that the log-normal and runcated distribution are
-restricted to positive values while we did not applied the restriction
+explained by the fact that the log-normal and truncated distribution are
+restricted to positive values while we did not apply the restriction
 when using moments. Were we to take the average of only the positive
-values the mean of the moments method would be higher and closer to the
-log-normal and truncated normal distributions.
+values, the mean of the moments' method would be higher and closer to
+the log-normal and truncated normal distributions.
 
-From the perspective of theory, firms would have inventives to
+From the perspective of theory, firms would have incentives to
 overreport their materials. Therefore, using moments to estimate
 overreporting without restricting to positive values like in the case of
-the MLE method using a lognormal or truncated distribution might
+the MLE method using a log-normal or truncated distribution might
 underestimate tax evasion through cost overreporting.
 
 \begin{figure}
@@ -4124,13 +4221,13 @@ tax-evading industries.}
 Table~\ref{tbl-CD-ar1-comparision} and \ref{tbl-CD-comparision} display
 the results of estimating the production function parameters following
 the identification strategy described above. In
-Table~\ref{tbl-CD-ar1-comparision}, I use an AR(1) model for the markov
+Table~\ref{tbl-CD-ar1-comparision}, I use an AR(1) model for the Markov
 process of productivity and a third degree polynomial in
 table~\ref{tbl-CD-comparision}. In both cases, I employed
-\(Z=\\{k_{it},l_{it}\\}\) as instruments.
+\(Z=\{k_{it},l_{it}\}\) as instruments.
 
 To compare, I also include the uncorrected estimates using GNR and a
-simple OLS. In the case of GNR estimation method, the markov process of
+simple OLS. In the case of GNR estimation method, the Markov process of
 productivity is a third degree polynomial and capital and labor the
 instruments.
 
@@ -4200,17 +4297,131 @@ polynomial for both `Tax Evasion + GNR' and `GNR'.
 
 \end{table}%
 
-In both tables, the estimates of correcting the production function
-parameters are similar. This provides evidence of the robustness of the
-results to misspecification in the markov process.
+First, Table~\ref{tbl-CD-ar1-comparision} and \ref{tbl-CD-comparision}
+show that assuming and AR(1) or third degree polynomial functional form
+for the Markov process of productivity yield similar estimates of the
+production function parameters when correcting for tax evasion.
+Reassuring that results are robust to this parametric specification of
+the Markov process of productivity (\(h(\cdot)\)).
+
+Second, comparing Tax-Evasion corrected results with GNR, the output
+elasticity of intermediates is significant smaller in most cases except
+in industry 331 (Wood Products). Lower output elasticities for
+intermediates were expected. The one that is higher might be due to the
+fact that CD estimates might be subject to omitted variable bias because
+it implicitly assumes that cross-elasticities are zero. In other words,
+complementarity or substitutability of the inputs is ignored.
+
+Examining the elasticities of capital and labor reveals variation across
+industries, with some being lower, some higher, and others quite
+similar. There is no clear pattern or expectation regarding how tax
+evasion on intermediate inputs might bias the elasticities of
+non-flexible inputs. Why would these elasticities change when correcting
+for tax evasion? One possible explanation is that the Cobb-Douglas (CD)
+production function omits cross-elasticities. Depending on the industry,
+the cross-elasticity between intermediates and capital and labor may
+vary in significance. Therefore, overreporting of intermediates might
+bias the cross-elasticities. Since these cross-elasticities are not
+included in the CD production function, the elasticities of capital and
+labor could reflect different degrees of these variations once
+intermediates are corrected for overreporting.
+
+\subsection{Productivity}\label{productivity}
+
+I use \textbf{?@eq-big-W-squiggle} assuming \(\omega\) follows a normal
+distribution to deconvolute it from the output shock \(\varepsilon\).
+Table~\ref{tbl-omega} displays the estimates of the distribution
+parameters of \(\omega\) assuming a parametric specification of an AR(1)
+and a third degree polynomial for the Markov process of \(\omega\).
+
+\begin{table}
+
+\caption{\label{tbl-omega}Estimates Omega Distribution by Industry after
+Deconvoluting from the Output Shock.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{r|r|r|r|r}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{AR(1)} & \multicolumn{2}{c}{3D Poly} \\
+\cline{2-3} \cline{4-5}
+  & \$\textbackslash{}mu\$ & \$\textbackslash{}sigma\$ & \$\textbackslash{}mu\$  & \$\textbackslash{}sigma\$ \\
+\hline
+322 & 5.4275 & 0.5837 & 5.4729 & 0.5864\\
+\hline
+342 & 4.2497 & 0.4676 & 4.2724 & 0.4673\\
+\hline
+313 & 3.2858 & 0.4527 & 3.3253 & 0.4516\\
+\hline
+351 & 3.4666 & 0.6503 & 3.3535 & 0.6475\\
+\hline
+331 & 4.0412 & 0.3818 & 4.0567 & 0.3818\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+To compare my estimates of productivity without correcting for tax
+evasion, I simulated data by employing 1000 independent draws from
+\(\omega\) and \(\varepsilon\) using the estimated parameters in
+Table~\ref{tbl-omega}. Then, I computed productivity,
+\(\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}\).
+
+Table~\ref{tbl-prod-comparison} compares summary statistics the
+simulated productivity using the estimated parameters after correcting
+for tax evasion with the summary statistics of the productivity
+estimates of GNR.
+
+\begin{table}
+
+\caption{\label{tbl-prod-comparison}Summary statistics of the
+productivity estimates using GNR correcting and not correcting for tax
+evasion. Tax-evasion corrected estimates were simulated using the
+parameters of Table~\ref{tbl-omega}.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|l|r|r|r|r|r}
+\hline
+inds & Method & Mean & SD & Q1 & Median & Q3\\
+\hline
+ & GNR & 42.8 & 24.3 & 28.2 & 36.7 & 50.0\\
+\cline{2-7}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 313} & Tax Evasion + GNR & 33.4 & 19.7 & 19.7 & 28.4 & 41.2\\
+\cline{1-7}
+ & GNR & 172.6 & 122.1 & 93.2 & 143.3 & 215.8\\
+\cline{2-7}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 322} & Tax Evasion + GNR & 52263.4 & 1182304.1 & 29.3 & 226.5 & 1883.4\\
+\cline{1-7}
+ & GNR & 210.7 & 113.5 & 137.2 & 185.3 & 251.7\\
+\cline{2-7}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 331} & Tax Evasion + GNR & 74.5 & 55.8 & 35.7 & 58.9 & 96.2\\
+\cline{1-7}
+ & GNR & 24.5 & 9.1 & 19.0 & 22.9 & 27.9\\
+\cline{2-7}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 342} & Tax Evasion + GNR & 110.8 & 116.7 & 38.3 & 76.0 & 136.3\\
+\cline{1-7}
+ & GNR & 4585.8 & 4749.1 & 1523.7 & 2864.5 & 5716.3\\
+\cline{2-7}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 351} & Tax Evasion + GNR & 53.0 & 72.0 & 12.5 & 28.4 & 64.0\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
 
 \subsection{By Year}\label{by-year}
 
 \section{Tax Evasion and Resource
-Misallocation}\label{tax-evasion-and-resource-misallocation}
+Missallocation}\label{tax-evasion-and-resource-missallocation}
 
-A popular way to decompose total productivity introduced by Olley and
-Pakes (1996) is the following :
+A popular way to decompose total productivity introduced by
+\citet{Olley1996} is the following :
 
 \[
 \varphi_t = \bar\varphi_t + \sum_{i=1}^I \left(s_{it}-\bar s_{t}\right)\left(\varphi_{it}-\bar\varphi_t\right)
@@ -4232,24 +4443,24 @@ productivity and missallocation.
 
 In the tax evasion context, the productivity of misreporting firms would
 look lower than it really is. How would this affect our measures of
-total productivity? If misrrerporting firms have small shares, their
+total productivity? If misreporting firms have small shares, their
 corrected productivity measure might be closer to the mean reducing
-their contribution to total producvity, leading to lower measured levels
-of total producvity.
+their contribution to total productivity, leading to lower measured
+levels of total productivity.
 
 In other words, tax evasion through cost overreporting might lead to
 biased measures of total aggregate productivity.
 
 However, if we think about the marginal firm that is struggling to stay
 in the market, the additional income gained through misreporting might
-help her survive longer. Therefore, tax evasion increases misallocation
+help her survive longer. Therefore, tax evasion increases missallocation
 in the sense that a share of the output is allocated to firms that
 otherwise would not be in the market.
 
 There are alternative ways to decompose total productivity that account
 for the entry and exit of firms (Foster et al.~2008). In addition,
 alternative measures to aggregate productivity have been used elsewhere
-(e.g.~aggregate demand shocks in Eslava et al.~2004).
+(e.g.~aggregate demand shocks in \citet{Eslava2004}).
 
 For example, we can decompose aggregate productivity like this
 
@@ -4264,17 +4475,17 @@ firms.
 In the case of corporate tax evasion a relevant measure could be
 aggregate profitability. Low productivity firms are surviving not
 because they are technologically efficient but because their
-profitatibility is marginally higher when they evade taxes. Decomposing
-an aggregate profitability measure by market shares and firm dynamics
-would indicate how exiting firms are contributing to the aggregate
-measure. Intuitively, again higher levels of aggregate profitability
-correspond to larger shares of the market being allocated to high
-profitability firms.
+profitability is marginally higher when they evade taxes. Decomposing an
+aggregate profitability measure by market shares and firm dynamics would
+indicate how exiting firms are contributing to the aggregate measure.
+Intuitively, again higher levels of aggregate profitability correspond
+to larger shares of the market being allocated to high profitability
+firms.
 
 In the absence of tax evasion, firms overreporting costs would have
 lower after-tax profits. The aggregate profitability level would be
 higher if these firms have small market shares and remain in the sample.
-On the other hand, the aggregate profitatibility level woud decrease if
+On the other hand, the aggregate profitability level would decrease if
 the small-share and low-profitability firms were to exit the market.
 
 Therefore, in the case of tax evasion, the key aspect of aggregate

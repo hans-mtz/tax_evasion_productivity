@@ -2,9 +2,9 @@
 
 ### Testing for the Presence of Tax Evasion Through Overreporting
 
-@eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$. Define the the null hypothesis as the absence of cost overreporting, $H_0: \mu_{\mathcal{V}}=0$, and the alternative hypothesis as the presence of cost overreporting, $H_1: \mu_{\mathcal{V}}>0$. Consequently, we can use a one sided t-test to verify for the presence of tax evasion by overreporting.
+@eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$. Define the null hypothesis as the absence of cost overreporting, $H_0: \mu_{\mathcal{V}}=0$, and the alternative hypothesis as the presence of cost overreporting, $H_1: \mu_{\mathcal{V}}>0$. Consequently, we can use a one-sided t-test to verify for the presence of tax evasion by overreporting.
 
-I test for the presence of tax evasion for different classifications of intermediates. Intermediates includes raw materials, energy and services. Deductibles includes raw materials and deductible expenses. Materials includes only raw materials. The items included as deductible expenses or services are detailed in @tbl-expenses-type
+I test for the presence of tax evasion for different classifications of intermediates. Intermediates include raw materials, energy and services. Deductibles include raw materials and deductible expenses. Materials include only raw materials. The items included as deductible expenses or services are detailed in @tbl-expenses-type
 
 ```{r}
 #| label: tbl-evasion-test-CD
@@ -60,13 +60,13 @@ In particular, there is no evidence of tax evasion for most industries in which 
 
 Among the industries with exempted products, 311 (Food Products) and 383 (Electrical Machinery) there is evidence of tax evasion but as we'll see later the average overreporting is low compared to other industries. 
 
-As expected, the evice is stronger particularly for the other industries that do not fall in the previous categories. Namely, there is evidence of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood Products except Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342 (Publishing);  351 (Industrial Chemicals) and 352 (Other Chemicals); 381 (Metal Products Except Machinery), and 390 (Other Manufacturing Industries). 
+As expected, the evidence is stronger particularly for the other industries that do not fall in the previous categories. Namely, there is evidence of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood Products except Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342 (Publishing); 351 (Industrial Chemicals) and 352 (Other Chemicals); 381 (Metal Products Except Machinery), and 390 (Other Manufacturing Industries). 
 
 ### Expenditure Swapping Tax Evasion
 
 Although we found evidence of evasion through raw materials overreporting, the previous table would suggest that other intermediate materials could have been underreported as indicated by the negative sign and the tight standard errors. 
 
-A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority's radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expeneses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.
+A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority's radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expenses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.
 
 Firms reserving valid expenses is known in the literature. It has been documented elsewhere, in particular in tax evasion studies focusing on revenue underreporting, that when authorities challenged firms' records, firms came back increasing their sales but also their expenses resulting in a zero net gain in terms of tax revenue for authorities.
 
@@ -109,7 +109,7 @@ tax_ev_test_tbl_gnr %>%
 
 ### Deconvoluting Tax Evasion Using Moments
 
-One simple way to start with the deconvulution is using moments. In particular, for every $n$-th moment $\mathbb{E}[\varepsilon_{it}^n|\Theta^{NE}]=\mathbb{E}[\varepsilon_{it}^n|t]=\mathbb{E}[\varepsilon_{it}^n]$
+One simple way to start with the deconvolution is using moments. In particular, for every $n$-th moment $\mathbb{E}[\varepsilon_{it}^n|\Theta^{NE}]=\mathbb{E}[\varepsilon_{it}^n|t]=\mathbb{E}[\varepsilon_{it}^n]$
 
 Therefore, any moment of the tax evasion $e_{it}$ distribution $\forall t\in T$ can be estimated in theory.
 
@@ -175,7 +175,7 @@ deconv_mmt_long%>%
 
 The top five tax evading industries, 322 (Wearing Apparel), 342 (Publishing), 313 (Beverages), 351 (Industrial Chemicals), and 331 (Wood Products), display an average tax evasion $e$ greater than 12%, which is non-trivial.
 
-Although deconvolution by moments is the simplest method, it displays the undesirable characteristic that estimate of variances frequently result with a negative sign. In the next section, I adress this problem by using parametric MLE. 
+Although deconvolution by moments is the simplest method, it displays the undesirable characteristic that estimate of variances frequently result with a negative sign. In the next section, I address this problem by using parametric MLE. 
 
 ### Deconvoluting by Parametric MLE
 
@@ -213,7 +213,7 @@ For tax-evasion, theory suggests that firms only have incentives to overreport c
 
 <!-- @tbl-deconv-mle-lognormal displays the results of a parametric MLE using a lognormal distribution for the evasion random variable. -->
 
-By definition, if a random variable $U$ is lognormal distributed, then $log(U)\sim N(\mu, \sigma)$. Thus, we cannot directly compare the parameters of the lognormal distribution to our previous estimates. We can however, used the parameters to compute any moment of the log-nomarlly distributed variable $U$ by
+By definition, if a random variable $U$ is log-normal distributed, then $log(U)\sim N(\mu, \sigma)$. Thus, we cannot directly compare the parameters of the log-normal distribution to our previous estimates. We can however, used the parameters to compute any moment of the log-normally distributed variable $U$ by
 
 $$
 E[U^n]=e^{n\mu+\frac{1}{2}n^2\sigma^2}
@@ -229,7 +229,7 @@ Var[U]&=E[U^2]-E[U]^2=e^{2\mu+\sigma^2}(e^{\sigma^2}-1).
 $$
 
 
-In addtion, the mode and the mean by
+In addition, the mode and the mean by
 
 $$
 \begin{aligned}
@@ -305,7 +305,7 @@ $$
 
 
 
-@tbl-deconv-mle-both displays the estimates of the parameters for both the lognormal and truncated normal distributions using an MLE approach. Other moments of the densities are computed as explained previously and shown for reference.
+@tbl-deconv-mle-both displays the estimates of the parameters for both the log-normal and truncated normal distributions using an MLE approach. Other moments of the densities are computed as explained previously and shown for reference.
 
 ```{r}
 #| label: tbl-deconv-mle-both
@@ -324,7 +324,7 @@ mle_deconv_tbl %>%
 
 ```
 
-Both the lognormal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of ther probability density functions. The standard devitaion is larger in the lognormal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the lognormal. Finally, the median is lower than the mean in the case of the lognormal, but higher than the mean in the case of the truncated normal because of the truncation from below.
+Both the log-normal and the truncated normal distributions point to similar means. The differences between the other moments of the distributions can be explained by the differences in the shapes of their probability density functions. The standard deviation is larger in the log-normal distribution than in the truncated normal distribution which can be explained by the asymmetry of the log normal distribution which is skewed to the right. With respect to the mode, it is the same to the mean in the case of the truncated normal distribution, while it is lower than the median for the log-normal. Finally, the median is lower than the mean in the case of the log-normal, but higher than the mean in the case of the truncated normal because of the truncation from below.
 
 Both distributions show higher estimates of the average overreporting in logs than using only moments. Now it looks like firms evade taxes by inflating their cost of their materials by 40 percent or more. 
 
@@ -358,12 +358,12 @@ boot_mle_deconv_tbl %>%
 ```
 
 
-The difference between our previous estimates using moments can be explained by the fact that the log-normal and runcated distribution are restricted to positive values while we did not applied the restriction when using moments. Were we to take the average of only the positive values the mean of the moments method would be higher and closer to the log-normal and truncated normal distributions. 
+The difference between our previous estimates using moments can be explained by the fact that the log-normal and truncated distribution are restricted to positive values while we did not apply the restriction when using moments. Were we to take the average of only the positive values, the mean of the moments' method would be higher and closer to the log-normal and truncated normal distributions. 
 
-From the perspective of theory, firms would have inventives to overreport their materials. Therefore, using moments to estimate overreporting without restricting to positive values like in the case of the MLE method using a lognormal or truncated distribution might underestimate tax evasion through cost overreporting. 
+From the perspective of theory, firms would have incentives to overreport their materials. Therefore, using moments to estimate overreporting without restricting to positive values like in the case of the MLE method using a log-normal or truncated distribution might underestimate tax evasion through cost overreporting. 
 
 
-::: {#fig-density-plots layout-ncol="1" }
+::: {#fig-density-plots layout-ncol="1"}
 
 ```{r}
 #| warning: false
@@ -435,9 +435,9 @@ Truncated Normal (red) and Log-Normal (blue) distribution of the overreporting o
 
 ### Production Function
 
-@tbl-CD-ar1-comparision and [-@tbl-CD-comparision] display the results of estimating the production function parameters following the identification strategy described above. In @tbl-CD-ar1-comparision, I use an AR(1) model for the markov process of productivity and a third degree polynomial in [table @tbl-CD-comparision ]. In both cases, I employed $Z=\\{k_{it},l_{it}\\}$ as instruments.
+@tbl-CD-ar1-comparision and [-@tbl-CD-comparision] display the results of estimating the production function parameters following the identification strategy described above. In @tbl-CD-ar1-comparision, I use an AR(1) model for the Markov process of productivity and a third degree polynomial in [table @tbl-CD-comparision ]. In both cases, I employed $Z=\{k_{it},l_{it}\}$ as instruments.
 
-To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the markov process of productivity is a third degree polynomial and capital and labor the instruments.
+To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the Markov process of productivity is a third degree polynomial and capital and labor the instruments.
 
 ```{r}
 #| label: tbl-CD-ar1-comparision
@@ -483,9 +483,80 @@ cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
 
 ```
 
-In both tables, the estimates of correcting the production function parameters are similar. This provides evidence of the robustness of the results to misspecification in the markov process. 
+First, @tbl-CD-ar1-comparision and [-@tbl-CD-comparision] show that assuming and AR(1) or third degree polynomial functional form for the Markov process of productivity yield similar estimates of the production function parameters when correcting for tax evasion. Reassuring that results are robust to this parametric specification of the Markov process of productivity ($h(\cdot)$).
+
+Second, comparing Tax-Evasion corrected results with GNR, the output elasticity of intermediates is significant smaller in most cases except in industry 331 (Wood Products). Lower output elasticities for intermediates were expected. The one that is higher might be due to the fact that CD estimates might be subject to omitted variable bias because it implicitly assumes that cross-elasticities are zero. In other words, complementarity or substitutability of the inputs is ignored.
+
+Examining the elasticities of capital and labor reveals variation across industries, with some being lower, some higher, and others quite similar. There is no clear pattern or expectation regarding how tax evasion on intermediate inputs might bias the elasticities of non-flexible inputs. Why would these elasticities change when correcting for tax evasion? One possible explanation is that the Cobb-Douglas (CD) production function omits cross-elasticities. Depending on the industry, the cross-elasticity between intermediates and capital and labor may vary in significance. Therefore, overreporting of intermediates might bias the cross-elasticities. Since these cross-elasticities are not included in the CD production function, the elasticities of capital and labor could reflect different degrees of these variations once intermediates are corrected for overreporting.
 
 
+
+### Productivity 
+
+
+I use @eq-big-w-squiggle assuming $\omega$ follows a normal distribution to deconvolute it from the output shock $\varepsilon$. @tbl-omega displays the estimates of the distribution parameters of $\omega$ assuming a parametric specification of an AR(1) and a third degree polynomial for the Markov process of $\omega$.
+
+```{r}
+#| label: tbl-omega
+#| tbl-cap: Estimates Omega Distribution by Industry after Deconvoluting from the Output Shock.
+
+load("../Code/Products/omega_deconv_mle.RData")
+
+inds <- str_extract(rownames(omega_norm_tbl),"\\d+")
+
+data.frame(
+  inds,
+  omega_norm_ar1_tbl[,1:2],
+  omega_norm_tbl[,1:2]
+) %>%
+mutate(
+  across(
+    everything(),
+    ~round(as.numeric(.x),4)
+  )
+) %>%
+kbl(
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"',
+    row.names = FALSE,
+    col.names = c(" ","$\\mu$","$\\sigma$", "$\\mu$ ", "$\\sigma$ ")
+  ) %>%
+  add_header_above(
+      c(" "=1, "AR(1)"=2, "3D Poly"=2)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+To compare my estimates of productivity without correcting for tax evasion, I simulated data by employing 1000 independent draws from $\omega$ and $\varepsilon$ using the estimated parameters in @tbl-omega. Then, I computed productivity, $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
+
+@tbl-prod-comparison compares summary statistics the simulated productivity using the estimated parameters after correcting for tax evasion with the summary statistics of the productivity estimates of GNR.
+
+```{r}
+#| label: tbl-prod-comparison
+#| tbl-cap: Summary statistics of the productivity estimates using GNR correcting and not correcting for tax evasion. Tax-evasion corrected estimates were simulated using the parameters of @tbl-omega. 
+
+load("../Code/Products/productivity.RData")
+
+data.frame(
+  rbind(
+    cbind(Method="Tax Evasion + GNR", 
+    productivity_tbl), 
+    cbind(Method="GNR", CD_GNR_prod_tbl)
+  )
+)[,c(2,1,3:7)] %>%
+arrange(
+  inds, Method
+) %>%
+kbl(
+    digits = 1,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  collapse_rows(1, valign = "top") %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+
+```
 
 ### By Year
 
