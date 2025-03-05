@@ -67,6 +67,7 @@ $$
 #| echo: false
 #| warning: false
 #| results: asis
+#| cache: true
 
 did_3_inds <- lapply(
     setdiff(top_20_inds$sic_3,c(311,312)),
@@ -160,6 +161,7 @@ Depending on the industry, firms might be adjusting different margins, raw mater
 ```{r}
 #| label: tbl-expenses-type
 #| tbl-cap: Classifications of Expenditure.
+#| cache: true
 
 kbl(
     exps_tbl,
@@ -178,6 +180,7 @@ row_spec(18, bold = T, hline_after = T)
 
 ```{r}
 #| results: asis
+#| cache: true
 
 did_3_inds_exp <- lapply(
     setdiff(top_20_inds$sic_3,c(311,312)),
@@ -270,6 +273,7 @@ Log of Types of Expenses Share of Total Expenses by Industry. Triple diff-in-dif
 #| warning: false
 #| error: false
 #| output: true
+#| cache: true
 
 for( x in names(did_3_inds)){
     # png(paste0("Paper/images/graphs/p_trends_",x,".png"), width=10*300, height=6*300, res=300)
@@ -330,6 +334,7 @@ for( x in names(did_3_inds)){
 #| warning: false
 #| error: false
 #| results: asis
+#| cache: true
 
 tax_changes_inds_regs<-lapply(
     top_20_inds$sic_3,

@@ -149,6 +149,20 @@ colombia_data_frame %>%
 
 ```
 
+### Top Industries by Revenue in Colombia
+
+```{r}
+#| label: tbl-top-inds-rev
+#| tbl-cap: Top 10 industries in Colombia by revenues
+
+top_10_revenue[1:10,] %>%
+    kbl(
+        digits =1,
+            table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+```
 
 ### Corporations by Industry
 
@@ -246,6 +260,7 @@ Although this is not deterministic evidence, it does not contradict the hypothes
 #| tbl-cap: Fiscal reform of 1983. Sales tax share of revenue, mean by industry year. Top 20 industries with more firms.
 #| echo: false
 #| warning: false
+#| cache: true
 
 
 f <- function(d,...){
