@@ -3,6 +3,7 @@
 library(tidyverse)
 library(fixest)
 library(statmod)
+library(ivreg)
 library(parallel)
 # load("Code/Products/colombia_data.RData")
 # load("Code/Products/global_vars.RData")
@@ -307,13 +308,19 @@ first_stage <- function(sic, var, data) {
     tbl <- data %>%
         filter(
             sic_3 == sic,
-            !is.na(.data[[var]]),
-            .data[[var]] < Inf,
-            .data[[var]] > -Inf
+            is.finite(.data[[var]])
         ) %>%
         mutate(
             cal_V = .data[[var]] - log(beta) - log(big_E)
-        ) 
+        ) %>%  
+        filter(
+            is.finite(cal_V),
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y)
+        )
 
     result_list <- list(
         cal_V = tbl$cal_V,
@@ -334,9 +341,7 @@ first_stage_panel <- function(sic, var, data) {
         filter(
             sic_3 == sic,
             juridical_organization == 3,
-            !is.na(.data[[var]]),
-            .data[[var]] < Inf,
-            .data[[var]] > -Inf
+            is.finite(.data[[var]])
         ) %>%
         fixest::feols(fml, data = .)
 
@@ -352,15 +357,21 @@ first_stage_panel <- function(sic, var, data) {
     tbl <- data %>%
         filter(
             sic_3 == sic,
-            !is.na(.data[[var]]),
-            .data[[var]] < Inf,
-            .data[[var]] > -Inf
+            is.finite(.data[[var]])
         ) %>%
         mutate(
             # y = log(gross_output),
             cal_V = .data[[var]] - log(beta) - log(big_E),
             m  = .data[[var]] + log_sales, #log(materials/sales)+log(sales)=log(materials)
             cal_W = y-beta*(m-cal_V)
+        ) %>%
+        filter(
+            is.finite(cal_V),
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y)
         ) %>%
         select(
             sic_3, year, plant, cal_V, cal_W, m, k, l, y
@@ -460,7 +471,7 @@ obj_fun_ar1<-function(alpha,data,params){
             w_eps = cal_W - alpha[1]*k-alpha[2]*l,
             lag_w_eps = lag(w_eps, order_by = year)
         ) %>%
-        lm(w_eps~lag_w_eps, data=., na.action = na.exclude) |>
+        lm(w_eps~lag_w_eps|lag_k+lag_m, data=., na.action = na.exclude) |>
         residuals()
 
 
@@ -477,13 +488,55 @@ obj_fun_ar1<-function(alpha,data,params){
 
 }
 
+obj_fun_ivar1<-function(alpha,data,params,ins){
+    a_k <- 1.3^alpha[1]
+    a_l <- 1.3^alpha[2]
+    fml <- as.formula(paste0("w_eps ~ lag_w_eps |",ins))
+
+    df <-data %>% 
+        ungroup() %>%
+        filter(
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m)
+        ) %>%
+        group_by(plant) %>%
+        mutate(
+            w_eps = cal_W - a_k*k-a_l*l,
+            lag_w_eps = lag(w_eps, order_by = year),
+            lag_2_w_eps = lag(w_eps, 2,order_by = year),
+            lag_k = lag(k, order_by = year),
+            lag_l = lag(l, order_by = year),
+            lag_m = lag(m, order_by = year)
+            
+        )
+
+    eta <- ivreg::ivreg(fml, data=df, na.action = "na.exclude") |>
+        residuals()
+
+
+    moments<-apply(
+        df[c("k","l")],
+        2, 
+        function(i){
+        mean(i*eta, na.rm = TRUE)
+        }
+    )
+
+    obj <- t(moments) %*% moments
+    return(sqrt(obj[1]))
+
+}
+
 ## Truncated Normal Distribution funs -----------------------------------
 
 f_trc_norm <- function(epsilon,v,mu,sigma){
     x<-sum(epsilon,v)
+    alpha <- -mu/sigma
     if (x>=0){
         num<-f_e(epsilon,v,mu,sigma)
-        den<- (1-pnorm(0,mean=mu, sd=sigma))
+        den<- (1-pnorm(alpha,mean=0, sd=1))
         return((1/sigma)*(num/den))
     } else {
        return(1e-300)
@@ -586,6 +639,60 @@ deconvolute_norm<-function(x,prod_fun_list,fs_list){
     return(ev_params)
 }
 
+deconvolute_norm_iv<-function(x,ins,prod_fun_list,fs_list){
+    select <- paste(x,ins)
+    alpha <- prod_fun_list[[select]]$coeffs
+
+    params<-list(
+        gauss_int=gauss_hermite,
+        epsilon_mu=fs_list[[x]]$epsilon_mu,
+        epsilon_sigma=fs_list[[x]]$epsilon_sigma
+    )
+
+    temp_df <- fs_list[[x]]$data %>%
+        filter(
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l)
+        ) %>%
+        mutate(
+            W_squiggle = cal_W - alpha[["k"]]*k-alpha[["l"]]*l
+        )
+
+    init<-c(
+        mu=mean(temp_df$W_squiggle, na.rm = TRUE), 
+        sigma=1.3^(sd(temp_df$W_squiggle, na.rm = TRUE))
+    )
+
+    res<-optim(
+        init,
+        obj_fun_f,
+        NULL,
+        f_w_n,
+        temp_df$W_squiggle,
+        params,
+        alpha[["m"]],
+        method = "BFGS",
+        control=list(fnscale=-1) #Maximizing instead of minimizing
+    )
+
+    mu<-res$par[[1]]
+    sigma<-1.3^(res$par[[2]])#|> round(6)
+    # n<-length(fs_list[[x]]$data$cal_V)
+    ev_params<-c(
+        mu = mu,
+        sigma = sigma,
+        mean=mu,
+        sd=sigma,
+        mode=mu,
+        median=mu,
+        convergence = res$convergence,
+        sic_3 = stringr::str_extract(x,"\\d{3}"),
+        ins = ins,
+        dist = "normal"
+    )
+    return(ev_params)
+}
 
 deconvolute_lognorm<-function(x,fs_list){
     params<-list(
@@ -634,6 +741,24 @@ deconvolute_lognorm<-function(x,fs_list){
     return(ev_params)
 }
 
+get_trcnorm_stats <- function(mu,sigma){
+    alpha <- -mu/sigma
+    Z = 1 - pnorm(alpha,mean=0, sd=1)
+    phi_a = dnorm(alpha,mean=0,sd=1)
+    lambda = phi_a/Z
+    mean_trcnorm = mu+sigma*lambda
+    num_median = pnorm(alpha,mean=0,sd=1)+1
+    median_trcnorm = mu+sigma*qnorm(num_median/2, mean=0, sd=1)
+    variance_trcnorm = sigma*sigma*(1-lambda*(lambda-alpha))
+    return(list(
+        mean = mean_trcnorm,
+        sd= sqrt(variance_trcnorm),
+        mode = mu,
+        median = median_trcnorm,
+        variance = variance_trcnorm
+    ))
+}
+
 deconvolute_trcnorm<-function(x,fs_list){
     params<-list(
         gauss_int=gauss_hermite,
@@ -656,15 +781,12 @@ deconvolute_trcnorm<-function(x,fs_list){
     )
     mu<-res$par[1]
     sigma<-1.3^res$par[2]
-    alpha <- -mu/sigma
-    Z = 1 - pnorm(0,mean=mu, sd=sigma)
-    num = dnorm(0,mean=mu,sd=sigma)
-    mean_trcnorm = mu+sigma*num/Z
-    num_median = pnorm(0,mean=mu,sd=sigma)+1
-    median_trcnorm = mu+qnorm(num_median/2, mean=mu, sd=sigma)*sigma
-    variance_trcnorm = sigma*sigma*(1+alpha*num/Z-(num/Z)^2)
-    # n<-sum(!is.na(fs_list[[x]]$data$cal_V))
-    # me<-1.96*sigma/sqrt(n)
+
+    trc_norm_stas <- get_trcnorm_stats(mu,sigma)
+    mean_trcnorm <- trc_norm_stas$mean
+    variance_trcnorm <- trc_norm_stas$variance
+    median_trcnorm <- trc_norm_stas$median
+
     ev_params<-c(
         mu = mu,
         sigma = sigma,
@@ -682,7 +804,47 @@ deconvolute_trcnorm<-function(x,fs_list){
     return(ev_params)
 }
 
-estimate_prod_fn<-function(x,fs_list,f){
+## Estimation of Production Function -------------------
+
+# estimate_prod_fn<-function(x,fs_list,f,...){
+#     params<-list(
+#         gauss_int=gauss_hermite,
+#         epsilon_mu=fs_list[[x]]$epsilon_mu,
+#         epsilon_sigma=fs_list[[x]]$epsilon_sigma,
+#         beta = fs_list[[x]]$beta
+#     )
+
+#     alpha0<-coef(
+#         lm(
+#             cal_W ~ k+l,
+#             fs_list[[x]]$data
+#         )
+#     )
+
+#     res<-optim(
+#         alpha0[-1],
+#         f,
+#         NULL,
+#         fs_list[[x]]$data,
+#         params,
+#         ...,
+#         method = "BFGS",
+#         control = list(
+#             maxit = 300
+#         )
+#     )
+#     return(
+#         list(
+#             coeffs=c(
+#                 m=fs_list[[x]]$beta,
+#                 res$par
+#                 ),
+#             convergence = res$convergence
+#             )
+#     )
+# }
+
+estimate_prod_fn<-function(x,fs_list,f,ins){
     params<-list(
         gauss_int=gauss_hermite,
         epsilon_mu=fs_list[[x]]$epsilon_mu,
@@ -703,21 +865,175 @@ estimate_prod_fn<-function(x,fs_list,f){
         NULL,
         fs_list[[x]]$data,
         params,
+        ins,
         method = "BFGS",
         control = list(
             maxit = 300
         )
     )
+
+    fml <- as.formula(paste0("w_eps ~ lag_w_eps |",ins))
+
+    ivreg_sum<-fs_list[[x]]$data %>% 
+        ungroup() %>%
+        filter(
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m)
+        ) %>%
+        group_by(plant) %>%
+        mutate(
+            w_eps = cal_W - res$par["k"]*k-res$par["l"]*l,
+            lag_w_eps = lag(w_eps, order_by = year),
+            lag_2_w_eps = lag(w_eps, 2,order_by = year),
+            lag_k = lag(k, order_by = year),
+            lag_l = lag(l, order_by = year),
+            lag_m = lag(m, order_by = year)          
+        ) %>%
+        ivreg::ivreg(fml, data=., na.action = "na.omit") |>
+        summary(diagnostics =TRUE)
+
     return(
         list(
             coeffs=c(
                 m=fs_list[[x]]$beta,
-                res$par
+                k = 1.3^res$par[["k"]],
+                l = 1.3^res$par[["l"]]
                 ),
-            convergence = res$convergence
+            convergence = res$convergence,
+            instrument = ins,
+            diagnostics = ivreg_sum$diagnostics |>
+                as.data.frame() %>%
+                mutate(
+                    stars = case_when(
+                        `p-value` < 0.01 ~ "***",
+                        `p-value` < 0.05 ~ "**",
+                        `p-value` < 0.1 ~ "*",
+                        .default =  ""
+                    )
+                )
             )
     )
 }
+
+obj_fun_ivar1_bounds<-function(alpha,data,params,ins){
+    a_k <- alpha[1]
+    a_l <- alpha[2]
+    fml <- as.formula(paste0("w_eps ~ lag_w_eps |",ins))
+
+    df <-data %>% 
+        ungroup() %>%
+        filter(
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m)
+        ) %>%
+        group_by(plant) %>%
+        mutate(
+            w_eps = cal_W - a_k*k-a_l*l,
+            lag_w_eps = lag(w_eps, order_by = year),
+            lag_2_w_eps = lag(w_eps, 2,order_by = year),
+            lag_k = lag(k, order_by = year),
+            lag_l = lag(l, order_by = year),
+            lag_m = lag(m, order_by = year)
+            
+        )
+
+    eta <- ivreg::ivreg(fml, data=df, na.action = "na.exclude") |>
+        residuals()
+
+
+    moments<-apply(
+        df[c("k","l")],
+        2, 
+        function(i){
+        mean(i*eta, na.rm = TRUE)
+        }
+    )
+
+    obj <- t(moments) %*% moments
+    return(sqrt(obj[1]))
+
+}
+
+estimate_prod_fn_bounds<-function(x,fs_list,f,ins){
+    params<-list(
+        gauss_int=gauss_hermite,
+        epsilon_mu=fs_list[[x]]$epsilon_mu,
+        epsilon_sigma=fs_list[[x]]$epsilon_sigma,
+        beta = fs_list[[x]]$beta
+    )
+
+    alpha0<-coef(
+        lm(
+            cal_W ~ k+l,
+            fs_list[[x]]$data
+        )
+    )
+
+    res<-optim(
+        alpha0[-1],
+        f,
+        NULL,
+        fs_list[[x]]$data,
+        params,
+        ins,
+        method = "L-BFGS-B",
+        lower = c(0,0),
+        upper = c(1,1),
+        control = list(
+            maxit = 300
+        )
+    )
+
+    fml <- as.formula(paste0("w_eps ~ lag_w_eps |",ins))
+
+    ivreg_sum<-fs_list[[x]]$data %>% 
+        ungroup() %>%
+        filter(
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m)
+        ) %>%
+        group_by(plant) %>%
+        mutate(
+            w_eps = cal_W - res$par["k"]*k-res$par["l"]*l,
+            lag_w_eps = lag(w_eps, order_by = year),
+            lag_2_w_eps = lag(w_eps, 2,order_by = year),
+            lag_k = lag(k, order_by = year),
+            lag_l = lag(l, order_by = year),
+            lag_m = lag(m, order_by = year)
+            
+        ) %>%
+        ivreg::ivreg(fml, data=.) |>
+        summary(diagnostics =TRUE)
+
+    return(
+        list(
+            coeffs=c(
+                m=fs_list[[x]]$beta,
+                k = res$par[["k"]],
+                l = res$par[["l"]]
+                ),
+            convergence = res$convergence,
+            instrument = ins,
+            diagnostics = ivreg_sum$diagnostics |>
+                as.data.frame() %>%
+                mutate(
+                    stars = case_when(
+                        `p-value` < 0.01 ~ "***",
+                        `p-value` < 0.05 ~ "**",
+                        `p-value` < 0.1 ~ "*",
+                        .default =  ""
+                    )
+                )
+            )
+    )
+}
+
 
 
 ## Saving functions --------------------

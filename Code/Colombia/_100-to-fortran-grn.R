@@ -15,13 +15,17 @@ folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
 # Stata_GNR_results_folder <- "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
 evasion_inds<-top_evading_inds[1:5] #c(322,324, 342, 313, 321, 351) #same as order_sic[1:6]
 
+top_5_inds <- top_10_revenue$sic_3[1:5]
+top_5_inds
+
 gnr_inds<-c(311,321,322,331,381)
 
 # Wrangling data to save to raw ---------
 
 ## Saving data for fortran -----
-for (inds in union(gnr_inds,evasion_inds)){
+# for (inds in union(gnr_inds,evasion_inds)){
 # for (inds in evasion_inds){
+for (inds in top_5_inds){
 fort_data<-colombia_data_frame %>%
     ungroup() %>%
     select(

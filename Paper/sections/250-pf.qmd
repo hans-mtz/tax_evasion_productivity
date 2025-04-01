@@ -1,0 +1,251 @@
+
+### Production Function
+
+@tbl-CD-ar1-comparision displays the results of estimating the production function parameters following the identification strategy described above. I use an AR(1) model for the Markov process of productivity. I employed $Z=\{k_{it},l_{it}\}$ as instruments for themselves. One additional instrument to control for the endogeneity between $\varepsilon_{it-1}$ and $\mathcal{W}_{it-1}$ is needed in the first stage of 'TE+GNR'. The instrument used is specified in the table [@tbl-CD-ar1-comparision].
+
+To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the Markov process of productivity is a third degree polynomial, and capital and labor, the instruments.
+
+I focus in the top 5 industries in terms of revenue: 1) 311 - Food Products, 2) 313 Beverages, 3) 352 Other Chemical Products. 4) 351 Industrial Chemicals, and 5) 321 Textiles.
+
+```{r}
+#| label: tbl-CD-ar1-comparision
+#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is an AR(1) process for 'Tax Evasion + GNR' but a third degree polynomial for 'GNR'. $Z=\\{k_{it},l_{it}\\}$ for GNR. One additional instrument to GNR's $Z$ control for the endogeneity between $\varepsilon_{it-1}$ and $\mathcal{W}_{it-1}$ in the first stage of 'TE+GNR'. The instrument used is specified in the table.
+#| eval: true
+
+
+# load("../Code/Products/deconv_prod_fun.RData")
+# load("../Code/Products/Fortran_CD_GNR.RData")
+
+
+# cbind(evasion_tbl_ar1,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
+#   kbl(
+#     digits = 4,
+#     table.attr = 'data-quarto-disable-processing="true"'
+#   ) %>%
+#   add_header_above(
+#       c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3,"OLS"=3)#
+#   ) %>%
+#   kable_classic(full_width=F, html_font = "Cambria")
+
+load("../Code/Products/deconv_prod_fun.RData")
+
+PF_tbl %>%
+  kbl(
+    digits = 4,
+    col.names = c(
+        "Inds.",
+        "Input",
+        "$k_{it-1}$",
+        "$l_{it-1}$",
+        "$m_{it-1}$",
+        "$\\mathcal{W}_{it-2}$",
+        "GNR",
+        " OLS"
+    ),
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  add_header_above(
+      c(" "=2,"Tax Evasion + GNR"=4, " "=2)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(columns = 1, valign = "top")
+
+```
+
+
+
+```{r}
+#| label: tbl-1s-diagnostics
+#| tbl-cap: First stage 'Weak Instruments' F-test of the 2SLS-IV estimation. The null hypothesis is that the coefficients are equal to zero, in other words, uncorrelated with the endogenous variable $\\mathcal{W}_{it-1}$.   
+
+tsls_1s_diag_tbl %>%
+    mutate(
+        across(
+            5:6,
+            ~as.numeric(.x) |> round(4)
+        ),
+        `Ins.` = case_when(
+          ins == "lag_k" ~ "$k_{t-1}$",
+          ins == "lag_l" ~ "$l_{t-1}$",
+          ins == "lag_2_w_eps" ~ "$\\mathcal{W}_{t-2}$",
+          ins == "lag_m" ~ "$m_{t-1}$",
+          TRUE ~ " "
+        ),
+    ) %>%
+    select(`Ins.`, `Inds.`=sic_3, df1:stars) %>%
+    kbl(
+        digits = 4,
+        row.names = FALSE,
+        # col.names = c("Inst.", "Inds.", names(tsls_1s_diag_tbl)[-c(1,2)]),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(columns = 1, valign = "top")
+
+```
+
+```{r}
+#| label: tbl-CD-comparision
+#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is a third degree polynomial for both 'Tax Evasion + GNR' and 'GNR'. $Z=\\{k_{it},l_{it}\\}$.
+#| eval: false
+#| include: false
+
+
+load("../Code/Products/deconv_prod_fun.RData")
+# load("../Code/Products/Fortran_CD_GNR.RData")
+
+
+cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
+  kbl(
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  add_header_above(
+      c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3,"OLS"=3)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+```{r}
+#| label: tbl-boot-pf
+#| tbl-cap: Production function parameter estimates with bias-corrected bootstrap confidence intervals. 200 repetitions.
+
+load("../Code/Products/boot_pf_prod.RData")
+
+boot_pf_tbl %>%
+  select(!contains(c("mu","sigma"))) %>%
+  mutate(
+    across(
+      !c(sic_3,ins),
+      ~round(.x,4)
+    ),
+    m = glue::glue("{m} [{CI_m_LCI}, {CI_m_UCI}]"),
+    k = glue::glue("{k} [{CI_k_LCI}, {CI_k_UCI}]"),
+    l = glue::glue("{l} [{CI_l_LCI}, {CI_l_UCI}]"),
+    `Ins.` = case_when(
+      ins == "lag_2_w_eps" ~ "$\\mathcal{W}_{t-2}$",
+      ins == "lag_m" ~ "$m_{t-1}$",
+      TRUE ~ " "
+    )
+  ) %>%
+  select(`Inds.`=sic_3, `Ins.`, m:l) %>%
+  kbl(
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(1, valign = "top")
+
+```
+
+From @tbl-tbl-1s-diagnostics, we can conclude that $m_{t-1}$ and $\mathcal{W}_{t-2}$ are better instruments than $k_{t-1}$ and $l_{t-1}$. The following discussion will be focusing on the results relating to thouse instruments.
+
+First, because tax evasion artificially inflates the intermediates's cost share of revenues, lower output elasticities of intermediates than traditional methods are expected. In table @tbl-CD-ar1-comparision shows that correcting for tax evasion results in smaller intermediates' output elasticity with respect with OLS. With respect to GNR, all estimates are statistically lower except one. The output elasticity of intermediates of the Textile industry (321) is significantly greater than the GNR result.
+
+Three of the five intermediate elasticities resulted as not statistically different from zero. These zeros are not exclusive to the method correcting by tax evasion, as we can see that GNR for Cobb-Douglas approach zero for some industries. These zeros could be the result of the functional form. A Cobb-Douglas specification leaves out the cross-elasticities which could lead to omitted variables bias.  In other words, we effectively ignore complementarity or substitutability between the inputs. This CD omitted variable bias could be accentutated because we defined raw materials as intermediates leaving out others, such as energy, fuels, and services.
+
+The elasticities of capital and labor vary across industries, with some being lower, some higher, and others quite similar. This is expected. The direction of the bias in the elasticities of capital and labor depends on whether thse inputs are complements or subsitutes of intermediate inputs. This relatioship will vary by industry. Put differently, for different industries, the cross-elasticity between intermediates and capital, and intermediates and labor will be different in direction and magnitude. Since these cross-elasticities are not included in the CD production function, the elasticities of capital and labor should reflect different degrees of these variations once intermediates are corrected for overreporting.
+
+### Productivity 
+
+Once, the production functio parameters are known, we can recover $\omega$ by deconvolution using @eq-w-squiggle. Here I assume $\omega$ follows a normal distribution.
+
+@tbl-boot-omega displays the estimates of the distribution parameters of $\omega$ corresponding to the instrument used in the previous section and the parametric specification of an AR(1).
+
+```{r}
+#| label: tbl-omega
+#| tbl-cap: Estimates Omega Distribution by Industry after Deconvoluting from the Output Shock.
+#| eval: false
+#| include: false
+
+
+load("../Code/Products/omega_deconv_mle.RData")
+
+inds <- str_extract(rownames(omega_norm_tbl),"\\d+")
+
+data.frame(
+  inds,
+  omega_norm_ar1_tbl[,1:2],
+  omega_norm_tbl[,1:2]
+) %>%
+mutate(
+  across(
+    everything(),
+    ~round(as.numeric(.x),4)
+  )
+) %>%
+kbl(
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"',
+    row.names = FALSE,
+    col.names = c(" ","$\\mu$","$\\sigma$", "$\\mu$ ", "$\\sigma$ ")
+  ) %>%
+  add_header_above(
+      c(" "=1, "AR(1)"=2, "3D Poly"=2)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
+
+```{r}
+#| label: tbl-boot-omega
+#| tbl-cap: Production function parameter estimates with bias-corrected bootstrap confidence intervals. 200 repetitions.
+
+load("../Code/Products/boot_pf_prod.RData")
+
+boot_pf_tbl %>%
+  select(sic_3, ins,contains(c("mu","sigma"))) %>%
+  mutate(
+    across(
+      !c(sic_3,ins),
+      ~round(.x,4)
+    ),
+    mu = glue::glue("{mu} [{CI_mu_LCI}, {CI_mu_UCI}]"),
+    sigma = glue::glue("{sigma} [{CI_sigma_LCI}, {CI_sigma_UCI}]"),
+    `Ins.` = case_when(
+      ins == "lag_2_w_eps" ~ "$\\mathcal{W}_{t-2}$",
+      ins == "lag_m" ~ "$m_{t-1}$",
+      TRUE ~ " "
+    )
+  ) %>%
+  select(`Inds.`=sic_3, `Ins.` , mu, sigma) %>%
+  kbl(
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  collapse_rows(1, valign="top") %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
+
+To compare these productivity estimates to uncorrected ones, I simulate productivity using the parameters estimated in @tbl-boot-omega. I use 1000 independent draws from $\omega$ and $\varepsilon$. Then, I computed productivity, $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
+
+@tbl-prod-comparison compares summary statistics the simulated productivity using the estimated parameters after correcting for tax evasion with the summary statistics of the productivity estimates of GNR.
+
+```{r}
+#| label: tbl-prod-comparison
+#| tbl-cap: Summary statistics of the productivity estimates using GNR correcting and not correcting for tax evasion. Tax-evasion corrected estimates were simulated using the parameters of @tbl-boot-omega. 
+
+load("../Code/Products/productivity.RData")
+
+rbind(productivity_tbl, CD_GNR_prod_tbl) %>% 
+arrange(inds,Method) %>%
+kbl(
+    digits = 1,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  collapse_rows(1, valign = "top") %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+
+```
+
+Industries 321 Texties, and 351 Industrial Chemicas, and 313 Beverages have means lower or equal to the uncorrected ones for both instrumentes considered. Industry 311 Food Products display a higher mean for both estimates, while industry 352 Other Chemicals displays a higher or lower mean depending on the instrument.
+
+With respect to standard deviations, industries 321 Textites, 351 Industrial Chemicals, and 352 Other Chemicals display lower magnitudes, while industries 311 Food Products display significantly higher magnitudes. Lastly, industry 313 Beverages standard deviation is lower or higher depending on the instrument.
+

@@ -337,23 +337,40 @@ Both distributions show higher estimates of the average overreporting in logs th
 
 # load("../Code/Products/boot_deconv_mle.RData")
 
-boot_mle_deconv_tbl %>%
-  mutate(
-    across(
-      !c(SIC,Distribution),
-      ~round(.x,4)
-    ),
-    Mean = glue::glue("{mean} [{CI_mean_LCI}, {CI_mean_UCI}]"),
-    SD = glue::glue("{sd} [{CI_sd_LCI}, {CI_sd_UCI}]")
+# boot_mle_deconv_tbl %>%
+#   mutate(
+#     across(
+#       !c(SIC,Distribution),
+#       ~round(.x,4)
+#     ),
+#     Mean = glue::glue("{mean} [{CI_mean_LCI}, {CI_mean_UCI}]"),
+#     SD = glue::glue("{sd} [{CI_sd_LCI}, {CI_sd_UCI}]")
+#   ) %>%
+#   select(SIC,Density=Distribution,Mean, SD) %>%
+#   kable(
+#     # col.names = c("SIC","Density","Mean","[","]")
+#     digits = 4,
+#     table.attr = 'data-quarto-disable-processing="true"'
+#   ) %>%
+#   kable_classic(full_width=F, html_font = "Cambria") %>%
+#   collapse_rows(columns = 1, valign = "top")
+
+
+boot_tx_ev_mle_tbl %>%
+  select(
+    SIC = sic_3,
+    Density = dist,
+    Mean = mean,
+    SD = sd
   ) %>%
-  select(SIC,Density=Distribution,Mean, SD) %>%
   kable(
     # col.names = c("SIC","Density","Mean","[","]")
     digits = 4,
     table.attr = 'data-quarto-disable-processing="true"'
   ) %>%
-  kable_classic(full_width=F, html_font = "Cambria") %>%
-  collapse_rows(columns = 1, valign = "top")
+  collapse_rows(columns = 1:2, valign = "top") %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
   
 ```
 
@@ -434,132 +451,6 @@ Truncated Normal (red) and Log-Normal (blue) distribution of the overreporting o
 
 :::
 
-### Production Function
-
-@tbl-CD-ar1-comparision and [-@tbl-CD-comparision] display the results of estimating the production function parameters following the identification strategy described above. In @tbl-CD-ar1-comparision, I use an AR(1) model for the Markov process of productivity and a third degree polynomial in [table @tbl-CD-comparision ]. In both cases, I employed $Z=\{k_{it},l_{it}\}$ as instruments.
-
-To compare, I also include the uncorrected estimates using GNR and a simple OLS. In the case of GNR estimation method, the Markov process of productivity is a third degree polynomial and capital and labor the instruments.
-
-```{r}
-#| label: tbl-CD-ar1-comparision
-#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is an AR(1) process for 'Tax Evasion + GNR' but a third degree polynomial for 'GNR'. $Z=\\{k_{it},l_{it}\\}$.
-#| eval: true
-
-load("../Code/Products/deconv_prod_fun.RData")
-# load("../Code/Products/Fortran_CD_GNR.RData")
-
-
-cbind(evasion_tbl_ar1,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
-  kbl(
-    digits = 4,
-    table.attr = 'data-quarto-disable-processing="true"'
-  ) %>%
-  add_header_above(
-      c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3,"OLS"=3)#
-  ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-
-
-```{r}
-#| label: tbl-CD-comparision
-#| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is a third degree polynomial for both 'Tax Evasion + GNR' and 'GNR'. $Z=\\{k_{it},l_{it}\\}$.
-#| eval: true
-
-load("../Code/Products/deconv_prod_fun.RData")
-# load("../Code/Products/Fortran_CD_GNR.RData")
-
-
-cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
-  kbl(
-    digits = 4,
-    table.attr = 'data-quarto-disable-processing="true"'
-  ) %>%
-  add_header_above(
-      c(" "=1,"Tax Evasion + GNR"=3, "GNR"=3,"OLS"=3)#
-  ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-First, @tbl-CD-ar1-comparision and [-@tbl-CD-comparision] show that assuming and AR(1) or third degree polynomial functional form for the Markov process of productivity yield similar estimates of the production function parameters when correcting for tax evasion. Reassuring that results are robust to this parametric specification of the Markov process of productivity ($h(\cdot)$).
-
-Second, comparing Tax-Evasion corrected results with GNR, the output elasticity of intermediates is significant smaller in most cases except in industry 331 (Wood Products). Lower output elasticities for intermediates were expected. The one that is higher might be due to the fact that CD estimates might be subject to omitted variable bias because it implicitly assumes that cross-elasticities are zero. In other words, complementarity or substitutability of the inputs is ignored.
-
-Examining the elasticities of capital and labor reveals variation across industries, with some being lower, some higher, and others quite similar. There is no clear pattern or expectation regarding how tax evasion on intermediate inputs might bias the elasticities of non-flexible inputs. Why would these elasticities change when correcting for tax evasion? One possible explanation is that the Cobb-Douglas (CD) production function omits cross-elasticities. Depending on the industry, the cross-elasticity between intermediates and capital and labor may vary in significance. Therefore, overreporting of intermediates might bias the cross-elasticities. Since these cross-elasticities are not included in the CD production function, the elasticities of capital and labor could reflect different degrees of these variations once intermediates are corrected for overreporting.
-
-
-
-### Productivity 
-
-
-Assuming $\omega$ follows a normal distribution and @eq-w-squiggle, I deconvolute it from the output shock $\varepsilon$. @tbl-omega displays the estimates of the distribution parameters of $\omega$ assuming a parametric specification of an AR(1) and a third degree polynomial for the Markov process of $\omega$.
-
-```{r}
-#| label: tbl-omega
-#| tbl-cap: Estimates Omega Distribution by Industry after Deconvoluting from the Output Shock.
-
-load("../Code/Products/omega_deconv_mle.RData")
-
-inds <- str_extract(rownames(omega_norm_tbl),"\\d+")
-
-data.frame(
-  inds,
-  omega_norm_ar1_tbl[,1:2],
-  omega_norm_tbl[,1:2]
-) %>%
-mutate(
-  across(
-    everything(),
-    ~round(as.numeric(.x),4)
-  )
-) %>%
-kbl(
-    digits = 4,
-    table.attr = 'data-quarto-disable-processing="true"',
-    row.names = FALSE,
-    col.names = c(" ","$\\mu$","$\\sigma$", "$\\mu$ ", "$\\sigma$ ")
-  ) %>%
-  add_header_above(
-      c(" "=1, "AR(1)"=2, "3D Poly"=2)#
-  ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-To compare productivity estimates corrected for tax-evasion to uncorrected, I simulated data by employing 1000 independent draws from $\omega$ and $\varepsilon$ using the parameters estimated for the 3D poly specification [@tbl-omega]. Then, I computed productivity, $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
-
-@tbl-prod-comparison compares summary statistics the simulated productivity using the estimated parameters after correcting for tax evasion with the summary statistics of the productivity estimates of GNR.
-
-```{r}
-#| label: tbl-prod-comparison
-#| tbl-cap: Summary statistics of the productivity estimates using GNR correcting and not correcting for tax evasion. Tax-evasion corrected estimates were simulated using the parameters of @tbl-omega. 
-
-load("../Code/Products/productivity.RData")
-
-data.frame(
-  rbind(
-    cbind(Method="Tax Evasion + GNR", 
-    productivity_tbl), 
-    cbind(Method="GNR", CD_GNR_prod_tbl)
-  )
-)[,c(2,1,3:7)] %>%
-arrange(
-  inds, Method
-) %>%
-kbl(
-    digits = 1,
-    table.attr = 'data-quarto-disable-processing="true"'
-  ) %>%
-  collapse_rows(1, valign = "top") %>%
-  kable_classic(full_width=F, html_font = "Cambria")
-
-
-```
-
-The corrected productivity estimates have lower means and smaller standard deviations than uncorrected estimates. Industries 322 and 342 sell half or more of their output to retailers and directly to consumers (see @sec-inter).
 
 ### By Year
 

@@ -456,7 +456,73 @@ boot_mle_deconv_tbl<-do.call(rbind, boot_res_list) |>
         contains("mean"),
         contains("sd")
     )
-     
+
+
+boot_tx_ev_mle_tbl<-do.call(rbind, boot_res_list) |> 
+    as.data.frame() %>%
+    mutate(
+        sic_3 = str_extract(id,"\\d+")
+    ) %>%
+    left_join(
+        as.data.frame(mle_deconv_tbl),
+        by = c("sic_3", "dist"),
+        suffix = c("",".t0")
+    ) %>%
+    # head() 
+    mutate(
+        across(
+            !c(sic_3,id,dist),
+            as.numeric
+        ),
+        bc_boot_mean = mean.mu-mean.mu.t0,
+        bc_boot_sd = sd.mu-sd.mu.t0,
+        # id = fct_reorder(id,mean.mu.t0,min)
+    ) %>%
+    # filter(is.na(bc_boot_sd))
+    group_by(sic_3,dist) %>%
+    reframe(
+        value_mean = quantile(bc_boot_mean, probs=c(0.975,0.025)),
+        value_sd = quantile(bc_boot_sd, probs = c(0.975,0.025), na.rm=TRUE),
+        probs = c(0.975,0.025),
+        ci_name = c("LCI","UCI"),
+        CI_mean = max(mean.mu.t0)-value_mean,
+        CI_sd = max(sd.mu.t0, na.rm=TRUE)-value_sd,
+        mean = max(mean.mu.t0),
+        sd = max(sd.mu.t0, na.rm=TRUE)#,
+        
+    ) %>%
+    select(
+        sic_3,dist,mean,ci_name,CI_mean,sd,CI_sd
+    ) %>%
+    pivot_wider(
+        names_from = ci_name,
+        values_from = c(CI_mean,CI_sd) #CI_mean# 
+    ) %>%
+    mutate(
+        across(
+            !c(sic_3,dist),
+            ~round(.,4)
+        ),
+        CI_mean = glue::glue("[{CI_mean_LCI}, {CI_mean_UCI}]"),
+        CI_sd = glue::glue("[{CI_sd_LCI}, {CI_sd_UCI}]"),
+        coeff_mean = glue::glue("{mean}"),
+        coeff_sd = glue::glue("{sd}")
+    ) %>%
+    select(
+        sic_3,dist,coeff_mean, coeff_sd, CI_mean, CI_sd
+    ) %>%
+    pivot_longer(
+        cols = contains(c("CI","coeff")),
+        names_to = c("type","statistic"),
+        names_pattern = "(CI|coeff)_(mean|sd)",
+        values_to = "Value"
+    ) %>%
+    pivot_wider(
+        names_from = statistic,
+        values_from = Value
+    ) %>%
+    arrange(sic_3,dist,desc(type))
+
 ## Plotting to check if things make sense--------
 
 
@@ -508,5 +574,6 @@ save(
     fs_list,trc_norm_res_list, lognorm_res_list,
     lognorm_tbl, trcnorm_tbl, mle_deconv_tbl,
     boot_res_list, boot_mle_deconv_tbl,
+    boot_tx_ev_mle_tbl,
     file="Code/Products/boot_deconv_mle.RData"
 )

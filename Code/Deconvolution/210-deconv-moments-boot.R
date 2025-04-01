@@ -107,9 +107,9 @@ set.seed(66636)
 ## Declaring variables ----------------------------
 
 mc_cores <- detectCores()-2
-top_evading_inds <- tax_ev_test_tbl %>% arrange(desc(log_mats_share)) %>% pull(sic_3)
-run_vars<-expand.grid(inds=top_evading_inds[1:5],input="log_mats_share", stringsAsFactors = FALSE)
-
+# top_evading_inds <- tax_ev_test_tbl %>% arrange(desc(log_mats_share)) %>% pull(sic_3)
+# run_vars<-expand.grid(inds=top_10_revenue$sic_3[1:5],input="log_mats_share", stringsAsFactors = FALSE)
+run_vars<-data.frame(inds=top_10_revenue$sic_3[1:5],input="log_mats_share")
 
 ## Estimating ------------------------------
 
@@ -181,6 +181,6 @@ tax_ev_boot_tbl <- do.call(rbind,boot_tax_ev_mmt) %>%
 
 save(
     boot_tax_ev_mmt, tax_ev_mmt_deconv_tbl,
-    tax_ev_boot_tbl,top_evading_inds,run_vars,
+    tax_ev_boot_tbl, run_vars,
     file="Code/Products/boot_tax_ev_mmt.RData"
 )

@@ -1,0 +1,97 @@
+---
+format: pdf
+keep-tex: true
+---
+
+
+When the markov process is an AR(1), $h(\xi)=\delta_0+\delta_1 \xi$
+
+$$
+W_{t} = \alpha k_t + \delta_0 + \delta_1 \left(W_{t-1}-\alpha k_{t-1}\right) + (1-\beta)\varepsilon_t - \delta_1 (1-\beta)\varepsilon_{t-1}+ \eta_t
+$$
+
+We can use instruments $Z_t=\{k_t,k_{t-1},m_{t-1},W_{t-2}\}$ (plus the constant) such that
+
+$$
+ E[(1-\beta)\varepsilon_t - \delta_1 (1-\beta)\varepsilon_{t-1} + \eta_t|Z_t]=0
+$$
+
+Indeed, 
+$$
+\begin{aligned}
+E[W_t|Z_t] =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]\\
+\end{aligned}
+$$
+
+Hence, all the parameters of $h(\cdot)$ and $\alpha$ are identified.
+
+When the Markov process is a second degree polynomial,$h(\xi)=\delta_0+\delta_1 \xi + \delta_2 \xi^2$
+
+
+$$
+\begin{aligned}
+    W_{t} =& \alpha k_t + \delta_0 + \delta_1 \left(W_{t-1}-\alpha k_{t-1}\right) + \delta_2 \left(W_{t-1}-\alpha k_{t-1}-(1-\beta)\varepsilon_{t-1}\right)^2 \\
+    &+ (1-\beta)\varepsilon_t - \delta_1 (1-\beta)\varepsilon_{t-1} + \eta_t \\
+    =& \alpha k_t + \delta_0 + \delta_1 \left(W_{t-1}-\alpha k_{t-1}\right) + \delta_2 \left(W_{t-1}-\alpha k_{t-1}\right)^2\\
+    &+ \delta_2(1-\beta)^2\varepsilon_{t-1}^2 - 2\delta_2(1-\beta)\left(W_{t-1}-\alpha k_{t-1}\right)\varepsilon_{t-1}\\
+    &+ (1-\beta)\varepsilon_t - \delta_1 (1-\beta)\varepsilon_{t-1} + \eta_t 
+\end{aligned}
+$$
+
+When $h(\cdot)$ is a second degree polynomial, I have two additional structural terms.
+
+Using the same instruments as before, $Z_t=\{k_t,k_{t-1},m_{t-1},W_{t-2}\}$
+
+$$
+\begin{aligned}
+E[W_t|Z_t] =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]\\
+    &+ \delta_2(1-\beta)^2E[\varepsilon_{t-1}^2|Z_t] - 2\delta_2(1-\beta)\underbrace{E[\left(W_{t-1}-\alpha k_{t-1}\right)\varepsilon_{t-1}|Z_t]}_{\begin{array}{c} \text{\scriptsize I can deduct the} \\ \text{\scriptsize structural conditional } \\ \text{\scriptsize covariance of this term} \end{array}}\\
+    =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]\\
+    &+ \delta_2(1-\beta)^2E[\varepsilon_{t-1}^2] - 2\delta_2(1-\beta)E[\left(\omega_{t-1}+(1-\beta)\varepsilon_{t-1}+\alpha k_t-\alpha k_{t-1}\right)\varepsilon_{t-1}|Z_t]\\
+    =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]\\
+    &+ \delta_2(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2 - 2\delta_2(1-\beta)E[\omega_{t-1}\varepsilon_{t-1}+(1-\beta)\varepsilon_{t-1}^2+\alpha k_t\varepsilon_{t-1}-\alpha k_{t-1}\varepsilon_{t-1}|Z_t]\\
+    =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]\\
+    &+ \delta_2(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2 - 2\delta_2(1-\beta)^2E[\varepsilon_{t-1}^2]\\
+    =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]\\
+    &- \delta_2(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2\\
+    =&\alpha k_t + \delta_0+ \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]\\
+    & + \delta_2 \left(E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]-(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2\right)\\
+    =&\alpha k_t + \underbrace{\delta_0 - \delta_2(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2}_{\tilde{\delta_0}}\\
+    &+ \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t]\\
+\end{aligned}
+$$
+
+Since I know $\beta$ and $\sigma_{\varepsilon}$, and $\delta_2$ is identified from $\left(W_{t-1}-\alpha k_{t-1}\right)^2$, I can identify $\delta_0$, and hence, all the parameters of $h(\cdot)$ and $\alpha$.
+
+When the Markov process is a third degree polynomial, $h(\xi)=\delta_0+\delta_1 \xi + \delta_2 \xi^2 + \delta_3 \xi^3$
+
+$$
+\begin{aligned}
+    W_{t} =& \alpha k_t + \delta_0 + \delta_1 \left(W_{t-1}-\alpha k_{t-1}\right) + \delta_2 \left(W_{t-1}-\alpha k_{t-1}-(1-\beta)\varepsilon_{t-1}\right)^2 \\
+    &+ \delta_3 \left(W_{t-1}-\alpha k_{t-1}-(1-\beta)\varepsilon_{t-1}\right)^3 + (1-\beta)\varepsilon_t - \delta_1 (1-\beta)\varepsilon_{t-1} + \eta_t \\
+    =& \alpha k_t + \delta_0 + \delta_1 \left(W_{t-1}-\alpha k_{t-1}\right) + \delta_2 \left(W_{t-1}-\alpha k_{t-1}\right)^2\\
+    &+ \delta_3 \left(W_{t-1}-\alpha k_{t-1}\right)^3 + \delta_2(1-\beta)^2\varepsilon_{t-1}^2 - 2\delta_2(1-\beta)\left(W_{t-1}-\alpha k_{t-1}\right)\varepsilon_{t-1}\\
+    &+ \delta_3(1-\beta)^3\varepsilon_{t-1}^3 - 3\delta_3(1-\beta)^2\left(W_{t-1}-\alpha k_{t-1}\right)\varepsilon_{t-1}^2 + 3\delta_3(1-\beta)\left(W_{t-1}-\alpha k_{t-1}\right)^2\varepsilon_{t-1}\\
+    &+ (1-\beta)\varepsilon_t - \delta_1 (1-\beta)\varepsilon_{t-1} + \eta_t 
+\end{aligned}
+$$
+
+Using the same instruments as before, $Z_t=\{k_t,k_{t-1},m_{t-1},W_{t-2}\}$
+
+$$
+\begin{aligned}
+E[W_t|Z_t] =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t] \\
+    &+ \delta_3 E[\left(W_{t-1}-\alpha k_{t-1}\right)^3|Z_t] + \delta_2(1-\beta)^2E[\varepsilon_{t-1}^2|Z_t] \\
+    &- 2\delta_2(1-\beta)E[\left(W_{t-1}-\alpha k_{t-1}\right)\varepsilon_{t-1}|Z_t] + \delta_3(1-\beta)^3E[\varepsilon_{t-1}^3|Z_t] \\
+    &- 3\delta_3(1-\beta)^2E[\left(W_{t-1}-\alpha k_{t-1}\right)\varepsilon_{t-1}^2|Z_t] + 3\delta_3(1-\beta)E[\left(W_{t-1}-\alpha k_{t-1}\right)^2\varepsilon_{t-1}|Z_t] \\
+    =&\alpha k_t + \delta_0 + \delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t] \\
+    &+ \delta_3 E[\left(W_{t-1}-\alpha k_{t-1}\right)^3|Z_t] - \delta_2(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2 \\
+    &- \delta_3(1-\beta)^3E[\varepsilon_{t-1}^3] \\
+    &- 3\delta_3(1-\beta)^2\sigma^2_{\varepsilon_{t-1}}E[\omega_{t-1}|Z_t] \\
+    =&\alpha k_t + \underbrace{\delta_0 - \delta_2(1-\beta)^2\sigma_{\varepsilon_{t-1}}^2 - \delta_3(1-\beta)^3E[\varepsilon_{t-1}^3] - 3\delta_3(1-\beta)^2\sigma^2_{\varepsilon_{t-1}}E[\omega_{t-1}|Z_t]}_{\tilde \delta_0} \\
+    &+\delta_1 E[W_{t-1}-\alpha k_{t-1}|Z_t]+ \delta_2 E[\left(W_{t-1}-\alpha k_{t-1}\right)^2|Z_t] \\
+    &+ \delta_3 E[\left(W_{t-1}-\alpha k_{t-1}\right)^3|Z_t] 
+\end{aligned}
+$$
+
+Now, even though I know $\beta$ and $\sigma_{\varepsilon}$, and $\delta_2$ and $\delta_3$ are identified from $\left(W_{t-1}-\alpha k_{t-1}\right)^2$ and $\left(W_{t-1}-\alpha k_{t-1}\right)^3$, I cannot identify $\delta_0$ because $E[\omega_{t-1}|Z]$ is unknown.

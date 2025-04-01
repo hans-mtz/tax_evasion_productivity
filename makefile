@@ -2,7 +2,7 @@
 QPAPFILE = Tax-Prod
 QSLIFILE = JMP-update
 RDIR = ./Code/Colombia
-# RDIR2 = ./Code/Deconvolution
+RDIR2 = ./Code/Deconvolution
 
 QPAPDIR = ./Paper
 QSLIDIR = ./Quarto-Slides
