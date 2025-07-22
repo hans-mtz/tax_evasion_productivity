@@ -1,282 +1,24 @@
-# Load data and packages ---------------
+# %% Load data and packages ---------------
 library(tidyverse)
 library(ivreg)
 library(parallel)
-load("Code/Products/colombia_data.RData")
+# load("Code/Products/colombia_data.RData")
+load("Code/Products/test_data.RData")
 load("Code/Products/global_vars.RData")
 load("Code/Products/deconv_funs.Rdata")
 # load("Code/Products/deconv.RData")
-load("Code/Products/boot_tax_ev_mmt.RData")
-load("Code/Products/boot_deconv_mle.RData")
+# load("Code/Products/boot_tax_ev_mmt.RData") # Top evading industries
+# load("Code/Products/boot_deconv_mle.RData")
+load("Code/Products/fs.RData") # Fist stage results
+load("Code/Products/run-vars.RData") # Fist stage results for ME
 
+# %%  Setting up folders and vars ----------------
 folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
-
-# Data Wrangling ------------------------------------
-# colombia_data_frame<-colombia_data_frame %>%
-#     mutate(
-#         log_ded_share = log(((materials+deductible_expenses)/sales)),
-#         log_mats_share = log((materials/sales))
-#     )
-
-# First Stage Panel ---------------------------------
-
-# fs_list<-mcmapply(
-#     first_stage_panel, #sic_3, log_mats_share, juridical_organization, gross_output, year, plant, k, l
-#     run_vars_iv[,"inds"],
-#     run_vars_iv[,"input"],
-#     MoreArgs = list(data=colombia_data_frame),
-#     SIMPLIFY = FALSE,
-#     mc.cores = mc_cores
-# )
-
-## Testing ------------------------------------------
-
-# load("Code/Products/deconv_prod_fun.RData")
-
-# x<-"311 log_mats_share"
-
-# alpha<-coef(
-#         lm(
-#             cal_W ~ k+l,
-#             fs_list[[x]]$data
-#         )
-#     )
-
-# alpha <- c(k=0.0719, l=0.4735)
-
-# # lag_m and lag_2_w_eps are stronger instruments than lag_k and lag_l 
-
-# eta<-fs_list[[x]]$data %>% 
-#         ungroup() %>%
-#         group_by(plant) %>%
-#         mutate(
-#             w_eps = cal_W - alpha["k"]*k-alpha["l"]*l,
-#             lag_w_eps = lag(w_eps, order_by = year),
-#             lag_2_w_eps = lag(w_eps, 2,order_by = year),
-#             lag_k = lag(k, order_by = year),
-#             lag_l = lag(l, order_by = year),
-#             lag_m = lag(m, order_by = year)
-#         ) %>%
-#         ivreg::ivreg(w_eps~ lag_w_eps|lag_k, data=., na.action = "na.exclude") |>
-#         residuals() #|>
-#         # summary(diagnostics =TRUE)# |>
-#         # str()
-
-# summ_ivreg<-fs_list[[x]]$data %>% 
-#         ungroup() %>%
-#         filter(
-#             is.finite(cal_W),
-#             is.finite(k),
-#             is.finite(l),
-#             is.finite(m)
-#         ) %>%
-#         group_by(plant) %>%
-#         mutate(
-#             w_eps = cal_W - alpha["k"]*k-alpha["l"]*l,
-#             lag_w_eps = lag(w_eps, order_by = year),
-#             lag_2_w_eps = lag(w_eps, 2,order_by = year),
-#             lag_k = lag(k, order_by = year),
-#             lag_l = lag(l, order_by = year),
-#             lag_m = lag(m, order_by = year)
-#         ) %>%
-#         ivreg::ivreg(w_eps~ lag_w_eps|lag_k, data=.) |>
-#         # residuals() #|>
-#         summary(diagnostics =TRUE)# |>
-#         # str()
-
-# fs_list[[x]]$data %>% 
-#         ungroup() %>%
-#         filter(
-#             is.finite(cal_W),
-#             is.finite(k),
-#             is.finite(l),
-#             is.finite(m)
-#         ) %>%
-#         group_by(plant) %>%
-#         mutate(
-#             w_eps = cal_W - alpha["k"]*k-alpha["l"]*l,
-#             lag_w_eps = lag(w_eps, order_by = year),
-#             lag_2_w_eps = lag(w_eps, 2,order_by = year),
-#             lag_k = lag(k, order_by = year),
-#             lag_l = lag(l, order_by = year),
-#             lag_m = lag(m, order_by = year)
-#         ) %>%
-#         ivreg::ivreg(w_eps~ 1|lag_w_eps|lag_k+lag_l, data=.) |>
-#         # residuals() #|>
-#         summary(diagnostics =TRUE)# |>
-
-# summ_ivreg$diagnostics |>
-#     as.data.frame() %>%
-#     mutate(
-#         stars = case_when(
-#             `p-value` < 0.01 ~ "***",
-#             `p-value` < 0.05 ~ "**",
-#             `p-value` < 0.1 ~ "*",
-#             .default =  ""
-#         )
-#     )
-
-# fs_list[["351 log_mats_share"]]$data |> 
-#     filter(rownames(fs_list[["351 log_mats_share"]]$data) %in% names(eta))
-
-# fs_list[["351 log_mats_share"]]$data %>% 
-#         ungroup() %>%
-#         arrange(plant,year) %>%
-#         group_by(plant) %>%
-#         mutate(
-#             w_eps = cal_W - alpha["k"]*k-alpha["l"]*l,
-#             lag_w_eps = lag(w_eps, order_by = year),
-#             lag_2_w_eps = lag(w_eps, 2,order_by = year),
-#             lag_k = lag(k, order_by = year),
-#             lag_l = lag(l, order_by = year),
-#             lag_m = lag(m, order_by = year)
-#         ) |> rownames()
-
-# params<-list(
-#         gauss_int=gauss_hermite,
-#         epsilon_mu=fs_list[["351 log_mats_share"]]$epsilon_mu,
-#         epsilon_sigma=fs_list[["351 log_mats_share"]]$epsilon_sigma,
-#         beta = fs_list[["351 log_mats_share"]]$beta
-#     )
-
-# obj_fun_ivar1(alpha,fs_list[[x]]$data,params,"lag_k")
-
-# obj_fun_ivar1(c(-3262.87,4199.43),fs_list[[x]]$data,params,"lag_k")
-
-# estimate_prod_fn_bounds(x,fs_list,obj_fun_ivar1_bounds,"lag_k")
-
-# obj_fun_ivar1_bounds<-function(alpha,data,params,ins){
-#     a_k <- alpha[1]
-#     a_l <- alpha[2]
-#     fml <- as.formula(paste0("w_eps ~ lag_w_eps |",ins))
-
-#     df <-data %>% 
-#         ungroup() %>%
-#         filter(
-#             is.finite(cal_W),
-#             is.finite(k),
-#             is.finite(l),
-#             is.finite(m)
-#         ) %>%
-#         group_by(plant) %>%
-#         mutate(
-#             w_eps = cal_W - a_k*k-a_l*l,
-#             lag_w_eps = lag(w_eps, order_by = year),
-#             lag_2_w_eps = lag(w_eps, 2,order_by = year),
-#             lag_k = lag(k, order_by = year),
-#             lag_l = lag(l, order_by = year),
-#             lag_m = lag(m, order_by = year)
-            
-#         )
-
-#     eta <- ivreg::ivreg(fml, data=df, na.action = "na.exclude") |>
-#         residuals()
-
-
-#     moments<-apply(
-#         df[c("k","l")],
-#         2, 
-#         function(i){
-#         mean(i*eta, na.rm = TRUE)
-#         }
-#     )
-
-#     obj <- t(moments) %*% moments
-#     return(sqrt(obj[1]))
-
-# }
-
-# estimate_prod_fn_bounds<-function(x,fs_list,f,ins){
-#     params<-list(
-#         gauss_int=gauss_hermite,
-#         epsilon_mu=fs_list[[x]]$epsilon_mu,
-#         epsilon_sigma=fs_list[[x]]$epsilon_sigma,
-#         beta = fs_list[[x]]$beta
-#     )
-
-#     alpha0<-coef(
-#         lm(
-#             cal_W ~ k+l,
-#             fs_list[[x]]$data
-#         )
-#     )
-
-#     res<-optim(
-#         alpha0[-1],
-#         f,
-#         NULL,
-#         fs_list[[x]]$data,
-#         params,
-#         ins,
-#         method = "L-BFGS-B",
-#         lower = c(0,0),
-#         upper = c(1,1),
-#         control = list(
-#             maxit = 300
-#         )
-#     )
-
-#     fml <- as.formula(paste0("w_eps ~ lag_w_eps |",ins))
-
-#     ivreg_sum<-fs_list[[x]]$data %>% 
-#         ungroup() %>%
-#         filter(
-#             is.finite(cal_W),
-#             is.finite(k),
-#             is.finite(l),
-#             is.finite(m)
-#         ) %>%
-#         group_by(plant) %>%
-#         mutate(
-#             w_eps = cal_W - res$par["k"]*k-res$par["l"]*l,
-#             lag_w_eps = lag(w_eps, order_by = year),
-#             lag_2_w_eps = lag(w_eps, 2,order_by = year),
-#             lag_k = lag(k, order_by = year),
-#             lag_l = lag(l, order_by = year),
-#             lag_m = lag(m, order_by = year)
-            
-#         ) %>%
-#         ivreg::ivreg(fml, data=.) |>
-#         summary(diagnostics =TRUE)
-
-#     return(
-#         list(
-#             coeffs=c(
-#                 m=fs_list[[x]]$beta,
-#                 k = res$par[["k"]],
-#                 l = res$par[["l"]]
-#                 ),
-#             convergence = res$convergence,
-#             instrument = ins,
-#             diagnostics = ivreg_sum$diagnostics |>
-#                 as.data.frame() %>%
-#                 mutate(
-#                     stars = case_when(
-#                         `p-value` < 0.01 ~ "***",
-#                         `p-value` < 0.05 ~ "**",
-#                         `p-value` < 0.1 ~ "*",
-#                         .default =  ""
-#                     )
-#                 )
-#             )
-#     )
-# }
-
-
-## Setting up cores----------------------------------
-
 mc_cores <- detectCores()-2
-# run_vars <- cbind(
-#     inds=rep(order_sic[1:6], each=3),
-#     input=c("log_share","log_ded_share","log_mats_share")
-# )
 
-## Estimation ------------------------------------------
-
-### Declaring Instruments & Running Vars ------------------------------
-
-
-
+# select_fs <- grep("log_deductible(_\\w+)+",names(fs_list), value = FALSE) 
+select_fs <- grep("log_mats(_\\w+)+",names(fs_list), value = FALSE) 
+J = length(select_fs) # Number of industries to estimate
 ins_v = c(
     "lag_k",
     "lag_l",
@@ -284,8 +26,21 @@ ins_v = c(
     "lag_2_w_eps"
 )
 
-run_vars_iv<-expand.grid(inds=names(fs_list),ins=ins_v, stringsAsFactors = FALSE)
+# Deductible intermediates
+# run_vars_iv<-expand.grid(inds=names(fs_list[11:20]),ins=ins_v, stringsAsFactors = FALSE)
+# Raw materials
+run_vars_iv<-expand.grid(inds=names(fs_list[select_fs]),ins=ins_v, stringsAsFactors = FALSE)
 
+select_inds <- str_extract(names(fs_list[select_fs]),"\\d+")
+
+
+## %% Saving variables ---------------------
+
+save(
+    run_vars, run_vars_iv,
+    file = "Code/Products/run-vars.RData"
+)
+## %% Estimation ------------------------------------------
 
 ### h- AR(1)
 
@@ -312,10 +67,33 @@ run_vars_iv<-expand.grid(inds=names(fs_list),ins=ins_v, stringsAsFactors = FALSE
 
 names(prod_fun_list_ivar1)<-paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"])
 
-## Saving prelim results -----------------------------------
+## %% Saving prelim results -----------------------------------
 
 save(
     prod_fun_list_ivar1,
+    file="Code/Products/deconv_prod_fun.RData"
+)
+
+## %% ME results -----------------------------------
+
+(pf_me_list<-mcmapply(
+    estimate_prod_fn_bounds,
+    x = run_vars_iv$inds,
+    ins = run_vars_iv$ins,
+    MoreArgs = list(
+        fs_list=fs_list_me,
+        f=obj_fun_ivar1_bounds
+    ),
+    SIMPLIFY = FALSE,
+    mc.cores = mc_cores
+))
+
+names(pf_me_list)<-paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"])
+
+## %% Saving results -----------------------------------
+
+save(
+    pf_me_list, prod_fun_list_ivar1,
     file="Code/Products/deconv_prod_fun.RData"
 )
 
@@ -373,7 +151,7 @@ save(
 
 # names(prod_fun_list)<-names(fs_list)
 
-## Collecting Results ------------------------------
+## %% Collecting Results ------------------------------
 
 # evasion_tbl<-sapply(
 #     names(prod_fun_list),
@@ -382,7 +160,7 @@ save(
 
 # rownames(evasion_tbl) <- paste0(top_evading_inds[1:5])
 
-# "Code/Products/deconv_prod_fun.RData" |> load()
+"Code/Products/deconv_prod_fun.RData" |> load()
 
 evasion_tbl_ivar1<-sapply(
     names(prod_fun_list_ivar1),
@@ -391,22 +169,30 @@ evasion_tbl_ivar1<-sapply(
 
 rownames(evasion_tbl_ivar1) <- paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"]) #paste0(top_evading_inds[1:5])
 
+pf_me_df<-sapply(
+    names(pf_me_list),
+    \(x)pf_me_list[[x]]$coeffs
+) |> t() |> round(4)
+
+rownames(pf_me_df) <- paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"]) #paste0(top_evading_inds[1:5])
 
 
 
-## Reading Results from Fortran GNR CD to Compare -------------
+
+## %% Reading Results from Fortran GNR CD to Compare -------------
 
 # Setting up folders and vars ----------------
 
-# Stata_GNR_results_folder <- "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+# %% Stata_GNR_results_folder <- "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
 
 
 (CD_fortran_R <- lapply(
     # union(evasion_inds,gnr_inds),
-    top_10_revenue$sic_3[1:5],
+    # top_10_revenue$sic_3[1:J],
     # top_evading_inds[1:5],
+    select_inds,
     \(x){
-        temp_coeff<-read.csv(paste0(folder_results,"CD_coeffs_R_",x,".out"))
+        temp_coeff<-read.csv(paste0(folder_results,"CD_mats_trim_coeffs_",x,".out"))
         temp_coeff$inds <- x
         return(temp_coeff)
     }
@@ -416,17 +202,26 @@ rownames(evasion_tbl_ivar1) <- paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"]) #
 CD_fortran_tbl_R <- do.call(rbind,CD_fortran_R)
 CD_fortran_tbl_R
 
-## OLS Results -------------------------------------
+## %% OLS Results -------------------------------------
 
-(ols_CD<-sapply(
-    top_10_revenue$sic_3[1:5],
+(ols_CD <-sapply(
+    # top_10_revenue$sic_3[1:J],
     # top_evading_inds[1:5],
+    select_inds,
     function(x){
-        reg<-colombia_data_frame %>%
+        reg<-test_data %>%
+        filter(
+            sic_3==x,
+            is.finite(y),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            log_mats_share > log(0.05)
+        ) %>%
         select(!m) %>%
-        filter(sic_3==x) %>%
         mutate(
             m= log(materials)
+            # m= log(deductible_intermediates)
         ) %>%
         fixest::feols(
             y~m+k+l, data = .
@@ -436,21 +231,26 @@ CD_fortran_tbl_R
     USE.NAMES = TRUE
 )|> t())
 
-rownames(ols_CD)<-paste0(top_10_revenue$sic_3[1:5])
+rownames(ols_CD)<-paste0(select_inds)
 
+## %% Stata CD GNR + ME Results ----------------------------
 
-## Saving results -----------------------------------
+read.csv("Code/Products/gnr-cd-me.csv", skip = 1) -> gnr_cd_me
+gnr_cd_me
+## %% Saving results -----------------------------------
 
 save(
     # prod_fun_list, 
     # evasion_tbl, 
     prod_fun_list_ivar1,
     evasion_tbl_ivar1,
+    pf_me_list, pf_me_df,
     CD_fortran_tbl_R, ols_CD,
+    gnr_cd_me,
     file="Code/Products/deconv_prod_fun.RData"
 )
 
-## Comparing Results -----------------------------------
+## %% Comparing Results -----------------------------------
 
 # "Code/Products/deconv_prod_fun.RData" |> load()
 
@@ -458,6 +258,7 @@ PF_tbl<-evasion_tbl_ivar1 %>%
     as.data.frame() %>%
     mutate(
         sic_3 = str_extract(rownames(.),"\\d+"),
+        # inter = str_extract(rownames(.),"log_\\w+(_\\w+)*"),
         method = paste("TE-GNR: ",str_extract(rownames(.),"lag_\\w+")
     )) %>%
     rbind(
@@ -495,8 +296,52 @@ PF_tbl<-evasion_tbl_ivar1 %>%
         `CD-GNR`, OLS
     ) #%>%
     # knitr::kable()
+PF_tbl #|> View()
 
-## Collecting 1st stage results Diagnostics ----------------
+PF_me_tbl <- pf_me_df %>%
+    as.data.frame() %>%
+    mutate(
+        sic_3 = str_extract(rownames(.),"\\d+"),
+        # inter = str_extract(rownames(.),"log_\\w+(_\\w+)*"),
+        method = paste("TE-GNR: ",str_extract(rownames(.),"lag_\\w+")
+    )) %>%
+    rbind(
+        gnr_cd_me %>%
+            mutate(
+                method = "CD-GNR",
+            ) %>%
+            select(sic_3,method, m,k,l)
+    ) %>%
+    bind_rows(
+        ols_CD %>%
+            as.data.frame() %>%
+            mutate(
+                sic_3 = rownames(.),
+                method = "OLS"
+            ) %>%
+            select(sic_3,method,m,k,l)
+    ) %>%
+    pivot_longer(
+        cols = c(m,k,l),
+        names_to = "input",
+        values_to = "coeff"
+    ) %>%
+    pivot_wider(
+        names_from = method,
+        values_from = coeff
+    ) %>%
+    select(
+        sic_3, 
+        input,
+        `TE-GNR:  lag_k`,
+        `TE-GNR:  lag_l`,
+        `TE-GNR:  lag_m`, 
+        `TE-GNR:  lag_2_w_eps`, 
+        `CD-GNR`, OLS
+    )
+
+PF_me_tbl # |> View()
+## %% Collecting 1st stage results Diagnostics ----------------
 
 tsls_1s_diag_tbl<-sapply(
     names(prod_fun_list_ivar1),
@@ -508,15 +353,30 @@ tsls_1s_diag_tbl<-sapply(
     ) #|> t()
 ) |> t() |> as.data.frame()
 
-## Saving results -----------------------------------
+tsls_1s_diag_me_tbl<-sapply(
+    names(pf_me_list),
+    \(x)c(
+        ins= str_extract(x,"lag_\\w+"),
+        sic_3 = str_extract(x,"\\d+"),
+        pf_me_list[[x]]$diagnostics[1,]
+        # id=x
+    ) #|> t()
+) |> t() |> as.data.frame()
+
+## %% Saving results -----------------------------------
 
 save(
     # prod_fun_list, 
     # evasion_tbl, 
     prod_fun_list_ivar1,
     evasion_tbl_ivar1,
+    pf_me_list, pf_me_df,
     CD_fortran_tbl_R, ols_CD,
-    PF_tbl,
-    tsls_1s_diag_tbl,
+    PF_tbl, PF_me_tbl, gnr_cd_me,
+    tsls_1s_diag_tbl, tsls_1s_diag_me_tbl,
     file="Code/Products/deconv_prod_fun.RData"
 )
+
+## Reviewing results ----------------------------
+
+# load("Code/Products/deconv_prod_fun.RData")

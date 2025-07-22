@@ -1,0 +1,45 @@
+### Expenditure Swapping Tax Evasion
+
+Although we found evidence of evasion through raw materials overreporting, the previous table would suggest that other intermediate materials could have been underreported as indicated by the negative sign and the tight standard errors. 
+
+A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority's radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expenses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.
+
+Firms reserving valid expenses is known in the literature. It has been documented elsewhere, in particular in tax evasion studies focusing on revenue underreporting, that when authorities challenged firms' records, firms came back increasing their sales but also their expenses resulting in a zero net gain in terms of tax revenue for authorities.
+
+
+```{r}
+#| label: tbl-evasion-test-CD-gnr
+#| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
+
+
+tax_ev_test_tbl_gnr %>%
+  # left_join(
+  #     top_20_inds
+  # ) %>%
+  left_join(
+      inds_sales_tax
+  ) %>%
+  arrange(desc(Category),sic_3) %>%
+  select(
+      Category,
+      sic_3,
+      # description,
+      # log_deductible_intermediates_share,
+      log_share:log_services_share
+  ) %>%
+  kbl(
+    col.names = c("","SIC","M+E+S", "Materials","Electricity", "Services"),
+    table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    collapse_rows(columns = 1, valign="top")# %>%
+    # pack_rows(
+    #   index=c(
+    #     "Specialized Material"=1,
+    #     "Exempt Product"=5,
+    #     "Exempt Material"=2,
+    #     "Other Industries"= 12)
+    # )
+
+```
+

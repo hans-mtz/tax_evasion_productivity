@@ -7,8 +7,8 @@ Suppose we have two flexible inputs $M$ and $L$. $M$ is deductible but $L$ is no
 $$
 \begin{aligned}
   \max_{M_{it}, L_{it},e_{it}\in [0,\infty), } [1-q(e_{it}|\theta_{it})]&\left[P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}-w_{t} L_{it}-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
-  +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-w_{t} L_{it}-\kappa(e)\right] \\
-  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+  +q(e_{it}|\theta_{it})&\left[P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}-w_{t} L_{it}-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}\right)-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it},L_{it})&\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$ {#eq-eva-non-deduct}
 
@@ -57,4 +57,4 @@ $$
 
 Note that while we can use the gross revenue of sales for deductible flexible inputs, we would have to use the net of tax sales revenues for non-deductible flexible inputs.
 
-More imporantly, note that the practicioner observes only $\ln M=\ln M^*+e$ but not $M^*$. In section @sec-id-strat, I show how to recover these functions.
+More imporantly, note that the practicioner observes only $\ln M^*=\ln M+e$ but not $M$. In section @sec-id-strat, I show how to recover these functions.

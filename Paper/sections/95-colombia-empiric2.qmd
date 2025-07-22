@@ -219,7 +219,7 @@ did_3_inds_exp <- lapply(
         sic_3 = relevel(factor(sic_3), ref="311"),
         treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
     ) %>%
-    feols( sw(log_services_share, log_inds_nded_share)~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+    feols( sw(log_services_share, log_energy_share, log_fuels_share, log_repair_maint_share)~ year*treat*treat_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
         | plant+year,
         data = ., cluster=~year#~plant+year
     )

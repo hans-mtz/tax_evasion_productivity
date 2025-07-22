@@ -775,7 +775,8 @@ colombia_data_frame %>%
         sw(
             capital_share,
             energy_share,
-            materials_share
+            materials_share,
+            fuels_share
             ) ~ Corp|
         sic_3+metro_area_code+year,
         data = ., cluster = ~sic_3+year
@@ -841,7 +842,8 @@ colombia_data_frame %>%
         sw(
             skilled_wage_bill_share,
             unskilled_wage_bill_share,
-            fuels_share
+            services_share,
+            repair_maint_share
             ) ~ Corp|
         sic_3+metro_area_code+year,
         data = ., cluster = ~sic_3+year
@@ -858,12 +860,14 @@ Shares of Revenue for different inputs by Corporations and Non-Corporation.
 
 :::
 
-::: {#tbl-reg-shares-3 layout-ncol="1"}
+<!-- ::: {#tbl-reg-shares-3 layout-ncol="1"}
 
 ```{r}
 #| echo: false
 #| warning: false
 #| results: asis
+#| eval: false
+#| include: false
 
 colombia_data_frame %>%
     ungroup() %>%
@@ -921,4 +925,4 @@ colombia_data_frame %>%
 
 Shares of Total Expenses for different classifications of expenses by Corporations and Non-Corporation.
 
-:::
+::: -->

@@ -20,14 +20,22 @@ Assumption \ref{ass-ind} implies that input overreporting is independent of the 
 
 ### Identifying the production function parameters 
 
-The econometrician observes then the overreported inputs in the data, $M_{it}=M^*_{it}\exp(e_{it})$[^linear-exp]. Assume the production function is Cobb-Douglas, $G(M^*_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})$. Then, for the case of Colombia, @eq-foc:ind applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get
+Assume the production function is Cobb-Douglas, $G(M_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})$. 
+
+The econometrician observes output, capital, labor, and prices of intermedite inputs and output $\{Y_{it},K_{it},L_{it},\rho_t, P_t\}$, but she only observes overreported intermediate inputs, $M^*_{it}=M_{it}\exp(e_{it})$[^linear-exp].
+
+Then, for the case of Colombia, [equation -@eq-foc:ind] applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get
 
 [^linear-exp]: Note we can always rewrite $M^*+e=M^*\exp\{a\}$, then $\exp\{a\}=\frac{e}{M^*}+1$.
 
 $$
 \begin{aligned}
-    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}&=\ln\beta + \ln \mathcal{E}- \varepsilon_{it} \\
-    &\equiv \ln D^{\mathcal{E}}- \varepsilon_{it} 
+    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right) &=\ln\beta + \ln \mathcal{E}- \varepsilon_{it} \\
+    &\equiv \ln D^{\mathcal{E}}- \varepsilon_{it} \\
+    &\\
+    \ln(M^*_{it})&=\ln(M_{it})+e_{it} \\ 
+    &\\
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right) &=\ln\beta + \ln \mathcal{E}- \varepsilon_{it}+e_{it} \\
 \end{aligned}
 $$ {#eq-foc-cd}
 
@@ -58,8 +66,7 @@ Having recovered both the flexible input elasticity, $\beta$, and the constant $
 
 $$
 \begin{aligned}
-    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)-\ln\beta -\ln\mathcal{E}\notag \\
-    &=\ln\left(\frac{\rho_tM^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta-\ln\mathcal{E}+e_{it} \notag \\
+    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta -\ln\mathcal{E}\notag \\
     &=-\varepsilon_{it} +e_{it}
 \end{aligned}
 $$ {#eq-ob-ev}
@@ -94,10 +101,10 @@ Let $\ln X_{it}=x_{it}$. With @eq-ob-ev, we can form the following observed vari
 
 $$
 \begin{aligned}
-    \mathcal W_{it} & \equiv y_{it} - \beta (m_{it}-\mathcal{V}_{it})\\
-    & = y_{it} - \beta (m^*_{it}+e_{it}-e_{it}+\varepsilon_{it})\\
+    \mathcal W_{it} & \equiv y_{it} - \beta (m^*_{it}-\mathcal{V}_{it})\\
+    & = y_{it} - \beta (m_{it}+e_{it}-e_{it}+\varepsilon_{it})\\
     % & = y_{it} - \beta (m^*_{it}+\varepsilon_{it})\\
-    & = y_{it} - \beta m^*_{it}-\beta\varepsilon_{it}\\
+    & = y_{it} - \beta m_{it}-\beta\varepsilon_{it}\\
     & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
 \end{aligned}
 $$ {#eq-big-w}
@@ -118,6 +125,7 @@ $$
 \mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\delta_1(1-\beta)\varepsilon_{it-1}|Z]=0.
 $$ {#eq-eta-moments}
 
+<!-- 
 Alternatively, when $h$ is non-linear,
 $$
 \begin{aligned}    
@@ -142,6 +150,8 @@ $$
 
 
 The first line follows from the orthogonality of the output shock of the current period $\mathbb{E}[\varepsilon_{it}|Z_{it}]=0$. The second line uses the definition of expectation. The third line decomposes the joint distribution of $\mathcal W_{it-1}$ and $\varepsilon_{it-1}$ using the Bayes' theorem. The fourth and fifth lines follow from the independence of the output shock of the previous period $\varepsilon_{it-1}$ with respect to $Z_{it}$ and the interchangeability of integrals. The sixth line uses the definition of the expectation again. Thus, $\alpha$ and $h$ are identified. Line six shows that we can take the expectation of $h(\cdot)$ with respect $\varepsilon_{t-1}$ and then form the moments using the intstruments $Z_{it}$. In principle, we can also use $\varepsilon_{it-1}$ as instrument. This identification works great for [polynomials](https://github.com/hans-mtz/tax_evasion_productivity/blob/main/Paper/integral.pdf).
+ -->
+
 
 @tbl-orth displays candidates for $Z$
 
@@ -158,10 +168,9 @@ The first line follows from the orthogonality of the output shock of the current
 
 <!-- To see how, note that even though we only recoverd the output shock distribution from the first stage and cannot form directly the regression in @eq-big-w-reg, we can still use the moments implied by @eq-eta-moments. Let $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1},\mathcal{W}_{it-1}\}$, -->
 
-The ideal instruments are $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m_{it-1}\}$.
+The possible instruments are $Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m^*_{it-1}, \mathcal{W}_{it-2}\}$.
 
-How many instruments are needed in practice? I use one per element in constant of integration to be just-identified. Then, for Cobb-Douglas case, I use $Z_{it}=\{k_{it},l_{it}\}$, with $h$ as a third degree polynomial.
-
+During estimation, I use labor and capital as instruments for themselves $Z_{it}=\{k_{it},l_{it}\}$, and the constant and the lag of observed overreported intermediates as instrument for the AR(1) productivity Markov process $h(\cdot)$.
 
 Once the paramaters of the production function are identified, we can use the following observed variable to recover $\omega_{it}$
 
@@ -172,9 +181,113 @@ $$
 \end{aligned}
 $$ {#eq-w-squiggle}
 
+
+### Identification with two Flexible Inputs
+
+Suppose now that $M_{it}$ and $L_{it}$ are flexible inputs, but $K_{it}$ is not. Furthermore, $M_{it}$ is deductible and $L_{it}$ is not. Under a Cobb-Douglas production function, @eq-foc:deduct and @eq-foc:non-deduct become,
+
+$$
+\begin{aligned}    
+ \ln\left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)=&\ln \beta +\ln \mathcal{E} -\varepsilon_{it} \\
+ =& \ln D^{\mathcal{E}}_M - \varepsilon_{it} \\
+\end{aligned}
+$$ {#eq-fs-ded}
+
+$$
+\begin{aligned}
+    \ln\left(\frac{w_t L_{it}}{(1-\tau)P_t Y_{it}}\right)=&\ln \alpha_L +\ln \mathcal{E} -\varepsilon_{it} \\
+    =& \ln D^{\mathcal{E}}_L - \varepsilon_{it}
+\end{aligned}
+$$ {#eq-fs-non-ded}
+
+Note that firms do not have incentives to overreport non-deductible flexible inputs. So the observed non-deductible flexible inputs are the true inputs consumed in production. For the deductible flexible inputes, we still observe the overreported inputs, $M^*_{it}=M_{it}\exp(e_{it})$.
+
+So, @eq-fs-ded becomes,
+
+$$
+ \ln\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)=\ln D^{\mathcal{E}}_M -\varepsilon_{it}+e_{it}
+$$ {#eq-fs-ded-ev}
+
+The constant $\ln D^{\mathcal{E}}_L$ is identified by a linear regression from @eq-fs-non-ded. Likewise, using assumption \ref{ass-non-ev}, we can identify the constant $\ln D^{\mathcal{E}}_M$ by running a linear regression of @eq-fs-ded-ev for the non-evaders.
+
+To identify the elasticities from the constant $\mathcal{E}$, let $\hat\varepsilon^M_{it}$ and $\hat\varepsilon^L_{it}$ be the residuals of the regressions of @eq-fs-ded-ev and @eq-fs-non-ded, respectively. Then, we can form the following observed variable,
+
+$$
+\varepsilon_{it}= \begin{cases}
+\lambda_{it} \hat \varepsilon^M_{it} + (1-\lambda_{it}) \hat \varepsilon^L_{it} & \text{if $i$ is a Non-evader}\\
+\hat \varepsilon^L_{it} & \text{otherwise}
+\end{cases}
+$$ {#eq-wgt-eps}
+
+where $\lambda_{it}$ is a weight that can be chosen by the practicioner. For example, it can be set to the share of the cost of both flexible inputs in the total cost of production, $\lambda_{it}=\frac{\rho_t M^*_{it}}{\rho_t M^*_{it}+w_t L_{it}}$. In this way, we would have a time-firm specific weight that captures the relative importance of each flexible input in the production process. alternatively, we can can have time or firm fixed weights, $\lambda_t=N^{-1}\sum_i\lambda_{it}$ or $\lambda_i=T^{-1}\sum_t\lambda_{it}$, respectively.
+
+Another option is to use the optimal weight to minimize the variance of $\varepsilon_{it}$, 
+
+$$
+\lambda = \arg\min_{\lambda} \mathbb{E}\left[\varepsilon^2|\Theta^{NE}\right]
+$$
+
+$$
+\begin{aligned}
+\mathbb{E}\left[\varepsilon^2|\Theta^{NE}\right] =&\lambda^2 \mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + (1-\lambda)^2 \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]\\
+&+ 2\lambda(1-\lambda)\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]
+\end{aligned}
+$$
+
+Deriving the first order condition, we get
+
+$$
+2\lambda \mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + 2(1-2\lambda) \mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right] - 2(1-\lambda)\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right] = 0
+$$
+
+Finally, solving for $\lambda$ gives us the optimal weight,
+
+$$
+\lambda^* = \frac{\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}{\mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-2\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}.
+$$ {#eq-opt-lambda}
+
+This might work only if the covariance of the residuals is less than the variance of any residual. In theory, the covariance cannot be larger than the variance of either residua. In that case, it means the both residuals are good estimates of the output shock $\varepsilon_{it}$ and we can use either of them to recover the output shock $\varepsilon_{it}$.
+
+Then, we can recover $\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]$ and the elasticities $\beta=\exp(\ln D^{\mathcal{E}}_M-\ln \mathcal{E})$ and $\alpha_L=\exp(\ln D^{\mathcal{E}}_L-\ln \mathcal{E})$.
+
+### Identifying Tax Evasion with Two Flexible Inputs
+
+$$
+\begin{aligned}    
+ \mathcal{V}_{it} \equiv&\ln \left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)-\ln D^{\mathcal{E}}_M +\varepsilon_{it}\\
+ =& \ln \left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)-\ln D^{\mathcal{E}}_M +\varepsilon_{it}+e_{it}\\
+ =& -\varepsilon_{it}+\varepsilon_{it}+e_{it}\\
+ =& e_{it}
+\end{aligned}
+$$
+
+In the case of the two flexible inputs, we can form a firm-time specific variable that captures the tax evasion by overreporting the deductible flexible input, $\mathcal{V}_{it}=e_{it}$.
+
+
+### Identifying Productivity with Two Flexible Inputs
+
+To recover $\alpha_K$, we can now form the following observed variable,
+
+$$
+\begin{aligned}
+    \mathcal{Y}_{it} \equiv& y_{it} - \beta (m^*_{it}-e_{it}) - \alpha_L l_{it} - \varepsilon_{it}\\
+    =& y_{it} - \beta m_{it} - \alpha_L l_{it} - \varepsilon_{it}\\
+    =& \alpha_K k_{it} + \omega_{it}
+\end{aligned}
+$$
+
+Then, using ortogonality of $\eta_{it}$, 
+
+$$
+\mathbb{E}[\mathcal{Y}_{it}|Z_{it}]=\alpha_K k_{it} + \mathbb{E}[h(\mathcal{Y}_{it-1}-\alpha_K k_{it-1})|Z_{it}]
+$$
+
+where $Z_{it}=\{k_{it},k_{it-1},\mathcal{Y}_{it-1}\}$.
+
+
 ### Translog Production Function
 
-To identify tax evasion and relaxing the assumption of a CD production function, we would need a flexible input for which firms have no inventives to overreport. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs. 
+To identify tax evasion and relaxing the assumption of a CD production function, we would need a flexible input for which firms have no incentives to overreport. Firms might face flexible inputs that they cannot deduct from their VAT or CIT, for example. If this is the case, then firms would have no incentives to overreport non-deductible flexible inputs. 
 
 Assume now that $L_{it}$ is a non-deductible flexible input and, without loss of generality, there are only two inputs ($L_{it}, M_{it}$). Let's assume the production function is now *translog*. We have, 
 
@@ -186,8 +299,8 @@ Then, equation @eq-foc:non-deduct becomes
 
 $$
 \begin{aligned}
-    s_{it}^{L}&=\ln \left(\beta_3+2\beta_4l_{it}+\beta_1(m^*_{it}+e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
-    &\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}+e_{it})- \varepsilon_{it} 
+    s_{it}^{L}&=\ln \left(\beta_3+2\beta_4l_{it}+\beta_1(m^*_{it}-e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
+    &\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}-e_{it})- \varepsilon_{it} 
 \end{aligned}
 $$ {#eq-translog-share}
 
@@ -201,14 +314,15 @@ We can design a test for tax evasion by forming the analog of @eq-ob-ev,
 
 $$
 \begin{aligned}
-\mathcal{V}_{it}^{L} =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*+e_{it})-s_{it}^L\\
-    =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*+e_{it})-\ln D^{\mathcal{E}}(l_{it},m_{it}^*)+\varepsilon_{it}\\
-    =&\ln\left(\frac{D^{\mathcal{E}}(l_{it},m_{it}^*+e_{it})}{D^{\mathcal{E}}(l_{it},m_{it}^*)}\right)+\varepsilon_{it}\\
+\mathcal{V}_{it}^{L} =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*)-s_{it}^L\\
+    =&\ln D^{\mathcal{E}}(l_{it},m_{it}+e_{it})-s_{it}^L\\
+    =&\ln D^{\mathcal{E}}(l_{it},m_{it}+e_{it})-\ln D^{\mathcal{E}}(l_{it},m_{it})+\varepsilon_{it}\\
+    =&\ln\left(\frac{D^{\mathcal{E}}(l_{it},m_{it}+e_{it})}{D^{\mathcal{E}}(l_{it},m_{it})}\right)+\varepsilon_{it}\\
 \end{aligned}
 $$
 
 
-Note that $\ln\left(\frac{D^{\mathcal{E}}(l,m^*+e)}{D^{\mathcal{E}}(l,m^*)}\right)\ge0$ is always positive because $e_{it}\ge0$ and $D^{\mathcal{E}}$ is strictly increasing in $m$. Thus, $\frac{D^{\mathcal{E}}(l,m^*+e)}{D^{\mathcal{E}}(l,m^*)}\ge1$.
+Note that $\ln\left(\frac{D^{\mathcal{E}}(l,m+e)}{D^{\mathcal{E}}(l,m)}\right)\ge0$ is always positive because $e_{it}\ge0$ and $D^{\mathcal{E}}$ is strictly increasing in $m$. Thus, $\frac{D^{\mathcal{E}}(l,m+e)}{D^{\mathcal{E}}(l,m)}\ge1$.
 
 #### Identifying Tax Evasion
 
@@ -216,17 +330,18 @@ Once we recovered the parameters of @eq-translog-share, we can invert it to solv
 
 $$
 \begin{aligned}
-    m_{it}-&D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
-    &= m_{it}^*+e_{it} -D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
-    &= m_{it}^*+e_{it} -D^{-1}(D(l_{it},m_{it}^*),l_{it})\\
-    &=e_{it}
+    m^*_{it}&=m_{it}+e_{it}\\
+    &=D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}+\varepsilon_{it}),l_{it})+e_{it}\\
+    % &= m_{it}^*+e_{it} -D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
+    % &= m_{it}^*+e_{it} -D^{-1}(D(l_{it},m_{it}^*),l_{it})\\
+    % &=e_{it}
 \end{aligned}
 $$
 
 Again, having recovered the distribution of the output shock $f_{\varepsilon}(\varepsilon)$, we can use deconvolution techniques to learn the distribution of $e$. In particular, to learn the p.d.f of tax evasion $f_e(e)$, we can deconvolute it by
 
 $$
-    \int f_e(m_{it}-D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})) f_{\varepsilon}(\varepsilon)d\varepsilon
+    \int f_e(m^*_{it}-D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})) f_{\varepsilon}(\varepsilon)d\varepsilon
 $$
 
 ### Non-Parametric Identification of Tax Evasion
@@ -245,18 +360,18 @@ $D^{\mathcal{E}}(K,L,M)$ is still identified by assumption \ref{ass-non-ev}, how
 
 $$
 \begin{aligned}
-\ln\left(\frac{\rho M}{PY}\right)-&\ln D^{\mathcal{E}}(K,L,M)=\\
-&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
-=&\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*+e)\\
-&+\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
-&-\left[\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*)\right] \\
-=&\ln\left(\frac{\rho M^*}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M^*) \\
-&+\left[\ln\left(\frac{\rho(M^*+e)}{PY}\right)-\ln\left(\frac{\rho(M^*)}{PY}\right)\right]\\
-&-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
-=& -\varepsilon \\
-&+\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M^*)+\varepsilon\right]\\
-&-\left[\ln D^{\mathcal{E}}(K,L,M^*+e)-\ln D^{\mathcal{E}}(K,L,M^*)\right]\\
-=& -\varepsilon(K,L,M^*)
+    \ln\left(\frac{\rho M^*}{PY}\right)-&\ln D^{\mathcal{E}}(K,L,M^*)=\\
+    &\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M+e)\\
+    =&\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M+e)\\
+    &+\left[\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
+    &-\left[\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)\right] \\
+    =&\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M) \\
+    &+\left[\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln\left(\frac{\rho(M)}{PY}\right)\right]\\
+    &-\left[\ln D^{\mathcal{E}}(K,L,M+e)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
+    =& -\varepsilon \\
+    &+\left[\ln D^{\mathcal{E}}(K,L,M+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M)+\varepsilon\right]\\
+    &-\left[\ln D^{\mathcal{E}}(K,L,M+e)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
+    =& -\varepsilon(K,L,M)
 \end{aligned}
 $$
 

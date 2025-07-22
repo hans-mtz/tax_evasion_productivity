@@ -1,0 +1,567 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata/003-loop-5-14-25.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}14 May 2025, 22:38:52
+{txt}
+{com}. 
+. global trim_cutoff=0.05
+{txt}
+{com}. 
+. do 003-loop
+{txt}
+{com}. /* Estimating CD using GNR(2020). Intermediates are raw materials */
+. 
+. 
+. // Renaming variables to use GNR_code_CD.do file
+. 
+. /************************************************************/
+. /**  Rename variables using the instructions below.        **/ 
+. /**  Pay attention to upper and lower case, as it          **/
+. /**  matters for Stata.  Inputs, output, and the share of  **/
+. /**  intermediate expenditures in total revenue should     **/
+. /**  all be expressed in levels.  The code will create     **/
+. /**  the log values.  Also note that input and output      **/
+. /**  variables are real values, whereas the share is       **/
+. /**  the nominal share.                                    **/
+. /**                                                        **/
+. /**  Firm ID: id                                           **/
+. /**  Time series variable (e.g., year, month): time        **/
+. /**  Real gross output: yg_level                           **/
+. /**  Real labor: l_level                                   **/
+. /**  Real capital: k_level                                 **/
+. /**  Real intermediate inputs): i_level                    **/
+. /**  Nominal Share of intermediates: si_level              **/ 
+. /**                                                        **/             
+. /**  Be sure to set the memory larger than what your       **/  
+. /**  dataset requires, since this code generates new       **/  
+. /**  variables.  Having too little memory will lead to     **/  
+. /**  error messages.                                       **/ 
+. /************************************************************/
+. 
+. 
+. // ren rii i_level // intermediates = mats + serv + energy
+. // ren si si_level // log share of intermediates = log(intermediates/go)
+. 
+. /* Loop through intermediates, mats + serv, and mats */
+. // ren rmats i_level
+. // ren mats_share si_level
+. // ren mats_share_sales si_level
+. // drop si
+. // ren si_sales si_level
+. 
+. 
+. 
+. /* Setting up local variables */
+. 
+. 
+. local inds 311 321 352 313 383 // 321 351 352
+{txt}
+{com}. // local r_inter rii rms rmats rded_i rnded_i
+. // local inter_shares log_share ms_share mats_share ded_i_share nded_i_share
+. // local inter_names m_s_e m_s m ded non_ded
+. local r_inter rii rmats rded_i
+{txt}
+{com}. local inter_shares intermediates_share mats_share ded_i_share 
+{txt}
+{com}. local inter_names m_s_e mats ded 
+{txt}
+{com}. // local nom_inter ii ms mats
+. 
+. // local n : word count `inds'
+. // local m : word count `r_inter'
+. // local tot = `n'*`m'
+. // matrix all_inds = J(`tot',7,0) // m,k,l,bigE,mean si_level, mean error, sd error
+. 
+. local mat_i 0
+{txt}
+{com}. 
+. foreach ind of local inds {c -(}
+{txt}  2{com}.         
+. //      mat li all_inds
+.         
+.         cd "/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA"
+{txt}  3{com}.         use gnr-colombia-stata-data if sic_3 == `ind', clear
+{txt}  4{com}.         
+.         ren plant id
+{txt}  5{com}.         ren year time
+{txt}  6{com}.         ren rgo yg_level
+{txt}  7{com}.         ren l l_level
+{txt}  8{com}.         ren rk k_level
+{txt}  9{com}.         ren si intermediates_share
+{txt} 10{com}.         
+. //      keep if sic_3 == `ind'
+.         
+.         
+.         local wc 0
+{txt} 11{com}.         
+. //      cd "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+. 
+.         cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata"
+{txt} 12{com}.         
+. //      mat li all_inds
+.         
+.         foreach var of local r_inter  {c -(}
+{txt} 13{com}.         
+.                 local ++wc
+{txt} 14{com}.                 local ++mat_i
+{txt} 15{com}.                 local i_share : word `wc' of `inter_shares'
+{txt} 16{com}.                 local name : word `wc' of `inter_names'
+{txt} 17{com}.                 gen si_level = `i_share'
+{txt} 18{com}.                 gen i_level = `var'
+{txt} 19{com}.                 
+.                 keep if si_level > $trim_cutoff & l_rgo~=. & l_rk ~=. & l_l ~=. & l_rii~=.
+{txt} 20{com}.                 
+. //              sum *level
+.                 
+. //              get mean si_level
+. 
+.                 matrix R_mat`mat_i' = J(1,7,0) //  m,k,l,bigE,mean si_level, mean error, sd error
+{txt} 21{com}.                 
+.                 sum si_level
+{txt} 22{com}.                 
+. //              xxx 
+.                 
+.                 mat R_mat`mat_i'[1,5] = r(mean)
+{txt} 23{com}.                 
+.                 quietly do GNR_code_CD
+{txt} 24{com}. 
+. //              sum *elas mexp_eg
+. //              get m,k,l, bigE, mean error, sd error
+. 
+. 
+. 
+.                 sum ielas
+{txt} 25{com}.                 mat R_mat`mat_i'[1,1] = r(mean)
+{txt} 26{com}. 
+.                 mat R_mat`mat_i'[1,2] = beta
+{txt} 27{com}. 
+.                 sum mexp_eg
+{txt} 28{com}.                 mat R_mat`mat_i'[1,4] = r(mean)
+{txt} 29{com}. 
+. 
+. 
+.                 sum eg 
+{txt} 30{com}.                 matrix R_mat`mat_i'[1,6] = r(mean)
+{txt} 31{com}.                 mat R_mat`mat_i'[1,7] = r(sd)
+{txt} 32{com}.                 
+. //              mat li R_mat`mat_i'
+.                 
+.                 matrix all_inds = (nullmat(all_inds)\ R_mat`mat_i')
+{txt} 33{com}.                 
+. //              mat li all_inds
+.                 
+.                 local row "`row' sic`ind'`name'"
+{txt} 34{com}.                 
+.                 di "Rownames: `row'"
+{txt} 35{com}.                 di "Intermediate: `wc' ; row: `mat_i'"
+{txt} 36{com}.                 
+.                 drop si_level-kelas
+{txt} 37{com}.         {c )-}
+{txt} 38{com}.         
+. {c )-}
+{res}/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(5 missing values generated)
+(132 missing values generated)
+(4,870 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      6,179    .7219158    .3938744   .0513889   28.62363
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      6,179    .6487623           0   .6487623   .6487623
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      6,179    1.065182           0   1.065182   1.065182
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      6,179   -1.74e-09    .3090639  -3.723776    2.59879
+Rownames:  sic311m_s_e
+Intermediate: 1 ; row: 1
+{txt}(187 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      5,992    .6416023    .1750445   .0534191   .9873613
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      5,992    .5630299           0   .5630299   .5630299
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      5,992    1.084849           0   1.084849   1.084849
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      5,992   -5.16e-10    .3470041  -.4802629   2.436605
+Rownames:  sic311m_s_e sic311mats
+Intermediate: 2 ; row: 2
+{txt}(0 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      5,992    .6781503    .1641945   .0902932     .99534
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      5,992    .6218038           0   .6218038   .6218038
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      5,992    1.051761           0   1.051761   1.051761
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      5,992   -7.19e-10     .289277  -.4199944   1.980028
+Rownames:  sic311m_s_e sic311mats sic311ded
+Intermediate: 3 ; row: 3
+/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(3 missing values generated)
+(130 missing values generated)
+(2,301 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      2,857     .568908    .1446767   .0913187   2.082892
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,857    .5183188           0   .5183188   .5183188
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,857    1.055705           0   1.055705   1.055705
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,857   -1.64e-09    .2995849  -1.336714   1.790444
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e
+Intermediate: 1 ; row: 4
+{txt}(46 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      2,811    .4632914     .152655   .0500665   .9413237
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,811    .3868533           0   .3868533   .3868533
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,811    1.115763           0   1.115763   1.115763
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,811   -3.99e-09     .413616  -.7797033   2.154231
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats
+Intermediate: 2 ; row: 5
+{txt}(0 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      2,811    .4989577    .1430596   .0647786   .9553854
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,811    .4433784           0   .4433784   .4433784
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,811     1.07056           0    1.07056    1.07056
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,811   -2.37e-09    .3384196  -.6995096   1.991631
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded
+Intermediate: 3 ; row: 6
+/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(26 missing values generated)
+(1,030 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      2,244    .6200839    .1471251   .1396731   1.961206
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,244    .5749308           0   .5749308   .5749308
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,244    1.043659           0   1.043659   1.043659
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,244    5.04e-11    .2718411  -1.184332   1.457678
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e
+Intermediate: 1 ; row: 7
+{txt}(6 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      2,238    .4574107    .1527734   .0522255   .8928857
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,238    .3909095           0   .3909095   .3909095
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,238    1.093961           0   1.093961   1.093961
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,238    3.49e-09    .3921797   -.736177    2.10271
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats
+Intermediate: 2 ; row: 8
+{txt}(0 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      2,238    .4762952    .1500815   .0567208    .908612
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,238    .4154105           0   .4154105   .4154105
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,238    1.080751           0   1.080751   1.080751
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,238   -3.45e-09    .3658915  -.7049947   2.068782
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded
+Intermediate: 3 ; row: 9
+/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(18 missing values generated)
+(302 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,117    .4893202    .1496132   .0721392   1.215897
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,117    .4324344           0   .4324344   .4324344
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,117    1.072079           0   1.072079   1.072079
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,117   -1.65e-09    .3478783  -.9642075   1.860433
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded sic313m_s_e
+Intermediate: 1 ; row: 10
+{txt}(0 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,117    .3346945    .1323192   .0542032    .871761
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,117    .2825584           0   .2825584   .2825584
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,117    1.093849           0   1.093849   1.093849
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,117    1.39e-09    .4103698  -1.036927   1.740849
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded sic313m_s_e sic313mats
+Intermediate: 2 ; row: 11
+{txt}(0 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,117    .3699288    .1339461   .0564214   .9344341
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,117    .3216044           0   .3216044   .3216044
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,117    1.076658           0   1.076658   1.076658
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,117   -3.30e-10    .3726326  -.9927567   1.814335
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded sic313m_s_e sic313mats sic313ded
+Intermediate: 3 ; row: 12
+/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(16 missing values generated)
+(764 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,410    .5693637    .1438848   .1195269   1.312046
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,410    .5261139           0   .5261139   .5261139
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,410    1.044469           0   1.044469   1.044469
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,410   -3.13e-09    .2785904  -.8703169   1.525485
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded sic313m_s_e sic313mats sic313ded sic383m_s_e
+Intermediate: 1 ; row: 13
+{txt}(3 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,407    .4426557    .1513421   .0548507    .882306
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,407    .3739361           0   .3739361   .3739361
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,407    1.101788           0   1.101788   1.101788
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,407   -6.49e-10    .4068588  -.7615201   2.016404
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded sic313m_s_e sic313mats sic313ded sic383m_s_e sic383mats
+Intermediate: 2 ; row: 14
+{txt}(0 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,407    .4658165    .1486621   .0549461   .9150724
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,407    .4031761           0   .4031761   .4031761
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,407    1.086122           0   1.086122   1.086122
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,407   -7.77e-10    .3761352  -.7370164   2.075634
+Rownames:  sic311m_s_e sic311mats sic311ded sic321m_s_e sic321mats sic321ded sic352m_s_e sic352mats sic352ded sic313m_s_e sic313mats sic313ded sic383m_s_e sic383mats sic383ded
+Intermediate: 3 ; row: 15
+{txt}
+{com}. 
+. matrix colnames all_inds = m l k bigE si_mean err_mean err_sd
+{txt}
+{com}. matrix rownames all_inds = `row'
+{txt}
+{com}. //
+. // outtable using "../Products/stata-gnr-inter", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+. 
+{txt}end of do-file
+
+{com}. 
+. xxx
+{err}command {bf}xxx{sf} is unrecognized
+{txt}{search r(199), local:r(199);}
+
+end of do-file
+
+{search r(199), local:r(199);}
+
+{com}. mat li all_inds
+{res}
+{txt}all_inds[15,7]
+                      m           l           k        bigE     si_mean
+sic311m_s_e {res}  .64876229   .18266938   .18319163   1.0651822   .72191577
+{txt} sic311mats {res}  .56302989    .2084034   .24427306   1.0848485   .64160231
+{txt}  sic311ded {res}  .62180376   .17465493    .2086492   1.0517606   .67815031
+{txt}sic321m_s_e {res}  .51831883   .26584033   .20881507   1.0557046   .56890805
+{txt} sic321mats {res}  .38685331   .34117505   .26039936   1.1157627   .46329135
+{txt}  sic321ded {res}  .44337839   .30273686   .24512188   1.0705597   .49895769
+{txt}sic352m_s_e {res}  .57493085   .21328889   .24152023    1.043659   .62008395
+{txt} sic352mats {res}  .39090952   .28583119   .35272241   1.0939615   .45741075
+{txt}  sic352ded {res}  .41541046   .27693867   .33455231   1.0807513   .47629518
+{txt}sic313m_s_e {res}  .43243435   .16580832   .30855301   1.0720789   .48932017
+{txt} sic313mats {res}  .28255844    .2943197   .33952107   1.0938493   .33469451
+{txt}  sic313ded {res}   .3216044   .29121414   .32033783   1.0766584   .36992875
+{txt}sic383m_s_e {res}  .52611387   .36659717   .18916253   1.0444691   .56936368
+{txt} sic383mats {res}  .37393606   .48893667   .25228479   1.1017877   .44265567
+{txt}  sic383ded {res}   .4031761   .45137664   .24325492   1.0861218   .46581646
+
+{txt}               err_mean      err_sd
+sic311m_s_e {res} -1.738e-09   .30906386
+{txt} sic311mats {res} -5.159e-10   .34700414
+{txt}  sic311ded {res} -7.187e-10   .28927698
+{txt}sic321m_s_e {res} -1.643e-09   .29958486
+{txt} sic321mats {res} -3.994e-09   .41361596
+{txt}  sic321ded {res} -2.367e-09   .33841958
+{txt}sic352m_s_e {res}  5.035e-11   .27184108
+{txt} sic352mats {res}  3.491e-09   .39217968
+{txt}  sic352ded {res} -3.454e-09   .36589152
+{txt}sic313m_s_e {res} -1.647e-09   .34787832
+{txt} sic313mats {res}  1.389e-09   .41036984
+{txt}  sic313ded {res} -3.299e-10   .37263258
+{txt}sic383m_s_e {res} -3.132e-09   .27859036
+{txt} sic383mats {res} -6.486e-10   .40685883
+{txt}  sic383ded {res} -7.767e-10    .3761352
+{reset}
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD07441.000000"
+{txt}
+{com}. outtable using "../../Paper/images/tables/stata-gnr-inter-trim-05", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD07441.000000"
+{txt}
+{com}. esttab mat(all_inds) using "../../Code/Products/stata-gnr-ii-trim-05", replace
+{err}command {bf}esttab{sf} is unrecognized
+{txt}{search r(199), local:r(199);}
+
+end of do-file
+
+{search r(199), local:r(199);}
+
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD07441.000000"
+{txt}
+{com}. esttab mat(all_inds) using "../../Code/Products/stata-gnr-ii-trim-05", replace
+{res}{txt}{p 0 4 2}
+(file {bf}
+../../Code/Products/stata-gnr-ii-trim-05.txt{rm}
+not found)
+{p_end}
+(output written to {browse  `"../../Code/Products/stata-gnr-ii-trim-05.txt"'})
+
+{com}. 
+{txt}end of do-file
+
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD07441.000000"
+{txt}
+{com}. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata/003-loop-5-14-25.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}14 May 2025, 23:03:30
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

@@ -1,0 +1,863 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata/003-loop-8_4_25.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 8 Apr 2025, 13:51:31
+{txt}
+{com}. 
+. do 003-loop
+{txt}
+{com}. /* Estimating CD using GNR(2020). Intermediates are raw materials */
+. 
+. 
+. // Renaming variables to use GNR_code_CD.do file
+. 
+. /************************************************************/
+. /**  Rename variables using the instructions below.        **/ 
+. /**  Pay attention to upper and lower case, as it          **/
+. /**  matters for Stata.  Inputs, output, and the share of  **/
+. /**  intermediate expenditures in total revenue should     **/
+. /**  all be expressed in levels.  The code will create     **/
+. /**  the log values.  Also note that input and output      **/
+. /**  variables are real values, whereas the share is       **/
+. /**  the nominal share.                                    **/
+. /**                                                        **/
+. /**  Firm ID: id                                           **/
+. /**  Time series variable (e.g., year, month): time        **/
+. /**  Real gross output: yg_level                           **/
+. /**  Real labor: l_level                                   **/
+. /**  Real capital: k_level                                 **/
+. /**  Real intermediate inputs): i_level                    **/
+. /**  Nominal Share of intermediates: si_level              **/ 
+. /**                                                        **/             
+. /**  Be sure to set the memory larger than what your       **/  
+. /**  dataset requires, since this code generates new       **/  
+. /**  variables.  Having too little memory will lead to     **/  
+. /**  error messages.                                       **/ 
+. /************************************************************/
+. 
+. 
+. // ren rii i_level // intermediates = mats + serv + energy
+. // ren si si_level // log share of intermediates = log(intermediates/go)
+. 
+. /* Loop through intermediates, mats + serv, and mats */
+. // ren rmats i_level
+. // ren mats_share si_level
+. // ren mats_share_sales si_level
+. // drop si
+. // ren si_sales si_level
+. 
+. 
+. 
+. /* Setting up local variables */
+. 
+. 
+. local inds 311 313 321 351 352
+{txt}
+{com}. local r_inter rii rms rmats
+{txt}
+{com}. // local nom_inter ii ms mats
+. local inter_shares log_share ms_share mats_share
+{txt}
+{com}. // local n : word count `inds'
+. // local m : word count `r_inter'
+. // local tot = `n'*`m'
+. // matrix all_inds = J(`tot',7,0) // m,k,l,bigE,mean si_level, mean error, sd error
+. 
+. local mat_i 0
+{txt}
+{com}. 
+. foreach ind of local inds {c -(}
+{txt}  2{com}.         
+. //      mat li all_inds
+.         
+.         cd "/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA"
+{txt}  3{com}.         use gnr-colombia-stata-data if sic_3 == `ind', clear
+{txt}  4{com}.         
+.         ren plant id
+{txt}  5{com}.         ren year time
+{txt}  6{com}.         ren rgo yg_level
+{txt}  7{com}.         ren l l_level
+{txt}  8{com}.         ren rk k_level
+{txt}  9{com}.         ren si log_share
+{txt} 10{com}.         
+. //      keep if sic_3 == `ind'
+.         
+.         local wc 0
+{txt} 11{com}.         
+. //      cd "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+. 
+.         cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata"
+{txt} 12{com}.         
+. //      mat li all_inds
+.         
+.         foreach var of local r_inter  {c -(}
+{txt} 13{com}.         
+.                 local ++wc
+{txt} 14{com}.                 local ++mat_i
+{txt} 15{com}.                 local i_share : word `wc' of `inter_shares'
+{txt} 16{com}.                 gen si_level = `i_share'
+{txt} 17{com}.                 gen i_level = `var'
+{txt} 18{com}.                 
+. //              mat li all_inds
+.                 
+. //              sum *level
+.                 
+. //              get mean si_level
+. 
+.                 
+.                 quietly do GNR_code_CD
+{txt} 19{com}. 
+. //              sum *elas mexp_eg
+. //              get m,k,l, bigE, mean error, sd error
+. 
+.                 matrix R_mat`mat_i' = J(1,7,0) //  m,k,l,bigE,mean si_level, mean error, sd error
+{txt} 20{com}. 
+.                 sum ielas
+{txt} 21{com}.                 mat R_mat`mat_i'[1,1] = r(mean)
+{txt} 22{com}. 
+.                 mat R_mat`mat_i'[1,2] = beta
+{txt} 23{com}. 
+.                 sum mexp_eg
+{txt} 24{com}.                 mat R_mat`mat_i'[1,4] = r(mean)
+{txt} 25{com}. 
+.                 sum si_level
+{txt} 26{com}.                 mat R_mat`mat_i'[1,5] = r(mean)
+{txt} 27{com}. 
+.                 sum eg 
+{txt} 28{com}.                 matrix R_mat`mat_i'[1,6] = r(mean)
+{txt} 29{com}.                 mat R_mat`mat_i'[1,7] = r(sd)
+{txt} 30{com}.                 
+. //              mat li R_mat`mat_i'
+.                 
+.                 matrix all_inds = (nullmat(all_inds)\ R_mat`mat_i')
+{txt} 31{com}.                 
+.                 mat li all_inds
+{txt} 32{com}.                 
+.                 local row "`row' `ind':`var'"
+{txt} 33{com}.                 
+.                 di "Rownames: `row'"
+{txt} 34{com}.                 di "Intermediate: `wc' ; row: `mat_i'"
+{txt} 35{com}.                 
+.                 drop si_level-kelas
+{txt} 36{com}.         {c )-}
+{txt} 37{com}.         
+. {c )-}
+{res}/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(5 missing values generated)
+(132 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      6,187    .6207732           0   .6207732   .6207732
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}     11,049     1.10824           0    1.10824    1.10824
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}     11,044    .7179209    .3239249    .009801   28.62363
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      6,187   -1.69e-10    .3336843  -3.728249   4.251255
+
+{txt}all_inds[1,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+
+{txt}            c7
+r1 {res}  .33368432
+{reset}Rownames:  311:rii
+Intermediate: 1 ; row: 1
+(5 missing values generated)
+(5 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      6,249    .5713291           0   .5713291   .5713291
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}     11,049    1.156599           0   1.156599   1.156599
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}     11,044    .6963185    .3247114   .0051086   28.14945
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      6,249   -1.21e-09    .3843508  -3.751834   4.443146
+
+{txt}all_inds[2,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{reset}Rownames:  311:rii 311:rms
+Intermediate: 2 ; row: 2
+(5 missing values generated)
+(5 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      6,180    .0022879           0   .0022879   .0022879
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}     11,049    236.3879           0   236.3879   236.3879
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}     11,044    .6117773    .2103111          0   .9873613
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      6,180   -1.23e-09    .9648862  -.6019366   13.60341
+
+{txt}all_inds[3,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{reset}Rownames:  311:rii 311:rms 311:rmats
+Intermediate: 3 ; row: 3
+{res}/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(18 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,117    .4324344           0   .4324344   .4324344
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,419    1.072079           0   1.072079   1.072079
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,419    .5109559    .1609282   .0721392   1.237448
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,117   -1.65e-09    .3478783  -.9642075   1.860433
+
+{txt}all_inds[4,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii
+Intermediate: 1 ; row: 4
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,129    .4239592           0   .4239592   .4239592
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,419    1.073892           0   1.073892   1.073892
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,419    .5018458    .1603272   .0710227   1.227245
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,129    2.55e-09    .3530314  -.9815751   1.857927
+
+{txt}all_inds[5,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms
+Intermediate: 2 ; row: 5
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,129    .2836069           0   .2836069   .2836069
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,419    1.095044           0   1.095044   1.095044
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,419    .3511314    .1422032   .0542032   .8980092
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,129    5.64e-09    .4131282  -1.061797   1.745643
+
+{txt}all_inds[6,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats
+Intermediate: 3 ; row: 6
+{res}/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(3 missing values generated)
+(130 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,857    .5183188           0   .5183188   .5183188
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      5,158    1.055705           0   1.055705   1.055705
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      5,155    .5559224     .176141   .0073888   2.745237
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,857   -1.64e-09    .2995849  -1.336714   1.790444
+
+{txt}all_inds[7,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii
+Intermediate: 1 ; row: 7
+(3 missing values generated)
+(3 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,916    .4556228           0   .4556228   .4556228
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      5,158    1.132377           0   1.132377   1.132377
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      5,155    .5334134    .1831793   .0046284   2.745237
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,916    4.61e-10    .3785032  -1.238127   4.246012
+
+{txt}all_inds[8,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms
+Intermediate: 2 ; row: 8
+(3 missing values generated)
+(3 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,899    .0228895           0   .0228895   .0228895
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      5,158    17.87691           0   17.87691   17.87691
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      5,155    .4421001    .1885692          0   .9644852
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,899   -1.42e-10    .6499132  -.8330998   9.842829
+
+{txt}all_inds[9,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats
+Intermediate: 3 ; row: 9
+{res}/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(11 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}        816    .5130339           0   .5130339   .5130339
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,360    1.063046           0   1.063046   1.063046
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,360    .5972813    .1817352   .0513862   2.136791
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}        816   -4.40e-10    .3184069  -.8435878    2.36211
+
+{txt}all_inds[10,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+{txt}r1 {res}  .51303387   .24060098   .26548627   1.0630463   .59728129  -4.403e-10
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{txt}r1 {res}  .31840689
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats 351:rii
+Intermediate: 1 ; row: 10
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}        818    .4356604           0   .4356604   .4356604
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,360    1.128643           0   1.128643   1.128643
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,360    .5626152     .202135   .0195954   1.968811
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}        818   -1.07e-09    .4308724  -.9262761   2.917127
+
+{txt}all_inds[11,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+{txt}r1 {res}  .51303387   .24060098   .26548627   1.0630463   .59728129  -4.403e-10
+{txt}r1 {res}  .43566036    .2892662   .26366123    1.128643   .56261524  -1.070e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{txt}r1 {res}  .31840689
+{txt}r1 {res}  .43087239
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats 351:rii 351:rms
+Intermediate: 2 ; row: 11
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}        818    .2209384           0   .2209384   .2209384
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,360    1.487253           0   1.487253   1.487253
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      1,360    .4351705    .2136666          0   .9302772
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}        818    3.40e-09    .7419375  -1.040668   3.377143
+
+{txt}all_inds[12,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+{txt}r1 {res}  .51303387   .24060098   .26548627   1.0630463   .59728129  -4.403e-10
+{txt}r1 {res}  .43566036    .2892662   .26366123    1.128643   .56261524  -1.070e-09
+{txt}r1 {res}  .22093843   .30416578   .03811124   1.4872532   .43517054   3.395e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{txt}r1 {res}  .31840689
+{txt}r1 {res}  .43087239
+{txt}r1 {res}  .74193754
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats 351:rii 351:rms 351:rmats
+Intermediate: 3 ; row: 12
+{res}/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+{txt}(26 missing values generated)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,244    .5749308           0   .5749308   .5749308
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      3,274    1.043659           0   1.043659   1.043659
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      3,274    .6259056    .1577219   .0233029   2.417016
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,244    5.04e-11    .2718411  -1.184332   1.457678
+
+{txt}all_inds[13,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+{txt}r1 {res}  .51303387   .24060098   .26548627   1.0630463   .59728129  -4.403e-10
+{txt}r1 {res}  .43566036    .2892662   .26366123    1.128643   .56261524  -1.070e-09
+{txt}r1 {res}  .22093843   .30416578   .03811124   1.4872532   .43517054   3.395e-09
+{txt}r1 {res}  .57493085   .21328889   .24152023    1.043659   .62590559   5.035e-11
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{txt}r1 {res}  .31840689
+{txt}r1 {res}  .43087239
+{txt}r1 {res}  .74193754
+{txt}r1 {res}  .27184108
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats 351:rii 351:rms 351:rmats 352:rii
+Intermediate: 1 ; row: 13
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,250    .5649378           0   .5649378   .5649378
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      3,274    1.046478           0   1.046478   1.046478
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      3,274    .6185533    .1591427    .021031   2.417016
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,250   -1.77e-10    .2802534  -1.193991   1.446806
+
+{txt}all_inds[14,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+{txt}r1 {res}  .51303387   .24060098   .26548627   1.0630463   .59728129  -4.403e-10
+{txt}r1 {res}  .43566036    .2892662   .26366123    1.128643   .56261524  -1.070e-09
+{txt}r1 {res}  .22093843   .30416578   .03811124   1.4872532   .43517054   3.395e-09
+{txt}r1 {res}  .57493085   .21328889   .24152023    1.043659   .62590559   5.035e-11
+{txt}r1 {res}  .56493777   .22207496   .24801904    1.046478   .61855326  -1.771e-10
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{txt}r1 {res}  .31840689
+{txt}r1 {res}  .43087239
+{txt}r1 {res}  .74193754
+{txt}r1 {res}  .27184108
+{txt}r1 {res}  .28025345
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats 351:rii 351:rms 351:rmats 352:rii 352:rms
+Intermediate: 2 ; row: 14
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,249     .026013           0    .026013    .026013
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      3,274    16.26001           0   16.26001   16.26001
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 4}si_level {c |}{res}      3,274    .4650362    .1594284          0   .8928857
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,249    2.19e-09    .4643426  -.7471533   10.43649
+
+{txt}all_inds[15,7]
+            c1          c2          c3          c4          c5          c6
+r1 {res}   .6207732   .20308788   .19616229     1.10824   .71792085  -1.694e-10
+{txt}r1 {res}  .57132912   .23361397   .23424279   1.1565987   .69631845  -1.209e-09
+{txt}r1 {res}  .00228788   .50992028   .56348987   236.38791   .61177727  -1.225e-09
+{txt}r1 {res}  .43243435   .16580832   .30855301   1.0720789   .51095586  -1.647e-09
+{txt}r1 {res}   .4239592   .17012399    .3054959   1.0738916   .50184584   2.550e-09
+{txt}r1 {res}  .28360686   .28714093   .33501705   1.0950435   .35113144   5.640e-09
+{txt}r1 {res}  .51831883   .26584033   .20881507   1.0557046    .5559224  -1.643e-09
+{txt}r1 {res}  .45562279   .28600005   .23651454   1.1323768   .53341345   4.611e-10
+{txt}r1 {res}  .02288948   .55050718   .42583891   17.876905   .44210005  -1.422e-10
+{txt}r1 {res}  .51303387   .24060098   .26548627   1.0630463   .59728129  -4.403e-10
+{txt}r1 {res}  .43566036    .2892662   .26366123    1.128643   .56261524  -1.070e-09
+{txt}r1 {res}  .22093843   .30416578   .03811124   1.4872532   .43517054   3.395e-09
+{txt}r1 {res}  .57493085   .21328889   .24152023    1.043659   .62590559   5.035e-11
+{txt}r1 {res}  .56493777   .22207496   .24801904    1.046478   .61855326  -1.771e-10
+{txt}r1 {res}    .026013   .47467077   .54444382   16.260012   .46503617   2.195e-09
+
+{txt}            c7
+r1 {res}  .33368432
+{txt}r1 {res}  .38435078
+{txt}r1 {res}  .96488616
+{txt}r1 {res}  .34787832
+{txt}r1 {res}  .35303143
+{txt}r1 {res}  .41312815
+{txt}r1 {res}  .29958486
+{txt}r1 {res}  .37850324
+{txt}r1 {res}  .64991316
+{txt}r1 {res}  .31840689
+{txt}r1 {res}  .43087239
+{txt}r1 {res}  .74193754
+{txt}r1 {res}  .27184108
+{txt}r1 {res}  .28025345
+{txt}r1 {res}   .4643426
+{reset}Rownames:  311:rii 311:rms 311:rmats 313:rii 313:rms 313:rmats 321:rii 321:rms 321:rmats 351:rii 351:rms 351:rmats 352:rii 352:rms 352:rmats
+Intermediate: 3 ; row: 15
+
+{com}. 
+. matrix colnames all_inds = m k l bigE si_mean err_mean err_sd
+{txt}
+{com}. matrix rownames all_inds = `row'
+{txt}
+{com}. 
+. 
+{txt}end of do-file
+
+{com}. 
+{txt}end of do-file
+
+{com}. mat li all_inds
+{res}
+{txt}all_inds[15,7]
+                    m           k           l        bigE     si_mean
+  311:rii {res}   .6207732   .20308788   .19616229     1.10824   .71792085
+{txt}  311:rms {res}  .57132912   .23361397   .23424279   1.1565987   .69631845
+{txt}311:rmats {res}  .00228788   .50992028   .56348987   236.38791   .61177727
+{txt}  313:rii {res}  .43243435   .16580832   .30855301   1.0720789   .51095586
+{txt}  313:rms {res}   .4239592   .17012399    .3054959   1.0738916   .50184584
+{txt}313:rmats {res}  .28360686   .28714093   .33501705   1.0950435   .35113144
+{txt}  321:rii {res}  .51831883   .26584033   .20881507   1.0557046    .5559224
+{txt}  321:rms {res}  .45562279   .28600005   .23651454   1.1323768   .53341345
+{txt}321:rmats {res}  .02288948   .55050718   .42583891   17.876905   .44210005
+{txt}  351:rii {res}  .51303387   .24060098   .26548627   1.0630463   .59728129
+{txt}  351:rms {res}  .43566036    .2892662   .26366123    1.128643   .56261524
+{txt}351:rmats {res}  .22093843   .30416578   .03811124   1.4872532   .43517054
+{txt}  352:rii {res}  .57493085   .21328889   .24152023    1.043659   .62590559
+{txt}  352:rms {res}  .56493777   .22207496   .24801904    1.046478   .61855326
+{txt}352:rmats {res}    .026013   .47467077   .54444382   16.260012   .46503617
+
+{txt}             err_mean      err_sd
+  311:rii {res} -1.694e-10   .33368432
+{txt}  311:rms {res} -1.209e-09   .38435078
+{txt}311:rmats {res} -1.225e-09   .96488616
+{txt}  313:rii {res} -1.647e-09   .34787832
+{txt}  313:rms {res}  2.550e-09   .35303143
+{txt}313:rmats {res}  5.640e-09   .41312815
+{txt}  321:rii {res} -1.643e-09   .29958486
+{txt}  321:rms {res}  4.611e-10   .37850324
+{txt}321:rmats {res} -1.422e-10   .64991316
+{txt}  351:rii {res} -4.403e-10   .31840689
+{txt}  351:rms {res} -1.070e-09   .43087239
+{txt}351:rmats {res}  3.395e-09   .74193754
+{txt}  352:rii {res}  5.035e-11   .27184108
+{txt}  352:rms {res} -1.771e-10   .28025345
+{txt}352:rmats {res}  2.195e-09    .4643426
+{reset}
+{com}. di `c(pwd'
+{res}
+
+{com}. di `c(pwd)'
+{res}{err}[/Volumes] not found
+{txt}{search r(111), local:r(111);}
+
+{com}. di "`c(pwd)'"
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD01476.000000"
+{txt}
+{com}. outtable using "../Products/stata-gnr-inter.tex", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+{err}command {bf}outtable{sf} is unrecognized
+{txt}{search r(199), local:r(199);}
+
+end of do-file
+
+{search r(199), local:r(199);}
+
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD01476.000000"
+{txt}
+{com}. outtable using "../Products/stata-gnr-inter.tex", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+{txt}{p 0 4 2}
+(file {bf}
+../Products/stata-gnr-inter.tex.tex{rm}
+not found)
+{p_end}
+
+{com}. 
+{txt}end of do-file
+
+{com}. do "/var/folders/_r/fhcn5vg539b5wkq5zz16mmpr0000gn/T//SD01476.000000"
+{txt}
+{com}. outtable using "../Products/stata-gnr-inter", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+{txt}{p 0 4 2}
+(file {bf}
+../Products/stata-gnr-inter.tex{rm}
+not found)
+{p_end}
+
+{com}. 
+{txt}end of do-file
+
+{com}. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata/003-loop-8_4_25.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 9 Apr 2025, 01:06:18
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

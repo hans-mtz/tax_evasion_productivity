@@ -1,0 +1,113 @@
+## Getting the Story Straight
+
+Firms face incentives to evade sales taxes by overreporting their input costs. Firms overreport their cost by acquiring fake invoices to claim additional deductions of their sales taxes, maximizing after-tax profits. The higher the sales tax, the greater the incentive to evade. However, the probability of detection and the threat of penalties limit how much firms overreport.
+
+The key incentive for firms is the **effective sales tax rate** — the amount firms ultimately pay or receive from the tax authority. The effective tax rate is calculated as the difference between the total sales tax charged by the firm on its sales and the total sales tax paid by the firm on its inputs, divided by total sales. A positive difference indicates what the firm should pay to the government. If the difference is negative, the firm receives a refund from the tax authority.
+
+$$
+\begin{aligned}
+\tau &= \frac{\tau_0P_tY_{it} - \tau_1\rho_t M_{it}}{P_tY_{it}} \\
+&= \tau_0 - \tau_1 \beta
+\end{aligned}
+$$
+
+In Colombia, the total amount charged by the firm as sales tax depends on the statutory tax rate of each product sold domestically; **exports are exempt** from sales tax. Low statutory sales tax rates and exempt products result in lower sales tax collected by the firm and thus, a lower effective tax rate. Consequently, firms whose products are exempt from sales tax or taxed with **low statutory rates** have low incentives to evade. Likewise, as the share of their exports increases, exporter firms bear decreasing incentives to evade taxes because a larger portion of their sales is exempt from sales tax, reducing the effective sales tax rate.
+
+On the other hand, the total amount paid by the firm as sales tax depends on the statutory tax rate of each of its inputs, including imports. **Imports**, in contrast to exports, are **not exempt**. Hence, the composition of the foreign and domestic inputs does not affect the effective sales tax rate, nor the incentives to evade. However, the tax system imposed a zero sales tax rate on **unprocessed primary inputs**, such as forestry, mining, fishing, and agriculture. Therefore, firms consuming a high share of primary inputs face a higher effective sales tax rate and thus, greater incentives to evade. 
+
+Note that the effective sales tax rate might naturally be **negative** for firms in certain industries. Before the 1983 reform in Colombia, there were four different statutory sales tax rates: 4, 10, 15 and 25 percent. Because the sales tax was applied at the product level, *the total amount paid as sales tax by the firms on its inputs could be larger than the total amount charged by the firm as sales tax on its products.* This situation would result in a negative effective sales tax rate. Firms in this situation would receive a refund from the tax authority. 
+
+Would firms with negative effective tax rates have incentives to overreport inputs to increase their refunds? Unlikely. Although the refunds had to be made within 30 days, *the procedure was complicated, and the tax authority delayed, on average, one year to process the payment*. Suspicion of fraudulent activities might further delay the process. Therefore, firms in this situation did not have incentives to overreport inputs to increase their refunds. 
+
+(On the contrary, firms with negative effective tax rates would have incentives to *underreport* inputs to reduce the risk of being audited due to the refunds. These firms would be *better off reporting enough inputs to offset the sales tax charged on their products, thus avoiding the complications of refunds and potential audits*. This might explain the negative coefficients found in the statistical test in the empirical section of this paper. Why? Because corporations have incentives to report truthfully their inputs, not only because they are subject to harder scrutiny by the tax authority, but also because they would not like to reduce their profits artificially; profits influence the value of their shares, and thus, the wealth of their shareholders.
+
+Underreporting inputs is the only reasonable explanation of the significantly negative coefficients found in the statistical test of tax evasion. Neither market power nor technology differences could explain the negative coefficients. Both market power on either side and technology differences would result in a smaller input cost share of revenues. 
+
+Market power in the sales market implies that firms can sell at higher prices, increasing the denominator of the share, resulting in a smaller share. Market power in the buying market implies firms can buy inputs at lower prices, decreasing the numerator of the share, leading to smaller shares, too. Because corporations are more likely to have market power, their smaller share would lead to a positive coefficient in the statistical test and smaller output elasticity of inputs.
+
+Likewise, firms with better technology are more likely to be more efficient in using inputs, resulting in smaller input costs relative to revenues. Because corporations are more likely to have better technology, their smaller share would lead to a positive coefficient in the statistical test and smaller output elasticity of inputs. Therefore, the negative coefficients found in the statistical test cannot be explained by market power or technology differences, but rather by firms with negative effective tax rates underreporting their inputs to avoid complications with refunds and potential audits.)
+
+Whether firms in certain industries have incentives to overreport their inputs to evade sales taxes might **not** be **obvious** *ex-ante*. For example, if the available data does not allow for estimating the average effective tax rate by type of firm in each industry.
+
+A first contribution of this paper is to provide practitioners and policymakers a way to identify industries where tax evasion through cost-overreporting might be non-trivial and can be identified from data. The simple model employed in this paper to investigate the mechanisms of tax evasion provides conditions that can be tested with data. As a result, I propose a statistical test where the null hypothesis states that firms in an industry of interest do not evade sales taxes by overreporting; the alternative states that firms do commit tax evasion [@sec-tax-ev-test].
+
+### Showing the Evidence 
+
+```{r}
+#| label: tbl-ielas
+#| tbl-cap: Intermediate elasticities for Corporations (Non-Evaders) and non-Corporations (Evaders) for different industries. Estimates were obtained using GNR (2020) method assuming a CD functional form. Intermediates are defined as raw materials. $\varepsilon$ is defined as **measurement error**. The Tax Evasion Test displays the coefficient of the statistical test, where the null hypothesis states that there is no tax evasion through cost overreporting. Among the industry characteristics, Sales is the industry's market share of the total sales in Colombia between 1981 and 1991. Sales Tax Rate is the average sales tax reported rate. Exports is the average share of exports of the industry total sales, and Exporters is the share of firms exporting 10 percent or more of their total sales.
+
+load("../Code/Products/i_elas.RData")
+
+ielas_cont_tbl %>%
+    select(!c(sic_3_lab,n,n_Corp)) %>%
+    kbl(
+        digits = 2,
+        align = "c",
+        col.names = c("SIC", "Corps.", 
+        "Others","Tax Ev.","Sales (Mkt %)", "Sales Tax Rate", "Exports (Avg. %)", "Exporters (%)"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    column_spec(2:3, width = "7em") %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=1, "Elasticities"=2, "Test"=1, "Inds. Char."=4)
+    ) %>%
+    collapse_rows(columns = c(1,2,4:8), valign = "top") %>%
+    pack_rows(
+        index = c(
+            "31 Food & Beverages" = 6,
+            "32 Textile, Apparel & Leather" = 8,
+            "33 Wood & Wood Products" = 4
+        )
+    )
+    
+
+```
+
+31 Food & Beverages:
+
+- 311 Food Products (Meat, Dairy, Sugar, Bakery, etc.)
+- 312 Food Products (Animal feeds, Others)
+- 313 Beverages (Soft drinks, Alcoholic beverages, etc.)
+
+In contrast to 311 and 312, 313 is not exempt from the sales tax. The evidence of tax evasion is significant as shown by the positive coefficient of the statistical test. Also, the output elasticity of intermediates is significantly smaller for non-evaders (Corporations) than for evaders (non-Corporations). 
+
+32 Textile, Apparel & Leather: 
+
+- 321 Textiles
+- 322 Wearing apparel
+- 323 Leather Products
+- 324 Footwear
+
+@tbl-ielas also shows evidence for tax evasion by overreporting in industries 321, 322, and 324, but not in 323. Corporations in industries 321, 322, and 324 display intermediate elasticities statistically smaller than the rest of the firms and the tax evasion test display a significantly positive coefficient. Not, for industry 323. 
+
+This makes sense because industry 323 displays by far the largest share of exporters and firms exports represent the largest average share of sales. Because exports are zero-rated for sales tax, firms in this industry have low incentives to evade taxes by overreporting their inputs.
+
+
+33 Wood & Wood Products:
+
+- 331 Wood Products except furniture (Sawmills, Containers, etc.)
+- 332 Wood Furniture (Wooden furniture and fixtures)
+
+Both industries sell their products locally (low shares of exports) and one third of their joint consumption comes from forestry, which is exempt of sales tax (IO-Matrix 1985 Colombia). For industry 331, the large share of primary goods probably leads to a high effective sales tax rate because we expect there might not be many more other inputs needed in the production process. Hence, firms in this industry might face high incentives to overreport their non-primary inputs to evade sales taxes.
+
+However, for firms in industry 332, even though they also consume a large share of primary goods, they also consume a more diverse set of inputs to produce the wood furniture, such as textiles, chemicals, foam cushions, and others. Because of this wide range of inputs, the sales tax paid for their inputs might be high leading to a low effective sales rate and hence, low incentives to evade taxes.
+
+::: {#fig-io-mat-1985}
+
+![IO-Matrix 1985 Colombia](images/tables/COL-Mat-InsProd-1985.pdf){width="90%"}
+
+:::
+
+<!-- 
+
+In practice, the situation is far more intricate. First, firms are actively trying to conceal their fraudulent activities, rendering the detection of tax evasion non-trivial. Second, firms face other taxes and exemptions. In cases where the tax code complexity is significant due to the variety of additional taxes, intricate exemptions, and frequent reforms, this might result in overlapping or potentially conflicting incentives. For example, in Colombia, firms are also subject to corporate income taxes that vary by type of juridical organization. Limited liability companies, for instance, faced a 20 percent income tax while 
+
+In Colombia, firms are subject also to corporate income taxes depending on the type of firm (known as juridical organization in Colombia), property taxes among others at the federal level, steel taxes, other taxes. Municipalities also imposed additional taxes on the firms. The complexities of the colombian tax code resulted in double taxation of individuals. An issue that the frequent reforms tried to address.
+
+In practice, the landscape is far more intricate. Firms go to great lengths to obscure fraudulent activities, making tax evasion detection a formidable challenge. Beyond sales taxes, firms face a web of additional taxes that create overlapping and sometimes conflicting incentives. For instance, in Colombia during the study period, the tax system was not only complex but also frequently reformed. Firms were liable for corporate income taxes that varied by juridical organization, property taxes, and sector-specific levies such as steel taxes. Municipalities layered on their own taxes, further complicating compliance. This patchwork of regulations often resulted in double taxation for individuals—a persistent problem that successive reforms attempted to resolve. For example, a manufacturing firm exporting goods might benefit from sales tax exemptions on exports, but still face high municipal taxes and sector-specific levies, creating a mix of incentives that influence both tax compliance and evasion strategies.
+
+First, because it might not be obvious what industries might be the most affected. Altough theory provides some clues, firms face a plethora of other taxes that might create conflicting incentives. The situation might be worsened if the tax authorities are frequently tinkering with the tax system. 
+
+ -->

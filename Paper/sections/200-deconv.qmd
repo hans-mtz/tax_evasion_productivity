@@ -1,8 +1,17 @@
-## Results
 
-### Testing for the Presence of Tax Evasion Through Overreporting
+
+### Testing for the Presence of Tax Evasion Through Overreporting {#sec-tax-ev-test}
 
 @eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$. Define the null hypothesis as the absence of cost overreporting, $H_0: \mu_{\mathcal{V}}=0$, and the alternative hypothesis as the presence of cost overreporting, $H_1: \mu_{\mathcal{V}}>0$. Consequently, we can use a one-sided t-test to verify for the presence of tax evasion by overreporting.
+
+Under the null hypothesis, there is no tax evasion. Then,
+$$
+\begin{aligned}  
+  z &= \frac{\bar{\mathcal{V}}}{\hat\sigma_{\mathcal{V}}/\sqrt{N}}=\frac{\mathbb{E}[\mathcal{V}]}{\sqrt{\mathbb{Var}[\mathcal{V}]/N}}\\
+  &=\frac{-\mathbb{E}[\varepsilon]+\mathbb{E}[e]}{\sqrt{\mathbb{Var}[\varepsilon]+\mathbb{Var}[e]/N}}\\
+  &= \frac{-\mathbb{E}[\varepsilon]}{\sqrt{\mathbb{Var}[\varepsilon]/N}}\sim N(0,1)
+\end{aligned}
+$$
 
 I test for the presence of tax evasion for different classifications of intermediates. Intermediates include raw materials, energy and services. Deductibles include raw materials and deductible expenses. Materials include only raw materials. The items included as deductible expenses or services are detailed in @tbl-expenses-type
 
@@ -10,18 +19,24 @@ I test for the presence of tax evasion for different classifications of intermed
 #| label: tbl-evasion-test-CD
 #| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
 
-inds_sales_tax <- tribble(
-    ~ sic_3, ~ Category,
-    311, "Exempt Product",
-    312, "Exempt Product",
-    382, "Exempt Product",
-    383, "Exempt Product",
-    384, "Exempt Product",
-    369, "Exempt Material",
-    323, "Exempt Material",
-    356, "Imported Material"
-)
+# inds_sales_tax <- tribble(
+#     ~ sic_3, ~ Category,
+#     311, "1 Exempt Product",
+#     312, "1 Exempt Product",
+#     382, "1 Exempt Product",
+#     383, "1 Exempt Product",
+#     384, "1 Exempt Product",
+#     369, "1 Exempt Material",
+#     323, "1 Exempt Material",
+#     356, "3 Specialized Material",
+#     322, "4 Direct Customer Sales",
+#     324, "4 Direct Customer Sales",
+#     342, "4 Direct Customer Sales",
+#     369, "4 Direct Customer Sales", 
+#     390, "4 Direct Customer Sales"
+# )
 
+load("../Code/Products/intermediates.RData")
 
 tax_ev_test_tbl %>%
   # left_join(
@@ -30,29 +45,64 @@ tax_ev_test_tbl %>%
   left_join(
       inds_sales_tax
   ) %>%
-  arrange(desc(Category),sic_3) %>%
+  filter( sic_3 %in% top_10_ev_inds) %>%
+  # mutate(
+  #   sic_3 = factor(sic_3,levels=top_10_ev_inds)) %>%
+  arrange(Category) %>%
   select(
-      # Category,
       sic_3,
+      Category,
       # description,
+      log_deductible_intermediates_share,
       log_mats_share:log_repair_maint_share
   ) %>%
   kbl(
-    col.names = c("SIC", "Materials", "Electricity", "Fuels", "R&M"),
+    col.names = c("SIC", "Category", "Deductibles","Materials", "Electricity", "Fuels", "R&M"),
     table.attr = 'data-quarto-disable-processing="true"'
     ) %>%
     kable_classic(full_width=F, html_font = "Cambria") %>%
-    # collapse_rows(columns = 1, latex_hline = "major") 
-    pack_rows(
-      index=c(
-        "Specialized Material"=1,
-        "Exempt Product"=5,
-        "Exempt Material"=2,
-        "Other Industries"= 12)
-    )
+    collapse_rows(columns = 1, valign = "top") 
+    # pack_rows(
+    #   index=c(
+    #     "Specialized Material"=1,
+    #     "Exempt Product"=5,
+    #     "Exempt Material"=2,
+    #     "Other Industries"= 12)
+    # )
 
 ```
 
+```{r}
+#| label: tbl-tax-ev-test-context
+#| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
+
+test_cont_tbl %>%
+    mutate(
+        across(
+            where(is.numeric),
+            ~ round(.x, 1)
+        ),  
+    ) %>% 
+    # select(
+    #     sic_3, log_mats_share, log_deductible_intermediates_share,
+    #     share_sales_tax, sales, materials, share_exports,
+    #     share_imports_materials
+    # ) %>%
+    # filter( sic_3 %in% top_10_ev_inds) %>%
+    kbl(
+        # col.names = c("SIC", "Materials", "Deductibles", "Sales Tax", "Sales (Mkt %)"," Materials (Mkt %)","Exports","Imports"),
+        digits = 2,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    collapse_rows(columns = 1, valign = "top") 
+    # %>%
+    # add_header_above(
+    #     c(" " = 1, "Test" = 2, "Industry Char." = 5)
+    # )
+
+
+```
 
 @tbl-evasion-test-CD shows that the null hypothesis of no tax evasion is rejected at the 1% significance level for twelve of the top twenty manufacturing industries. 
 
@@ -61,50 +111,6 @@ In particular, there is no evidence of tax evasion for most industries in which 
 Among the industries with exempted products, 311 (Food Products) and 383 (Electrical Machinery) there is evidence of tax evasion but as we'll see later the average overreporting is low compared to other industries. 
 
 As expected, the evidence is stronger particularly for the other industries that do not fall in the previous categories. Namely, there is evidence of tax evasion for industries 313 (Beverages); for 321 (Textiles), 322 (Wearing Apparel), and 324 (Footwear); 331 (Wood Products except Furniture) and 332 (Wood Furniture); for industry 341 (Paper) and 342 (Publishing); 351 (Industrial Chemicals) and 352 (Other Chemicals); 381 (Metal Products Except Machinery), and 390 (Other Manufacturing Industries). 
-
-### Expenditure Swapping Tax Evasion
-
-Although we found evidence of evasion through raw materials overreporting, the previous table would suggest that other intermediate materials could have been underreported as indicated by the negative sign and the tight standard errors. 
-
-A closer examination reveals that non-deductible intermediates are the expenses underreported. This could be explained by what I call expenditure swapping In Colombia, firms were subject to submitting tax declarations bimonthly. This constant reporting made misreporting difficult. If firms wanted to fly unnoticed under the authority's radar their bimonthly reports had to add up as a non-evading firm. Firms could exchange non-deductible expenses for deductible expenses. That way, if the authority challenged their fake expenses, they could come back with valid unreported expenses and only pay the sales tax owed and leave the corporate income tax unaffected.
-
-Firms reserving valid expenses is known in the literature. It has been documented elsewhere, in particular in tax evasion studies focusing on revenue underreporting, that when authorities challenged firms' records, firms came back increasing their sales but also their expenses resulting in a zero net gain in terms of tax revenue for authorities.
-
-
-```{r}
-#| label: tbl-evasion-test-CD-gnr
-#| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
-
-
-tax_ev_test_tbl_gnr %>%
-  # left_join(
-  #     top_20_inds
-  # ) %>%
-  left_join(
-      inds_sales_tax
-  ) %>%
-  arrange(desc(Category),sic_3) %>%
-  select(
-      # Category,
-      sic_3,
-      # description,
-      log_share:log_services_share
-  ) %>%
-  kbl(
-    col.names = c("SIC", "M+E+S", "Materials","Electricity", "Services"),
-    table.attr = 'data-quarto-disable-processing="true"'
-    ) %>%
-    kable_classic(full_width=F, html_font = "Cambria") %>%
-    # collapse_rows(columns = 1, latex_hline = "major") %>%
-    pack_rows(
-      index=c(
-        "Specialized Material"=1,
-        "Exempt Product"=5,
-        "Exempt Material"=2,
-        "Other Industries"= 12)
-    )
-
-```
 
 
 ### Deconvoluting Tax Evasion Using Moments
@@ -130,17 +136,31 @@ Note that we learned the distribution $f_\varepsilon(\varepsilon)$ of $\varepsil
 
 ```{r}
 #| label: tbl-tax-ev-deconv-moments
-#| tbl-cap: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in @eq-ob-ev.  LCI and UCI are the bias-corrected bootsrap confidence intervals at the 95\% significance level with 200 bootstrap replicates.
+#| tbl-cap: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in @eq-ob-ev.  LCI and UCI are the bias-corrected bootsrap confidence intervals at the 10\% significance level with 250 bootstrap replicates. Intermediates are defined as raw materials. 
 
 load("../Code/Products/boot_tax_ev_mmt.RData")
 
-tax_ev_boot_tbl %>%
+tax_ev_boot_tbl_90 %>%
+  filter( 
+    # inter == "log_mats_share",
+    # sic_3 %in% top_5_ev_inds
+  ) %>%
+  mutate(
+    inter = factor(inter, 
+      levels = c("log_mats_share","log_deductible_intermediates_share"), 
+      labels = c("Materials","Deductibles"))#,
+    # sic_3 = factor(sic_3,levels=top_5_ev_inds)
+  ) %>%
+  arrange(sic_3) %>%
+  select(SIC=sic_3, Inter=inter,Mean=mu, LCI, UCI) %>%
+  # slice(1:5) %>%
   kbl(
-    col.names = c("SIC","Mean", "LCI", "UCI"),
+    # col.names = c("SIC","Mean", "LCI", "UCI"),
     digits = 4,
     table.attr = 'data-quarto-disable-processing="true"'
   ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(columns = 1, valign = "top")
 
 ```
 
@@ -309,14 +329,30 @@ $$
 
 ```{r}
 #| label: tbl-deconv-mle-both
-#| tbl-cap: Estimates of Deconvoluting Tax Evasion from the Output Shock in @eq-ob-ev by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. $\mu$ and $\sigma$ are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above.
+#| tbl-cap: Estimates of Deconvoluting Tax Evasion from the Output Shock in @eq-ob-ev by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. $\mu$ and $\sigma$ are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above. Intermediates are defined as raw materials.
 
 load("../Code/Products/boot_deconv_mle.RData")
 
 mle_deconv_tbl %>%
+  filter(
+    inter == "materials", #deductible_intermediates",
+    sic_3 %in% top_5_ev_inds #top_10_revenue$sic_3[1:5]
+  ) %>%
+  select(
+    sic_3, dist, mu:median
+  ) %>%
+  mutate(
+    across(
+      mu:median,
+      ~ round(as.numeric(.x),4)
+    )
+  ) %>%
+  group_by(sic_3,dist) %>%
+  arrange(dist, .by_group = TRUE) %>%
+  # slice(1:10) %>%
   kable(
     digits = 4,
-    col.names = c("SIC","Density","$\\mu$","$\\sigma$","Mean","SD","Mode","Median"),
+    # col.names = c("SIC","Density","$\\mu$","$\\sigma$","Mean","SD","Mode","Median"),
     table.attr = 'data-quarto-disable-processing="true"'
   ) %>%
   kable_classic(full_width=F, html_font = "Cambria")%>%
@@ -333,7 +369,7 @@ Both distributions show higher estimates of the average overreporting in logs th
 
 ```{r}
 #| label: tbl-deconv-mle-boot
-#| tbl-cap: Estimates of Deconvoluting Tax Evasion from the Output Shock in @eq-ob-ev by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 95 percent significance level using 200 replicates.
+#| tbl-cap: Estimates of Deconvoluting Tax Evasion from the Output Shock in @eq-ob-ev by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 5 percent significance level using 250 replicates.
 
 # load("../Code/Products/boot_deconv_mle.RData")
 
@@ -357,12 +393,18 @@ Both distributions show higher estimates of the average overreporting in logs th
 
 
 boot_tx_ev_mle_tbl %>%
+  ungroup() %>%
+  filter( 
+    inter == "materials", #deductible_intermediates",
+    sic_3 %in% top_5_ev_inds
+  ) %>%
   select(
     SIC = sic_3,
     Density = dist,
     Mean = mean,
     SD = sd
   ) %>%
+  # slice(1:20) %>%
   kable(
     # col.names = c("SIC","Density","Mean","[","]")
     digits = 4,
@@ -388,8 +430,10 @@ From the perspective of theory, firms would have incentives to overreport their 
 #| eval: true
 #| cache: true
 
+library(truncnorm)
+
 density_plots<-lapply(
-    unique(mle_deconv_tbl$sic_3),
+    top_5_ev_inds,
     function(i){
 
       if (i==322){
@@ -400,21 +444,33 @@ density_plots<-lapply(
 
 
         mu<-mle_deconv_tbl %>% 
-            filter(sic_3==i, dist=="lognormal") %>%
-            pull(mu.mu)
+            filter(
+              sic_3==i, dist=="lognormal",
+              inter == "materials"
+            ) %>%
+            pull(mu)  |> as.numeric()
         sigma<-mle_deconv_tbl %>% 
-            filter(sic_3==i, dist=="lognormal") %>%
-            pull(sigma.sigma)
+            filter(
+              sic_3==i, dist=="lognormal",
+              inter == "materials"
+            ) %>%
+            pull(sigma) |> as.numeric()
         mu2<-mle_deconv_tbl %>% 
-            filter(sic_3==i, dist=="truncated normal") %>%
-            pull(mu.mu)
+            filter(
+              sic_3==i, dist=="truncated normal",
+              inter == "materials"
+            ) %>%
+            pull(mu) |> as.numeric()
         sigma2<-mle_deconv_tbl %>% 
-            filter(sic_3==i, dist=="truncated normal") %>%
-            pull(sigma.sigma)
+            filter(
+              sic_3==i, dist=="truncated normal",
+              inter == "materials"
+            ) %>%
+            pull(sigma) |> as.numeric()
 
         plot(
             x,
-            dnorm(x,mu2,sigma2),
+            dtruncnorm(x,a=0,mean=mu2,sd=sigma2),
             type = "l", col="red",
                     xlab = "", ylab = "",
             main = paste(
@@ -452,7 +508,7 @@ Truncated Normal (red) and Log-Normal (blue) distribution of the overreporting o
 :::
 
 
-### By Year
+<!-- ### By Year -->
 
 ```{r}
 #| label: fig-deconv-mmt-year
@@ -486,3 +542,26 @@ par(mfrow = c(1, 1))
 
 ```
 
+### Non-Parametric Deconvolution using Penalized B-Splines
+
+```{r}
+#| label: tbl-sp-deconv
+#| tbl-cap: Semiparametric Deconvolution of Tax Evasion using Penalized B-Splines. The error density function is assumed to be normally distributed with mean and variance obtained from the residuals of the first stage conditional on firms beign Non-Evaders.
+
+load("../Code/Products/bs_mle_data.Rdata")
+
+stats_df %>%
+  mutate(
+    sic_3 = stringr::str_extract(rownames(.),"\\d{3}"),
+    .before = mean
+  ) %>%
+  kbl(
+    digits = 3,
+    table.attr = 'data-quarto-disable-processing="true"',
+    row.names = FALSE
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+
+
+```

@@ -1,0 +1,28 @@
+## Density
+
+::: {#fig-fs-eps-density layout-ncol="1"}
+
+```{r}
+#| echo = FALSE
+
+load("../Code/Products/fs.RData")
+
+for(i in seq_along(fs_list)[1:5]) {
+    plot(
+        # fs_list[[i]]$data$cal_V,
+        density(fs_list[[i]]$data$epsilon, na.rm=TRUE),
+        main=sub("^(\\d{3}).*$", "Industry \\1", names(fs_list)[i]),
+        xlab=" ",
+        ylab=" ",
+        col="blue", lwd=2
+    )
+    curve(dnorm(x, mean=mean(fs_list[[i]]$data$epsilon, na.rm=TRUE), sd=sd(fs_list[[i]]$data$epsilon, na.rm=TRUE)), 
+          add=TRUE, col="darkgray", lwd=2)
+    legend("topright", 
+           legend=c("Epsilon density", "Normal distribution fit"),
+           col=c("blue", "darkgray"), lty=1, lwd=2)
+    # abline(h=0, col="red")
+}
+```
+
+:::

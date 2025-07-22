@@ -9,48 +9,131 @@ $$
 
 where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$. 
 
-### Parametric MLE
+### Parametric Deconvolution
 
 Assume a functional form for $f_{\varepsilon}(\cdot;\gamma)$ that depends on known parameters $\gamma$. Assume a known functional form for the density $f_e(\cdot;\lambda)$ that depends on unknown parameters $\lambda$. We can estimate parameters $\lambda$ by
 
 $$
-\hat \lambda = \arg \max_{\lambda}\sum_{i=1}^n \log \left(\int f_e(\mathcal{V}+\varepsilon;\lambda)f_{\varepsilon}(\varepsilon;\gamma)\text{d}\varepsilon\right)
+\hat \lambda = \arg \max_{\lambda}\sum_{i=1}^n \log \left(\int f_e(\mathcal{V}_i+\varepsilon;\lambda)f_{\varepsilon}(\varepsilon;\gamma)\text{d}\varepsilon\right)
 $$ {#eq-mle}
 
 Properties of MLE with unobserved scalar heterogeneity have been derived elsewhere before [@Chen2007; @Yi2021].
 
-### Non-Parametric MLE
+### Non-Parametric Deconvolution by Splines
 
-Consider the following log-density model:
-
-$$
-f_{e|\Theta}(e)=\exp(s(e;\theta)-C(\theta))
-$$
-
-where, 
+Following @Kang2021, consider the following logspline model:
 
 $$
-s(e;\theta)=\sum_{j=1}^{k_n}\theta_j B_j(e),
+f_{e|\Theta}(e)=\exp(s(e;\theta)-C(\theta)), \quad L < e < R
 $$
 
-$\{B_j(E), j=1,2,\dots\}$ is a sequence of known basis functions, and 
+where, $[L,R]$ define the support of $f_e$, 
 
 $$
-C(\theta) = \log\left(\int \exp(s(e;\theta)) \text{d}e \right)
+s(e;\theta)=\sum_{j=1}^{K-1}\theta_j B_j(e),
 $$
+
+$\{B_j(E), j=1,2,\dots, K\}$ is a sequence of cubic B-spline basis functions, and 
+
+$$
+C(\theta) = \log\left(\int^R_L \exp(s(e;\theta)) \text{d}e \right) < \infty .
+$$
+
+
+Then $f_{e|\Theta}(e)$ is a positive density function on $(L,R)$. The logspline model assumes that $f_e$ is a twice continuously differentiable function. The last basis function is not used for identifiability purposes, given that by the property of B-splines, $\sum_{j=1}^{K}B_j(e)=1$ for all $e \in (L,R)$ .
+
 
 The log likelihood of the observed variable $\mathcal{V}$ is
 
 $$
 \begin{aligned}
-    l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\theta)-C(\theta))\text{d}e\right)\\
-    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V})\exp(s(e;\theta))\text{d}e\right)-nC(\theta)
+    l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V_i})f_{e|\theta}(e)\text{d}e\right)\\
+    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V_i})\exp(s(e;\theta)-C(\theta))\text{d}e\right)\\
+    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V_i})\exp(s(e;\theta))\text{d}e\right)-nC(\theta)
 \end{aligned}
 $$
 
 The usual maximum likelihood estimate $\hat{\theta}$ is the maximizer of $l_{\mathcal{V}}(\theta)$.
 
-Laguerre polynomials can be used to approximate any function $L_2([0,\infty), leb)$ $L_2$ norm relative to the Lebesgue measure and domain $[0,\infty)$ [@Chen2007].
+To avoid overfitting, I add a penalty term to the log-likelihood function. The penalty term is a linear combination of the squared second derivatives of the B-spline basis functions. The second derivative of the B-splines is approximated by finite differences [@Eilers1996].
+
+The penalty term is given by
+
+$$
+\text{Penalty}(\theta) = \lambda \cdot \|\mathbf{D}\theta \|^2
+$$
+
+
+Intuitively, we want to penalize excessive curvature in the log-density $\log f_e(e) \approx s(e; \theta) = \sum_j \theta_j B_j(e)$, where $B_j$ are B-spline basis functions.
+
+The second derivative of a smooth function is a measure of curvature. Since we don’t have an analytical form for $s''(e)$, we can approximate it using finite differences on the coefficients $\theta$.
+
+Given a vector of spline coefficients $\theta = (\theta_1, \theta_2, \ldots, \theta_k)$, define the second-order differences as:
+
+$$
+\Delta^2 \theta_j = \theta_j - 2\theta_{j+1} + \theta_{j+2}
+$$
+
+These values approximate the second derivative of the spline function at positions along the domain.
+
+We can write all second differences as a matrix operation:
+
+Let $D \in \mathbb{R}^{(k-2) \times k}$, then:
+
+$$
+D \theta = 
+\begin{bmatrix}
+1 & -2 & 1 & 0 & 0 & \dots & 0 \\
+0 & 1 & -2 & 1 & 0 & \dots & 0 \\
+0 & 0 & 1 & -2 & 1 & \dots & 0 \\
+\vdots & & & \ddots & & & \vdots \\
+0 & \dots & 0 & 1 & -2 & 1
+\end{bmatrix}
+\begin{bmatrix}
+\theta_1 \\
+\theta_2 \\
+\theta_3 \\
+\vdots \\
+\theta_k
+\end{bmatrix}
+$$
+
+So $D \theta$ is a vector of second differences:
+
+$$
+\left[ \theta_1 - 2\theta_2 + \theta_3, \theta_2 - 2\theta_3 + \theta_4, \dots \right]
+$$
+
+The roughness penalty becomes:
+
+$$
+\text{Penalty} = \lambda \cdot \| D \theta \|^2 = \lambda \cdot \sum_{j=1}^{k-2} (\Delta^2 \theta_j)^2
+$$
+
+where $\lambda$ is a smoothing parameter that can be choosen based on BIC/AIC or cross-validation.
+
+The final log-likelihood function to be maximized is:
+
+$$
+l_{\mathcal{V}}(\theta) = \sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(e-\mathcal{V_i})\exp(s(e;\theta))\text{d}e\right)-nC(\theta) - \lambda \cdot \| D \theta \|^2
+$$
+
+#### Simulations
+
+Before deconvoluting with the actual data, I run some simulations to check the performance of my implmenetation in R.
+
+I simulated a thousand observations of $\varepsilon \sim \mathcal{N}(0,0.35)$ and $\log(e) \sim \mathcal{N}(-1.8,0.95)$, and then I generated $\mathcal{V} = e - \varepsilon$. @fig-simulated-data shows the histogram of the simulated data.
+
+![Simulated data](../Code/Products/bs_mle_hist.png){#fig-simulated-data}
+
+I then used the logspline model to estimate the parameters of the distribution of $e$.
+I used a B-spline basis with 10 knots. The knots where placed at equally spaced percentiles of the non-negative $V$ observations. For the integral, I used Gauss Legendre quadrature. To ensure good coverage of the high probability region of the density, I used a recursive function to form a grid placing a higher number of nodes in the high probability region. I set the penalty parameter $\lambda$ to 0.1. The estimated density is shown in @fig-simulated-deconv.
+
+![LogSpline Deconvolution](../Code/Products/bs_mle.png){#fig-simulated-deconv}
+
+
+
+<!-- Laguerre polynomials can be used to approximate any function $L_2([0,\infty), leb)$ $L_2$ norm relative to the Lebesgue measure and domain $[0,\infty)$ [@Chen2007].
 
 The EM algorithm [@Kang2021] starts with an initial estimate $\hat{\mathbf{\theta}}^0$ and iteratively updates the estimate as follows.
 
@@ -76,70 +159,4 @@ $$
 Q(\mathbf{\theta}|\mathbf{\theta}^{(k)}) = \sum_{j=1}^{k_n}\theta_j b_j \left(\hat{\mathbf{\theta}}^{(k)}\right) - nC(\mathbf{\theta})
 $$
 
-The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}$.
-
-### Fortran GNR
-
-```{r}
-#| label: tbl-CD-Stata-Fortran
-#| tbl-cap: Cobb-Douglas production function parameters estimates using GNR Stata data and estimator vs. the Fortran GNR estimator.
-
-# load("../Code/Products/deconv_prod_fun.RData")
-load("../Code/Products/Fortran_CD_GNR.RData")
-
-left_join(Stata_results,CD_fortran_tbl[,c(1,3,2,4)], by=c("INDS"="inds")) %>%
-  kbl(
-    col.names = c("Industry", "m","k","l","m","k","l"),
-    digits = 4,
-    table.attr = 'data-quarto-disable-processing="true"'
-  ) %>%
-  add_header_above(
-      c(" "=1,"Stata GNR"=3, "Fortran GNR"=3)#
-  ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
-
-```
-
-
-
-```{r}
-#| label: tbl-fortran-gnr
-#| tbl-cap: GNR Fortran implementation. Bias-corrected Bootstrap confidence intervals, 95% significance level, 250 repetitions.
-#| echo: false
-#| warning: false
-
-fortran_gnr <- tribble(
-    ~Industry, ~Implementation,~Estimate,~m, ~l, ~k, 
-    "311", "Stata", "mean elasticity", 0.67, 0.22, 0.12,
-    "311", "Fortran", "mean elasticity",.68867344,.22215679,.10996130, 
-    "311", "Fortran","LCI",.68566285,.21960601,.10817073,
-    "311", "Fortran","UCI",.69203629,.22445365,.11165320,
-    "321", "Stata", "mean elasticity", 0.54, 0.32, 0.16,
-    "321", "Fortran", "mean elasticity", .58772782,.33504245,.12100036,
-    "321", "Fortran", "LCI",.58354659,.33116173,.11778809,
-    "321", "Fortran", "UCI",.59176468,.33894814,.12374840,
-    "322", "Stata", "mean elasticity", 0.52, 0.42, 0.05,
-    "322", "Fortran", "mean elasticity", .57329557,.40757876,.36815224E-01,
-    "322", "Fortran", "LCI",.56875683,.40279332,.36412139E-01,
-    "322", "Fortran", "UCI",.57829406,.41189006,.37263870E-01,
-    "331", "Stata", "mean elasticity", 0.51, 0.44, 0.04,
-    "331", "Fortran", "mean elasticity",.54696732,.42890784,.28400284E-01,
-    "331", "Fortran", "LCI",.53953007,.42114309,.24590548E-01,
-    "331", "Fortran", "UCI",.55516056,.43715581,.31658542E-01,
-    "381", "Stata", "mean elasticity", 0.53, 0.29, 0.03,
-    "381", "Fortran", "mean elasticity",.59271906,.38956320,.84889960E-01,
-    "381", "Fortran", "LCI",.58963970,.38596049,.83332520E-01,
-    "381", "Fortran", "UCI",.59598513,.39287295,.86487109E-01
-) 
-
-fortran_gnr %>%
-    kbl(
-        digits = 3,
-        # col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
-        table.attr = 'data-quarto-disable-processing="true"'
-    ) %>%
-    kable_classic(full_width=F, html_font = "Cambria") %>% 
-    collapse_rows(columns = 1:2, valign = "top")
-
-
-```
+The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathcal{V}}(\mathbf{\theta}^{(k)})<10^{-6}$. -->

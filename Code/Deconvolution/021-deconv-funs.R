@@ -1,19 +1,21 @@
-# install.packages("statmod")
+# %% install.packages("statmod")
 # Load data and packages ---------------
 library(tidyverse)
 library(fixest)
 library(statmod)
 library(ivreg)
 library(parallel)
+library(MCMCprecision)
 # load("Code/Products/colombia_data.RData")
 # load("Code/Products/global_vars.RData")
 
 
 
-# Use Gaus-Hermite -----------------------
+# %% Use Gaus-Hermite -----------------------
 
 gauss_hermite<-gauss.quad(10,"hermite")
 gauss_laguerre<-gauss.quad(10,"laguerre")
+threshold_cut <- 0.05
 
 # Deconvolution using Moments ---------------
 ## Deconvolution functions ----------------------------
@@ -51,7 +53,7 @@ mmt_deconv_year <- function(sic, var, data) {
                 .data[[var]] > -Inf
             ) %>%
             mutate(
-                cal_V = .data[[var]] - log(beta) - log(big_E)
+                cal_V = .data[[var]] - log_D
             ) %>%
             group_by(year) %>%
             summarise(
@@ -74,9 +76,14 @@ mmt_deconv <- function(sic, var, data) {
             filter(
                 sic_3 == sic,
                 juridical_organization == 3,
-                !is.na(.data[[var]]),
-                .data[[var]] < Inf,
-                .data[[var]] > -Inf
+                # !is.na(.data[[var]]),
+                # .data[[var]] < Inf,
+                # .data[[var]] > -Inf
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                .data[[var]] > log(threshold_cut)
             ) %>%
             fixest::feols(fml, data = .)
 
@@ -92,12 +99,17 @@ mmt_deconv <- function(sic, var, data) {
         tbl <- data %>%
             filter(
                 sic_3 == sic,
-                !is.na(.data[[var]]),
-                .data[[var]] < Inf,
-                .data[[var]] > -Inf
+                is.finite(.data[[var]]),
+                # is.finite(k),
+                # is.finite(l),
+                # is.finite(m),
+                .data[[var]] > log(threshold_cut)
+                # !is.na(.data[[var]]),
+                # .data[[var]] < Inf,
+                # .data[[var]] > -Inf
             ) %>%
             mutate(
-                cal_V = .data[[var]] - log(beta) - log(big_E)
+                cal_V = .data[[var]] - log_D
             ) %>%
             summarise(
                 mean_evasion = mean(cal_V, na.rm = TRUE) + mean_epsilon,
@@ -105,7 +117,8 @@ mmt_deconv <- function(sic, var, data) {
                 n = n()
             ) %>%
             mutate(
-                sic_3 = sic
+                sic_3 = sic,
+                inter = var
             )
         return(tbl)
     }
@@ -113,6 +126,12 @@ mmt_deconv <- function(sic, var, data) {
 # Testing the presence of Evasion by Overreporting -----------------
 
 test_ev_cd <- function(sic, var, data) {
+    # This function perfomrs a one tail t-test for the presence of tax evasion 
+    # through input overreporting. 
+    # - Under the null hypothesis, there is no tax evasion H_0: cal_V == 0;
+    # - Under the alternative hypothesis, there is tax evasion H_a: cal_V > 0;
+    # There is no need to trim the data if the probability the firm reported a zero
+    # is the same for corporations and non-corporations. 
         fml <- paste0(var,"~1") |> as.formula()
         fs_reg <- data %>%
             mutate(
@@ -120,10 +139,14 @@ test_ev_cd <- function(sic, var, data) {
             ) %>%
             filter(
                 sic_3 == sic,
-                juridical_organization == 3,
-                !is.na(.data[[var]]),
-                .data[[var]] < Inf,
-                .data[[var]] > -Inf
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                # .data[[var]] > log(threshold_cut),
+                juridical_organization == 3#,
+                # ...
             ) %>%
             fixest::feols(fml, data = .)
 
@@ -139,12 +162,15 @@ test_ev_cd <- function(sic, var, data) {
         tbl <- data %>%
             filter(
                 sic_3 == sic,
-                !is.na(.data[[var]]),
-                .data[[var]] < Inf,
-                .data[[var]] > -Inf
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut)
             ) %>%
             mutate(
-                cal_V = .data[[var]] - log(beta) - log(big_E)
+                cal_V = .data[[var]] - log_D
             ) %>%
             summarise(
                 mean_V = mean(cal_V, na.rm = TRUE),
@@ -160,13 +186,353 @@ test_ev_cd <- function(sic, var, data) {
                     "Reject H_0: cal_V==0, H_a: cal_V>0", 
                     "Fail to reject H_0: cav_V==0"
                 ),
-                sic_3 = sic
+                sic_3 = sic,
+                intermediates = var
+            )
+        return(tbl)
+    }
+
+test_ev_trim <- function(sic, var, data) {
+    # This function perfomrs a one tail t-test for the presence of tax evasion 
+    # through input overreporting. 
+    # - Under the null hypothesis, there is no tax evasion H_0: cal_V == 0;
+    # - Under the alternative hypothesis, there is tax evasion H_a: cal_V > 0;
+    # There is no need to trim the data if the probability the firm reported a zero
+    # is the same for corporations and non-corporations. 
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                juridical_organization == 3#,
+                # ...
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut)
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log_D
+            ) %>%
+            summarise(
+                mean_V = mean(cal_V, na.rm = TRUE),
+                n = n(),
+                # se = sqrt(abs(variance_epsilon)/n)
+                se = sd(cal_V)/sqrt(n)
+            ) %>%
+            mutate(
+                t_stat = (mean_V)/se,
+                rej_rule = t_stat > 1.645,
+                test_result = ifelse(
+                    rej_rule>=1,
+                    "Reject H_0: cal_V==0, H_a: cal_V>0", 
+                    "Fail to reject H_0: cav_V==0"
+                ),
+                sic_3 = sic,
+                intermediates = var
+            )
+        return(tbl)
+    }
+
+test_ev_cond <- function(sic, var, data, cond) {
+    # This function perfomrs a one tail t-test for the presence of tax evasion 
+    # through input overreporting. 
+    # - Under the null hypothesis, there is no tax evasion H_0: cal_V == 0;
+    # - Under the alternative hypothesis, there is tax evasion H_a: cal_V > 0;
+    # There is no need to trim the data if the probability the firm reported a zero
+    # is the same for corporations and non-corporations. 
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                # juridical_organization == 3#,
+                {{cond}}
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m)
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log_D
+            ) %>%
+            summarise(
+                mean_V = mean(cal_V, na.rm = TRUE),
+                n = n(),
+                # se = sqrt(abs(variance_epsilon)/n)
+                se = sd(cal_V)/sqrt(n)
+            ) %>%
+            mutate(
+                t_stat = (mean_V)/se,
+                rej_rule = t_stat > 1.645,
+                test_result = ifelse(
+                    rej_rule>=1,
+                    "Reject H_0: cal_V==0, H_a: cal_V>0", 
+                    "Fail to reject H_0: cav_V==0"
+                ),
+                sic_3 = sic,
+                intermediates = var
+            )
+        return(tbl)
+    }
+
+# Double sided test for the presence of evasion ------------------
+# Get beta on Corps, test on All firms
+test_ev_2t <- function(sic, var, data) {
+    # This function perfomrs a one tail t-test for the presence of tax evasion 
+    # through input overreporting. 
+    # - Under the null hypothesis, there is no tax evasion H_0: cal_V == 0;
+    # - Under the alternative hypothesis, there is tax evasion H_a: cal_V > 0;
+    # There is no need to trim the data if the probability the firm reported a zero
+    # is the same for corporations and non-corporations. 
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                juridical_organization == 3 #,
+                # ...
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut)
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log_D
+            ) %>%
+            summarise(
+                mean_V = mean(cal_V, na.rm = TRUE),
+                n = n(),
+                # se = sqrt(abs(variance_epsilon)/n)
+                se = sd(cal_V)/sqrt(n)
+            ) %>%
+            mutate(
+                t_stat = (mean_V)/se,
+                rej_rule = abs(t_stat) > 1.96,
+                test_result = ifelse(
+                    rej_rule >= 1,
+                    "Reject H_0: cal_V==0; H_a: cal_V!=0", 
+                    "Fail to reject H_0: cav_V==0"
+                ),
+                sic_3 = sic,
+                intermediates = var
+            )
+        return(tbl)
+    }
+
+# Double sided test for the presence of evasion 2 Samples ------------------
+# Get beta on Corps, test on Non-Corps
+test_ev_2t_2smpl <- function(sic, var, data) {
+    # This function perfomrs a one tail t-test for the presence of tax evasion 
+    # through input overreporting. 
+    # - Under the null hypothesis, there is no tax evasion H_0: cal_V == 0;
+    # - Under the alternative hypothesis, there is tax evasion H_a: cal_V > 0;
+    # There is no need to trim the data if the probability the firm reported a zero
+    # is the same for corporations and non-corporations. 
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                juridical_organization == 3 #,
+                # ...
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                juridical_organization != 3,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut)
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log_D
+            ) %>%
+            summarise(
+                mean_V = mean(cal_V, na.rm = TRUE),
+                n = n(),
+                # se = sqrt(abs(variance_epsilon)/n)
+                se = sd(cal_V)/sqrt(n)
+            ) %>%
+            mutate(
+                t_stat = (mean_V)/se,
+                rej_rule = abs(t_stat) > 1.96,
+                test_result = ifelse(
+                    rej_rule >= 1,
+                    "Reject H_0: cal_V==0; H_a: cal_V!=0", 
+                    "Fail to reject H_0: cav_V==0"
+                ),
+                sic_3 = sic,
+                intermediates = var
             )
         return(tbl)
     }
 
 
+# Double sided test for the presence of evasion 2 Samples ------------------
+# Get beta on Corps, test on user-defined group
 
+test_ev_2t_2smpl_cond <- function(sic, var, cond, data) {
+    # This function perfomrs a one tail t-test for the presence of tax evasion 
+    # through input overreporting. 
+    # - Under the null hypothesis, there is no tax evasion H_0: cal_V == 0;
+    # - Under the alternative hypothesis, there is tax evasion H_a: cal_V > 0;
+    # There is no need to trim the data if the probability the firm reported a zero
+    # is the same for corporations and non-corporations. 
+        fml <- paste0(var,"~1") |> as.formula()
+        fs_reg <- data %>%
+            mutate(
+                treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
+            ) %>%
+            filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                juridical_organization == 3 #,
+                # ...
+            ) %>%
+            fixest::feols(fml, data = .)
+
+        log_D <- coefficients(fs_reg)[[1]]
+        epsilon <- residuals(fs_reg)
+        big_E <- -epsilon |> exp() |> mean()
+        beta <- exp(log_D - log(big_E))
+        mean_epsilon <- mean(-epsilon)
+        variance_epsilon <- var(-epsilon)
+
+        ## Deconvolution ------------------------
+
+        tbl <- data %>%
+            filter(
+                sic_3 == sic,
+                # juridical_organization != 3,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                eval(cond, envir = .)
+            ) %>%
+            mutate(
+                cal_V = .data[[var]] - log_D
+            ) %>%
+            summarise(
+                mean_V = mean(cal_V, na.rm = TRUE),
+                n = n(),
+                # se = sqrt(abs(variance_epsilon)/n)
+                se = sd(cal_V)/sqrt(n)
+            ) %>%
+            mutate(
+                t_stat = (mean_V)/se,
+                rej_rule = abs(t_stat) > 1.96,
+                test_result = ifelse(
+                    rej_rule >= 1,
+                    "Reject H_0: cal_V==0; H_a: cal_V!=0", 
+                    "Fail to reject H_0: cav_V==0"
+                ),
+                sic_3 = sic,
+                intermediates = var,
+                cond = deparse(cond)
+            )
+        return(tbl)
+    }
 # Expectation of a function over a normal random variable with
 # mean mu and variance sigma
 
@@ -290,9 +656,15 @@ first_stage <- function(sic, var, data) {
         filter(
             sic_3 == sic,
             juridical_organization == 3,
-            !is.na(.data[[var]]),
-            .data[[var]] < Inf,
-            .data[[var]] > -Inf
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
+            # !is.na(.data[[var]]),
+            # .data[[var]] < Inf,
+            # .data[[var]] > -Inf
         ) %>%
         fixest::feols(fml, data = .)
 
@@ -308,19 +680,21 @@ first_stage <- function(sic, var, data) {
     tbl <- data %>%
         filter(
             sic_3 == sic,
-            is.finite(.data[[var]])
-        ) %>%
-        mutate(
-            cal_V = .data[[var]] - log(beta) - log(big_E)
-        ) %>%  
-        filter(
-            is.finite(cal_V),
-            is.finite(cal_W),
+            is.finite(.data[[var]]),
             is.finite(k),
             is.finite(l),
             is.finite(m),
-            is.finite(y)
-        )
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
+        ) %>%
+        mutate(
+            cal_V = .data[[var]] - log_D
+        ) #%>%  
+        # filter(
+        #     is.finite(cal_V),
+        #     is.finite(cal_W),
+
+        # )
 
     result_list <- list(
         cal_V = tbl$cal_V,
@@ -332,18 +706,24 @@ first_stage <- function(sic, var, data) {
     return(result_list)
 }
 
-first_stage_panel <- function(sic, var, data) {
+first_stage_panel <- function(sic, var, r_var, data) {
     fml <- paste0(var,"~1") |> as.formula()
-    fs_reg <- data %>%
+    corp_data <- data %>%
         mutate(
             treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
         ) %>%
         filter(
             sic_3 == sic,
             juridical_organization == 3,
-            is.finite(.data[[var]])
-        ) %>%
-        fixest::feols(fml, data = .)
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
+        ) #%>%
+    fs_reg <- lm(fml, data = corp_data) # %>%
+        # fixest::feols(fml, data = .)
 
     log_D <- coefficients(fs_reg)[[1]]
     epsilon <- residuals(fs_reg)
@@ -352,17 +732,29 @@ first_stage_panel <- function(sic, var, data) {
     mean_epsilon <- mean(-epsilon)
     variance_epsilon <- var(-epsilon)
 
+    corp_data$epsilon <- -epsilon
+
     ## Deconvolution ------------------------
 
     tbl <- data %>%
+        left_join(
+            corp_data %>% select(plant, year, epsilon),
+            by = c("plant", "year")
+        ) %>%
         filter(
             sic_3 == sic,
-            is.finite(.data[[var]])
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
         ) %>%
+        select(!m) %>%
         mutate(
             # y = log(gross_output),
-            cal_V = .data[[var]] - log(beta) - log(big_E),
-            m  = .data[[var]] + log_sales, #log(materials/sales)+log(sales)=log(materials)
+            cal_V = .data[[var]] - log_D,
+            m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
             cal_W = y-beta*(m-cal_V)
         ) %>%
         filter(
@@ -374,7 +766,7 @@ first_stage_panel <- function(sic, var, data) {
             is.finite(y)
         ) %>%
         select(
-            sic_3, year, plant, cal_V, cal_W, m, k, l, y
+            sic_3, year, plant, cal_V, cal_W, m, k, l, y, epsilon
         )
 
     result_list <- list(
@@ -382,7 +774,81 @@ first_stage_panel <- function(sic, var, data) {
         epsilon_mu = mean_epsilon,
         epsilon_sigma = sqrt(variance_epsilon),
         beta = beta,
-        big_E = big_E
+        big_E = big_E,
+        sic_3 = sic,
+        inter = r_var
+    )
+    return(result_list)
+}
+
+first_stage_panel_me <- function(sic, var, r_var, data) {
+    fml <- paste0(var,"~1") |> as.formula()
+    corp_data <- data %>%
+        filter(
+            sic_3 == sic,
+            juridical_organization == 3,
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
+        )
+    fs_reg <- lm(fml, data = corp_data) # %>%
+    # fixest::feols(fml, data = .)
+
+    log_D <- coefficients(fs_reg)[[1]]
+    epsilon <- residuals(fs_reg)
+    big_E <- 1
+    beta <- exp(log_D - log(big_E))
+    mean_epsilon <- mean(-epsilon)
+    variance_epsilon <- var(-epsilon)
+
+    corp_data$epsilon <- -epsilon
+
+    ## Deconvolution ------------------------
+
+    tbl <- data %>%
+        left_join(
+            corp_data %>% select(plant, year, epsilon),
+            by = c("plant", "year")
+        ) %>%
+        filter(
+            sic_3 == sic,
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
+        ) %>%
+        select(!m) %>%
+        mutate(
+            # y = log(gross_output),
+            cal_V = .data[[var]] - log_D,
+            m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
+            cal_W = y-beta*(m-cal_V)
+        ) %>%
+        filter(
+            is.finite(cal_V),
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y)
+        ) %>%
+        select(
+            sic_3, year, plant, cal_V, cal_W, m, k, l, y, epsilon
+        )
+
+    result_list <- list(
+        data = tbl,
+        epsilon_mu = mean_epsilon,
+        epsilon_sigma = sqrt(variance_epsilon),
+        beta = beta,
+        big_E = big_E,
+        sic_3 = sic,
+        inter = r_var
     )
     return(result_list)
 }
@@ -583,6 +1049,31 @@ resample_by_group<-function(data,...){
     return(resampled_data)
 }
 
+bayesian_sampling <- function(data, ..., alpha=4){
+
+    tmp <- data %>%
+        ungroup() %>%
+        group_by(...) %>%
+        reframe(
+            unique_plants = unique(plant),
+            sampled_plants = sample(
+                unique_plants, 
+                replace = TRUE, 
+                prob = MCMCprecision::rdirichlet(1, rep(alpha, length(unique_plants)))
+            )
+        ) %>%
+        select(plant = sampled_plants, ...)
+
+    resampled_data <- tmp %>%
+        left_join(
+            data,
+            by = c("plant","sic_3"),
+            relationship = "many-to-many"
+        )
+
+    return(resampled_data)
+}
+
 
 ## MLE Deconvulution Functions -------------------
 
@@ -716,8 +1207,8 @@ deconvolute_lognorm<-function(x,fs_list){
         control=list(fnscale=-1) #Maximizing instead of minimizing
     )
 
-    mu<-res$par[1]
-    sigma<-1.3^(res$par[2])#|> round(6)
+    mu<-res$par[[1]]
+    sigma<-1.3^(res$par[[2]])#|> round(6)
     mean_lognorm<-exp(mu+0.5*sigma^2)# |> round(6)
     sd_lognorm<-mean_lognorm*sqrt(exp(sigma^2)-1)# |> round(6)
     mode<-exp(mu-sigma^2)# |> round(6)
@@ -731,8 +1222,9 @@ deconvolute_lognorm<-function(x,fs_list){
         mode=mode,
         median=exp(mu),# |> round(6),
         convergence = res$convergence,
-        id = x,
-        dist = "lognormal"
+        dist = "lognormal",
+        sic_3 = fs_list[[x]]$sic_3,
+        inter = fs_list[[x]]$inter
         # n = n,
         # mu_LCI = mu_hat*exp(-me),
         # mu_UCI = mu_hat*exp(me)
@@ -795,8 +1287,9 @@ deconvolute_trcnorm<-function(x,fs_list){
         mode = mu,
         median = median_trcnorm,
         convergence = res$convergence,
-        id = x,
-        dist = "truncated normal"
+        dist = "truncated normal",
+        sic_3 = fs_list[[x]]$sic_3,
+        inter = fs_list[[x]]$inter
         # n = n#,
         # mu_LCI = mu-1.96*sigma/sqrt(n),
         # mu_UCI = mu+1.96*sigma/sqrt(n)
@@ -880,11 +1373,12 @@ estimate_prod_fn<-function(x,fs_list,f,ins){
             is.finite(cal_W),
             is.finite(k),
             is.finite(l),
-            is.finite(m)
+            is.finite(m),
+            is.finite(y)
         ) %>%
         group_by(plant) %>%
         mutate(
-            w_eps = cal_W - res$par["k"]*k-res$par["l"]*l,
+            w_eps = cal_W - res$par[["k"]]*k-res$par[["l"]]*l,
             lag_w_eps = lag(w_eps, order_by = year),
             lag_2_w_eps = lag(w_eps, 2,order_by = year),
             lag_k = lag(k, order_by = year),
@@ -1000,7 +1494,7 @@ estimate_prod_fn_bounds<-function(x,fs_list,f,ins){
         ) %>%
         group_by(plant) %>%
         mutate(
-            w_eps = cal_W - res$par["k"]*k-res$par["l"]*l,
+            w_eps = cal_W - res$par[["k"]]*k-res$par[["l"]]*l,
             lag_w_eps = lag(w_eps, order_by = year),
             lag_2_w_eps = lag(w_eps, 2,order_by = year),
             lag_k = lag(k, order_by = year),

@@ -1,0 +1,316 @@
+
+## Fortran GNR
+
+### Non-Parametric Production Function
+
+
+```{r}
+#| label: tbl-fortran-gnr
+#| tbl-cap: Fortran implementation of the Non-Parametric GNR(2020) method to estimate production functions. Comparison with Stata code and replication data from GNR(2020), and the working data of this paper and my own Fortran implementation code.
+#| echo: false
+#| warning: false
+
+load("../Code/Products/replication.RData")
+
+# fortran_gnr <- tribble(
+#     ~Industry, ~Implementation,~Estimate,~m, ~l, ~k, 
+#     "311", "Stata", "mean elasticity", 0.67, 0.22, 0.12,
+#     "311", "Fortran", "mean elasticity",.68867344,.22215679,.10996130, 
+#     "311", "Fortran","LCI",.68566285,.21960601,.10817073,
+#     "311", "Fortran","UCI",.69203629,.22445365,.11165320,
+#     "321", "Stata", "mean elasticity", 0.54, 0.32, 0.16,
+#     "321", "Fortran", "mean elasticity", .58772782,.33504245,.12100036,
+#     "321", "Fortran", "LCI",.58354659,.33116173,.11778809,
+#     "321", "Fortran", "UCI",.59176468,.33894814,.12374840,
+#     "322", "Stata", "mean elasticity", 0.52, 0.42, 0.05,
+#     "322", "Fortran", "mean elasticity", .57329557,.40757876,.36815224E-01,
+#     "322", "Fortran", "LCI",.56875683,.40279332,.36412139E-01,
+#     "322", "Fortran", "UCI",.57829406,.41189006,.37263870E-01,
+#     "331", "Stata", "mean elasticity", 0.51, 0.44, 0.04,
+#     "331", "Fortran", "mean elasticity",.54696732,.42890784,.28400284E-01,
+#     "331", "Fortran", "LCI",.53953007,.42114309,.24590548E-01,
+#     "331", "Fortran", "UCI",.55516056,.43715581,.31658542E-01,
+#     "381", "Stata", "mean elasticity", 0.53, 0.29, 0.03,
+#     "381", "Fortran", "mean elasticity",.59271906,.38956320,.84889960E-01,
+#     "381", "Fortran", "LCI",.58963970,.38596049,.83332520E-01,
+#     "381", "Fortran", "UCI",.59598513,.39287295,.86487109E-01
+# ) 
+
+gnr_rep_tbl %>%
+    kbl(
+        digits = 2,
+        # col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    add_header_above(
+        c(" "=1, "Stata"=3, "Stata"=3,"Fortran"=3)
+    ) %>%
+    add_header_above(
+        c(" "=1, "Replication Data"=3, "Working Data"=6)
+    ) %>%
+    add_header_above(
+        c("NP GNR"=10)
+    )
+
+
+```
+
+
+![@Gandhi2020 Table 2 (GNR2020)](images/tables/gnr-2020.png){#fig-gnr-2020}
+
+```{r}
+#| label: tbl-gnr-err-stats
+#| tbl-cap: Fortran implementation of the Non-Parametric GNR(2020) method to estimate production functions. Comparison of the error standard deviation and $\\mathcal{E}$ between the Stata code and replication data from GNR(2020), and the working data of this paper and my own Fortran implementation code.
+
+gnr_err_tbl %>%
+    kbl(
+        digits = 2,
+        col.names = rep(c("$\\mathcal{E}$","err sd"),3),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    add_header_above(
+        c(" "=1, "Stata"=2, "Stata"=2,"Fortran"=2)
+    ) %>%
+    add_header_above(
+        c(" "=1, "Replication Data"=2, "Working Data"=4)
+    ) %>%
+    add_header_above(
+        c("NP GNR"=7)
+    )
+
+```
+
+### Cobb-Douglas Production Function
+
+
+
+```{r}
+#| label: tbl-fortran-gnr-cd
+#| tbl-cap: Fortran implementation of the Cobb-Douglas GNR(2020) method to estimate production functions. Comparison with Stata code and replication data from GNR(2020), and the working data of this paper and my own Fortran implementation code.
+
+gnr_rep_tbl_CD %>%
+    kbl(
+        digits = 2,
+        # col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    add_header_above(
+        c(" "=1, "Stata"=3, "Stata"=3,"Fortran"=3)
+    ) %>%
+    add_header_above(
+        c(" "=1, "Replication Data"=3, "Working Data"=6)
+    ) %>%
+    add_header_above(
+        c("CD GNR"=10)
+    )
+
+```
+
+
+
+```{r}
+#| label: tbl-gnr-err-stats-cd
+#| tbl-cap: Fortran implementation of the Cobb-Douglas GNR(2020) method to estimate production functions. Comparison of the error standard deviation and $\\mathcal{E}$ between the Stata code and replication data from GNR(2020), and the working data of this paper and my own Fortran implementation code.
+
+gnr_err_tbl_CD %>%
+    kbl(
+        digits = 2,
+        col.names = rep(c("$\\mathcal{E}$","err sd"),3),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    add_header_above(
+        c(" "=1, "Stata"=2, "Stata"=2,"Fortran"=2)
+    ) %>%
+    add_header_above(
+        c(" "=1, "Replication Data"=2, "Working Data"=4)
+    ) %>%
+    add_header_above(
+        c("CD GNR"=7)
+    )
+
+```
+
+
+
+```{r}
+#| label: tbl-CD-Stata-Fortran
+#| tbl-cap: Cobb-Douglas production function parameters estimates using GNR Stata data and estimator vs. the Fortran GNR estimator.
+#| eval: false
+#| include: false
+
+# load("../Code/Products/deconv_prod_fun.RData")
+load("../Code/Products/Fortran_CD_GNR.RData")
+
+left_join(Stata_results,CD_fortran_tbl[,c(1,3,2,4)], by=c("INDS"="inds")) %>%
+  kbl(
+    col.names = c("Industry", "m","k","l","m","k","l"),
+    digits = 4,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  add_header_above(
+      c(" "=1,"Stata GNR"=3, "Fortran GNR"=3)#
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+
+### CD GNR + trimming
+
+```{r}
+#| label: tbl-CD-GNR-trim
+#| tbl-cap: First State of Cobb-Douglas production function intermediate elasticities estimates using GNR Stata estimator and R estimator with trimmed data at 0.05. **All firms**.
+
+load("../Code/Products/gnr_fs.RData")
+
+col_names <- c("Industry", "Inter.", rep(c("m", "$\\mathcal{E}$","err sd"),2))
+
+gnr_fs_trim_tbl %>%
+    kbl(
+        digits = 2,
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=2, "Stata"=3, "R"=3)
+    ) %>%
+    add_header_above(
+        c(" "=2, "Working Data"=6)
+    ) %>%
+    collapse_rows(columns = 1, 
+                 valign = "top")
+
+```
+
+### CD GNR + Trimming + Corporations
+
+
+```{r}
+#| label: tbl-CD-GNR-trim-corps
+#| tbl-cap: First State of Cobb-Douglas production function intermediate elasticities estimates using GNR Stata estimator and R estimator with trimmed data at 0.05. **Only Corporations**.
+
+# load("../Code/Products/gnr_fs.RData")
+
+fs_compare_tbl %>%
+    kbl(
+        digits = 2,
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=2, "Stata."=3, "R"=3)
+    ) %>%
+    add_header_above(
+        c(" "=2, "Working Data"=6)
+    ) %>%
+    collapse_rows(columns = 1, 
+                 valign = "top")
+
+```
+
+
+### CD GNR + Trimming + Measurement Error
+
+```{r}
+#| label: tbl-CD-GNR-me
+#| tbl-cap: First State of Cobb-Douglas production function intermediate elasticities estimates using GNR Stata estimator and R estimator with trimmed data at 0.05. **Corporations vs. All**. $\varepsilon$ is the **measurement error**.
+
+# load("../Code/Products/gnr_fs.RData")
+
+fs_compare_me_tbl %>%
+    kbl(
+        digits = 2,
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=2, "Corps."=3, "All"=3)
+    ) %>%
+    add_header_above(
+        c(" "=2, "Working Data (R)"=6)
+    ) %>%
+    collapse_rows(columns = 1, 
+                 valign = "top")
+
+```
+
+
+
+```{r}
+#| label: tbl-CD-GNR-me-ev
+#| tbl-cap: First State of Cobb-Douglas production function intermediate elasticities estimates using GNR Stata estimator and R estimator with trimmed data at 0.05. **Corporations vs. All**. $\varepsilon$ is the **measurement error**. Top evading industries.
+
+# load("../Code/Products/gnr_fs.RData")
+
+fs_compare_ev_me_tbl %>%
+    kbl(
+        digits = 2,
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=2, "Corps."=3, "All"=3)
+    ) %>%
+    add_header_above(
+        c(" "=2, "Working Data (R)"=6)
+    ) %>%
+    collapse_rows(columns = 1, 
+                 valign = "top")
+
+```
+
+### Industry Characteristics
+
+```{r}
+#| label: tbl-good-guys
+#| tbl-cap: Intermediate elasticities for different groups of firms using GNR method assuming a CD functional form. Data trimmed at 0.05 of the intermediates share cost of gross output. $\varepsilon$ is defined as **measurement error**. 
+
+load("../Code/Products/gnr_fs.RData")
+
+fs_me_tbl %>%
+    select(c(1,2,5,6,8,4)) %>%
+    kbl(
+        digits = 2,
+        col.names = c("Inds.", "Intermediate", "Corps.", "Exp.", "Imp.","All"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=2, "m"=4)
+    ) %>%
+    collapse_rows(columns = 1, 
+                 valign = "top")  
+```
+
+```{r}
+#| label: tbl-industry-characteristics
+#| tbl-cap: One side test of tax evasion through inputs overreporting. Different non-evaders groups used as reference.
+
+load("../Code/Products/intermediates.RData")
+
+test_tbl[-c(6:7)] %>%
+    filter( sic_3 %in% fs_me_tbl$sic_3 ) %>%
+    mutate(
+        sic_3 = factor(sic_3, levels = unique(fs_me_tbl$sic_3))#,
+        # sic_3 = fct_reorder(sic_3, -m)
+    ) %>%
+    arrange(sic_3) %>%
+    kbl(
+        digits = 2,
+        col.names = c("Inds.", rep(c("Materials", "Deductibles"),3)),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=1, "Corporations"=2, "Exporters"=2, "Importers"=2)
+    )
+
+```

@@ -42,10 +42,14 @@ ex_name <- "night"#"select"#"tax"#"win" #"subsidies"#"share"#  "exp-ratio"#"sale
 
 industries <- colombia_data_frame %>%
     filter(
-        sales > 0,
-        # !is.na(capital),
-        !is.na(k),!is.na(l), !is.na(m)
+        # sales > 0,
+        # # !is.na(capital),
+        # !is.na(k),!is.na(l), !is.na(m)
         # n_sic > 500
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m)
     ) %>%
     group_by(sic_3) %>%
     summarise(n_sic = n()) %>%
@@ -228,11 +232,14 @@ labels <- c(
     # 'mats_serv_share' = 'Materials + Services',
     # 'mats_deduct_share' = 'Materials + Deductible T.S.',
     'materials_share' = 'Materials (M)',
+    # 'mats_serv_share' = 'Materials + Services (M+S)',
     'energy_share' = 'Electricity (E)',
     'capital_share' = 'Capital',
     'fuels_share' = 'Fuels (F)',
     'services_share' = 'Services (S)',
-    'repair_maint_share' = 'Repair & Maintenance'#,
+    'repair_maint_share' = 'Repair & Maintenance (R&M)',
+    'deductible_intermediates_share' = 'Deductible Inter. (M+E+F+R&M)',
+    'non_deductible_intermediates_share' = 'Non-Deductible Inter. (S)'
     # 'gnr_ded_share' = 'Deductible GNR',
     # 'lp_share' = 'LP (M+E+F)',
     # 'lp_ded_share' = 'Deductible LP',
@@ -306,10 +313,14 @@ sales_tax_change<-tribble(
 
 candidate_inds<-colombia_data_frame %>%
     filter(
-        sales > 0,
-        # !is.na(capital),
-        !is.na(k),!is.na(l), !is.na(m)
+        # sales > 0,
+        # # !is.na(capital),
+        # !is.na(k),!is.na(l), !is.na(m)
         # n_sic > 500
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m)
     ) %>%
     group_by(sic_3) %>%
     summarise(
@@ -366,10 +377,14 @@ top_20_inds <- candidate_inds[1:20,] %>%
 top_20_inds_table <- colombia_data_frame %>%
     ungroup() %>%
     filter(
-        sales > 0,
-        # !is.na(capital),
-        !is.na(k),!is.na(l), !is.na(m)
+        # sales > 0,
+        # # !is.na(capital),
+        # !is.na(k),!is.na(l), !is.na(m)
         # n_sic > 500
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m)
     ) %>%
     mutate( 
         corp = factor(ifelse(juridical_organization==3,"Corp","Non-Corp")),
@@ -419,10 +434,14 @@ top_20_inds_table <- colombia_data_frame %>%
 top_10_revenue<-colombia_data_frame %>%
     ungroup() %>%
     filter(
-        sales > 0,
-        # !is.na(capital),
-        !is.na(k),!is.na(l), !is.na(m)
+        # sales > 0,
+        # # !is.na(capital),
+        # !is.na(k),!is.na(l), !is.na(m)
         # n_sic > 500
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m)
     ) %>%
     mutate( 
         corp = factor(ifelse(juridical_organization==3,"Corp","Non-Corp")),
@@ -498,6 +517,23 @@ exps_tbl<-tribble(
     "Other expenditures", "c16","$+$", " ", " ",
     "TOTAL General Expenditures (c8:c16)", "c17", " "," ", " ",
     "TOTAL Expenditure (c7+c17)", " ", " ", " ", " ",
+)
+
+inds_sales_tax <- tribble(
+    ~ sic_3, ~ Category,
+    311, "1 Exempt Product",
+    312, "1 Exempt Product",
+    382, "1 Exempt Product",
+    383, "1 Exempt Product",
+    384, "1 Exempt Product",
+    369, "1 Exempt Material",
+    323, "1 Exempt Material",
+    356, "3 Specialized Material",
+    322, "4 Direct Customer Sales",
+    324, "4 Direct Customer Sales",
+    342, "4 Direct Customer Sales",
+    369, "4 Direct Customer Sales", 
+    390, "4 Direct Customer Sales"
 )
 
 # Saving global variables -----------

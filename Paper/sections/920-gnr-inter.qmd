@@ -1,0 +1,98 @@
+## CD GNR Intermediates
+
+Observations with value of zero for some intermediates were driving down the estimates of the output elasticity of intermediates. This is a common problem when using data from surveys. To avoid this problem, I trimmed the observations with a share of intermediates below 0.05.
+
+These observations increase the variance of the error term, which in turn increases the value of $\mathcal{E}$. The higher the value of $\mathcal{E}$, the lower the value of the elasticity of intermediates.
+
+@fig-cutoff  show that at when trimming observations with a share of intermediates below 0.05, the estimates of $\mathcal{E}$ and the output elasticity of intermediates start to stabilize. That is the changes in the values of these variables are small. In addition, @fig-cutoff-drop shows that at this threshold, the change in percentage of observations dropped is also small. 
+
+A more detailed picture of this is displayed in @tbl-cd-gnr-inter-trim. The table compares the estimates of the output elasticity of intermediates and other statistics of the first stage of GNR(2020) assuming a Cobb-Douglas Production Function for different definitions of intermediates and different thresholds for trimming observations. 
+
+::: {#fig-cutoff}
+
+![](images/graphs/trim-bigE-inds.png)
+
+Estimates of $\mathcal{E}$ and the output elasticity of intermediates (raw materials) trimming observations with a share of intermediates below different thresholds going from 0.01 to 0.1 . The elasticities of intermediates were estimated assuming a Cobb-Douglas production function using the first stage of GNR(2020).
+
+:::
+
+::: {#fig-cutoff-drop }
+
+![](images/graphs/trim-drop-all.png)
+
+Estimates of $\mathcal{E}$ and percentage of observations dropped by trimming observations with a share of intermediates (raw materials) below different thresholds going from 0.01 to 0.1 . The elasticities of intermediates were estimated assuming a Cobb-Douglas production function using the first stage of GNR(2020).
+
+:::
+
+<!-- ::: {#tbl-cd-gnr-inter-trim}
+
+![](images/tables/gnr-cd-tbl.png)
+
+Output elasticities of intermediates and other statistics of the first stage of GNR(2020) assuming a Cobb-Douglas Production Functions for different definitions of intermediates. *mse* stands for raw materials, services, and energy; *materials* for raw materials; and *deductibles* for raw materials, electricity, fuels, and repair and maintenance services. Observations were trimmed by removing observations where the intermediate share was below 0.04, 0.05, or 0.06.
+::: -->
+
+
+::: {#tbl-cd-gnr-inter}
+
+<!-- ![](images/tables/gnr-cd-tbl-i.png) -->
+
+```{r}
+read.csv(
+    "../Code/Products/stata-gnr-trim.csv", 
+    skip=1
+    ) %>% 
+    mutate(
+            `Ind.` = str_extract(X,"\\d{3}"),
+            `Inter.` = str_extract(X,"(ded|m_s_e|mats)$"),
+            .before = m
+    ) %>%
+    select(-X) %>%
+    kbl(
+        digits = 4,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    collapse_rows(1, valign = "top")
+    
+```
+
+Estimates of Cobb-Douglas Production Function parameters using GNR(2020) and statistics of the first stage for different definitions of intermediates. *m s e* stands for raw materials, services, and energy, *mats* for raw materials, and *ded* for deductible intermediates (raw materials, electricity, fuels, and repair and maintenance services). Observations were trimmed below a share of intermediates of 0.05.
+:::
+
+<!-- ::: {#tbl-cd-gnr-inter-ded}
+
+![](images/tables/stata-gnr-inter-ded.png)
+
+Estimates of Cobb-Douglas Production Functions using GNR(2020) for different definitions of intermediates. *m* is raw materials, *s* services, and *e* energy. *ded* stands for deductible intermediates and includes raw materials, electricity, fuels, and repair and maintenance services.
+::: -->
+
+<!-- When intermediates are defined as raw materials only, the elasticity of intermediates is biased downward. This happens because the variance of the error term increases significantly. The variance of the error term affects the estimate of $\mathcal{E}$, which is used to adjust the output elasticity of intermediates.
+
+For the purposes of studying tax evasion, this implies that the researchers should pay close attention to the behavior of residuals in the first stage. What we want is good estimates of the structural error term. There are several ways we can reduce the variance of the error term. A simple one could be defining intermediates as all the deductible intermediates. That is what `ded` stands for. It includes raw materials, electricity, fuels, and repair and maintenance services. 
+
+The problem is not unique to CD estimates. If we allow for more flexible functional forms and add the remaining intermediates to the production function, the variance of the error term decreases. However, the pattern persists. Narrower definitions of intermediates lead to larger variances of the error term. 
+
+Narrower definitions of intermediates lead to larger variances of the error term, even when including the remaining intermediates in the production function and allowing for more flexible functional forms. Measurement error is likely to be larger, the narrower the definition of intermediates. This larger measurement error might be leading to larger variances of the error term. -->
+
+```{r}
+#| label: bigE
+#| tbl-cap: Residual and $\mathcal{E}$ estimates for different definitions of intermediates and more flexible functional forms. Adding and not adding remaining intermediates.
+#| eval: false
+#| include: false
+
+load("../Code/Products/bigE.Rdata")
+
+cbind(bigE_tbl, bigE_comp_tbl[,4:5]) %>%
+    kbl(
+        digits = 4,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    collapse_rows(1, valign = "top") %>%
+    add_header_above(c(" " = 3, "Poly 2D" = 2, "Poly 2D Add" = 2))
+
+```
+
+<!-- Ideally, we would like to include all the flexible inputs individually in our production function. Having more than one flexible input (and assuming non-deductible intermediates are monotonic in productivity), could allow us to have more estimators of the error term. How can we do this?
+
+A first solution, maybe naive, is to use some kind of weight on the residuals to obtain a unique estimate of the structural error term. We could weight by the share of the total cost of intermediates. -->

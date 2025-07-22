@@ -73,6 +73,7 @@ library(kableExtra)
 library(modelsummary)
 library(tinytable)
 library(stringr)
+library(truncnorm)
 
 load("../Code/Products/colombia_data.RData")
 load("../Code/Products/global_vars.RData")
@@ -180,9 +181,11 @@ setFixest_dict(c(
 - Tax Evasion and Productivity: Using PF to identify tax evasion through input overreporting
   - CD
     - Preliminary results of Tax Evasion: Moments, MLE (Truncated Normal and LogNormal)
-    - **New** Identification of PF parameters when $h$ is polynomial
-    - Preliminary results of PF parameters
+    - Identification of PF parameters when $h$ AR(1)
+    - **New** Discussion: Variance of the error term and Choosing intermediates in GNR-CD.
+    - **New** Preliminary results of PF parameters
     - **New** Productivity results
+
   - TransLog
     - Identification strategy for tax evasion
 
@@ -195,12 +198,31 @@ setFixest_dict(c(
 - Tax Evasion and Productivity
   - Back of Envelope estimates for Gov Losses in Tax Revenue
   - App of Productivity: Aggregate Productivity and Resource Misallocations
-  - Translog results
-  - Non-parametric Deconvolution
-  - Non-parametric PF
+  - Translog Tax Evasion results
+  - Translog PF identification strategy
+  - Translog PF results
+  - Translog Productivity results
 - DiD
   - Relaxing parallel trends: Linear trends that in the absence of policy change would have continued
 
+## TODO
+
+- Correct tests: 
+  - Use corps to get beta, test on non-corps
+  - Use corps to get beta, test on all
+  - Bootstrap all (Use bayesian bootstrap)
+- Why are there true negatives? Secondary question, test might guide
+  - Only two industries: 323 Leather and Leather Products and 356 Plastic Products
+  - Alternative explanations: Market Power, Differences in productivity do not make sense, There does not seem to be incentives for underreporting inputs. Wrong reference group? When testing against
+  323: 
+    - Not effective tax rate: Higher sales tax for sales for Non-Corps, but sales tax purchases similar (exports?)
+    - High share of exporters, high share of sales are exports (significantly higher than any other industry)
+  356: ?
+- Other Data: Ecuador, Spain
+- Summarize main points of Lit in Slides
+- Using ELVIS to allow for more flexible functional forms of $h$ the markov process of productivity
+- Non-parametric Deconvolution
+- Non-parametric PF
 
 
 <!-- Intro -->
@@ -230,6 +252,9 @@ setFixest_dict(c(
 <!-- Same Techonology *-->
 {{< include sections/92-col-corp-tech.qmd >}}
 
+<!-- Intermediates -->
+{{< include sections/150-intermediates.qmd >}}
+
 <!-- Identification strategy *-->
 {{< include sections/56-id-evasion.qmd >}}
 
@@ -239,13 +264,15 @@ setFixest_dict(c(
 <!-- Implementation -->
 {{< include sections/120-implementation.qmd >}}
 
-<!-- Implementation -->
-{{< include sections/150-intermediates.qmd >}}
+## Results
+
+{{< include sections/11-intro.qmd >}}
+
+<!-- Production Function -->
+{{< include sections/250-pf.qmd >}}
 
 <!-- Deconvolution -->
 {{< include sections/200-deconv.qmd >}}
-
-{{< include sections/250-pf.qmd >}}
 
 <!-- Misallocation -->
 {{< include sections/300-misallocation.qmd >}}
@@ -254,6 +281,15 @@ setFixest_dict(c(
 
 ::: {#refs}
 :::
+
+
+{{< include sections/910-GNR-rep.qmd >}}
+
+{{< include sections/920-gnr-inter.qmd >}}
+
+{{< include sections/930-eps-density.qmd >}}
+
+
 
 
 <!-- {{< include sections/100-appendix.qmd >}} -->

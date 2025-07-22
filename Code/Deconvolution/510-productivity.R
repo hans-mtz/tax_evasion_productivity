@@ -3,17 +3,21 @@ library(tidyverse)
 # library(parallel)
 # library(quantreg)
 # library(ggplot2)
-load("Code/Products/colombia_data.RData")
+# load("Code/Products/colombia_data.RData")
 load("Code/Products/global_vars.RData")
 load("Code/Products/deconv_funs.Rdata")
-load("Code/Products/boot_deconv_mle.RData") # fs_list
+# load("Code/Products/boot_deconv_mle.RData") # fs_list
 # load("Code/Products/omega_deconv_mle.RData")
 # load("Code/Products/boot_tax_ev_mmt.RData")
 # load("Code/Products/deconv_prod_fun.RData")
 load("Code/Products/omega_ar1_deconv_mle.RData")
+load("Code/Products/fs.RData") # Fist stage results
 
 # Setting Seed -----------
 set.seed(987654)
+
+select_inds <- str_extract(names(fs_list),"\\d+")
+
 
 ## Compare to GNR --------
 
@@ -23,10 +27,12 @@ folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
 CD_fortran_prod_list <- lapply(
     # union(evasion_inds,gnr_inds),
     # top_evading_inds[1:5],
-    top_10_revenue$sic_3[1:5],
+    # top_10_revenue$sic_3[1:5],
+    # top_5_ev_inds,
+    select_inds,
     \(x){
-        temp_coeff<-read.csv(paste0(folder_results,"CD_productivity_R_",x,".out"))
-        temp_coeff$inds <- x
+        temp_coeff<-read.csv(paste0(folder_results,"CD_mats_trim_productivity_",x,".out"))
+        temp_coeff$inds <- as.numeric(x)
         return(temp_coeff)
     }
 )
@@ -101,7 +107,7 @@ mapply(
     mutate(
         Method = case_when(
             ins == "lag_2_w_eps" ~ "TE: $\\mathcal{W}_{t-2}$",
-            ins == "lag_m" ~ "TE: $m_{t-1}$",
+            ins == "lag_m" ~ "TE: $m^*_{t-1}$",
             TRUE ~ " "
         )
     ) %>%
