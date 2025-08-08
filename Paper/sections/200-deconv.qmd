@@ -13,6 +13,26 @@ $$
 \end{aligned}
 $$
 
+The previous test ignores the sample variance of the $\beta$ estimator in the first stage. 
+
+Alternatively, we can do a difference in means test to account for this variation. This test is equivalent to a two sample GMM test, where in one moment the corporations are used to estimate $\hat\beta$ and the second is a test moment where we use $\hat\beta$ from the first one. Under the null, the two moment should be equal to zero.
+
+
+Let $s_{it}=log\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)$ and  $\bar s_G= \frac{1}{N_1T_1}\sum_{i=1}^{N_1}\sum_{t=1}^{T_1}s_{it}^G$ and $\bar s_B= \frac{1}{N_2T_2}\sum_{i=1}^{N_2}\sum_{t=1}^{T_2}s_{it}^B$ be the sample means for good guys (corporations) and the tax evasion guys, respectively. 
+
+Then, the test statistic is,
+
+$$
+\begin{aligned}  
+  t &= \frac{\bar s_B - \bar s_G}{\sqrt{\hat\sigma^2_{\bar s_B}/N_2T_2 + \hat\sigma^2_{\bar s_G}/N_1T_1}} \sim N(0,1) \text{ under } H_0\\
+\end{aligned}
+$$
+
+where $\hat\sigma^2_{\bar s_B}$ and $\hat\sigma^2_{\bar s_G}$ are the sample variances of $s_{it}^B$ and $s_{it}^G$, respectively.
+
+Of course, the assumption of independent samples is likely incorrect. For example, firms in an industry might get contemporaneous shocks affecting everyone in one period, like a price shock in inputs. Productivity is usually assumed to be persistent over time, but the effects of productivity of one firm on the other firms is commonly ignored. In addition, if the data uses SIC codes, firms within sub-industries are more likely to be correlated than firms in different sub-industries.
+
+
 I test for the presence of tax evasion for different classifications of intermediates. Intermediates include raw materials, energy and services. Deductibles include raw materials and deductible expenses. Materials include only raw materials. The items included as deductible expenses or services are detailed in @tbl-expenses-type
 
 ```{r}

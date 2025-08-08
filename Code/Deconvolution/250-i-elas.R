@@ -4,6 +4,7 @@ library(tidyverse)
 library(parallel)
 # load("Code/Products/fs.RData")
 # load("Code/Products/boot_fs.RData")
+load("Code/Products/colombia_data.RData")
 load("Code/Products/test_data.RData")
 load("Code/Products/deconv_funs.Rdata")
 load("Code/Products/global_vars.RData") # top_20_inds
@@ -389,3 +390,191 @@ save(
     ielas_cont_tbl, elas_tst_tbl,
     file = "Code/Products/i_elas.RData"
 )
+
+# %% Industry Characteristics Table ------------------------
+
+inds_char_tbl_corp <- colombia_data_frame %>%
+    filter(
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m),
+        log_mats_share > log(threshold_cut),
+        sic_3 %in% top_20_inds$sic_3
+    ) %>%
+    mutate(
+        # total_gross_output = sum(gross_output, na.rm = TRUE),
+        total_sales = sum(sales, na.rm = TRUE),
+        total_deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE),
+        total_materials = sum(materials, na.rm = TRUE),
+        total_share_exports = mean(share_exports, na.rm = TRUE),
+        total_share_imports = mean(share_imports, na.rm = TRUE),
+        total_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        total_share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        importer = ifelse(share_imports > 0, 1, 0),
+        exporter = ifelse(share_exports > 0, 1, 0),
+        importer_mats = ifelse(share_imports_materials > 0, 1, 0),
+        Corp = factor(ifelse(juridical_organization==3,"Corp","Non-Corp")),
+        
+    ) %>%
+    mutate(
+        avg_age_plant = mean(age, na.rm = TRUE),
+        .by = c(plant)
+    ) %>%
+    group_by(sic_3, Corp) %>%
+    summarise(
+        n = unique(plant) |> length(),
+        avg_age = mean(age, na.rm = TRUE),
+        # n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
+        sales_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        purchases_sales_tax = mean(sales_tax_purchases, na.rm = TRUE),
+        # gross_output = sum(gross_output, na.rm = TRUE)/max(total_gross_output, na.rm = TRUE),
+        sales = sum(sales, na.rm = TRUE)/max(total_sales, na.rm = TRUE),
+        # deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE)/max(total_deductible_intermediates, na.rm = TRUE),
+        # materials = sum(materials, na.rm = TRUE)/max(total_materials, na.rm = TRUE),
+        share_exports = mean(share_exports, na.rm = TRUE),
+        # share_imports = mean(share_imports, na.rm = TRUE),
+        share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        exporters = mean(exporter, na.rm = TRUE),
+        # importers = mean(importer, na.rm = TRUE),
+        importers_mats = mean(importer_mats, na.rm = TRUE)
+    ) %>%
+    mutate(
+        across(sales_sales_tax:importers_mats, ~ round(.x*100, 1)),
+        avg_age = round(avg_age, 0),
+    ) %>%
+    pivot_wider(
+        names_from = Corp,
+        values_from = n:importers_mats,
+        names_sep = "_"
+    )# |> View()
+
+inds_char_tbl_corp
+
+inds_char_tbl <- colombia_data_frame %>%
+    filter(
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m),
+        log_mats_share > log(threshold_cut),
+        sic_3 %in% top_20_inds$sic_3
+    ) %>%
+    mutate(
+        # total_gross_output = sum(gross_output, na.rm = TRUE),
+        total_sales = sum(sales, na.rm = TRUE),
+        total_deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE),
+        total_materials = sum(materials, na.rm = TRUE),
+        total_share_exports = mean(share_exports, na.rm = TRUE),
+        total_share_imports = mean(share_imports, na.rm = TRUE),
+        total_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        total_share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        importer = ifelse(share_imports > 0, 1, 0),
+        exporter = ifelse(share_exports > 0, 1, 0),
+        importer_mats = ifelse(share_imports_materials > 0, 1, 0),
+        Corp = factor(ifelse(juridical_organization==3,"Corp","Non-Corp")),
+        
+    ) %>%
+    mutate(
+        avg_age_plant = mean(age, na.rm = TRUE),
+        .by = c(plant)
+    ) %>%
+    group_by(sic_3) %>%
+    summarise(
+        n = unique(plant) |> length(),
+        n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
+        avg_age = mean(age, na.rm = TRUE),
+        sales_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        purchases_sales_tax = mean(sales_tax_purchases, na.rm = TRUE),
+        # gross_output = sum(gross_output, na.rm = TRUE)/max(total_gross_output, na.rm = TRUE),
+        sales = sum(sales, na.rm = TRUE)/max(total_sales, na.rm = TRUE),
+        # deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE)/max(total_deductible_intermediates, na.rm = TRUE),
+        # materials = sum(materials, na.rm = TRUE)/max(total_materials, na.rm = TRUE),
+        exporters = mean(exporter, na.rm = TRUE),
+        share_exports = mean(share_exports, na.rm = TRUE),
+        # share_imports = mean(share_imports, na.rm = TRUE),
+        importers_mats = mean(importer_mats, na.rm = TRUE),
+        share_imports_materials = mean(share_imports_materials, na.rm = TRUE)
+        # importers = mean(importer, na.rm = TRUE),
+    ) %>%
+    mutate(
+        across(sales_sales_tax:share_imports_materials, ~ round(.x*100, 1)),
+        avg_age = round(avg_age, 0),
+    ) #%>%
+    # pivot_wider(
+    #     names_from = Corp,
+    #     values_from = n:importers_mats,
+    #     names_sep = "_"
+    # )# |> View()
+inds_char_tbl
+
+## %% Combining tbls ------------------------
+
+load("Code/Products/i_elas.RData")
+load("Code/Products/boot_tax_ev_2ttst.RData")
+
+i_elas_tbl
+tst_2t2s_tbl
+
+
+comparison_tbl <- i_elas_tbl %>%
+    mutate(
+        type = replace(
+            type, type == "m", "coeff"
+        ),
+        sic_3 = as.numeric(sic_3)
+    ) %>%
+    left_join(
+        tst_2t2s_tbl %>% select(-mean_V_log_deductible_intermediates_share),
+        by = c('sic_3', 'type')
+    ) %>%
+    left_join(
+        inds_char_tbl_corp,
+        by = "sic_3",
+    ) #|> View()
+
+
+main_tbl <- i_elas_tbl %>%
+    mutate(
+        type = replace(
+            type, type == "m", "coeff"
+        ),
+        sic_3 = as.numeric(sic_3)
+    ) %>%
+    left_join(
+        tst_2t2s_tbl %>% select(-mean_V_log_deductible_intermediates_share),
+        by = c('sic_3', 'type')
+    ) %>%
+    left_join(
+        inds_char_tbl,
+        by = "sic_3",
+    ) %>% 
+    mutate(
+        effective_tax_rate = ifelse(
+            type == "coeff",
+            round((sales_sales_tax-purchases_sales_tax*as.numeric(corps)),1),
+            NaN
+        ),
+        .before = sales_sales_tax
+    )#|> View()
+
+## %% Saving the main table ------------------------
+
+save(
+    fs_me_cust_tbl, fs_me_cust_list,
+    boot_fs_me_cust_list, i_elas_tbl,
+    ielas_cont_tbl, elas_tst_tbl,
+    inds_char_tbl, inds_char_tbl_corp,
+    comparison_tbl, main_tbl,
+    file = "Code/Products/i_elas.RData"
+)
+
+## %% stuff -------------------------
+
+vrs<-gsub("^(\\w_*\\w*)_(Corp|Non-Corp)$","\\1",names(inds_char_tbl_corp)[-1]) |> unique()
+vrs
+col_vec <- rep(2, length(vrs))
+names(col_vec) <- vrs
+col_vec |> View()
+gsub("(_)", " ", names(col_vec))
+gsub("\\b(\\w)", "\\U\\1", names(col_vec), perl=TRUE) 

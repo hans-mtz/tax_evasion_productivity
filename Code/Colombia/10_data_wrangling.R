@@ -92,6 +92,7 @@ cdf <- col_df %>%
         nom_sales = ifelse(s5 > 0, s5 ,NA),
         real_sales = nom_sales / p_gdp_new,
         sic_3 = as.numeric(str_sub(as.character(sic), 1, 3)),
+        sic_4 = as.numeric(str_sub(as.character(sic), 1, 4)),
         share = ifelse(pg==0, NA, nom_intermediates / pg),
         log_share = log(share),
         real_indirect_taxes = t6 / p_gdp_new,
@@ -137,7 +138,7 @@ cdf <- col_df %>%
     select(
         plant,
         year = datayear,
-        sic_3,
+        sic_3, sic_4,
         p_gdp = p_gdp_new,
         gross_output = real_gross_output,
         nom_gross_output = pg,
@@ -349,5 +350,45 @@ colombia_data_frame <- colombia_data_frame %>%
     left_join(jo_class, by = join_by( juridical_organization == JO_code))
 
 # Saving data ---------------------------------
+print("Saving Colombia DF")
+save(colombia_data_frame, jo_class, sum_rows, file = "Code/Products/colombia_data.RData")
+
+## %% Correcting age for three plants with negative age ----
+
+neg_age_plants <- colombia_data_frame %>%
+    filter(age < 0) %>%
+    select(plant) %>% pull |> unique()
+
+neg_age_df <- colombia_data_frame %>%
+    filter(plant %in% neg_age_plants) %>%
+    select(sic_3, plant, year, age)
+
+colombia_data_frame <- colombia_data_frame %>%
+    mutate(
+        age = replace(
+            age, 
+                plant == neg_age_plants[1] &
+                age < 0
+            ,
+            1:5),
+        age = replace(
+            age,
+                plant == neg_age_plants[2] &
+                age <= 0
+            ,
+            c(0:6,10)),
+        age = replace(
+            age, 
+                plant == neg_age_plants[3] &
+                age < 0
+            ,
+            2)
+    )# %>% 
+    # filter(
+    #     plant %in% neg_age_plants
+    # ) %>%
+    # select(sic_3, plant, year, age) |> View()
+
+# %% Saving data ---------------------------------
 print("Saving Colombia DF")
 save(colombia_data_frame, jo_class, sum_rows, file = "Code/Products/colombia_data.RData")

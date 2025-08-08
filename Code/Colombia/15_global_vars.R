@@ -536,6 +536,8 @@ inds_sales_tax <- tribble(
     390, "4 Direct Customer Sales"
 )
 
+threshold_cut <- 0.05
+
 # Saving global variables -----------
 print("Saving global variables")
 save(

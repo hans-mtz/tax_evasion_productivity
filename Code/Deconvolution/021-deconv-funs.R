@@ -429,13 +429,13 @@ test_ev_2t_2smpl <- function(sic, var, data) {
         tbl <- data %>%
             filter(
                 sic_3 == sic,
-                juridical_organization != 3,
                 is.finite(.data[[var]]),
                 is.finite(k),
                 is.finite(l),
                 is.finite(m),
                 is.finite(y),
-                .data[[var]] > log(threshold_cut)
+                .data[[var]] > log(threshold_cut),
+                juridical_organization != 3
             ) %>%
             mutate(
                 cal_V = .data[[var]] - log_D
@@ -809,10 +809,6 @@ first_stage_panel_me <- function(sic, var, r_var, data) {
     ## Deconvolution ------------------------
 
     tbl <- data %>%
-        left_join(
-            corp_data %>% select(plant, year, epsilon),
-            by = c("plant", "year")
-        ) %>%
         filter(
             sic_3 == sic,
             is.finite(.data[[var]]),
@@ -821,6 +817,10 @@ first_stage_panel_me <- function(sic, var, r_var, data) {
             is.finite(m),
             is.finite(y),
             .data[[var]] > log(threshold_cut)
+        ) %>%
+        left_join(
+            corp_data %>% select(plant, year, epsilon),
+            by = c("plant", "year")
         ) %>%
         select(!m) %>%
         mutate(

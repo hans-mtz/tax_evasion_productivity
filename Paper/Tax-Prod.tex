@@ -222,12 +222,12 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 %%==== colors from yaml ===%
 \definecolor{Definition-color1}{HTML}{99CCFF}
 \definecolor{Definition-color2}{HTML}{FFFFFF}
+\definecolor{Theorem-color1}{HTML}{99CCFF}
+\definecolor{Theorem-color2}{HTML}{FFFFFF}
 \definecolor{Assumption-color1}{HTML}{99CCFF}
 \definecolor{Assumption-color2}{HTML}{FFFFFF}
 \definecolor{Proposition-color1}{HTML}{99CCFF}
 \definecolor{Proposition-color2}{HTML}{FFFFFF}
-\definecolor{Theorem-color1}{HTML}{99CCFF}
-\definecolor{Theorem-color2}{HTML}{FFFFFF}
 %=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{July 9, 2025}
+\date{August 8, 2025}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca. I thank my supervisors
@@ -293,6 +293,38 @@ Estimation, Productivity
 
 \newpage
 \spacingset{1.9} % DON'T change the spacing!
+
+\section*{TODO}\label{todo}
+\addcontentsline{toc}{section}{TODO}
+
+\begin{itemize}
+\tightlist
+\item
+  Correct tests:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Use corps to get beta, test on non-corps
+  \item
+    Use corps to get beta, test on all
+  \item
+    Bootstrap all (Use bayesian bootstrap)
+  \end{itemize}
+\item
+  Why are there true negatives?
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Only two industries: 323 Leather and Leather Products and 356
+    Plastic Products
+  \end{itemize}
+\item
+  Other Data: Ecuador, (Spain?)
+\item
+  Summarize main points of Lit in Slides
+\end{itemize}
 
 \section*{Updates}\label{updates}
 \addcontentsline{toc}{section}{Updates}
@@ -367,9 +399,16 @@ Estimation, Productivity
     Translog PF results
   \item
     Translog Productivity results
+  \item
+    Using ELVIS to allow for more flexible functional forms of \(h\) the
+    markov process of productivity
+  \item
+    Non-parametric Deconvolution
+  \item
+    Non-parametric PF
   \end{itemize}
 \item
-  DiD
+  DDD
 
   \begin{itemize}
   \tightlist
@@ -377,19 +416,6 @@ Estimation, Productivity
     Relaxing parallel trends: Linear trends that in the absence of
     policy change would have continued
   \end{itemize}
-\end{itemize}
-
-\section{TODO}\label{todo}
-
-\begin{itemize}
-\tightlist
-\item
-  Using ELVIS to allow for more flexible functional forms of \(h\) the
-  markov process of productivity
-\item
-  Non-parametric Deconvolution
-\item
-  Non-parametric PF
 \end{itemize}
 
 \section{A parsimonious model of tax evasion through input
@@ -725,6 +751,1157 @@ Currently, only productivity. But, it can also be
 \end{itemize}
 
 \end{anfxnote}
+
+\section{Lit Review Notes}\label{lit-review-notes}
+
+For personal reference, to be removed from the final version.
+
+\subsection{\texorpdfstring{\citet{Dabla2019}}{@Dabla2019}}\label{dabla2019}
+
+Productivity improvements by firms can causally lead to lower tax
+evasion, i.e., underreporting sales for tax purposes. In other words, an
+increase in firm productivity leads to a higher share of sales reported
+for tax purposes. The authors use the self-reported share of declared
+income as a proxy for tax evasion.
+
+Limitations: Using the World Bank Enterprise (47 emerging and developing
+countries) survey question to get the percentage of sales that are
+reported for tax purposes, which is used to measure tax evasion. In
+addition, productivity is measured as the log of sales per worker. No
+access to quantities data, they use LP but with sales and workers.
+
+Undisputed (?) facts: 1) Tax evasion is higher in poor countries; 2) Tax
+evading firms tend to be less productive (?).
+
+Productivity gaps between firms that comply with taxes and regulations
+and those which do not are significant, (between 25 and 50 \%) (Amin et
+al.~2019; Fajnzylber, 2011; Busso et al., 2012). These large
+productivity gaps can translate into low-economy wide productivity and
+growth: 1) if, by not complying with existing taxes and regulations,
+firms enjoy a potentially large implicit subsidy that allows them to
+stay in business despite low productivity, or 2) to expand their market
+share at the expense of more productive firms (Farrell, 2004; Bobbio,
+2016).
+
+Almeida and Carneiro (2009): Tax evasion may also increase firms'
+efficiency (productivity?). Avoiding onerous taxes might confer firms
+more flexibility in their employment and production decisions.
+
+Kleven et. al (2016): Larger firms are less likely to avoid taxes. The
+firm's use of business records increases as it hires more employees.
+They show that the government may be able to enforce higher tax
+compliance even in the presence of a low threat of audit due to the
+increased ease of whistleblowing as the firm grows.
+
+Tax evasion is hidden: it is difficult to obtain precise measures (Kundt
+et al., 2017; Slemrod and Weber, 2012).
+
+Loayza and Rigolini (2006) and La Porta and Shleifer (2014): informality
+is larger in lower GDPpC countries
+
+Tax evasion and informality are associated with lower income levels and
+productivity (Dabla-Norris and Feltenstein, 2003; Loayza, 1996; Sarte,
+2000)
+
+\subsection{\texorpdfstring{\citet{Paulus2015}}{@Paulus2015}}\label{paulus2015}
+
+The author models discrepancies between tax records and income survey
+data as individual tax evasion and measurement error jointly. Using data
+for Estonia, the author finds that people in the bottom and the top part
+of earnings distribution evade much more and about 12\% of wages and
+salaries in total are underreported. The identifying assumption, i.e.,
+location condition, is that people working in the public sector cannot
+evade taxes. In other words, measurement error is unrelated to the
+sector where the individual works while the same does not hold for tax
+compliance.
+
+The main constraint for empirical research on tax evasion is the lack of
+suitable data. This is worse for developing countries. A measure of
+undeclared income for individuals is needed. This kind of data is
+usually unreliable and very difficult/or expensive to obtain.
+
+Baldini et al.~(2009) use linked income data with tax records at the
+individual level to estimate tax evasion. However, the author assumes
+people report their true income in the survey to obtain a measure of
+non-reporting. Furthermore, in the measurement error literature, several
+studies assume the opposite, e.g.~Krueger (1991) and Bollinger(1998);
+survey of lit Chen et al.~(2011) and Bound et al.~(2001). Linked data is
+referred to as Validation data in the measurement error literature.
+Later studies have started to consider matching errors (Kapteyn and
+Ypma, 2007; Meijer et al., 2012) and errors in register data (Abowd and
+Stinson, 2013).
+
+Pissarides and Weber (1989) pioneered a methodology to study
+underreported income. They assume that the underreported income for one
+population group is inferred from a comparison with a reference group
+assumed to have negligible non-compliance but to be similar in other
+respects. These types of studies assume implicitly that the
+underreporting of income in a survey corresponds to the underreporting
+of income to the tax authority.
+
+\subsection{\texorpdfstring{\citet{Slemrod2019}}{@Slemrod2019}}\label{slemrod2019}
+
+Tax evasion policies have been a greater priority in developed countries
+since the 2008 Great Recession (IMF, 2015). For example, the UK
+announced efforts to combat tax avoidance, tax evasion, and `imbalances'
+in the tax system that would bring in \pounds 5 billion in additional
+revenue each year.
+
+Tax evasion matters because it affects both the resource cost of raising
+taxes and the distribution of the tax burden, i.e.~core interests of
+public economics. Policy question? Does curbing evasion improve the
+equity and efficiency of the public finances, given the cost of doing
+so? If so, what's the best way to go about it?
+
+Tax evasion creates horizontal inequity because people evade taxes by
+different proportionate amounts because of differences in personal
+characteristics ---risk aversion, tax system, and honesty--- and because
+of different opportunities and potential rewards for evasion. Likewise,
+efforts to combat tax evasion might create vertical inequity. For
+example, going after lower-income households such as the IRS fighting
+fraud related to the earned income tax credit (EITC) than going after
+unreported foreign accounts that are more likely to be held by
+high-income households.
+
+Tax evasion creates efficiency costs, e.g., the individual's cost of
+implementing and hiding non-compliance, the tax authority's cost of
+combating non-compliance, etc. Tax evasion also creates socially
+inefficient incentives to engage in activities that facilitate tax
+evasion. For example, tax-noncompliance opportunities attract people to
+self-employment who would otherwise be employees.
+
+Tax evasion creates misallocations. For example, it can cause companies
+that otherwise would not find it attractive to do so to set up
+operations in a tax haven to facilitate or camouflage evasion.
+
+Curtailing tax evasion cost shapes optimal policy ---it is not optimal
+to completely eradicate tax evasion because of the cost of doing so. The
+presence of evasion also alters the optimal setting of tax rates
+---because it affects the marginal efficiency cost of so doing--- and
+the choice of the tax base ---because different tax bases are more or
+less susceptible to evasion.
+
+Slemrod and Weber (2012) review macroeconomic measures of the informal
+economy.
+
+The standard tax evasion framework is the model of tax deterrence by
+Allingham and Sandmo (1972), who adapted Becker's (1968) model of
+criminal behavior to tax evasion. A relatively recent simplified
+framework is where the maximand is \(y(1-t)+te-c(e,\alpha)\), \(y\) is
+income, \(e\) is the understated tax liability, \(t\) is a linear tax
+rate, and \(c\) is the private cost of evasion which includes the
+utility cost of bearing risk and the expected value of punishment. The
+private cost may depend on the amount of attempted evasion and
+\(\alpha\), the vector of enforcement instruments, such as the extent of
+auditing.
+
+The model predicts that a risk-averse agent will evade taxes if the
+expected return is positive. Additionally, an increase in either the
+probability of detection or the penalty if detected will reduce evasion.
+Importantly, the effect of the tax rate is less clear, for even its sign
+depends on the penalty function (Yitzhaki, 1974).
+
+What matters about \(p\) is the perception of taxpayers. Much work is
+focused on what alters the taxpayer's perception of the enforcement
+environment.
+
+This framework naturally applies to individuals, and small, single-owned
+firms. Large firms might be risk-neutral rather than risk-averse.
+
+The challenge of measuring tax evasion is the incentive of evaders to
+conceal their behavior. Many taxpayers are unwilling to respond
+accurately maybe because of the threat of punishment or social shame.
+For this reason, even the most credible empirical studies of evasion
+don't actually have a reliable measure of evasion.
+
+Tax gap studies by auditing (real differences between countries' tax
+gaps or differences in methodologies?):
+
+-U.S. Overall gross tax-gap average over 2008-10 was \$458 billion USD,
+18.3\% of estimated tax liability (IRS, 2016). IRS National Research
+Program (NRP).
+
+-UK: overall tax gap from 2013-2014 6.4\% of true liability: 6.4\% for
+the corporation income tax 5.0\% individual income tax, and 11.1\%
+value-added tax (VAT). Small- and medium-sized enterprises account for
+over half of the overall tax gap (HMRC, 2015). Her Majesty's Revenue and
+Customs (HMRC, 2015) Toro et a. (2013).
+
+-Denmark's overall tax gap is only 2.2 percent of net income (Kleven et
+al., 2011).
+
+-OECD(2015) other countries.
+
+Sharp variations in the compliance rate by the extent of information
+reporting to the tax authority provide compelling evidence that the
+probability of successful evasion play a key role in the deterrence of
+tax evasion. For example, in the US, the estimated non-compliance rate
+when there is little to no third-party-reported information (e.g.,
+self-employment income) is 63\%, compared to 19\% and 7\% for `some' and
+`substantial' information reporting, respectively. Small businesses
+represent a large portion of the tax gap in individual income with
+approximately 47\% of underreporting. In contrast, only 1 \% of
+non-compliance is estimated for employee wages and salaries
+---substantial information reporting. Kleven et al.~(2011) find a
+similar disparity, but lower, non-compliance rates in Denmark, where
+14.9 \% for self-employment income but less than 1\% for third-party
+reported items. In other words, when the information reporting renders
+the likelihood of evading taxes successfully near zero, evasion is
+eradicated; when the likelihood is higher, evasion proliferates.
+
+Administrative data: Canada, UK, Brazil, Chile, China, Costa Rica,
+Ecuador, India, Pakistan, Rwanda, Tunisia, and Uganda.
+\href{https://www.irs.gov/pub/irs-soi/16jsrpprojects.pdf}{US access}
+
+RCT's review: Hallsworth (2014)
+
+Bérgolo et al.~(2018) RCT with firms using letters. Value-added-tax
+compliance, 20,000 Uruguayan small and medium-sized firms. The authors
+find that adding to the baseline letter a paragraph with statistics
+about the probability of being audited and the penalty rates increased
+tax compliance by about 6.3 percent (about one-fourth of its current
+level), and adding a paragraph that informs firms that evading taxes
+increased the probability of being audited increased tax compliance by
+about 7.4 percent.
+
+Ortega and Scartascini (2018) Colombia, individuals. Method of
+communication. The authors find sizable differences across delivery
+methods. Personal visits by a tax inspector are more effective than the
+impersonal methods; they are, alas, also much more expensive. In a
+follow-up study, Ortega and Scartascini (2015) find that the effect of
+phone calls falls between those of the impersonal methods and the
+personal visits.
+
+Almunia and Lopez-Rodriguez (2018) study the behavior of Spanish firms
+in response to a notch in enforcement intensity that arises because the
+Spanish Large Taxpayer's Unit (LTU) monitors firms with revenues above
+€6 million for all major taxes. Sure enough, there is significant
+bunching of firms just below the threshold. The bunching is more
+pronounced for firms that produce intermediate goods, which makes sense
+because their transactions create more of a paper trail than firms that
+sell to final consumers, and thus the discontinuous increase in
+enforcement intensity affects these firms more than retailers.
+
+Examining data from Ecuador, Carrillo, Emran, and Rivadeneira (2012)
+find evidence of bunching in reported tax liability just above the
+withholding threshold, suggesting that some firms manipulate their
+self-reported tax liability and possibly real economic choices to
+minimize expected tax payments subject to the discontinuity in the audit
+probability. Third-party data on sales and intermediate input costs
+reported by large firms who act as withholding agents indicate that
+bunching is indeed associated with tax evasion: self-reported sales are
+smaller than third-party reports for more than 10 percent of firms.
+``withholding'', large firms withhold and remit to the tax authority a
+fixed share of their purchases from small firms (and individuals), who
+can then apply the withheld amount as a credit against their
+self-reported tax liability. While withholding does not change the
+firms' true tax liability, there is typically a discontinuity in the
+audit probability at the withholding rate; firms seeking tax refunds
+(because self-reported tax liability is lower than the withheld amount)
+are audited at a higher rate than firms making additional tax
+remittances.
+
+In Chile, firms can only claim tax credits for inputs bought from
+tax-compliant suppliers, the invoice--credit VAT system has a built-in
+(albeit imperfect) self-enforcement mechanism for firm-to-firm
+transactions. Pomeranz (2015) tests this hypothesis by mailing
+increased-audit-threat letters to over 100,000 randomly selected Chilean
+firms, using a sample of over 300,000 firms receiving no letter as the
+control group. Consistent with theoretical predictions on the
+self-enforcement mechanism, the increase in VAT receipts (and therefore
+the inferred level of evasion) induced by the letters is concentrated at
+the level of sales from firms to final consumers, for which there is no
+paper trail.
+
+In Ecuador, Carrillo, Pomeranz, and Singhal (2017) examine the effect of
+a change in the tax authority's use of third-party information on
+reported corporate tax revenues. In the authors' study, the Ecuadorian
+tax authority informed some firms of the discrepancy between the two
+reports and offered them the opportunity to file an amended return. The
+authors compare the reporting behavior of firms before and after the
+notification and find that 24 percent of firms underreported revenue in
+the years when the government did not use the third-party-verified
+information. In the three rounds of the experiment, 11--19 percent of
+notified firms filed an amended return.
+
+In amended returns, firms correctly reported their revenues but also
+increased their reported costs almost one-for-one with the increase in
+reported revenues (96 cents for each dollar!), nearly eliminating any
+impact on apparent tax liability. This study also reveals that reported
+costs were lower than third-party information on costs, which at first
+blush seems to be at odds with a model of firms that seek to maximize
+after-tax profits. The authors propose that this behavior is consistent
+with firms who may believe that the probability of an audit is a
+function of firm size and profits. To appear small, and lower the odds
+of being audited, some firms may underreport both revenues and costs.
+
+Kumler, Verhoogen, and Frías (2013) study the effects on evasion of a
+1997 pension reform in Mexico that tied younger workers' retirement
+benefits more closely to the wage reported by employers. This reform
+provided a new incentive for this group of workers to ensure that their
+employers accurately reported their wages, which in turn might lower
+payroll tax evasion by firms. To examine the impact of this initiative,
+the authors combine two sources of data on wages: administrative data
+from the Mexican Social Security Insitute (IMSS) and household survey
+data from the Encuesta Nacional de Empleo Urbano (ENEU). The authors
+find that, consistent with a decline in evasion, the gap in median or
+mean wage within a cell between the ENEU data and the IMSS data fell for
+younger age groups after the pension reform but, as predicted, for older
+workers not affected by this reform there was no decrease in the gap
+between the two income reports.
+
+In Pakistan, corporations either pay a tax on profits or turnover,
+depending on which liability is greater. This effectively implies that
+at a profit rate lower than the ratio of the turnover tax rate to the
+profit tax rate, firms cannot deduct costs. Because in Pakistan a large
+portion of evasion is through misreporting of costs, this tax regime
+trades off loss in production efficiency (as firms move from a neutral
+profit tax to a distorting output tax regime) for a gain in revenue
+collection. Best et al.~(2015) use administrative data on the universe
+of corporations in Pakistan to estimate the elasticity of taxable income
+using the bunching of firms below the threshold profit rate. They find
+clear evidence of such bunching, whose location shifts along with
+changes in tax rates that move the threshold. Using the
+analysis-of-bunching methodology, they estimate that turnover taxes
+reduce evasion by between 60--70 percent.
+
+Relevance of tax evasion Widespreadness of tax evasion Seminal model of
+tax evasion Real effects of tax evasion firm-to-firm sales less likely
+to evade taxes small firms more likely to evade taxes evidence of
+misreporting of costs (Pakistan) Chile and Colombia tax evasion evidence
+
+\subsection{\texorpdfstring{\citet{Carrillo2022}}{@Carrillo2022}}\label{carrillo2022}
+
+The authors study tax evasion through the use of ghost firms --- fake
+firms that issue fraudulent receipts so that their clients can claim
+false deductions. Using transaction-level data from Ecuador, the
+research documents that ghost transactions are widespread; prevalent
+among large firms ---(!) measured as revenue level {[}related to
+size{]}--- and firms with high-income owners ---owners with experience
+in tax evasion? Sophisticated or less risk-averse owners?---; and
+exhibit suspicious patterns: bunching at the end of the fiscal year
+{[}tax evasion decision is realized post realization of productivity and
+true input optimization{]}, at round numbers, and just below financial
+system thresholds {[}no real economic activity behind{]}.
+
+Globally widespread but extremely limited researched problem. ``Ghost
+firms'' ---also known as ``invoice mills'', or ``missing traders''---
+issue fraudulent receipts that allow the receivers to claim additional
+tax deductions on value-added (VAT) and corporate income taxes (OECD,
+2017; Keen and Smith, 2006) Appendix B.
+
+Data: firm-to-firm transaction-level data with 800 `ghost firms' and
+firm owners of Ecuadorian firms data.
+
+Widespread and quantitatively important, not limited to small,
+semiformal firms, benefits those at the top of the income distribution.
+In 2015, 4.7\% of potential clients took deductions from a ghost firm.
+Annual ghost deductions were 14.1\% of the value of their purchase
+deductions {[}huge number!{]}. Larger firms are more likely to engage in
+ghost transactions and feature larger shares of ghost transactions in
+total input costs {[}a function of size{]}. Ghost deductions are
+disproportionately used by firms owned by high-income individuals.
+
+Process: Given a list of identified ghost firms (2016) by the Ecuadorian
+Internal Revenue Service (SRI), the authors identified ghosts' clients
+---firms with at least one purchase from ghosts firms--- with
+administrative data -which includes annual corporate and individual
+income tax filings in Ecuador (2010-2017) and monthly purchase annexes
+(2010-2015). The sample is restricted to firms that are required to file
+purchase annexes: incorporated firms (88\%) and large sole
+proprietorships (12\%) (i.e., annual sales \textgreater{} \$100,000,
+annual costs \textgreater{} \$80,000, or capital above \$60,000)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Tax deductions based on fake receipts from ghost firms are widespread
+  and large. 10.4\% of unique firms filed deductions based on receipts
+  from at least one identified ghost firm. On average, 3.6\% of all
+  purchases of ghost clients are from ghosts, amounting to 10.4\% of the
+  value of their purchase deductions. These shares are the highest,4.6\%
+  and 14.1\%, for 2015, the year before the ghost list was collected.
+  Earlier ghosts might have disappeared by the time the list was
+  established. Total tax evasion was \$2.1 billion in value, 1.7\% of
+  tax evaded for corporations and 11.5\% for sole proprietorships.
+\item
+  Evasion through ghost firms is more prevalent among relatively large
+  firms. Ghost clients have higher revenues, costs, and tax liabilities.
+  The probability of engaging in cost overreporting through ghost firms
+  increases monotonically in firm revenue ---maybe only because of more
+  transactions. Share of ghost deductions also increases throughout much
+  of the size distribution, except at the very top ---very large
+  corporations might have stronger incentives to avoid illegal behavior
+  or they can use more sophisticated avenues of tax avoidance that do
+  not require evasion using fake receipts (Bustos et al., 2022)
+\item
+  Ghost deductions are most prevalent in firms owned by high-income
+  individuals. The probability of having ownership of a ghost client and
+  the amount of ghost purchases attributed to individuals increases with
+  individuals' income. The amount of additional tax as a share of
+  owners' income is over 56 times higher in the top 5\% than in the
+  bottom 80\% of the income distribution, and almost 170 times higher in
+  the top 1\%. Ghost-firm-enabled tax evasion tends to reduce
+  disproportionately the effective taxation of firms owned by rich
+  individuals.
+\item
+  The number and value of ghost transactions are clustered towards the
+  end of the tax year ---the same as the calendar year in Ecuador. In
+  December, there as twice as many ghost transactions as during the six
+  previous months of the year. Non-ghost transactions are only 6\%
+  higher in December. This is consistent with firms assessing their
+  annual revenues at the end of the year and then utilizing ghost
+  transactions to achieve a target reported profit level or rate for tax
+  purposes. Similar to US firms spending more on capital investment
+  towards the end of the fiscal year to reduce tax obligations (Xu and
+  Zwick, 2022).
+\item
+  Ghost transactions bunch at round numbers more prevalently than
+  non-ghost transactions. This is consistent with ghost transactions
+  representing false activity (Klimek et al, 2018; Nigrim, 2018).
+\item
+  Ghost transactions exhibit bunching below the financial system payment
+  threshold. In Ecuador, transactions above \$5,000 (gross-of-VAT) are
+  required by law to be made through the formal financial sector
+  (e.g.~electronic transfers, checks, or credit cards). Ghost
+  transactions bunch just below \$5,000. In contrast the distribution of
+  non-ghost transactions is smooth through the \$5,000 threshold.
+\end{enumerate}
+
+Lit on tax evasion via ghost firms is extremely sparse. Waseem (2020)
+Pakistan. Policy: VAT rates reduced to zero. Ghost firms decreased. Most
+ghost deductions are claimed by exporters. Ghost deductions are a large
+share of over-claimed refunds for exporters. Mittal et al.~(2018)
+develop a Machine Learning algorithm to detect ghost firms.
+
+Most recent work on tax evasion focuses on firms' revenue misreporting
+(Slemrod, 2019; Pomeranz and Vila-Belda, 2019), but few have studied
+firms' cost misreporting. Recent firms' revenue misreporting studies
+have found that enforcement policies targeting revenue underreporting
+led to increasing reported costs ---to offset tax liabilities---, but
+there is no offsetting behavior ---reduction in reported revenue--- in
+the study by Carrillo et al.~(2022). This is consistent with third-party
+information reporting ---firm-to-firm transaction level data is used in
+this study--- decreasing the incentive to evade by increasing the
+probability of getting caught.
+
+Other studies finding bunching at the thresholds are: - VAT reporting
+thresholds: Onji, 2009; Asatryan and Peichl, 2017; Luksic and Mittal,
+2019; Liu et al., 2021. - Different tax regimes and regulations:
+Hasegawa et al., 2013; Best et al., 2015; Almunia and Lopez-Rodriguez,
+2018; Lopez-Luzuriaga, 2019; Chen et al., 2021; Clifford and
+Mavrokonstantis, 2021; Overview: Kleven, 2016.
+
+Intervention: Tax authority challenged deductions from firms with ghost
+transactions (ghost clients) during 2010-2015 by notifying them via
+email.
+
+{[}What goes into the cost overreporting function? Tax authority chooses
+effort (b(type)-c(type))e (?){]}Tax authorities target firms with higher
+potential tax recovery. In this study, notified firms were larger than
+typical incorporated ghost clients ---authors only had access to the
+data on incorporated firms that were notified. Notified firms had 2.4
+times higher median tax liability, the median amount of ghost deductions
+of these firms was \$181,000 (mean \$338,000) and the median share of
+ghost deductions out of their total purchases was 26\% (mean 38\%).
+{[}conditional on being large, the overreporting level does affect your
+probability of being audited.{]}
+
+{[}Evidence of overreporting in intermediates{]} Adjusting firms reduced
+most strongly non-labor costs: domestic purchases, other production
+costs, and imports. Some offsetting behavior was observed; Firms
+increased labor, inventory, and financial costs. However, overall total
+costs still decreased on average by 72 cents for every dollar contested
+in the notification.
+
+Many firms did not respond to the notifications. A portion might be
+explained by failure in communication (e.g., letters not reaching the
+firm or the right person within the firm). Firms might choose not to
+amend knowing the tax authority has limited capacity for follow-up
+enforcement. Adjusting firms tend to be somewhat smaller than all the
+notified firms.
+
+The intervention resulted in large reductions in firms' reported costs.
+The reduction in costs increased tax liabilities by \$20.6 million, 81\%
+increase on the \$25.4 million originally filed by adjusting firms. On
+average, reported costs were reduced by \$229,000
+
+Firm-to-firm transactions ---third-party reporting: firm's sales to
+other firms can be cross-checked--- are less like to underreport
+revenue. Firms did not adjust revenues down to offset tax liability
+resulting from the decrease in costs ---as in other studies where the
+enforcement strategies pushing firms to truthfully report their revenues
+led firms to make large offsetting adjustments by increasing reported
+costs (Asatryan and Peichl, 2017; Carrillo et al., 2017; Slemrod et
+al.,2017; Almunia and Lopez-Rodriguez, 2018; Mascagni et al., 2018;
+Naritomi, 2019; Li andWang, 2020)
+
+No evidence that the intervention was followed by firms going out of
+business or de-formalizing; consistent with ghost clients being large
+and established.
+
+International prevalence of false invoicing (ghost firms) - Mexico:
+between 2014 and 2018, the estimated annual tax revenue lost due to
+ghost firms was 5 billion MXN (SAT), 0.03\% of Mexico's GDP; 8,500
+identified ghost firms in 2018 (Senado de la Republica, 2019). - Chile:
+historically, false invoices represent between 15\% and 25\% of total
+VAT evasion. In 2004, fake-invoice tax evasion was 114 billion CLP,
+0.2\% of Chile's GDP (Gonzalez and Velasquez, 2013; Jorrat, 2001; CIAT,
+2008). - Colombia: fake-invoice tax evasion was around 2,300 billion
+COP, 0.2\% of Colombia's GDP (Portafolio, 2019). - Poland: In 2016,
+fake-invoice tax evasion amounted to 103,850 million PLN, 5.6\% of
+Poland's GDP (Poland's Minister of Finance, 2018). - Asia: South Korea
+(Krever, 2014) and China (Hashimzada et al., 2010; Barboza, 2013). -
+Africa: Kenya (Kenya Revenue Authority; Mak'Osewe, 2019); Rwanda
+(Mascagni et al., 2019; 2021); African Tax Administration Forum (Brain
+and Nwankwo, 2018).
+
+\subsection{\texorpdfstring{\citet{McLure1989}}{@McLure1989}}\label{mclure1989}
+
+\subsubsection{Colombian Tax System}\label{colombian-tax-system}
+
+The tax system of Colombia has been under constant study and revision
+since the 1960s.
+
+During the early 1960s, a Fiscal Survey of Colombia (1965) led by
+Professor Milton Taylor was prepared as part of the ongoing program of
+the Organization of American States and the Inter-American Development
+Bank. This study led to important administrative innovations, but few
+concrete substantive reforms.
+
+In 1970, Professor Richard Bird prepared a report, influential in terms
+of policy, based on his experience as a resident advisor to the
+government of Colombia on tax and fiscal policy during the period of
+1964-1966.
+
+In 1968, Professor Richard Musgrave was commissioned by President Carlos
+Lleras Restrepo to appraise the tax system and make recommendations for
+reform with the help of Colombian and foreign experts. The resulting
+document, Fiscal Reform for Colombia: Final Report and Staff Papers of
+the Colombian Commission on Tax Reform, significantly shaped the 1974
+and subsequent tax reforms. This report has also become a classic in the
+field of tax reform in developing countries.
+
+In late 1974 Colombia undertook a major fiscal reform drawing heavily on
+the recommendations of the Musgrave Commission.
+
+Other influential documents during this period were La Reforma
+Tributaria 1974 (Gillis and McLure, 1974) and a World Bank report
+(McLure, 1982). Finally, there exists a report on the taxation of income
+from business and capital (McLure, Mutti, Thuronyi, and Zodrow, 1989?)
+
+\subsubsection{Income tax}\label{income-tax}
+
+At the time of the Taylor Mission, Colombia's system of \emph{income and
+complementary taxes} consisted of a basic income tax, a net wealth tax,
+and an excess profit tax.
+
+In the early 1960s, the base of the Colombian income tax was quite
+broad. It included all ``enrichment''; it included corporate dividends
+and shares in the earnings of limited liability companies and
+partnerships.
+
+During this period, high-income individuals could evade the individual
+income tax on dividends and interest on bearer securities, since a
+withholding tax of only 12 percent was levied on such income.
+
+The income of individuals was taxed under a graduated schedule
+consisting of 56 rates, ranging from 0.50 to 51 percent. There was a
+complex system of personal deductions for expenditures on medical,
+educational, and other professional services; these deductions depended
+on the income and number of children of the taxpayer.
+
+Tax incentives were provided for, among others, industrial enterprises.
+In addition, income tax exemptions, limitations, or reductions were
+granted to oil companies, certain mining companies, large-scale
+agricultural improvements, cattle-raisers, Colombian airlines, certain
+basic industries, manufacturers using products from \emph{Paz del Rio}
+steel plant, and exporters other than coffee, petroleum, bananas, hides
+and precious metals.
+
+Juridical persons were subject to graduated rates. Corporate rates (on
+\emph{Sociedades anonimas}), which applied to all foreign entities, were
+12, 24, and 36 percent. The rates applied to limited liability companies
+(\emph{Sociedades de Responsabilidad Limitada}), the business forms used
+for many of the most important Colombian business ventures, were only 4,
+8, and 12 percent, and the income of partnerships was taxed at rates of
+3 and 6 percent. Whereas the income of proprietorships was taxed only in
+the hands of the owner under the individual tax, the income of juridical
+persons was taxed directly to the firm. The entire net income of limited
+liability companies (like that of partnerships) was taxed to the
+partners, whether or not distributed; by comparison, only dividends were
+taxed to owners of corporate shares.
+
+The tax system of Colombia suffered from many administrative problems in
+1960. A serious problem involved the interplay of an overly short
+statute of limitations (two years), a system of penalties and interest
+that encouraged false and delinquent returns, and an overburdened tax
+administration. In extreme cases, taxpayers could avoid taxation
+completely by deliberating reporting false information, and waiting for
+the statute of limitations to preclude correction by the fiscal
+authorities.
+
+\subsubsection{Net wealth tax}\label{net-wealth-tax}
+
+Since 1953, Colombia has imposed a tax on net wealth (\emph{impuesto
+complementario de patrimonio}), apparently to increase the tax burden
+related to income from capital and to induce a more productive use of
+land. The net wealth tax applies to individuals but not to corporations,
+partnerships, and limited liability companies. Taxable wealth was that
+held in Colombia, net of indebtedness. There were numerous exceptions,
+which paralleled, for the most part, those under the income tax. For
+example, there were exemptions for livestock kept for breeding purposes,
+certain agricultural investments, assets of Colombian airlines,
+investments in motor vehicle assembly or manufacturing plants,
+investments in securities of the \emph{Paz del Rio} steel plant, and
+investments in certain basic industries and certain iron and steel
+fabricators.
+
+\subsubsection{Excess-Profits Tax}\label{excess-profits-tax}
+
+Colombia imposed an excess-profits tax beginning in 1935; this tax was
+repealed in 1974.
+
+\subsubsection{The Taylor Mission
+Proposals}\label{the-taylor-mission-proposals}
+
+The Taylor Mission produced an impressive analysis of the distortions
+and inequities that flow from the disparate treatment of individuals,
+corporations, limited liability companies, and partnerships. It noted
+particularly the case for integration of the corporate and individual
+income taxes. However, it concluded that such a policy, integrating
+corporate and individual income taxes, was not warranted at the time.
+McLure rationalizes this contradiction with political realism because
+the double taxation had been recently introduced in 1953. The Mission's
+recommendation focused on the interplay between the corporate income
+tax, two of the supplementary taxes on income, and the excess-profits
+tax. The Mission favored a tax increase in limited liability companies,
+which it acknowledges were used as ``tax avoidance device''.
+
+The Mission devoted particular attention to the agricultural sector
+because of the potential revenue being lost and the potential role of
+tax policy to stimulate efficient use of rural resources. The Mission
+proposed a presumptive calculation of income from agriculture equal to
+10 percent of the assessed value of agricultural property.
+
+The Taylor Mission also proposed administrative changes such as
+withholding for wages, salaries, interests, and dividends, the
+requirement of advance tax payments based on estimated liabilities,
+self-assessment, extension of the statute of limitations, and rigorous
+application of penalties.
+
+\subsubsection{Musgrave Commission's
+Proposals}\label{musgrave-commissions-proposals}
+
+For the most part, the Taylor and Musgrave recommendations for income
+tax reform were broadly consistent.
+
+The Musgrave Commission repeated the call for heavier penalties for tax
+evasion. The Commission also suggested strategies to improve taxation of
+the \emph{hard-to-tax} group such as small traders, independent
+professionals, and agriculture.
+
+In contrast to the Taylor Mission, the integration of the taxes on
+business and on individuals was rejected by the Musgrave Commission.
+Instead, the Commission proposed that the income of corporations and
+limited-liability companies be subject to a unified system of taxation.
+The proposed system would consist of taxation at the entity level and at
+the individual shareholder level only on income that is distributed.
+Partnerships would be taxed at the entity level at a substantial lower
+rate, and subject to certain conditions limited-liability companies
+would be given the option to being taxed like partnerships; the
+partners' share in partnership profits would also be subject to
+individual taxation, whether distributed or not.
+
+\subsubsection{Sales tax and VAT}\label{sales-tax-and-vat}
+
+Colombia introduced a national sales tax in 1965. This was a
+single-stage manufacturers' tax levied at rates of 3 to 10 percent on
+finished domestic goods and imports. Buyers' certification that goods
+would undergo further processing prevented the transaction from being
+taxed to avoid double taxation. This system led inevitably to double
+taxation and evasion. In 1966, this sales tax was converted into a crude
+credit-type value added tax (VAT), but one that extended only through
+the manufacturing level and allowed no credit for tax paid on capital
+goods.
+
+\subsubsection{1974 reforms}\label{reforms}
+
+The 1974 reforms were greatly influenced by the Musgrave
+recommendations, which were considered and refined by local experts
+during the intervening half-decade. These reforms rationalized many
+aspects of the income and net wealth taxes, and eliminated the tax on
+excess profits, added a calculation of presumptive income based on net
+wealth, and further improved the system of internal indirect taxes.
+
+\emph{Income}. The 1974 reforms eliminated many exemptions and other
+forms of preferential treatment for non-labor income, including the
+exclusion of interest on public debt, exemptions for automobile
+producers and private electrical companies, and deductions for reserves
+for investment. Exemptions remained intact for the airlines, publishing,
+and reforestation sectors, and for various activities in selected
+regions (primarily ``frontier'' and other less developed ones).
+
+The 1974 reforms replaced graduated rates with flat-rate taxes for
+business income. But the taxation of corporations and limited liability
+companies was not unified. Instead, the income of corporations was taxed
+at 40 percent and that of limited liability companies and partnerships
+at a rate of 20 percent. As before, shareholders of corporations paid
+tax only on dividends, whereas owners of limited liability companies and
+partnerships were required to pay tax currently on the share of the
+profits of the company imputed to them.
+
+The 1974 reforms extended the concept of presumptive income from only to
+the agricultural sector (1973) to the economy as a whole. Income was
+presumed to be no less than 8 percent of net wealth, defined generally
+in the same way as for the net wealth tax.
+
+\emph{Internal indirect tax}. The 1974 reforms eliminated the
+possibility of buying otherwise taxed items on an exempt basis simply by
+certifying to the seller that they were to be processed further; under
+the new law, the tax credit (invoice) system was extended to all such
+transactions. This created administrative headaches because of the many
+claims for refunds that had to be processed.
+
+The law expanded the base of the VAT to reduce the regressivity of the
+tax at the upper en of the income scale. The VAT was applied to many
+services, including parking lots, insurance, international air fares,
+photographic developing and photocopying, telegraphic and telephone
+services, and fees of social clubs. Likewise, the degree of
+progressivity of the rate schedule applied to various goods, ranging
+from ``wage'' goods (6\%) to luxuries (35\%) was increased. The 1974
+reforms also provided more widespread exemptions, for example, for
+almost all food and for selected agricultural machinery.
+
+As under previous law, no credit was allowed on capital goods, in part
+to compensate for underpricing of capital resulting from various non-tax
+policies, including an undervalued exchange rate. On the other hand, the
+law contained anomalous provision that exempted imports of capital goods
+destined for ``basic'' industries. The combination of these policies
+placed domestic producers of capital goods at a competitive disadvantage
+relative to foreign producers of imported capital goods.
+
+\subsubsection{1974-1986 Period}\label{period}
+
+During this period of continued tinkering with the tax system in
+Colombia, some changes represented improvements, but the more important
+ones represented retrogression. These \emph{counter-reforms} were in
+large a response to the pleadings of politically powerful economic
+groups.
+
+For example, law 20 of 1979 effectively exempted cattle raising from
+income tax and arbitrarily reduced the value of breeding stock and dairy
+cattle for net wealth and presumptive income tax purposes by 50\%.
+
+Law 9 of 1983 introduced a tax credit of 10\% of dividends received was
+provided as a means of reducing double taxation of dividends.
+
+In addition, Law 9 of 1983 instituted a measure of presumptive income
+equal to 2 percent of gross receipts to supplement the measure based on
+net wealth. This reform was aimed specifically at the commerce and
+service sectors; the former were thought to evade the wealth-based
+presumptive tax by systematically understating inventories. In addition,
+it extended the presumptive income tax to limited liability companies.
+
+Tax returns were not required if 80 percent of income was from labor
+subject to withholding, if the taxpayer was not an owner of shares in a
+limited liability company (ownership of corporate shares was allowed),
+and if the taxpayer was not liable for sales tax, among other
+requirements.
+
+In 1983, the value-added tax (VAT) was extended to the retail level,
+with a \emph{simplified system} being made available to small retailers
+in the effort to ease compliance costs and administrative burden.
+Services like hotels, computing services, maintenance, and rental of
+goods and fixtures were brought into the scope of the tax. Moreover,
+there was some unification of rates to alleviate the difficulties of
+dealing with differential rates at the retail level which led to an
+increase in the rate of (non-creditable) tax applied to domestically
+produced capital goods. Imported capital goods continued to be exempt
+from tax. In 1984, exemptions for agricultural machinery, transportation
+equipment, and certain other goods were eliminated.
+
+\subsubsection{The 1986 reforms}\label{the-1986-reforms}
+
+The 1986 reform reduced tax rates dramatically. The top tax rate applied
+to individual income was reduced from 49 to 30\%; the same rate applied
+to the income of corporations and limited liability companies.
+
+Expense deductions of independent professionals were limited to 50\% of
+income in an effort to curtail a major source of abuse.
+
+The 1986 reforms unified the taxation of corporations and limited
+liability companies by taxing both at a rate of 30\%. It integrated the
+taxation of companies and individuals by exempting corporate dividends
+and participation in profits of limited liability companies from tax at
+the individual shareholder/owner level. Consistent with this treatment,
+losses, exempt income, and tax credits of companies cannot be used to
+offset income of their owners.
+
+\subsection{Fiscal Survey of Colombia}\label{fiscal-survey-of-colombia}
+
+Juridical persons in Colombia (p.~27-30).
+
+\begin{itemize}
+\item
+  Corporation (\emph{sociedad anónima}), the typical association of
+  capital and is the counterpart of the United States corporation. The
+  Colombian corporation is a separate juridical entity, having its own
+  name, domicile, and property. Corporations are subject to the
+  Superintendent of Corporations and are closely supervised, being
+  required, for example, to have an auditor and to maintain a legal
+  reserve. Foreign corporations, partnerships, and other companies or
+  entities are taxed as corporations. Also taxable as corporations are
+  limited stock partnerships (\emph{sociedades en comandita por
+  acciones}), which are limited partnerships with the partnership
+  interest represented by shares of stock.
+\item
+  General partnerships (\emph{sociedades colectivas}), which include
+  mining partnerships (\emph{sociedades ordinarias de minas}), \emph{de
+  facto} or constructive partnerships (\emph{sociedades de hecho}),
+  organized associations, associations, and foundations.
+\item
+  The third type of entity includes the ordinary limited partnership
+  (\emph{sociedad en comandita simple}), i.e., one other than a limited
+  stock partnership; and the limited liability company (\emph{sociedad
+  de responsabilidad limitada}). The limited liability company is quite
+  important (1960s) in Colombia. It combines certain features of a
+  corporation and a partnership. It is organized in the same manner as a
+  general partnership but with the additional requirement that the
+  articles of association must indicate that the personal liability of
+  the partners is limited to the capital contributed. The limited
+  liability company offers some advantages as compared to a corporation,
+  chiefly, the lower cost of organization and taxation (until the 1980s
+  reforms) and comparative freedom of operation. Under Colombian law,
+  the limited liability company is an association of persons, not of
+  capital, and it is not subject to the superintendent of Corporations
+  unless more than one-third is owned by a corporation.
+\end{itemize}
+
+Profits from individual proprietorships {[}were{]} taxed only once under
+the income tax system, but the dividends of corporations {[}were{]}
+taxed in full, resulting in a double income tax burden on distributed
+corporate profits. On the other hand, for both partnerships and limited
+liability companies, all income after payment of the income tax at the
+business level is construed to be distributed and is taxed again at the
+individual level.
+
+\subsection{\texorpdfstring{\citet{Perry1987}}{@Perry1987}}\label{perry1987}
+
+\emph{Development of a Value Added Tax in Colombia}
+
+\subsection{\texorpdfstring{\citet{Sanchez1994}}{@Sanchez1994}}\label{sanchez1994}
+
+\subsubsection{Reforma 1983}\label{reforma-1983}
+
+El objetivo de la reforma de 1983 fue reducir el déficit fiscal y evitar
+financiación con recursos de emisión. Asimismo, la reforma de 1983
+buscaba reactivar la economía aumentando la inversión mediante
+incentivos tributarios. Con el objetivo de la reactivación económica, se
+amplió y reestructuro la base tributaria y se simplificó el cobro de
+impuestos. Se redujo el número de personas obligadas a declarar renta y
+se extendió la renta presuntiva al comercio y los intermediarios
+financieros. Se eliminó la doble tributación para las sociedades
+anónimas (Corporations) y se redujeron las tasas para las sociedades
+limitadas y las personas naturales.
+
+El IVA se extendió al comercio y detal. Se unificaron y simplificaron
+las tarifas.
+
+\subsubsection{Reforma 1986}\label{reforma-1986}
+
+Objetivo: devolver la equidad y la neutralidad del impuesto de renta,
+fortalecer la administración tributaria y adecuar la estructura
+tributaria a la movilidad internacional de capitales.
+
+Con este objetivo, se igualó las alternativas de inversión de las
+empresas (impuestos sobre rendimientos de capital), se unificaron las
+tarifas tributarias para todo tipo de sociedades tanto nacionales como
+extranjeras; se eximió del pago de la retención en la fuente al 90\% de
+los asalariados del país.
+
+En el campo administrativo, la contribución más importante fue la
+delegación en la red bancaria de la recepción y recaudo del impuesto de
+renta (income tax).
+
+\subsubsection{Reforma 1990}\label{reforma-1990}
+
+Objetivo: Incrementar el ahorro de la economía, desarrollar el mercado
+de capitales y fomentar la repatriación de los capitales fugados. El
+objetivo también incluía disminuir la dependencia fiscal de la actividad
+económica externa y adecuar la estructura tributaria a la apertura
+comercial.
+
+Se desgravó la utilidad obtenida en la enajenación de acciones a través
+de bolsa, se exoneró del impuesto de renta a los fondos de inversión,
+fondos comunes y de valores y se redujeron las tarifas de remesas y
+renta para la inversión extranjera. Se dieron amnistías fiscales y se
+redujo el impuesto de saneamiento para fomentar la repatriación de
+capitales.
+
+Se amplió la base del IVA y se elevó la tarifa general de 10\% al 12\%.
+
+\subsubsection{Impacto en recaudos}\label{impacto-en-recaudos}
+
+Grafico 1. Se observa una caída en los ingresos tributarios como
+porcentaje del PIB desde 1980 hasta 1983, el punto más bajo. A partir de
+1984, los ingresos incrementan hasta 1987, donde se observa un declive
+hasta 1990. Por último, se observa un incremento para 1991.
+
+\subsubsection{Evasión}\label{evasiuxf3n}
+
+Grafico 3. Impuesto a la renta (Income tax). Se muestra una reducción
+sostenida a lo largo del tiempo, de 1980 a 1991. Se muestra también un
+decremento de 1980 a 1983, luego un incremento desde 1983 hasta 1988,
+luego decremento del 88 al 90 y finalmente un gran incremento del 90 al
+91.
+
+Grafico 4. IVA, evasión y recaudo. Se aprecia un decremento del 42\% de
+la tasa recaudo efectivo/recaudo potencial de 1984 hasta 1990 y luego un
+incremento en 1991.
+
+\subsection{\texorpdfstring{\citet{Almunia2018}}{@Almunia2018}}\label{almunia2018}
+
+Effects of size-dependent tax enforcement on firm's tax compliance. The
+authors exploit quasi-experimental variation generated by a Large
+Taxpayers Unit (LTU) in Spain, which monitors firms with more than 6
+million euros in reported revenue. Firms strategically bunch below the
+eligibility threshold in order to avoid stricter tax enforcement. The
+response is stronger in sectors where transactions leave more paper
+trail, suggesting that the monitoring effort and the traceability of
+information reported by firms are complements.
+
+Following the advice of multilateral organizations such as the IMF and
+the OECD, many tax administrations have established special units to
+monitor and improve the tax compliance of the largest taxpayers. The
+benefits of establishing Large Taxpayers Units (LTU) include higher tax
+revenues and efficiency.
+
+In Spain, the LTU focuses exclusively on firms with total operating
+revenue above 6 million euros, a threshold established in 1995 and it
+has remained constant in nominal terms ever since. The LTU has more
+auditors per taxpayer than the rest of the tax authority, and these
+auditors are on average more experienced and better trained to deal with
+the most complex taxpayers. Thus, while firms above and below the
+eligibility threshold face the same tax schedule, monitoring effort
+changes discretely at this arbitrary cutoff.
+
+In the model, firms make production and tax-reporting decisions given a
+tax rate on reported profits. Underreporting revenue lowers tax
+liabilities, but it also implies some resource costs (e.g., keeping two
+sets of accounting books or foregoing business opportunities). The
+detection probability increases endogenously with the amount evaded by
+firms, depending on the monitoring effort of the tax authority
+(resources devoted to analyzing tax returns and other paper trails
+generated by business activities) and the enforcement technology
+(technology to process the information generated by business
+transactions). The model assumes monitoring effort jumps up discretely
+at a certain threshold of reported revenue, while enforcement technology
+remains constant. This creates an incentive for firms to bunch below the
+LTU cutoff to avoid stricter tax enforcement. Firms are heterogeneous in
+their cost of evasion and in the effectiveness of monitoring efforts,
+which depend on the traceability of firms' transactions. Intermediate
+input sales (firm-to-firm) leave more paper trail and thus are easier to
+trace than firm-to-consumer sales. In line with this, the model predicts
+a stronger bunching response by upstream (firm-to-firm) firms compared
+to downstream (firm-to-consumer) firms.
+
+The authors use the Commercial Registry (Registro Mercantil) from the
+Banco de España. The dataset contains firm-level information on annual
+net operating revenue, input expenditures, number of employees, payroll
+taxes, total value added, and the tax base and liability in the
+corporate income tax, covering more than 80 percent of registered
+businesses in Spain with operating revenue between 3 and 9 million euros
+between 1995 and 2007. The LTU threshold remained constant at 6 million
+euros.
+
+Empirical finding 1: The authors find that a significant number of firms
+report revenues just below the LTU threshold. Their estimates indicate
+that firms reduce their reported revenue by 2 percent of their total
+revenue on average. The marginal buncher's response is bounded between
+6.4 and 8.7 percent of the total reported revenue.
+
+EF 2: The average bunching response is significantly higher in upstream
+sectors than in downstream sectors. The authors argue that the
+effectiveness of an additional monitoring effort is higher the easier it
+is to trace firms' transactions, which suggests that information trails
+and monitoring efforts are complements.
+
+EF 3: The authors suggest that they identify patterns that are not
+compatible with firms lowering real output (real response) suggesting
+firms are merely underreporting revenue (evasion response). They find
+that at the LTU threshold, the average ratio of material expenditures
+over total revenue shifts down sharply, while the average ratio of the
+wage bill (net of payroll taxes) as a share of total revenue shifts
+upward. The argument is that if bunchers reduced their true output, both
+ratios would jump up at the threshold because they are more productive
+than other firms below the threshold (?). Firms might also overreport
+material inputs and underreport labor costs to evade VAT and payroll tax
+(PRT). This doesn't make sense. This is precisely what would be expected
+if firms were reporting true output but overreporting inputs and
+underreporting labor.
+
+The authors also document a positive persistent gap in the average
+reported taxable profit and significant jumps in the VAT and PRT between
+the two enforcement regimes.
+
+\citet{Almunia2018} conclude that Spanish firms misreport both revenue
+and inputs. In their argument, the authors do not discard the case in
+which firms report their true output and only misreport inputs. However,
+upstream firms are likely to fall in this case, only input but not
+revenue misreporting. While buying firms have incentives to overreport
+input expenses, selling firms have incentives to underreport sales.
+Hence, due to opposite incentives, upstream firms might find it hard to
+underreport their revenue. If the expected benefits of staying below the
+LTU threshold and evading taxes outweigh the costs of forgone production
+and evasion, bunching upstream firms are likely to reduce their true
+output and misreport their inputs.
+
+This is not so clear in the introduction, where the authors just state
+that the cross-sectional patterns they observe in the data are not
+compatible with a real response (firms lowering their true output to
+avoid being monitored by the LTU). Maybe the reason for not clarifying
+they find evidence of both revenue and input misreporting in the
+introduction is because they focus on revenue misreporting and have
+nothing to say about input misreporting.
+
+The authors do not consider the case where firms only misreport inputs
+and reduce their true output to stay below the LTU threshold. To
+underreport revenue, firms need to coordinate with customers. Customers
+must agree to not require an invoice, to avoid leaving a paper trail.
+This is likely to happen with downstream firms, firms that sell to final
+customers. However, with upstream firms, firms selling to other firms,
+this is unlikely the case. The reason is that, unlike final customers,
+other firms have incentives to overreport their input consumption to
+reduce their VAT and CIT.
+
+It might be likely bunching upstream firms reduce their true output if
+the expected benefits of staying below the LTU threshold outweigh the
+cost of forgone production and evasion costs. The authors indeed find
+lower bunching for upstream firms than for downstream firms. Moreover,
+in the online appendix, the authors show that the ratios of intermediate
+expenses over revenue and labor expenses over revenue of wholesale
+(upstream) and retail (downstream) firms follow the general evasion
+patterns. Intermediates upward sloping then dropping at the cutoff;
+labor downward sloping then jumping at the cutoff.
+
+I argue that they cannot distinguish between the scenario where firms
+only misreport inputs and the one where firms can misreport both revenue
+and inputs. Another point they missed is that the input expense over
+revenue ratio is equal to the output elasticity of inputs. In turn, this
+elasticity depends on the shape of the production function and is
+productivity-free if the productivity is Hicks-neutral. This is key to
+their argument, because, if it might be true that bunchers are more
+productive than firms below the LTU threshold, their input shares are
+not necessarily lower. If the production function is Cobb-Douglas, for
+example, the shares are constant below and above the threshold.
+
+Under multiple taxes, firms have incentives to underreport revenue and
+overreport intermediate expenses to evade Value-Added Tax (VAT) and
+Corporate Income Tax (CIT), and to underreport labor expenditure to
+evade the Pay-Roll Tax (PRT). To study the mechanism of the bunching
+response under multiple taxes, the authors compare with the data their
+model's `predictions' on the input expense share of revenue under three
+different scenarios. The idea is that in the absence of the LTU, firms
+around the threshold should have similar average ratios of input
+expenditure as a fraction of revenue. Since the probability of detection
+is higher under the LTU, firms above the threshold have a smaller
+incentive to evade taxes. Once the LTU is introduced, some firms, the
+bunchers, above the threshold have incentives to bunch below to avoid
+stricter monitoring by the LTU and have larger expected profits. The
+heterogeneity arises because firms differ in monitoring effectivity by
+the authority and evasion costs.
+
+Under the first scenario, there is no misreporting. The bunchers reduce
+their input consumption to lower their output and stay below the LTU
+threshold. The authors argue that because the bunchers are more
+productive than the firms below the threshold, their input expenses
+share of revenue ratio is lower. Therefore the average ratio of input
+expenses over revenue should be lower the closer to the cutoff. Then, at
+the threshold, the would be a discrete upward jump for both ratios. In
+brief, the predictions of this scenario are (i) a downward trend of both
+ratios as we get closer to the revenue threshold along the revenue axis,
+and (ii) a discrete upward jump at the cutoff. Gap: share equals output
+elasticity of inputs, do not depend on productivity, but on PF shape.
+
+In the second scenario, the authors allow for revenue misreporting but
+no input misreporting. According to the authors, the bunchers' input
+expenses share of revenue ratios are mechanically greater than the firms
+below the cutoff. As a consequence, both ratios go up and then drop at
+the cutoff. Gap: share should be lower for bunchers than firms below the
+cutoff. Implicitly, authors are assuming that bunchers underreport
+revenue enough to make their input shares larger than firms below the
+cutoff, but is this guaranteed?
+
+Finally, the authors allow for misreporting revenues and inputs. In this
+scenario, One goes up, the other goes down. Gap:
+
+They conclude that it is likely that firms underreport revenue and
+misreport inputs (overreporting inputs, underreporting labor). This is
+not clear in the introduction as they have nothing to say about input
+misreporting. Moreover, they don't claim causality or significance. They
+just say that given their model's testable implications and what they
+observe in the data simply suggests the third scenario is the more
+likely to be happening.
+
+They take the input over revenues and labor over revenue ratios and look
+at what would happen just before the LTU threshold and after the
+threshold. In their argument, higher productivity firms would use a
+lower amount of inputs, hence, in the absence of misreporting, these
+shares should be smaller for firms with higher revenues (higher
+productivity). However, they miss the point that actually these ratios
+are productivity free and depend on the output elasticity of inputs.
+
+However, this ratio is equal to the output elasticity of inputs and it
+is free of productivity. Indeed, using the authors' notation, we have
+that for the intermediates,
+
+\[
+\begin{aligned}
+    \psi f_x(x,z) & \ge w \\
+    \frac{f_x(x,z)x}{f(x,z)} & \ge \frac{wx}{y}
+\end{aligned}
+\]
+
+In this equation, equality holds only when firms produce the optimum
+quantity. When they don't, then the intermediate's input expense over
+the revenue ratio is lower than the elasticity. For the sake of clarity,
+suppose the production function is Cobb-Douglas,
+\(f(x,z)\psi=x^\alpha z^{1-\alpha}\psi\). In this case, we have
+
+\[
+\alpha \ge \frac{wx}{y}
+\]
+
+Because they are producing less output than the optimal, bunchers' input
+cost over revenue is lower than the input elasticity of output.
+
+\subsection{\texorpdfstring{\citet{Rudnick2021}}{@Rudnick2021}}\label{rudnick2021}
+
+In the early 1990s, Colombia's publicly-owned power sector was
+financially distressed and poorly managed, becoming a risk for the
+country's macroeconomic stability. The sector reached a tipping point
+during extensive demand rationing episodes in 1992. Amidst the paradigm
+transformation promoted by the 1991 Constitution, Colombia launched an
+ambitious power sector reform package in 1994, introducing private
+sector participation, independent regulation of distribution and
+transmission, and competition in power generation and retailing.
+
+Colombia's power sector was heavily distressed in the early 1990's.
+Financially unsustainable utilities placed an enormous burden on the
+country's fiscal gap. Efficiency was very low overall, particularly in
+areas with high electricity theft and fraud. Furthermore, two major
+blackout periods, first in 1983 and then in 1992-1993, pushed power
+sector reform to the top of the country's agenda in 1993 (Larsen, Dyner,
+Bedoya, \& Franco, 2004).
+
+To tackle these challenges, a comprehensive reform package was launched
+with enactment of Laws 142 and 143 of 1994. These laws established the
+framework for vertical unbundling and private sector participation, a
+new regulatory framework and rate-system governed by principles such as
+efficiency and financial sufficiency, and introduction of wholesale
+competition, among other measures.
 
 \section{Colombia 1981-1991}\label{colombia-1981-1991}
 
@@ -1368,26 +2545,26 @@ column{6}={halign=c,},
 }                     %% tabularray inner close
 \toprule
 SIC & Industry & P&T (1990) & Change & Change Year & Annual Sales Tax (82-86) \\ \midrule %% TinyTableHeader
-311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idx1up3g3fb2lgt2suro8v.png} \\
-312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idu2o2dorhxrnug98uz6wz.png} \\
-322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id71ocwfmd0prx4hd6ymuj.png} \\
-381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idjkvdt41aihjae54h49xw.png} \\
-321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idc8q59az6x3tzw0uldxug.png} \\
-382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idjqzd4kugbm3t3p7cr2a6.png} \\
-384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idy4e0bvrp0zuw0ktixl0r.png} \\
-383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idp7hhztt9w0nfkpclpcjg.png} \\
-313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idvyub99y37k8ws3yxuedd.png} \\
-341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id8x07fp77sbjks9xajan1.png} \\
-324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id3p3l7fq53kmb21pdcl1k.png} \\
-342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idzsfyu6g7pmk0y3qirpn8.png} \\
-369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idywxjjtjxw3jvz3ztth9j.png} \\
-332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id1by32etha8c22tmsi4rz.png} \\
-390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idtcebrve1h9x047kxzyap.png} \\
-351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idbxsl3q452z49fk3lpug8.png} \\
-352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idfk6a69k8mui217qc679j.png} \\
-356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idddpoehhtvxioljpi8duy.png} \\
-331 & Wood and Wood and Cork Products, Except Furniture &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/idhylz85wfc68pub77eiuk.png} \\
-323 & Leather and Products of Leather, Leather Substitutes and Fur, Except Footwear and Wearing Apparel &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/id6z1ikbbr32da44s7y0w4.png} \\
+311 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idy7plycf0g9pprxhxztj7.png} \\
+312 & Food Manufacturing &   & Exempt &  & \includegraphics[height=4em]{tinytable_assets/idaibps6gb96ga5ig7o27t.png} \\
+322 & Wearing Apparel, Except Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/id445tjd0zxykkyqzn4488.png} \\
+381 & Fabricated Metal Products, Except Machinery and Equipment &   & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id8l953i38cywf801nk1hf.png} \\
+321 & Textiles & 6 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idsgbbupx50hnx9xgdgalc.png} \\
+382 & Machinery Except Electrical & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/idw5xcvy5tqtel25t6scyq.png} \\
+384 & Transport Equipment & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/ideviligh6om96gh55rnm2.png} \\
+383 & Electrical Machinery Apparatus, Appliances and Supplies & 6 to 10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id3be0wjjb3h7un6pcu3m0.png} \\
+313 & Beverage Industries & - to 35;10 & Increased & 85 & \includegraphics[height=4em]{tinytable_assets/id4d5v1fl9r1e9649ak4u9.png} \\
+341 & Paper and Paper Products & 15 to 10 & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idrdqrvzn84bvadzwulwh4.png} \\
+324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear &   & Increased & 84 & \includegraphics[height=4em]{tinytable_assets/idznu9uynb5xueqfhyy11y.png} \\
+342 & Printing, Publishing and Allied Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id6mu7y2sngar4ubva3xgq.png} \\
+369 & Other Non-Metallic Mineral Products &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idsgx3yqqx6et0zgdoyqed.png} \\
+332 & Furniture and Fixtures, Except Primarily of Metal &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id3s8dvox2bhk4y2t9jzu9.png} \\
+390 & Other Manufacturing Industries &   & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/id20pgiimtv9jzkxu0kios.png} \\
+351 & Industrial Chemicals & 15 to 10 & Decreased & 84 & \includegraphics[height=4em]{tinytable_assets/idrk6mwr3enxw3v7q4rmmm.png} \\
+352 & Other Chemical Products & 6;15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idi1po1kh0wmpt7uj9kbwd.png} \\
+356 & Plastic Products Not Elsewhere Classified & 15 to 10 & No Change &  & \includegraphics[height=4em]{tinytable_assets/idf7ilp4zegsi3996buxfi.png} \\
+331 & Wood and Wood and Cork Products, Except Furniture &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/idxphb8tp3uktdof741yid.png} \\
+323 & Leather and Products of Leather, Leather Substitutes and Fur, Except Footwear and Wearing Apparel &   & No Change &  & \includegraphics[height=4em]{tinytable_assets/idymsutpfjkbwp4pu2ur3c.png} \\
 \bottomrule
 \end{tblr}
 
@@ -3873,7 +5050,10 @@ indicates what the firm should pay to the government. If the difference
 is negative, the firm receives a refund from the tax authority.
 
 \[
-\tau = \frac{\tau_0P_tY_{it} - \tau_1\rho_t M_{it}}{P_tY_{it}}
+\begin{aligned}
+\tau &= \frac{\tau_0P_tY_{it} - \tau_1\rho_t M_{it}}{P_tY_{it}} \\
+&= \tau_0 - \tau_1 \beta
+\end{aligned}
 \]
 
 In Colombia, the total amount charged by the firm as sales tax depends
@@ -3916,49 +5096,13 @@ process the payment}. Suspicion of fraudulent activities might further
 delay the process. Therefore, firms in this situation did not have
 incentives to overreport inputs to increase their refunds.
 
-(On the contrary, firms with negative effective tax rates would have
-incentives to \emph{underreport} inputs to reduce the risk of being
-audited due to the refunds. These firms would be \emph{better off
-reporting enough inputs to offset the sales tax charged on their
-products, thus avoiding the complications of refunds and potential
-audits}. This might explain the negative coefficients found in the
-statistical test in the empirical section of this paper. Why? Because
-corporations have incentives to report truthfully their inputs, not only
-because they are subject to harder scrutiny by the tax authority, but
-also because they would not like to reduce their profits artificially;
-profits influence the value of their shares, and thus, the wealth of
-their shareholders.
-
-Underreporting inputs is the only reasonable explanation of the
-significantly negative coefficients found in the statistical test of tax
-evasion. Neither market power nor technology differences could explain
-the negative coefficients. Both market power on either side and
-technology differences would result in a smaller input cost share of
-revenues.
-
-Market power in the sales market implies that firms can sell at higher
-prices, increasing the denominator of the share, resulting in a smaller
-share. Market power in the buying market implies firms can buy inputs at
-lower prices, decreasing the numerator of the share, leading to smaller
-shares, too. Because corporations are more likely to have market power,
-their smaller share would lead to a positive coefficient in the
-statistical test and smaller output elasticity of inputs.
-
-Likewise, firms with better technology are more likely to be more
-efficient in using inputs, resulting in smaller input costs relative to
-revenues. Because corporations are more likely to have better
-technology, their smaller share would lead to a positive coefficient in
-the statistical test and smaller output elasticity of inputs. Therefore,
-the negative coefficients found in the statistical test cannot be
-explained by market power or technology differences, but rather by firms
-with negative effective tax rates underreporting their inputs to avoid
-complications with refunds and potential audits.)
-
 Whether firms in certain industries have incentives to overreport their
 inputs to evade sales taxes might \textbf{not} be \textbf{obvious}
-\emph{ex-ante}. For example, if the available data does not allow for
-estimating the average effective tax rate by type of firm in each
-industry.
+\emph{ex-ante}. The tax code might be complex, with many exemptions and
+different statutory rates. Different taxes might generate overlapping or
+conflicting incentives. Available data might lack details on the
+products or inputs used by firms, making it difficult to identify the
+effective sales tax rate.
 
 A first contribution of this paper is to provide practitioners and
 policymakers a way to identify industries where tax evasion through
@@ -3970,7 +5114,75 @@ that firms in an industry of interest do not evade sales taxes by
 overreporting; the alternative states that firms do commit tax evasion
 Section~\ref{sec-tax-ev-test}.
 
+Failing to reject the null hypothesis does not necessarily imply that
+firms in this industry are not overreporting. If a researcher suspects
+this practcie on a particular industry, he would have to investigate if
+the assumptions of the model are not unreasonable for said industry. The
+main assumption comes from the production function method, even though
+they might differ in their productivity, evaders and non-evaders share a
+common technology.
+
+With this in mind, in any dataset using SIC codes, it should be
+considered that the SIC codes groups firms with similar products, but
+some categories might group products that require different
+technologies. Furthermore, most firms are multiproducts, and might be
+classified under a certain SIC code because it produces more of a
+certain product marginally.
+
 \subsection{Showing the Evidence}\label{showing-the-evidence}
+
+\begin{table}
+
+\caption{\label{tbl-ielas-top5}Intermediate elasticities for
+Corporations (Non-Evaders) and non-Corporations (Evaders) for different
+industries. Estimates were obtained using GNR (2020) method assuming a
+CD functional form. Intermediates are defined as raw materials.
+\(\varepsilon\) is defined as \textbf{measurement error}. The Tax
+Evasion Test displays the coefficient of the statistical test, where the
+null hypothesis states that there is no tax evasion through cost
+overreporting. Among the industry characteristics, Sales is the
+industry's market share of the total sales in Colombia between 1981 and
+1991. Sales Tax Rate is the average sales tax reported rate. Exports is
+the average share of exports of the industry total sales, and Exporters
+is the share of firms exporting 10 percent or more of their total sales.
+Bias-corrected bootstrap confidence intervals at 95\% significanve level
+are displayed in brackets. *, **, *** denote significance at the 10\%,
+5\%, and 1\% levels (one-sided).}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
+\cline{2-3} \cline{4-4} \cline{8-10}
+SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
+\hline
+ & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
 
 \begin{table}
 
@@ -3985,59 +5197,115 @@ industry characteristics, Sales is the industry's market share of the
 total sales in Colombia between 1981 and 1991. Sales Tax Rate is the
 average sales tax reported rate. Exports is the average share of exports
 of the industry total sales, and Exporters is the share of firms
-exporting 10 percent or more of their total sales.}
+exporting 10 percent or more of their total sales. Bias-corrected
+bootstrap confidence intervals at 95\% significanve level are displayed
+in brackets. *, **, *** denote significance at the 10\%, 5\%, and 1\%
+levels (one-sided).}
 
 \centering{
 
 \centering
-\begin{tabular}[t]{c|>{\centering\arraybackslash}p{7em}|>{\centering\arraybackslash}p{7em}|c|c|c|c|c}
+\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
 \hline
-\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{4}{c}{Inds. Char.} \\
-\cline{2-3} \cline{4-4} \cline{5-8}
-SIC & Corps. & Others & Tax Ev. & Sales (Mkt \%) & Sales Tax Rate & Exports (Avg. \%) & Exporters (\%)\\
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
+\cline{2-3} \cline{4-4} \cline{8-10}
+SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
 \hline
-\multicolumn{8}{l}{\textbf{31 Food \& Beverages}}\\
+\multicolumn{10}{l}{\textbf{31 Food \& Beverages}}\\
 \hline
-\hspace{1em} & 0.6 & 0.61 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & \multirow[t]{-2}{*}{\centering\arraybackslash -0.0085 (0.0124)} & \multirow[t]{-2}{*}{\centering\arraybackslash 23.5} &  & \multirow[t]{-2}{*}{\centering\arraybackslash 4.3} & \multirow[t]{-2}{*}{\centering\arraybackslash 6.6}\\
-\cline{1-5}
-\cline{7-8}
-\hspace{1em} & 0.58 & 0.57 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 312} & [0.49, 0.65] & [0.52, 0.61] & \multirow[t]{-2}{*}{\centering\arraybackslash -0.1493 (0.0257)} & \multirow[t]{-2}{*}{\centering\arraybackslash 5.3} & \multirow[t]{-4}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 0.2} & \multirow[t]{-2}{*}{\centering\arraybackslash 2.5} & \multirow[t]{-2}{*}{\centering\arraybackslash 3.6}\\
-\cline{1-8}
-\hspace{1em} & 0.29 & 0.35 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & \multirow[t]{-2}{*}{\centering\arraybackslash 0.0659 (0.0123)***} & \multirow[t]{-2}{*}{\centering\arraybackslash 9.6} & \multirow[t]{-2}{*}{\centering\arraybackslash 8.4} & \multirow[t]{-2}{*}{\centering\arraybackslash 0.2} & \multirow[t]{-2}{*}{\centering\arraybackslash 0.5}\\
-\cline{1-8}
-\multicolumn{8}{l}{\textbf{32 Textile, Apparel \& Leather}}\\
+\hspace{1em} & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.58 & 0.57 & -0.01 & 188 & 41 & 5.3 & -0.3 & 0.2 & 0.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 312} & [0.49, 0.64] & [0.51, 0.63] & [-0.11, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{32 Textile, Apparel \& Leather}}\\
 \hline
-\hspace{1em} & 0.39 & 0.44 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 321} & [0.35, 0.41] & [0.42, 0.45] & \multirow[t]{-2}{*}{\centering\arraybackslash 0.0842 (0.0111)***} & \multirow[t]{-2}{*}{\centering\arraybackslash 7.4} & \multirow[t]{-2}{*}{\centering\arraybackslash 7.9} & \multirow[t]{-2}{*}{\centering\arraybackslash 2.8} & \multirow[t]{-2}{*}{\centering\arraybackslash 6.9}\\
-\cline{1-8}
-\hspace{1em} & 0.35 & 0.42 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 322} & [0.3, 0.4] & [0.4, 0.43] & \multirow[t]{-2}{*}{\centering\arraybackslash 1.1582 (0.0145)***} & \multirow[t]{-2}{*}{\centering\arraybackslash 2.6} & \multirow[t]{-2}{*}{\centering\arraybackslash 8.0} & \multirow[t]{-2}{*}{\centering\arraybackslash 3.9} & \multirow[t]{-2}{*}{\centering\arraybackslash 7.6}\\
-\cline{1-8}
-\hspace{1em} & 0.56 & 0.47 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 323} & [0.5, 0.58] & [0.44, 0.5] & \multirow[t]{-2}{*}{\centering\arraybackslash -0.1731 (0.0179)} & \multirow[t]{-2}{*}{\centering\arraybackslash 1.1} & \multirow[t]{-2}{*}{\centering\arraybackslash 8.1} & \multirow[t]{-2}{*}{\centering\arraybackslash 16.1} & \multirow[t]{-2}{*}{\centering\arraybackslash 30.6}\\
-\cline{1-8}
-\hspace{1em} & 0.43 & 0.46 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 324} & [0.36, 0.47] & [0.45, 0.47] & \multirow[t]{-2}{*}{\centering\arraybackslash 0.0331 (0.0188)**} & \multirow[t]{-2}{*}{\centering\arraybackslash 1.0} & \multirow[t]{-2}{*}{\centering\arraybackslash 8.0} & \multirow[t]{-2}{*}{\centering\arraybackslash 3.7} & \multirow[t]{-2}{*}{\centering\arraybackslash 7.8}\\
-\cline{1-8}
-\multicolumn{8}{l}{\textbf{33 Wood \& Wood Products}}\\
+\hspace{1em} & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.35 & 0.42 & 0.2*** & 737 & 22 & 2.5 & 6.5 & 8.1 & 4.6\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 322} & [0.3, 0.4] & [0.4, 0.43] & [0.07, 0.35] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.56 & 0.47 & -0.19 & 99 & 13 & 1.2 & 5.3 & 8.1 & 5.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 323} & [0.5, 0.59] & [0.45, 0.5] & [-0.26, -0.07] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.43 & 0.46 & 0.07** & 192 & 9 & 1.0 & 5.9 & 8.0 & 4.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 324} & [0.36, 0.47] & [0.44, 0.48] & [-0.01, 0.22] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{33 Wood \& Wood Products}}\\
 \hline
-\hspace{1em} & 0.32 & 0.41 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 331} & [0.24, 0.38] & [0.38, 0.44] & \multirow[t]{-2}{*}{\centering\arraybackslash 0.1851 (0.0198)***} & \multirow[t]{-2}{*}{\centering\arraybackslash 0.6} & \multirow[t]{-2}{*}{\centering\arraybackslash 5.6} & \multirow[t]{-2}{*}{\centering\arraybackslash 2.1} & \multirow[t]{-2}{*}{\centering\arraybackslash 4.6}\\
-\cline{1-8}
-\hspace{1em} & 0.36 & 0.35 &  &  &  &  & \\
-\cline{2-3}
-\multirow[t]{-2}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\centering\arraybackslash 332} & [0.27, 0.42] & [0.33, 0.37] & \multirow[t]{-2}{*}{\centering\arraybackslash -0.0353 (0.0142)} & \multirow[t]{-2}{*}{\centering\arraybackslash 0.3} & \multirow[t]{-2}{*}{\centering\arraybackslash 10.5} & \multirow[t]{-2}{*}{\centering\arraybackslash 0.8} & \multirow[t]{-2}{*}{\centering\arraybackslash 2.2}\\
+\hspace{1em} & 0.32 & 0.41 & 0.24** & 172 & 13 & 0.6 & 5.0 & 5.6 & 1.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 331} & [0.24, 0.37] & [0.38, 0.44] & [0.05, 0.46] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.36 & 0.35 & -0.03 & 193 & 12 & 0.3 & 9.2 & 10.6 & 4.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 332} & [0.26, 0.43] & [0.33, 0.37] & [-0.23, 0.21] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{34 Paper \& Printing}}\\
+\hline
+\hspace{1em} & 0.49 & 0.47 & -0.05 & 153 & 41 & 5.1 & 6.7 & 9.0 & 4.7\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 341} & [0.43, 0.52] & [0.43, 0.49] & [-0.17, 0.07] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.34 & 0.37 & 0.07** & 347 & 40 & 2.9 & 6.4 & 7.7 & 3.7\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 342} & [0.29, 0.36] & [0.36, 0.39] & [-0.01, 0.2] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{35 Chemicals, Petroleum, Rubber \& Plastic}}\\
+\hline
+\hspace{1em} & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.5 & 0.45 & -0.1 & 272 & 53 & 3.4 & 7.0 & 10.0 & 6.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 356} & [0.48, 0.54] & [0.43, 0.46] & [-0.17, -0.04] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{36 Non-Metallic Mineral Products}}\\
+\hline
+\hspace{1em} & 0.24 & 0.3 & 0.2*** & 274 & 58 & 3.4 & 5.0 & 5.5 & 2.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 369} & [0.19, 0.27] & [0.28, 0.33] & [0.05, 0.38] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{38 Fabricated Metal Products, Machinery \& Equipment}}\\
+\hline
+\hspace{1em} & 0.41 & 0.41 & -0.01 & 633 & 85 & 4.0 & 7.3 & 9.3 & 4.9\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 381} & [0.38, 0.44] & [0.4, 0.43] & [-0.08, 0.06] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.38 & 0.37 & -0.02 & 364 & 46 & 2.0 & 6.4 & 7.9 & 4.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 382} & [0.33, 0.4] & [0.35, 0.38] & [-0.09, 0.1] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.4 & 0.42 & 0.04 & 213 & 57 & 3.9 & 7.1 & 8.9 & 4.6\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 383} & [0.35, 0.43] & [0.39, 0.44] & [-0.05, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.44 & 0.39 & -0.13 & 238 & 42 & 6.9 & 5.5 & 7.7 & 5.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 384} & [0.37, 0.48] & [0.37, 0.42] & [-0.21, 0.02] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{39 Other Manufacturing}}\\
+\hline
+\hspace{1em} & 0.34 & 0.35 & 0.04 & 179 & 18 & 0.9 & 9.8 & 11.2 & 4.1\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 390} & [0.26, 0.39] & [0.33, 0.37] & [-0.15, 0.27] &  &  &  &  &  & \\
 \hline
 \end{tabular}
 
@@ -4057,11 +5325,14 @@ SIC & Corps. & Others & Tax Ev. & Sales (Mkt \%) & Sales Tax Rate & Exports (Avg
   313 Beverages (Soft drinks, Alcoholic beverages, etc.)
 \end{itemize}
 
-In contrast to 311 and 312, 313 is not exempt from the sales tax. The
-evidence of tax evasion is significant as shown by the positive
-coefficient of the statistical test. Also, the output elasticity of
-intermediates is significantly smaller for non-evaders (Corporations)
-than for evaders (non-Corporations).
+In the Food and Beverages industry classification, industry 313 beverges
+displays suspicious activity of overreporting. This finding is
+consistent with the model because, in contrast to 311 and 312, industry
+313 is not exempt from the sales tax. In fact, the effective sales tax
+rate for industries 311 and 312 is negative, implying that these firms
+were receving refunds from the government. In comparison, industries in
+313 industry would have higher incentives to overreport because of their
+positive effective sales tax.
 
 32 Textile, Apparel \& Leather:
 
@@ -4072,25 +5343,63 @@ than for evaders (non-Corporations).
 \item
   322 Wearing apparel
 \item
-  323 Leather Products
+  323 Leather and Fur Products
 \item
   324 Footwear
 \end{itemize}
 
-Table~\ref{tbl-ielas} also shows evidence for tax evasion by
-overreporting in industries 321, 322, and 324, but not in 323.
+Table~\ref{tbl-ielas} also shows evidence for potential tax evasion by
+overreporting in industries 321, 322, and 324. Again, from the theory
+perspective, these firms face positie effective tax rates, tax rates
+generate incentives to evade. This is consistent with the model.
 Corporations in industries 321, 322, and 324 display intermediate
 elasticities statistically smaller than the rest of the firms and the
-tax evasion test display a significantly positive coefficient. Not, for
-industry 323.
+tax evasion test display a significantly positive coefficient.
 
-This makes sense because industry 323 displays by far the largest share
-of exporters and firms exports represent the largest average share of
-sales. Because exports are zero-rated for sales tax, firms in this
-industry have low incentives to evade taxes by overreporting their
-inputs.
+What about industry 323? The effective sales tax rate is positive but
+does not display evidence of evasion according to the test, moreover the
+coefficient of the test is negative and statistically significant as
+indicated by the confidence intervals.
 
-33 Wood \& Wood Products:
+Most likely, it is not a good idea to compare corporations with the rest
+of the firms in this industry. First, looking at the sample size, we
+note that the number of corporations in this industry is small. While
+this is also true for industry 324, looking more closely, we can also
+note that industry 323 groups classifications 3231 (Leather Tanning and
+Finishing), 3232 (Fur dressing and Dyeing), and 3233 (Leather products,
+except footwear and wearing apparel). In contrast, industry 324, only
+includes 3240 (Footwear, except plastic). The two most important groups
+of 323 are 3231 (30\% of all the firms) and 3233 (60\%). However, the
+composition of these subindustries is different between corporations
+(60/40) and non-corporations (22/73).
+
+Although technologies between small and large firms were similar at the
+core, the processes were significantly different which raises the
+question on the validity of the comparision between corporations and the
+other firms. During this period, small firms were tipically artisanal
+producers. These smaller establishments relied primarily on traditional
+local tanning methods based on vegetable extracts such as quebracho and
+chestnut. The process is long, typically requiring several weeks,
+however the products are highly valued because their durability and the
+distinctive patina it acquires as it ages. Their products were destined
+for the local market.
+
+In contrast, large firms used a chrome-based mineral tanning, mechanized
+drums and automated finishing machinery. Chromium tanning is faster and
+allows for mass scale consistent quality. The product is softer and
+water resistant. These characteristics make chrome-based tanning leather
+suitable for exporting to the US and European markets. However, chromium
+disposal requires advanced waste water treatment necessary to remove
+havey metals and prevent chromium discharge into the environment.
+Furthermore, these firms need to comply with strict enviromental
+regulations including regular monitoring, hazard assessment, and
+reporting.
+
+The data shows that corporations are more oriented to the foreign market
+than the rest of the firms, with highest average share of exports (28
+vs.~13\%), highest share of exporters (80 vs 35\%).
+
+33 Wood \& Wood Products; 34 Paper \& Printing:
 
 \begin{itemize}
 \tightlist
@@ -4098,23 +5407,126 @@ inputs.
   331 Wood Products except furniture (Sawmills, Containers, etc.)
 \item
   332 Wood Furniture (Wooden furniture and fixtures)
+\item
+  341 Paper and Paper Products
+\item
+  342 Printing, publishing and allied industries
 \end{itemize}
 
-Both industries sell their products locally (low shares of exports) and
-one third of their joint consumption comes from forestry, which is
-exempt of sales tax (IO-Matrix 1985 Colombia). For industry 331, the
-large share of primary goods probably leads to a high effective sales
-tax rate because we expect there might not be many more other inputs
-needed in the production process. Hence, firms in this industry might
-face high incentives to overreport their non-primary inputs to evade
-sales taxes.
+In these categories, we find that industries 331 and 342 display
+suspicious activity of overreporting. However, results should be taken
+with caution in particular for industry 331 because the sample of
+corporations is relatively small.
 
-However, for firms in industry 332, even though they also consume a
-large share of primary goods, they also consume a more diverse set of
-inputs to produce the wood furniture, such as textiles, chemicals, foam
-cushions, and others. Because of this wide range of inputs, the sales
-tax paid for their inputs might be high leading to a low effective sales
-rate and hence, low incentives to evade taxes.
+Again, failing to reject the null hypothesis of no tax evasion could
+only mean that cost overreporting cannot be identfied with the data
+available using corporations as reference group.
+
+35 Chemicals, Petroleum, Rubber \& Plastic; 36 Non-Metallic Mineral
+Products:
+
+\begin{itemize}
+\tightlist
+\item
+  351 Industrial Chemicals (Basic chemicals, Fertilizers, Synthetic
+  resins and fibers)
+\item
+  352 Other Chemicals (Paints and lacquers, Drugs, Soap and cosmetics,
+  etc.)
+\item
+  356 Other Plastic Products (not classified elsewhere)
+\item
+  369 Non-Metallic Mineral Products (Structural clay products, Cement
+  and plaster, Other non-metallic mineral products)
+\end{itemize}
+
+I find significant evidence for industry 369 Non-Metallic Mineral
+Products, and some evidence for industry 352. Results should be taken
+with caution as both industries include different types of products,
+processes might vary significantly from one another. On the other hand,
+the sample of corporations is not small and there are observations
+across all subindustries, suggesting that the comparison between
+corporations and the rest of the firms might not be unreasonable.
+
+Regarding industry 356, the perspicaz reader might notice that the
+coefficient of the tax evasion test is negative and statistically
+significant. However, in this category is not clear the composition of
+the subcategories included, as it covers other plastic products not
+classfied elsewhere. Unlike other categories, this one only includes one
+subcategory, 3560 (Plastic products, not elsewhere classified). As in
+other industries, corporations have higher average share of exports and
+their share of exporters is higher than the non-incorporated firms. Does
+this matter? Likely. How? It is not clear.
+
+38 Fabricated Metal Products, Machinery \& Equipment; 39 Other
+Manufacturing:
+
+\begin{itemize}
+\tightlist
+\item
+  381 Fabricated Metal Products (Structural metal products, Cutlery,
+  Hand tools, etc.)
+\item
+  382 Machinery and Equipment (Agricultural machinery, Metalworking
+  machinery, etc.)
+\item
+  383 Electrical Machinery and Apparatus (Electric motors, Generators,
+  etc.)
+\item
+  384 Transport Equipment (Motor vehicles, Aircraft, Ships, etc.)
+\item
+  390 Other Manufacturing (Jewelry, Musical instruments, etc.)
+\end{itemize}
+
+I cannot reject the null hypothesis of no tax evasion by overreporting
+for these industries. It is interesting to note that agricultural
+machinery, transportation equipment, and equipment were exempt from
+sales tax since 1974. In 1984, exemptions for agricultural machinery and
+transportation equipment were removed.
+
+If these results are valid, this could imply that there is a dynamic
+component to the tax evasion decision. Meaning that the desicion of tax
+evasion in the current period depends critically on the past periodl.
+For example, if a firm did not evade in the previous year, it might be
+less likely to evade in the current year. The fact that there is no
+evidence of tax evasion might suggest that this effect is persistent
+over time.
+
+How does this dynamic decision could enter the economic model? Firms in
+the agricultural machinery and transportation equipment sectors started
+facing incentives to evade after 1984. However, they have been providing
+truthful information to the tax authority for over a decade. They know
+that the probability of detection for them is high, given that the
+authority can easily compare their records with previous years and
+detect anomalies.
+
+\subsubsection{Results Summary}\label{results-summary}
+
+I find that four out of the top five (nine of the to top twenty)
+industries display activities consistent with tax evasion through cost
+overreporting in Colombia between 1981 and 1991. Firms might overreport
+up to 22 percent of their costs. Consisten with the model, firms in
+industries with exempt products and negative effective sales tax rates
+display minor or no evidence of tax evasion. Furthermore, the evidence
+could suggest that the tax evasion decision is dynamic, as there is a
+lack of evidence of tax evasion in industries that lost exemption after
+a decade.
+
+Of course, the results should be taken with the usual precautions. The
+main assumption of the model is that evaders and non-evaders share a
+common technology. This assumption might be not unreasonable in most
+cases. However, commonly available data might group firms with similar
+products, but the technological processes might differ.
+
+On the other hand, failing to reject the null hypothesis of no tax
+evasion does not necessarily mean that firms in this industry are not
+overreporting; it might mean that overreporting cannot be identified
+with the data available at this industry level using corporations as the
+reference group. A researcher suspecting tax evasion in a particular
+industry should exhaustively investigate if the assumptions of the model
+are not unreasonable for said industry. In particular, she should inform
+herself about the industry technological processeses and asses if
+evaders and non-evaders can be compared.
 
 \begin{figure}
 
@@ -4135,6 +5547,249 @@ rate and hence, low incentives to evade taxes.
 \caption{\label{fig-io-mat-1985}}
 
 \end{figure}%
+
+\begin{table}
+
+\caption{\label{tbl-comp-test}Comparison of different methods to
+estimate the bias corrected confidence intervals and the p-values. The
+null hypothesis states that firms do not commit tax evasion through
+cost-overreporting. The alternative is that they do. The first column is
+a difference of the means test (includes error of the estimator, but
+assumes independence of the samples). The different methods showon in
+the rest of the columns are combinations of two different procedures
+when sampling the bootstrap ---sampling from corporations and
+non-corporations, or sampling full data--- and two different methods to
+estimate the coefficient of the test --- using all the firms or only the
+non-incorporated firms. When not fixing the number of corporations,
+Bayesian sampling was used to ensure there would be at least one
+corporation needed to estimate the first-stage parameter. The numbers in
+parenthesis are the standard errors of the mean difference test. The
+numbers in brackets represent the bias-corrected bootstrap confidence
+intervals at 95\% significance level. *, **, *** denote significance at
+the 10\%, 5\%, and 1\% levels (one-sided).}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{r|l|l|l|l|l}
+\hline
+\multicolumn{2}{c|}{ } & \multicolumn{4}{c}{Bootstrap} \\
+\cline{3-6}
+\multicolumn{2}{c|}{ } & \multicolumn{2}{c|}{Two Group Sampling} & \multicolumn{2}{c}{Bayesian} \\
+\cline{3-4} \cline{5-6}
+SIC & Mean Diff. & All & Others & All  & Others \\
+\hline
+ & 0.02** & 0.02* & 0.02* & 0.02 & 0.02\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 311} & (0.011) & [-0.01, 0.06] & [-0.01, 0.08] & [-0.03, 0.07] & [-0.04, 0.08]\\
+\cline{1-6}
+ & -0.01 & -0.01 & -0.01 & -0.01 & -0.01\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 312} & (0.034) & [-0.09, 0.11] & [-0.15, 0.14] & [-0.16, 0.12] & [-0.2, 0.15]\\
+\cline{1-6}
+ & 0.18*** & 0.07*** & 0.18*** & 0.07** & 0.18***\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 313} & (0.026) & [0.03, 0.12] & [0.05, 0.32] & [0.01, 0.12] & [0.03, 0.34]\\
+\cline{1-6}
+ & 0.13*** & 0.11*** & 0.13*** & 0.11*** & 0.13***\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 321} & (0.018) & [0.06, 0.19] & [0.09, 0.24] & [0.02, 0.18] & [0.02, 0.25]\\
+\cline{1-6}
+ & 0.2*** & 0.2*** & 0.2*** & 0.2** & 0.2**\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 322} & (0.039) & [0.06, 0.32] & [0.07, 0.32] & [0.03, 0.35] & [-0.03, 0.36]\\
+\cline{1-6}
+ & -0.19 & -0.15 & -0.19 & -0.15 & -0.19\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 323} & (0.026) & [-0.24, -0.07] & [-0.26, -0.08] & [-0.26, -0.05] & [-0.35, -0.08]\\
+\cline{1-6}
+ & 0.07** & 0.07** & 0.07** & 0.07 & 0.07\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 324} & (0.03) & [-0.02, 0.23] & [-0.01, 0.23] & [-0.07, 0.24] & [-0.07, 0.25]\\
+\cline{1-6}
+ & 0.24*** & 0.22*** & 0.24*** & 0.22** & 0.24**\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 331} & (0.044) & [0.05, 0.42] & [0.04, 0.47] & [-0.06, 0.42] & [0, 0.49]\\
+\cline{1-6}
+ & -0.03 & -0.03 & -0.03 & -0.03 & -0.03\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 332} & (0.057) & [-0.24, 0.18] & [-0.27, 0.2] & [-0.28, 0.27] & [-0.42, 0.27]\\
+\cline{1-6}
+ & -0.05 & -0.03 & -0.05 & -0.03 & -0.05\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 341} & (0.024) & [-0.12, 0.05] & [-0.17, 0.06] & [-0.12, 0.06] & [-0.18, 0.09]\\
+\cline{1-6}
+ & 0.07*** & 0.06* & 0.07** & 0.06 & 0.07\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 342} & (0.027) & [-0.01, 0.17] & [-0.02, 0.19] & [-0.08, 0.18] & [-0.09, 0.19]\\
+\cline{1-6}
+ & 0.09** & 0.03 & 0.09 & 0.03 & 0.09\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 351} & (0.046) & [-0.04, 0.11] & [-0.13, 0.33] & [-0.06, 0.12] & [-0.18, 0.39]\\
+\cline{1-6}
+ & 0.06*** & 0.04** & 0.06** & 0.04 & 0.06\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 352} & (0.017) & [0, 0.1] & [-0.01, 0.16] & [-0.03, 0.1] & [-0.05, 0.15]\\
+\cline{1-6}
+ & -0.1 & -0.08 & -0.1 & -0.08 & -0.1\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 356} & (0.018) & [-0.15, -0.04] & [-0.17, -0.05] & [-0.15, -0.01] & [-0.19, 0]\\
+\cline{1-6}
+ & 0.2*** & 0.14*** & 0.2*** & 0.14** & 0.2**\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 369} & (0.036) & [0.05, 0.3] & [0.06, 0.43] & [0, 0.27] & [0, 0.38]\\
+\cline{1-6}
+ & -0.01 & -0.01 & -0.01 & -0.01 & -0.01\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 381} & (0.017) & [-0.06, 0.05] & [-0.09, 0.07] & [-0.08, 0.09] & [-0.11, 0.08]\\
+\cline{1-6}
+ & -0.02 & -0.02 & -0.02 & -0.02 & -0.02\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 382} & (0.026) & [-0.08, 0.09] & [-0.09, 0.08] & [-0.12, 0.06] & [-0.13, 0.07]\\
+\cline{1-6}
+ & 0.04** & 0.03 & 0.04 & 0.03 & 0.04\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 383} & (0.025) & [-0.03, 0.11] & [-0.04, 0.17] & [-0.06, 0.12] & [-0.1, 0.17]\\
+\cline{1-6}
+ & -0.13 & -0.1 & -0.13 & -0.1 & -0.13\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 384} & (0.029) & [-0.19, 0.01] & [-0.24, 0.01] & [-0.21, 0.02] & [-0.3, 0.02]\\
+\cline{1-6}
+ & 0.04 & 0.04 & 0.04 & 0.04 & 0.04\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 390} & (0.046) & [-0.13, 0.25] & [-0.15, 0.24] & [-0.17, 0.27] & [-0.23, 0.31]\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-sec11-inds-char-coprs-vs-others}Comparison of
+industry characteristics between corporations and non-corporations.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{N} & \multicolumn{2}{c|}{Avg. Age} & \multicolumn{2}{c|}{Sales (Sales Tax Rate)} & \multicolumn{2}{c|}{Purchases (Sales Tax Rate)} & \multicolumn{2}{c|}{Mkt \% (Sales)} & \multicolumn{2}{c|}{Exports (Avg. \%)} & \multicolumn{2}{c|}{Imports (Avg. \%)} & \multicolumn{2}{c|}{Exporters (N \%)} & \multicolumn{2}{c}{Importers (N \%)} \\
+\cline{2-3} \cline{4-5} \cline{6-7} \cline{8-9} \cline{10-11} \cline{12-13} \cline{14-15} \cline{16-17} \cline{18-19}
+SIC & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others\\
+\hline
+311 & 147 & 783 & 27 & 20 & 0.5 & 0.1 & 0.9 & 0.4 & 15.2 & 8.4 & 5.4 & 4.3 & 17.5 & 6.1 & 27.0 & 5.7 & 55.4 & 11.2\\
+\hline
+312 & 41 & 161 & 26 & 21 & 0.2 & 0.2 & 1.2 & 0.7 & 3.9 & 1.4 & 6.4 & 1.3 & 11.9 & 5.1 & 28.4 & 4.5 & 75.7 & 20.4\\
+\hline
+313 & 74 & 61 & 31 & 31 & 4.5 & 14.8 & 1.6 & 3.5 & 7.7 & 2.0 & 0.1 & 0.3 & 10.6 & 3.1 & 0.4 & 9.8 & 49.6 & 35.6\\
+\hline
+321 & 71 & 422 & 26 & 17 & 8.2 & 8.0 & 3.8 & 4.8 & 5.1 & 2.4 & 4.3 & 2.0 & 20.3 & 5.4 & 46.6 & 11.5 & 64.5 & 18.8\\
+\hline
+322 & 22 & 724 & 24 & 14 & 7.9 & 8.1 & 4.1 & 4.6 & 0.5 & 2.0 & 13.6 & 3.2 & 6.2 & 1.6 & 64.6 & 9.8 & 37.2 & 5.5\\
+\hline
+323 & 13 & 90 & 35 & 17 & 6.5 & 8.5 & 4.8 & 5.0 & 0.7 & 0.5 & 28.0 & 13.4 & 9.4 & 3.9 & 80.2 & 35.1 & 82.1 & 28.7\\
+\hline
+324 & 9 & 186 & 35 & 14 & 8.1 & 8.0 & 5.5 & 4.8 & 0.6 & 0.4 & 16.4 & 2.9 & 7.7 & 1.0 & 93.2 & 10.7 & 91.5 & 10.6\\
+\hline
+331 & 13 & 160 & 21 & 18 & 6.6 & 5.5 & 1.9 & 1.8 & 0.4 & 0.2 & 6.0 & 1.6 & 3.8 & 1.4 & 49.0 & 4.4 & 38.5 & 7.6\\
+\hline
+332 & 12 & 187 & 25 & 15 & 9.5 & 10.6 & 4.3 & 4.0 & 0.1 & 0.2 & 5.0 & 0.5 & 7.7 & 1.2 & 19.3 & 3.3 & 29.8 & 6.7\\
+\hline
+341 & 41 & 119 & 26 & 20 & 8.7 & 9.1 & 3.8 & 5.0 & 4.5 & 0.6 & 4.9 & 0.2 & 21.1 & 2.6 & 43.3 & 5.2 & 60.1 & 14.6\\
+\hline
+342 & 40 & 324 & 25 & 22 & 5.1 & 8.0 & 2.9 & 3.8 & 1.3 & 1.6 & 8.4 & 1.3 & 34.7 & 9.3 & 42.6 & 7.7 & 76.2 & 25.1\\
+\hline
+351 & 68 & 55 & 24 & 17 & 7.3 & 6.4 & 3.0 & 3.6 & 6.5 & 0.9 & 7.0 & 3.2 & 30.3 & 14.3 & 54.2 & 21.7 & 72.1 & 48.7\\
+\hline
+352 & 100 & 216 & 30 & 24 & 7.1 & 6.7 & 3.8 & 3.8 & 7.3 & 1.2 & 2.0 & 1.1 & 45.5 & 20.0 & 52.6 & 10.4 & 96.2 & 56.4\\
+\hline
+356 & 53 & 241 & 20 & 15 & 9.6 & 10.2 & 5.7 & 6.1 & 2.1 & 1.3 & 5.6 & 1.8 & 37.7 & 15.7 & 53.4 & 17.3 & 86.1 & 40.5\\
+\hline
+369 & 58 & 223 & 29 & 19 & 4.9 & 5.7 & 1.7 & 2.0 & 3.0 & 0.4 & 4.2 & 0.4 & 12.9 & 5.9 & 29.4 & 4.1 & 39.7 & 19.2\\
+\hline
+381 & 85 & 569 & 24 & 17 & 9.0 & 9.4 & 4.8 & 4.9 & 2.6 & 1.4 & 5.3 & 1.2 & 30.3 & 12.8 & 52.8 & 9.8 & 78.0 & 32.2\\
+\hline
+382 & 46 & 330 & 26 & 20 & 8.1 & 7.8 & 4.2 & 4.0 & 1.0 & 0.9 & 6.4 & 3.7 & 39.1 & 13.9 & 54.7 & 18.3 & 85.7 & 43.5\\
+\hline
+383 & 57 & 168 & 23 & 18 & 9.3 & 8.8 & 4.5 & 4.6 & 3.1 & 0.8 & 3.5 & 2.0 & 52.1 & 23.8 & 49.2 & 13.5 & 95.3 & 57.3\\
+\hline
+384 & 42 & 209 & 26 & 17 & 8.7 & 7.4 & 5.0 & 5.0 & 5.9 & 0.9 & 5.2 & 2.0 & 48.4 & 14.5 & 39.8 & 8.8 & 80.3 & 38.7\\
+\hline
+390 & 18 & 163 & 24 & 21 & 9.6 & 11.4 & 4.1 & 4.1 & 0.4 & 0.5 & 15.1 & 3.1 & 43.6 & 13.6 & 82.3 & 19.6 & 90.3 & 40.7\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-tims-test}Rejection frequencies of the
+\(\mathcal{V}_{it}\) for Corporations and Non-Corporations. The
+rejection frequencies of the one tail test are the average number of
+observations that fell above the 95\% region of the
+\(f_{\varepsilon}(\varepsilon)\) distribution recovered in the first
+stage. The rejection frequencies of the two tail test are the average
+number of observations that fell above the 97.5\% or below the 2.5\%
+region.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|r|r|r|r}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{One Tail} & \multicolumn{2}{c}{Two Tail} \\
+\cline{2-3} \cline{4-5}
+SIC & Corp & Non-Corp & Corp  & Non-Corp \\
+\hline
+311 & 5.1 & 9.3 & 5.1 & 8.7\\
+\cline{1-5}
+312 & 5.1 & 3.2 & 5.1 & 6.8\\
+\cline{1-5}
+322 & 4.4 & 26.3 & 3.5 & 8.9\\
+\cline{1-5}
+381 & 4.9 & 4.6 & 4.9 & 6.3\\
+\cline{1-5}
+321 & 4.9 & 21.4 & 5.1 & 12.7\\
+\cline{1-5}
+382 & 5.0 & 5.2 & 5.0 & 5.4\\
+\cline{1-5}
+384 & 5.0 & 0.6 & 4.7 & 4.3\\
+\cline{1-5}
+383 & 4.9 & 2.6 & 5.1 & 2.9\\
+\cline{1-5}
+313 & 5.0 & 17.9 & 5.0 & 12.9\\
+\cline{1-5}
+341 & 5.0 & 4.4 & 5.0 & 8.1\\
+\cline{1-5}
+324 & 5.1 & 10.4 & 5.1 & 11.2\\
+\cline{1-5}
+342 & 5.1 & 6.3 & 5.1 & 5.9\\
+\cline{1-5}
+369 & 5.1 & 12.5 & 4.8 & 12.8\\
+\cline{1-5}
+332 & 5.3 & 4.3 & 5.3 & 8.5\\
+\cline{1-5}
+390 & 4.4 & 1.1 & 4.4 & 1.0\\
+\cline{1-5}
+351 & 4.8 & 11.2 & 4.8 & 10.5\\
+\cline{1-5}
+352 & 4.9 & 12.1 & 5.0 & 9.9\\
+\cline{1-5}
+356 & 5.2 & 3.9 & 5.2 & 8.6\\
+\cline{1-5}
+331 & 5.8 & 26.1 & 4.8 & 22.7\\
+\cline{1-5}
+323 & 4.7 & 1.5 & 3.8 & 12.6\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
 
 \subsection{Production Function}\label{production-function}
 
@@ -4527,6 +6182,42 @@ Under the null hypothesis, there is no tax evasion. Then, \[
 \end{aligned}
 \]
 
+The previous test ignores the sample variance of the \(\beta\) estimator
+in the first stage.
+
+Alternatively, we can do a difference in means test to account for this
+variation. This test is equivalent to a two sample GMM test, where in
+one moment the corporations are used to estimate \(\hat\beta\) and the
+second is a test moment where we use \(\hat\beta\) from the first one.
+Under the null, the two moment should be equal to zero.
+
+Let \(s_{it}=log\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)\) and
+\(\bar s_G= \frac{1}{N_1T_1}\sum_{i=1}^{N_1}\sum_{t=1}^{T_1}s_{it}^G\)
+and
+\(\bar s_B= \frac{1}{N_2T_2}\sum_{i=1}^{N_2}\sum_{t=1}^{T_2}s_{it}^B\)
+be the sample means for good guys (corporations) and the tax evasion
+guys, respectively.
+
+Then, the test statistic is,
+
+\[
+\begin{aligned}  
+  t &= \frac{\bar s_B - \bar s_G}{\sqrt{\hat\sigma^2_{\bar s_B}/N_2T_2 + \hat\sigma^2_{\bar s_G}/N_1T_1}} \sim N(0,1) \text{ under } H_0\\
+\end{aligned}
+\]
+
+where \(\hat\sigma^2_{\bar s_B}\) and \(\hat\sigma^2_{\bar s_G}\) are
+the sample variances of \(s_{it}^B\) and \(s_{it}^G\), respectively.
+
+Of course, the assumption of independent samples is likely incorrect.
+For example, firms in an industry might get contemporaneous shocks
+affecting everyone in one period, like a price shock in inputs.
+Productivity is usually assumed to be persistent over time, but the
+effects of productivity of one firm on the other firms is commonly
+ignored. In addition, if the data uses SIC codes, firms within
+sub-industries are more likely to be correlated than firms in different
+sub-industries.
+
 I test for the presence of tax evasion for different classifications of
 intermediates. Intermediates include raw materials, energy and services.
 Deductibles include raw materials and deductible expenses. Materials
@@ -4549,25 +6240,25 @@ at the 1\% (***), 5\% (**), and 10\% (*).}
 \hline
 SIC & Category & Deductibles & Materials & Electricity & Fuels & R\&M\\
 \hline
-311 & 1 Exempt Product & 0.0203 (0.0056)*** & -0.0085 (0.0124) & 0.2154 (0.0137)*** & 0.0741 (0.0248)** & -0.1053 (0.0182)\\
+311 & 1 Exempt Product & 0.0294 (0.005)*** & 0.1111 (0.0045)*** & 2.1331 (0.0201)*** & 2.7032 (0.0234)*** & 2.989 (0.0348)***\\
 \cline{1-7}
-312 & 1 Exempt Product & 0.0117 (0.0127) & -0.1493 (0.0257) & 0.1471 (0.0373)*** & 0.4202 (0.0516)*** & 0.3357 (0.0404)***\\
+312 & 1 Exempt Product & 0.0251 (0.0115)** & -0.0098 (0.0158) & 3.2172 (0.0702)*** & 3.4251 (0.0559)*** & 3.4931 (0.0698)***\\
 \cline{1-7}
-383 & 1 Exempt Product & 0.0519 (0.0105)*** & 0.0413 (0.0113)*** & 0.1495 (0.0238)*** & 0.301 (0.0421)*** & 0.2026 (0.0361)***\\
+383 & 1 Exempt Product & 0.056 (0.0101)*** & 0.0471 (0.0108)*** & 2.3743 (0.1024)*** & 3.7437 (0.0916)*** & 2.9996 (0.0326)***\\
 \cline{1-7}
-322 & 4 Direct Customer Sales & 0.582 (0.009)*** & 1.1582 (0.0145)*** & -0.1566 (0.0131) & -0.398 (0.026) & -0.3541 (0.0202)\\
+322 & 4 Direct Customer Sales & 0.6404 (0.0068)*** & 1.27 (0.0068)*** & 2.1725 (0.068)*** & 3.7666 (0.1205)*** & 2.9369 (0.04)***\\
 \cline{1-7}
-342 & 4 Direct Customer Sales & 0.0618 (0.0084)*** & 0.0747 (0.0097)*** & 0.1848 (0.016)*** & -0.0632 (0.0268) & -0.1317 (0.0254)\\
+342 & 4 Direct Customer Sales & 0.0711 (0.0077)*** & 0.0936 (0.0082)*** & 2.2239 (0.0814)*** & 3.3124 (0.0918)*** & 2.1927 (0.0468)***\\
 \cline{1-7}
-390 & 4 Direct Customer Sales & 0.082 (0.0132)*** & 0.061 (0.0146)*** & 0.476 (0.0338)*** & 0.7123 (0.0451)*** & 0.1153 (0.0491)**\\
+390 & 4 Direct Customer Sales & 0.0866 (0.0124)*** & 0.0761 (0.0131)*** & 2.2658 (0.0478)*** & 3.8163 (0.1293)*** & 3.3716 (0.1142)***\\
 \cline{1-7}
-321 &  & 0.0752 (0.0079)*** & 0.0842 (0.0111)*** & -0.3619 (0.0201) & -0.6187 (0.0342) & -0.1783 (0.026)\\
+321 &  & 0.0885 (0.007)*** & 0.1262 (0.0078)*** & 1.4567 (0.0255)*** & 2.77 (0.0286)*** & 3.1702 (0.1098)***\\
 \cline{1-7}
-313 &  & 0.0377 (0.0111)*** & 0.0659 (0.0123)*** & -0.3124 (0.0235) & -0.2885 (0.0411) & -0.4473 (0.0418)\\
+313 &  & 0.0377 (0.0111)*** & 0.0659 (0.0123)*** & 1.7785 (0.0315)*** & 2.0103 (0.0428)*** & 2.2176 (0.0881)***\\
 \cline{1-7}
-351 &  & 0.0144 (0.0148) & 0.0417 (0.026)* & -0.1065 (0.0486) & 0.1192 (0.0662)** & -0.018 (0.0446)\\
+351 &  & 0.0171 (0.0145) & 0.1116 (0.0221)*** & 1.6454 (0.0406)*** & 2.7385 (0.0444)*** & 2.2409 (0.0539)***\\
 \cline{1-7}
-352 &  & 0.0441 (0.008)*** & 0.0322 (0.0098)*** & 0.1309 (0.0191)*** & 0.2939 (0.0358)*** & 0.0546 (0.0286)**\\
+352 &  & 0.0462 (0.0079)*** & 0.0414 (0.0083)*** & 2.8723 (0.0918)*** & 3.8478 (0.107)*** & 3.0485 (0.047)***\\
 \hline
 \end{tabular}
 
@@ -4587,49 +6278,49 @@ parethesis. Stars indicate significance level at the 1\% (***), 5\%
 \centering{
 
 \centering
-\begin{tabular}[t]{l|l|l|r|r|r|r|r|r}
+\begin{tabular}[t]{r|r|r|r|r|r|r|r|r|r|r|r|r|r|l|l}
 \hline
-sic\_3 & sic\_3\_lab & log\_mats\_share & n & n\_Corp & sales & share\_sales\_tax & share\_exports & exporters\\
+sic\_3 & n & n\_Corp & share\_sales\_tax & gross\_output & sales & deductible\_intermediates & materials & share\_exports & share\_imports & share\_imports\_materials & importers & exporters & importers\_mats & log\_mats\_share & log\_deductible\_intermediates\_share\\
 \hline
-311 & Food Manufacturing & -0.0085 (0.0124) & 912 & 150 & 23.5 & 0.2 & 4.3 & 6.6\\
-\cline{1-9}
-313 & Beverage Industries & 0.0659 (0.0123)*** & 130 & 74 & 9.6 & 8.4 & 0.2 & 0.5\\
-\cline{1-9}
-352 & Other Chemical Products & 0.0322 (0.0098)*** & 301 & 101 & 8.5 & 6.8 & 1.4 & 4.2\\
-\cline{1-9}
-351 & Industrial Chemicals & 0.0417 (0.026)* & 117 & 69 & 7.5 & 7.0 & 5.6 & 18.5\\
-\cline{1-9}
-321 & Textiles & 0.0842 (0.0111)*** & 476 & 71 & 7.4 & 7.9 & 2.8 & 6.9\\
-\cline{1-9}
-384 & Transport Equipment & -0.094 (0.0119) & 238 & 42 & 6.8 & 7.7 & 2.7 & 7.0\\
-\cline{1-9}
-312 & Food Manufacturing & -0.1493 (0.0257) & 193 & 41 & 5.3 & 0.2 & 2.5 & 3.6\\
-\cline{1-9}
-341 & Paper and Paper Products & -0.0143 (0.012) & 153 & 41 & 5.1 & 9.0 & 1.5 & 3.1\\
-\cline{1-9}
-381 & Fabricated Metal Products, Except Machinery and Equipment & -0.0041 (0.0066) & 633 & 85 & 3.9 & 9.3 & 1.9 & 6.4\\
-\cline{1-9}
-383 & Electrical Machinery Apparatus, Appliances and Supplies & 0.0413 (0.0113)*** & 213 & 57 & 3.9 & 8.9 & 2.5 & 5.8\\
-\cline{1-9}
-369 & Other Non-Metallic Mineral Products & -0.0634 (0.0407) & 299 & 62 & 3.7 & 5.0 & 1.2 & 3.1\\
-\cline{1-9}
-356 & Plastic Products Not Elsewhere Classified & -0.0805 (0.0088) & 273 & 54 & 3.4 & 10.0 & 2.5 & 7.3\\
-\cline{1-9}
-342 & Printing, Publishing and Allied Industries & 0.0747 (0.0097)*** & 347 & 40 & 2.9 & 7.7 & 2.1 & 4.5\\
-\cline{1-9}
-322 & Wearing Apparel, Except Footwear & 1.1582 (0.0145)*** & 747 & 24 & 2.6 & 8.0 & 3.9 & 7.6\\
-\cline{1-9}
-382 & Machinery Except Electrical & -0.0078 (0.009) & 364 & 46 & 2.0 & 7.8 & 4.0 & 10.8\\
-\cline{1-9}
-323 & Leather and Products of Leather, Leather Substitutes and Fur, Except Footwear and Wearing Apparel & -0.1731 (0.0179) & 100 & 13 & 1.1 & 8.1 & 16.1 & 30.6\\
-\cline{1-9}
-324 & Footwear, Except Vulcanized or Moulded Rubber or Plastic Footwear & 0.0331 (0.0188)** & 193 & 9 & 1.0 & 8.0 & 3.7 & 7.8\\
-\cline{1-9}
-390 & Other Manufacturing Industries & 0.061 (0.0146)*** & 179 & 18 & 0.9 & 11.2 & 4.5 & 11.5\\
-\cline{1-9}
-331 & Wood and Wood and Cork Products, Except Furniture & 0.1851 (0.0198)*** & 173 & 13 & 0.6 & 5.6 & 2.1 & 4.6\\
-\cline{1-9}
-332 & Furniture and Fixtures, Except Primarily of Metal & -0.0353 (0.0142) & 193 & 12 & 0.3 & 10.5 & 0.8 & 2.2\\
+311 & 888 & 147 & 0.0 & 0.2 & 0.2 & 0.3 & 0.3 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 0.2 & 0.1111 (0.0045)*** & 0.0294 (0.005)***\\
+\cline{1-16}
+312 & 188 & 41 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 0.0 & 0.1 & 0.1 & 0.3 & 0.1 & 0.3 & -0.0098 (0.0158) & 0.0251 (0.0115)**\\
+\cline{1-16}
+313 & 130 & 74 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.0 & 0.1 & 0.3 & 0.0 & 0.4 & 0.0659 (0.0123)*** & 0.0377 (0.0111)***\\
+\cline{1-16}
+321 & 470 & 71 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.1 & 0.1 & 0.3 & 0.2 & 0.3 & 0.1262 (0.0078)*** & 0.0885 (0.007)***\\
+\cline{1-16}
+322 & 737 & 22 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 1.27 (0.0068)*** & 0.6404 (0.0068)***\\
+\cline{1-16}
+323 & 99 & 13 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.2 & 0.0 & 0.0 & 0.3 & 0.4 & 0.4 & -0.1534 (0.0133) & -0.1635 (0.0137)\\
+\cline{1-16}
+324 & 192 & 9 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.2 & 0.0664 (0.0086)*** & 0.0578 (0.0084)***\\
+\cline{1-16}
+331 & 172 & 13 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 0.2177 (0.0154)*** & 0.1205 (0.0139)***\\
+\cline{1-16}
+332 & 193 & 12 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.0 & 0.1 & -0.028 (0.0136) & -0.0284 (0.0127)\\
+\cline{1-16}
+341 & 153 & 41 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.1 & 0.1 & 0.2 & 0.2 & 0.3 & -0.0067 (0.0112) & -0.0284 (0.0094)\\
+\cline{1-16}
+342 & 347 & 40 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.2 & 0.1 & 0.3 & 0.0936 (0.0082)*** & 0.0711 (0.0077)***\\
+\cline{1-16}
+351 & 116 & 68 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.3 & 0.2 & 0.6 & 0.4 & 0.6 & 0.1116 (0.0221)*** & 0.0171 (0.0145)\\
+\cline{1-16}
+352 & 300 & 100 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.2 & 0.3 & 0.6 & 0.3 & 0.7 & 0.0414 (0.0083)*** & 0.0462 (0.0079)***\\
+\cline{1-16}
+356 & 272 & 53 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.4 & 0.2 & 0.5 & -0.077 (0.0084) & -0.0517 (0.0073)\\
+\cline{1-16}
+369 & 274 & 58 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.2 & 0.1 & 0.2 & 0.5516 (0.0161)*** & -0.0237 (0.0105)\\
+\cline{1-16}
+381 & 633 & 85 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.3 & 0.2 & 0.4 & -0.0014 (0.0065) & 3e-04 (0.0058)\\
+\cline{1-16}
+382 & 364 & 46 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.3 & 0.2 & 0.5 & -0.0022 (0.0087) & 0.0095 (0.0077)\\
+\cline{1-16}
+383 & 213 & 57 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.6 & 0.2 & 0.7 & 0.0471 (0.0108)*** & 0.056 (0.0101)***\\
+\cline{1-16}
+384 & 238 & 42 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.2 & 0.2 & 0.4 & 0.2 & 0.5 & -0.0924 (0.0118) & -0.0824 (0.0101)\\
+\cline{1-16}
+390 & 179 & 18 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.4 & 0.3 & 0.5 & 0.0761 (0.0131)*** & 0.0866 (0.0124)***\\
 \hline
 \end{tabular}
 
@@ -4964,15 +6655,15 @@ underestimate tax evasion through cost overreporting.
 
 \begin{minipage}{\linewidth}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-43-1.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-47-1.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-43-2.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-47-2.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-43-3.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-47-3.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-43-4.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-47-4.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-43-5.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-47-5.pdf}
 
 \begin{verbatim}
 NULL
@@ -5471,6 +7162,12 @@ Industry & Inter. & m & \$\textbackslash{}mathcal\{E\}\$ & err sd & m & \$\textb
 \cline{2-8}
 \multirow[t]{-3}{*}{\raggedright\arraybackslash 322} & Deductibles & 0.37 & 1 & 0.38 & 0.43 & 1 & 0.45\\
 \cline{1-8}
+ & Intermediates & 0.41 & 1 & 0.41 & 0.37 & 1 & 0.54\\
+\cline{2-8}
+ & Materials & 0.24 & 1 & 0.61 & 0.28 & 1 & 0.62\\
+\cline{2-8}
+\multirow[t]{-3}{*}{\raggedright\arraybackslash 369} & Deductibles & 0.35 & 1 & 0.41 & 0.34 & 1 & 0.46\\
+\cline{1-8}
  & Intermediates & 0.51 & 1 & 0.24 & 0.51 & 1 & 0.38\\
 \cline{2-8}
  & Materials & 0.32 & 1 & 0.42 & 0.4 & 1 & 0.48\\
@@ -5483,17 +7180,11 @@ Industry & Inter. & m & \$\textbackslash{}mathcal\{E\}\$ & err sd & m & \$\textb
 \cline{2-8}
 \multirow[t]{-3}{*}{\raggedright\arraybackslash 321} & Deductibles & 0.43 & 1 & 0.33 & 0.47 & 1 & 0.37\\
 \cline{1-8}
- & Intermediates & 0.54 & 1 & 0.25 & 0.5 & 1 & 0.27\\
+ & Intermediates & 0.55 & 1 & 0.3 & 0.55 & 1 & 0.32\\
 \cline{2-8}
- & Materials & 0.34 & 1 & 0.41 & 0.36 & 1 & 0.37\\
+ & Materials & 0.34 & 1 & 0.63 & 0.35 & 1 & 0.62\\
 \cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 342} & Deductibles & 0.37 & 1 & 0.37 & 0.39 & 1 & 0.35\\
-\cline{1-8}
- & Intermediates & 0.46 & 1 & 0.29 & 0.46 & 1 & 0.35\\
-\cline{2-8}
- & Materials & 0.29 & 1 & 0.36 & 0.31 & 1 & 0.41\\
-\cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 313} & Deductibles & 0.33 & 1 & 0.32 & 0.35 & 1 & 0.37\\
+\multirow[t]{-3}{*}{\raggedright\arraybackslash 351} & Deductibles & 0.44 & 1 & 0.4 & 0.44 & 1 & 0.41\\
 \hline
 \end{tabular}
 
@@ -5519,47 +7210,23 @@ trimmed at 0.05 of the intermediates share cost of gross output.
 \cline{3-6}
 Inds. & Intermediate & Corps. & Exp. & Imp. & All\\
 \hline
- & Intermediates & 0.4 & 0.5 & 0.56 & 0.51\\
-\cline{2-6}
- & Materials & 0.35 & 0.41 & 0.42 & 0.42\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 322} & Deductibles & 0.37 & 0.4 & 0.44 & 0.43\\
+311 & Materials & 0.6 & 0.61 & 0.35 & 0.61\\
 \cline{1-6}
- & Intermediates & 0.51 & 0.5 & 0.57 & 0.51\\
-\cline{2-6}
- & Materials & 0.32 & 0.38 & 0.42 & 0.4\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 331} & Deductibles & 0.39 & 0.41 & 0.45 & 0.44\\
+312 & Materials & 0.58 & 0.57 & 0.49 & 0.58\\
 \cline{1-6}
- & Intermediates & 0.53 & 0.55 & 0.54 & 0.55\\
-\cline{2-6}
- & Materials & 0.39 & 0.45 & 0.41 & 0.43\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 321} & Deductibles & 0.43 & 0.48 & 0.45 & 0.47\\
+313 & Materials & 0.29 & 0.35 & 0.36 & 0.31\\
 \cline{1-6}
- & Intermediates & 0.54 & 0.53 & 0.52 & 0.5\\
-\cline{2-6}
- & Materials & 0.34 & 0.38 & 0.34 & 0.36\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 342} & Deductibles & 0.37 & 0.41 & 0.37 & 0.39\\
+321 & Materials & 0.39 & 0.44 & 0.37 & 0.43\\
 \cline{1-6}
- & Intermediates & 0.46 & 0.29 & 0.43 & 0.46\\
-\cline{2-6}
- & Materials & 0.29 & 0.23 & 0.27 & 0.31\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 313} & Deductibles & 0.33 & 0.25 & 0.32 & 0.35\\
+322 & Materials & 0.35 & 0.42 & 0.41 & 0.42\\
 \cline{1-6}
- & Intermediates & 0.71 & 0.71 & 0.77 & 0.69\\
-\cline{2-6}
- & Materials & 0.6 & 0.64 & 0.67 & 0.61\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 311} & Deductibles & 0.62 & 0.66 & 0.7 & 0.63\\
+323 & Materials & 0.56 & 0.47 & 0.22 & 0.48\\
 \cline{1-6}
- & Intermediates & 0.56 & 0.58 & 0.53 & 0.53\\
-\cline{2-6}
- & Materials & 0.41 & 0.42 & 0.4 & 0.41\\
-\cline{2-6}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 381} & Deductibles & 0.44 & 0.45 & 0.43 & 0.44\\
+324 & Materials & 0.43 & 0.46 & 0.22 & 0.46\\
+\cline{1-6}
+331 & Materials & 0.32 & 0.41 & 0.42 & 0.4\\
+\cline{1-6}
+332 & Materials & 0.36 & 0.35 & 0.42 & 0.35\\
 \hline
 \end{tabular}
 
@@ -5582,19 +7249,23 @@ as reference.}
 \cline{2-3} \cline{4-5} \cline{6-7}
 Inds. & Materials & Deductibles & Materials & Deductibles & Materials & Deductibles\\
 \hline
-322 & 1.1582 (0.0145)*** & 0.582 (0.009)*** & 0.1215 (0.0145)*** & 0.1103 (0.009)*** & -0.1187 (0.0145) & -0.0914 (0.009)\\
+311 & 0.1111 (0.0045)*** & 0.0294 (0.005)*** & -0.1489 (0.0124) & -0.0416 (0.0056) & -0.2007 (0.0124) & -0.1147 (0.0056)\\
 \hline
-331 & 0.1851 (0.0198)*** & 0.11 (0.0148)*** & 0.086 (0.0198)*** & 0.1038 (0.0148)*** & -0.0852 (0.0198) & -0.0367 (0.0148)\\
-\hline
-321 & 0.0842 (0.0111)*** & 0.0752 (0.0079)*** & 0.0604 (0.0111)*** & 0.115 (0.0079)*** & 0.016 (0.0111)* & 0.0247 (0.0079)***\\
-\hline
-342 & 0.0747 (0.0097)*** & 0.0618 (0.0084)*** & -0.0731 (0.0097) & -0.0611 (0.0084) & 0.0396 (0.0097)*** & 0.0475 (0.0084)***\\
+312 & -0.0098 (0.0158) & 0.0251 (0.0115)** & 0.0516 (0.0257)** & 0.0648 (0.0127)*** & -0.1104 (0.0257) & 0.0707 (0.0127)***\\
 \hline
 313 & 0.0659 (0.0123)*** & 0.0377 (0.0111)*** & 0.2794 (0.0123)*** & 0.3439 (0.0111)*** & 0.1218 (0.0123)*** & 0.0935 (0.0111)***\\
 \hline
-311 & -0.0085 (0.0124) & 0.0203 (0.0056)*** & -0.1489 (0.0124) & -0.0416 (0.0056) & -0.2007 (0.0124) & -0.1147 (0.0056)\\
+321 & 0.1262 (0.0078)*** & 0.0885 (0.007)*** & 0.0604 (0.0111)*** & 0.115 (0.0079)*** & 0.016 (0.0111)* & 0.0247 (0.0079)***\\
 \hline
-381 & -0.0041 (0.0066) & -4e-04 (0.0058) & -0.0246 (0.0066) & -0.0169 (0.0058) & 0.0254 (0.0066)*** & 0.025 (0.0058)***\\
+322 & 1.27 (0.0068)*** & 0.6404 (0.0068)*** & 0.1215 (0.0145)*** & 0.1103 (0.009)*** & -0.1187 (0.0145) & -0.0914 (0.009)\\
+\hline
+323 & -0.1534 (0.0133) & -0.1635 (0.0137) & -0.181 (0.0179) & -0.1646 (0.0152) & -0.1544 (0.0179) & -0.1542 (0.0152)\\
+\hline
+324 & 0.0664 (0.0086)*** & 0.0578 (0.0084)*** & -0.1202 (0.0188) & -0.098 (0.0099) & -0.0588 (0.0188) & -0.0537 (0.0099)\\
+\hline
+331 & 0.2177 (0.0154)*** & 0.1205 (0.0139)*** & 0.086 (0.0198)*** & 0.1038 (0.0148)*** & -0.0852 (0.0198) & -0.0367 (0.0148)\\
+\hline
+332 & -0.028 (0.0136) & -0.0284 (0.0127) & -0.1286 (0.0142) & -0.1522 (0.0133) & -0.2887 (0.0142) & -0.2709 (0.0133)\\
 \hline
 \end{tabular}
 
@@ -5718,15 +7389,15 @@ Ind. & Inter. & m & l & k & bigE & si\_mean & err\_mean & err\_sd\\
 
 \begin{minipage}{\linewidth}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-59-1.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-63-1.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-59-2.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-63-2.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-59-3.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-63-3.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-59-4.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-63-4.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-59-5.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-63-5.pdf}
 
 \end{minipage}%
 

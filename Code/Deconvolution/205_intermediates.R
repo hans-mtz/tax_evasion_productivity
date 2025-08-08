@@ -580,7 +580,7 @@ top_5_ev_inds_mag
 
 
 ## %% Charactersitics by industry ------------------------
-
+# load("Code/Products/intermediates.RData")
 test_cont_tbl <- colombia_data_frame %>%
     filter(
         is.finite(y),
@@ -604,10 +604,10 @@ test_cont_tbl <- colombia_data_frame %>%
         importer_mats = ifelse(share_imports_materials > 0, 1, 0),
         Corp = factor(ifelse(juridical_organization==3,"Corp","Non-Corp")),
     ) %>%
-    group_by(sic_3,Corp) %>%
+    group_by(sic_3) %>%
     summarise(
         n = unique(plant) |> length(),
-        # n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
+        n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
         share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
         gross_output = sum(gross_output, na.rm = TRUE)/max(total_gross_output, na.rm = TRUE),
         sales = sum(sales, na.rm = TRUE)/max(total_sales, na.rm = TRUE),
@@ -619,12 +619,60 @@ test_cont_tbl <- colombia_data_frame %>%
         importers = mean(importer, na.rm = TRUE),
         exporters = mean(exporter, na.rm = TRUE),
         importers_mats = mean(importer_mats, na.rm = TRUE)
+    ) %>%
+    right_join(
+        tax_ev_test_tbl[c("sic_3", "log_mats_share", "log_deductible_intermediates_share")],
+        by = "sic_3"
     )
-     #%>%
-    # right_join(
-    #     tax_ev_test_tbl[c("sic_3", "log_mats_share", "log_deductible_intermediates_share")],
-    #     by = "sic_3"
-    # )
+
+colombia_data_frame %>%
+    filter(
+        is.finite(y),
+        is.finite(k),
+        is.finite(l),
+        is.finite(m),
+        log_mats_share > log(threshold_cut),
+        sic_3 %in% top_20_inds$sic_3
+    ) %>%
+    mutate(
+        total_gross_output = sum(gross_output, na.rm = TRUE),
+        total_sales = sum(sales, na.rm = TRUE),
+        total_deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE),
+        total_materials = sum(materials, na.rm = TRUE),
+        total_share_exports = mean(share_exports, na.rm = TRUE),
+        total_share_imports = mean(share_imports, na.rm = TRUE),
+        total_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        total_share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        importer = ifelse(share_imports > 0, 1, 0),
+        exporter = ifelse(share_exports > 0, 1, 0),
+        importer_mats = ifelse(share_imports_materials > 0, 1, 0),
+        Corp = factor(ifelse(juridical_organization==3,"Corp","Non-Corp")),
+    ) %>%
+    group_by(sic_3, Corp) %>%
+    summarise(
+        n = unique(plant) |> length(),
+        age = mean(age, na.rm = TRUE),
+        # n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
+        share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        # gross_output = sum(gross_output, na.rm = TRUE)/max(total_gross_output, na.rm = TRUE),
+        sales = sum(sales, na.rm = TRUE)/max(total_sales, na.rm = TRUE),
+        # deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE)/max(total_deductible_intermediates, na.rm = TRUE),
+        materials = sum(materials, na.rm = TRUE)/max(total_materials, na.rm = TRUE),
+        share_exports = mean(share_exports, na.rm = TRUE),
+        # share_imports = mean(share_imports, na.rm = TRUE),
+        share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        exporters = mean(exporter, na.rm = TRUE),
+        # importers = mean(importer, na.rm = TRUE),
+        importers_mats = mean(importer_mats, na.rm = TRUE)
+    ) %>%
+    mutate(
+        across(share_sales_tax:importers_mats, ~ round(.x*100, 1))
+    ) %>%
+    pivot_wider(
+        names_from = Corp,
+        values_from = n:importers_mats,
+        names_sep = "_"
+    ) |> View()
 
 # TODO
 # - Left join with tax_ev_test_tbl
