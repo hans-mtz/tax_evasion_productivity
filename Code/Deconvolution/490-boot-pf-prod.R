@@ -7,8 +7,8 @@ load("Code/Products/run-vars.RData") # Top evading industries
 load("Code/Products/fs.RData") # Top evading industries
 load("Code/Products/boot_fs.RData")
 # load("Code/Products/boot_tax_ev_mmt.RData")
-# load("Code/Products/omega_ar1_deconv_mle.RData")
-# load("Code/Products/deconv_prod_fun.RData")
+load("Code/Products/omega_ar1_deconv_mle.RData")
+load("Code/Products/deconv_prod_fun.RData")
 # load("Code/Products/boot_deconv_mle.RData")
 
 ## %% Setting seed for Reproducibility --------------
@@ -21,22 +21,22 @@ mc_cores <- detectCores()-2
 # Don't do all the instruments, select best ones
 # Best instruments are m^*_{t-1} and W^*_{t-2}
 
-select_ins <- c(
-    "lag_m",
-    "lag_2_w_eps"
-)
+# select_ins <- c(
+#     "lag_m",
+#     "lag_2_w_eps"
+# )
 
-run_vars_pick_iv <- run_vars_iv %>% 
-    filter(
-        ins %in% select_ins
-    )
+# run_vars_pick_iv <- run_vars_iv %>% 
+#     filter(
+#         ins %in% select_ins
+#     )
 
 ## %% Saving variables ---------------------
 
-save(
-    run_vars, run_vars_iv, run_vars_pick_iv,
-    file = "Code/Products/run-vars.RData"
-)
+# save(
+#     run_vars, run_vars_iv, run_vars_pick_iv,
+#     file = "Code/Products/run-vars.RData"
+# )
 # top_evading_inds <- tax_ev_test_tbl %>% arrange(desc(log_mats_share)) %>% pull(sic_3)
 # run_vars<-expand.grid(inds=top_evading_inds[1:5],input="log_mats_share", stringsAsFactors = FALSE)
 
@@ -431,7 +431,7 @@ save(
 )
 
 ## Testing ----------------------------------
-load("Code/Products/boot_pf_prod.RData")
+# load("Code/Products/boot_pf_prod.RData")
 
 boot_pf_tbl_90
 # boot_pf_tbl %>%

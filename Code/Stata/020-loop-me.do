@@ -1,3 +1,5 @@
+*** RUN USING 004-run-loop.do ***
+
 /* Estimating CD using GNR(2020). Intermediates are raw materials */
 
 
@@ -41,10 +43,11 @@
 
 
 /* Setting up local variables */
-
-
+* cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia/"
+* clear all
 // local inds 311 321 352 313 383 // 321 351 352
-local inds 322 331 321 342 313 311 381
+* local inds 322 331 321 342 313 311 381
+local inds 331 322 369 313 321
 
 // local r_inter rii rms rmats rded_i rnded_i
 // local inter_shares log_share ms_share mats_share ded_i_share nded_i_share
@@ -66,7 +69,9 @@ foreach ind of local inds {
 	
 // 	mat li all_inds
 	
-	cd "/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA"
+	* cd "/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA"
+	* cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia/"
+	cd "../../Data/Colombia"
 	use gnr-colombia-stata-data if sic_3 == `ind', clear
 	
 	ren plant id
@@ -75,22 +80,23 @@ foreach ind of local inds {
 	ren l l_level
 	ren rk k_level
 	ren si log_share
+	* ren si_level si_l_orig 
 	
 // 	keep if sic_3 == `ind'
 	
 	
 	local wc 0
 	
-// 	cd "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+ 	* cd "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
 
-	cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata"
+	cd "../../Code/Stata"
 	
 // 	mat li all_inds
 	
 	di "cut is `cut' before loop 2"
 	
 	foreach var of local r_inter  {
-	
+		di "`var'"
 		local ++wc
 		local ++mat_i
 		local i_share : word `wc' of `inter_shares'
@@ -152,3 +158,8 @@ matrix colnames all_inds = m l k bigE err_sd sic_3
 matrix rownames all_inds = `row'
 //
 // outtable using "../Products/stata-gnr-inter", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+
+* cd  "../Products"
+* esttab mat(all_inds, fmt(4)) using gnr-cd-me, csv plain replace
+
+

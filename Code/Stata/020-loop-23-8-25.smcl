@@ -1,0 +1,352 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata/020-loop-23-8-25.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}23 Aug 2025, 14:04:29
+{txt}
+{com}. /* Running GNR(2020) using a loop over industries and intermediate input shares
+>    Using the modified GNR code for the mean-error specification
+>    See 004-run-loop.do for running this code
+> */
+. clear
+{txt}
+{com}. 
+. clear matrix
+{txt}
+{com}.    
+. // log close
+. 
+. // local today `c(current_date)'
+. // local day : word 1 of `c(current_date)'
+. // local month : word 2 of `today'
+. // local year : word 3 of `today'
+. 
+. 
+. // global trim_cutoff=0.05
+. global g_cut = 0.05
+{txt}
+{com}. // do 003-loop
+. do 020-loop-me
+{txt}
+{com}. *** RUN USING 004-run-loop.do ***
+. 
+. /* Estimating CD using GNR(2020). Intermediates are raw materials */
+. 
+. 
+. // Renaming variables to use GNR_code_CD.do file
+. 
+. /************************************************************/
+. /**  Rename variables using the instructions below.        **/ 
+. /**  Pay attention to upper and lower case, as it          **/
+. /**  matters for Stata.  Inputs, output, and the share of  **/
+. /**  intermediate expenditures in total revenue should     **/
+. /**  all be expressed in levels.  The code will create     **/
+. /**  the log values.  Also note that input and output      **/
+. /**  variables are real values, whereas the share is       **/
+. /**  the nominal share.                                    **/
+. /**                                                        **/
+. /**  Firm ID: id                                           **/
+. /**  Time series variable (e.g., year, month): time        **/
+. /**  Real gross output: yg_level                           **/
+. /**  Real labor: l_level                                   **/
+. /**  Real capital: k_level                                 **/
+. /**  Real intermediate inputs): i_level                    **/
+. /**  Nominal Share of intermediates: si_level              **/ 
+. /**                                                        **/             
+. /**  Be sure to set the memory larger than what your       **/  
+. /**  dataset requires, since this code generates new       **/  
+. /**  variables.  Having too little memory will lead to     **/  
+. /**  error messages.                                       **/ 
+. /************************************************************/
+. 
+. 
+. // ren rii i_level // intermediates = mats + serv + energy
+. // ren si si_level // log share of intermediates = log(intermediates/go)
+. 
+. /* Loop through intermediates, mats + serv, and mats */
+. // ren rmats i_level
+. // ren mats_share si_level
+. // ren mats_share_sales si_level
+. // drop si
+. // ren si_sales si_level
+. 
+. 
+. 
+. /* Setting up local variables */
+. * cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia/"
+. * clear all
+. // local inds 311 321 352 313 383 // 321 351 352
+. * local inds 322 331 321 342 313 311 381
+. local inds 331 322 369 313 321
+{txt}
+{com}. 
+. // local r_inter rii rms rmats rded_i rnded_i
+. // local inter_shares log_share ms_share mats_share ded_i_share nded_i_share
+. // local inter_names m_s_e m_s m ded non_ded
+. 
+. // local r_inter rii rmats rded_i 
+. // local inter_shares log_share mats_share ded_i_share
+. // local inter_names mse materials dedudctibles
+. 
+. local r_inter rmats //rded_i 
+{txt}
+{com}. local inter_shares mats_share //ded_i_share
+{txt}
+{com}. local inter_names materials //dedudctibles
+{txt}
+{com}. 
+. local mat_i 0
+{txt}
+{com}. 
+. di "cut is `cut' before loop"
+{res}cut is  before loop
+{txt}
+{com}. 
+. foreach ind of local inds {c -(}
+{txt}  2{com}.         
+. //      mat li all_inds
+.         
+.         * cd "/Volumes/SSD Hans 1/Dropbox/Dropbox hmarti33/COLOMBIA"
+.         * cd "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia/"
+.         cd "../../Data/Colombia"
+{txt}  3{com}.         use gnr-colombia-stata-data if sic_3 == `ind', clear
+{txt}  4{com}.         
+.         ren plant id
+{txt}  5{com}.         ren year time
+{txt}  6{com}.         ren rgo yg_level
+{txt}  7{com}.         ren l l_level
+{txt}  8{com}.         ren rk k_level
+{txt}  9{com}.         ren si log_share
+{txt} 10{com}.         * ren si_level si_l_orig 
+.         
+. //      keep if sic_3 == `ind'
+.         
+.         
+.         local wc 0
+{txt} 11{com}.         
+.         * cd "/Volumes/SSD Hans 1/Github/gnr/Code/GNR-ado"
+. 
+.         cd "../../Code/Stata"
+{txt} 12{com}.         
+. //      mat li all_inds
+.         
+.         di "cut is `cut' before loop 2"
+{txt} 13{com}.         
+.         foreach var of local r_inter  {c -(}
+{txt} 14{com}.                 di "`var'"
+{txt} 15{com}.                 local ++wc
+{txt} 16{com}.                 local ++mat_i
+{txt} 17{com}.                 local i_share : word `wc' of `inter_shares'
+{txt} 18{com}.                 local name : word `wc' of `inter_names'
+{txt} 19{com}.                 gen si_level = `i_share'
+{txt} 20{com}.                 gen i_level = `var'
+{txt} 21{com}.                 
+.                 di "cut is `cut' before inner-loop"
+{txt} 22{com}. //              matrix R_mat`mat_i' = J(1,7,0) //  m,k,l,bigE,mean si_level, mean error, sd error
+.                 
+.                 matrix R_mat`mat_i' = J(1,6,0) //  m,bigE,mean si_level, N_drop
+{txt} 23{com}.                 
+.                 keep if si_level > $g_cut & l_rgo~=. & l_rk ~=. & l_l ~=. & l_rii~=.
+{txt} 24{com}. //              mat R_mat`mat_i'[1,4] = r(N_drop)
+. //              local N_drop = r(N_drop)
+.                 
+. //              quietly do GNR_code_CD_fs
+.                 quietly do GNR_code_CD_me
+{txt} 25{com}. 
+. //              sum *elas mexp_eg
+. //              get m,k,l, bigE, mean error, sd error
+. 
+. 
+. 
+.                 sum ielas
+{txt} 26{com}.                 mat R_mat`mat_i'[1,1] = r(mean)
+{txt} 27{com}. //              mat R_mat`mat_i'[1,4] = `N_drop'/r(N)
+. 
+.                 mat R_mat`mat_i'[1,2] = beta
+{txt} 28{com}. 
+.                 sum mexp_eg
+{txt} 29{com}.                 mat R_mat`mat_i'[1,4] = r(mean)
+{txt} 30{com}. 
+. //              sum si_level
+. //              mat R_mat`mat_i'[1,3] = r(mean)
+. 
+.                 sum eg 
+{txt} 31{com}. 
+.                 mat R_mat`mat_i'[1,5] = r(sd)
+{txt} 32{com}.                 matrix R_mat`mat_i'[1,6] = `ind'
+{txt} 33{com}.                 
+. //              mat li R_mat`mat_i'
+.                 
+.                 matrix all_inds = (nullmat(all_inds)\ R_mat`mat_i')
+{txt} 34{com}.                 
+. //              mat li all_inds
+.                 
+.                 local row "`row' sic`ind'-`name'"
+{txt} 35{com}.                 
+.                 di "Rownames: `row'"
+{txt} 36{com}.                 di "Intermediate: `wc' ; row: `mat_i'"
+{txt} 37{com}.                 
+.                 drop si_level-kelas
+{txt} 38{com}.         {c )-}
+{txt} 39{com}.         
+. {c )-}
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+cut is  before loop 2
+rmats
+cut is  before inner-loop
+{txt}(1,012 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}        959    .3989355           0   .3989355   .3989355
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}        959           1           0          1          1
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}        959   -3.17e-09    .4775776  -.8176542   2.035335
+Rownames:  sic331-materials
+Intermediate: 1 ; row: 1
+/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+cut is  before loop 2
+rmats
+{txt}(3 missing values generated)
+(3 missing values generated)
+cut is  before inner-loop
+(6,499 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      4,320    .4217535           0   .4217535   .4217535
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      4,320           1           0          1          1
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      4,320   -5.23e-10    .4477155  -.7352591   2.128353
+Rownames:  sic331-materials sic322-materials
+Intermediate: 1 ; row: 2
+/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+cut is  before loop 2
+rmats
+cut is  before inner-loop
+{txt}(1,822 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,511    .2820557           0   .2820557   .2820557
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,511           1           0          1          1
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,511    7.08e-09    .6240957  -1.173817   1.727444
+Rownames:  sic331-materials sic322-materials sic369-materials
+Intermediate: 1 ; row: 3
+/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+cut is  before loop 2
+rmats
+cut is  before inner-loop
+{txt}(302 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      1,117    .3090764           0   .3090764   .3090764
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      1,117           1           0          1          1
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      1,117    1.39e-09    .4103698  -1.036927   1.740849
+Rownames:  sic331-materials sic322-materials sic369-materials sic313-materials
+Intermediate: 1 ; row: 4
+/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Data/Colombia
+{txt}(Columbia Industrial Survey 1977)
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata
+cut is  before loop 2
+rmats
+{txt}(3 missing values generated)
+(3 missing values generated)
+cut is  before inner-loop
+(2,347 observations deleted)
+
+    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 7}ielas {c |}{res}      2,811    .4316365           0   .4316365   .4316365
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 5}mexp_eg {c |}{res}      2,811           1           0          1          1
+
+{txt}    Variable {c |}        Obs        Mean    Std. dev.       Min        Max
+{hline 13}{c +}{hline 57}
+{space 10}eg {c |}{res}      2,811   -3.99e-09     .413616  -.7797033   2.154231
+Rownames:  sic331-materials sic322-materials sic369-materials sic313-materials sic321-materials
+Intermediate: 1 ; row: 5
+{txt}
+{com}. 
+. matrix colnames all_inds = m l k bigE err_sd sic_3
+{txt}
+{com}. matrix rownames all_inds = `row'
+{txt}
+{com}. //
+. // outtable using "../Products/stata-gnr-inter", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+. 
+. * cd  "../Products"
+. * esttab mat(all_inds, fmt(4)) using gnr-cd-me, csv plain replace
+. 
+. 
+. 
+{txt}end of do-file
+
+{com}. 
+. // xxx
+. 
+. cd  "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Products"
+{res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Products
+{txt}
+{com}. 
+. // outtable using "../../Paper/images/tables/stata-gnr-inter-trim-05", mat(all_inds) replace format(%9.4f) center nobox caption("Production function estimates using GNR(2020) for a Cobb-Douglas functional form") 
+. 
+. // esttab mat(all_inds, fmt(4)) using stata-gnr-trim, csv plain replace
+. mat li all_inds
+{res}
+{txt}all_inds[5,6]
+                      m          l          k       bigE     err_sd      sic_3
+sic331-mat~s {res}  .3989355  .46713632  .09622595          1  .47757759        331
+{txt}sic322-mat~s {res}  .4217535  .33022112  .17587022          1  .44771548        322
+{txt}sic369-mat~s {res} .28205574  .56108942  .24570704          1  .62409569        369
+{txt}sic313-mat~s {res} .30907637  .28344128  .32697281          1  .41036984        313
+{txt}sic321-mat~s {res} .43163648  .31625618   .2413803          1  .41361596        321
+{reset}
+{com}. esttab mat(all_inds, fmt(4)) using gnr-cd-me, csv plain replace
+{res}{txt}(output written to {browse  `"gnr-cd-me.csv"'})
+
+{com}. 
+. // esttab mat(all_inds, fmt(2)) using gnr_fs_trim_corps, csv plain replace
+. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata/020-loop-23-8-25.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res}23 Aug 2025, 14:04:32
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}

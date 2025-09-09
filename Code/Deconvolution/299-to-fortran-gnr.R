@@ -9,7 +9,7 @@ load("Code/Products/global_vars.RData")
 # load("Code/Products/deconv.RData")
 # load("Code/Products/boot_tax_ev_mmt.RData")
 load("Code/Products/intermediates.RData") #Top evading industries
-
+load("Code/Products/run-vars.RData")
 # Setting up folders and vars ----------------
 
 folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
@@ -18,8 +18,9 @@ folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
 
 # select_inds <- top_10_revenue$sic_3[1:10]
 
-gnr_inds<-c(311,321,322,331,381)
-select_inds <- union(top_5_ev_inds_mag[1:5], gnr_inds)
+# gnr_inds<-c(311,321,322,331,381)
+# select_inds <- union(top_5_ev_inds_mag[1:5], gnr_inds)
+select_inds <- top_5_boot_test[1:5]
 datasets_dims <- list()
 
 # Wrangling data to save to raw ---------

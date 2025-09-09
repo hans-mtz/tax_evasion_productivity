@@ -60,6 +60,8 @@ for (d in spss_years) {
    }
 }
 
+names(data_list) <- spss_years
+
 ## Chat GPT version
 # data_list <- lapply(spss_years, function(d) {
 #     Map(read.spss, paste(zip_dir[[d]], spss_files[[d]], sep = "/"), to.data.frame = TRUE)

@@ -35,3 +35,26 @@ In the absence of tax evasion, firms overreporting costs would have lower after-
 Therefore, in the case of tax evasion, the key aspect of aggregate profitability is the counterfactual decision of low-profitability firms to exit the market in addition to the corrected profits if firms were not to overreport their costs.
 
 Consequently, the economic model should account for firm entry and exit along with tax evasion.
+
+### Implementation
+
+Given I can only obtain the distribution of productivity non-parametrically, one way to recover the covariance term between productivity and size is the following:
+
+$$
+Cov(\varphi_{it}, s_{it}) = E[\varphi_{it} s_{it}] - E[\varphi_{it}]E[s_{it}]
+$$
+
+Clearly, I can estimate the expectation of $\varphi_{it}$ and $s_{it}$ using the estimated non-parametric distribution. While, I can directly compute the expectation of size from data.
+
+For the joint expectation, All I need is the conditional distribution of $\varphi_{it}$ given $s_{it}$. This can be estimated non-parametrically dividing size in different groups, and then estimating the productivity within each group.
+
+To see this, note that
+$$
+\begin{aligned}
+    E[\varphi_{it} s_{it}] &= \int \int \varphi_{it} s_{it} f(\varphi_{it}, s_{it}) d\varphi_{it} ds_{it} \\
+    &= \int \left(\int \varphi_{it} s_{it}  f(\varphi_{it}|s_{it}) d\varphi_{it}\right) f(s_{it}) ds_{it}\\
+    &= E_{s_{it}}\left[ \left(\int \varphi_{it} s_{it}  f(\varphi_{it}|s_{it}) d\varphi_{it}\right) \right]
+\end{aligned}
+$$
+
+

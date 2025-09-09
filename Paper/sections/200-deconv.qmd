@@ -565,12 +565,13 @@ par(mfrow = c(1, 1))
 ### Non-Parametric Deconvolution using Penalized B-Splines
 
 ```{r}
-#| label: tbl-sp-deconv
-#| tbl-cap: Semiparametric Deconvolution of Tax Evasion using Penalized B-Splines. The error density function is assumed to be normally distributed with mean and variance obtained from the residuals of the first stage conditional on firms beign Non-Evaders.
+#| label: tbl-np-deconv
+#| tbl-cap: Semiparametric Deconvolution of Tax Evasion using Penalized B-Splines. I used a kernel density estimator to fit the error density on the residuals of the first stage conditional on firms being Non-Evaders.
 
 load("../Code/Products/bs_mle_data.Rdata")
 
-stats_df %>%
+
+np_stats_df %>%
   mutate(
     sic_3 = stringr::str_extract(rownames(.),"\\d{3}"),
     .before = mean

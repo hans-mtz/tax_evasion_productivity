@@ -475,6 +475,8 @@ save(
 
 # %% Get tables --------------------------
 
+load("Code/Products/boot_tax_ev_2ttst.RData")
+
 ## %% function to get tables ----------------
 
 render_tbl <- function(boot_l, smpl_l, cond=FALSE){
@@ -559,11 +561,12 @@ render_tbl(
 ) |> View()
 
 # Fix corps, others: boot_tax_ev_2t2s with tax_ev_test_2t_2smpl
-render_tbl(
+pref_tax_ev_test_tbl <- render_tbl(
     boot_tax_ev_2t2s,
     tax_ev_test_2t_2smpl,
     cond = TRUE
-) |> View()
+) 
+pref_tax_ev_test_tbl|> View()
 
 # No fix, all: bayboot_tax_ev_2ttst with tax_ev_test_trim (or tax_ev_test_2t)
 render_tbl(
@@ -636,6 +639,6 @@ test_comp_ded_tbl |> View()
 ## %% Saving the combined table ----------------
 
 save(
-    test_comp_tbl, test_comp_ded_tbl,
+    test_comp_tbl, test_comp_ded_tbl, pref_tax_ev_test_tbl,
     file = "Code/Products/boot_test_comp_tbl.RData"
 )

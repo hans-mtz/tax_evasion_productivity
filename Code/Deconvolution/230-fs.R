@@ -81,37 +81,38 @@ save(
 
 load("Code/Products/fs.RData")
 
-plot(density(fs_list[[2]]$data$cal_V, na.rm=TRUE), col="red")
-lines(density(-fs_list[[1]]$data$epsilon, na.rm=TRUE), main="Density of epsilon")
+# plot(density(fs_list[[2]]$data$cal_V, na.rm=TRUE), col="red")
+# lines(density(-fs_list[[1]]$data$epsilon, na.rm=TRUE), main="Density of epsilon")
 
 
-for(i in seq_along(fs_list)[1]) {
-    plot(
-        # fs_list[[i]]$data$cal_V,
-        density(fs_list[[i]]$data$epsilon, na.rm=TRUE, bw="SJ-ste"),
-        main=sub("^(\\d{3}).*$", "Industry \\1", names(fs_list)[i]),
-        xlab=" ",
-        ylab=" ",
-        col="blue", lwd=2
-    )
-    curve(dnorm(x, mean=mean(fs_list[[i]]$data$epsilon, na.rm=TRUE), sd=sd(fs_list[[i]]$data$epsilon, na.rm=TRUE)), 
-          add=TRUE, col="darkgray", lwd=2)
-    legend("topright", 
-           legend=c("Epsilon density", "Normal distribution fit"),
-           col=c("blue", "darkgray"), lty=1, lwd=2)
-    # abline(h=0, col="red")
-}
+# for(i in seq_along(fs_list)[1]) {
+#     plot(
+#         # fs_list[[i]]$data$cal_V,
+#         density(fs_list[[i]]$data$epsilon, na.rm=TRUE, bw="SJ-ste"),
+#         main=sub("^(\\d{3}).*$", "Industry \\1", names(fs_list)[i]),
+#         xlab=" ",
+#         ylab=" ",
+#         col="blue", lwd=2
+#     )
+#     curve(dnorm(x, mean=mean(fs_list[[i]]$data$epsilon, na.rm=TRUE), sd=sd(fs_list[[i]]$data$epsilon, na.rm=TRUE)), 
+#           add=TRUE, col="darkgray", lwd=2)
+#     legend("topright", 
+#            legend=c("Epsilon density", "Normal distribution fit"),
+#            col=c("blue", "darkgray"), lty=1, lwd=2)
+#     # abline(h=0, col="red")
+# }
 
-## %% Recovering epsilon density non-parametrically -----------------
+# ## %% Recovering epsilon density non-parametrically -----------------
 
 fs_list[[1]]$data$epsilon |> na.omit() |> 
     density(bw="nrd0") -> eps_density
 
 eps_pdf <- approxfun(eps_density$x, eps_density$y, yleft = 0, yright = 0)
+eps_pdf <- splinefun(eps_density$x, eps_density$y, method = "natural")
 
 curve(
     eps_pdf,
-    from = min(eps_density$x), to = max(eps_density$x),
+    from = min(eps_density$x)-3, to = max(eps_density$x)+3,
     xlab = "Epsilon",
     ylab = "Density",
     main = "Non-parametric Epsilon Density",
@@ -135,15 +136,16 @@ epdf <- function(x, x_data, bw = "nrd0") {
         "ucv" = bw.ucv(x_data),
         "bcv" = bw.bcv(x_data)
     ) # Using a different bandwidth method
-    p <- (x-x_data)/h
     x_data_sd <- sd(x_data, na.rm = TRUE)
+    p <- (x-x_data)/h
     K <- dnorm(p, mean = 0, sd = x_data_sd)
     density_estimate <- sum(K, na.rm = TRUE) / (length(x_data) * h)
     return(density_estimate)
 }
 vepdf<-Vectorize(epdf, "x")
-vepdf(1:10, fs_list[[1]]$data$epsilon |> na.omit())
-
+vepdf(1:10, fs_list[[1]]$data$epsilon |> na.omit(), bw="bcv")
+x <- fs_list[[1]]$data$epsilon |> na.omit()
+sum(gl$weights * vepdf(gl$nodes,x))
 bws <- c("nrd0", "nrd", "SJ-ste", "SJ-dpi", "ucv", "bcv")
 curve(
     eps_pdf,
@@ -159,6 +161,8 @@ names(my_colors) <- bws  # Generate random colors for each bandwidth
 for (bw in bws) {
     curve(
         vepdf(x, fs_list[[1]]$data$epsilon |> na.omit(), bw=bw),
+        from = min(fs_list[[1]]$data$epsilon, na.rm = TRUE), 
+        to = max(fs_list[[1]]$data$epsilon, na.rm = TRUE),
         add = TRUE,
         lwd=2, lty = 2,
         col =   my_colors[bw]# Random color for each curve
@@ -179,14 +183,14 @@ for (bw in bws) {
         col =   my_colors[bw]# Random color for each curve
     )
 }
-## %% stuff ------------------------------
+# ## %% stuff ------------------------------
 
-mi_funcion <- function(x) x^2
-mi_lista <- list(
-  cuadrado = mi_funcion,
-  suma = function(a, b) a + b
-)
+# mi_funcion <- function(x) x^2
+# mi_lista <- list(
+#   cuadrado = mi_funcion,
+#   suma = function(a, b) a + b
+# )
 
-# Usar la función desde la lista
-mi_lista$cuadrado(4)   # Devuelve 16
-mi_lista$suma(2, 3)    # Devuelve 5
+# # Usar la función desde la lista
+# mi_lista$cuadrado(4)   # Devuelve 16
+# mi_lista$suma(2, 3)    # Devuelve 5

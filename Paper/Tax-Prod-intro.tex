@@ -1,0 +1,625 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  12pt]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-1in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.7in}%
+\addtolength{\topmargin}{-1in}%
+
+\usepackage{amsthm}
+\newtheorem{ass}{Assumption}
+% \usepackage{mathtools}
+\usepackage[final, nomargin, inline, nomarginclue, author=HM]{fixme}
+% \fxusetargetlayout{color}
+\fxsetface{inline}{\color{blue}}
+\fxsetface{env}{\color{blue}}
+% \usepackage{amsmath}
+% \usepackage[final,nomargin,index,inline, author=]{fixme}
+% \usepackage{bbm}
+\usepackage{unicode-math}
+\usepackage{tabularx}
+\usepackage{adjustbox}
+% \usepackage{amsmath}
+% - \usepackage{longtable}
+% - \usepackage{booktabs}
+% - \usepackage{graphicx}
+% \newtheorem{definition}{Definition}
+% \newtheorem{theo}{Theorem}
+% \newtheorem{lemma}{Lemma}
+% \newtheorem{ass}{Assumption}
+% \usepackage{xkvltxp}
+% -  #final or draft
+% - \fxsetup{envlayout=color, targetlayout=color}
+% - \fxsetface{inline}{\color{blue}}
+
+% kableExtra required packages:
+\usepackage{booktabs}
+\usepackage{longtable}
+% \usepackage{array}
+% \usepackage{multirow}
+% \usepackage{wrapfig}
+% \usepackage{float}
+% \usepackage{colortbl}
+% \usepackage{pdflscape}
+% \usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+% \usepackage[normalem]{ulem}
+% \usepackage{makecell}
+% \usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
+\makeatother
+%%%% ---foldboxy preamble ----- %%%%%
+
+\definecolor{fbx-default-color1}{HTML}{c7c7d0}
+\definecolor{fbx-default-color2}{HTML}{a3a3aa}
+
+\definecolor{fbox-color1}{HTML}{c7c7d0}
+\definecolor{fbox-color2}{HTML}{a3a3aa}
+
+% arguments: #1 typelabelnummer: #2 titel: #3
+\newenvironment{fbx}[3]{\begin{tcolorbox}[enhanced, breakable,%
+attach boxed title to top*={xshift=1.4pt},
+boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, arc=.3em, rounded corners=east, sharp corners=west}, colframe=#1-color2, colbacktitle=#1-color1, colback = white, coltitle=black,  titlerule=0mm, toprule=0pt, bottomrule=.7pt, leftrule=.3em, rightrule=0pt, outer arc=.3em,  arc=0pt,	 sharp corners = east, left=.5em, bottomtitle=1mm, toptitle=1mm,title=\textbf{#2}\hspace{0.5em}{#3}]}
+{\end{tcolorbox}}
+
+% boxed environment with right border
+\newenvironment{fbxSimple}[3]{\begin{tcolorbox}[enhanced, breakable,%
+attach boxed title to top*={xshift=1.4pt},
+boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, arc=.3em, rounded corners=east, sharp corners=west}, colframe=#1-color2, colbacktitle=#1-color1, colback = white, coltitle=black,  titlerule=0mm, toprule=0pt, bottomrule=.7pt, leftrule=.3em, rightrule=.7pt, outer arc=.3em,  	left=.5em, right=.5em, bottomtitle=1mm, toptitle=1mm,title=\textbf{#2}\hspace{0.5em}{#3}]}
+{\end{tcolorbox}}
+
+%%%% --- end foldboxy preamble ----- %%%%%
+%%==== colors from yaml ===%
+\definecolor{Assumption-color1}{HTML}{99CCFF}
+\definecolor{Assumption-color2}{HTML}{FFFFFF}
+\definecolor{Proposition-color1}{HTML}{99CCFF}
+\definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Definition-color1}{HTML}{99CCFF}
+\definecolor{Definition-color2}{HTML}{FFFFFF}
+\definecolor{Theorem-color1}{HTML}{99CCFF}
+\definecolor{Theorem-color2}{HTML}{FFFFFF}
+%=============%
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[]{natbib}
+\bibliographystyle{agsm}
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Tax Evasion and Productivity},
+  pdfauthor={Hans Martinez},
+  pdfkeywords={Tax Evasion, Cost Overreporting, Production Function
+Estimation, Productivity},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\begin{document}
+
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\date{September 3, 2025}
+\title{\bf Tax Evasion and Productivity}
+\author{
+Hans Martinez\thanks{email: hmarti33@uwo.ca.}\\
+Department of Economics, University of Western Ontario\\
+}
+\maketitle
+
+\bigskip
+\bigskip
+\begin{abstract}
+I propose a novel method to estimate corporate tax evasion through cost
+overreporting using production functions. I first show how that cost
+overreporting leads to biased estimates of productivity and the
+production function parameters. Then, I demonstrate how to recover
+unbiased estimates of both in the presence of tax evasion. With these
+estimates on hand, the production function can be inverted to recover
+the true inputs. Cost overreporting can be estimated as the difference
+between the observed and the true inputs. I apply this method to a
+well-known dataset where I find evidence suggesting that cost
+overreporting is widespread and quantitatively large. My results
+indicate that ignoring cost overreporting leads to consistently larger
+elasticities of intermediate inputs. The bias on the intermediate inputs
+spreads to the elasticities of labor and capital, whose bias direction
+varies by industry. Finally, I find significant differences in the
+productivity distributions.
+\end{abstract}
+
+\noindent%
+{\it Keywords:} Tax Evasion, Cost Overreporting, Production Function
+Estimation, Productivity
+\vfill
+
+\newpage
+\spacingset{1.9} % DON'T change the spacing!
+
+\section*{Introduction}\label{introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+I propose a novel method to estimate corporate tax evasion through cost
+overreporting using production functions. I first show how that cost
+overreporting lead to biased estimates of productivity and production
+function parameters. Then, I show how to recover unbiased estimates of
+the production function and productivity in the presence of tax evasion.
+With the production function parameters and productivity on hand, the
+production function can be inverted to recover the true inputs. Then, I
+estimate cost overreporting as the difference between observed and true
+inputs. I apply this method to a well-known dataset where I find
+evidence suggesting that cost overreporting is widespread and
+quantitatively large. I also find that ignoring cost overreporting leads
+to consistently larger elasticities of intermediate inputs. The bias on
+the intermediate inputs spreads to the elasticities of labor and
+capital, whose bias direction varies by industry.
+
+Corporate tax evasion through cost overreporting spreads globally
+causing governments significant revenue losses. Cost overreporting,
+however, has been largely overlooked by the literature except for a few
+recent studies. The literature has mostly relied on manually detecting
+evaders using administrative data or on experiments where researchers
+randomly send letters and observing how firms adjust their tax
+declarations. My approach is complementary to these methods. It is not
+restricted to administrative data and can be applied using more commonly
+available data such as firm-level surveys.
+
+Cost overreporting arises when firms acquire false invoices to claim
+additional tax deductions on value-added (VAT) and corporate income
+taxes (CIT). According to the OECD's document \citet{OECD2017}, cost
+overreporting --- also known as ``fake invoicing'', ``ghost firms'',
+``invoice mills'', or ``missing traders''--- permeates internationally.
+Reports from Latin America, Eastern Europe, Asia, and Africa claim cost
+overreporting led to annual tax revenue losses as large as 5.6\% of the
+GDP, for example, in Poland, 2016 (Poland's Minister of Finance,
+2018)\footnote{Other reports show that cost overreporting led to revenue
+  losses of 0.2\% of Chile's GDP in 2004 (Gonzalez and Velasquez, 2013;
+  Jorrat, 2001; CIAT, 2008); 0.2\% of Colombia's GDP (Portafolio, 2019);
+  and 0.03\% of Mexico's GDP in 2018 (Senado de la Republica, 2019).}
+
+Despite its relevance, cost overreporting has been mostly overlooked by
+the literature. On one hand, the few studies on this evasion strategy
+exploit detailed administrative data \citep{Zumaya2021, Carrillo2022}.
+Government tax authorities restrict access to administrative data
+because of firms' confidentiality concerns. On the other hand, to the
+best of my knowledge, no study has attempted to structurally identify
+cost overreporting. Unlike the case of individuals
+\citep{Pissarides1989, Paulus2015}, when it comes to corporate tax
+evasion, researchers have to account for an additional source of
+unobserved heterogeneity, productivity. Why? Because cost overreporting
+might be naively quantified as low productivity. Intuitively, for a
+given output level, high input utilization by a firm could be explained
+by either the amount of input the firm overreports to evade taxes or by
+a negative productivity shock.
+
+To address this gap in the literature, first I formally show that
+ignoring tax evasion leads to downward biased productivity estimates. I
+then provide a new estimation strategy using production functions to
+jointly recover the densities of tax evasion and productivity. The
+intuition works as follows. In the absence of tax evasion, the
+first-order conditions of the firms' cost-minimization problem let us
+recover the common technology, the production function. Consequently, in
+the presence of cost overreporting, deviations from this common
+technology identify tax evasion up to the measurement error. Then, from
+a subset of non-overreporting firms, the strategy identifies the
+production function parameters and the density of the output shock.
+Finally, using non-parametric deconvolution techniques, I jointly
+recover the distributions of tax evasion and productivity.
+
+Applying the method using firm-level data from Colombia between 1981 and
+1991 ---a commonly used dataset in the production function
+literature---, I find evidence suggesting that firms in four of the top
+five industries (8 of the top 20) engage in cost overreporting. These
+firms overreport up to 25\% of their costs. My estimates suggest that
+the tax evading firms in the top 20 revenue industries caused the
+government of Colombia approximately XXXX in tax revenue losses.
+{[}exporters/importers/proprietorships/limited liability companies{]}
+are {[}less/more{]} likely to engage in cost overreporting. I also find
+that ignoring cost overreporting leads to consistently larger
+elasticities of intermediate inputs by {[}what factor{]}. The bias on
+the intermediate inputs spreads to the elasticities of labor and
+capital, whose bias direction varies by industry {[}what range?{]}.
+Lastly, I find significant differences in the productivity
+distributions. In particular, true productivity distributions are
+{[}how{]}. The differences between {[}exporters/corporations{]} and
+{[}importers/limited liability companies{]} are {[}what?{]}.
+
+\begin{anfxnote}{Remove}
+Recently, evidence from Ecuador \citep{Carrillo2022} shows that cost
+overreporting disseminates across all types of firms; constitutes a
+quantitatively large share of firms' total deductions; and occurs mostly
+in the intermediate inputs. Contrary to the literature consensus,
+evasion by overreporting is not limited to small, semi-formal firms, but
+large and formal firms overreport too. Likewise, firms were found to
+overreport up to 14.1\% of the value of their purchase deductions.
+Finally, when challenged by the tax authority, firms adjusted mostly
+intermediate inputs.
+
+The evidence from Ecuador also shows that big firms do not overreport
+inputs. This is unsurprising for several reasons. First, a large firm
+arguably draws more attention from the tax authority. Given its limited
+resources, the government optimizes its expected revenues by targeting
+the firms with the higher potential tax recovery, the few big ones.
+Second, the cost of being caught cheating is potentially higher for big
+firms. Large firms are likely to participate in international markets. A
+tax evasion scandal in Colombia, for example, might affect US sales.
+Finally, big firms potentially have more sophisticated strategies for
+tax evasion \citep[e.g., profit shifting][]{Bustos2022}.
+
+In a preliminary application, I show how to use the method to learn
+about tax evasion even when we do not know the subset of non-evading
+firms, but there has been a change in fiscal policy that incentivizes
+cost overreporting. Using firm-level data from Colombia between 1981 and
+1991, I show that tax evasion through cost overreporting increased after
+the fiscal reform of 1983 between 8 and 9\% in 1985 and 1986. This
+result stands at odds with previous studies that indicate that the
+evasion of income tax and VAT declined during this period (Sanchez \&
+Gutierrez, 1994)
+
+I formally show that ignoring tax evasion leads to biased estimates of
+productivity, which can be significant considering cost overreporting is
+widespread and quantitatively large. In the proxy variable literature,
+productivity is measured as the residual of a production function, where
+the output is a function of the inputs. A key assumption is that input
+demand is strictly monotonic on the productivity
+\citep{Gandhi2020, Ackerberg2015, Levinsohn2003}. In other words, we
+expect highly productive firms will use fewer inputs and produce more
+output. When firms overreport their costs (inputs) to reduce their tax
+liabilities, their reported inputs are higher than their actual
+utilization, resulting in lower productivity estimates.
+
+Tax evasion through cost overreporting has been largely overlooked by
+the literature, though; most recent studies focus on revenue
+underreporting.
+
+Despite its relevance, detecting and measuring tax evasion ---through
+cost overreporting or otherwise--- remains a non-trivial task even for
+governments with detailed administrative data; mainly because of firms'
+---and individuals'--- incentives to avoid getting caught. Direct
+empirical measures are mostly unreliable because firms and individuals
+have incentives to conceal their behavior \citep{Slemrod2019}. Hence, it
+is unlikely that evasion would be truthfully reported in surveys, for
+instance. Indirect structural measures have had some degree of success
+in the case of individual income tax evasion \citep{Pissarides1989}, but
+in the case of corporate tax evasion researchers must account for an
+additional latent variable, the productivity of firms. The reason is
+that tax evasion might be naively quantified as low productivity.
+Intuitively, for a given level of output, high input utilization by a
+firm could be explained by either the amount of input the firm
+overreports to evade taxes or by a low productivity shock. In certain
+countries, governments take advantage of the different sources of
+administrative data. For example, in Ecuador, the tax authority uses
+third-party information on reported corporate taxes to detect evasion
+through revenue underreporting \citep{Carrillo2017}. However, access to
+this type of administrative data is generally restricted for most
+researchers.
+
+Despite the vast efforts of the literature, measuring tax evasion
+remains a non-trivial task\footnote{The challenge is to obtain reliable
+  data. Practitioners usually have to undergo time- and
+  resource-consuming processes to access or collect data; for example,
+  by requesting access to government administrative data or by
+  collecting their own through surveys or experiments.}.
+
+Tax evasion is a significant concern for developing and developed
+countries\footnote{Tax evasion has been a long-standing concern for
+  developing countries, but since the 2008 economic crisis, it has also
+  been of increasing importance for developed countries
+  \citep{Slemrod2019}.}.
+
+Having productivity estimates could potentially help, however, tax
+evasion has not been satisfactorily addressed in the estimation of
+productivity. I show that ignoring tax evasion leads to biased estimates
+of productivity. To address this gap in the literature, I provide a new
+estimation strategy to recover tax evasion and productivity using
+commonly available data.
+
+Indirect structural attempts to estimate corporate tax evasion have to
+account for the productivity of the firms. The reason is that low
+productivity might be naively quantified as tax evasion. Consider the
+case in which firms overreport input expenses to reduce their profits to
+evade taxes. A practitioner with output and input data might conclude
+that output is a function of inputs, thus it can be considered a second
+measure. She might try to recover true inputs and get an estimate of tax
+evasion by the difference between reported and true inputs. However, for
+a given level of output, high input utilization by a firm could be
+explained by either the amount of input the firm overreports to evade
+taxes or by its low productivity.
+
+Firm-level estimates of productivity could be helpful to measure tax
+evasion, however, tax evasion has not been satisfactorily addressed in
+the estimation of productivity by the literature. The literature has
+coped with tax evasion by treating it as a classical measurement error
+\citep[e.g.,][p.204]{Blalock2004}. In other words, it has been assumed
+that tax-evasion misreporting has zero mean ---some firms under-report
+and others over-report so that the misreporting does not bias the
+estimates of interest--- and this misreporting is independent of
+everything else, including the attributes of the firms. However, the
+classical measurement error argument is inconsistent with economic
+intuition\footnote{Economic intuition will inform us that systematic
+  misreporting due to tax evasion should lead firms to decrease profits
+  by either underreporting sales or overreporting costs. Put
+  differently, there's no economic incentive for firms to go the other
+  direction ---overreporting sales or underreporting input expenses---
+  and artificially increase their profits. An artificial increment of
+  profits will increase the tax liabilities of the firm and decrease
+  their after-tax real profits. Therefore, it is unlikely that tax
+  evasion is mean zero. Economic intuition will also point out that the
+  degree of misreporting is likely to vary across firms depending on the
+  characteristics of the firms, e.g., age, size, owner's risk aversion,
+  etc.}.
+
+The contribution to the tax evasion literature is two-fold: (1) I
+provide an estimation strategy using commonly available data, and (2)
+the method identifies tax evasion through cost overreporting, an
+overlooked by the literature but relevant phenomenon. The contribution
+to the productivity literature is to show that ignoring tax evasion
+leads to biased estimates and to provide a method to recover the
+productivity density in the presence of input overreporting.
+
+Why do we care about productivity measurement bias due to tax evasion?
+First, it might help explain part of the productivity gap puzzle.
+Economists have found \emph{enormous and consistent} productivity
+differences across producers \citep{Syverson2011}. We still don't know
+how much of this productivity gap ---the difference between the lower
+and higher percentiles of the distribution--- tax evasion can explain.
+Second, it should be considered in the design of public policies aiming
+at reducing resource misallocations. Aggregate productivity ---and,
+thus, the economic growth of a country and the welfare of its
+citizens--- depends on the efficient allocation of its inputs among its
+firms. Ideally, resources should be allocated to the most productive
+firms. Additionally, it is not necessarily the case that firms with the
+highest incentives to evade taxes are always the lowest productive. The
+incentives depend on the tax system. For example, in countries where a
+profit threshold determines different tax rates, the firms near the
+threshold are the ones with the highest incentives to misreport, but the
+threshold might be completely unrelated to productivity. Therefore,
+firm-level productivity estimates adjusted by tax evasion misreporting
+might inform better the design of public policies aiming at an efficient
+reallocation of resources to boost economic growth.
+
+Moreover, accounting for tax evasion in estimating and measuring
+firm-level productivity is particularly significant for developing
+countries. This is the case because tax evasion is likely to be higher
+in low- and middle-income countries\footnote{Informality ---the extreme
+  form of tax evasion--- is larger in developing countries
+  \citep{Loayza2006, LaPorta2014}.}, and because the productivity gap in
+these countries is wider ---wider productivity gaps are associated with
+higher resource misallocations. For example, recent estimates of
+non-detected tax evasion are up to \$10 billion USD per year in Mexico
+\citep{Zumaya2021}, approximately 1\% of the country's GDP. Furthermore,
+some studies argue that input misallocation ---implied by a wider
+productivity gap--- explains a significant part of the differences in
+income per capita between developed and developing countries
+\citep{Syverson2011, Levy2018}. For instance, evidence from Colombia
+suggests that labor and financial policy reforms during the 1990s aimed
+at reallocating away from low- and towards high-productivity firms
+---effectively reducing the productivity gap--- resulted in a higher
+aggregate productivity \citep{Eslava2004}.
+
+The main challenge of dealing with tax evasion is that it is hidden by
+nature, for that reason,
+
+So, then, in this paper, I ask,
+
+\begin{quote}
+can we recover unbiased productivity estimates at the firm level using a
+gross-output production function in the presence of systematic
+misreporting due to tax evasion? if so, what is the magnitude of this
+bias, in particular for developing countries? given that different tax
+systems ---rates, rules and enforcement procedures--- generate different
+tax evasion incentives, how does the producitivity bias vary according
+to different tax systems? how much of the productivity gap can tax
+evasion explain within a country and across countries?
+\end{quote}
+
+To answer these questions, this paper studies productivity at the
+establishment level for Mexican and Colombian firms accounting for tax
+evasion. I employ data from a sample of anonymized firms' tax filings
+and INEGI's EAIM annual production survey, in the case of Mexico. For
+Colombia, I use the EAM annual survey on manufacturing firms. In the
+estimation framework, I jointly model the firm-level productivity and
+the tax evasion, allowing for classical measurement error. The key
+identifying assumption is that while tax evasion depends on the expected
+return to cheating, productivity follows a Markov process, and
+measurement error is uncorrelated with inputs and across time. In turn,
+the expected returns to cheating depend on the firm's
+characteristics\footnote{Tax evasion might also depend on the firm's
+  market characteristics, e.g., market concentration, end-consumer
+  vs.~intermediate goods market, etc.}. In particular, larger firms are
+less likely to underreport inputs because of their higher cheating cost,
+their higher probability to be anonymously denounced by an employee, and
+their access to complex tools to legally \emph{avoid} taxes\footnote{I
+  follow the literature by referring to evasion as illegal actions to
+  reduce tax liability, while avoidance refers to legal actions to
+  reduce tax.}.
+
+By jointly modeling tax evasion and productivity, this paper departs
+from the literature in estimating a latent variable that follows an
+incentive constraint (IC) ---tax compliance---, and in focusing on the
+productivity bias ---rather than on an input's coefficient. Recent work
+has studied the effect of measurement error in capital inputs on
+production function estimation. Their approach has been using an IV
+\citep{Collard2020} or a centering condition \emph{à la} \citet{Hu2008}
+(Charlotte's JMP). However, systematic misreporting is different from
+measurement error in that it goes only one way and it follows an IC, as
+discussed above. Likewise, because capital is not a flexible
+input\footnote{In the literature, a flexible input is neither dynamic
+  ---current input choice depends on its lagged value---, nor
+  predetermined ---completely defined in the past.}, the focus of these
+papers is on the effect of the marginal return to capital coefficient
+rather than on the effect on productivity estimates.
+
+Moreover, I focus on gross-output production functions, as opposed to
+value-added, to reduce the noise that might be introduced by firms
+cheating also on prices. Besides the fact that prices are an equilibrium
+object and might be affected by demand also ---and not only by
+supply---, firms might also artificially increase the price of inputs or
+reduce the price of sales to reduce declared profits. Then, in that
+sense, the tax-evasion bias magnitude of productivity estimates obtained
+through a value-added production function would be greater than through
+the gross-output production function. In the latter, only the price of
+the flexible input ---intermediates---, and the output sale price enter
+through the first-order conditions (FOC) of the profit maximization
+problem of the firm\footnote{If the cross-derivative of the flexible
+  input with respect to the non-flexible inputs is not zero, then
+  systematic misreporting in the non-flexible inputs will also affect
+  productivity.}. In contrast, the prices of the non-flexible inputs,
+---capital and labor---, might introduce noise in the case of the
+value-added production function.
+\fxnote{tax evasion underreporting sales: use firms that sell to other firms because of opposite incentives in contrast to firm-end consumer sales. Unskilled labor might be flexible but it's the least productive, so less damage.}
+
+\end{anfxnote}
+
+\section{References}\label{references}
+
+\renewcommand{\bibsection}{}
+\bibliography{biblio/export.bib,biblio/export2.bib,biblio/export3.bib,biblio/export31072022.bib,biblio/b100422.bib,biblio/b270123.bib,biblio/b100424.bib}
+
+
+
+
+\end{document}

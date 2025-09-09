@@ -190,7 +190,7 @@ The elasticities of capital and labor vary across industries, with some being lo
 
 ### Productivity 
 
-Once, the production functio parameters are known, we can recover $\omega$ by deconvolution using @eq-w-squiggle. Here I assume $\omega$ follows a normal distribution.
+Once, the production function parameters are known, we can recover $\omega$ by deconvolution using @eq-w-squiggle. Here I assume $\omega$ follows a normal distribution.
 
 @tbl-boot-omega displays the estimates of the distribution parameters of $\omega$ corresponding to the instrument used in the previous section and the parametric specification of an AR(1).
 
@@ -293,4 +293,48 @@ kbl(
 Industries 321 Textiles, and 351 Industrial Chemicals, and 313 Beverages have means lower or equal to the uncorrected ones for both instruments considered. Industry 311 Food Products display a higher mean for both estimates, while industry 352 Other Chemicals displays a higher or lower mean depending on the instrument.
 
 With respect to standard deviations, industries 321 Textiles, 351 Industrial Chemicals, and 352 Other Chemicals display lower magnitudes, while industries 311 Food Products display significantly higher magnitudes. Lastly, industry 313 Beverages standard deviation is lower or higher depending on the instrument.
+
+#### Non-Parametric Productivity Density
+
+Nothing impedes us from estimating a non-parametric distribution of $\omega$. I deconvolute $\omega$ using penalized B-Splines from @eq-w-squiggle. First, I estimate the density of $\varepsilon$ using a kernel density estimator. 
+
+```{r}
+#| label: tbl-np-prod
+#| tbl-cap: Non-Parametric Deconvolution of $\omega$ using Penalized B-Splines. The error density function is estimated using a kernel density estimator fitted on the residuals of the first stage conditional on firms being Non-Evaders. 
+
+load("../Code/Products/omega_ar1_deconv_mle.RData")
+
+omg_np_stats_df %>%
+  mutate(
+    sic_3 = stringr::str_extract(rownames(.),"\\d{3}"),
+    instrument = case_when(
+      grepl("lag_2_w_eps", rownames(.)) ~ "$\\mathcal{W}_{t-2}$",
+      grepl("lag_m", rownames(.)) ~ "$m_{t-1}$",
+      TRUE ~ " "
+    ),
+    .before = mean
+  ) %>%
+  kbl(
+    digits = 3,
+    table.attr = 'data-quarto-disable-processing="true"',
+    row.names = FALSE
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+```{r}
+#| label: tbl-np-sim-prod
+#| tbl-cap: Summary statistics of the simulated productivity using the non-parametric estimates of $\omega$ and $\varepsilon$. Both functions were numerically inverted to obtain simulated draws of $\omega$ and $\varepsilon$. 1000 draws were used. Productivity is computed as $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
+
+load("../Code/Products/np_productivity.RData")
+
+sim_productivity_tbl %>%
+  kbl(
+    digits = 1,
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  kable_classic(full_width=F, html_font = "Cambria")
+
+```
 

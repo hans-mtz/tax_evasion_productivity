@@ -5,12 +5,17 @@ library(parallel)
 
 # load("Code/Products/boot_deconv_mle.RData")
 load("Code/Products/fs.RData")
+# load("Code/Products/np-deconv-funs.RData")
 
 set.seed(557788)
 pspline_degree <- 3
 n_knots <- 10
 gl <- gauss.quad(15, "legendre")
 lambda <- 10
+# Choose industries to deconvolve ---------------------
+
+# select_fs_l <- paste0(top_5_ev_inds, " log_mats_share")
+select_fs_l <- grep("log_mats",names(fs_list), value = TRUE) # Get all industries with log_mats_share
 
 
 ## %% --- Second difference matrix for roughness penalty ---
@@ -197,40 +202,36 @@ estimate_theta <- function(fs_list, gl, lambda = lambda, parallel = TRUE) {
 
 ## %% --- Run estimation ---
 
-result <- estimate_theta(fs_list[[5]], gl, lambda = lambda, parallel = FALSE)
+# result <- estimate_theta(fs_list[[5]], gl, lambda = lambda, parallel = FALSE)
 
-## %% Choose industries to deconvolve ---------------------
-
-# select_fs_l <- paste0(top_5_ev_inds, " log_mats_share")
-select_fs_l <- grep("log_mats",names(fs_list), value = TRUE) # Get all industries with log_mats_share
 
 ## %% run all inds ---------------------
 
-sp_deconv_list <- mclapply(
-  select_fs_l,
-  function(i) {
-    cat("Estimating industry ", i, "\n")
-    estimate_theta(fs_list[[i]], gl, lambda = lambda, parallel = FALSE)
-  },
-  mc.cores = detectCores() - 2
-)
-names(sp_deconv_list) <- select_fs_l
+# sp_deconv_list <- mclapply(
+#   select_fs_l,
+#   function(i) {
+#     cat("Estimating industry ", i, "\n")
+#     estimate_theta(fs_list[[i]], gl, lambda = lambda, parallel = FALSE)
+#   },
+#   mc.cores = detectCores() - 2
+# )
+# names(sp_deconv_list) <- select_fs_l
 
 ## %% Save results ---------------------
 
-save(
-  sp_deconv_list, #f_e, adaptive_integrate,
-  file = "Code/Products/bs_mle_data.RData"
-)
-
+# save(
+#   sp_deconv_list, #f_e, adaptive_integrate,
+#   file = "Code/Products/bs_mle_data.RData"
+# )
+load("Code/Products/bs_mle_data.RData")
 ## %% Plot results ---------------------
 
-x <- seq(result$params$a, result$params$b, length.out = 1000)
-plot(x, f_e(x, result$theta, result$params), type = "l", col = "blue", lwd = 2,
-     xlab = "e", ylab = "Density", main = "Density of e")
+# x <- seq(result$params$a, result$params$b, length.out = 1000)
+# plot(x, f_e(x, result$theta, result$params), type = "l", col = "blue", lwd = 2,
+#      xlab = "e", ylab = "Density", main = "Density of e")
 
 ### %% Plot results for all industries ---------------------
-load("Code/Products/bs_mle_data.RData")
+# load("Code/Products/bs_mle_data.RData")
 par(mfrow = c(3, 2))
 lapply(
   seq_along(sp_deconv_list),
@@ -248,7 +249,8 @@ get_stats <- function(theta, params) {
   f <- function(e) f_e(e, theta, params)
   mean_e <- adaptive_integrate(function(e) e * f(e), params$a, params$b, params$gl)
   var_e <- adaptive_integrate(function(e) (e - mean_e)^2 * f(e), params$a, params$b, params$gl)
-  return(c(mean = mean_e, sd = sqrt(var_e)))
+  skweness_e <- adaptive_integrate(function(e) ((e - mean_e)^3) * f(e), params$a, params$b, params$gl) / (var_e^(3/2))
+  return(c(mean = mean_e, sd = sqrt(var_e), skewness = skweness_e))
 }
 
 get_stats(sp_deconv_list[[1]]$theta, sp_deconv_list[[1]]$params)
@@ -282,6 +284,10 @@ save(
   file = "Code/Products/bs_mle_data.RData"
 )
 
+## %% --- Non-parametric deconvolution ----------------------
+
+# load("Code/Products/bs_mle_data.RData")
+
 ## %% NP error distribution ----------------------
 
 np_pdf <- function(list) {
@@ -290,7 +296,7 @@ np_pdf <- function(list) {
     density(bw="SJ-dpi")
   
   # Create a function for the PDF
-  eps_pdf <- approxfun(eps_density$x, eps_density$y, yleft = 0, yright = 0)
+  eps_pdf <- approxfun(eps_density$x, eps_density$y, rule =2)
   
   return(eps_pdf)
 }
@@ -330,11 +336,13 @@ llh_np <- function(theta, V, params, lambda = lambda, parallel = TRUE) {
       eps_pdf(x) * exp(s(e, theta, bspline))
     }
     val <- adaptive_integrate(integrand, params$a, params$b, gl)
-    log(val)
+    val <- ifelse(val <=0,-5e7,log(val)) # Avoid log(0)
+    val
     },
     mc.cores = mc_cores
   )
   ll_vec <- unlist(ll_vec)
+  # cat("ll_vec :", ll_vec, "\n")
 
   D <- build_D_order(length(theta), order = pspline_degree)
   penalty <- lambda * sum((D %*% theta)^2)
@@ -348,6 +356,7 @@ estimate_np_theta <- function(fs_list, eps_pdf_list, gl, lambda = lambda, parall
   bspline_spec <- get_bspline_spec(V, n_knots = n_knots, spline_degree = pspline_degree)
   
   theta0 <- initialize_theta(V, bspline_spec)
+  cat("Initial theta0: ", theta0, "\n")
   params <- list(
     a = bspline_spec$Boundary.knots[1],
     b = bspline_spec$Boundary.knots[2],
@@ -403,6 +412,26 @@ estimate_np_theta(
   lambda = lambda, parallel = TRUE
 )
 
+# V <- fs_list[[1]]$data$cal_V
+
+# bspline_spec <- get_bspline_spec(V, n_knots = n_knots, spline_degree = pspline_degree)
+
+# llh_np(
+#   theta = c(0.6701048, 0.251192, -0.07530958, 0.3961341, 0.2114183, 0.2602096, 0.2424873, 0.03029904, -0.03350309, -1.483456),
+#   V = fs_list[[1]]$data$cal_V,
+#   params = list(
+#     a = bspline_spec$Boundary.knots[1],
+#     b = bspline_spec$Boundary.knots[2],
+#     bspline = bspline_spec,
+#     gl = gl,
+#     epsilon_mean = fs_list[[1]]$epsilon_mu,
+#     epsilon_sd = fs_list[[1]]$epsilon_sigma,
+#     eps_pdf = eps_pdf_list[[1]]
+
+#   ),
+#   lambda = lambda,
+#   parallel = TRUE
+# )
 ## %% run all inds ---------------------
 
 full_np_deconv_list <- mclapply(
@@ -419,20 +448,21 @@ names(full_np_deconv_list) <- select_fs_l
 
 
 save(
-  np_deconv_list, full_np_deconv_list, 
-  stats_df,#np_stats_df,
+  sp_deconv_list, full_np_deconv_list, 
+  stats_df,eps_pdf_list, #np_stats_df,
   file = "Code/Products/bs_mle_data.RData"
 )
 
 ## %% Get statistics from distributions ---------------------
 
 np_stats_df <- get_stats.list(full_np_deconv_list)
-
+np_stats_df
 ## %% Save results ---------------------
 
 save(
-  np_deconv_list, full_np_deconv_list, 
-  stats_df,np_stats_df,
+  sp_deconv_list, full_np_deconv_list, 
+  stats_df,eps_pdf_list, np_stats_df,
   file = "Code/Products/bs_mle_data.RData"
 )
 
+load("Code/Products/bs_mle_data.RData")
