@@ -220,14 +220,14 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 
 %%%% --- end foldboxy preamble ----- %%%%%
 %%==== colors from yaml ===%
-\definecolor{Proposition-color1}{HTML}{99CCFF}
-\definecolor{Proposition-color2}{HTML}{FFFFFF}
 \definecolor{Assumption-color1}{HTML}{99CCFF}
 \definecolor{Assumption-color2}{HTML}{FFFFFF}
-\definecolor{Theorem-color1}{HTML}{99CCFF}
-\definecolor{Theorem-color2}{HTML}{FFFFFF}
 \definecolor{Definition-color1}{HTML}{99CCFF}
 \definecolor{Definition-color2}{HTML}{FFFFFF}
+\definecolor{Proposition-color1}{HTML}{99CCFF}
+\definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Theorem-color1}{HTML}{99CCFF}
+\definecolor{Theorem-color2}{HTML}{FFFFFF}
 %=============%
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{September 11, 2025}
+\date{September 12, 2025}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca.}\\
@@ -305,101 +305,73 @@ Estimation, Productivity
 \section*{Introduction}\label{introduction}
 \addcontentsline{toc}{section}{Introduction}
 
-\begin{anfxnote}{Remove. Do not copy-paste abstract.}
-I propose a novel method to estimate corporate tax evasion through cost
-overreporting using production functions. I first show how that cost
-overreporting lead to biased estimates of productivity and production
-function parameters. Then, I show how to recover unbiased estimates of
-the production function and productivity in the presence of tax evasion.
-With the production function parameters and productivity on hand, the
-production function can be inverted to recover the true inputs. Then, I
-estimate cost overreporting as the difference between observed and true
-inputs. I apply this method to a well-known dataset where I find
-evidence suggesting that cost overreporting is widespread and
-quantitatively large. I also find that ignoring cost overreporting leads
-to consistently larger elasticities of intermediate inputs. The bias on
-the intermediate inputs spreads to the elasticities of labor and
-capital, whose bias direction varies by industry. Finally, I find
-significant differences in the productivity distributions.
+Cost overreporting arises when firms acquire false invoices to claim
+additional tax deductions on value-added (VAT) and corporate income
+taxes (CIT). According to the OECD's document \citet{OECD2017}, cost
+overreporting --- also known as ``fake invoicing'', ``ghost firms'',
+``invoice mills'', or ``missing traders''--- permeates internationally.
 
-\end{anfxnote}
+Reports from Latin America, Eastern Europe, Asia, and Africa claim cost
+overreporting led to annual tax revenue losses as large as 5.6\% of the
+GDP, for example, in Poland, 2016 (Poland's Minister of Finance, 2018).
+Other reports show that cost overreporting led to revenue losses of
+0.2\% of Chile's GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat,
+2001; CIAT, 2008); 0.2\% of Colombia's GDP (Portafolio, 2019); and
+0.03\% of Mexico's GDP in 2018 (Senado de la Republica, 2019).
 
-\fxnote{Title:What is cost overreporting?} Cost overreporting arises
-when firms acquire false invoices to claim additional tax deductions on
-value-added (VAT) and corporate income taxes (CIT). According to the
-OECD's document \citet{OECD2017}, cost overreporting --- also known as
-``fake invoicing'', ``ghost firms'', ``invoice mills'', or ``missing
-traders''--- permeates internationally.
+Furthermore, ignoring tax evasion leads to biased estimates of
+productivity. In the proxy variable literature, productivity is measured
+as the residual of the production function, where the output of a firm
+is a function of the inputs, capital, labor, and intermediates. A key
+assumption is that intermediate input demand is strictly monotonic on
+the productivity of the firm
+\citep{Gandhi2020, Ackerberg2015, Levinsohn2003}. In other words, we
+expect highly productive firms will use fewer inputs to produce a given
+level of output. Intermediate inputs, however, are also the most likely
+input to be misreported. When firms overreport their inputs increasing
+their costs to claim additional tax deductions, their reported inputs
+are higher than their actual utilization, resulting in lower
+productivity estimates.
 
-\fxnote{Title:Why do we care? Revenue losses for govt's} Reports from
-Latin America, Eastern Europe, Asia, and Africa claim cost overreporting
-led to annual tax revenue losses as large as 5.6\% of the GDP, for
-example, in Poland, 2016 (Poland's Minister of Finance, 2018). Other
-reports show that cost overreporting led to revenue losses of 0.2\% of
-Chile's GDP in 2004 (Gonzalez and Velasquez, 2013; Jorrat, 2001; CIAT,
-2008); 0.2\% of Colombia's GDP (Portafolio, 2019); and 0.03\% of
-Mexico's GDP in 2018 (Senado de la Republica, 2019). \fxnote{Replace
-percentages of GDP with USD. I care about Tax Revenue more than GDP. How
-much am I losing in tax revenue? Throw Poland. Don't say ``up to''. Give
-people a range. Compared to total tax revenue and the whole size of the
-economy GDP. 20-30\% Tax Revenue relative to GDP.}
-
-\fxnote{Title:Why do we care? Productivity biases} Furthermore, ignoring
-tax evasion leads to biased estimates of productivity. In the proxy
-variable literature, productivity is measured as the residual of the
-production function, where the output of a firm is a function of the
-inputs, capital, labor, and intermediates. A key assumption is that
-intermediate input demand is strictly monotonic on the productivity of
-the firm \citep{Gandhi2020, Ackerberg2015, Levinsohn2003}. In other
-words, we expect highly productive firms will use fewer inputs to
-produce a given level of output. Intermediate inputs, however, are also
-the most likely input to be misreported. When firms overreport their
-inputs increasing their costs to claim additional tax deductions, their
-reported inputs are higher than their actual utilization, resulting in
-lower productivity estimates.
-
-\fxnote{Title:Overlooked by corp tax ev lit? Why?} Despite its
-relevance, the literature on corporate tax evasion has mostly overlooked
-cost overreporting. The few studies focusing on this tax evasion
-strategy rely on exploiting detailed administrative data
+Despite its relevance, the literature on corporate tax evasion has
+mostly overlooked cost overreporting. The few studies focusing on this
+tax evasion strategy rely on exploiting detailed administrative data
 \citep{Zumaya2021, Carrillo2022}. Due to firms' confidentiality
 concerns, government tax authorities restrict access to kind of data. My
 approach complements these methods. It is not restricted to confidential
 tax records and can be applied using more commonly available data such
 as firm-level surveys.
 
-\fxnote{Title: Why is it hard?} To the best of my knowledge, no other
-study has attempted to structurally identify cost overreporting. A
-fundamental problem is that when it comes to corporate tax evasion,
-researchers have to account for an additional source of unobserved
-heterogeneity, productivity. Why? Because cost overreporting might be
-naively quantified as low productivity. Intuitively, for a given output
-level, high input utilization by a firm could be explained by either the
-amount of input the firm overreports to evade taxes or by a negative
-productivity shock.
+To the best of my knowledge, no other study has attempted to
+structurally identify cost overreporting. A fundamental problem is that
+when it comes to corporate tax evasion, researchers have to account for
+an additional source of unobserved heterogeneity, productivity. Why?
+Because cost overreporting might be naively quantified as low
+productivity. Intuitively, for a given output level, high input
+utilization by a firm could be explained by either the amount of input
+the firm overreports to evade taxes or by a negative productivity shock.
 
-\fxnote{Title: How do I do it?} To address this gap in the literature,
-first I formally show that ignoring tax evasion leads to downward biased
-productivity estimates. I then provide a new estimation strategy using
-production functions to jointly recover the densities of tax evasion and
-productivity. The intuition works as follows. In the absence of tax
-evasion, the first-order conditions of the firms' cost-minimization
-problem let us recover the common technology, the production function.
-Consequently, in the presence of cost overreporting, deviations from
-this common technology identify tax evasion up to the measurement error.
-Then, from a subset of non-overreporting firms, the strategy identifies
-the production function parameters and the density of the output shock.
+To address this gap in the literature, first I formally show that
+ignoring tax evasion leads to downward biased productivity estimates. I
+then provide a new estimation strategy using production functions to
+jointly recover the densities of tax evasion and productivity. The
+intuition works as follows. In the absence of tax evasion, the
+first-order conditions of the firms' cost-minimization problem let us
+recover the common technology, the production function. Consequently, in
+the presence of cost overreporting, deviations from this common
+technology identify tax evasion up to the measurement error. Then, from
+a subset of non-overreporting firms, the strategy identifies the
+production function parameters and the density of the output shock.
 Finally, using non-parametric deconvolution techniques, I jointly
 recover the distributions of tax evasion and productivity.
 
-\fxnote{Title: What do I do? What do I find?} Applying the method using
-firm-level data from Colombia between 1981 and 1991 ---a commonly used
-dataset in the production function literature---, I find evidence
-suggesting that firms in four of the top five industries (8 of the top
-20) engage in cost overreporting. These firms overreport up to 25\% of
-their costs. My estimates suggest that the tax evading firms in the top
-20 revenue industries caused the government of Colombia approximately
-XXXX in tax revenue losses.
+Applying the method using firm-level data from Colombia between 1981 and
+1991 ---a commonly used dataset in the production function
+literature---, I find evidence suggesting that firms in four of the top
+five industries (8 of the top 20) engage in cost overreporting. These
+firms overreport up to 25\% of their costs. My estimates suggest that
+the tax evading firms in the top 20 revenue industries caused the
+government of Colombia approximately XXXX in tax revenue losses.
 {[}exporters/importers/proprietorships/limited liability companies{]}
 are {[}less/more{]} likely to engage in cost overreporting. I also find
 that ignoring cost overreporting leads to consistently larger
@@ -410,42 +382,6 @@ Lastly, I find significant differences in the productivity
 distributions. In particular, true productivity distributions are
 {[}how{]}. The differences between {[}exporters/corporations{]} and
 {[}importers/limited liability companies{]} are {[}what?{]}.
-
-\begin{anfxnote}{Notes}
-Next paragraph why do we care? - Two reasons: How much revenue
-governments are losing - Second: Productivity measurement bias
--\textgreater{} potentially systematic wrong -\textgreater{} potential
-biases in productivity estimates might be behind the differences between
-different groups of firms. Do they differ due to inherent productivity
-differences or due to different incentives to evade taxes? Fav reasons
-for prd fns
-
-Third, overlooked by the lit on corporate tax evasion why?
-Underreporting revenue. What lit? Big picture wise: Difficult to get
-data. People have done things like: experiments and have focus on
-revenue underreporting. Part of the reason, Access to tax data is hard.
-The few studies as a result. My method is complementary to these methods
-and can be applied to more commonly available data. STOP.
-
-Why this is hard? A fundamental problem One partial reason of doing
-this. After making the point, explain how I do it.
-
-Table: order testing and estimation data. order by magnitude one tail.
-Switch between quarters. Randomly rotate. Estimate with three quarters
-and test with the others. With replacement. Test approach
-
-First productivity, Kernel density. How they differ. Eyeball test. Use
-pdf not cdfs. Compare prod densities. All vs.~validation
-vs.~overreporting.
-
-What I really want is the joint distribution of productivity and tax
-evasion. How to get it???
-
-Back of envelope calculation: tax revenue losses, how much is that.
-
-Option 1: Focus on tax evasion, leave identification in the Appendix
-
-\end{anfxnote}
 
 \section{A parsimonious model of tax evasion through input
 overreporting}\label{a-parsimonious-model-of-tax-evasion-through-input-overreporting}
@@ -496,36 +432,13 @@ charge on their sales and pay on their raw materials.
 Firms solve Equation~\ref{eq-eva}
 \begin{equation}\phantomsection\label{eq-eva}{
 \begin{aligned}
-  \max_{K_{it},L_{it},M_{it}, e_{it}\in [0,\infty)} (1-q_{it})&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  \max_{K_{it},L_{it},M_{it}, e_{it}} (1-q_{it})&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
   &-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)-\kappa_i(e_{it})\bigg]\\
   +q_{it}&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
   &-\kappa_i(e_{it})\bigg] \\
   \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 }\end{equation}
-
-\begin{anfxnote}{Option 1, Size matters}
-Option 1: \(q_{it}=q(e_{it},M_{it})\). Intuitively, the level matters.
-The bigger you are, the more likely you will be detected cheating. Why
-\(M_{it}\), though? It is more common that tax authorities pay attention
-to revenues, \(P_tY_{it}\) or output \(Y_{it}\). Again, due to
-\(\varepsilon\) being outside the firms' information set, then it is not
-unreasonble that they estimate their probability of detection using the
-expected revenue
-\(q_{it}=q(e_{it},P_t\mathbb{E}_{\varepsilon}[Y_{it}])\), or expected
-output \(q_{it}=q(e_{it},\mathbb{E}_{\varepsilon}[Y_{it}])\)
-
-Option 2: two caterogies of firms from the point of view of the tax
-authority, High and Low scrutiny. Small firms have a positive
-probability of being detected but the probability never reaches 1. High
-scrutiny firms have a probability of detection equal to 1,
-\(q_{it}=q(e_{it}|\theta_{i})\) where
-\(\theta_{i}\in\mathbfcal{\Theta}=\{\text{Low, High}\}\). Assuming that
-the type of the firm is fixed over time. Most firms keep their juridical
-organization over time in the Colombian data. Firms know their category
-and it is given exogenously, by now.
-
-\end{anfxnote}
 
 The probability of detection \(q(e_{it}, M_{it})\) is monotonically
 increasing in the amount evaded \(e_{it}\) and the level of materials
@@ -537,35 +450,13 @@ The evasion cost \(\kappa_i(e_{it})\) is monotonically increasing,
 \(\kappa_i(e_{it})'>0\), and convex in the amount evaded,
 \(\kappa''_i(e_{it})\ge0\). In addition, \(\kappa_i(0)=0\). This cost
 represents the actual cost of aquiring fake invoices and maintaning
-double accounting books to hide the evasion. It might also represent the
-the loss in the company's stock value due to artificially decreasing its
-profits. This cost is paid either way, if the firms decides to evade and
-gets caught or not\footnote{Alternatively, we could have modeled a
-  penalty function that is paid only if the firm gets caught. The
-  intuition remains the same, there would be a trade off between the
-  expected benefit of evading and the expected cost of getting caught.}.
-
-\begin{anfxnote}{Remove}
-The type of the firm \(\theta_{it}\) might be discrete, like the type of
-juridical organization, or continuous, like the level of revenue. Some
-types might be more likely to be detected if the firm engages in tax
-evasion. For example, in contrast to other types of juridical
-organizations in Colombia, corporations are closely supervised and are
-required to have an auditor. That is, for a given level of tax evasion
-\(e_0\) and two different types
-\(\theta' \not= \theta \in \mathbfcal{\Theta}\), then
-\(q(e_0|\theta')\ge q(e_0|\theta)\).
-
-If the type \(\theta\) is continuous, it might be a function of inputs;
-for example, level of revenue. Firms will then affect their probability
-of detection \(q(e|\theta)\) in two ways: directly, by choosing how much
-they evade \(e\); and indirectly, when choosing inputs \(M\).
-
-Level of revenue is a common measure for fiscal authorities to determine
-a firm's taxes and/or level of scrutiny, e.g., Mexico, Spain, Colombia,
-and Ecuador. Chile (?)
-
-\end{anfxnote}
+double accounting books to hide the evasion. It might also represent
+oportunity for incurring in tax evasion. This cost is paid either way,
+if the firms decides to evade and gets caught or not\footnote{Alternatively,
+  we could have modeled a penalty function that is paid only if the firm
+  gets caught. The intuition remains the same, there would be a trade
+  off between the expected benefit of evading and the expected cost of
+  getting caught.}.
 
 The optimal decision of the firm will depend on the fiscal environment
 \(\Gamma=\{\tau, \kappa, q \}\), namely the tax rates, the cost of
@@ -574,7 +465,7 @@ evasion, and the probability of detection.
 The firms' problem (Equation~\ref{eq-eva}) can be rewritten as follows,
 \begin{equation}\phantomsection\label{eq-eva-2}{
 \begin{aligned}
-  \max_{M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
+  \max_{K_{it}, L_{it},M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
   &+[1-q(e_{it}, M_{it})]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
   -\kappa_i(e_{it}) \\
   \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
@@ -592,8 +483,8 @@ firms might be close to 1.
 
 Their optimization problem is, therefore, the standard cost minimization
 problem. The optimal solution of these firms is well known. In
-particular, the optimal input choice of materials \(M^*_{it}\) satisfies
-the following first-order condition
+particular, the optimal input choice of materials satisfies the
+following first-order condition
 
 \begin{equation}\phantomsection\label{eq-foc-noeva}{
 \beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
@@ -614,8 +505,8 @@ following system of differential equations,
 \frac{\rho_t}{P_t}\tau\left(1-q(e_{it}, M_{it})-\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}} e_{it}\right) =\kappa'(e_{it})
 }\end{equation}
 
-The system of equations solve the optimal input choice \(M^*_{it}\) and
-the optimal evasion decision \(e^*_{it}\).
+The system of equations solve the optimal material input choice and the
+optimal evasion decision.
 
 The left-hand side of Equation~\ref{eq-foc-cont-m} is the familiar
 marginal output of inputs. The right hand side is the relative prices
@@ -678,237 +569,6 @@ Equation~\ref{eq-foc-cont-m-log} yields,
 In the absence of tax evasion, \(\tilde{e}_{it}=0\),
 Equation~\ref{eq-foc-cont-m-log-rep} reduces to
 Equation~\ref{eq-foc-noeva-log}.
-
-\begin{anfxnote}{Remove}
-
-\subsection{\texorpdfstring{Case 1 (Independence): \(q(e|\theta)=q(e)\)
-and
-\(\kappa(e)=\kappa_0\)}{Case 1 (Independence): q(e\textbar\textbackslash theta)=q(e) and \textbackslash kappa(e)=\textbackslash kappa\_0}}\label{case-1-independence-qethetaqe-and-kappaekappa_0}
-
-Consider the case when the probability of detection is independent of
-type, \(q(e|\theta)=q(e)\). This could be the case if the type is the
-juridical organization of the firm. Hence, the type of the firm, and
-thus the probability of detection, does not change with the firm's input
-decisions,
-\(\frac{\partial q(e_{it}|\theta_{it})}{\partial \theta_{it}}\frac{\partial \theta_{it}}{\partial M}=0\).
-In addition, assume the evasion cost is constant,
-\(\kappa(e)=\kappa_0\), for simplicity.
-
-In this case, the first-order conditions of Equation~\ref{eq-eva} with
-respect to the input \(M_{it}\) and the tax evasion \(e_{it}\) yield the
-following
-
-\begin{equation}\phantomsection\label{eq-foc:ind}{
-G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
-}\end{equation}
-
-\begin{equation}\phantomsection\label{eq-foc:eva:ind}{
-e_{it}=\frac{1-q(e_{it})}{q'(e_{it})}-\frac{\kappa_0}{\frac{\rho_{t}}{P_t}\tau}
-}\end{equation}
-
-Equation~\ref{eq-foc:ind}, the well-known optimality condition, says
-that the price ratio is equal to the marginal product of the inputs.
-
-Likewise, Equation~\ref{eq-foc:eva:ind} reveals the firms' optimal tax
-evasion decision decreases if the probability of detection \(q(e_{it})\)
-or the penalty of evading \(\kappa\) increases. Tax evasion also depends
-on how sensitive the probability of detection is to the level of evasion
-\(q'(e)\). In particular, greater sensibility will result in lower
-levels of evasion.
-
-Note that the net change of tax evasion due to an increase in the
-relative prices \(\frac{\rho_{t}}{P_t}\) or the tax rate \(\tau\) is not
-evident at first sight. The net effect will also depend on the change in
-the detection probability induced by the changes in the relative prices
-or the tax rate. In particular, an increase in relative prices
-\(\frac{\rho_{t}}{P_t}\) or the tax rate \(\tau\) will incentivize a
-higher tax evasion level, however, a higher tax evasion level will
-increase the probability of detection ---depending on the shape of the
-probability as a function of \(e\)---, so it will deter higher levels of
-evasion. An increase in the tax rate, for instance, will only increase
-tax evasion if the change in the tax rates increases the incentives to
-evade more than the decrease in the incentives due to the changes in the
-detection probability.
-
-Formally, suppose a firm increases its tax evasion, \(e_1-e_0>0\)
-because of an increase in taxes \(\tau_1>\tau_0\). Then, it follows that
-
-\[
-\left(\frac{\tau_1-\tau_0}{\tau_1\tau_0}\right)\frac{P\kappa}{\rho}>
-  \left(\frac{1-q(e_1)}{q'(e_1)}-\frac{1-q(e_0)}{q'(e_0)}\right)
-\]
-
-The change in the probability of detection weighted by the slope of the
-probability function should be less than the change in the tax rate
-weighted by the penalty of evading and the relative prices\footnote{An
-  analogous condition for an increase in relative prices leading to
-  higher levels of tax evasion exists. Under this condition, the model
-  is consistent with the literature that macroeconomic downturns lead to
-  higher evasion.}.
-
-\subsection{Case 2 (Spain): Discrete increase in the probability of
-detection after a certain threshold of
-revenue}\label{case-2-spain-discrete-increase-in-the-probability-of-detection-after-a-certain-threshold-of-revenue}
-
-In Spain, the Large Taxpayers Unit (LTU) of the tax authority focuses
-exclusively on firms with total operating revenue above 6 million euros.
-The LTU has more auditors per taxpayer than the rest of the tax
-authority, and these auditors are on average more experienced and better
-trained to deal with the most complex taxpayers. This LTU creates a
-discontinuity in the monitoring effort of the tax authority.
-Consequently, at this arbitrary revenue level, the probability of
-detection increases discretely \citep{Almunia2018}.
-
-In this scenario, depending on the productivity shock, the firm might be
-better off choosing not to produce past the revenue threshold. Indeed,
-for a relevant range of productivity draws
-\(\Omega^B=[\omega^L, \omega^H]\), the firms will not choose to grow
-past the revenue threshold if the expected after-tax profits of staying
-small are greater than the expected after-tax profits of growing.
-
-In the model, there is now a threshold of revenue \(\theta^L\) after
-which the probability of detection increases discretely. To make things
-simpler, assume that before the threshold, the probability changes as a
-function of evasion but does not vary conditional on size. After the
-threshold, the probability increases for every level of evasion but does
-not vary conditional on size.
-
-Formally, let \(\Theta_{L} = \{\theta_i : \theta_{i} < \theta^L \}\) and
-\(\Theta_{H} = \{\theta_i : \theta_{i} \ge \theta^L \}\), then for all
-\(e_0\) and \(\theta'_i\not=\theta_i\),
-\(q(e_0|\theta_i \in \Theta_k)=q(e_0|\theta'_i \in \Theta_k)\) with
-\(k=\{L,H\}\), but
-\(q(e_0|\theta'_i \in \Theta_H)\ge q(e_0|\theta_i \in \Theta_L)\).
-
-Firms' revenue with productivity draw \(\omega^L\) corresponds exactly
-to the enforcement threshold \(\theta^L\). Production and reporting
-decisions of firms with productivity draws below \(\omega^L\) are not
-affected by the change in the probability of detection. Firms choose
-their inputs according to Equation~\ref{eq-foc:ind} and their evasion
-decision according to Equation~\ref{eq-foc-cont-e}. Firms with
-productivity draws above \(\omega^U\)
-
-Firms with productivity \(\omega_{i}\in \Omega^B\) will choose the input
-level \(\tilde{M}_{i}\) resulting in an expected revenue below the
-threshold \(\theta_{i}<\theta^L\), if the expected after-tax profit of
-staying small are greater than growing,
-\(\mathbb{E}[\pi_{i}|\Theta_L, \Omega^B]-\mathbb{E}[\pi_{i}|\Theta_H, \Omega^B]\ge0\).
-
-The optimal input choice \(M^*_{i}\) for firms with productivity
-\(\omega_i\in\Omega^B\) implies an expected revenue greater than or
-equal to the threshold \(\theta^*_{i}\ge \theta^L\). Let the expected
-profits given \(M^*_{i}\) and the optimal tax evasion in the range of
-size \(\theta_l\), \(e^*_{it}\), is
-\(\pi_l\equiv\mathbb{E}[\pi(M^*_{it}, e^*_{it})|\theta_l]\). Let
-\(\tilde{M}_{it}\) be the input level such that the expected revenue is
-below the threshold \(\tilde{s}_{it}<\theta^L\) and \(\tilde{e}_{it}\)
-be the optimal tax evasion in the range of size \(\theta_s\). Let also
-the expected profits of staying small are
-\(\pi_s\equiv\mathbb{E}[\pi(\tilde{M}_{it},\tilde{e}_{it})|\theta_s]\).
-
-In this second case, therefore, firms might optimally choose to remain
-small if, for a low productivity shock, the expected profits of not
-growing are greater than the expected profits of growing
-\(\pi_l<\pi_s\). Firms choosing to remain small will lead to a bunching
-below the threshold in the size distribution of firms.
-
-Besides the higher levels of evasion before the threshold ---simply
-because of the higher probability of detection---, we can also expect
-bunching firms to evade more than their similar-sized peers. At
-\(\tilde{M}_{it}\), the optimization condition of
-Equation~\ref{eq-foc:ind} no longer holds, hence, the marginal product
-of the input is now greater than the relative prices. Therefore,
-according to Equation~\ref{eq-foc:eva:ind}, bunching firms would
-compensate for their \emph{higher} costs by increasing overreporting.
-
-\subsubsection{Discussion}\label{discussion}
-
-What is new in this paper relative to the literature is that it focuses
-on the production function framework using public data whereas
-\citet{Almunia2018} and other papers use a bunching estimator with
-government administrative data which is difficult to access. Second, the
-paper focuses on input overreporting rather than on revenue
-underreporting, which is the relevant margin of evasion for
-manufacturing firms. More on this point in the revenue underreporting
-section. Finally, in contrast to \citet{Almunia2018} where the authors
-conclude that misreporting does not imply real losses in production but
-only fictitious reduction of the real sales, firms might optimally forgo
-higher revenue levels if the expected profits of staying small and evade
-taxes by misreporting are greater than the expected profits of growing
-and avoid misreporting.
-
-\subsection{Case 3 (Colombia \& Mexico): Discrete increase in the tax
-rate after a revenue
-threshold}\label{case-3-colombia-mexico-discrete-increase-in-the-tax-rate-after-a-revenue-threshold}
-
-\subsubsection{Colombia, Individual
-Proprietorships}\label{colombia-individual-proprietorships}
-
-In Colombia between 1981 and 1991, individual firm proprietors were
-subject to the individual income tax schedule. Individuals had
-incentives to not form juridical organizations to avoid double taxation.
-The tax authority suffered from severe limitations and inefficiencies at
-the time.
-
-In this case, after the revenue threshold, the tax rate increases
-discretely but the probability of detection does not. The jump in the
-tax rate generates the incentive to increase evasion. However, a higher
-level of evasion increases the cost of evading by increasing the
-probability of detection. If the cost of an increased evasion outweighs
-the benefits of growing past the revenue threshold, the firms would
-bunch below the cutoff.
-
-\subsubsection{Mexico, Irreversible Change in Tax Regime after a Revenue
-Threshold}\label{mexico-irreversible-change-in-tax-regime-after-a-revenue-threshold}
-
-In Mexico, firms with annual revenues below 2 million pesos are taxed
-under the REPECO (\emph{Regime de Pequeños Contribuyentes}) regime of
-small contributors at 2 percent of annual revenues, while firms above
-that threshold are taxed under the general regime at 30 percent. Firms
-must transition to the general regime if revenues increase beyond the
-threshold. Once in the general regime, firms cannot revert to the REPECO
-regime.
-
-Firms' decision is now dynamic. Firms will maximize the sum of current
-and future after-tax profits. The discrete jump in the tax rate will
-lead to a bunching below the threshold. Moreover, the bunching will be
-exacerbated because firms will choose to grow past the cutoff only if
-the future productivity shocks allow the firm to continue to be
-profitable.
-
-\subsection{Case 4 (Colombia): Firms first choose type, input decisions
-do not affect the probability of
-detection}\label{case-4-colombia-firms-first-choose-type-input-decisions-do-not-affect-the-probability-of-detection}
-
-In Colombia between 1981 and 1991, Corporations were closely supervised
-by the Superintendent of Corporations and were required to have an
-auditor. All other firms were subject to the regular monitoring efforts
-of the tax authority, which suffered from severe limitations and
-inefficiencies at the time.
-
-In the model, firms first choose their type. Input decisions do not
-affect the probability of detection. However, if the type is
-\emph{Corporation} the probability of detection is higher than
-\emph{Partnership}. Firms maximize the sum of their expected profits. In
-their optimization problem, firms will consider the sum of expected
-productivity shocks and their corresponding probability of detection.
-High-productivity firms will self-select into \emph{Corporations}.
-
-\subsection{Other Sources of
-Heterogeneity}\label{other-sources-of-heterogeneity}
-
-Currently, only productivity. But, it can also be
-
-\begin{itemize}
-\tightlist
-\item
-  Probability of detection might be a random function (idiosyncratic
-  random shocks on the beliefs about being detected)
-\item
-  Cost of evasion (different technologies of evasion)
-\end{itemize}
-
-\end{anfxnote}
 
 \section{Colombia 1981-1991}\label{colombia-1981-1991}
 
@@ -1324,8 +984,8 @@ but she only observes overreported intermediate inputs,
 \(M^*_{it}=M_{it}\exp(e_{it})\)\footnote{Note we can always rewrite
   \(M^*+e=M^*\exp\{a\}\), then \(\exp\{a\}=\frac{e}{M^*}+1\).}.
 
-Then, for the case of Colombia, equation~\ref{eq-foc:ind} applies since
-the type of firms is the juridical organization and the non-evaders are
+Then, for the case of Colombia, \textbf{?@eq-foc:ind} applies since the
+type of firms is the juridical organization and the non-evaders are
 Corporations. By multiplying both sides by the intermediate inputs and
 dividing by the output, we get
 
