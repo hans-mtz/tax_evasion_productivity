@@ -220,12 +220,12 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 
 %%%% --- end foldboxy preamble ----- %%%%%
 %%==== colors from yaml ===%
-\definecolor{Assumption-color1}{HTML}{99CCFF}
-\definecolor{Assumption-color2}{HTML}{FFFFFF}
-\definecolor{Definition-color1}{HTML}{99CCFF}
-\definecolor{Definition-color2}{HTML}{FFFFFF}
 \definecolor{Proposition-color1}{HTML}{99CCFF}
 \definecolor{Proposition-color2}{HTML}{FFFFFF}
+\definecolor{Definition-color1}{HTML}{99CCFF}
+\definecolor{Definition-color2}{HTML}{FFFFFF}
+\definecolor{Assumption-color1}{HTML}{99CCFF}
+\definecolor{Assumption-color2}{HTML}{FFFFFF}
 \definecolor{Theorem-color1}{HTML}{99CCFF}
 \definecolor{Theorem-color2}{HTML}{FFFFFF}
 %=============%
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{September 12, 2025}
+\date{September 16, 2025}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca.}\\
@@ -421,154 +421,104 @@ incentive for firms is to underreport labor to evade payroll taxes and
 social security contributions, but this is not the focus of this paper.
 
 In the model, firms can choose to overreport their inputs by an amount
-\(e_{it}\) to claim additional tax deductions and optimize expected
-after-tax profits. Firms, then, consider in their optimization problem
-the tax rate \(\tau\), the evasion cost \(\kappa(e)\), and the
-probability of detection \(q_{it}\). Without lack of generalization,
-assume only materials can be deducted for tax purposes. So, then
-\(\tau\) is a value added tax (VAT) or a sales tax, that firms pay
-charge on their sales and pay on their raw materials.
+\(e_{it}\equiv M^*-M\ge0\) to claim additional tax deductions and
+maximize expected after-tax profits. \(M^*\) is the reported level of
+materials, while \(M\) is the true level of materials.
 
-Firms solve Equation~\ref{eq-eva}
+Firms pay a tax rate \(\tau\) on their revenues after deducting their
+materials costs. \(\tau\) is, therefore, equivalent to a value-added tax
+(VAT) or corporate income tax (CIT), where firms can only claim
+deductions for their expenses on materials.
+
+The tax authority audits firms at random and always detects misreporting
+if the firm engages in tax evasion and gets audited. The probabiliy of
+detection is then, \(q(e_{it},a)\); where \(a\) represents the exogenous
+monitoring effort by the tax authority. The probability of detection is
+continuous and increasing in both of its arguments. The more a firm
+overreports, the more likely it is to be detected. Likewise, the larger
+the efforts of the tax authority in monitoring suspicious behaviour of
+firms, the higher the probability of detection.
+
+The evasion cost \(\kappa_i(e_{it})\) is increasing,
+\(\kappa_i(e_{it})'>0\), and convex in the amount overreported,
+\(\kappa''_i(e_{it})\ge0\). In addition, not overreporting is costless,
+\(\kappa_i(0)=0\). This cost represents the direct cost of overreporting
+such as acquiring fake invoices and resource cost of maintaining
+parallel accounting books to keep track of the true and reported costs.
+It might also represent indirect costs or losses of incurring in tax
+evasion. If the firms decides to evade, the evading cost is paid whether
+the firms is detected evading or not.
+
+Finally, if tax evasion is detected, the tax authority imposes a
+penalty. Detected firms are fined with a rate of \(\phi\) over the value
+of evaded taxes in addition to the true tax liability.
+
+Firms, then, solve Equation~\ref{eq-eva}
 \begin{equation}\phantomsection\label{eq-eva}{
 \begin{aligned}
-  \max_{K_{it},L_{it},M_{it}, e_{it}} (1-q_{it})&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  \max_{K_{it},L_{it},M_{it}, e_{it}} \big(1-q(e_{it},a)\big)&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
   &-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)-\kappa_i(e_{it})\bigg]\\
-  +q_{it}&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
-  &-\kappa_i(e_{it})\bigg] \\
+  +q(e_{it},a)&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
+  &-\kappa_i(e_{it})-\phi\frac{\rho_t}{P_t}\tau e_{it}\bigg] \\
   \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 }\end{equation}
-
-The probability of detection \(q(e_{it}, M_{it})\) is monotonically
-increasing in the amount evaded \(e_{it}\) and the level of materials
-\(M_{it}\) and it is bounded between \((0,1]\). Intuitively, firms that
-overreport more are more likely to get caught. Likewise, bigger firms
-are more likely to be detected if they evade.
-
-The evasion cost \(\kappa_i(e_{it})\) is monotonically increasing,
-\(\kappa_i(e_{it})'>0\), and convex in the amount evaded,
-\(\kappa''_i(e_{it})\ge0\). In addition, \(\kappa_i(0)=0\). This cost
-represents the actual cost of aquiring fake invoices and maintaning
-double accounting books to hide the evasion. It might also represent
-oportunity for incurring in tax evasion. This cost is paid either way,
-if the firms decides to evade and gets caught or not\footnote{Alternatively,
-  we could have modeled a penalty function that is paid only if the firm
-  gets caught. The intuition remains the same, there would be a trade
-  off between the expected benefit of evading and the expected cost of
-  getting caught.}.
-
-The optimal decision of the firm will depend on the fiscal environment
-\(\Gamma=\{\tau, \kappa, q \}\), namely the tax rates, the cost of
-evasion, and the probability of detection.
 
 The firms' problem (Equation~\ref{eq-eva}) can be rewritten as follows,
 \begin{equation}\phantomsection\label{eq-eva-2}{
 \begin{aligned}
   \max_{K_{it}, L_{it},M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
-  &+[1-q(e_{it}, M_{it})]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
-  -\kappa_i(e_{it}) \\
+  &+[1-q(e_{it}, a)]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
+  -q(e_{it},a)\phi\frac{\rho_t}{P_t}\tau e_{it}-\kappa_i(e_{it}) \\
   \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 }\end{equation}
 
-For a subset of firms, the cost of evasion is too high for any non-zero
-level of evasion. These firms will always optimally choose not to evade,
-\(e_{it}=0\). Corporations for example, would rather not evade by
-overreporting their materials because lower profits would lead to a
-lower stock price. The opportunity cost of evading is too high for these
-firms. In addition, these firms might be subject to higher levels of
-scrutiny by the tax authority, so the probability of detection for these
-firms might be close to 1.
+An interior solution leads to following first-order conditions,
 
-Their optimization problem is, therefore, the standard cost minimization
-problem. The optimal solution of these firms is well known. In
-particular, the optimal input choice of materials satisfies the
-following first-order condition
-
-\begin{equation}\phantomsection\label{eq-foc-noeva}{
+\begin{equation}\phantomsection\label{eq-foc-m}{
 \beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
 }\end{equation}
 
-where \(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\). The left-hand
-side is the marginal product of materials. The right-hand side is the
-relative price of materials.
-
-For the rest of the firms, the first-order conditions lead to the
-following system of differential equations,
-
-\begin{equation}\phantomsection\label{eq-foc-cont-m}{
-\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)
+\begin{equation}\phantomsection\label{eq-foc-cont-e}{
+\frac{\rho_t}{P_t}\tau\left(1-(1+\phi)\left(q(e_{it}, a)+\frac{\partial q(e_{it}, a)}{\partial e_{it}} e_{it}\right)\right) =\kappa'(e_{it})
 }\end{equation}
+
+where \(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\).
+
+Under random auditing, Equation~\ref{eq-foc-m} is the familiar
+optimality condition, where the left-hand side is the marginal product
+of materials and the right-hand side is the relative prices of
+materials.
+
+To better understand the incentives to overreport inputs, we can rewrite
+Equation~\ref{eq-foc-cont-e} in terms of the evasion elasticity of the
+probability of detection,
+\(\xi_{q,e}=\frac{\partial q(e_{it}, a)}{\partial e_{it}}\frac{e_{it}}{q(e_{it}, a)}\),
+as follows,
 
 \begin{equation}\phantomsection\label{eq-foc-cont-e}{
-\frac{\rho_t}{P_t}\tau\left(1-q(e_{it}, M_{it})-\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}} e_{it}\right) =\kappa'(e_{it})
+\frac{\rho_t}{P_t}\tau\bigg(1-(1+\phi)\left(1+\xi_{q,e}\right)q(e_{it}, a)\bigg) =\kappa'(e_{it})
 }\end{equation}
-
-The system of equations solve the optimal material input choice and the
-optimal evasion decision.
-
-The left-hand side of Equation~\ref{eq-foc-cont-m} is the familiar
-marginal output of inputs. The right hand side is the relative prices
-that are now multiplied by an additional term. In comparison with
-Equation~\ref{eq-foc-noeva}, this term is anologous to a wedge arising
-from the incentives generated by the fiscal environment. In other
-wordsk, in the absence of tax evasion, \(e_{it}=0\), this term would be
-equal to one. In the presence of tax evasion, the term is greater than
-one because \(\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}>0\). The
-marginal product of inputs must be higher to compensate for the
-additional increase to the price ratio by the wedge. Keeping the capital
-and labor constant, firms will choose higher levels of materials making
-them less efficient than firms that do not evade.
-
-The previous result implies the incentives generated by the fiscal
-environment lead to inefficient input choices. The total tax revenue
-loss is the sum of the tax revenue losses due to overreporting and the
-tax revenue losses due to inefficient input choices. Higher levels of
-input utilization lead to lower profits and a smaller value-added tax
-base.
 
 The left-hand side of Equation~\ref{eq-foc-cont-e} is the marginal
 benefit of tax evasion, while, the right-hand side is the marginal cost
-of evasion. The marginal benefit of evasion decreases with the
-probability of detection \(q(e_{it}, M_{it})\) and how sensitive the
-probability is to changes in the level of evasion
-\(\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}}\). The marginal
-cost of evasion increases with the level of evasion because
+of evasion. The marginal benefit of evasion decreases with the evasion
+penalty \(\phi\), the probability of detection \(q(e_{it}, a)\), and the
+evasion elasticity of the probability of detection \(\xi_{q,e}\). The
+marginal cost of evasion increases with the level of evasion because
 \(\kappa'(e_{it})\ge0\).
 
-\subsection{Challenge for the
-econometrician}\label{challenge-for-the-econometrician}
-
-Equation~\ref{eq-foc-noeva} can be rewritten as follows,
-
-\begin{equation}\phantomsection\label{eq-foc-noeva-log}{
-\ln\left(\frac{\rho_tM_{it}}{P_tY_{it}}\right)=\ln\beta+\ln\mathcal{E}-\varepsilon_{it}
-}\end{equation}
-
-This equation can be used to estimate \(\beta\) using the orthogonality
-of \(\varepsilon_{it}\). However, if firms evade, then
-Equation~\ref{eq-foc-cont-m} holds instead of
-Equation~\ref{eq-foc-noeva}, resulting in the following equation,
-
-\begin{equation}\phantomsection\label{eq-foc-cont-m-log}{
-\ln\left(\frac{\rho_tM_{it}}{P_tY_{it}}\right)=\ln\beta+\ln\mathcal{E}-\ln\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)-\varepsilon_{it}
-}\end{equation}
-
-Moreover, the econometrician observes the reported, not the true
-intermediate inputs. Let us denote the percentage increase in the
-reported inputs as \(\exp(\tilde{e}_{it})\), so that what is observed is
-\(M^*_{it}=M_{it}\exp(\tilde{e}_{it})=M_{it}+e_{it}\). Rewriting in
-terms of \(\tilde{e_{it}}\) and plugging into
-Equation~\ref{eq-foc-cont-m-log} yields,
-
-\begin{equation}\phantomsection\label{eq-foc-cont-m-log-rep}{
-\ln\left(\frac{\rho_tM^*_{it}}{P_tY_{it}}\right)=\ln\beta+\ln\mathcal{E}+\tilde{e}_{it}-\ln\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}M^*_{it}(1-\exp(-\tilde{e}_{it}))\right)-\varepsilon_{it} 
-}\end{equation}
-
-In the absence of tax evasion, \(\tilde{e}_{it}=0\),
-Equation~\ref{eq-foc-cont-m-log-rep} reduces to
-Equation~\ref{eq-foc-noeva-log}.
+Note that there could be firms that can optimally choose not to evade,
+\(e_{it}=0\). It could be that Equation~\ref{eq-foc-cont-e} may not hold
+for some firms. Namely, there could be firms, that the marginal cost is
+greater than the marginal benefit for any non-zero level of tax evasion.
+Corporations, for example, would rather not evade by overreporting their
+materials because lower profits would lead to a lower stock price. The
+marginal cost of evasion is greater than the marginal benefit for any
+level. For these firms their optimization problem is, therefore, the
+standard cost minimization problem. The optimal solution of these firms
+is well known is also given by Equation~\ref{eq-foc-m} and \(e_{it}=0\).
 
 \section{Colombia 1981-1991}\label{colombia-1981-1991}
 
@@ -958,7 +908,7 @@ In addition, I impose the following timing assumption.
 \phantomsection\label{ass-ind}
 \begin{fbx}{Assumption}{Assumption 4.2: }{Independence}
 \phantomsection\label{ass-ind}
-Firms choose overreporting \(e_{it}\) \emph{before }the output shock
+Firms choose overreporting \(e_{it}\) \emph{before} the output shock
 \(\varepsilon_{it}\)
 
 \end{fbx}
@@ -3145,6 +3095,9 @@ intermediates are corrected for overreporting.
 
 \subsection{Productivity}\label{productivity}
 
+\subsubsection{Parametric Productivity
+Density}\label{parametric-productivity-density}
+
 Once, the production function parameters are known, we can recover
 \(\omega\) by deconvolution using Equation~\ref{eq-w-squiggle}. Here I
 assume \(\omega\) follows a normal distribution.
@@ -3297,9 +3250,9 @@ sic\_3 & instrument & mean & sd & skewness\\
 \caption{\label{tbl-np-sim-prod}Summary statistics of the simulated
 productivity using the non-parametric estimates of \(\omega\) and
 \(\varepsilon\). Both functions were numerically inverted to obtain
-simulated draws of \(\omega\) and \(\varepsilon\). 1000 draws were used.
-Productivity is computed as
-\(\varphi_{it}^S=\exp{\omega_{it}^S+\varepsilon_{it}^S}\).}
+simulated draws of \(\omega\). 1000 draws were used. Productivity is
+computed as \(\varphi_{it}^S=\exp{\omega_{it}^S}\). \(\varepsilon\) is
+measurement error, so not part of productivity.}
 
 \centering{
 
@@ -3308,25 +3261,35 @@ Productivity is computed as
 \hline
 sic\_3 & Method & Mean & SD & Q1 & Median & Q3\\
 \hline
-313 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 6841.3 & 7504.3 & 2457.8 & 4928.0 & 8309.3\\
+313 & GNR & 60.8 & 30.7 & 43.3 & 55.3 & 69.6\\
 \hline
-313 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 52.5 & 37.7 & 30.5 & 44.3 & 63.2\\
+313 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 6253.5 & 5744.5 & 2697.1 & 4867.0 & 7690.4\\
 \hline
-321 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 20.8 & 17.1 & 12.7 & 16.8 & 23.1\\
+313 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 48.2 & 25.1 & 35.6 & 44.9 & 54.9\\
 \hline
-321 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 20.9 & 16.8 & 12.6 & 16.9 & 23.3\\
+321 & GNR & 21.0 & 11.2 & 13.8 & 18.7 & 25.5\\
 \hline
-322 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 68.9 & 50.2 & 42.5 & 56.8 & 78.5\\
+321 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 18.9 & 8.7 & 14.8 & 17.4 & 20.8\\
 \hline
-322 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 80.4 & 59.1 & 49.3 & 66.3 & 91.7\\
+321 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 18.9 & 8.8 & 14.8 & 17.5 & 21.0\\
 \hline
-331 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 115.6 & 67.6 & 67.7 & 97.7 & 145.0\\
+322 & GNR & 34.9 & 16.4 & 24.0 & 33.4 & 43.2\\
 \hline
-331 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 71.6 & 40.6 & 42.8 & 60.6 & 89.6\\
+322 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 60.9 & 17.3 & 51.6 & 60.0 & 68.8\\
 \hline
-369 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 25.4 & 19.3 & 12.1 & 18.0 & 34.4\\
+322 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 71.0 & 20.8 & 59.7 & 69.8 & 80.3\\
 \hline
-369 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 0.3 & 1.8 & 0.0 & 0.0 & 0.1\\
+331 & GNR & 51.3 & 26.1 & 33.2 & 46.4 & 62.7\\
+\hline
+331 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 103.1 & 31.4 & 85.9 & 99.6 & 115.2\\
+\hline
+331 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 63.8 & 17.8 & 55.4 & 63.0 & 70.9\\
+\hline
+369 & GNR & 34.5 & 26.9 & 17.0 & 29.2 & 45.5\\
+\hline
+369 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 20.3 & 4.6 & 18.1 & 20.0 & 22.0\\
+\hline
+369 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 0.2 & 1.2 & 0.0 & 0.0 & 0.0\\
 \hline
 \end{tabular}
 

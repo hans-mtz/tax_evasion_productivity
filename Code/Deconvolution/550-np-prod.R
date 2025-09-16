@@ -215,6 +215,7 @@ sim_productivity <- mapply(
         return(
             data.frame(
                 phi = phi,
+                exp_omg = exp(omega_v),
                 inds = x,
                 sic_3 = str_extract(x,"\\d+") |> as.numeric(),
                 intermediate = str_extract(x,"\\w+$"),
@@ -258,6 +259,26 @@ sim_productivity_tbl <- do.call(rbind, sim_productivity) %>%
         sic_3, Method, Mean, SD, Q1, Median, Q3
     )
 
+sim_productivity_me_tbl <- do.call(rbind, sim_productivity) %>%
+    group_by(sic_3, ins) %>%
+    summarise(
+        Mean = mean(exp_omg),
+        SD = sd(exp_omg),
+        Q1 = quantile(exp_omg, probs=0.25)[[1]],
+        Median = median(exp_omg),
+        Q3 = quantile(exp_omg, probs=0.75)[[1]]
+    ) %>%
+    mutate(
+        Method = case_when(
+            ins == "lag_m" ~ "TE: $m^*_{t-1}$",
+            ins == "lag_2_w_eps" ~ "TE: $\\mathcal{W}_{t-2}$",
+            TRUE ~ ""
+        )
+    ) %>%
+    select(
+        sic_3, Method, Mean, SD, Q1, Median, Q3
+    )
+
 ## %% Save results ---------------------
 
 save(
@@ -269,3 +290,38 @@ save(
 
 load("Code/Products/np_productivity.RData")
 sim_productivity_tbl
+
+## %% Compare with GNR results ---------------------
+
+folder_stata_results <- "Code/Products"
+
+CD_GNR_me_prod_df <- list.files(folder_stata_results, pattern="stata-gnr-me-omg-.*csv", full.names = TRUE) |>
+    lapply(read.csv) |>
+    do.call(rbind,args=_) %>%
+    group_by(sic3) %>%
+    summarise(
+        Mean = mean(exp(logomega)),
+        SD = sd(exp(logomega)),
+        Q1 = quantile(exp(logomega), probs=0.25)[[1]],
+        Median = median(exp(logomega)),
+        Q3 = quantile(exp(logomega), probs=0.75)[[1]]
+    ) %>%
+    mutate(
+        Method = "GNR"
+    ) %>%
+    select(
+        sic_3=sic3, Method, Mean, SD, Q1, Median, Q3
+    )
+
+prod_comp_tbl <- rbind(
+    sim_productivity_me_tbl,
+    CD_GNR_me_prod_df
+    ) %>%
+    arrange(sic_3, Method)
+prod_comp_tbl
+## %% Save results ---------------------
+
+save(
+    sim_productivity, sim_productivity_tbl, prod_comp_tbl,
+    file = "Code/Products/np_productivity.RData"
+)

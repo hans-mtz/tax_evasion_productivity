@@ -190,6 +190,8 @@ The elasticities of capital and labor vary across industries, with some being lo
 
 ### Productivity 
 
+#### Parametric Productivity Density
+
 Once, the production function parameters are known, we can recover $\omega$ by deconvolution using @eq-w-squiggle. Here I assume $\omega$ follows a normal distribution.
 
 @tbl-boot-omega displays the estimates of the distribution parameters of $\omega$ corresponding to the instrument used in the previous section and the parametric specification of an AR(1).
@@ -325,16 +327,17 @@ omg_np_stats_df %>%
 
 ```{r}
 #| label: tbl-np-sim-prod
-#| tbl-cap: Summary statistics of the simulated productivity using the non-parametric estimates of $\omega$ and $\varepsilon$. Both functions were numerically inverted to obtain simulated draws of $\omega$ and $\varepsilon$. 1000 draws were used. Productivity is computed as $\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}$.
+#| tbl-cap: Summary statistics of the simulated productivity using the non-parametric estimates of $\omega$ and $\varepsilon$. Both functions were numerically inverted to obtain simulated draws of $\omega$. 1000 draws were used. Productivity is computed as $\varphi_{it}^S=\exp{\omega_{it}^S}$. $\varepsilon$ is measurement error, so not part of productivity.
 
 load("../Code/Products/np_productivity.RData")
 
-sim_productivity_tbl %>%
+prod_comp_tbl %>%
   kbl(
     digits = 1,
     table.attr = 'data-quarto-disable-processing="true"'
   ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(1, valign = "top")
 
 ```
 

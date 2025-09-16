@@ -115,7 +115,7 @@ foreach ind of local inds {
 		
 // 		quietly do GNR_code_CD_fs
 		quietly do GNR_code_CD_me
-
+		export delimited id time sic sic3 logomega using "../Products/stata-gnr-me-omg-`ind'.csv", replace
 // 		sum *elas mexp_eg
 //		get m,k,l, bigE, mean error, sd error
 

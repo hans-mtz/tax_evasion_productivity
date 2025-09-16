@@ -14,15 +14,23 @@ The characteristic of the materials being flexible is what makes them more susce
 
 Likewise, labor leaves a larger paper trail than materials because of payroll taxes and social security contributions. These additional taxes and contributions makes labor more costly to evade than materials. The incentive for firms is to underreport labor to evade payroll taxes and social security contributions, but this is not the focus of this paper.
 
-In the model, firms can choose to overreport their inputs by an amount $e_{it}$ to claim additional tax deductions and optimize expected after-tax profits. Firms, then, consider in their optimization problem the tax rate $\tau$, the evasion cost $\kappa(e)$, and the probability of detection $q_{it}$. Without lack of generalization, assume only materials can be deducted for tax purposes. So, then $\tau$ is a value added tax (VAT) or a sales tax, that firms pay charge on their sales and pay on their raw materials.
+In the model, firms can choose to overreport their inputs by an amount $e_{it}\equiv M^*-M\ge0$ to claim additional tax deductions and maximize expected after-tax profits. $M^*$ is the reported level of materials, while $M$ is the true level of materials.
 
-Firms solve @eq-eva
+Firms pay a tax rate $\tau$ on their revenues after deducting their materials costs. $\tau$ is, therefore, equivalent to a value-added tax (VAT) or corporate income tax (CIT), where firms can only claim deductions for their expenses on materials.
+
+The tax authority audits firms at random and always detects misreporting if the firm engages in tax evasion and gets audited. The probabiliy of detection is then, $q(e_{it},a)$; where $a$ represents the exogenous monitoring effort by the tax authority. The probability of detection is continuous and increasing in both of its arguments. The more a firm overreports, the more likely it is to be detected. Likewise, the larger the efforts of the tax authority in monitoring suspicious behaviour of firms, the higher the probability of detection.
+
+The evasion cost $\kappa_i(e_{it})$ is increasing, $\kappa_i(e_{it})'>0$, and convex in the amount overreported, $\kappa''_i(e_{it})\ge0$. In addition, not overreporting is costless, $\kappa_i(0)=0$.  This cost represents the direct cost of overreporting such as acquiring fake invoices and resource cost of maintaining parallel accounting books to keep track of the true and reported costs. It might also represent indirect costs or losses of incurring in tax evasion. If the firms decides to evade, the evading cost is paid whether the firms is detected evading or not.
+
+Finally, if tax evasion is detected, the tax authority imposes a penalty. Detected firms are fined with a rate of $\phi$ over the value of evaded taxes in addition to the true tax liability.
+
+Firms, then, solve @eq-eva
 $$
 \begin{aligned}
-  \max_{K_{it},L_{it},M_{it}, e_{it}} (1-q_{it})&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  \max_{K_{it},L_{it},M_{it}, e_{it}} \big(1-q(e_{it},a)\big)&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
   &-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)-\kappa_i(e_{it})\bigg]\\
-  +q_{it}&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
-  &-\kappa_i(e_{it})\bigg] \\
+  +q(e_{it},a)&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
+  &-\kappa_i(e_{it})-\phi\frac{\rho_t}{P_t}\tau e_{it}\bigg] \\
   \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$ {#eq-eva}
@@ -38,11 +46,11 @@ Option 2: two caterogies of firms from the point of view of the tax authority, H
 
 :::
 
+::: {#note-draft-q .content-hidden unless-meta="draft"}
+
 The probability of detection $q(e_{it}, M_{it})$ is monotonically increasing in the amount evaded $e_{it}$ and the level of materials $M_{it}$ and it is bounded between $(0,1]$. Intuitively, firms that overreport more are more likely to get caught. Likewise, bigger firms are more likely to be detected if they evade. 
 
-The evasion cost $\kappa_i(e_{it})$ is monotonically increasing, $\kappa_i(e_{it})'>0$, and convex in the amount evaded, $\kappa''_i(e_{it})\ge0$. In addition, $\kappa_i(0)=0$.  This cost represents the actual cost of aquiring fake invoices and maintaning double accounting books to hide the evasion. It might also represent other types of costs for the firm by incurring in tax evasion. This cost is paid either way, if the firms decides to evade and gets caught or not[^kappa].
-
-[^kappa]: Alternatively, we could have modeled a penalty function that is paid only if the firm gets caught. The intuition remains the same, there would be a trade off between the expected benefit of evading and the expected cost of getting caught.
+:::
 
 ::: {.content-hidden unless-meta="draft"}
 
@@ -55,46 +63,59 @@ Level of revenue is a common measure for fiscal authorities to determine a firm'
 
 :::
 
-The optimal decision of the firm will depend on the fiscal environment $\Gamma=\{\tau, \kappa, q \}$, namely the tax rates, the cost of evasion, and the probability of detection. 
-
 
 The firms' problem (@eq-eva) can be rewritten as follows,
 $$
 \begin{aligned}
   \max_{K_{it}, L_{it},M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
-  &+[1-q(e_{it}, M_{it})]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
-  -\kappa_i(e_{it}) \\
+  &+[1-q(e_{it}, a)]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
+  -q(e_{it},a)\phi\frac{\rho_t}{P_t}\tau e_{it}-\kappa_i(e_{it}) \\
   \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 $$ {#eq-eva-2}
 
-Note that firms can optimally choose not to evade, $e_{it}=0$. For these firms, any non-zero level of evasion may lead to a probability of detection close to one or excessive evasion costs. Corporations, for example, would rather not evade by overreporting their materials because lower profits would lead to a lower stock price. The cost of evading is too high for these firms. Furthermore, the tax authority in Colombia holds corporations to higher levels of scrutiny, so the probability of detection for these firms is also higher.
 
-Their optimization problem is, therefore, the standard cost minimization problem. The optimal solution of these firms is well known. In particular, the optimal input choice of materials satisfies the following first-order condition
+An interior solution leads to following first-order conditions,
 
 $$
 \beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
-$$ {#eq-foc-noeva}
+$$ {#eq-foc-m}
 
-where $\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]$. The left-hand side is the marginal product of materials. The right-hand side is the relative price of materials.
 
-For the rest of the firms, the first-order conditions lead to the following system of differential equations,
-
+::: {#note-foc-q-m .content-hidden unless-meta="draft"}
 $$
 \beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)
-$$ {#eq-foc-cont-m}
+$$ {#eq-foc-cont-q-m}
+
+:::
 
 $$
-\frac{\rho_t}{P_t}\tau\left(1-q(e_{it}, M_{it})-\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}} e_{it}\right) =\kappa'(e_{it})
+\frac{\rho_t}{P_t}\tau\left(1-(1+\phi)\left(q(e_{it}, a)+\frac{\partial q(e_{it}, a)}{\partial e_{it}} e_{it}\right)\right) =\kappa'(e_{it})
 $$ {#eq-foc-cont-e}
 
-The system of equations solve the optimal material input choice and the optimal evasion decision.
+where $\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]$. 
 
-The left-hand side of @eq-foc-cont-m is the familiar marginal output of inputs. The right hand side is the relative prices that are now multiplied by an additional term. In comparison with @eq-foc-noeva, this term is anologous to a wedge arising from the incentives generated by the fiscal environment. In other wordsk, in the absence of tax evasion, $e_{it}=0$, this term would be equal to one. In the presence of tax evasion, the term is greater than one because $\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}>0$. The marginal product of inputs must be higher to compensate for the additional increase to the price ratio by the wedge. Keeping the capital and labor constant, firms will choose higher levels of materials making them less efficient than firms that do not evade.
+Under random auditing, @eq-foc-m is the familiar optimality condition, where the left-hand side is the marginal product of materials and the right-hand side is the relative prices of materials.
+
+::: {.content-hidden unless-meta="draft"}
+
+The left-hand side of @eq-foc-m is the familiar marginal output of inputs. The right hand side is the relative prices that are now multiplied by an additional term. In comparison with @eq-foc-noeva, this term is anologous to a wedge arising from the incentives generated by the fiscal environment. In other wordsk, in the absence of tax evasion, $e_{it}=0$, this term would be equal to one. In the presence of tax evasion, the term is greater than one because $\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}>0$. The marginal product of inputs must be higher to compensate for the additional increase to the price ratio by the wedge. Keeping the capital and labor constant, firms will choose higher levels of materials making them less efficient than firms that do not evade.
 
 The previous result implies the incentives generated by the fiscal environment lead to inefficient input choices. The total tax revenue loss is the sum of the tax revenue losses due to overreporting and the tax revenue losses due to inefficient input choices. Higher levels of input utilization lead to lower profits and a smaller value-added tax base.
 
-The left-hand side of @eq-foc-cont-e is the marginal benefit of tax evasion, while, the right-hand side is the marginal cost of evasion. The marginal benefit of evasion decreases with the probability of detection $q(e_{it}, M_{it})$ and how sensitive the probability is to changes in the level of evasion $\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}}$. The marginal cost of evasion increases with the level of evasion because $\kappa'(e_{it})\ge0$.
+:::
+
+To better understand the incentives to overreport inputs, we can rewrite @eq-foc-cont-e in terms of the evasion elasticity of the probability of detection, $\xi_{q,e}=\frac{\partial q(e_{it}, a)}{\partial e_{it}}\frac{e_{it}}{q(e_{it}, a)}$, as follows,
+
+$$
+\frac{\rho_t}{P_t}\tau\bigg(1-(1+\phi)\left(1+\xi_{q,e}\right)q(e_{it}, a)\bigg) =\kappa'(e_{it})
+$$ {#eq-foc-cont-e}
+
+The left-hand side of @eq-foc-cont-e is the marginal benefit of tax evasion, while, the right-hand side is the marginal cost of evasion. The marginal benefit of evasion decreases with the evasion penalty $\phi$, the probability of detection $q(e_{it}, a)$, and the evasion elasticity of the probability of detection $\xi_{q,e}$. The marginal cost of evasion increases with the level of evasion because $\kappa'(e_{it})\ge0$.
+
+Note that there could be firms that can optimally choose not to evade, $e_{it}=0$. It could be that @eq-foc-cont-e may not hold for some firms. Namely, there could be firms, that the marginal cost is greater than the marginal benefit for any non-zero level of tax evasion. Corporations, for example, would rather not evade by overreporting their materials because lower profits would lead to a lower stock price. The marginal cost of evasion is greater than the marginal benefit for any level. For these firms their optimization problem is, therefore, the standard cost minimization problem. The optimal solution of these firms is well known is also given by @eq-foc-m and $e_{it}=0$.
+
+::: {.content-hidden unless-meta="draft"}
 
 ### Challenge for the econometrician
 
@@ -117,6 +138,10 @@ $$
 $$ {#eq-foc-cont-m-log-rep}
 
 In the absence of tax evasion, $\tilde{e}_{it}=0$, @eq-foc-cont-m-log-rep reduces to @eq-foc-noeva-log.
+
+
+:::
+
 
 ::: {.content-hidden unless-meta="draft"}
 

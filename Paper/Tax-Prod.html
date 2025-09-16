@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Hans Martinez">
-<meta name="dcterms.date" content="2025-09-12">
+<meta name="dcterms.date" content="2025-09-16">
 <meta name="keywords" content="Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity">
 
 <title>Tax Evasion and Productivity</title>
@@ -60,6 +60,10 @@ div.csl-indent {
 <script src="Tax-Prod_files/libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="Tax-Prod_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <style>
+.Theorem {
+  --color1: #99CCFF;
+  --color2: #FFFFFF;
+}
 .Definition {
   --color1: #99CCFF;
   --color2: #FFFFFF;
@@ -69,10 +73,6 @@ div.csl-indent {
   --color2: #FFFFFF;
 }
 .Proposition {
-  --color1: #99CCFF;
-  --color2: #FFFFFF;
-}
-.Theorem {
   --color1: #99CCFF;
   --color2: #FFFFFF;
 }
@@ -119,10 +119,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#a-parsimonious-model-of-tax-evasion-through-input-overreporting" id="toc-a-parsimonious-model-of-tax-evasion-through-input-overreporting" class="nav-link" data-scroll-target="#a-parsimonious-model-of-tax-evasion-through-input-overreporting"><span class="header-section-number">1</span> A parsimonious model of tax evasion through input overreporting</a>
-  <ul class="collapse">
-  <li><a href="#challenge-for-the-econometrician" id="toc-challenge-for-the-econometrician" class="nav-link" data-scroll-target="#challenge-for-the-econometrician"><span class="header-section-number">1.1</span> Challenge for the econometrician</a></li>
-  </ul></li>
+  <li><a href="#a-parsimonious-model-of-tax-evasion-through-input-overreporting" id="toc-a-parsimonious-model-of-tax-evasion-through-input-overreporting" class="nav-link" data-scroll-target="#a-parsimonious-model-of-tax-evasion-through-input-overreporting"><span class="header-section-number">1</span> A parsimonious model of tax evasion through input overreporting</a></li>
   <li><a href="#colombia-1981-1991" id="toc-colombia-1981-1991" class="nav-link" data-scroll-target="#colombia-1981-1991"><span class="header-section-number">2</span> Colombia 1981-1991</a>
   <ul class="collapse">
   <li><a href="#colombian-corporate-tax-system" id="toc-colombian-corporate-tax-system" class="nav-link" data-scroll-target="#colombian-corporate-tax-system"><span class="header-section-number">2.1</span> Colombian Corporate Tax System</a>
@@ -177,7 +174,8 @@ window.Quarto = {
   <li><a href="#production-function" id="toc-production-function" class="nav-link" data-scroll-target="#production-function"><span class="header-section-number">7.2</span> Production Function</a></li>
   <li><a href="#productivity" id="toc-productivity" class="nav-link" data-scroll-target="#productivity"><span class="header-section-number">7.3</span> Productivity</a>
   <ul class="collapse">
-  <li><a href="#non-parametric-productivity-density" id="toc-non-parametric-productivity-density" class="nav-link" data-scroll-target="#non-parametric-productivity-density"><span class="header-section-number">7.3.1</span> Non-Parametric Productivity Density</a></li>
+  <li><a href="#parametric-productivity-density" id="toc-parametric-productivity-density" class="nav-link" data-scroll-target="#parametric-productivity-density"><span class="header-section-number">7.3.1</span> Parametric Productivity Density</a></li>
+  <li><a href="#non-parametric-productivity-density" id="toc-non-parametric-productivity-density" class="nav-link" data-scroll-target="#non-parametric-productivity-density"><span class="header-section-number">7.3.2</span> Non-Parametric Productivity Density</a></li>
   </ul></li>
   </ul></li>
   
@@ -259,7 +257,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 12, 2025</p>
+      <p class="date">September 16, 2025</p>
     </div>
   </div>
   
@@ -305,65 +303,48 @@ Y_{it}=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsi
 <p>In addition, firms can freely choose their materials in the current period, but capital and labor are either predetermined or dynamic. In practice what this means is that when it comes to choosing materials, firms face static optimization problem.</p>
 <p>The characteristic of the materials being flexible is what makes them more susceptible to be overreported. Capital can be audited more easily than materials. For example, the tax authority can verify the existence of capital goods in the firm’s premises. In contrast, materials are consumed in the production process and are more difficult to verify.</p>
 <p>Likewise, labor leaves a larger paper trail than materials because of payroll taxes and social security contributions. These additional taxes and contributions makes labor more costly to evade than materials. The incentive for firms is to underreport labor to evade payroll taxes and social security contributions, but this is not the focus of this paper.</p>
-<p>In the model, firms can choose to overreport their inputs by an amount <span class="math inline">\(e_{it}\)</span> to claim additional tax deductions and optimize expected after-tax profits. Firms, then, consider in their optimization problem the tax rate <span class="math inline">\(\tau\)</span>, the evasion cost <span class="math inline">\(\kappa(e)\)</span>, and the probability of detection <span class="math inline">\(q_{it}\)</span>. Without lack of generalization, assume only materials can be deducted for tax purposes. So, then <span class="math inline">\(\tau\)</span> is a value added tax (VAT) or a sales tax, that firms pay charge on their sales and pay on their raw materials.</p>
-<p>Firms solve <a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a> <span id="eq-eva"><span class="math display">\[
+<p>In the model, firms can choose to overreport their inputs by an amount <span class="math inline">\(e_{it}\equiv M^*-M\ge0\)</span> to claim additional tax deductions and maximize expected after-tax profits. <span class="math inline">\(M^*\)</span> is the reported level of materials, while <span class="math inline">\(M\)</span> is the true level of materials.</p>
+<p>Firms pay a tax rate <span class="math inline">\(\tau\)</span> on their revenues after deducting their materials costs. <span class="math inline">\(\tau\)</span> is, therefore, equivalent to a value-added tax (VAT) or corporate income tax (CIT), where firms can only claim deductions for their expenses on materials.</p>
+<p>The tax authority audits firms at random and always detects misreporting if the firm engages in tax evasion and gets audited. The probabiliy of detection is then, <span class="math inline">\(q(e_{it},a)\)</span>; where <span class="math inline">\(a\)</span> represents the exogenous monitoring effort by the tax authority. The probability of detection is continuous and increasing in both of its arguments. The more a firm overreports, the more likely it is to be detected. Likewise, the larger the efforts of the tax authority in monitoring suspicious behaviour of firms, the higher the probability of detection.</p>
+<p>The evasion cost <span class="math inline">\(\kappa_i(e_{it})\)</span> is increasing, <span class="math inline">\(\kappa_i(e_{it})'&gt;0\)</span>, and convex in the amount overreported, <span class="math inline">\(\kappa''_i(e_{it})\ge0\)</span>. In addition, not overreporting is costless, <span class="math inline">\(\kappa_i(0)=0\)</span>. This cost represents the direct cost of overreporting such as acquiring fake invoices and resource cost of maintaining parallel accounting books to keep track of the true and reported costs. It might also represent indirect costs or losses of incurring in tax evasion. If the firms decides to evade, the evading cost is paid whether the firms is detected evading or not.</p>
+<p>Finally, if tax evasion is detected, the tax authority imposes a penalty. Detected firms are fined with a rate of <span class="math inline">\(\phi\)</span> over the value of evaded taxes in addition to the true tax liability.</p>
+<p>Firms, then, solve <a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a> <span id="eq-eva"><span class="math display">\[
 \begin{aligned}
-  \max_{K_{it},L_{it},M_{it}, e_{it}} (1-q_{it})&amp;\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  \max_{K_{it},L_{it},M_{it}, e_{it}} \big(1-q(e_{it},a)\big)&amp;\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
   &amp;-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)-\kappa_i(e_{it})\bigg]\\
-  +q_{it}&amp;\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
-  &amp;-\kappa_i(e_{it})\bigg] \\
+  +q(e_{it},a)&amp;\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
+  &amp;-\kappa_i(e_{it})-\phi\frac{\rho_t}{P_t}\tau e_{it}\bigg] \\
   \text{s.t. }\; Y_{it}&amp;=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 \tag{2}\]</span></span></p>
-<p>The probability of detection <span class="math inline">\(q(e_{it}, M_{it})\)</span> is monotonically increasing in the amount evaded <span class="math inline">\(e_{it}\)</span> and the level of materials <span class="math inline">\(M_{it}\)</span> and it is bounded between <span class="math inline">\((0,1]\)</span>. Intuitively, firms that overreport more are more likely to get caught. Likewise, bigger firms are more likely to be detected if they evade.</p>
-<p>The evasion cost <span class="math inline">\(\kappa_i(e_{it})\)</span> is monotonically increasing, <span class="math inline">\(\kappa_i(e_{it})'&gt;0\)</span>, and convex in the amount evaded, <span class="math inline">\(\kappa''_i(e_{it})\ge0\)</span>. In addition, <span class="math inline">\(\kappa_i(0)=0\)</span>. This cost represents the actual cost of aquiring fake invoices and maintaning double accounting books to hide the evasion. It might also represent oportunity for incurring in tax evasion. This cost is paid either way, if the firms decides to evade and gets caught or not<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<p>The optimal decision of the firm will depend on the fiscal environment <span class="math inline">\(\Gamma=\{\tau, \kappa, q \}\)</span>, namely the tax rates, the cost of evasion, and the probability of detection.</p>
 <p>The firms’ problem (<a href="#eq-eva" class="quarto-xref">Equation&nbsp;2</a>) can be rewritten as follows, <span id="eq-eva-2"><span class="math display">\[
 \begin{aligned}
   \max_{K_{it}, L_{it},M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &amp;(1-\tau)\left(\mathbb{E}[Y_{it}]-\frac{\rho_{t}}{P_t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
-  &amp;+[1-q(e_{it}, M_{it})]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
-  -\kappa_i(e_{it}) \\
+  &amp;+[1-q(e_{it}, a)]\left(\frac{\rho_{t}}{P_t}\tau e_{it}\right)
+  -q(e_{it},a)\phi\frac{\rho_t}{P_t}\tau e_{it}-\kappa_i(e_{it}) \\
   \text{s.t. }\; Y_{it}&amp;=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
 \end{aligned}
 \tag{3}\]</span></span></p>
-<p>For a subset of firms, the cost of evasion is too high for any non-zero level of evasion. These firms will always optimally choose not to evade, <span class="math inline">\(e_{it}=0\)</span>. Corporations for example, would rather not evade by overreporting their materials because lower profits would lead to a lower stock price. The opportunity cost of evading is too high for these firms. In addition, these firms might be subject to higher levels of scrutiny by the tax authority, so the probability of detection for these firms might be close to 1.</p>
-<p>Their optimization problem is, therefore, the standard cost minimization problem. The optimal solution of these firms is well known. In particular, the optimal input choice of materials satisfies the following first-order condition</p>
-<p><span id="eq-foc-noeva"><span class="math display">\[
+<p>An interior solution leads to following first-order conditions,</p>
+<p><span id="eq-foc-m"><span class="math display">\[
 \beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
 \tag{4}\]</span></span></p>
-<p>where <span class="math inline">\(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)</span>. The left-hand side is the marginal product of materials. The right-hand side is the relative price of materials.</p>
-<p>For the rest of the firms, the first-order conditions lead to the following system of differential equations,</p>
-<p><span id="eq-foc-cont-m"><span class="math display">\[
-\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)
-\tag{5}\]</span></span></p>
 <p><span id="eq-foc-cont-e"><span class="math display">\[
-\frac{\rho_t}{P_t}\tau\left(1-q(e_{it}, M_{it})-\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}} e_{it}\right) =\kappa'(e_{it})
+\frac{\rho_t}{P_t}\tau\left(1-(1+\phi)\left(q(e_{it}, a)+\frac{\partial q(e_{it}, a)}{\partial e_{it}} e_{it}\right)\right) =\kappa'(e_{it})
+\tag{5}\]</span></span></p>
+<p>where <span class="math inline">\(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)</span>.</p>
+<p>Under random auditing, <a href="#eq-foc-m" class="quarto-xref">Equation&nbsp;4</a> is the familiar optimality condition, where the left-hand side is the marginal product of materials and the right-hand side is the relative prices of materials.</p>
+<p>To better understand the incentives to overreport inputs, we can rewrite <a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;6</a> in terms of the evasion elasticity of the probability of detection, <span class="math inline">\(\xi_{q,e}=\frac{\partial q(e_{it}, a)}{\partial e_{it}}\frac{e_{it}}{q(e_{it}, a)}\)</span>, as follows,</p>
+<p><span id="eq-foc-cont-e"><span class="math display">\[
+\frac{\rho_t}{P_t}\tau\bigg(1-(1+\phi)\left(1+\xi_{q,e}\right)q(e_{it}, a)\bigg) =\kappa'(e_{it})
 \tag{6}\]</span></span></p>
-<p>The system of equations solve the optimal material input choice and the optimal evasion decision.</p>
-<p>The left-hand side of <a href="#eq-foc-cont-m" class="quarto-xref">Equation&nbsp;5</a> is the familiar marginal output of inputs. The right hand side is the relative prices that are now multiplied by an additional term. In comparison with <a href="#eq-foc-noeva" class="quarto-xref">Equation&nbsp;4</a>, this term is anologous to a wedge arising from the incentives generated by the fiscal environment. In other wordsk, in the absence of tax evasion, <span class="math inline">\(e_{it}=0\)</span>, this term would be equal to one. In the presence of tax evasion, the term is greater than one because <span class="math inline">\(\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}&gt;0\)</span>. The marginal product of inputs must be higher to compensate for the additional increase to the price ratio by the wedge. Keeping the capital and labor constant, firms will choose higher levels of materials making them less efficient than firms that do not evade.</p>
-<p>The previous result implies the incentives generated by the fiscal environment lead to inefficient input choices. The total tax revenue loss is the sum of the tax revenue losses due to overreporting and the tax revenue losses due to inefficient input choices. Higher levels of input utilization lead to lower profits and a smaller value-added tax base.</p>
-<p>The left-hand side of <a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;6</a> is the marginal benefit of tax evasion, while, the right-hand side is the marginal cost of evasion. The marginal benefit of evasion decreases with the probability of detection <span class="math inline">\(q(e_{it}, M_{it})\)</span> and how sensitive the probability is to changes in the level of evasion <span class="math inline">\(\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}}\)</span>. The marginal cost of evasion increases with the level of evasion because <span class="math inline">\(\kappa'(e_{it})\ge0\)</span>.</p>
-<section id="challenge-for-the-econometrician" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="challenge-for-the-econometrician"><span class="header-section-number">1.1</span> Challenge for the econometrician</h2>
-<p><a href="#eq-foc-noeva" class="quarto-xref">Equation&nbsp;4</a> can be rewritten as follows,</p>
-<p><span id="eq-foc-noeva-log"><span class="math display">\[
-\ln\left(\frac{\rho_tM_{it}}{P_tY_{it}}\right)=\ln\beta+\ln\mathcal{E}-\varepsilon_{it}
-\tag{7}\]</span></span></p>
-<p>This equation can be used to estimate <span class="math inline">\(\beta\)</span> using the orthogonality of <span class="math inline">\(\varepsilon_{it}\)</span>. However, if firms evade, then <a href="#eq-foc-cont-m" class="quarto-xref">Equation&nbsp;5</a> holds instead of <a href="#eq-foc-noeva" class="quarto-xref">Equation&nbsp;4</a>, resulting in the following equation,</p>
-<p><span id="eq-foc-cont-m-log"><span class="math display">\[
-\ln\left(\frac{\rho_tM_{it}}{P_tY_{it}}\right)=\ln\beta+\ln\mathcal{E}-\ln\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)-\varepsilon_{it}
-\tag{8}\]</span></span></p>
-<p>Moreover, the econometrician observes the reported, not the true intermediate inputs. Let us denote the percentage increase in the reported inputs as <span class="math inline">\(\exp(\tilde{e}_{it})\)</span>, so that what is observed is <span class="math inline">\(M^*_{it}=M_{it}\exp(\tilde{e}_{it})=M_{it}+e_{it}\)</span>. Rewriting in terms of <span class="math inline">\(\tilde{e_{it}}\)</span> and plugging into <a href="#eq-foc-cont-m-log" class="quarto-xref">Equation&nbsp;8</a> yields,</p>
-<p><span id="eq-foc-cont-m-log-rep"><span class="math display">\[
-\ln\left(\frac{\rho_tM^*_{it}}{P_tY_{it}}\right)=\ln\beta+\ln\mathcal{E}+\tilde{e}_{it}-\ln\left(1+\frac{\tau}{(1-\tau)}\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}M^*_{it}(1-\exp(-\tilde{e}_{it}))\right)-\varepsilon_{it}
-\tag{9}\]</span></span></p>
-<p>In the absence of tax evasion, <span class="math inline">\(\tilde{e}_{it}=0\)</span>, <a href="#eq-foc-cont-m-log-rep" class="quarto-xref">Equation&nbsp;9</a> reduces to <a href="#eq-foc-noeva-log" class="quarto-xref">Equation&nbsp;7</a>.</p>
+<p>The left-hand side of <a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;6</a> is the marginal benefit of tax evasion, while, the right-hand side is the marginal cost of evasion. The marginal benefit of evasion decreases with the evasion penalty <span class="math inline">\(\phi\)</span>, the probability of detection <span class="math inline">\(q(e_{it}, a)\)</span>, and the evasion elasticity of the probability of detection <span class="math inline">\(\xi_{q,e}\)</span>. The marginal cost of evasion increases with the level of evasion because <span class="math inline">\(\kappa'(e_{it})\ge0\)</span>.</p>
+<p>Note that there could be firms that can optimally choose not to evade, <span class="math inline">\(e_{it}=0\)</span>. It could be that <a href="#eq-foc-cont-e" class="quarto-xref">Equation&nbsp;6</a> may not hold for some firms. Namely, there could be firms, that the marginal cost is greater than the marginal benefit for any non-zero level of tax evasion. Corporations, for example, would rather not evade by overreporting their materials because lower profits would lead to a lower stock price. The marginal cost of evasion is greater than the marginal benefit for any level. For these firms their optimization problem is, therefore, the standard cost minimization problem. The optimal solution of these firms is well known is also given by <a href="#eq-foc-m" class="quarto-xref">Equation&nbsp;4</a> and <span class="math inline">\(e_{it}=0\)</span>.</p>
 <!-- Setting -->
 <!--  -->
 <!-- Identification strategy
 <!--  -->
 <!-- Colombia 1981-1991: tax system and reforms *-->
-</section>
 </section>
 <section id="colombia-1981-1991" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Colombia 1981-1991</h1>
@@ -476,14 +457,14 @@ Table&nbsp;2: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tinytable_uz6uhunaoj6t9ce8ji3m</title>
+    <title>tinytable_eiyh3q2youv9s8i8owe1</title>
     <style>
-.table td.tinytable_css_1d894in2za2z1usqon98, .table th.tinytable_css_1d894in2za2z1usqon98 {    border-bottom: solid 0.1em #d3d8dc; }
-.table td.tinytable_css_qaoc0wxz5w7l0s9r2wb1, .table th.tinytable_css_qaoc0wxz5w7l0s9r2wb1 {   padding-left: 1em; }
-.table td.tinytable_css_svpq74xqy3cegjwb2v97, .table th.tinytable_css_svpq74xqy3cegjwb2v97 {    text-align: center; }
-.table td.tinytable_css_er1moyiigi7r9bv3t0l8, .table th.tinytable_css_er1moyiigi7r9bv3t0l8 {    border-top: solid 0.1em black; }
-.table td.tinytable_css_00tnq3vosk36vl6ns0zq, .table th.tinytable_css_00tnq3vosk36vl6ns0zq {    font-weight: bold; border-bottom: solid 0.1em black; }
-.table td.tinytable_css_pn277cuc8qsb57bqhskw, .table th.tinytable_css_pn277cuc8qsb57bqhskw {    border-bottom: solid 0.1em white; }
+.table td.tinytable_css_raff1g9kh2gaxfvndty8, .table th.tinytable_css_raff1g9kh2gaxfvndty8 {    border-bottom: solid 0.1em #d3d8dc; }
+.table td.tinytable_css_neurcef2ke46rfanfebb, .table th.tinytable_css_neurcef2ke46rfanfebb {   padding-left: 1em; }
+.table td.tinytable_css_kmba4mi8etfgepmnb5yy, .table th.tinytable_css_kmba4mi8etfgepmnb5yy {    text-align: center; }
+.table td.tinytable_css_4xh4e4his7ul2dk3urmv, .table th.tinytable_css_4xh4e4his7ul2dk3urmv {    border-top: solid 0.1em black; }
+.table td.tinytable_css_efoc2kejr0xgd40eoog3, .table th.tinytable_css_efoc2kejr0xgd40eoog3 {    font-weight: bold; border-bottom: solid 0.1em black; }
+.table td.tinytable_css_6lbs23d8r0beqdlh64ni, .table th.tinytable_css_6lbs23d8r0beqdlh64ni {    border-bottom: solid 0.1em white; }
     </style>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -501,7 +482,7 @@ Table&nbsp;2: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
 
   
     <div class="container">
-      <table class="table table-borderless" id="tinytable_uz6uhunaoj6t9ce8ji3m" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+      <table class="table table-borderless" id="tinytable_eiyh3q2youv9s8i8owe1" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         <thead>
         
               <tr>
@@ -665,12 +646,12 @@ Table&nbsp;2: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
     </div>
 
     <script>
-      function styleCell_tinytable_v8czv7o37h7czp1kux4d(i, j, css_id) {
-        var table = document.getElementById("tinytable_uz6uhunaoj6t9ce8ji3m");
+      function styleCell_tinytable_9ln1i4owvnh94ks5855z(i, j, css_id) {
+        var table = document.getElementById("tinytable_eiyh3q2youv9s8i8owe1");
         table.rows[i].cells[j].classList.add(css_id);
       }
-      function insertSpanRow_lj0fw2byh7bvu844oel3(i, colspan, content) {
-        var table = document.getElementById('tinytable_uz6uhunaoj6t9ce8ji3m');
+      function insertSpanRow_hxpedkvecom8gmn5x2b1(i, colspan, content) {
+        var table = document.getElementById('tinytable_eiyh3q2youv9s8i8owe1');
         var newRow = table.insertRow(i);
         var newCell = newRow.insertCell(0);
         newCell.setAttribute("colspan", colspan);
@@ -678,8 +659,8 @@ Table&nbsp;2: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         // this may be unsafe, but innerText does not interpret <br>
         newCell.innerHTML = content;
       }
-      function spanCell_tinytable_v8czv7o37h7czp1kux4d(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_uz6uhunaoj6t9ce8ji3m");
+      function spanCell_tinytable_9ln1i4owvnh94ks5855z(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_eiyh3q2youv9s8i8owe1");
         const targetRow = table.rows[i];
         const targetCell = targetRow.cells[j];
         for (let r = 0; r < rowspan; r++) {
@@ -706,73 +687,73 @@ Table&nbsp;2: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
         targetCell.colSpan = colspan;
       }
 
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 0, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 1, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 2, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 3, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 4, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 5, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(0, 6, 'tinytable_css_1d894in2za2z1usqon98') })
-window.addEventListener('load', function () { insertSpanRow_lj0fw2byh7bvu844oel3(5, 7, 'Intermediates') });
-window.addEventListener('load', function () { insertSpanRow_lj0fw2byh7bvu844oel3(1, 7, 'Share of Revenues') });
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(2, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(3, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(4, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(5, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(7, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(8, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(9, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(11, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(13, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(15, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(16, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(17, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(18, 0, 'tinytable_css_qaoc0wxz5w7l0s9r2wb1') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 0, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 1, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 2, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 3, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 4, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 5, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(-1, 6, 'tinytable_css_svpq74xqy3cegjwb2v97') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 0, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 1, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 2, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 3, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 4, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 5, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(12, 6, 'tinytable_css_er1moyiigi7r9bv3t0l8') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 0, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 0, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 0, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 1, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 1, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 1, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 2, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 2, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 2, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 3, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 3, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 3, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 4, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 4, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 4, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 5, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 5, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 5, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(1, 6, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(6, 6, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(14, 6, 'tinytable_css_00tnq3vosk36vl6ns0zq') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 0, 'tinytable_css_pn277cuc8qsb57bqhskw') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 1, 'tinytable_css_pn277cuc8qsb57bqhskw') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 2, 'tinytable_css_pn277cuc8qsb57bqhskw') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 3, 'tinytable_css_pn277cuc8qsb57bqhskw') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 4, 'tinytable_css_pn277cuc8qsb57bqhskw') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 5, 'tinytable_css_pn277cuc8qsb57bqhskw') })
-window.addEventListener('load', function () { styleCell_tinytable_v8czv7o37h7czp1kux4d(10, 6, 'tinytable_css_pn277cuc8qsb57bqhskw') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 0, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 1, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 2, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 3, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 4, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 5, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(0, 6, 'tinytable_css_raff1g9kh2gaxfvndty8') })
+window.addEventListener('load', function () { insertSpanRow_hxpedkvecom8gmn5x2b1(5, 7, 'Intermediates') });
+window.addEventListener('load', function () { insertSpanRow_hxpedkvecom8gmn5x2b1(1, 7, 'Share of Revenues') });
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(2, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(3, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(4, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(5, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(7, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(8, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(9, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(11, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(13, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(15, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(16, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(17, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(18, 0, 'tinytable_css_neurcef2ke46rfanfebb') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 0, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 1, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 2, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 3, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 4, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 5, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(-1, 6, 'tinytable_css_kmba4mi8etfgepmnb5yy') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 0, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 1, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 2, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 3, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 4, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 5, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(12, 6, 'tinytable_css_4xh4e4his7ul2dk3urmv') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 0, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 0, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 0, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 1, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 1, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 1, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 2, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 2, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 2, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 3, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 3, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 3, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 4, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 4, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 4, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 5, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 5, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 5, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(1, 6, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(6, 6, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(14, 6, 'tinytable_css_efoc2kejr0xgd40eoog3') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 0, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 1, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 2, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 3, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 4, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 5, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
+window.addEventListener('load', function () { styleCell_tinytable_9ln1i4owvnh94ks5855z(10, 6, 'tinytable_css_6lbs23d8r0beqdlh64ni') })
     </script>
 
   
@@ -1128,14 +1109,14 @@ Table&nbsp;4: Corporations by Industry. Top 20 Industries in Colombia by number 
 <p>For those firms, then <span class="math inline">\(\mathbb{E}[e_{it}|\theta_i\in\Theta^{NE}]=0\)</span></p>
 <p>In addition, I impose the following timing assumption.</p>
 <div id="ass-ind" class="Assumption" title="Independence" data-number="II">
-<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 4.2: </strong>Independence</summary><div>Firms choose overreporting <span class="math inline">\(e_{it}\)</span> <em>before </em>the output shock <span class="math inline">\(\varepsilon_{it}\)</span><p></p>
+<p></p><details class="Assumption fbx-default closebutton" open=""><summary><strong>Assumption 4.2: </strong>Independence</summary><div>Firms choose overreporting <span class="math inline">\(e_{it}\)</span> <em>before</em> the output shock <span class="math inline">\(\varepsilon_{it}\)</span><p></p>
 </div></details>
 </div>
 <p>Assumption <a href="#ass-ind">4.2</a> implies that input overreporting is independent of the current period output shock, <span class="math inline">\(e_{it} \perp \varepsilon_{it}\)</span>. In the literature is not rare to assume that the output shock is not part of the information set of the firms, <span class="math inline">\(\varepsilon_{it}\not\in \mathcal{I}_t\)</span> <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>. Timing and information set assumptions are not uncommon for identification strategies in production functions and demand estimation <span class="citation" data-cites="Ackerberg2021 Ackerberg2019">(<a href="#ref-Ackerberg2021" role="doc-biblioref">Ackerberg et al. 2021</a>; <a href="#ref-Ackerberg2019" role="doc-biblioref">Ackerberg 2019</a>)</span>.</p>
 <section id="identifying-the-production-function-parameters" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="identifying-the-production-function-parameters"><span class="header-section-number">4.1</span> Identifying the production function parameters</h2>
 <p>Assume the production function is Cobb-Douglas, <span class="math inline">\(G(M_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})\)</span>.</p>
-<p>The econometrician observes output, capital, labor, and prices of intermedite inputs and output <span class="math inline">\(\{Y_{it},K_{it},L_{it},\rho_t, P_t\}\)</span>, but she only observes overreported intermediate inputs, <span class="math inline">\(M^*_{it}=M_{it}\exp(e_{it})\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>The econometrician observes output, capital, labor, and prices of intermedite inputs and output <span class="math inline">\(\{Y_{it},K_{it},L_{it},\rho_t, P_t\}\)</span>, but she only observes overreported intermediate inputs, <span class="math inline">\(M^*_{it}=M_{it}\exp(e_{it})\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 <p>Then, for the case of Colombia, <strong>?@eq-foc:ind</strong> applies since the type of firms is the juridical organization and the non-evaders are Corporations. By multiplying both sides by the intermediate inputs and dividing by the output, we get</p>
 <p><span id="eq-foc-cd"><span class="math display">\[
 \begin{aligned}
@@ -1146,20 +1127,20 @@ Table&nbsp;4: Corporations by Industry. Top 20 Industries in Colombia by number 
     &amp;\\
     \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right) &amp;=\ln\beta + \ln \mathcal{E}- \varepsilon_{it}+e_{it} \\
 \end{aligned}
-\tag{10}\]</span></span></p>
+\tag{7}\]</span></span></p>
 <p>where, <span class="math inline">\(\mathcal{E}\equiv \mathbb{E}[\exp(\varepsilon_{it})|\mathcal{I}_{it}]=\mathbb{E}[\exp(\varepsilon_{it})]\)</span>.</p>
-<p>We can use <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;10</a> and assumption <a href="#ass-non-ev">4.1</a> to recover the production function parameter <span class="math inline">\(\beta\)</span></p>
+<p>We can use <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;7</a> and assumption <a href="#ass-non-ev">4.1</a> to recover the production function parameter <span class="math inline">\(\beta\)</span></p>
 <p><span id="eq-foc-cd-exp"><span class="math display">\[
     \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{NE}\right]=\ln D^{\mathcal{E}}
-\tag{11}\]</span></span></p>
+\tag{8}\]</span></span></p>
 <p>The constant <span class="math inline">\(\mathcal{E}\)</span> is also identified <span class="citation" data-cites="Gandhi2020">(<a href="#ref-Gandhi2020" role="doc-biblioref">Gandhi et al. 2020</a>)</span>,</p>
 <p><span id="eq-id-E"><span class="math display">\[
 \mathcal{E}=\mathbb{E}\left[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}\right]=\mathbb{E}\left[\exp(\varepsilon_{it})|\theta^{NE}\right]=\mathbb{E}[\exp(\varepsilon_{it})]
-\tag{12}\]</span></span></p>
+\tag{9}\]</span></span></p>
 <p>and, thus, the output elasticity of input, <span class="math inline">\(\beta\)</span>, is also identified,</p>
 <p><span id="eq-id-beta"><span class="math display">\[
 \beta=\exp\left(\ln D^{\mathcal{E}}-\ln\mathcal{E}\right).
-\tag{13}\]</span></span></p>
+\tag{10}\]</span></span></p>
 </section>
 <section id="identifying-tax-evasion" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="identifying-tax-evasion"><span class="header-section-number">4.2</span> Identifying Tax Evasion</h2>
@@ -1169,8 +1150,8 @@ Table&nbsp;4: Corporations by Industry. Top 20 Industries in Colombia by number 
     \mathcal V_{it}\equiv&amp;\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta -\ln\mathcal{E}\notag \\
     &amp;=-\varepsilon_{it} +e_{it}
 \end{aligned}
-\tag{14}\]</span></span></p>
-<p>Tax evasion therefore can be recovered up to an independent random variable. We can do better however. By assumption <a href="#ass-ind">4.2</a>, the tax evasion, <span class="math inline">\(\varepsilon_{it}\)</span> ,is independent of <span class="math inline">\(e_{it}\)</span>. Note that, from <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;10</a>, we also recovered <span class="math inline">\(f_{\varepsilon}(\varepsilon)\)</span> the distribution of <span class="math inline">\(\varepsilon\)</span>. By using deconvolution methods, I can recover the tax evasion apart from the output shock.</p>
+\tag{11}\]</span></span></p>
+<p>Tax evasion therefore can be recovered up to an independent random variable. We can do better however. By assumption <a href="#ass-ind">4.2</a>, the tax evasion, <span class="math inline">\(\varepsilon_{it}\)</span> ,is independent of <span class="math inline">\(e_{it}\)</span>. Note that, from <a href="#eq-foc-cd" class="quarto-xref">Equation&nbsp;7</a>, we also recovered <span class="math inline">\(f_{\varepsilon}(\varepsilon)\)</span> the distribution of <span class="math inline">\(\varepsilon\)</span>. By using deconvolution methods, I can recover the tax evasion apart from the output shock.</p>
 <p>In particular, from probability theory,</p>
 <div id="def-conv" class="Definition theorem definition" title="Convolution">
 <p><span class="theorem-title"><strong>Definition 1</strong></span> </p><details class="Definition fbx-default closebutton" open=""><summary><strong>Definition: </strong>Convolution</summary><div>The density of the sum of two <strong>independent</strong> random variables is equal to the <strong>convolution</strong> of the densities of both addends; hence<p></p>
@@ -1187,8 +1168,8 @@ h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
 <p>In the literature, it is not uncommon to assume that productivity follows a Markov process. That is,</p>
 <p><span id="eq-prod-markov"><span class="math display">\[
     \omega_{it}=h(\omega_{it-1})+\eta_{it}
-\tag{15}\]</span></span></p>
-<p>Let <span class="math inline">\(\ln X_{it}=x_{it}\)</span>. With <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>, we can form the following observed variable,</p>
+\tag{12}\]</span></span></p>
+<p>Let <span class="math inline">\(\ln X_{it}=x_{it}\)</span>. With <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>, we can form the following observed variable,</p>
 <p><span id="eq-big-w"><span class="math display">\[
 \begin{aligned}
     \mathcal W_{it} &amp; \equiv y_{it} - \beta (m^*_{it}-\mathcal{V}_{it})\\
@@ -1197,18 +1178,18 @@ h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
     &amp; = y_{it} - \beta m_{it}-\beta\varepsilon_{it}\\
     &amp; = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
 \end{aligned}
-\tag{16}\]</span></span></p>
+\tag{13}\]</span></span></p>
 <p>Here, intuitively, we are trading unobservables, the unobserved tax evasion for the output shock, just to make our lives easier. We could have use use directly <span class="math inline">\(m^*\)</span> since we know the distribution of tax evasion <span class="math inline">\(e\)</span>, which is equivalent to the distribution of <span class="math inline">\(f_{m^*|m}(m^*|m)\)</span>. Also note that is it not necessary to learn tax evasion to recover productivity. This is useful if a practicioner is only interested in productivity and not on tax evasion.</p>
-<p>By replacing <span class="math inline">\(\omega_{it}\)</span> from <a href="#eq-big-w" class="quarto-xref">Equation&nbsp;16</a> in <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;15</a>, we get</p>
+<p>By replacing <span class="math inline">\(\omega_{it}\)</span> from <a href="#eq-big-w" class="quarto-xref">Equation&nbsp;13</a> in <a href="#eq-prod-markov" class="quarto-xref">Equation&nbsp;12</a>, we get</p>
 <p><span id="eq-big-w-reg"><span class="math display">\[
 \begin{aligned}
     \mathcal W_{it}=(1-\beta)\varepsilon_{it}+\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})+\eta_{it}
 \end{aligned}
-\tag{17}\]</span></span></p>
+\tag{14}\]</span></span></p>
 <p>If <span class="math inline">\(h(\xi)=\delta_0 +\delta_1\xi\)</span>, to learn <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(h\)</span>, we need to find instruments <span class="math inline">\(Z\)</span> such that,</p>
 <p><span id="eq-eta-moments"><span class="math display">\[
 \mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\delta_1(1-\beta)\varepsilon_{it-1}|Z]=0.
-\tag{18}\]</span></span></p>
+\tag{15}\]</span></span></p>
 <!-- 
 Alternatively, when $h$ is non-linear,
 $$
@@ -1281,7 +1262,7 @@ Table&nbsp;5: Orthogonality by Residuals
     \widetilde{\mathcal W_{it}} &amp; \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
     &amp; = \omega_{it}+(1-\beta)\varepsilon_{it}
 \end{aligned}
-\tag{19}\]</span></span></p>
+\tag{16}\]</span></span></p>
 </section>
 <section id="identification-with-two-flexible-inputs" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="identification-with-two-flexible-inputs"><span class="header-section-number">4.4</span> Identification with two Flexible Inputs</h2>
@@ -1291,26 +1272,26 @@ Table&nbsp;5: Orthogonality by Residuals
 \ln\left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)=&amp;\ln \beta +\ln \mathcal{E} -\varepsilon_{it} \\
 =&amp; \ln D^{\mathcal{E}}_M - \varepsilon_{it} \\
 \end{aligned}
-\tag{20}\]</span></span></p>
+\tag{17}\]</span></span></p>
 <p><span id="eq-fs-non-ded"><span class="math display">\[
 \begin{aligned}
     \ln\left(\frac{w_t L_{it}}{(1-\tau)P_t Y_{it}}\right)=&amp;\ln \alpha_L +\ln \mathcal{E} -\varepsilon_{it} \\
     =&amp; \ln D^{\mathcal{E}}_L - \varepsilon_{it}
 \end{aligned}
-\tag{21}\]</span></span></p>
+\tag{18}\]</span></span></p>
 <p>Note that firms do not have incentives to overreport non-deductible flexible inputs. So the observed non-deductible flexible inputs are the true inputs consumed in production. For the deductible flexible inputes, we still observe the overreported inputs, <span class="math inline">\(M^*_{it}=M_{it}\exp(e_{it})\)</span>.</p>
-<p>So, <a href="#eq-fs-ded" class="quarto-xref">Equation&nbsp;20</a> becomes,</p>
+<p>So, <a href="#eq-fs-ded" class="quarto-xref">Equation&nbsp;17</a> becomes,</p>
 <p><span id="eq-fs-ded-ev"><span class="math display">\[
 \ln\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)=\ln D^{\mathcal{E}}_M -\varepsilon_{it}+e_{it}
-\tag{22}\]</span></span></p>
-<p>The constant <span class="math inline">\(\ln D^{\mathcal{E}}_L\)</span> is identified by a linear regression from <a href="#eq-fs-non-ded" class="quarto-xref">Equation&nbsp;21</a>. Likewise, using assumption <a href="#ass-non-ev">4.1</a>, we can identify the constant <span class="math inline">\(\ln D^{\mathcal{E}}_M\)</span> by running a linear regression of <a href="#eq-fs-ded-ev" class="quarto-xref">Equation&nbsp;22</a> for the non-evaders.</p>
-<p>To identify the elasticities from the constant <span class="math inline">\(\mathcal{E}\)</span>, let <span class="math inline">\(\hat\varepsilon^M_{it}\)</span> and <span class="math inline">\(\hat\varepsilon^L_{it}\)</span> be the residuals of the regressions of <a href="#eq-fs-ded-ev" class="quarto-xref">Equation&nbsp;22</a> and <a href="#eq-fs-non-ded" class="quarto-xref">Equation&nbsp;21</a>, respectively. Then, we can form the following observed variable,</p>
+\tag{19}\]</span></span></p>
+<p>The constant <span class="math inline">\(\ln D^{\mathcal{E}}_L\)</span> is identified by a linear regression from <a href="#eq-fs-non-ded" class="quarto-xref">Equation&nbsp;18</a>. Likewise, using assumption <a href="#ass-non-ev">4.1</a>, we can identify the constant <span class="math inline">\(\ln D^{\mathcal{E}}_M\)</span> by running a linear regression of <a href="#eq-fs-ded-ev" class="quarto-xref">Equation&nbsp;19</a> for the non-evaders.</p>
+<p>To identify the elasticities from the constant <span class="math inline">\(\mathcal{E}\)</span>, let <span class="math inline">\(\hat\varepsilon^M_{it}\)</span> and <span class="math inline">\(\hat\varepsilon^L_{it}\)</span> be the residuals of the regressions of <a href="#eq-fs-ded-ev" class="quarto-xref">Equation&nbsp;19</a> and <a href="#eq-fs-non-ded" class="quarto-xref">Equation&nbsp;18</a>, respectively. Then, we can form the following observed variable,</p>
 <p><span id="eq-wgt-eps"><span class="math display">\[
 \varepsilon_{it}= \begin{cases}
 \lambda_{it} \hat \varepsilon^M_{it} + (1-\lambda_{it}) \hat \varepsilon^L_{it} &amp; \text{if $i$ is a Non-evader}\\
 \hat \varepsilon^L_{it} &amp; \text{otherwise}
 \end{cases}
-\tag{23}\]</span></span></p>
+\tag{20}\]</span></span></p>
 <p>where <span class="math inline">\(\lambda_{it}\)</span> is a weight that can be chosen by the practicioner. For example, it can be set to the share of the cost of both flexible inputs in the total cost of production, <span class="math inline">\(\lambda_{it}=\frac{\rho_t M^*_{it}}{\rho_t M^*_{it}+w_t L_{it}}\)</span>. In this way, we would have a time-firm specific weight that captures the relative importance of each flexible input in the production process. alternatively, we can can have time or firm fixed weights, <span class="math inline">\(\lambda_t=N^{-1}\sum_i\lambda_{it}\)</span> or <span class="math inline">\(\lambda_i=T^{-1}\sum_t\lambda_{it}\)</span>, respectively.</p>
 <p>Another option is to use the optimal weight to minimize the variance of <span class="math inline">\(\varepsilon_{it}\)</span>,</p>
 <p><span class="math display">\[
@@ -1329,7 +1310,7 @@ Table&nbsp;5: Orthogonality by Residuals
 <p>Finally, solving for <span class="math inline">\(\lambda\)</span> gives us the optimal weight,</p>
 <p><span id="eq-opt-lambda"><span class="math display">\[
 \lambda^* = \frac{\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}{\mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-2\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}.
-\tag{24}\]</span></span></p>
+\tag{21}\]</span></span></p>
 <p>This might work only if the covariance of the residuals is less than the variance of any residual. In theory, the covariance cannot be larger than the variance of either residua. In that case, it means the both residuals are good estimates of the output shock <span class="math inline">\(\varepsilon_{it}\)</span> and we can use either of them to recover the output shock <span class="math inline">\(\varepsilon_{it}\)</span>.</p>
 <p>Then, we can recover <span class="math inline">\(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)</span> and the elasticities <span class="math inline">\(\beta=\exp(\ln D^{\mathcal{E}}_M-\ln \mathcal{E})\)</span> and <span class="math inline">\(\alpha_L=\exp(\ln D^{\mathcal{E}}_L-\ln \mathcal{E})\)</span>.</p>
 </section>
@@ -1374,12 +1355,12 @@ Table&nbsp;5: Orthogonality by Residuals
     s_{it}^{L}&amp;=\ln \left(\beta_3+2\beta_4l_{it}+\beta_1(m^*_{it}-e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
     &amp;\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}-e_{it})- \varepsilon_{it}
 \end{aligned}
-\tag{25}\]</span></span></p>
+\tag{22}\]</span></span></p>
 <p>where <span class="math inline">\(s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)\)</span>.</p>
 <p>Note that by assumption <a href="#ass-non-ev">4.1</a>, <span class="math inline">\(D^{\mathcal{E}}\)</span> and the density of <span class="math inline">\(\varepsilon\)</span> are still identified.</p>
 <section id="testing-for-tax-evasion" class="level3" data-number="4.7.1">
 <h3 data-number="4.7.1" class="anchored" data-anchor-id="testing-for-tax-evasion"><span class="header-section-number">4.7.1</span> Testing for Tax Evasion</h3>
-<p>We can design a test for tax evasion by forming the analog of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>,</p>
+<p>We can design a test for tax evasion by forming the analog of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>,</p>
 <p><span class="math display">\[
 \begin{aligned}
 \mathcal{V}_{it}^{L} =&amp;\ln D^{\mathcal{E}}(l_{it},m_{it}^*)-s_{it}^L\\
@@ -1392,7 +1373,7 @@ Table&nbsp;5: Orthogonality by Residuals
 </section>
 <section id="identifying-tax-evasion-1" class="level3" data-number="4.7.2">
 <h3 data-number="4.7.2" class="anchored" data-anchor-id="identifying-tax-evasion-1"><span class="header-section-number">4.7.2</span> Identifying Tax Evasion</h3>
-<p>Once we recovered the parameters of <a href="#eq-translog-share" class="quarto-xref">Equation&nbsp;25</a>, we can invert it to solve for the true inputs <span class="math inline">\(m^*\)</span> as a function of observed data and the output. Then, the difference between the observed and true inputs is by definition the tax evasion by overreporting.</p>
+<p>Once we recovered the parameters of <a href="#eq-translog-share" class="quarto-xref">Equation&nbsp;22</a>, we can invert it to solve for the true inputs <span class="math inline">\(m^*\)</span> as a function of observed data and the output. Then, the difference between the observed and true inputs is by definition the tax evasion by overreporting.</p>
 <p><span class="math display">\[
 \begin{aligned}
     m^*_{it}&amp;=m_{it}+e_{it}\\
@@ -1416,7 +1397,7 @@ Table&nbsp;5: Orthogonality by Residuals
 <p><span class="math display">\[
 \ln\left(\frac{\rho M}{PY}\right)=\ln D^{\mathcal{E}}(K,L,M)-\varepsilon
 \]</span></p>
-<p><span class="math inline">\(D^{\mathcal{E}}(K,L,M)\)</span> is still identified by assumption <a href="#ass-non-ev">4.1</a>, however, when we form the analogous of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>, we now have</p>
+<p><span class="math inline">\(D^{\mathcal{E}}(K,L,M)\)</span> is still identified by assumption <a href="#ass-non-ev">4.1</a>, however, when we form the analogous of <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>, we now have</p>
 <p><span class="math display">\[
 \begin{aligned}
     \ln\left(\frac{\rho M^*}{PY}\right)-&amp;\ln D^{\mathcal{E}}(K,L,M^*)=\\
@@ -1441,7 +1422,7 @@ Table&nbsp;5: Orthogonality by Residuals
 </section>
 <section id="implementation" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Implementation</h1>
-<p>We are interested in the distribution of tax evasion <span class="math inline">\(e\)</span> but it cannot be observed. What is observed is the contaminated version <span class="math inline">\(\mathcal{V}\)</span> <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>. Evasion <span class="math inline">\(e\)</span> and the output shock <span class="math inline">\(\varepsilon\)</span> are independent [<a href="#ass-ind">4.2</a>] with probability density distributions <span class="math inline">\(f_e\)</span> and <span class="math inline">\(f_{\varepsilon}\)</span>. Then, from <a href="#def-conv" class="quarto-xref">Definition&nbsp;1</a></p>
+<p>We are interested in the distribution of tax evasion <span class="math inline">\(e\)</span> but it cannot be observed. What is observed is the contaminated version <span class="math inline">\(\mathcal{V}\)</span> <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>. Evasion <span class="math inline">\(e\)</span> and the output shock <span class="math inline">\(\varepsilon\)</span> are independent [<a href="#ass-ind">4.2</a>] with probability density distributions <span class="math inline">\(f_e\)</span> and <span class="math inline">\(f_{\varepsilon}\)</span>. Then, from <a href="#def-conv" class="quarto-xref">Definition&nbsp;1</a></p>
 <p><span class="math display">\[
 f_{\mathcal{V}}(\mathcal{V})=\int f_e(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\text{d}\varepsilon
 \]</span></p>
@@ -1451,7 +1432,7 @@ f_{\mathcal{V}}(\mathcal{V})=\int f_e(\mathcal{V}+\varepsilon)f_{\varepsilon}(\v
 <p>Assume a functional form for <span class="math inline">\(f_{\varepsilon}(\cdot;\gamma)\)</span> that depends on known parameters <span class="math inline">\(\gamma\)</span>. Assume a known functional form for the density <span class="math inline">\(f_e(\cdot;\lambda)\)</span> that depends on unknown parameters <span class="math inline">\(\lambda\)</span>. We can estimate parameters <span class="math inline">\(\lambda\)</span> by</p>
 <p><span id="eq-mle"><span class="math display">\[
 \hat \lambda = \arg \max_{\lambda}\sum_{i=1}^n \log \left(\int f_e(\mathcal{V}_i+\varepsilon;\lambda)f_{\varepsilon}(\varepsilon;\gamma)\text{d}\varepsilon\right)
-\tag{26}\]</span></span></p>
+\tag{23}\]</span></span></p>
 <p>Properties of MLE with unobserved scalar heterogeneity have been derived elsewhere before <span class="citation" data-cites="Chen2007 Yi2021">(<a href="#ref-Chen2007" role="doc-biblioref">Chen 2007</a>; <a href="#ref-Yi2021" role="doc-biblioref">Yi 2021</a>)</span>.</p>
 </section>
 <section id="non-parametric-deconvolution-by-splines" class="level2" data-number="5.2">
@@ -1582,7 +1563,7 @@ The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathca
 <!-- Deconvolution -->
 <section id="sec-tax-ev-test" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="sec-tax-ev-test"><span class="header-section-number">6.1</span> Testing for the Presence of Tax Evasion Through Overreporting</h2>
-<p><a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a> suggest a way to test the presence of tax evasion through cost overreporting. Let <span class="math inline">\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\)</span>. Define the null hypothesis as the absence of cost overreporting, <span class="math inline">\(H_0: \mu_{\mathcal{V}}=0\)</span>, and the alternative hypothesis as the presence of cost overreporting, <span class="math inline">\(H_1: \mu_{\mathcal{V}}&gt;0\)</span>. Consequently, we can use a one-sided t-test to verify for the presence of tax evasion by overreporting.</p>
+<p><a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a> suggest a way to test the presence of tax evasion through cost overreporting. Let <span class="math inline">\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\)</span>. Define the null hypothesis as the absence of cost overreporting, <span class="math inline">\(H_0: \mu_{\mathcal{V}}=0\)</span>, and the alternative hypothesis as the presence of cost overreporting, <span class="math inline">\(H_1: \mu_{\mathcal{V}}&gt;0\)</span>. Consequently, we can use a one-sided t-test to verify for the presence of tax evasion by overreporting.</p>
 <p>Under the null hypothesis, there is no tax evasion. Then, <span class="math display">\[
 \begin{aligned}  
   z &amp;= \frac{\bar{\mathcal{V}}}{\hat\sigma_{\mathcal{V}}/\sqrt{N}}=\frac{\mathbb{E}[\mathcal{V}]}{\sqrt{\mathbb{Var}[\mathcal{V}]/N}}\\
@@ -1606,7 +1587,7 @@ The EM algorithm stops when $l_{\mathcal{V}}(\mathbf{\theta}^{(k+1)})-l_{\mathca
 <div id="tbl-evasion-test-CD" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-evasion-test-CD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a> for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
+Table&nbsp;6: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a> for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
 </figcaption>
 <div aria-describedby="tbl-evasion-test-CD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -1725,7 +1706,7 @@ Table&nbsp;6: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry
 <div id="tbl-tax-ev-test-context" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tax-ev-test-context-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;7: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
+Table&nbsp;7: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>. Standard errors shown in parethesis. Stars indicate significance level at the 1% (***), 5% (**), and 10% (*).
 </figcaption>
 <div aria-describedby="tbl-tax-ev-test-context-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2128,7 +2109,7 @@ Table&nbsp;7: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry
 <h2 data-number="6.2" class="anchored" data-anchor-id="deconvoluting-tax-evasion-using-moments"><span class="header-section-number">6.2</span> Deconvoluting Tax Evasion Using Moments</h2>
 <p>One simple way to start with the deconvolution is using moments. In particular, for every <span class="math inline">\(n\)</span>-th moment <span class="math inline">\(\mathbb{E}[\varepsilon_{it}^n|\Theta^{NE}]=\mathbb{E}[\varepsilon_{it}^n|t]=\mathbb{E}[\varepsilon_{it}^n]\)</span></p>
 <p>Therefore, any moment of the tax evasion <span class="math inline">\(e_{it}\)</span> distribution <span class="math inline">\(\forall t\in T\)</span> can be estimated in theory.</p>
-<p>Namely, from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>, we can estimate the average tax evasion by <span class="math display">\[
+<p>Namely, from <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>, we can estimate the average tax evasion by <span class="math display">\[
 \begin{aligned}
   \mathbb{E}[e_{it}|t]&amp;=\mathbb{E}[\mathcal V_{it}|t]+\mathbb{E}[\varepsilon_{it}]\\
   &amp;=\mathbb{E}[\mathcal V_{it}|t]+\mu_{\varepsilon}
@@ -2143,7 +2124,7 @@ Table&nbsp;7: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry
 <div id="tbl-tax-ev-deconv-moments" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tax-ev-deconv-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;8: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a>. LCI and UCI are the bias-corrected bootsrap confidence intervals at the 10% significance level with 250 bootstrap replicates. Intermediates are defined as raw materials.
+Table&nbsp;8: Average tax evasion by Industry. Estimates show the average tax evasion from the output shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a>. LCI and UCI are the bias-corrected bootsrap confidence intervals at the 10% significance level with 250 bootstrap replicates. Intermediates are defined as raw materials.
 </figcaption>
 <div aria-describedby="tbl-tax-ev-deconv-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2208,7 +2189,7 @@ Table&nbsp;8: Average tax evasion by Industry. Estimates show the average tax ev
 </section>
 <section id="deconvoluting-by-parametric-mle" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="deconvoluting-by-parametric-mle"><span class="header-section-number">6.3</span> Deconvoluting by Parametric MLE</h2>
-<p>I use parametric MLE to obtain better estimates of the variances using equation <a href="#eq-mle" class="quarto-xref">Equation&nbsp;26</a>. I assume that the error term <span class="math inline">\(\varepsilon\)</span> follows a normal distribution.</p>
+<p>I use parametric MLE to obtain better estimates of the variances using equation <a href="#eq-mle" class="quarto-xref">Equation&nbsp;23</a>. I assume that the error term <span class="math inline">\(\varepsilon\)</span> follows a normal distribution.</p>
 <!-- 
 
 ::: {#tbl-deconv-mle .cell tbl-cap='Estimates of the first and second moments of the evasion distribution using a parametric MLE approach assuming a Normal distribution.'}
@@ -2282,7 +2263,7 @@ Var[U|U&gt;0]&amp;=\sigma^2[1+\alpha\varphi(\alpha)/(1-\Phi(\alpha))-(\varphi(\a
 <div id="tbl-deconv-mle-both" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deconv-mle-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;9: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above. Intermediates are defined as raw materials.
+Table&nbsp;9: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are the parameters of the densities. Moments displayed are estimated using the distribution paramters as explained above. Intermediates are defined as raw materials.
 </figcaption>
 <div aria-describedby="tbl-deconv-mle-both-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -2415,7 +2396,7 @@ Table&nbsp;9: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a
 <div id="tbl-deconv-mle-boot" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-deconv-mle-boot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;10: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;14</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 5 percent significance level using 250 replicates.
+Table&nbsp;10: Estimates of Deconvoluting Tax Evasion from the Output Shock in <a href="#eq-ob-ev" class="quarto-xref">Equation&nbsp;11</a> by Parametric MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI are the bias corrected bootstrap confidence intervals at the 5 percent significance level using 250 replicates.
 </figcaption>
 <div aria-describedby="tbl-deconv-mle-boot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -5068,7 +5049,9 @@ Table&nbsp;19: First stage ‘Weak Instruments’ F-test of the 2SLS-IV estimati
 </section>
 <section id="productivity" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="productivity"><span class="header-section-number">7.3</span> Productivity</h2>
-<p>Once, the production function parameters are known, we can recover <span class="math inline">\(\omega\)</span> by deconvolution using <a href="#eq-w-squiggle" class="quarto-xref">Equation&nbsp;19</a>. Here I assume <span class="math inline">\(\omega\)</span> follows a normal distribution.</p>
+<section id="parametric-productivity-density" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="parametric-productivity-density"><span class="header-section-number">7.3.1</span> Parametric Productivity Density</h3>
+<p>Once, the production function parameters are known, we can recover <span class="math inline">\(\omega\)</span> by deconvolution using <a href="#eq-w-squiggle" class="quarto-xref">Equation&nbsp;16</a>. Here I assume <span class="math inline">\(\omega\)</span> follows a normal distribution.</p>
 <p><strong>?@tbl-boot-omega</strong> displays the estimates of the distribution parameters of <span class="math inline">\(\omega\)</span> corresponding to the instrument used in the previous section and the parametric specification of an AR(1).</p>
 <div class="cell">
 <div id="tbl-omega" class="cell quarto-float anchored">
@@ -5243,9 +5226,10 @@ Table&nbsp;21: Summary statistics of the productivity estimates using GNR correc
 </div>
 <p>Industries 321 Textiles, and 351 Industrial Chemicals, and 313 Beverages have means lower or equal to the uncorrected ones for both instruments considered. Industry 311 Food Products display a higher mean for both estimates, while industry 352 Other Chemicals displays a higher or lower mean depending on the instrument.</p>
 <p>With respect to standard deviations, industries 321 Textiles, 351 Industrial Chemicals, and 352 Other Chemicals display lower magnitudes, while industries 311 Food Products display significantly higher magnitudes. Lastly, industry 313 Beverages standard deviation is lower or higher depending on the instrument.</p>
-<section id="non-parametric-productivity-density" class="level3" data-number="7.3.1">
-<h3 data-number="7.3.1" class="anchored" data-anchor-id="non-parametric-productivity-density"><span class="header-section-number">7.3.1</span> Non-Parametric Productivity Density</h3>
-<p>Nothing impedes us from estimating a non-parametric distribution of <span class="math inline">\(\omega\)</span>. I deconvolute <span class="math inline">\(\omega\)</span> using penalized B-Splines from <a href="#eq-w-squiggle" class="quarto-xref">Equation&nbsp;19</a>. First, I estimate the density of <span class="math inline">\(\varepsilon\)</span> using a kernel density estimator.</p>
+</section>
+<section id="non-parametric-productivity-density" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="non-parametric-productivity-density"><span class="header-section-number">7.3.2</span> Non-Parametric Productivity Density</h3>
+<p>Nothing impedes us from estimating a non-parametric distribution of <span class="math inline">\(\omega\)</span>. I deconvolute <span class="math inline">\(\omega\)</span> using penalized B-Splines from <a href="#eq-w-squiggle" class="quarto-xref">Equation&nbsp;16</a>. First, I estimate the density of <span class="math inline">\(\varepsilon\)</span> using a kernel density estimator.</p>
 <div class="cell">
 <div id="tbl-np-prod" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -5347,7 +5331,7 @@ Table&nbsp;22: Non-Parametric Deconvolution of <span class="math inline">\(\omeg
 <div id="tbl-np-sim-prod" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-np-sim-prod-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;23: Summary statistics of the simulated productivity using the non-parametric estimates of <span class="math inline">\(\omega\)</span> and <span class="math inline">\(\varepsilon\)</span>. Both functions were numerically inverted to obtain simulated draws of <span class="math inline">\(\omega\)</span> and <span class="math inline">\(\varepsilon\)</span>. 1000 draws were used. Productivity is computed as <span class="math inline">\(\varphi_{it}^S=\exp{\omega_{it}^S+\varepsilon_{it}^S}\)</span>.
+Table&nbsp;23: Summary statistics of the simulated productivity using the non-parametric estimates of <span class="math inline">\(\omega\)</span> and <span class="math inline">\(\varepsilon\)</span>. Both functions were numerically inverted to obtain simulated draws of <span class="math inline">\(\omega\)</span>. 1000 draws were used. Productivity is computed as <span class="math inline">\(\varphi_{it}^S=\exp{\omega_{it}^S}\)</span>. <span class="math inline">\(\varepsilon\)</span> is measurement error, so not part of productivity.
 </figcaption>
 <div aria-describedby="tbl-np-sim-prod-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -5366,93 +5350,138 @@ Table&nbsp;23: Summary statistics of the simulated productivity using the non-pa
 <tbody>
   <tr>
    <td style="text-align:right;"> 313 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 60.8 </td>
+   <td style="text-align:right;"> 30.7 </td>
+   <td style="text-align:right;"> 43.3 </td>
+   <td style="text-align:right;"> 55.3 </td>
+   <td style="text-align:right;"> 69.6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 313 </td>
    <td style="text-align:left;"> TE: $\mathcal{W}_{t-2}$ </td>
-   <td style="text-align:right;"> 6841.3 </td>
-   <td style="text-align:right;"> 7504.3 </td>
-   <td style="text-align:right;"> 2457.8 </td>
-   <td style="text-align:right;"> 4928.0 </td>
-   <td style="text-align:right;"> 8309.3 </td>
+   <td style="text-align:right;"> 6253.5 </td>
+   <td style="text-align:right;"> 5744.5 </td>
+   <td style="text-align:right;"> 2697.1 </td>
+   <td style="text-align:right;"> 4867.0 </td>
+   <td style="text-align:right;"> 7690.4 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 313 </td>
    <td style="text-align:left;"> TE: $m^*_{t-1}$ </td>
-   <td style="text-align:right;"> 52.5 </td>
-   <td style="text-align:right;"> 37.7 </td>
-   <td style="text-align:right;"> 30.5 </td>
-   <td style="text-align:right;"> 44.3 </td>
-   <td style="text-align:right;"> 63.2 </td>
+   <td style="text-align:right;"> 48.2 </td>
+   <td style="text-align:right;"> 25.1 </td>
+   <td style="text-align:right;"> 35.6 </td>
+   <td style="text-align:right;"> 44.9 </td>
+   <td style="text-align:right;"> 54.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 321 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 21.0 </td>
+   <td style="text-align:right;"> 11.2 </td>
+   <td style="text-align:right;"> 13.8 </td>
+   <td style="text-align:right;"> 18.7 </td>
+   <td style="text-align:right;"> 25.5 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 321 </td>
    <td style="text-align:left;"> TE: $\mathcal{W}_{t-2}$ </td>
+   <td style="text-align:right;"> 18.9 </td>
+   <td style="text-align:right;"> 8.7 </td>
+   <td style="text-align:right;"> 14.8 </td>
+   <td style="text-align:right;"> 17.4 </td>
    <td style="text-align:right;"> 20.8 </td>
-   <td style="text-align:right;"> 17.1 </td>
-   <td style="text-align:right;"> 12.7 </td>
-   <td style="text-align:right;"> 16.8 </td>
-   <td style="text-align:right;"> 23.1 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 321 </td>
    <td style="text-align:left;"> TE: $m^*_{t-1}$ </td>
-   <td style="text-align:right;"> 20.9 </td>
-   <td style="text-align:right;"> 16.8 </td>
-   <td style="text-align:right;"> 12.6 </td>
-   <td style="text-align:right;"> 16.9 </td>
-   <td style="text-align:right;"> 23.3 </td>
+   <td style="text-align:right;"> 18.9 </td>
+   <td style="text-align:right;"> 8.8 </td>
+   <td style="text-align:right;"> 14.8 </td>
+   <td style="text-align:right;"> 17.5 </td>
+   <td style="text-align:right;"> 21.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 322 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 34.9 </td>
+   <td style="text-align:right;"> 16.4 </td>
+   <td style="text-align:right;"> 24.0 </td>
+   <td style="text-align:right;"> 33.4 </td>
+   <td style="text-align:right;"> 43.2 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 322 </td>
    <td style="text-align:left;"> TE: $\mathcal{W}_{t-2}$ </td>
-   <td style="text-align:right;"> 68.9 </td>
-   <td style="text-align:right;"> 50.2 </td>
-   <td style="text-align:right;"> 42.5 </td>
-   <td style="text-align:right;"> 56.8 </td>
-   <td style="text-align:right;"> 78.5 </td>
+   <td style="text-align:right;"> 60.9 </td>
+   <td style="text-align:right;"> 17.3 </td>
+   <td style="text-align:right;"> 51.6 </td>
+   <td style="text-align:right;"> 60.0 </td>
+   <td style="text-align:right;"> 68.8 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 322 </td>
    <td style="text-align:left;"> TE: $m^*_{t-1}$ </td>
-   <td style="text-align:right;"> 80.4 </td>
-   <td style="text-align:right;"> 59.1 </td>
-   <td style="text-align:right;"> 49.3 </td>
-   <td style="text-align:right;"> 66.3 </td>
-   <td style="text-align:right;"> 91.7 </td>
+   <td style="text-align:right;"> 71.0 </td>
+   <td style="text-align:right;"> 20.8 </td>
+   <td style="text-align:right;"> 59.7 </td>
+   <td style="text-align:right;"> 69.8 </td>
+   <td style="text-align:right;"> 80.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 331 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 51.3 </td>
+   <td style="text-align:right;"> 26.1 </td>
+   <td style="text-align:right;"> 33.2 </td>
+   <td style="text-align:right;"> 46.4 </td>
+   <td style="text-align:right;"> 62.7 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 331 </td>
    <td style="text-align:left;"> TE: $\mathcal{W}_{t-2}$ </td>
-   <td style="text-align:right;"> 115.6 </td>
-   <td style="text-align:right;"> 67.6 </td>
-   <td style="text-align:right;"> 67.7 </td>
-   <td style="text-align:right;"> 97.7 </td>
-   <td style="text-align:right;"> 145.0 </td>
+   <td style="text-align:right;"> 103.1 </td>
+   <td style="text-align:right;"> 31.4 </td>
+   <td style="text-align:right;"> 85.9 </td>
+   <td style="text-align:right;"> 99.6 </td>
+   <td style="text-align:right;"> 115.2 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 331 </td>
    <td style="text-align:left;"> TE: $m^*_{t-1}$ </td>
-   <td style="text-align:right;"> 71.6 </td>
-   <td style="text-align:right;"> 40.6 </td>
-   <td style="text-align:right;"> 42.8 </td>
-   <td style="text-align:right;"> 60.6 </td>
-   <td style="text-align:right;"> 89.6 </td>
+   <td style="text-align:right;"> 63.8 </td>
+   <td style="text-align:right;"> 17.8 </td>
+   <td style="text-align:right;"> 55.4 </td>
+   <td style="text-align:right;"> 63.0 </td>
+   <td style="text-align:right;"> 70.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 369 </td>
+   <td style="text-align:left;"> GNR </td>
+   <td style="text-align:right;"> 34.5 </td>
+   <td style="text-align:right;"> 26.9 </td>
+   <td style="text-align:right;"> 17.0 </td>
+   <td style="text-align:right;"> 29.2 </td>
+   <td style="text-align:right;"> 45.5 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 369 </td>
    <td style="text-align:left;"> TE: $\mathcal{W}_{t-2}$ </td>
-   <td style="text-align:right;"> 25.4 </td>
-   <td style="text-align:right;"> 19.3 </td>
-   <td style="text-align:right;"> 12.1 </td>
-   <td style="text-align:right;"> 18.0 </td>
-   <td style="text-align:right;"> 34.4 </td>
+   <td style="text-align:right;"> 20.3 </td>
+   <td style="text-align:right;"> 4.6 </td>
+   <td style="text-align:right;"> 18.1 </td>
+   <td style="text-align:right;"> 20.0 </td>
+   <td style="text-align:right;"> 22.0 </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 369 </td>
    <td style="text-align:left;"> TE: $m^*_{t-1}$ </td>
-   <td style="text-align:right;"> 0.3 </td>
-   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 0.2 </td>
+   <td style="text-align:right;"> 1.2 </td>
    <td style="text-align:right;"> 0.0 </td>
    <td style="text-align:right;"> 0.0 </td>
-   <td style="text-align:right;"> 0.1 </td>
+   <td style="text-align:right;"> 0.0 </td>
   </tr>
 </tbody>
 </table>
@@ -7505,8 +7534,7 @@ Zumaya, M., Guerrero, R., Islas, E., Pineda, O., Gershenson, C., Iñiguez, G., a
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Alternatively, we could have modeled a penalty function that is paid only if the firm gets caught. The intuition remains the same, there would be a trade off between the expected benefit of evading and the expected cost of getting caught.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Note we can always rewrite <span class="math inline">\(M^*+e=M^*\exp\{a\}\)</span>, then <span class="math inline">\(\exp\{a\}=\frac{e}{M^*}+1\)</span>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Note we can always rewrite <span class="math inline">\(M^*+e=M^*\exp\{a\}\)</span>, then <span class="math inline">\(\exp\{a\}=\frac{e}{M^*}+1\)</span>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main>
 <!-- /main column -->

@@ -1,6 +1,6 @@
 
 cd  "/Volumes/SSD Hans 1/Github/Tax_Evasion_Productivity/Code/Stata"
-log using 020-loop-23-8-25.smcl, replace
+log using 020-loop-15-9-25.smcl, replace
 /* Running GNR(2020) using a loop over industries and intermediate input shares
    Using the modified GNR code for the mean-error specification
    See 004-run-loop.do for running this code
