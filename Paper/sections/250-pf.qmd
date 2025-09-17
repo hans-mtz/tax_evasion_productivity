@@ -11,6 +11,7 @@ I focus on the top 5 industries in terms of revenue: 1) 311 - Food Products, 2) 
 #| label: tbl-CD-ar1-comparision
 #| tbl-cap: Cobb-Douglas production function parameters estimates, correcting intermediates —raw materials— for tax evasion vs. naive estimation and OLS. $h$ is an AR(1) process for 'Tax Evasion + GNR' but a third degree polynomial for 'GNR'. $Z=\\{k_{it},l_{it}\\}$ for GNR. One additional instrument to GNR's $Z$ control for the endogeneity between $\varepsilon_{it-1}$ and $\mathcal{W}_{it-1}$ in the first stage of 'TE+GNR'. The instrument used is specified in the table.
 #| eval: true
+#| include: false
 
 
 # load("../Code/Products/deconv_prod_fun.RData")
@@ -147,7 +148,7 @@ cbind(evasion_tbl,CD_fortran_tbl_R[c(1,3,2)],ols_CD) %>%
 
 ```{r}
 #| label: tbl-boot-pf
-#| tbl-cap: Production function parameter estimates with bias-corrected bootstrap confidence intervals at the 10 percent significance level. 250 repetitions.
+#| tbl-cap: Production function parameter estimates with bias-corrected bootstrap confidence intervals at the 5 percent significance level. 250 repetitions.
 #| eval: false
 #| include: false
 
@@ -190,7 +191,9 @@ The elasticities of capital and labor vary across industries, with some being lo
 
 ### Productivity 
 
-#### Parametric Productivity Density
+:::: {.content-hidden unless-meta="draft"}
+
+#### Parametric Productivity Density 
 
 Once, the production function parameters are known, we can recover $\omega$ by deconvolution using @eq-w-squiggle. Here I assume $\omega$ follows a normal distribution.
 
@@ -296,9 +299,13 @@ Industries 321 Textiles, and 351 Industrial Chemicals, and 313 Beverages have me
 
 With respect to standard deviations, industries 321 Textiles, 351 Industrial Chemicals, and 352 Other Chemicals display lower magnitudes, while industries 311 Food Products display significantly higher magnitudes. Lastly, industry 313 Beverages standard deviation is lower or higher depending on the instrument.
 
+::::
+
 #### Non-Parametric Productivity Density
 
 Nothing impedes us from estimating a non-parametric distribution of $\omega$. I deconvolute $\omega$ using penalized B-Splines from @eq-w-squiggle. First, I estimate the density of $\varepsilon$ using a kernel density estimator. 
+
+To compare these productivity estimates to uncorrected ones, I simulate productivity using the B-Splines. To simulate 1000 independent draws from $\omega$, I numerically invert the B-Splines. First, I draw 1000 $u^S\sim U(0,1)$. Then I find the $\omega^S = \arg \min \left(\int_a^{\omega^S} s(t,\theta)dt-u^S\right)^2$. Then, I computed productivity, $\varphi_{it}^S=\exp\{\omega_{it}^S\}$. $\varepsilon$ is measurement error, so not part of productivity.
 
 ```{r}
 #| label: tbl-np-prod
@@ -316,12 +323,14 @@ omg_np_stats_df %>%
     ),
     .before = mean
   ) %>%
+  arrange(sic_3, instrument) %>%
   kbl(
     digits = 3,
     table.attr = 'data-quarto-disable-processing="true"',
     row.names = FALSE
   ) %>%
-  kable_classic(full_width=F, html_font = "Cambria")
+  kable_classic(full_width=F, html_font = "Cambria") %>%
+  collapse_rows(1, valign = "top")
 
 ```
 

@@ -2,7 +2,15 @@
 
 ### Testing for the Presence of Tax Evasion Through Overreporting {#sec-tax-ev-test}
 
-@eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$. Define the null hypothesis as the absence of cost overreporting, $H_0: \mu_{\mathcal{V}}=0$, and the alternative hypothesis as the presence of cost overreporting, $H_1: \mu_{\mathcal{V}}>0$. Consequently, we can use a one-sided t-test to verify for the presence of tax evasion by overreporting.
+@eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$ and define the null hypothesis as the absence of cost overreporting and the alternative hypothesis as the presence of cost overreporting. . Consequently, to verify for the presence of tax evasion by overreporting, we can use a one-sided test where under the alternative hypothesis $H_1: \mu_{\mathcal{V}}>0$, and unde the null, $H_0: \mu_{\mathcal{V}}\le0$.
+
+I use a bootstrap hypothesis test to verify the presence of tax evasion. @tbl-ielas-most-least-likely displays the estimated elasticities of intermediates for corporations and non-corporations for different industries. The table also displays the estimated value of the test statistic for the null hypothesis of no tax evasion.
+
+I test the three least likely and the three most likely industries to evade taxes. The three least likely industries are exempt of sales taxes or lost exemption during the sample period. Exempt industries include 311 and 312 (Food Products), while industry 384 (Transport Equipment) lost exemption in 1984. Exempt industries are less likely to evade taxes because the sales tax rate is zero, so there is no incentive to overreport costs.
+
+The three mos likely industries have low purchase sales tax rates. Lower purchase sales tax rate imply higher incentives to overreport costs to claim additional deductions to the sales taxes owed to the government. These industries include 313 (Beverages), 331 (Wood Products except Furniture), and 369 (Non-Metallic Mineral Products).
+
+::: {.content-hidden unless-meta="draft" }
 
 Under the null hypothesis, there is no tax evasion. Then,
 $$
@@ -18,7 +26,7 @@ The previous test ignores the sample variance of the $\beta$ estimator in the fi
 Alternatively, we can do a difference in means test to account for this variation. This test is equivalent to a two sample GMM test, where in one moment the corporations are used to estimate $\hat\beta$ and the second is a test moment where we use $\hat\beta$ from the first one. Under the null, the two moment should be equal to zero.
 
 
-Let $s_{it}=log\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)$ and  $\bar s_G= \frac{1}{N_1T_1}\sum_{i=1}^{N_1}\sum_{t=1}^{T_1}s_{it}^G$ and $\bar s_B= \frac{1}{N_2T_2}\sum_{i=1}^{N_2}\sum_{t=1}^{T_2}s_{it}^B$ be the sample means for good guys (corporations) and the tax evasion guys, respectively. 
+Let $s_{it}=\ln\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)$ and  $\bar s_G= \frac{1}{N_1T_1}\sum_{i=1}^{N_1}\sum_{t=1}^{T_1}s_{it}^G$ and $\bar s_B= \frac{1}{N_2T_2}\sum_{i=1}^{N_2}\sum_{t=1}^{T_2}s_{it}^B$ be the sample means for good guys (corporations) and the tax evasion guys, respectively. 
 
 Then, the test statistic is,
 
@@ -33,11 +41,131 @@ where $\hat\sigma^2_{\bar s_B}$ and $\hat\sigma^2_{\bar s_G}$ are the sample var
 Of course, the assumption of independent samples is likely incorrect. For example, firms in an industry might get contemporaneous shocks affecting everyone in one period, like a price shock in inputs. Productivity is usually assumed to be persistent over time, but the effects of productivity of one firm on the other firms is commonly ignored. In addition, if the data uses SIC codes, firms within sub-industries are more likely to be correlated than firms in different sub-industries.
 
 
+
 I test for the presence of tax evasion for different classifications of intermediates. Intermediates include raw materials, energy and services. Deductibles include raw materials and deductible expenses. Materials include only raw materials. The items included as deductible expenses or services are detailed in @tbl-expenses-type
+
+:::
+
+
+```{r}
+#| label: tbl-ielas-most-least-likely
+#| tbl-cap: Intermediate elasticities for Corporations (Non-Evaders) and non-Corporations (Evaders) for different industries. Estimates were obtained using GNR (2020) method assuming a CD functional form. Intermediates are defined as raw materials. $\varepsilon$ is defined as **measurement error**. The Tax Evasion Test displays the coefficient of the statistical test, where the null hypothesis states that there is no tax evasion through cost overreporting. Among the industry characteristics, Sales is the industry's market share of the total sales in Colombia between 1981 and 1991. Sales Tax Rate is the average sales tax reported rate. Exports is the average share of exports of the industry total sales, and Exporters is the share of firms exporting 10 percent or more of their total sales. Bias-corrected bootstrap confidence intervals at 95% significanve level are displayed in brackets. \\*, \\*\\*, \\*\\*\\* denote significance at the 10%, 5%, and 1% levels (one-sided).
+
+load("../Code/Products/i_elas.RData")
+
+# col_names <- c("SIC", "Corps.", 
+#         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases","N (%)","Qty. (Avg. %)","N (%) ","Qty. (Avg. %) ")
+
+col_names <- c("SIC", "Corps.", 
+        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
+
+main_tbl %>% 
+    filter(
+        # sic_3 %in% top_10_revenue$sic_3[1:5]
+        sic_3 %in% c(311, 312, 384, 313, 369, 331)
+    ) %>%
+    mutate(
+        across(n:share_imports_materials, ~replace(.x, type=="CI", NaN)),
+        sic_3 = factor(sic_3, levels=c(311, 312, 384, 313, 369, 331))
+    ) %>%
+    arrange(sic_3) %>%
+    select(
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        # exporters:share_imports_materials
+    ) %>%
+    kbl(
+        # digits = 2,
+        align = "c",
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    # column_spec(2:4, width = "9em") %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+    ) %>%
+    collapse_rows(columns = 1, valign = "top") %>%
+    pack_rows(
+        index = c(
+            "3 Least Likely Industries" = 6,
+            "3 Most Likely Industries" = 6
+            # "33 Wood & Wood Products" = 4,
+            # "34 Paper & Printing" = 4,
+            # "35 Chemicals, Petroleum, Rubber & Plastic" = 6,
+            # "36 Non-Metallic Mineral Products" = 2,
+            # # "37 Basic Metals" = 4,
+            # "38 Fabricated Metal Products, Machinery & Equipment" = 8,
+            # "39 Other Manufacturing" = 2
+        )
+    )
+    
+
+```
+
+
+
+```{r}
+#| label: tbl-ielas-top5-1
+#| tbl-cap: Intermediate elasticities for Corporations (Non-Evaders) and non-Corporations (Evaders) for different industries. Estimates were obtained using GNR (2020) method assuming a CD functional form. Intermediates are defined as raw materials. $\varepsilon$ is defined as **measurement error**. The Tax Evasion Test displays the coefficient of the statistical test, where the null hypothesis states that there is no tax evasion through cost overreporting. Among the industry characteristics, Sales is the industry's market share of the total sales in Colombia between 1981 and 1991. Sales Tax Rate is the average sales tax reported rate. Exports is the average share of exports of the industry total sales, and Exporters is the share of firms exporting 10 percent or more of their total sales. Bias-corrected bootstrap confidence intervals at 95% significanve level are displayed in brackets. \\*, \\*\\*, \\*\\*\\* denote significance at the 10%, 5%, and 1% levels (one-sided).
+
+load("../Code/Products/i_elas.RData")
+
+# col_names <- c("SIC", "Corps.", 
+#         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases","N (%)","Qty. (Avg. %)","N (%) ","Qty. (Avg. %) ")
+
+col_names <- c("SIC", "Corps.", 
+        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
+
+main_tbl %>% 
+    filter(
+        sic_3 %in% top_10_revenue$sic_3[1:5]
+    ) %>%
+    mutate(
+        across(n:share_imports_materials, ~replace(.x, type=="CI", NaN)),
+        sic_3 = factor(sic_3, levels=top_10_revenue$sic_3[1:5])
+    ) %>%
+    select(
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        # exporters:share_imports_materials
+    ) %>%
+    arrange(sic_3) %>%
+    kbl(
+        # digits = 2,
+        align = "c",
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    # column_spec(2:4, width = "9em") %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+    ) %>%
+    collapse_rows(columns = 1, valign = "top") #%>%
+    # pack_rows(
+    #     index = c(
+    #         "31 Food & Beverages" = 6,
+    #         "32 Textile, Apparel & Leather" = 8,
+    #         "33 Wood & Wood Products" = 4,
+    #         "34 Paper & Printing" = 4,
+    #         "35 Chemicals, Petroleum, Rubber & Plastic" = 6,
+    #         "36 Non-Metallic Mineral Products" = 2,
+    #         # "37 Basic Metals" = 4,
+    #         "38 Fabricated Metal Products, Machinery & Equipment" = 8,
+    #         "39 Other Manufacturing" = 2
+    #     )
+    # )
+    
+
+```
+
+
+
 
 ```{r}
 #| label: tbl-evasion-test-CD
 #| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev for different intermediate inputs. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
+#| eval: false
+#| include: false
 
 # inds_sales_tax <- tribble(
 #     ~ sic_3, ~ Category,
@@ -95,6 +223,8 @@ tax_ev_test_tbl %>%
 ```{r}
 #| label: tbl-tax-ev-test-context
 #| tbl-cap: Tax Evasion Through Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the null hypothesis, there is no tax evasion. Values of the statistic were computed from @eq-ob-ev. Standard errors shown in parethesis. Stars indicate significance level at the 1% (\\*\\*\\*), 5% (\\*\\*), and 10% (\\*).
+#| eval: false
+#| include: false
 
 test_cont_tbl %>%
     mutate(
@@ -216,6 +346,9 @@ deconv_mmt_long%>%
 The top five tax evading industries, 322 (Wearing Apparel), 342 (Publishing), 313 (Beverages), 351 (Industrial Chemicals), and 331 (Wood Products), display an average tax evasion $e$ greater than 12%, which is non-trivial.
 
 Although deconvolution by moments is the simplest method, it displays the undesirable characteristic that estimate of variances frequently result with a negative sign. In the next section, I address this problem by using parametric MLE. 
+
+:::: {#note-remove-mle-deconv .content-hidden unless-meta="draft"}
+
 
 ### Deconvoluting by Parametric MLE
 
@@ -562,7 +695,11 @@ par(mfrow = c(1, 1))
 
 ```
 
+::::
+
 ### Non-Parametric Deconvolution using Penalized B-Splines
+
+[TODO: Add median and mode, remove skewness]{.content-hidden unless-meta="draft"}
 
 ```{r}
 #| label: tbl-np-deconv

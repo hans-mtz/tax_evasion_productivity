@@ -220,12 +220,12 @@ boxed title style={boxrule=0.0mm, fuzzy shadow={1pt}{-1pt}{0mm}{0.1mm}{gray}, ar
 
 %%%% --- end foldboxy preamble ----- %%%%%
 %%==== colors from yaml ===%
-\definecolor{Proposition-color1}{HTML}{99CCFF}
-\definecolor{Proposition-color2}{HTML}{FFFFFF}
-\definecolor{Definition-color1}{HTML}{99CCFF}
-\definecolor{Definition-color2}{HTML}{FFFFFF}
 \definecolor{Assumption-color1}{HTML}{99CCFF}
 \definecolor{Assumption-color2}{HTML}{FFFFFF}
+\definecolor{Definition-color1}{HTML}{99CCFF}
+\definecolor{Definition-color2}{HTML}{FFFFFF}
+\definecolor{Proposition-color1}{HTML}{99CCFF}
+\definecolor{Proposition-color2}{HTML}{FFFFFF}
 \definecolor{Theorem-color1}{HTML}{99CCFF}
 \definecolor{Theorem-color2}{HTML}{FFFFFF}
 %=============%
@@ -260,7 +260,7 @@ Estimation, Productivity},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\date{September 16, 2025}
+\date{September 17, 2025}
 \title{\bf Tax Evasion and Productivity}
 \author{
 Hans Martinez\thanks{email: hmarti33@uwo.ca.}\\
@@ -481,7 +481,7 @@ An interior solution leads to following first-order conditions,
 }\end{equation}
 
 \begin{equation}\phantomsection\label{eq-foc-cont-e}{
-\frac{\rho_t}{P_t}\tau\left(1-(1+\phi)\left(q(e_{it}, a)+\frac{\partial q(e_{it}, a)}{\partial e_{it}} e_{it}\right)\right) =\kappa'(e_{it})
+\frac{\rho_t}{P_t}\tau\left(1-(1+\phi)\left(q(e_{it}, a)+\frac{\partial q(e_{it}, a)}{\partial e_{it}} e_{it}\right)\right) =\kappa_i'(e_{it})
 }\end{equation}
 
 where \(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\).
@@ -498,7 +498,7 @@ probability of detection,
 as follows,
 
 \begin{equation}\phantomsection\label{eq-foc-cont-e}{
-\frac{\rho_t}{P_t}\tau\bigg(1-(1+\phi)\left(1+\xi_{q,e}\right)q(e_{it}, a)\bigg) =\kappa'(e_{it})
+\frac{\rho_t}{P_t}\tau\bigg(1-(1+\phi)\left(1+\xi_{q,e}\right)q(e_{it}, a)\bigg) =\kappa_i'(e_{it})
 }\end{equation}
 
 The left-hand side of Equation~\ref{eq-foc-cont-e} is the marginal
@@ -519,6 +519,504 @@ marginal cost of evasion is greater than the marginal benefit for any
 level. For these firms their optimization problem is, therefore, the
 standard cost minimization problem. The optimal solution of these firms
 is well known is also given by Equation~\ref{eq-foc-m} and \(e_{it}=0\).
+
+\section{Identification Strategy}\label{sec-id-strat}
+
+Because the firms' optimization decisions depend on the fiscal
+environment, the identification strategy should be motivated by the
+fiscal environment \(\Gamma\). In particular, the identification
+strategy will be as good as how well we can tell apart a subset of firms
+that have the highest incentive to not evade. For example, in the case
+of Spain, the firms above the revenue LTU threshold. In the case of
+Colombia, the corporations.
+
+\phantomsection\label{ass-non-ev}
+\begin{fbx}{Assumption}{Assumption 2.1: }{Non-Evaders}
+\phantomsection\label{ass-non-ev}
+Based on the fiscal environment \(\Gamma\), the researcher can identify
+a subset of firms \(\theta_i\in\Theta^{NE}\subset \Theta\) that does not
+evade taxes by overreporting inputs.
+
+\end{fbx}
+
+For those firms, then \(\mathbb{E}[e_{it}|\theta_i\in\Theta^{NE}]=0\)
+
+In addition, I impose the following timing assumption.
+
+\phantomsection\label{ass-ind}
+\begin{fbx}{Assumption}{Assumption 2.2: }{Independence}
+\phantomsection\label{ass-ind}
+Firms choose overreporting \(e_{it}\) \emph{before} the output shock
+\(\varepsilon_{it}\)
+
+\end{fbx}
+
+Assumption \hyperref[ass-ind]{2.2} implies that input overreporting is
+independent of the current period output shock,
+\(e_{it} \perp \varepsilon_{it}\). In the literature is not rare to
+assume that the output shock is not part of the information set of the
+firms, \(\varepsilon_{it}\not\in \mathcal{I}_t\) \citep{Gandhi2020}.
+Timing and information set assumptions are not uncommon for
+identification strategies in production functions and demand estimation
+\citep{Ackerberg2021, Ackerberg2019}.
+
+\subsection{Identifying the production function
+parameters}\label{identifying-the-production-function-parameters}
+
+Assume the production function is Cobb-Douglas,
+\(G(M_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})\).
+
+The econometrician observes output, capital, labor, and prices of
+intermedite inputs and output \(\{Y_{it},K_{it},L_{it},\rho_t, P_t\}\),
+but she only observes overreported intermediate inputs,
+\(M^*_{it}=M_{it}\exp(e_{it})\)\footnote{Note we can always rewrite
+  \(M^*+e=M^*\exp\{a\}\), then \(\exp\{a\}=\frac{e}{M^*}+1\).}.
+
+Then, for the case of Colombia, \textbf{?@eq-foc:ind} applies since the
+type of firms is the juridical organization and the non-evaders are
+Corporations. By multiplying both sides by the intermediate inputs and
+dividing by the output, we get
+
+\begin{equation}\phantomsection\label{eq-foc-cd}{
+\begin{aligned}
+    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right) &=\ln\beta + \ln \mathcal{E}- \varepsilon_{it} \\
+    &\equiv \ln D^{\mathcal{E}}- \varepsilon_{it} \\
+    &\\
+    \ln(M^*_{it})&=\ln(M_{it})+e_{it} \\ 
+    &\\
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right) &=\ln\beta + \ln \mathcal{E}- \varepsilon_{it}+e_{it} \\
+\end{aligned}
+}\end{equation}
+
+where,
+\(\mathcal{E}\equiv \mathbb{E}[\exp(\varepsilon_{it})|\mathcal{I}_{it}]=\mathbb{E}[\exp(\varepsilon_{it})]\).
+
+We can use Equation~\ref{eq-foc-cd} and assumption
+\hyperref[ass-non-ev]{2.1} to recover the production function parameter
+\(\beta\)
+
+\begin{equation}\phantomsection\label{eq-foc-cd-exp}{
+    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{NE}\right]=\ln D^{\mathcal{E}}
+}\end{equation}
+
+The constant \(\mathcal{E}\) is also identified \citep{Gandhi2020},
+
+\begin{equation}\phantomsection\label{eq-id-E}{
+\mathcal{E}=\mathbb{E}\left[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}\right]=\mathbb{E}\left[\exp(\varepsilon_{it})|\theta^{NE}\right]=\mathbb{E}[\exp(\varepsilon_{it})]
+}\end{equation}
+
+and, thus, the output elasticity of input, \(\beta\), is also
+identified,
+
+\begin{equation}\phantomsection\label{eq-id-beta}{
+\beta=\exp\left(\ln D^{\mathcal{E}}-\ln\mathcal{E}\right).
+}\end{equation}
+
+\subsection{Identifying Tax Evasion}\label{identifying-tax-evasion}
+
+Having recovered both the flexible input elasticity, \(\beta\), and the
+constant \(\mathcal{E}\), for all firms, I can form the following
+variable using observed data.
+
+\begin{equation}\phantomsection\label{eq-ob-ev}{
+\begin{aligned}
+    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta -\ln\mathcal{E}\notag \\
+    &=-\varepsilon_{it} +e_{it}
+\end{aligned}
+}\end{equation}
+
+Tax evasion therefore can be recovered up to an independent random
+variable. We can do better however. By assumption
+\hyperref[ass-ind]{2.2}, the tax evasion, \(\varepsilon_{it}\) ,is
+independent of \(e_{it}\). Note that, from Equation~\ref{eq-foc-cd}, we
+also recovered \(f_{\varepsilon}(\varepsilon)\) the distribution of
+\(\varepsilon\). By using deconvolution methods, I can recover the tax
+evasion apart from the output shock.
+
+In particular, from probability theory,
+
+\begin{definition}[]\protect\hypertarget{def-conv}{}\label{def-conv}
+
+\begin{fbx}{Definition}{Definition: }{Convolution}
+\phantomsection\label{}
+The density of the sum of two \textbf{independent} random variables is
+equal to the \textbf{convolution} of the densities of both addends;
+hence
+
+\[
+h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
+\]
+
+where \(f\) is the density of \(\mathcal Z\) (Meister, 2009)
+
+\end{fbx}
+
+\end{definition}
+
+\subsection{Identifying Productivity}\label{identifying-productivity}
+
+Here, I show how to recover the rest of the parameters of the production
+function, including productivity and its Markov process. We can do it in
+several ways, depending on our object of interest.
+
+In the literature, it is not uncommon to assume that productivity
+follows a Markov process. That is,
+
+\begin{equation}\phantomsection\label{eq-prod-markov}{
+    \omega_{it}=h(\omega_{it-1})+\eta_{it}
+}\end{equation}
+
+Let \(\ln X_{it}=x_{it}\). With Equation~\ref{eq-ob-ev}, we can form the
+following observed variable,
+
+\begin{equation}\phantomsection\label{eq-big-w}{
+\begin{aligned}
+    \mathcal W_{it} & \equiv y_{it} - \beta (m^*_{it}-\mathcal{V}_{it})\\
+    & = y_{it} - \beta (m_{it}+e_{it}-e_{it}+\varepsilon_{it})\\
+    % & = y_{it} - \beta (m^*_{it}+\varepsilon_{it})\\
+    & = y_{it} - \beta m_{it}-\beta\varepsilon_{it}\\
+    & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+Here, intuitively, we are trading unobservables, the unobserved tax
+evasion for the output shock, just to make our lives easier. We could
+have use use directly \(m^*\) since we know the distribution of tax
+evasion \(e\), which is equivalent to the distribution of
+\(f_{m^*|m}(m^*|m)\). Also note that is it not necessary to learn tax
+evasion to recover productivity. This is useful if a practicioner is
+only interested in productivity and not on tax evasion.
+
+By replacing \(\omega_{it}\) from Equation~\ref{eq-big-w} in
+Equation~\ref{eq-prod-markov}, we get
+
+\begin{equation}\phantomsection\label{eq-big-w-reg}{
+\begin{aligned}
+    \mathcal W_{it}=(1-\beta)\varepsilon_{it}+\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})+\eta_{it}
+\end{aligned}
+}\end{equation}
+
+If \(h(\xi)=\delta_0 +\delta_1\xi\), to learn \(\alpha\) and \(h\), we
+need to find instruments \(Z\) such that,
+
+\begin{equation}\phantomsection\label{eq-eta-moments}{
+\mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\delta_1(1-\beta)\varepsilon_{it-1}|Z]=0.
+}\end{equation}
+
+Table~\ref{tbl-orth} displays candidates for \(Z\)
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2174}}
+  >{\centering\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7826}}@{}}
+\caption{Orthogonality by Residuals}\label{tbl-orth}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Orthogonality
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Orthogonality
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\eta_{it}\) & \(k_{it},l_{it},\varepsilon_{it}\),
+\(k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}\) \\
+\(\varepsilon_{it}\) &
+\(k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}\),
+\(k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}\) \\
+\(\varepsilon_{it-1}\) &
+\(k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}\),
+\(k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}\) \\
+\end{longtable}
+
+The possible instruments are
+\(Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m^*_{it-1}, \mathcal{W}_{it-2}\}\).
+
+During estimation, I use labor and capital as instruments for themselves
+\(Z_{it}=\{k_{it},l_{it}\}\), and the constant and the lag of observed
+overreported intermediates as instrument for the AR(1) productivity
+Markov process \(h(\cdot)\).
+
+Once the paramaters of the production function are identified, we can
+use the following observed variable to recover \(\omega_{it}\)
+
+\begin{equation}\phantomsection\label{eq-w-squiggle}{
+\begin{aligned}
+    \widetilde{\mathcal W_{it}} & \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
+    & = \omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+\subsection{Identification with two Flexible
+Inputs}\label{identification-with-two-flexible-inputs}
+
+Suppose now that \(M_{it}\) and \(L_{it}\) are flexible inputs, but
+\(K_{it}\) is not. Furthermore, \(M_{it}\) is deductible and \(L_{it}\)
+is not. Under a Cobb-Douglas production function,
+\textbf{?@eq-foc:deduct} and \textbf{?@eq-foc:non-deduct} become,
+
+\begin{equation}\phantomsection\label{eq-fs-ded}{
+\begin{aligned}    
+ \ln\left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)=&\ln \beta +\ln \mathcal{E} -\varepsilon_{it} \\
+ =& \ln D^{\mathcal{E}}_M - \varepsilon_{it} \\
+\end{aligned}
+}\end{equation}
+
+\begin{equation}\phantomsection\label{eq-fs-non-ded}{
+\begin{aligned}
+    \ln\left(\frac{w_t L_{it}}{(1-\tau)P_t Y_{it}}\right)=&\ln \alpha_L +\ln \mathcal{E} -\varepsilon_{it} \\
+    =& \ln D^{\mathcal{E}}_L - \varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+Note that firms do not have incentives to overreport non-deductible
+flexible inputs. So the observed non-deductible flexible inputs are the
+true inputs consumed in production. For the deductible flexible inputes,
+we still observe the overreported inputs,
+\(M^*_{it}=M_{it}\exp(e_{it})\).
+
+So, Equation~\ref{eq-fs-ded} becomes,
+
+\begin{equation}\phantomsection\label{eq-fs-ded-ev}{
+ \ln\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)=\ln D^{\mathcal{E}}_M -\varepsilon_{it}+e_{it}
+}\end{equation}
+
+The constant \(\ln D^{\mathcal{E}}_L\) is identified by a linear
+regression from Equation~\ref{eq-fs-non-ded}. Likewise, using assumption
+\hyperref[ass-non-ev]{2.1}, we can identify the constant
+\(\ln D^{\mathcal{E}}_M\) by running a linear regression of
+Equation~\ref{eq-fs-ded-ev} for the non-evaders.
+
+To identify the elasticities from the constant \(\mathcal{E}\), let
+\(\hat\varepsilon^M_{it}\) and \(\hat\varepsilon^L_{it}\) be the
+residuals of the regressions of Equation~\ref{eq-fs-ded-ev} and
+Equation~\ref{eq-fs-non-ded}, respectively. Then, we can form the
+following observed variable,
+
+\begin{equation}\phantomsection\label{eq-wgt-eps}{
+\varepsilon_{it}= \begin{cases}
+\lambda_{it} \hat \varepsilon^M_{it} + (1-\lambda_{it}) \hat \varepsilon^L_{it} & \text{if $i$ is a Non-evader}\\
+\hat \varepsilon^L_{it} & \text{otherwise}
+\end{cases}
+}\end{equation}
+
+where \(\lambda_{it}\) is a weight that can be chosen by the
+practicioner. For example, it can be set to the share of the cost of
+both flexible inputs in the total cost of production,
+\(\lambda_{it}=\frac{\rho_t M^*_{it}}{\rho_t M^*_{it}+w_t L_{it}}\). In
+this way, we would have a time-firm specific weight that captures the
+relative importance of each flexible input in the production process.
+alternatively, we can can have time or firm fixed weights,
+\(\lambda_t=N^{-1}\sum_i\lambda_{it}\) or
+\(\lambda_i=T^{-1}\sum_t\lambda_{it}\), respectively.
+
+Another option is to use the optimal weight to minimize the variance of
+\(\varepsilon_{it}\),
+
+\[
+\lambda = \arg\min_{\lambda} \mathbb{E}\left[\varepsilon^2|\Theta^{NE}\right]
+\]
+
+\[
+\begin{aligned}
+\mathbb{E}\left[\varepsilon^2|\Theta^{NE}\right] =&\lambda^2 \mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + (1-\lambda)^2 \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]\\
+&+ 2\lambda(1-\lambda)\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]
+\end{aligned}
+\]
+
+Deriving the first order condition, we get
+
+\[
+2\lambda \mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + 2(1-2\lambda) \mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right] - 2(1-\lambda)\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right] = 0
+\]
+
+Finally, solving for \(\lambda\) gives us the optimal weight,
+
+\begin{equation}\phantomsection\label{eq-opt-lambda}{
+\lambda^* = \frac{\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}{\mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-2\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}.
+}\end{equation}
+
+This might work only if the covariance of the residuals is less than the
+variance of any residual. In theory, the covariance cannot be larger
+than the variance of either residua. In that case, it means the both
+residuals are good estimates of the output shock \(\varepsilon_{it}\)
+and we can use either of them to recover the output shock
+\(\varepsilon_{it}\).
+
+Then, we can recover \(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)
+and the elasticities
+\(\beta=\exp(\ln D^{\mathcal{E}}_M-\ln \mathcal{E})\) and
+\(\alpha_L=\exp(\ln D^{\mathcal{E}}_L-\ln \mathcal{E})\).
+
+\subsection{Identifying Tax Evasion with Two Flexible
+Inputs}\label{identifying-tax-evasion-with-two-flexible-inputs}
+
+\[
+\begin{aligned}    
+ \mathcal{V}_{it} \equiv&\ln \left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)-\ln D^{\mathcal{E}}_M +\varepsilon_{it}\\
+ =& \ln \left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)-\ln D^{\mathcal{E}}_M +\varepsilon_{it}+e_{it}\\
+ =& -\varepsilon_{it}+\varepsilon_{it}+e_{it}\\
+ =& e_{it}
+\end{aligned}
+\]
+
+In the case of the two flexible inputs, we can form a firm-time specific
+variable that captures the tax evasion by overreporting the deductible
+flexible input, \(\mathcal{V}_{it}=e_{it}\).
+
+\subsection{Identifying Productivity with Two Flexible
+Inputs}\label{identifying-productivity-with-two-flexible-inputs}
+
+To recover \(\alpha_K\), we can now form the following observed
+variable,
+
+\[
+\begin{aligned}
+    \mathcal{Y}_{it} \equiv& y_{it} - \beta (m^*_{it}-e_{it}) - \alpha_L l_{it} - \varepsilon_{it}\\
+    =& y_{it} - \beta m_{it} - \alpha_L l_{it} - \varepsilon_{it}\\
+    =& \alpha_K k_{it} + \omega_{it}
+\end{aligned}
+\]
+
+Then, using ortogonality of \(\eta_{it}\),
+
+\[
+\mathbb{E}[\mathcal{Y}_{it}|Z_{it}]=\alpha_K k_{it} + \mathbb{E}[h(\mathcal{Y}_{it-1}-\alpha_K k_{it-1})|Z_{it}]
+\]
+
+where \(Z_{it}=\{k_{it},k_{it-1},\mathcal{Y}_{it-1}\}\).
+
+\subsection{Translog Production
+Function}\label{translog-production-function}
+
+To identify tax evasion and relaxing the assumption of a CD production
+function, we would need a flexible input for which firms have no
+incentives to overreport. Firms might face flexible inputs that they
+cannot deduct from their VAT or CIT, for example. If this is the case,
+then firms would have no incentives to overreport non-deductible
+flexible inputs.
+
+Assume now that \(L_{it}\) is a non-deductible flexible input and,
+without loss of generality, there are only two inputs
+(\(L_{it}, M_{it}\)). Let's assume the production function is now
+\emph{translog}. We have,
+
+\[
+ \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
+\]
+
+Then, equation \textbf{?@eq-foc:non-deduct} becomes
+
+\begin{equation}\phantomsection\label{eq-translog-share}{
+\begin{aligned}
+    s_{it}^{L}&=\ln \left(\beta_3+2\beta_4l_{it}+\beta_1(m^*_{it}-e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
+    &\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}-e_{it})- \varepsilon_{it} 
+\end{aligned}
+}\end{equation}
+
+where
+\(s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)\).
+
+Note that by assumption \hyperref[ass-non-ev]{2.1}, \(D^{\mathcal{E}}\)
+and the density of \(\varepsilon\) are still identified.
+
+\subsubsection{Testing for Tax Evasion}\label{testing-for-tax-evasion}
+
+We can design a test for tax evasion by forming the analog of
+Equation~\ref{eq-ob-ev},
+
+\[
+\begin{aligned}
+\mathcal{V}_{it}^{L} =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*)-s_{it}^L\\
+    =&\ln D^{\mathcal{E}}(l_{it},m_{it}+e_{it})-s_{it}^L\\
+    =&\ln D^{\mathcal{E}}(l_{it},m_{it}+e_{it})-\ln D^{\mathcal{E}}(l_{it},m_{it})+\varepsilon_{it}\\
+    =&\ln\left(\frac{D^{\mathcal{E}}(l_{it},m_{it}+e_{it})}{D^{\mathcal{E}}(l_{it},m_{it})}\right)+\varepsilon_{it}\\
+\end{aligned}
+\]
+
+Note that
+\(\ln\left(\frac{D^{\mathcal{E}}(l,m+e)}{D^{\mathcal{E}}(l,m)}\right)\ge0\)
+is always positive because \(e_{it}\ge0\) and \(D^{\mathcal{E}}\) is
+strictly increasing in \(m\). Thus,
+\(\frac{D^{\mathcal{E}}(l,m+e)}{D^{\mathcal{E}}(l,m)}\ge1\).
+
+\subsubsection{Identifying Tax Evasion}\label{identifying-tax-evasion-1}
+
+Once we recovered the parameters of Equation~\ref{eq-translog-share}, we
+can invert it to solve for the true inputs \(m^*\) as a function of
+observed data and the output. Then, the difference between the observed
+and true inputs is by definition the tax evasion by overreporting.
+
+\[
+\begin{aligned}
+    m^*_{it}&=m_{it}+e_{it}\\
+    &=D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}+\varepsilon_{it}),l_{it})+e_{it}\\
+    % &= m_{it}^*+e_{it} -D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
+    % &= m_{it}^*+e_{it} -D^{-1}(D(l_{it},m_{it}^*),l_{it})\\
+    % &=e_{it}
+\end{aligned}
+\]
+
+Again, having recovered the distribution of the output shock
+\(f_{\varepsilon}(\varepsilon)\), we can use deconvolution techniques to
+learn the distribution of \(e\). In particular, to learn the p.d.f of
+tax evasion \(f_e(e)\), we can deconvolute it by
+
+\[
+    \int f_e(m^*_{it}-D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})) f_{\varepsilon}(\varepsilon)d\varepsilon
+\]
+
+\subsection{Non-Parametric Identification of Tax
+Evasion}\label{non-parametric-identification-of-tax-evasion}
+
+The previous result also suggests a non-parametric identification
+strategy, as long as \(D^{\mathcal{E}}\) is monotonic in \(m\). This
+identification strategy is analogous to \citet{Hu2022b}, where the
+authors also require monotonicity and independence to recover a
+nonparametric function of \(m^*\) with nonclassical measurement error.
+
+In our case, intuitively, if we know the density of \(\varepsilon\) and
+the function \(D^{\mathcal{E}}\), the variation left is due to \(e\),
+which can be recovered as long as we can vary \(D^{\mathcal{E}}\) by
+moving \(e\).
+
+To see why the non-deductible flexible input is needed to identify tax
+evasion consider the following. Suppose that only the input \(M\) is
+flexible and deductible.
+
+\[
+\ln\left(\frac{\rho M}{PY}\right)=\ln D^{\mathcal{E}}(K,L,M)-\varepsilon
+\]
+
+\(D^{\mathcal{E}}(K,L,M)\) is still identified by assumption
+\hyperref[ass-non-ev]{2.1}, however, when we form the analogous of
+Equation~\ref{eq-ob-ev}, we now have
+
+\[
+\begin{aligned}
+    \ln\left(\frac{\rho M^*}{PY}\right)-&\ln D^{\mathcal{E}}(K,L,M^*)=\\
+    &\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M+e)\\
+    =&\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M+e)\\
+    &+\left[\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
+    &-\left[\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)\right] \\
+    =&\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M) \\
+    &+\left[\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln\left(\frac{\rho(M)}{PY}\right)\right]\\
+    &-\left[\ln D^{\mathcal{E}}(K,L,M+e)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
+    =& -\varepsilon \\
+    &+\left[\ln D^{\mathcal{E}}(K,L,M+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M)+\varepsilon\right]\\
+    &-\left[\ln D^{\mathcal{E}}(K,L,M+e)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
+    =& -\varepsilon(K,L,M)
+\end{aligned}
+\]
+
+Now, we are not able to separate the variation of \(\varepsilon\) from
+\(e\).
 
 \section{Colombia 1981-1991}\label{colombia-1981-1991}
 
@@ -882,510 +1380,12 @@ Leather and Products of Leather, Leather Substitutes and Fur, Except Footwear an
 
 \end{table}%
 
-\section{Identification Strategy}\label{sec-id-strat}
-
-Because the firms' optimization decisions depend on the fiscal
-environment, the identification strategy should be motivated by the
-fiscal environment \(\Gamma\). In particular, the identification
-strategy will be as good as how well we can tell apart a subset of firms
-that have the highest incentive to not evade. For example, in the case
-of Spain, the firms above the revenue LTU threshold. In the case of
-Colombia, the corporations.
-
-\phantomsection\label{ass-non-ev}
-\begin{fbx}{Assumption}{Assumption 4.1: }{Non-Evaders}
-\phantomsection\label{ass-non-ev}
-Based on the fiscal environment \(\Gamma\), the researcher can identify
-a subset of firms \(\theta_i\in\Theta^{NE}\subset \Theta\) that does not
-evade taxes by overreporting inputs.
-
-\end{fbx}
-
-For those firms, then \(\mathbb{E}[e_{it}|\theta_i\in\Theta^{NE}]=0\)
-
-In addition, I impose the following timing assumption.
-
-\phantomsection\label{ass-ind}
-\begin{fbx}{Assumption}{Assumption 4.2: }{Independence}
-\phantomsection\label{ass-ind}
-Firms choose overreporting \(e_{it}\) \emph{before} the output shock
-\(\varepsilon_{it}\)
-
-\end{fbx}
-
-Assumption \hyperref[ass-ind]{4.2} implies that input overreporting is
-independent of the current period output shock,
-\(e_{it} \perp \varepsilon_{it}\). In the literature is not rare to
-assume that the output shock is not part of the information set of the
-firms, \(\varepsilon_{it}\not\in \mathcal{I}_t\) \citep{Gandhi2020}.
-Timing and information set assumptions are not uncommon for
-identification strategies in production functions and demand estimation
-\citep{Ackerberg2021, Ackerberg2019}.
-
-\subsection{Identifying the production function
-parameters}\label{identifying-the-production-function-parameters}
-
-Assume the production function is Cobb-Douglas,
-\(G(M_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})\).
-
-The econometrician observes output, capital, labor, and prices of
-intermedite inputs and output \(\{Y_{it},K_{it},L_{it},\rho_t, P_t\}\),
-but she only observes overreported intermediate inputs,
-\(M^*_{it}=M_{it}\exp(e_{it})\)\footnote{Note we can always rewrite
-  \(M^*+e=M^*\exp\{a\}\), then \(\exp\{a\}=\frac{e}{M^*}+1\).}.
-
-Then, for the case of Colombia, \textbf{?@eq-foc:ind} applies since the
-type of firms is the juridical organization and the non-evaders are
-Corporations. By multiplying both sides by the intermediate inputs and
-dividing by the output, we get
-
-\begin{equation}\phantomsection\label{eq-foc-cd}{
-\begin{aligned}
-    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right) &=\ln\beta + \ln \mathcal{E}- \varepsilon_{it} \\
-    &\equiv \ln D^{\mathcal{E}}- \varepsilon_{it} \\
-    &\\
-    \ln(M^*_{it})&=\ln(M_{it})+e_{it} \\ 
-    &\\
-    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right) &=\ln\beta + \ln \mathcal{E}- \varepsilon_{it}+e_{it} \\
-\end{aligned}
-}\end{equation}
-
-where,
-\(\mathcal{E}\equiv \mathbb{E}[\exp(\varepsilon_{it})|\mathcal{I}_{it}]=\mathbb{E}[\exp(\varepsilon_{it})]\).
-
-We can use Equation~\ref{eq-foc-cd} and assumption
-\hyperref[ass-non-ev]{4.1} to recover the production function parameter
-\(\beta\)
-
-\begin{equation}\phantomsection\label{eq-foc-cd-exp}{
-    \mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{NE}\right]=\ln D^{\mathcal{E}}
-}\end{equation}
-
-The constant \(\mathcal{E}\) is also identified \citep{Gandhi2020},
-
-\begin{equation}\phantomsection\label{eq-id-E}{
-\mathcal{E}=\mathbb{E}\left[\exp\left(\ln D^{\mathcal{E}}- \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\right)|\theta^{NE}\right]=\mathbb{E}\left[\exp(\varepsilon_{it})|\theta^{NE}\right]=\mathbb{E}[\exp(\varepsilon_{it})]
-}\end{equation}
-
-and, thus, the output elasticity of input, \(\beta\), is also
-identified,
-
-\begin{equation}\phantomsection\label{eq-id-beta}{
-\beta=\exp\left(\ln D^{\mathcal{E}}-\ln\mathcal{E}\right).
-}\end{equation}
-
-\subsection{Identifying Tax Evasion}\label{identifying-tax-evasion}
-
-Having recovered both the flexible input elasticity, \(\beta\), and the
-constant \(\mathcal{E}\), for all firms, I can form the following
-variable using observed data.
-
-\begin{equation}\phantomsection\label{eq-ob-ev}{
-\begin{aligned}
-    \mathcal V_{it}\equiv&\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta -\ln\mathcal{E}\notag \\
-    &=-\varepsilon_{it} +e_{it}
-\end{aligned}
-}\end{equation}
-
-Tax evasion therefore can be recovered up to an independent random
-variable. We can do better however. By assumption
-\hyperref[ass-ind]{4.2}, the tax evasion, \(\varepsilon_{it}\) ,is
-independent of \(e_{it}\). Note that, from Equation~\ref{eq-foc-cd}, we
-also recovered \(f_{\varepsilon}(\varepsilon)\) the distribution of
-\(\varepsilon\). By using deconvolution methods, I can recover the tax
-evasion apart from the output shock.
-
-In particular, from probability theory,
-
-\begin{definition}[]\protect\hypertarget{def-conv}{}\label{def-conv}
-
-\begin{fbx}{Definition}{Definition: }{Convolution}
-\phantomsection\label{}
-The density of the sum of two \textbf{independent} random variables is
-equal to the \textbf{convolution} of the densities of both addends;
-hence
-
-\[
-h = f*m = \int f(\mathcal Z - \varepsilon)m(\varepsilon)d\varepsilon
-\]
-
-where \(f\) is the density of \(\mathcal Z\) (Meister, 2009)
-
-\end{fbx}
-
-\end{definition}
-
-\subsection{Identifying Productivity}\label{identifying-productivity}
-
-Here, I show how to recover the rest of the parameters of the production
-function, including productivity and its Markov process. We can do it in
-several ways, depending on our object of interest.
-
-In the literature, it is not uncommon to assume that productivity
-follows a Markov process. That is,
-
-\begin{equation}\phantomsection\label{eq-prod-markov}{
-    \omega_{it}=h(\omega_{it-1})+\eta_{it}
-}\end{equation}
-
-Let \(\ln X_{it}=x_{it}\). With Equation~\ref{eq-ob-ev}, we can form the
-following observed variable,
-
-\begin{equation}\phantomsection\label{eq-big-w}{
-\begin{aligned}
-    \mathcal W_{it} & \equiv y_{it} - \beta (m^*_{it}-\mathcal{V}_{it})\\
-    & = y_{it} - \beta (m_{it}+e_{it}-e_{it}+\varepsilon_{it})\\
-    % & = y_{it} - \beta (m^*_{it}+\varepsilon_{it})\\
-    & = y_{it} - \beta m_{it}-\beta\varepsilon_{it}\\
-    & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
-\end{aligned}
-}\end{equation}
-
-Here, intuitively, we are trading unobservables, the unobserved tax
-evasion for the output shock, just to make our lives easier. We could
-have use use directly \(m^*\) since we know the distribution of tax
-evasion \(e\), which is equivalent to the distribution of
-\(f_{m^*|m}(m^*|m)\). Also note that is it not necessary to learn tax
-evasion to recover productivity. This is useful if a practicioner is
-only interested in productivity and not on tax evasion.
-
-By replacing \(\omega_{it}\) from Equation~\ref{eq-big-w} in
-Equation~\ref{eq-prod-markov}, we get
-
-\begin{equation}\phantomsection\label{eq-big-w-reg}{
-\begin{aligned}
-    \mathcal W_{it}=(1-\beta)\varepsilon_{it}+\alpha_K k_{it}+\alpha_L l_{it}+h(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})+\eta_{it}
-\end{aligned}
-}\end{equation}
-
-If \(h(\xi)=\delta_0 +\delta_1\xi\), to learn \(\alpha\) and \(h\), we
-need to find instruments \(Z\) such that,
-
-\begin{equation}\phantomsection\label{eq-eta-moments}{
-\mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\delta_1(1-\beta)\varepsilon_{it-1}|Z]=0.
-}\end{equation}
-
-Table~\ref{tbl-orth} displays candidates for \(Z\)
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2174}}
-  >{\centering\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7826}}@{}}
-\caption{Orthogonality by Residuals}\label{tbl-orth}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Orthogonality
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Orthogonality
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\(\eta_{it}\) & \(k_{it},l_{it},\varepsilon_{it}\),
-\(k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}\) \\
-\(\varepsilon_{it}\) &
-\(k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}\),
-\(k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}\) \\
-\(\varepsilon_{it-1}\) &
-\(k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}\),
-\(k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}\) \\
-\end{longtable}
-
-The possible instruments are
-\(Z_{it}=\{k_{it},l_{it},k_{it-1},l_{it-1}, m^*_{it-1}, \mathcal{W}_{it-2}\}\).
-
-During estimation, I use labor and capital as instruments for themselves
-\(Z_{it}=\{k_{it},l_{it}\}\), and the constant and the lag of observed
-overreported intermediates as instrument for the AR(1) productivity
-Markov process \(h(\cdot)\).
-
-Once the paramaters of the production function are identified, we can
-use the following observed variable to recover \(\omega_{it}\)
-
-\begin{equation}\phantomsection\label{eq-w-squiggle}{
-\begin{aligned}
-    \widetilde{\mathcal W_{it}} & \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
-    & = \omega_{it}+(1-\beta)\varepsilon_{it}
-\end{aligned}
-}\end{equation}
-
-\subsection{Identification with two Flexible
-Inputs}\label{identification-with-two-flexible-inputs}
-
-Suppose now that \(M_{it}\) and \(L_{it}\) are flexible inputs, but
-\(K_{it}\) is not. Furthermore, \(M_{it}\) is deductible and \(L_{it}\)
-is not. Under a Cobb-Douglas production function,
-\textbf{?@eq-foc:deduct} and \textbf{?@eq-foc:non-deduct} become,
-
-\begin{equation}\phantomsection\label{eq-fs-ded}{
-\begin{aligned}    
- \ln\left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)=&\ln \beta +\ln \mathcal{E} -\varepsilon_{it} \\
- =& \ln D^{\mathcal{E}}_M - \varepsilon_{it} \\
-\end{aligned}
-}\end{equation}
-
-\begin{equation}\phantomsection\label{eq-fs-non-ded}{
-\begin{aligned}
-    \ln\left(\frac{w_t L_{it}}{(1-\tau)P_t Y_{it}}\right)=&\ln \alpha_L +\ln \mathcal{E} -\varepsilon_{it} \\
-    =& \ln D^{\mathcal{E}}_L - \varepsilon_{it}
-\end{aligned}
-}\end{equation}
-
-Note that firms do not have incentives to overreport non-deductible
-flexible inputs. So the observed non-deductible flexible inputs are the
-true inputs consumed in production. For the deductible flexible inputes,
-we still observe the overreported inputs,
-\(M^*_{it}=M_{it}\exp(e_{it})\).
-
-So, Equation~\ref{eq-fs-ded} becomes,
-
-\begin{equation}\phantomsection\label{eq-fs-ded-ev}{
- \ln\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)=\ln D^{\mathcal{E}}_M -\varepsilon_{it}+e_{it}
-}\end{equation}
-
-The constant \(\ln D^{\mathcal{E}}_L\) is identified by a linear
-regression from Equation~\ref{eq-fs-non-ded}. Likewise, using assumption
-\hyperref[ass-non-ev]{4.1}, we can identify the constant
-\(\ln D^{\mathcal{E}}_M\) by running a linear regression of
-Equation~\ref{eq-fs-ded-ev} for the non-evaders.
-
-To identify the elasticities from the constant \(\mathcal{E}\), let
-\(\hat\varepsilon^M_{it}\) and \(\hat\varepsilon^L_{it}\) be the
-residuals of the regressions of Equation~\ref{eq-fs-ded-ev} and
-Equation~\ref{eq-fs-non-ded}, respectively. Then, we can form the
-following observed variable,
-
-\begin{equation}\phantomsection\label{eq-wgt-eps}{
-\varepsilon_{it}= \begin{cases}
-\lambda_{it} \hat \varepsilon^M_{it} + (1-\lambda_{it}) \hat \varepsilon^L_{it} & \text{if $i$ is a Non-evader}\\
-\hat \varepsilon^L_{it} & \text{otherwise}
-\end{cases}
-}\end{equation}
-
-where \(\lambda_{it}\) is a weight that can be chosen by the
-practicioner. For example, it can be set to the share of the cost of
-both flexible inputs in the total cost of production,
-\(\lambda_{it}=\frac{\rho_t M^*_{it}}{\rho_t M^*_{it}+w_t L_{it}}\). In
-this way, we would have a time-firm specific weight that captures the
-relative importance of each flexible input in the production process.
-alternatively, we can can have time or firm fixed weights,
-\(\lambda_t=N^{-1}\sum_i\lambda_{it}\) or
-\(\lambda_i=T^{-1}\sum_t\lambda_{it}\), respectively.
-
-Another option is to use the optimal weight to minimize the variance of
-\(\varepsilon_{it}\),
-
-\[
-\lambda = \arg\min_{\lambda} \mathbb{E}\left[\varepsilon^2|\Theta^{NE}\right]
-\]
-
-\[
-\begin{aligned}
-\mathbb{E}\left[\varepsilon^2|\Theta^{NE}\right] =&\lambda^2 \mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + (1-\lambda)^2 \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]\\
-&+ 2\lambda(1-\lambda)\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]
-\end{aligned}
-\]
-
-Deriving the first order condition, we get
-
-\[
-2\lambda \mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + 2(1-2\lambda) \mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right] - 2(1-\lambda)\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right] = 0
-\]
-
-Finally, solving for \(\lambda\) gives us the optimal weight,
-
-\begin{equation}\phantomsection\label{eq-opt-lambda}{
-\lambda^* = \frac{\mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}{\mathbb{E}\left[\left(\hat \varepsilon^M_{it}\right)^2|\Theta^{NE}\right] + \mathbb{E}\left[\left(\hat \varepsilon^L_{it}\right)^2|\Theta^{NE}\right]-2\mathbb{E}\left[\hat \varepsilon^M_{it}\hat \varepsilon^L_{it}|\Theta^{NE}\right]}.
-}\end{equation}
-
-This might work only if the covariance of the residuals is less than the
-variance of any residual. In theory, the covariance cannot be larger
-than the variance of either residua. In that case, it means the both
-residuals are good estimates of the output shock \(\varepsilon_{it}\)
-and we can use either of them to recover the output shock
-\(\varepsilon_{it}\).
-
-Then, we can recover \(\mathcal{E}=\mathbb{E}[\exp(\varepsilon_{it})]\)
-and the elasticities
-\(\beta=\exp(\ln D^{\mathcal{E}}_M-\ln \mathcal{E})\) and
-\(\alpha_L=\exp(\ln D^{\mathcal{E}}_L-\ln \mathcal{E})\).
-
-\subsection{Identifying Tax Evasion with Two Flexible
-Inputs}\label{identifying-tax-evasion-with-two-flexible-inputs}
-
-\[
-\begin{aligned}    
- \mathcal{V}_{it} \equiv&\ln \left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)-\ln D^{\mathcal{E}}_M +\varepsilon_{it}\\
- =& \ln \left(\frac{\rho_t M_{it}}{P_t Y_{it}}\right)-\ln D^{\mathcal{E}}_M +\varepsilon_{it}+e_{it}\\
- =& -\varepsilon_{it}+\varepsilon_{it}+e_{it}\\
- =& e_{it}
-\end{aligned}
-\]
-
-In the case of the two flexible inputs, we can form a firm-time specific
-variable that captures the tax evasion by overreporting the deductible
-flexible input, \(\mathcal{V}_{it}=e_{it}\).
-
-\subsection{Identifying Productivity with Two Flexible
-Inputs}\label{identifying-productivity-with-two-flexible-inputs}
-
-To recover \(\alpha_K\), we can now form the following observed
-variable,
-
-\[
-\begin{aligned}
-    \mathcal{Y}_{it} \equiv& y_{it} - \beta (m^*_{it}-e_{it}) - \alpha_L l_{it} - \varepsilon_{it}\\
-    =& y_{it} - \beta m_{it} - \alpha_L l_{it} - \varepsilon_{it}\\
-    =& \alpha_K k_{it} + \omega_{it}
-\end{aligned}
-\]
-
-Then, using ortogonality of \(\eta_{it}\),
-
-\[
-\mathbb{E}[\mathcal{Y}_{it}|Z_{it}]=\alpha_K k_{it} + \mathbb{E}[h(\mathcal{Y}_{it-1}-\alpha_K k_{it-1})|Z_{it}]
-\]
-
-where \(Z_{it}=\{k_{it},k_{it-1},\mathcal{Y}_{it-1}\}\).
-
-\subsection{Translog Production
-Function}\label{translog-production-function}
-
-To identify tax evasion and relaxing the assumption of a CD production
-function, we would need a flexible input for which firms have no
-incentives to overreport. Firms might face flexible inputs that they
-cannot deduct from their VAT or CIT, for example. If this is the case,
-then firms would have no incentives to overreport non-deductible
-flexible inputs.
-
-Assume now that \(L_{it}\) is a non-deductible flexible input and,
-without loss of generality, there are only two inputs
-(\(L_{it}, M_{it}\)). Let's assume the production function is now
-\emph{translog}. We have,
-
-\[
- \ln G(l,m)=\beta_0m_{it}+\beta_1m_{it}l_{it}+\beta_2m_{it}m_{it}+\beta_3l_{it}+\beta_4l_{it}l_{it}
-\]
-
-Then, equation \textbf{?@eq-foc:non-deduct} becomes
-
-\begin{equation}\phantomsection\label{eq-translog-share}{
-\begin{aligned}
-    s_{it}^{L}&=\ln \left(\beta_3+2\beta_4l_{it}+\beta_1(m^*_{it}-e_{it})\right) + \ln \mathcal{E}- \varepsilon_{it} \\
-    &\equiv \ln D^{\mathcal{E}}(l_{it},m^*_{it}-e_{it})- \varepsilon_{it} 
-\end{aligned}
-}\end{equation}
-
-where
-\(s_{it}^{L} \equiv\ln\left(\frac{w_t L_{it}}{(1-\tau)P_{t}Y_{it}}\right)\).
-
-Note that by assumption \hyperref[ass-non-ev]{4.1}, \(D^{\mathcal{E}}\)
-and the density of \(\varepsilon\) are still identified.
-
-\subsubsection{Testing for Tax Evasion}\label{testing-for-tax-evasion}
-
-We can design a test for tax evasion by forming the analog of
-Equation~\ref{eq-ob-ev},
-
-\[
-\begin{aligned}
-\mathcal{V}_{it}^{L} =&\ln D^{\mathcal{E}}(l_{it},m_{it}^*)-s_{it}^L\\
-    =&\ln D^{\mathcal{E}}(l_{it},m_{it}+e_{it})-s_{it}^L\\
-    =&\ln D^{\mathcal{E}}(l_{it},m_{it}+e_{it})-\ln D^{\mathcal{E}}(l_{it},m_{it})+\varepsilon_{it}\\
-    =&\ln\left(\frac{D^{\mathcal{E}}(l_{it},m_{it}+e_{it})}{D^{\mathcal{E}}(l_{it},m_{it})}\right)+\varepsilon_{it}\\
-\end{aligned}
-\]
-
-Note that
-\(\ln\left(\frac{D^{\mathcal{E}}(l,m+e)}{D^{\mathcal{E}}(l,m)}\right)\ge0\)
-is always positive because \(e_{it}\ge0\) and \(D^{\mathcal{E}}\) is
-strictly increasing in \(m\). Thus,
-\(\frac{D^{\mathcal{E}}(l,m+e)}{D^{\mathcal{E}}(l,m)}\ge1\).
-
-\subsubsection{Identifying Tax Evasion}\label{identifying-tax-evasion-1}
-
-Once we recovered the parameters of Equation~\ref{eq-translog-share}, we
-can invert it to solve for the true inputs \(m^*\) as a function of
-observed data and the output. Then, the difference between the observed
-and true inputs is by definition the tax evasion by overreporting.
-
-\[
-\begin{aligned}
-    m^*_{it}&=m_{it}+e_{it}\\
-    &=D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}+\varepsilon_{it}),l_{it})+e_{it}\\
-    % &= m_{it}^*+e_{it} -D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})\\
-    % &= m_{it}^*+e_{it} -D^{-1}(D(l_{it},m_{it}^*),l_{it})\\
-    % &=e_{it}
-\end{aligned}
-\]
-
-Again, having recovered the distribution of the output shock
-\(f_{\varepsilon}(\varepsilon)\), we can use deconvolution techniques to
-learn the distribution of \(e\). In particular, to learn the p.d.f of
-tax evasion \(f_e(e)\), we can deconvolute it by
-
-\[
-    \int f_e(m^*_{it}-D^{-1}(\exp(s^L_{it}-\ln\mathcal{E}-\varepsilon_{it}),l_{it})) f_{\varepsilon}(\varepsilon)d\varepsilon
-\]
-
-\subsection{Non-Parametric Identification of Tax
-Evasion}\label{non-parametric-identification-of-tax-evasion}
-
-The previous result also suggests a non-parametric identification
-strategy, as long as \(D^{\mathcal{E}}\) is monotonic in \(m\). This
-identification strategy is analogous to \citet{Hu2022b}, where the
-authors also require monotonicity and independence to recover a
-nonparametric function of \(m^*\) with nonclassical measurement error.
-
-In our case, intuitively, if we know the density of \(\varepsilon\) and
-the function \(D^{\mathcal{E}}\), the variation left is due to \(e\),
-which can be recovered as long as we can vary \(D^{\mathcal{E}}\) by
-moving \(e\).
-
-To see why the non-deductible flexible input is needed to identify tax
-evasion consider the following. Suppose that only the input \(M\) is
-flexible and deductible.
-
-\[
-\ln\left(\frac{\rho M}{PY}\right)=\ln D^{\mathcal{E}}(K,L,M)-\varepsilon
-\]
-
-\(D^{\mathcal{E}}(K,L,M)\) is still identified by assumption
-\hyperref[ass-non-ev]{4.1}, however, when we form the analogous of
-Equation~\ref{eq-ob-ev}, we now have
-
-\[
-\begin{aligned}
-    \ln\left(\frac{\rho M^*}{PY}\right)-&\ln D^{\mathcal{E}}(K,L,M^*)=\\
-    &\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M+e)\\
-    =&\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M+e)\\
-    &+\left[\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
-    &-\left[\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M)\right] \\
-    =&\ln\left(\frac{\rho M}{PY}\right)-\ln D^{\mathcal{E}}(K,L,M) \\
-    &+\left[\ln\left(\frac{\rho(M+e)}{PY}\right)-\ln\left(\frac{\rho(M)}{PY}\right)\right]\\
-    &-\left[\ln D^{\mathcal{E}}(K,L,M+e)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
-    =& -\varepsilon \\
-    &+\left[\ln D^{\mathcal{E}}(K,L,M+e)-\varepsilon-\ln D^{\mathcal{E}}(K,L,M)+\varepsilon\right]\\
-    &-\left[\ln D^{\mathcal{E}}(K,L,M+e)-\ln D^{\mathcal{E}}(K,L,M)\right]\\
-    =& -\varepsilon(K,L,M)
-\end{aligned}
-\]
-
-Now, we are not able to separate the variation of \(\varepsilon\) from
-\(e\).
-
 \section{Implementation}\label{implementation}
 
 We are interested in the distribution of tax evasion \(e\) but it cannot
 be observed. What is observed is the contaminated version
 \(\mathcal{V}\) Equation~\ref{eq-ob-ev}. Evasion \(e\) and the output
-shock \(\varepsilon\) are independent {[}\hyperref[ass-ind]{4.2}{]} with
+shock \(\varepsilon\) are independent {[}\hyperref[ass-ind]{2.2}{]} with
 probability density distributions \(f_e\) and \(f_{\varepsilon}\). Then,
 from Definition~\ref{def-conv}
 
@@ -1575,98 +1575,88 @@ Overreporting}\label{sec-tax-ev-test}
 
 Equation~\ref{eq-ob-ev} suggest a way to test the presence of tax
 evasion through cost overreporting. Let
-\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\). Define the
-null hypothesis as the absence of cost overreporting,
-\(H_0: \mu_{\mathcal{V}}=0\), and the alternative hypothesis as the
-presence of cost overreporting, \(H_1: \mu_{\mathcal{V}}>0\).
-Consequently, we can use a one-sided t-test to verify for the presence
-of tax evasion by overreporting.
+\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\) and define the
+null hypothesis as the absence of cost overreporting and the alternative
+hypothesis as the presence of cost overreporting. . Consequently, to
+verify for the presence of tax evasion by overreporting, we can use a
+one-sided test where under the alternative hypothesis
+\(H_1: \mu_{\mathcal{V}}>0\), and unde the null,
+\(H_0: \mu_{\mathcal{V}}\le0\).
 
-Under the null hypothesis, there is no tax evasion. Then, \[
-\begin{aligned}  
-  z &= \frac{\bar{\mathcal{V}}}{\hat\sigma_{\mathcal{V}}/\sqrt{N}}=\frac{\mathbb{E}[\mathcal{V}]}{\sqrt{\mathbb{Var}[\mathcal{V}]/N}}\\
-  &=\frac{-\mathbb{E}[\varepsilon]+\mathbb{E}[e]}{\sqrt{\mathbb{Var}[\varepsilon]+\mathbb{Var}[e]/N}}\\
-  &= \frac{-\mathbb{E}[\varepsilon]}{\sqrt{\mathbb{Var}[\varepsilon]/N}}\sim N(0,1)
-\end{aligned}
-\]
+I use a bootstrap hypothesis test to verify the presence of tax evasion.
+Table~\ref{tbl-ielas-most-least-likely} displays the estimated
+elasticities of intermediates for corporations and non-corporations for
+different industries. The table also displays the estimated value of the
+test statistic for the null hypothesis of no tax evasion.
 
-The previous test ignores the sample variance of the \(\beta\) estimator
-in the first stage.
+I test the three least likely and the three most likely industries to
+evade taxes. The three least likely industries are exempt of sales taxes
+or lost exemption during the sample period. Exempt industries include
+311 and 312 (Food Products), while industry 384 (Transport Equipment)
+lost exemption in 1984. Exempt industries are less likely to evade taxes
+because the sales tax rate is zero, so there is no incentive to
+overreport costs.
 
-Alternatively, we can do a difference in means test to account for this
-variation. This test is equivalent to a two sample GMM test, where in
-one moment the corporations are used to estimate \(\hat\beta\) and the
-second is a test moment where we use \(\hat\beta\) from the first one.
-Under the null, the two moment should be equal to zero.
-
-Let \(s_{it}=log\left(\frac{\rho_t M^*_{it}}{P_t Y_{it}}\right)\) and
-\(\bar s_G= \frac{1}{N_1T_1}\sum_{i=1}^{N_1}\sum_{t=1}^{T_1}s_{it}^G\)
-and
-\(\bar s_B= \frac{1}{N_2T_2}\sum_{i=1}^{N_2}\sum_{t=1}^{T_2}s_{it}^B\)
-be the sample means for good guys (corporations) and the tax evasion
-guys, respectively.
-
-Then, the test statistic is,
-
-\[
-\begin{aligned}  
-  t &= \frac{\bar s_B - \bar s_G}{\sqrt{\hat\sigma^2_{\bar s_B}/N_2T_2 + \hat\sigma^2_{\bar s_G}/N_1T_1}} \sim N(0,1) \text{ under } H_0\\
-\end{aligned}
-\]
-
-where \(\hat\sigma^2_{\bar s_B}\) and \(\hat\sigma^2_{\bar s_G}\) are
-the sample variances of \(s_{it}^B\) and \(s_{it}^G\), respectively.
-
-Of course, the assumption of independent samples is likely incorrect.
-For example, firms in an industry might get contemporaneous shocks
-affecting everyone in one period, like a price shock in inputs.
-Productivity is usually assumed to be persistent over time, but the
-effects of productivity of one firm on the other firms is commonly
-ignored. In addition, if the data uses SIC codes, firms within
-sub-industries are more likely to be correlated than firms in different
-sub-industries.
-
-I test for the presence of tax evasion for different classifications of
-intermediates. Intermediates include raw materials, energy and services.
-Deductibles include raw materials and deductible expenses. Materials
-include only raw materials. The items included as deductible expenses or
-services are detailed in \textbf{?@tbl-expenses-type}
+The three mos likely industries have low purchase sales tax rates. Lower
+purchase sales tax rate imply higher incentives to overreport costs to
+claim additional deductions to the sales taxes owed to the government.
+These industries include 313 (Beverages), 331 (Wood Products except
+Furniture), and 369 (Non-Metallic Mineral Products).
 
 \begin{table}
 
-\caption{\label{tbl-evasion-test-CD}Tax Evasion Through
-Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the
-null hypothesis, there is no tax evasion. Values of the statistic were
-computed from Equation~\ref{eq-ob-ev} for different intermediate inputs.
-Standard errors shown in parethesis. Stars indicate significance level
-at the 1\% (***), 5\% (**), and 10\% (*).}
+\caption{\label{tbl-ielas-most-least-likely}Intermediate elasticities
+for Corporations (Non-Evaders) and non-Corporations (Evaders) for
+different industries. Estimates were obtained using GNR (2020) method
+assuming a CD functional form. Intermediates are defined as raw
+materials. \(\varepsilon\) is defined as \textbf{measurement error}. The
+Tax Evasion Test displays the coefficient of the statistical test, where
+the null hypothesis states that there is no tax evasion through cost
+overreporting. Among the industry characteristics, Sales is the
+industry's market share of the total sales in Colombia between 1981 and
+1991. Sales Tax Rate is the average sales tax reported rate. Exports is
+the average share of exports of the industry total sales, and Exporters
+is the share of firms exporting 10 percent or more of their total sales.
+Bias-corrected bootstrap confidence intervals at 95\% significanve level
+are displayed in brackets. *, **, *** denote significance at the 10\%,
+5\%, and 1\% levels (one-sided).}
 
 \centering{
 
 \centering
-\begin{tabular}[t]{r|l|l|l|l|l|l}
+\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
 \hline
-SIC & Category & Deductibles & Materials & Electricity & Fuels & R\&M\\
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
+\cline{2-3} \cline{4-4} \cline{8-10}
+SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
 \hline
-311 & 1 Exempt Product & 0.0294 (0.005)*** & 0.1111 (0.0045)*** & 2.1331 (0.0201)*** & 2.7032 (0.0234)*** & 2.989 (0.0348)***\\
-\cline{1-7}
-312 & 1 Exempt Product & 0.0251 (0.0115)** & -0.0098 (0.0158) & 3.2172 (0.0702)*** & 3.4251 (0.0559)*** & 3.4931 (0.0698)***\\
-\cline{1-7}
-383 & 1 Exempt Product & 0.056 (0.0101)*** & 0.0471 (0.0108)*** & 2.3743 (0.1024)*** & 3.7437 (0.0916)*** & 2.9996 (0.0326)***\\
-\cline{1-7}
-322 & 4 Direct Customer Sales & 0.6404 (0.0068)*** & 1.27 (0.0068)*** & 2.1725 (0.068)*** & 3.7666 (0.1205)*** & 2.9369 (0.04)***\\
-\cline{1-7}
-342 & 4 Direct Customer Sales & 0.0711 (0.0077)*** & 0.0936 (0.0082)*** & 2.2239 (0.0814)*** & 3.3124 (0.0918)*** & 2.1927 (0.0468)***\\
-\cline{1-7}
-390 & 4 Direct Customer Sales & 0.0866 (0.0124)*** & 0.0761 (0.0131)*** & 2.2658 (0.0478)*** & 3.8163 (0.1293)*** & 3.3716 (0.1142)***\\
-\cline{1-7}
-321 &  & 0.0885 (0.007)*** & 0.1262 (0.0078)*** & 1.4567 (0.0255)*** & 2.77 (0.0286)*** & 3.1702 (0.1098)***\\
-\cline{1-7}
-313 &  & 0.0377 (0.0111)*** & 0.0659 (0.0123)*** & 1.7785 (0.0315)*** & 2.0103 (0.0428)*** & 2.2176 (0.0881)***\\
-\cline{1-7}
-351 &  & 0.0171 (0.0145) & 0.1116 (0.0221)*** & 1.6454 (0.0406)*** & 2.7385 (0.0444)*** & 2.2409 (0.0539)***\\
-\cline{1-7}
-352 &  & 0.0462 (0.0079)*** & 0.0414 (0.0083)*** & 2.8723 (0.0918)*** & 3.8478 (0.107)*** & 3.0485 (0.047)***\\
+\multicolumn{10}{l}{\textbf{3 Least Likely Industries}}\\
+\hline
+\hspace{1em} & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.58 & 0.57 & -0.01 & 188 & 41 & 5.3 & -0.3 & 0.2 & 0.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 312} & [0.49, 0.64] & [0.51, 0.63] & [-0.11, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.44 & 0.39 & -0.13 & 238 & 42 & 6.9 & 5.5 & 7.7 & 5.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 384} & [0.37, 0.48] & [0.37, 0.42] & [-0.21, 0.02] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{3 Most Likely Industries}}\\
+\hline
+\hspace{1em} & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.24 & 0.3 & 0.2*** & 274 & 58 & 3.4 & 5.0 & 5.5 & 2.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 369} & [0.19, 0.27] & [0.28, 0.33] & [0.05, 0.38] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.32 & 0.41 & 0.24** & 172 & 13 & 0.6 & 5.0 & 5.6 & 1.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 331} & [0.24, 0.37] & [0.38, 0.44] & [0.05, 0.46] &  &  &  &  &  & \\
 \hline
 \end{tabular}
 
@@ -1676,59 +1666,50 @@ SIC & Category & Deductibles & Materials & Electricity & Fuels & R\&M\\
 
 \begin{table}
 
-\caption{\label{tbl-tax-ev-test-context}Tax Evasion Through
-Cost-Overreporting One-Side t-Test by Industry in Colombia. Under the
-null hypothesis, there is no tax evasion. Values of the statistic were
-computed from Equation~\ref{eq-ob-ev}. Standard errors shown in
-parethesis. Stars indicate significance level at the 1\% (***), 5\%
-(**), and 10\% (*).}
+\caption{\label{tbl-ielas-top5-1}Intermediate elasticities for
+Corporations (Non-Evaders) and non-Corporations (Evaders) for different
+industries. Estimates were obtained using GNR (2020) method assuming a
+CD functional form. Intermediates are defined as raw materials.
+\(\varepsilon\) is defined as \textbf{measurement error}. The Tax
+Evasion Test displays the coefficient of the statistical test, where the
+null hypothesis states that there is no tax evasion through cost
+overreporting. Among the industry characteristics, Sales is the
+industry's market share of the total sales in Colombia between 1981 and
+1991. Sales Tax Rate is the average sales tax reported rate. Exports is
+the average share of exports of the industry total sales, and Exporters
+is the share of firms exporting 10 percent or more of their total sales.
+Bias-corrected bootstrap confidence intervals at 95\% significanve level
+are displayed in brackets. *, **, *** denote significance at the 10\%,
+5\%, and 1\% levels (one-sided).}
 
 \centering{
 
 \centering
-\begin{tabular}[t]{r|r|r|r|r|r|r|r|r|r|r|r|r|r|l|l}
+\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
 \hline
-sic\_3 & n & n\_Corp & share\_sales\_tax & gross\_output & sales & deductible\_intermediates & materials & share\_exports & share\_imports & share\_imports\_materials & importers & exporters & importers\_mats & log\_mats\_share & log\_deductible\_intermediates\_share\\
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
+\cline{2-3} \cline{4-4} \cline{8-10}
+SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
 \hline
-311 & 888 & 147 & 0.0 & 0.2 & 0.2 & 0.3 & 0.3 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 0.2 & 0.1111 (0.0045)*** & 0.0294 (0.005)***\\
-\cline{1-16}
-312 & 188 & 41 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 0.0 & 0.1 & 0.1 & 0.3 & 0.1 & 0.3 & -0.0098 (0.0158) & 0.0251 (0.0115)**\\
-\cline{1-16}
-313 & 130 & 74 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.0 & 0.1 & 0.3 & 0.0 & 0.4 & 0.0659 (0.0123)*** & 0.0377 (0.0111)***\\
-\cline{1-16}
-321 & 470 & 71 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.1 & 0.1 & 0.3 & 0.2 & 0.3 & 0.1262 (0.0078)*** & 0.0885 (0.007)***\\
-\cline{1-16}
-322 & 737 & 22 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 1.27 (0.0068)*** & 0.6404 (0.0068)***\\
-\cline{1-16}
-323 & 99 & 13 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.2 & 0.0 & 0.0 & 0.3 & 0.4 & 0.4 & -0.1534 (0.0133) & -0.1635 (0.0137)\\
-\cline{1-16}
-324 & 192 & 9 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.2 & 0.0664 (0.0086)*** & 0.0578 (0.0084)***\\
-\cline{1-16}
-331 & 172 & 13 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.1 & 0.2177 (0.0154)*** & 0.1205 (0.0139)***\\
-\cline{1-16}
-332 & 193 & 12 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.0 & 0.1 & -0.028 (0.0136) & -0.0284 (0.0127)\\
-\cline{1-16}
-341 & 153 & 41 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.1 & 0.1 & 0.2 & 0.2 & 0.3 & -0.0067 (0.0112) & -0.0284 (0.0094)\\
-\cline{1-16}
-342 & 347 & 40 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.2 & 0.1 & 0.3 & 0.0936 (0.0082)*** & 0.0711 (0.0077)***\\
-\cline{1-16}
-351 & 116 & 68 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.3 & 0.2 & 0.6 & 0.4 & 0.6 & 0.1116 (0.0221)*** & 0.0171 (0.0145)\\
-\cline{1-16}
-352 & 300 & 100 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.2 & 0.3 & 0.6 & 0.3 & 0.7 & 0.0414 (0.0083)*** & 0.0462 (0.0079)***\\
-\cline{1-16}
-356 & 272 & 53 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.4 & 0.2 & 0.5 & -0.077 (0.0084) & -0.0517 (0.0073)\\
-\cline{1-16}
-369 & 274 & 58 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.1 & 0.2 & 0.1 & 0.2 & 0.5516 (0.0161)*** & -0.0237 (0.0105)\\
-\cline{1-16}
-381 & 633 & 85 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.3 & 0.2 & 0.4 & -0.0014 (0.0065) & 3e-04 (0.0058)\\
-\cline{1-16}
-382 & 364 & 46 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.3 & 0.2 & 0.5 & -0.0022 (0.0087) & 0.0095 (0.0077)\\
-\cline{1-16}
-383 & 213 & 57 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.3 & 0.3 & 0.6 & 0.2 & 0.7 & 0.0471 (0.0108)*** & 0.056 (0.0101)***\\
-\cline{1-16}
-384 & 238 & 42 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.0 & 0.2 & 0.2 & 0.4 & 0.2 & 0.5 & -0.0924 (0.0118) & -0.0824 (0.0101)\\
-\cline{1-16}
-390 & 179 & 18 & 0.1 & 0.0 & 0.0 & 0.0 & 0.0 & 0.0 & 0.1 & 0.2 & 0.4 & 0.3 & 0.5 & 0.0761 (0.0131)*** & 0.0866 (0.0124)***\\
+ & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
 \hline
 \end{tabular}
 
@@ -1736,7 +1717,7 @@ sic\_3 & n & n\_Corp & share\_sales\_tax & gross\_output & sales & deductible\_i
 
 \end{table}%
 
-Table~\ref{tbl-evasion-test-CD} shows that the null hypothesis of no tax
+\textbf{?@tbl-evasion-test-CD} shows that the null hypothesis of no tax
 evasion is rejected at the 1\% significance level for twelve of the top
 twenty manufacturing industries.
 
@@ -1832,245 +1813,6 @@ the undesirable characteristic that estimate of variances frequently
 result with a negative sign. In the next section, I address this problem
 by using parametric MLE.
 
-\subsection{Deconvoluting by Parametric
-MLE}\label{deconvoluting-by-parametric-mle}
-
-I use parametric MLE to obtain better estimates of the variances using
-equation Equation~\ref{eq-mle}. I assume that the error term
-\(\varepsilon\) follows a normal distribution.
-
-For tax-evasion, theory suggests that firms only have incentives to
-overreport costs, not to underreport them. Therefore, as explained
-elsewhere, it might be expected that overreporting \(e\ge0\) is
-non-negative. In addition, it might also be expected that most firms
-overreport a little and a few firms overreport greater amounts.
-Therefore, a lognormal or a truncated normal distribution might be more
-appropriate.
-
-By definition, if a random variable \(U\) is log-normal distributed,
-then \(log(U)\sim N(\mu, \sigma)\). Thus, we cannot directly compare the
-parameters of the log-normal distribution to our previous estimates. We
-can however, used the parameters to compute any moment of the
-log-normally distributed variable \(U\) by
-
-\[
-E[U^n]=e^{n\mu+\frac{1}{2}n^2\sigma^2}
-\]
-
-In particular, the first moment and the variance are computed as
-follows,
-
-\[
-\begin{aligned}  
-E[U]&=e^{\mu+\frac{1}{2}\sigma^2}\\
-Var[U]&=E[U^2]-E[U]^2=e^{2\mu+\sigma^2}(e^{\sigma^2}-1).
-\end{aligned}
-\]
-
-In addition, the mode and the mean by
-
-\[
-\begin{aligned}
-  \text{Mode}[U]&=e^{\mu-\sigma^2} \\
-  \text{Med}[U]&=e^{\mu}
-\end{aligned}
-\]
-
-Likewise, the probability density function of random variable \(U\) with
-a normal distribution with parameters \(\tilde\mu\) and \(\tilde\sigma\)
-and truncated from below at zero is
-
-\[
-  f(u\\;\tilde\mu,\tilde\sigma) = \frac{\varphi(\frac{u-\tilde\mu}{\tilde\sigma})}{\tilde\sigma (1-\Phi(\alpha))}
-\]
-
-where
-
-\[
-\varphi(\xi)=\frac{1}{2\pi}\exp(-\frac{1}{2}\xi^2)
-\]
-
-is the probability density function of the standard normal distribution,
-\(\Phi(\centerdot)\) is its cumulative distribution function, and
-\(\alpha=-\tilde\mu/\tilde\sigma\)
-
-Then, the mean becomes
-
-\[
-E[U|U>0]=\tilde\mu+\tilde\sigma\frac{\varphi(\alpha)}{1-\Phi(\alpha)}
-\]
-
-and the variance, median, and mode become
-
-\[
-\begin{aligned}  
-Var[U|U>0]&=\sigma^2[1+\alpha\varphi(\alpha)/(1-\Phi(\alpha))-(\varphi(\alpha)/[1-\Phi(\alpha)])^2]\\
-\text{Median}[U|U>0]&=\tilde\mu+\Phi^{-1}\left(\frac{\Phi(\alpha)+1}{2}\right)\tilde\sigma \\ 
-\text{Mode}[U|U>0]&=\tilde\mu
-\end{aligned}
-\]
-
-Table~\ref{tbl-deconv-mle-both} displays the estimates of the parameters
-for both the log-normal and truncated normal distributions using an MLE
-approach. Other moments of the densities are computed as explained
-previously and shown for reference.
-
-\begin{longtable}[t]{llrrrrrr}
-
-\caption{\label{tbl-deconv-mle-both}Estimates of Deconvoluting Tax
-Evasion from the Output Shock in Equation~\ref{eq-ob-ev} by Parametric
-MLE Using A Log-Normal and a Truncated-Normal Distribution. \(\mu\) and
-\(\sigma\) are the parameters of the densities. Moments displayed are
-estimated using the distribution paramters as explained above.
-Intermediates are defined as raw materials.}
-
-\tabularnewline
-
-\toprule
-sic\_3 & dist & mu & sigma & mean & sd & mode & median\\
-\midrule
- & lognormal & -1.7460 & 0.9181 & 0.2659 & 0.3059 & 0.0751 & 0.1745\\
-\cmidrule{2-8}\nopagebreak
-\multirow[t]{-2}{*}{\raggedright\arraybackslash 311} & truncated normal & 0.2280 & 0.0894 & 0.2294 & 0.0876 & 0.2280 & 0.2286\\
-\cmidrule{1-8}\pagebreak[0]
- & lognormal & -1.4006 & 0.9855 & 0.4005 & 0.5131 & 0.0933 & 0.2465\\
-\cmidrule{2-8}\nopagebreak
-\multirow[t]{-2}{*}{\raggedright\arraybackslash 313} & truncated normal & 0.3285 & 0.1647 & 0.3376 & 0.1549 & 0.3285 & 0.3332\\
-\cmidrule{1-8}\pagebreak[0]
- & lognormal & -1.4011 & 0.8883 & 0.3655 & 0.4006 & 0.1119 & 0.2463\\
-\cmidrule{2-8}\nopagebreak
-\multirow[t]{-2}{*}{\raggedright\arraybackslash 321} & truncated normal & 0.3183 & 0.1302 & 0.3209 & 0.1269 & 0.3183 & 0.3195\\
-\cmidrule{1-8}\pagebreak[0]
- & lognormal & -1.5406 & 0.9517 & 0.3370 & 0.4091 & 0.0866 & 0.2143\\
-\cmidrule{2-8}\nopagebreak
-\multirow[t]{-2}{*}{\raggedright\arraybackslash 352} & truncated normal & 0.2847 & 0.1218 & 0.2879 & 0.1180 & 0.2847 & 0.2862\\
-\cmidrule{1-8}\pagebreak[0]
- & lognormal & -1.5748 & 0.9288 & 0.3187 & 0.3730 & 0.0874 & 0.2071\\
-\cmidrule{2-8}\nopagebreak
-\multirow[t]{-2}{*}{\raggedright\arraybackslash 383} & truncated normal & 0.2718 & 0.1230 & 0.2761 & 0.1180 & 0.2718 & 0.2739\\
-\bottomrule
-
-\end{longtable}
-
-Both the log-normal and the truncated normal distributions point to
-similar means. The differences between the other moments of the
-distributions can be explained by the differences in the shapes of their
-probability density functions. The standard deviation is larger in the
-log-normal distribution than in the truncated normal distribution which
-can be explained by the asymmetry of the log normal distribution which
-is skewed to the right. With respect to the mode, it is the same to the
-mean in the case of the truncated normal distribution, while it is lower
-than the median for the log-normal. Finally, the median is lower than
-the mean in the case of the log-normal, but higher than the mean in the
-case of the truncated normal because of the truncation from below.
-
-Both distributions show higher estimates of the average overreporting in
-logs than using only moments. Now it looks like firms evade taxes by
-inflating their cost of their materials by 40 percent or more.
-
-Table~\ref{tbl-deconv-mle-boot} shows the bias corrected bootstrap
-confidence intervals for the mean of each distribution by industry using
-200 replicates.
-
-\begin{longtable}[t]{llll}
-
-\caption{\label{tbl-deconv-mle-boot}Estimates of Deconvoluting Tax
-Evasion from the Output Shock in Equation~\ref{eq-ob-ev} by Parametric
-MLE Using A Log-Normal and a Truncated-Normal Distribution. LCI and UCI
-are the bias corrected bootstrap confidence intervals at the 5 percent
-significance level using 250 replicates.}
-
-\tabularnewline
-
-\toprule
-SIC & Density & Mean & SD\\
-\midrule
- &  & 0.2659 & 0.3059\\
-\cmidrule{3-4}\nopagebreak
- & \multirow[t]{-2}{*}{\raggedright\arraybackslash lognormal} & {}[0.2285, 0.2999] & {}[0.2069, 0.3536]\\
-\cmidrule{2-4}\nopagebreak
- &  & 0.2294 & 0.0876\\
-\cmidrule{3-4}\nopagebreak
-\multirow[t]{-4}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\raggedright\arraybackslash 311} & \multirow[t]{-2}{*}{\raggedright\arraybackslash truncated normal} & {}[0.2116, 0.2597] & {}[0.0791, 0.0991]\\
-\cmidrule{1-4}\pagebreak[0]
- &  & 0.4005 & 0.5131\\
-\cmidrule{3-4}\nopagebreak
- & \multirow[t]{-2}{*}{\raggedright\arraybackslash lognormal} & {}[0.3407, 0.468] & {}[0.3279, 0.6767]\\
-\cmidrule{2-4}\nopagebreak
- &  & 0.3376 & 0.1549\\
-\cmidrule{3-4}\nopagebreak
-\multirow[t]{-4}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\raggedright\arraybackslash 313} & \multirow[t]{-2}{*}{\raggedright\arraybackslash truncated normal} & {}[0.2965, 0.3831] & {}[0.1343, 0.1791]\\
-\cmidrule{1-4}\pagebreak[0]
- &  & 0.337 & 0.4091\\
-\cmidrule{3-4}\nopagebreak
- & \multirow[t]{-2}{*}{\raggedright\arraybackslash lognormal} & {}[0.2718, 0.3804] & {}[0.2442, 0.4747]\\
-\cmidrule{2-4}\nopagebreak
- &  & 0.2879 & 0.118\\
-\cmidrule{3-4}\nopagebreak
-\multirow[t]{-4}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\raggedright\arraybackslash 352} & \multirow[t]{-2}{*}{\raggedright\arraybackslash truncated normal} & {}[0.2509, 0.3287] & {}[0.1046, 0.134]\\
-\cmidrule{1-4}\pagebreak[0]
- &  & 0.3655 & 0.4006\\
-\cmidrule{3-4}\nopagebreak
- & \multirow[t]{-2}{*}{\raggedright\arraybackslash lognormal} & {}[0.3176, 0.4179] & {}[0.2702, 0.4448]\\
-\cmidrule{2-4}\nopagebreak
- &  & 0.3209 & 0.1269\\
-\cmidrule{3-4}\nopagebreak
-\multirow[t]{-4}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\raggedright\arraybackslash 321} & \multirow[t]{-2}{*}{\raggedright\arraybackslash truncated normal} & {}[0.2909, 0.3751] & {}[0.1183, 0.1443]\\
-\cmidrule{1-4}\pagebreak[0]
- &  & 0.3187 & 0.373\\
-\cmidrule{3-4}\nopagebreak
- & \multirow[t]{-2}{*}{\raggedright\arraybackslash lognormal} & {}[0.2613, 0.3727] & {}[0.2391, 0.4416]\\
-\cmidrule{2-4}\nopagebreak
- &  & 0.2761 & 0.118\\
-\cmidrule{3-4}\nopagebreak
-\multirow[t]{-4}{*}[1\dimexpr\aboverulesep+\belowrulesep+\cmidrulewidth]{\raggedright\arraybackslash 383} & \multirow[t]{-2}{*}{\raggedright\arraybackslash truncated normal} & {}[0.226, 0.3368] & {}[0.1082, 0.1351]\\
-\bottomrule
-
-\end{longtable}
-
-The difference between our previous estimates using moments can be
-explained by the fact that the log-normal and truncated distribution are
-restricted to positive values while we did not apply the restriction
-when using moments. Were we to take the average of only the positive
-values, the mean of the moments' method would be higher and closer to
-the log-normal and truncated normal distributions.
-
-From the perspective of theory, firms would have incentives to
-overreport their materials. Therefore, using moments to estimate
-overreporting without restricting to positive values like in the case of
-the MLE method using a log-normal or truncated distribution might
-underestimate tax evasion through cost overreporting.
-
-\begin{figure}
-
-\begin{minipage}{\linewidth}
-
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-13-1.pdf}
-
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-13-2.pdf}
-
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-13-3.pdf}
-
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-13-4.pdf}
-
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-13-5.pdf}
-
-\begin{verbatim}
-NULL
-NULL
-NULL
-NULL
-NULL
-\end{verbatim}
-
-\end{minipage}%
-
-\caption{\label{fig-density-plots}Truncated Normal (red) and Log-Normal
-(blue) distribution of the overreporting of raw materials for the top
-tax-evading industries.}
-
-\end{figure}%
-
 \subsection{Non-Parametric Deconvolution using Penalized
 B-Splines}\label{non-parametric-deconvolution-using-penalized-b-splines}
 
@@ -2104,775 +1846,16 @@ sic\_3 & mean & sd & skewness\\
 
 \end{table}%
 
-\section{Getting the Story Straight}\label{getting-the-story-straight}
-
-Firms face incentives to evade sales taxes by overreporting their input
-costs. Firms overreport their cost by acquiring fake invoices to claim
-additional deductions of their sales taxes, maximizing after-tax
-profits. The higher the sales tax, the greater the incentive to evade.
-However, the probability of detection and the threat of penalties limit
-how much firms overreport.
-
-The key incentive for firms is the \textbf{effective sales tax rate} ---
-the amount firms ultimately pay or receive from the tax authority. The
-effective tax rate is calculated as the difference between the total
-sales tax charged by the firm on its sales and the total sales tax paid
-by the firm on its inputs, divided by total sales. A positive difference
-indicates what the firm should pay to the government. If the difference
-is negative, the firm receives a refund from the tax authority.
-
-\[
-\begin{aligned}
-\tau &= \frac{\tau_0P_tY_{it} - \tau_1\rho_t M_{it}}{P_tY_{it}} \\
-&= \tau_0 - \tau_1 \beta
-\end{aligned}
-\]
-
-In Colombia, the total amount charged by the firm as sales tax depends
-on the statutory tax rate of each product sold domestically;
-\textbf{exports are exempt} from sales tax. Low statutory sales tax
-rates and exempt products result in lower sales tax collected by the
-firm and thus, a lower effective tax rate. Consequently, firms whose
-products are exempt from sales tax or taxed with \textbf{low statutory
-rates} have low incentives to evade. Likewise, as the share of their
-exports increases, exporter firms bear decreasing incentives to evade
-taxes because a larger portion of their sales is exempt from sales tax,
-reducing the effective sales tax rate.
-
-On the other hand, the total amount paid by the firm as sales tax
-depends on the statutory tax rate of each of its inputs, including
-imports. \textbf{Imports}, in contrast to exports, are \textbf{not
-exempt}. Hence, the composition of the foreign and domestic inputs does
-not affect the effective sales tax rate, nor the incentives to evade.
-However, the tax system imposed a zero sales tax rate on
-\textbf{unprocessed primary inputs}, such as forestry, mining, fishing,
-and agriculture. Therefore, firms consuming a high share of primary
-inputs face a higher effective sales tax rate and thus, greater
-incentives to evade.
-
-Note that the effective sales tax rate might naturally be
-\textbf{negative} for firms in certain industries. Before the 1983
-reform in Colombia, there were four different statutory sales tax rates:
-4, 10, 15 and 25 percent. Because the sales tax was applied at the
-product level, \emph{the total amount paid as sales tax by the firms on
-its inputs could be larger than the total amount charged by the firm as
-sales tax on its products.} This situation would result in a negative
-effective sales tax rate. Firms in this situation would receive a refund
-from the tax authority.
-
-Would firms with negative effective tax rates have incentives to
-overreport inputs to increase their refunds? Unlikely. Although the
-refunds had to be made within 30 days, \emph{the procedure was
-complicated, and the tax authority delayed, on average, one year to
-process the payment}. Suspicion of fraudulent activities might further
-delay the process. Therefore, firms in this situation did not have
-incentives to overreport inputs to increase their refunds.
-
-Whether firms in certain industries have incentives to overreport their
-inputs to evade sales taxes might \textbf{not} be \textbf{obvious}
-\emph{ex-ante}. The tax code might be complex, with many exemptions and
-different statutory rates. Different taxes might generate overlapping or
-conflicting incentives. Available data might lack details on the
-products or inputs used by firms, making it difficult to identify the
-effective sales tax rate.
-
-A first contribution of this paper is to provide practitioners and
-policymakers a way to identify industries where tax evasion through
-cost-overreporting might be non-trivial and can be identified from data.
-The simple model employed in this paper to investigate the mechanisms of
-tax evasion provides conditions that can be tested with data. As a
-result, I propose a statistical test where the null hypothesis states
-that firms in an industry of interest do not evade sales taxes by
-overreporting; the alternative states that firms do commit tax evasion
-Section~\ref{sec-tax-ev-test}.
-
-Failing to reject the null hypothesis does not necessarily imply that
-firms in this industry are not overreporting. If a researcher suspects
-this practcie on a particular industry, he would have to investigate if
-the assumptions of the model are not unreasonable for said industry. The
-main assumption comes from the production function method, even though
-they might differ in their productivity, evaders and non-evaders share a
-common technology.
-
-With this in mind, in any dataset using SIC codes, it should be
-considered that the SIC codes groups firms with similar products, but
-some categories might group products that require different
-technologies. Furthermore, most firms are multiproducts, and might be
-classified under a certain SIC code because it produces more of a
-certain product marginally.
-
-\subsection{Showing the Evidence}\label{showing-the-evidence}
-
-\begin{table}
-
-\caption{\label{tbl-ielas-top5}Intermediate elasticities for
-Corporations (Non-Evaders) and non-Corporations (Evaders) for different
-industries. Estimates were obtained using GNR (2020) method assuming a
-CD functional form. Intermediates are defined as raw materials.
-\(\varepsilon\) is defined as \textbf{measurement error}. The Tax
-Evasion Test displays the coefficient of the statistical test, where the
-null hypothesis states that there is no tax evasion through cost
-overreporting. Among the industry characteristics, Sales is the
-industry's market share of the total sales in Colombia between 1981 and
-1991. Sales Tax Rate is the average sales tax reported rate. Exports is
-the average share of exports of the industry total sales, and Exporters
-is the share of firms exporting 10 percent or more of their total sales.
-Bias-corrected bootstrap confidence intervals at 95\% significanve level
-are displayed in brackets. *, **, *** denote significance at the 10\%,
-5\%, and 1\% levels (one-sided).}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
-\hline
-\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
-\cline{2-3} \cline{4-4} \cline{8-10}
-SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
-\hline
- & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
-\cline{2-10}
-\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
-\cline{1-10}
- & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
-\cline{2-10}
-\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
-\cline{1-10}
- & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
-\cline{2-10}
-\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
-\cline{1-10}
- & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
-\cline{2-10}
-\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
-\cline{1-10}
- & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
-\cline{2-10}
-\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
-\begin{table}
-
-\caption{\label{tbl-ielas}Intermediate elasticities for Corporations
-(Non-Evaders) and non-Corporations (Evaders) for different industries.
-Estimates were obtained using GNR (2020) method assuming a CD functional
-form. Intermediates are defined as raw materials. \(\varepsilon\) is
-defined as \textbf{measurement error}. The Tax Evasion Test displays the
-coefficient of the statistical test, where the null hypothesis states
-that there is no tax evasion through cost overreporting. Among the
-industry characteristics, Sales is the industry's market share of the
-total sales in Colombia between 1981 and 1991. Sales Tax Rate is the
-average sales tax reported rate. Exports is the average share of exports
-of the industry total sales, and Exporters is the share of firms
-exporting 10 percent or more of their total sales. Bias-corrected
-bootstrap confidence intervals at 95\% significanve level are displayed
-in brackets. *, **, *** denote significance at the 10\%, 5\%, and 1\%
-levels (one-sided).}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
-\hline
-\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
-\cline{2-3} \cline{4-4} \cline{8-10}
-SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
-\hline
-\multicolumn{10}{l}{\textbf{31 Food \& Beverages}}\\
-\hline
-\hspace{1em} & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.58 & 0.57 & -0.01 & 188 & 41 & 5.3 & -0.3 & 0.2 & 0.8\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 312} & [0.49, 0.64] & [0.51, 0.63] & [-0.11, 0.16] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{32 Textile, Apparel \& Leather}}\\
-\hline
-\hspace{1em} & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.35 & 0.42 & 0.2*** & 737 & 22 & 2.5 & 6.5 & 8.1 & 4.6\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 322} & [0.3, 0.4] & [0.4, 0.43] & [0.07, 0.35] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.56 & 0.47 & -0.19 & 99 & 13 & 1.2 & 5.3 & 8.1 & 5.0\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 323} & [0.5, 0.59] & [0.45, 0.5] & [-0.26, -0.07] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.43 & 0.46 & 0.07** & 192 & 9 & 1.0 & 5.9 & 8.0 & 4.8\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 324} & [0.36, 0.47] & [0.44, 0.48] & [-0.01, 0.22] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{33 Wood \& Wood Products}}\\
-\hline
-\hspace{1em} & 0.32 & 0.41 & 0.24** & 172 & 13 & 0.6 & 5.0 & 5.6 & 1.8\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 331} & [0.24, 0.37] & [0.38, 0.44] & [0.05, 0.46] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.36 & 0.35 & -0.03 & 193 & 12 & 0.3 & 9.2 & 10.6 & 4.0\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 332} & [0.26, 0.43] & [0.33, 0.37] & [-0.23, 0.21] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{34 Paper \& Printing}}\\
-\hline
-\hspace{1em} & 0.49 & 0.47 & -0.05 & 153 & 41 & 5.1 & 6.7 & 9.0 & 4.7\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 341} & [0.43, 0.52] & [0.43, 0.49] & [-0.17, 0.07] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.34 & 0.37 & 0.07** & 347 & 40 & 2.9 & 6.4 & 7.7 & 3.7\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 342} & [0.29, 0.36] & [0.36, 0.39] & [-0.01, 0.2] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{35 Chemicals, Petroleum, Rubber \& Plastic}}\\
-\hline
-\hspace{1em} & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.5 & 0.45 & -0.1 & 272 & 53 & 3.4 & 7.0 & 10.0 & 6.0\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 356} & [0.48, 0.54] & [0.43, 0.46] & [-0.17, -0.04] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{36 Non-Metallic Mineral Products}}\\
-\hline
-\hspace{1em} & 0.24 & 0.3 & 0.2*** & 274 & 58 & 3.4 & 5.0 & 5.5 & 2.0\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 369} & [0.19, 0.27] & [0.28, 0.33] & [0.05, 0.38] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{38 Fabricated Metal Products, Machinery \& Equipment}}\\
-\hline
-\hspace{1em} & 0.41 & 0.41 & -0.01 & 633 & 85 & 4.0 & 7.3 & 9.3 & 4.9\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 381} & [0.38, 0.44] & [0.4, 0.43] & [-0.08, 0.06] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.38 & 0.37 & -0.02 & 364 & 46 & 2.0 & 6.4 & 7.9 & 4.0\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 382} & [0.33, 0.4] & [0.35, 0.38] & [-0.09, 0.1] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.4 & 0.42 & 0.04 & 213 & 57 & 3.9 & 7.1 & 8.9 & 4.6\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 383} & [0.35, 0.43] & [0.39, 0.44] & [-0.05, 0.16] &  &  &  &  &  & \\
-\cline{1-10}
-\hspace{1em} & 0.44 & 0.39 & -0.13 & 238 & 42 & 6.9 & 5.5 & 7.7 & 5.0\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 384} & [0.37, 0.48] & [0.37, 0.42] & [-0.21, 0.02] &  &  &  &  &  & \\
-\cline{1-10}
-\multicolumn{10}{l}{\textbf{39 Other Manufacturing}}\\
-\hline
-\hspace{1em} & 0.34 & 0.35 & 0.04 & 179 & 18 & 0.9 & 9.8 & 11.2 & 4.1\\
-\cline{2-10}
-\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 390} & [0.26, 0.39] & [0.33, 0.37] & [-0.15, 0.27] &  &  &  &  &  & \\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
-31 Food \& Beverages:
-
-\begin{itemize}
-\tightlist
-\item
-  311 Food Products (Meat, Dairy, Sugar, Bakery, etc.)
-\item
-  312 Food Products (Animal feeds, Others)
-\item
-  313 Beverages (Soft drinks, Alcoholic beverages, etc.)
-\end{itemize}
-
-In the Food and Beverages industry classification, industry 313 beverges
-displays suspicious activity of overreporting. This finding is
-consistent with the model because, in contrast to 311 and 312, industry
-313 is not exempt from the sales tax. In fact, the effective sales tax
-rate for industries 311 and 312 is negative, implying that these firms
-were receving refunds from the government. In comparison, industries in
-313 industry would have higher incentives to overreport because of their
-positive effective sales tax.
-
-32 Textile, Apparel \& Leather:
-
-\begin{itemize}
-\tightlist
-\item
-  321 Textiles
-\item
-  322 Wearing apparel
-\item
-  323 Leather and Fur Products
-\item
-  324 Footwear
-\end{itemize}
-
-Table~\ref{tbl-ielas} also shows evidence for potential tax evasion by
-overreporting in industries 321, 322, and 324. Again, from the theory
-perspective, these firms face positie effective tax rates, tax rates
-generate incentives to evade. This is consistent with the model.
-Corporations in industries 321, 322, and 324 display intermediate
-elasticities statistically smaller than the rest of the firms and the
-tax evasion test display a significantly positive coefficient.
-
-What about industry 323? The effective sales tax rate is positive but
-does not display evidence of evasion according to the test, moreover the
-coefficient of the test is negative and statistically significant as
-indicated by the confidence intervals.
-
-Most likely, it is not a good idea to compare corporations with the rest
-of the firms in this industry. First, looking at the sample size, we
-note that the number of corporations in this industry is small. While
-this is also true for industry 324, looking more closely, we can also
-note that industry 323 groups classifications 3231 (Leather Tanning and
-Finishing), 3232 (Fur dressing and Dyeing), and 3233 (Leather products,
-except footwear and wearing apparel). In contrast, industry 324, only
-includes 3240 (Footwear, except plastic). The two most important groups
-of 323 are 3231 (30\% of all the firms) and 3233 (60\%). However, the
-composition of these subindustries is different between corporations
-(60/40) and non-corporations (22/73).
-
-Although technologies between small and large firms were similar at the
-core, the processes were significantly different which raises the
-question on the validity of the comparision between corporations and the
-other firms. During this period, small firms were tipically artisanal
-producers. These smaller establishments relied primarily on traditional
-local tanning methods based on vegetable extracts such as quebracho and
-chestnut. The process is long, typically requiring several weeks,
-however the products are highly valued because their durability and the
-distinctive patina it acquires as it ages. Their products were destined
-for the local market.
-
-In contrast, large firms used a chrome-based mineral tanning, mechanized
-drums and automated finishing machinery. Chromium tanning is faster and
-allows for mass scale consistent quality. The product is softer and
-water resistant. These characteristics make chrome-based tanning leather
-suitable for exporting to the US and European markets. However, chromium
-disposal requires advanced waste water treatment necessary to remove
-havey metals and prevent chromium discharge into the environment.
-Furthermore, these firms need to comply with strict enviromental
-regulations including regular monitoring, hazard assessment, and
-reporting.
-
-The data shows that corporations are more oriented to the foreign market
-than the rest of the firms, with highest average share of exports (28
-vs.~13\%), highest share of exporters (80 vs 35\%).
-
-33 Wood \& Wood Products; 34 Paper \& Printing:
-
-\begin{itemize}
-\tightlist
-\item
-  331 Wood Products except furniture (Sawmills, Containers, etc.)
-\item
-  332 Wood Furniture (Wooden furniture and fixtures)
-\item
-  341 Paper and Paper Products
-\item
-  342 Printing, publishing and allied industries
-\end{itemize}
-
-In these categories, we find that industries 331 and 342 display
-suspicious activity of overreporting. However, results should be taken
-with caution in particular for industry 331 because the sample of
-corporations is relatively small.
-
-Again, failing to reject the null hypothesis of no tax evasion could
-only mean that cost overreporting cannot be identfied with the data
-available using corporations as reference group.
-
-35 Chemicals, Petroleum, Rubber \& Plastic; 36 Non-Metallic Mineral
-Products:
-
-\begin{itemize}
-\tightlist
-\item
-  351 Industrial Chemicals (Basic chemicals, Fertilizers, Synthetic
-  resins and fibers)
-\item
-  352 Other Chemicals (Paints and lacquers, Drugs, Soap and cosmetics,
-  etc.)
-\item
-  356 Other Plastic Products (not classified elsewhere)
-\item
-  369 Non-Metallic Mineral Products (Structural clay products, Cement
-  and plaster, Other non-metallic mineral products)
-\end{itemize}
-
-I find significant evidence for industry 369 Non-Metallic Mineral
-Products, and some evidence for industry 352. Results should be taken
-with caution as both industries include different types of products,
-processes might vary significantly from one another. On the other hand,
-the sample of corporations is not small and there are observations
-across all subindustries, suggesting that the comparison between
-corporations and the rest of the firms might not be unreasonable.
-
-Regarding industry 356, the perspicaz reader might notice that the
-coefficient of the tax evasion test is negative and statistically
-significant. However, in this category is not clear the composition of
-the subcategories included, as it covers other plastic products not
-classfied elsewhere. Unlike other categories, this one only includes one
-subcategory, 3560 (Plastic products, not elsewhere classified). As in
-other industries, corporations have higher average share of exports and
-their share of exporters is higher than the non-incorporated firms. Does
-this matter? Likely. How? It is not clear.
-
-38 Fabricated Metal Products, Machinery \& Equipment; 39 Other
-Manufacturing:
-
-\begin{itemize}
-\tightlist
-\item
-  381 Fabricated Metal Products (Structural metal products, Cutlery,
-  Hand tools, etc.)
-\item
-  382 Machinery and Equipment (Agricultural machinery, Metalworking
-  machinery, etc.)
-\item
-  383 Electrical Machinery and Apparatus (Electric motors, Generators,
-  etc.)
-\item
-  384 Transport Equipment (Motor vehicles, Aircraft, Ships, etc.)
-\item
-  390 Other Manufacturing (Jewelry, Musical instruments, etc.)
-\end{itemize}
-
-I cannot reject the null hypothesis of no tax evasion by overreporting
-for these industries. It is interesting to note that agricultural
-machinery, transportation equipment, and equipment were exempt from
-sales tax since 1974. In 1984, exemptions for agricultural machinery and
-transportation equipment were removed.
-
-If these results are valid, this could imply that there is a dynamic
-component to the tax evasion decision. Meaning that the desicion of tax
-evasion in the current period depends critically on the past periodl.
-For example, if a firm did not evade in the previous year, it might be
-less likely to evade in the current year. The fact that there is no
-evidence of tax evasion might suggest that this effect is persistent
-over time.
-
-How does this dynamic decision could enter the economic model? Firms in
-the agricultural machinery and transportation equipment sectors started
-facing incentives to evade after 1984. However, they have been providing
-truthful information to the tax authority for over a decade. They know
-that the probability of detection for them is high, given that the
-authority can easily compare their records with previous years and
-detect anomalies.
-
-\subsubsection{Results Summary}\label{results-summary}
-
-I find that four out of the top five (nine of the to top twenty)
-industries display activities consistent with tax evasion through cost
-overreporting in Colombia between 1981 and 1991. Firms might overreport
-up to 22 percent of their costs. Consisten with the model, firms in
-industries with exempt products and negative effective sales tax rates
-display minor or no evidence of tax evasion. Furthermore, the evidence
-could suggest that the tax evasion decision is dynamic, as there is a
-lack of evidence of tax evasion in industries that lost exemption after
-a decade.
-
-Of course, the results should be taken with the usual precautions. The
-main assumption of the model is that evaders and non-evaders share a
-common technology. This assumption might be not unreasonable in most
-cases. However, commonly available data might group firms with similar
-products, but the technological processes might differ.
-
-On the other hand, failing to reject the null hypothesis of no tax
-evasion does not necessarily mean that firms in this industry are not
-overreporting; it might mean that overreporting cannot be identified
-with the data available at this industry level using corporations as the
-reference group. A researcher suspecting tax evasion in a particular
-industry should exhaustively investigate if the assumptions of the model
-are not unreasonable for said industry. In particular, she should inform
-herself about the industry technological processeses and asses if
-evaders and non-evaders can be compared.
-
-\begin{figure}
-
-\centering{
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.9\textwidth,height=\textheight]{images/tables/COL-Mat-InsProd-1985.pdf}
-
-}
-
-\caption{IO-Matrix 1985 Colombia}
-
-\end{figure}%
-
-}
-
-\caption{\label{fig-io-mat-1985}}
-
-\end{figure}%
-
-\begin{table}
-
-\caption{\label{tbl-comp-test}Comparison of different methods to
-estimate the bias corrected confidence intervals and the p-values. The
-null hypothesis states that firms do not commit tax evasion through
-cost-overreporting. The alternative is that they do. The first column is
-a difference of the means test (includes error of the estimator, but
-assumes independence of the samples). The different methods showon in
-the rest of the columns are combinations of two different procedures
-when sampling the bootstrap ---sampling from corporations and
-non-corporations, or sampling full data--- and two different methods to
-estimate the coefficient of the test --- using all the firms or only the
-non-incorporated firms. When not fixing the number of corporations,
-Bayesian sampling was used to ensure there would be at least one
-corporation needed to estimate the first-stage parameter. The numbers in
-parenthesis are the standard errors of the mean difference test. The
-numbers in brackets represent the bias-corrected bootstrap confidence
-intervals at 95\% significance level. *, **, *** denote significance at
-the 10\%, 5\%, and 1\% levels (one-sided).}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{r|l|l|l|l|l}
-\hline
-\multicolumn{2}{c|}{ } & \multicolumn{4}{c}{Bootstrap} \\
-\cline{3-6}
-\multicolumn{2}{c|}{ } & \multicolumn{2}{c|}{Two Group Sampling} & \multicolumn{2}{c}{Bayesian} \\
-\cline{3-4} \cline{5-6}
-SIC & Mean Diff. & All & Others & All  & Others \\
-\hline
- & 0.02** & 0.02* & 0.02* & 0.02 & 0.02\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 311} & (0.011) & [-0.01, 0.06] & [-0.01, 0.08] & [-0.03, 0.07] & [-0.04, 0.08]\\
-\cline{1-6}
- & -0.01 & -0.01 & -0.01 & -0.01 & -0.01\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 312} & (0.034) & [-0.09, 0.11] & [-0.15, 0.14] & [-0.16, 0.12] & [-0.2, 0.15]\\
-\cline{1-6}
- & 0.18*** & 0.07*** & 0.18*** & 0.07** & 0.18***\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 313} & (0.026) & [0.03, 0.12] & [0.05, 0.32] & [0.01, 0.12] & [0.03, 0.34]\\
-\cline{1-6}
- & 0.13*** & 0.11*** & 0.13*** & 0.11*** & 0.13***\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 321} & (0.018) & [0.06, 0.19] & [0.09, 0.24] & [0.02, 0.18] & [0.02, 0.25]\\
-\cline{1-6}
- & 0.2*** & 0.2*** & 0.2*** & 0.2** & 0.2**\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 322} & (0.039) & [0.06, 0.32] & [0.07, 0.32] & [0.03, 0.35] & [-0.03, 0.36]\\
-\cline{1-6}
- & -0.19 & -0.15 & -0.19 & -0.15 & -0.19\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 323} & (0.026) & [-0.24, -0.07] & [-0.26, -0.08] & [-0.26, -0.05] & [-0.35, -0.08]\\
-\cline{1-6}
- & 0.07** & 0.07** & 0.07** & 0.07 & 0.07\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 324} & (0.03) & [-0.02, 0.23] & [-0.01, 0.23] & [-0.07, 0.24] & [-0.07, 0.25]\\
-\cline{1-6}
- & 0.24*** & 0.22*** & 0.24*** & 0.22** & 0.24**\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 331} & (0.044) & [0.05, 0.42] & [0.04, 0.47] & [-0.06, 0.42] & [0, 0.49]\\
-\cline{1-6}
- & -0.03 & -0.03 & -0.03 & -0.03 & -0.03\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 332} & (0.057) & [-0.24, 0.18] & [-0.27, 0.2] & [-0.28, 0.27] & [-0.42, 0.27]\\
-\cline{1-6}
- & -0.05 & -0.03 & -0.05 & -0.03 & -0.05\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 341} & (0.024) & [-0.12, 0.05] & [-0.17, 0.06] & [-0.12, 0.06] & [-0.18, 0.09]\\
-\cline{1-6}
- & 0.07*** & 0.06* & 0.07** & 0.06 & 0.07\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 342} & (0.027) & [-0.01, 0.17] & [-0.02, 0.19] & [-0.08, 0.18] & [-0.09, 0.19]\\
-\cline{1-6}
- & 0.09** & 0.03 & 0.09 & 0.03 & 0.09\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 351} & (0.046) & [-0.04, 0.11] & [-0.13, 0.33] & [-0.06, 0.12] & [-0.18, 0.39]\\
-\cline{1-6}
- & 0.06*** & 0.04** & 0.06** & 0.04 & 0.06\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 352} & (0.017) & [0, 0.1] & [-0.01, 0.16] & [-0.03, 0.1] & [-0.05, 0.15]\\
-\cline{1-6}
- & -0.1 & -0.08 & -0.1 & -0.08 & -0.1\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 356} & (0.018) & [-0.15, -0.04] & [-0.17, -0.05] & [-0.15, -0.01] & [-0.19, 0]\\
-\cline{1-6}
- & 0.2*** & 0.14*** & 0.2*** & 0.14** & 0.2**\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 369} & (0.036) & [0.05, 0.3] & [0.06, 0.43] & [0, 0.27] & [0, 0.38]\\
-\cline{1-6}
- & -0.01 & -0.01 & -0.01 & -0.01 & -0.01\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 381} & (0.017) & [-0.06, 0.05] & [-0.09, 0.07] & [-0.08, 0.09] & [-0.11, 0.08]\\
-\cline{1-6}
- & -0.02 & -0.02 & -0.02 & -0.02 & -0.02\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 382} & (0.026) & [-0.08, 0.09] & [-0.09, 0.08] & [-0.12, 0.06] & [-0.13, 0.07]\\
-\cline{1-6}
- & 0.04** & 0.03 & 0.04 & 0.03 & 0.04\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 383} & (0.025) & [-0.03, 0.11] & [-0.04, 0.17] & [-0.06, 0.12] & [-0.1, 0.17]\\
-\cline{1-6}
- & -0.13 & -0.1 & -0.13 & -0.1 & -0.13\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 384} & (0.029) & [-0.19, 0.01] & [-0.24, 0.01] & [-0.21, 0.02] & [-0.3, 0.02]\\
-\cline{1-6}
- & 0.04 & 0.04 & 0.04 & 0.04 & 0.04\\
-\cline{2-6}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 390} & (0.046) & [-0.13, 0.25] & [-0.15, 0.24] & [-0.17, 0.27] & [-0.23, 0.31]\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
-\begin{table}
-
-\caption{\label{tbl-sec11-inds-char-coprs-vs-others}Comparison of
-industry characteristics between corporations and non-corporations.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
-\hline
-\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{N} & \multicolumn{2}{c|}{Avg. Age} & \multicolumn{2}{c|}{Sales (Sales Tax Rate)} & \multicolumn{2}{c|}{Purchases (Sales Tax Rate)} & \multicolumn{2}{c|}{Mkt \% (Sales)} & \multicolumn{2}{c|}{Exports (Avg. \%)} & \multicolumn{2}{c|}{Imports (Avg. \%)} & \multicolumn{2}{c|}{Exporters (N \%)} & \multicolumn{2}{c}{Importers (N \%)} \\
-\cline{2-3} \cline{4-5} \cline{6-7} \cline{8-9} \cline{10-11} \cline{12-13} \cline{14-15} \cline{16-17} \cline{18-19}
-SIC & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others\\
-\hline
-311 & 147 & 783 & 27 & 20 & 0.5 & 0.1 & 0.9 & 0.4 & 15.2 & 8.4 & 5.4 & 4.3 & 17.5 & 6.1 & 27.0 & 5.7 & 55.4 & 11.2\\
-\hline
-312 & 41 & 161 & 26 & 21 & 0.2 & 0.2 & 1.2 & 0.7 & 3.9 & 1.4 & 6.4 & 1.3 & 11.9 & 5.1 & 28.4 & 4.5 & 75.7 & 20.4\\
-\hline
-313 & 74 & 61 & 31 & 31 & 4.5 & 14.8 & 1.6 & 3.5 & 7.7 & 2.0 & 0.1 & 0.3 & 10.6 & 3.1 & 0.4 & 9.8 & 49.6 & 35.6\\
-\hline
-321 & 71 & 422 & 26 & 17 & 8.2 & 8.0 & 3.8 & 4.8 & 5.1 & 2.4 & 4.3 & 2.0 & 20.3 & 5.4 & 46.6 & 11.5 & 64.5 & 18.8\\
-\hline
-322 & 22 & 724 & 24 & 14 & 7.9 & 8.1 & 4.1 & 4.6 & 0.5 & 2.0 & 13.6 & 3.2 & 6.2 & 1.6 & 64.6 & 9.8 & 37.2 & 5.5\\
-\hline
-323 & 13 & 90 & 35 & 17 & 6.5 & 8.5 & 4.8 & 5.0 & 0.7 & 0.5 & 28.0 & 13.4 & 9.4 & 3.9 & 80.2 & 35.1 & 82.1 & 28.7\\
-\hline
-324 & 9 & 186 & 35 & 14 & 8.1 & 8.0 & 5.5 & 4.8 & 0.6 & 0.4 & 16.4 & 2.9 & 7.7 & 1.0 & 93.2 & 10.7 & 91.5 & 10.6\\
-\hline
-331 & 13 & 160 & 21 & 18 & 6.6 & 5.5 & 1.9 & 1.8 & 0.4 & 0.2 & 6.0 & 1.6 & 3.8 & 1.4 & 49.0 & 4.4 & 38.5 & 7.6\\
-\hline
-332 & 12 & 187 & 25 & 15 & 9.5 & 10.6 & 4.3 & 4.0 & 0.1 & 0.2 & 5.0 & 0.5 & 7.7 & 1.2 & 19.3 & 3.3 & 29.8 & 6.7\\
-\hline
-341 & 41 & 119 & 26 & 20 & 8.7 & 9.1 & 3.8 & 5.0 & 4.5 & 0.6 & 4.9 & 0.2 & 21.1 & 2.6 & 43.3 & 5.2 & 60.1 & 14.6\\
-\hline
-342 & 40 & 324 & 25 & 22 & 5.1 & 8.0 & 2.9 & 3.8 & 1.3 & 1.6 & 8.4 & 1.3 & 34.7 & 9.3 & 42.6 & 7.7 & 76.2 & 25.1\\
-\hline
-351 & 68 & 55 & 24 & 17 & 7.3 & 6.4 & 3.0 & 3.6 & 6.5 & 0.9 & 7.0 & 3.2 & 30.3 & 14.3 & 54.2 & 21.7 & 72.1 & 48.7\\
-\hline
-352 & 100 & 216 & 30 & 24 & 7.1 & 6.7 & 3.8 & 3.8 & 7.3 & 1.2 & 2.0 & 1.1 & 45.5 & 20.0 & 52.6 & 10.4 & 96.2 & 56.4\\
-\hline
-356 & 53 & 241 & 20 & 15 & 9.6 & 10.2 & 5.7 & 6.1 & 2.1 & 1.3 & 5.6 & 1.8 & 37.7 & 15.7 & 53.4 & 17.3 & 86.1 & 40.5\\
-\hline
-369 & 58 & 223 & 29 & 19 & 4.9 & 5.7 & 1.7 & 2.0 & 3.0 & 0.4 & 4.2 & 0.4 & 12.9 & 5.9 & 29.4 & 4.1 & 39.7 & 19.2\\
-\hline
-381 & 85 & 569 & 24 & 17 & 9.0 & 9.4 & 4.8 & 4.9 & 2.6 & 1.4 & 5.3 & 1.2 & 30.3 & 12.8 & 52.8 & 9.8 & 78.0 & 32.2\\
-\hline
-382 & 46 & 330 & 26 & 20 & 8.1 & 7.8 & 4.2 & 4.0 & 1.0 & 0.9 & 6.4 & 3.7 & 39.1 & 13.9 & 54.7 & 18.3 & 85.7 & 43.5\\
-\hline
-383 & 57 & 168 & 23 & 18 & 9.3 & 8.8 & 4.5 & 4.6 & 3.1 & 0.8 & 3.5 & 2.0 & 52.1 & 23.8 & 49.2 & 13.5 & 95.3 & 57.3\\
-\hline
-384 & 42 & 209 & 26 & 17 & 8.7 & 7.4 & 5.0 & 5.0 & 5.9 & 0.9 & 5.2 & 2.0 & 48.4 & 14.5 & 39.8 & 8.8 & 80.3 & 38.7\\
-\hline
-390 & 18 & 163 & 24 & 21 & 9.6 & 11.4 & 4.1 & 4.1 & 0.4 & 0.5 & 15.1 & 3.1 & 43.6 & 13.6 & 82.3 & 19.6 & 90.3 & 40.7\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
-\begin{table}
-
-\caption{\label{tbl-tims-test}Rejection frequencies of the
-\(\mathcal{V}_{it}\) for Corporations and Non-Corporations. The
-rejection frequencies of the one tail test are the average number of
-observations that fell above the 95\% region of the
-\(f_{\varepsilon}(\varepsilon)\) distribution recovered in the first
-stage. The rejection frequencies of the two tail test are the average
-number of observations that fell above the 97.5\% or below the 2.5\%
-region.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{l|r|r|r|r}
-\hline
-\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{One Tail} & \multicolumn{2}{c}{Two Tail} \\
-\cline{2-3} \cline{4-5}
-SIC & Corp & Non-Corp & Corp  & Non-Corp \\
-\hline
-311 & 5.1 & 9.3 & 5.1 & 8.7\\
-\cline{1-5}
-312 & 5.1 & 3.2 & 5.1 & 6.8\\
-\cline{1-5}
-322 & 4.4 & 26.3 & 3.5 & 8.9\\
-\cline{1-5}
-381 & 4.9 & 4.6 & 4.9 & 6.3\\
-\cline{1-5}
-321 & 4.9 & 21.4 & 5.1 & 12.7\\
-\cline{1-5}
-382 & 5.0 & 5.2 & 5.0 & 5.4\\
-\cline{1-5}
-384 & 5.0 & 0.6 & 4.7 & 4.3\\
-\cline{1-5}
-383 & 4.9 & 2.6 & 5.1 & 2.9\\
-\cline{1-5}
-313 & 5.0 & 17.9 & 5.0 & 12.9\\
-\cline{1-5}
-341 & 5.0 & 4.4 & 5.0 & 8.1\\
-\cline{1-5}
-324 & 5.1 & 10.4 & 5.1 & 11.2\\
-\cline{1-5}
-342 & 5.1 & 6.3 & 5.1 & 5.9\\
-\cline{1-5}
-369 & 5.1 & 12.5 & 4.8 & 12.8\\
-\cline{1-5}
-332 & 5.3 & 4.3 & 5.3 & 8.5\\
-\cline{1-5}
-390 & 4.4 & 1.1 & 4.4 & 1.0\\
-\cline{1-5}
-351 & 4.8 & 11.2 & 4.8 & 10.5\\
-\cline{1-5}
-352 & 4.9 & 12.1 & 5.0 & 9.9\\
-\cline{1-5}
-356 & 5.2 & 3.9 & 5.2 & 8.6\\
-\cline{1-5}
-331 & 5.8 & 26.1 & 4.8 & 22.7\\
-\cline{1-5}
-323 & 4.7 & 1.5 & 3.8 & 12.6\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
 \subsection{Production Function}\label{production-function}
 
-Table~\ref{tbl-CD-ar1-comparision} displays the results of estimating
-the production function parameters following the identification strategy
+\textbf{?@tbl-CD-ar1-comparision} displays the results of estimating the
+production function parameters following the identification strategy
 described above. I use an AR(1) model for the Markov process of
 productivity. I employed \(Z=\{k_{it},l_{it}\}\) as instruments for
 themselves. One additional instrument to control for the endogeneity
 between \(\varepsilon_{it-1}\) and \(\mathcal{W}_{it-1}\) is needed in
 the first stage of `TE+GNR'. The instrument used is specified in the
-table Table~\ref{tbl-CD-ar1-comparision}.
+table \textbf{?@tbl-CD-ar1-comparision}.
 
 To compare, I also include the uncorrected estimates using GNR and a
 simple OLS. In the case of GNR estimation method, the Markov process of
@@ -2882,62 +1865,6 @@ instruments.
 I focus on the top 5 industries in terms of revenue: 1) 311 - Food
 Products, 2) 313 Beverages, 3) 352 Other Chemical Products. 4) 351
 Industrial Chemicals, and 5) 321 Textiles.
-
-\begin{table}
-
-\caption{\label{tbl-CD-ar1-comparision}Cobb-Douglas production function
-parameters estimates, correcting intermediates ---raw materials--- for
-tax evasion vs.~naive estimation and OLS. \(h\) is an AR(1) process for
-`Tax Evasion + GNR' but a third degree polynomial for `GNR'.
-\(Z=\{k_{it},l_{it}\}\) for GNR. One additional instrument to GNR's
-\(Z\) control for the endogeneity between \(\varepsilon_{it-1}\) and
-\(\mathcal{W}_{it-1}\) in the first stage of `TE+GNR'. The instrument
-used is specified in the table.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{l|l|r|r|r|r|r|r}
-\hline
-\multicolumn{2}{c|}{ } & \multicolumn{4}{c|}{Tax Evasion + GNR} & \multicolumn{2}{c}{ } \\
-\cline{3-6}
-Inds. & Input & \$k\_\{it-1\}\$ & \$l\_\{it-1\}\$ & \$m\textasciicircum{}*\_\{it-1\}\$ & \$\textbackslash{}mathcal\{W\}\_\{it-2\}\$ & GNR &  OLS\\
-\hline
- & m & 0.2937 & 0.2937 & 0.2937 & 0.2937 & 0.3485 & 0.5593\\
-\cline{2-8}
- & k & 0.0388 & 0.0000 & 0.1156 & 0.0721 & 0.1043 & 0.0636\\
-\cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 331} & l & 0.5819 & 0.3383 & 0.6179 & 0.5809 & 0.5063 & 0.4311\\
-\cline{1-8}
- & m & 0.3123 & 0.3123 & 0.3123 & 0.3123 & 0.3683 & 0.5669\\
-\cline{2-8}
- & k & 0.0911 & 0.0540 & 0.1698 & 0.1875 & 0.1921 & 0.0477\\
-\cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 322} & l & 0.3125 & 0.2986 & 0.4076 & 0.4106 & 0.3608 & 0.4119\\
-\cline{1-8}
- & m & 0.1999 & 0.1999 & 0.1999 & 0.1999 & 0.2252 & 0.4974\\
-\cline{2-8}
- & k & 0.0526 & 0.3351 & 1.0000 & 0.3492 & 0.2652 & 0.1253\\
-\cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 369} & l & 0.5524 & 0.3619 & 0.8056 & 0.5831 & 0.6055 & 0.5206\\
-\cline{1-8}
- & m & 0.2701 & 0.2701 & 0.2701 & 0.2701 & 0.2826 & 0.7497\\
-\cline{2-8}
- & k & 0.0160 & 1.0000 & 0.4610 & 0.0000 & 0.3395 & 0.1171\\
-\cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 313} & l & 0.0283 & 0.1592 & 0.1229 & 0.2157 & 0.2943 & 0.2702\\
-\cline{1-8}
- & m & 0.3544 & 0.3544 & 0.3544 & 0.3544 & 0.3869 & 0.6616\\
-\cline{2-8}
- & k & 0.0697 & 0.0000 & 0.3389 & 0.3214 & 0.2604 & 0.0966\\
-\cline{2-8}
-\multirow[t]{-3}{*}{\raggedright\arraybackslash 321} & l & 0.1324 & 0.2780 & 0.2987 & 0.3383 & 0.3412 & 0.2796\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
 
 \begin{table}
 
@@ -3064,7 +1991,7 @@ following discussion will be focusing on the results relating using
 First, because tax evasion artificially inflates the intermediates's
 cost share of revenues, lower output elasticities of intermediates than
 traditional methods are expected. In table
-Table~\ref{tbl-CD-ar1-comparision} shows that correcting for tax evasion
+\textbf{?@tbl-CD-ar1-comparision} shows that correcting for tax evasion
 results in smaller intermediates' output elasticity with respect with
 OLS. With respect to GNR, all estimates are statistically lower except
 one. The output elasticity of intermediates of the Textile industry
@@ -3095,108 +2022,6 @@ intermediates are corrected for overreporting.
 
 \subsection{Productivity}\label{productivity}
 
-\subsubsection{Parametric Productivity
-Density}\label{parametric-productivity-density}
-
-Once, the production function parameters are known, we can recover
-\(\omega\) by deconvolution using Equation~\ref{eq-w-squiggle}. Here I
-assume \(\omega\) follows a normal distribution.
-
-\textbf{?@tbl-boot-omega} displays the estimates of the distribution
-parameters of \(\omega\) corresponding to the instrument used in the
-previous section and the parametric specification of an AR(1).
-
-\begin{table}
-
-\caption{\label{tbl-omega}Estimates Omega Distribution by Industry after
-Deconvoluting from the Output Shock.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{r|r|r}
-\hline
-  & \$\textbackslash{}mu\$ & \$\textbackslash{}sigma\$\\
-\hline
-322 & 5.43 & 0.58\\
-\hline
-342 & 4.25 & 0.47\\
-\hline
-313 & 3.29 & 0.45\\
-\hline
-351 & 3.47 & 0.65\\
-\hline
-331 & 4.04 & 0.38\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
-To compare these productivity estimates to uncorrected ones, I simulate
-productivity using the parameters estimated in
-\textbf{?@tbl-boot-omega}. I use 1000 independent draws from \(\omega\)
-and \(\varepsilon\). Then, I computed productivity,
-\(\varphi_{it}^S=\exp\{\omega_{it}^S+\varepsilon_{it}^S\}\).
-
-Table~\ref{tbl-prod-comparison} compares summary statistics the
-simulated productivity using the estimated parameters after correcting
-for tax evasion with the summary statistics of the productivity
-estimates of GNR.
-
-\begin{table}
-
-\caption{\label{tbl-prod-comparison}Summary statistics of the
-productivity estimates using GNR correcting and not correcting for tax
-evasion. Tax-evasion corrected estimates were simulated using the
-parameters of \textbf{?@tbl-boot-omega}, with 1000 draws.}
-
-\centering{
-
-\centering
-\begin{tabular}[t]{r|l|r|r|r|r|r}
-\hline
-inds & Method & Mean & SD & Q1 & Median & Q3\\
-\hline
- & GNR & 70.6 & 44.7 & 45.1 & 59.0 & 82.7\\
-\cline{2-7}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 313} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 55.8 & 39.9 & 29.3 & 47.0 & 70.2\\
-\cline{1-7}
- & GNR & 23.6 & 11.0 & 17.4 & 21.5 & 27.3\\
-\cline{2-7}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 321} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 21.6 & 13.1 & 12.6 & 18.2 & 26.7\\
-\cline{1-7}
- & GNR & 41.6 & 14.3 & 32.2 & 39.1 & 48.6\\
-\cline{2-7}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 322} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 83.1 & 54.5 & 47.2 & 68.1 & 106.0\\
-\cline{1-7}
- & GNR & 61.1 & 23.5 & 46.3 & 56.5 & 70.3\\
-\cline{2-7}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 331} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 73.8 & 44.5 & 42.9 & 63.7 & 93.0\\
-\cline{1-7}
- & GNR & 23.1 & 8.3 & 18.1 & 21.7 & 26.3\\
-\cline{2-7}
-\multirow[t]{-2}{*}{\raggedleft\arraybackslash 342} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 32.1 & 18.4 & 18.5 & 27.7 & 40.7\\
-\hline
-\end{tabular}
-
-}
-
-\end{table}%
-
-Industries 321 Textiles, and 351 Industrial Chemicals, and 313 Beverages
-have means lower or equal to the uncorrected ones for both instruments
-considered. Industry 311 Food Products display a higher mean for both
-estimates, while industry 352 Other Chemicals displays a higher or lower
-mean depending on the instrument.
-
-With respect to standard deviations, industries 321 Textiles, 351
-Industrial Chemicals, and 352 Other Chemicals display lower magnitudes,
-while industries 311 Food Products display significantly higher
-magnitudes. Lastly, industry 313 Beverages standard deviation is lower
-or higher depending on the instrument.
-
 \subsubsection{Non-Parametric Productivity
 Density}\label{non-parametric-productivity-density}
 
@@ -3204,6 +2029,14 @@ Nothing impedes us from estimating a non-parametric distribution of
 \(\omega\). I deconvolute \(\omega\) using penalized B-Splines from
 Equation~\ref{eq-w-squiggle}. First, I estimate the density of
 \(\varepsilon\) using a kernel density estimator.
+
+To compare these productivity estimates to uncorrected ones, I simulate
+productivity using the B-Splines. To simulate 1000 independent draws
+from \(\omega\), I numerically invert the B-Splines. First, I draw 1000
+\(u^S\sim U(0,1)\). Then I find the
+\(\omega^S = \arg \min \left(\int_a^{\omega^S} s(t,\theta)dt-u^S\right)^2\).
+Then, I computed productivity, \(\varphi_{it}^S=\exp\{\omega_{it}^S\}\).
+\(\varepsilon\) is measurement error, so not part of productivity.
 
 \begin{table}
 
@@ -3219,25 +2052,25 @@ conditional on firms being Non-Evaders.}
 \hline
 sic\_3 & instrument & mean & sd & skewness\\
 \hline
-331 & \$m\_\{t-1\}\$ & 4.140 & 0.256 & -0.724\\
-\hline
-322 & \$m\_\{t-1\}\$ & 4.253 & 0.303 & -0.455\\
-\hline
-369 & \$m\_\{t-1\}\$ & -3.984 & 1.929 & 0.542\\
-\hline
-313 & \$m\_\{t-1\}\$ & 3.799 & 0.454 & -0.088\\
-\hline
-321 & \$m\_\{t-1\}\$ & 2.885 & 0.391 & -0.127\\
-\hline
-331 & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 4.616 & 0.269 & -0.179\\
-\hline
-322 & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 4.102 & 0.297 & -0.481\\
-\hline
-369 & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 3.017 & 0.305 & -0.489\\
-\hline
-313 & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 8.410 & 0.926 & -0.496\\
-\hline
-321 & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 2.885 & 0.378 & -0.069\\
+ & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 8.410 & 0.926 & -0.496\\
+\cline{2-5}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 313} & \$m\_\{t-1\}\$ & 3.799 & 0.454 & -0.088\\
+\cline{1-5}
+ & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 2.885 & 0.378 & -0.069\\
+\cline{2-5}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 321} & \$m\_\{t-1\}\$ & 2.885 & 0.391 & -0.127\\
+\cline{1-5}
+ & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 4.102 & 0.297 & -0.481\\
+\cline{2-5}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 322} & \$m\_\{t-1\}\$ & 4.253 & 0.303 & -0.455\\
+\cline{1-5}
+ & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 4.616 & 0.269 & -0.179\\
+\cline{2-5}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 331} & \$m\_\{t-1\}\$ & 4.140 & 0.256 & -0.724\\
+\cline{1-5}
+ & \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 3.017 & 0.305 & -0.489\\
+\cline{2-5}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash 369} & \$m\_\{t-1\}\$ & -3.984 & 1.929 & 0.542\\
 \hline
 \end{tabular}
 
@@ -3261,35 +2094,35 @@ measurement error, so not part of productivity.}
 \hline
 sic\_3 & Method & Mean & SD & Q1 & Median & Q3\\
 \hline
-313 & GNR & 60.8 & 30.7 & 43.3 & 55.3 & 69.6\\
-\hline
-313 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 6253.5 & 5744.5 & 2697.1 & 4867.0 & 7690.4\\
-\hline
-313 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 48.2 & 25.1 & 35.6 & 44.9 & 54.9\\
-\hline
-321 & GNR & 21.0 & 11.2 & 13.8 & 18.7 & 25.5\\
-\hline
-321 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 18.9 & 8.7 & 14.8 & 17.4 & 20.8\\
-\hline
-321 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 18.9 & 8.8 & 14.8 & 17.5 & 21.0\\
-\hline
-322 & GNR & 34.9 & 16.4 & 24.0 & 33.4 & 43.2\\
-\hline
-322 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 60.9 & 17.3 & 51.6 & 60.0 & 68.8\\
-\hline
-322 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 71.0 & 20.8 & 59.7 & 69.8 & 80.3\\
-\hline
-331 & GNR & 51.3 & 26.1 & 33.2 & 46.4 & 62.7\\
-\hline
-331 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 103.1 & 31.4 & 85.9 & 99.6 & 115.2\\
-\hline
-331 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 63.8 & 17.8 & 55.4 & 63.0 & 70.9\\
-\hline
-369 & GNR & 34.5 & 26.9 & 17.0 & 29.2 & 45.5\\
-\hline
-369 & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 20.3 & 4.6 & 18.1 & 20.0 & 22.0\\
-\hline
-369 & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 0.2 & 1.2 & 0.0 & 0.0 & 0.0\\
+ & GNR & 60.8 & 30.7 & 43.3 & 55.3 & 69.6\\
+\cline{2-7}
+ & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 6253.5 & 5744.5 & 2697.1 & 4867.0 & 7690.4\\
+\cline{2-7}
+\multirow[t]{-3}{*}{\raggedleft\arraybackslash 313} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 48.2 & 25.1 & 35.6 & 44.9 & 54.9\\
+\cline{1-7}
+ & GNR & 21.0 & 11.2 & 13.8 & 18.7 & 25.5\\
+\cline{2-7}
+ & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 18.9 & 8.7 & 14.8 & 17.4 & 20.8\\
+\cline{2-7}
+\multirow[t]{-3}{*}{\raggedleft\arraybackslash 321} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 18.9 & 8.8 & 14.8 & 17.5 & 21.0\\
+\cline{1-7}
+ & GNR & 34.9 & 16.4 & 24.0 & 33.4 & 43.2\\
+\cline{2-7}
+ & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 60.9 & 17.3 & 51.6 & 60.0 & 68.8\\
+\cline{2-7}
+\multirow[t]{-3}{*}{\raggedleft\arraybackslash 322} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 71.0 & 20.8 & 59.7 & 69.8 & 80.3\\
+\cline{1-7}
+ & GNR & 51.3 & 26.1 & 33.2 & 46.4 & 62.7\\
+\cline{2-7}
+ & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 103.1 & 31.4 & 85.9 & 99.6 & 115.2\\
+\cline{2-7}
+\multirow[t]{-3}{*}{\raggedleft\arraybackslash 331} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 63.8 & 17.8 & 55.4 & 63.0 & 70.9\\
+\cline{1-7}
+ & GNR & 34.5 & 26.9 & 17.0 & 29.2 & 45.5\\
+\cline{2-7}
+ & TE: \$\textbackslash{}mathcal\{W\}\_\{t-2\}\$ & 20.3 & 4.6 & 18.1 & 20.0 & 22.0\\
+\cline{2-7}
+\multirow[t]{-3}{*}{\raggedleft\arraybackslash 369} & TE: \$m\textasciicircum{}*\_\{t-1\}\$ & 0.2 & 1.2 & 0.0 & 0.0 & 0.0\\
 \hline
 \end{tabular}
 
@@ -4559,6 +3392,765 @@ new regulatory framework and rate-system governed by principles such as
 efficiency and financial sufficiency, and introduction of wholesale
 competition, among other measures.
 
+\section{Getting the Story Straight}\label{getting-the-story-straight}
+
+Firms face incentives to evade sales taxes by overreporting their input
+costs. Firms overreport their cost by acquiring fake invoices to claim
+additional deductions of their sales taxes, maximizing after-tax
+profits. The higher the sales tax, the greater the incentive to evade.
+However, the probability of detection and the threat of penalties limit
+how much firms overreport.
+
+The key incentive for firms is the \textbf{effective sales tax rate} ---
+the amount firms ultimately pay or receive from the tax authority. The
+effective tax rate is calculated as the difference between the total
+sales tax charged by the firm on its sales and the total sales tax paid
+by the firm on its inputs, divided by total sales. A positive difference
+indicates what the firm should pay to the government. If the difference
+is negative, the firm receives a refund from the tax authority.
+
+\[
+\begin{aligned}
+\tau &= \frac{\tau_0P_tY_{it} - \tau_1\rho_t M_{it}}{P_tY_{it}} \\
+&= \tau_0 - \tau_1 \beta
+\end{aligned}
+\]
+
+In Colombia, the total amount charged by the firm as sales tax depends
+on the statutory tax rate of each product sold domestically;
+\textbf{exports are exempt} from sales tax. Low statutory sales tax
+rates and exempt products result in lower sales tax collected by the
+firm and thus, a lower effective tax rate. Consequently, firms whose
+products are exempt from sales tax or taxed with \textbf{low statutory
+rates} have low incentives to evade. Likewise, as the share of their
+exports increases, exporter firms bear decreasing incentives to evade
+taxes because a larger portion of their sales is exempt from sales tax,
+reducing the effective sales tax rate.
+
+On the other hand, the total amount paid by the firm as sales tax
+depends on the statutory tax rate of each of its inputs, including
+imports. \textbf{Imports}, in contrast to exports, are \textbf{not
+exempt}. Hence, the composition of the foreign and domestic inputs does
+not affect the effective sales tax rate, nor the incentives to evade.
+However, the tax system imposed a zero sales tax rate on
+\textbf{unprocessed primary inputs}, such as forestry, mining, fishing,
+and agriculture. Therefore, firms consuming a high share of primary
+inputs face a higher effective sales tax rate and thus, greater
+incentives to evade.
+
+Note that the effective sales tax rate might naturally be
+\textbf{negative} for firms in certain industries. Before the 1983
+reform in Colombia, there were four different statutory sales tax rates:
+4, 10, 15 and 25 percent. Because the sales tax was applied at the
+product level, \emph{the total amount paid as sales tax by the firms on
+its inputs could be larger than the total amount charged by the firm as
+sales tax on its products.} This situation would result in a negative
+effective sales tax rate. Firms in this situation would receive a refund
+from the tax authority.
+
+Would firms with negative effective tax rates have incentives to
+overreport inputs to increase their refunds? Unlikely. Although the
+refunds had to be made within 30 days, \emph{the procedure was
+complicated, and the tax authority delayed, on average, one year to
+process the payment}. Suspicion of fraudulent activities might further
+delay the process. Therefore, firms in this situation did not have
+incentives to overreport inputs to increase their refunds.
+
+Whether firms in certain industries have incentives to overreport their
+inputs to evade sales taxes might \textbf{not} be \textbf{obvious}
+\emph{ex-ante}. The tax code might be complex, with many exemptions and
+different statutory rates. Different taxes might generate overlapping or
+conflicting incentives. Available data might lack details on the
+products or inputs used by firms, making it difficult to identify the
+effective sales tax rate.
+
+A first contribution of this paper is to provide practitioners and
+policymakers a way to identify industries where tax evasion through
+cost-overreporting might be non-trivial and can be identified from data.
+The simple model employed in this paper to investigate the mechanisms of
+tax evasion provides conditions that can be tested with data. As a
+result, I propose a statistical test where the null hypothesis states
+that firms in an industry of interest do not evade sales taxes by
+overreporting; the alternative states that firms do commit tax evasion
+Section~\ref{sec-tax-ev-test}.
+
+Failing to reject the null hypothesis does not necessarily imply that
+firms in this industry are not overreporting. If a researcher suspects
+this practcie on a particular industry, he would have to investigate if
+the assumptions of the model are not unreasonable for said industry. The
+main assumption comes from the production function method, even though
+they might differ in their productivity, evaders and non-evaders share a
+common technology.
+
+With this in mind, in any dataset using SIC codes, it should be
+considered that the SIC codes groups firms with similar products, but
+some categories might group products that require different
+technologies. Furthermore, most firms are multiproducts, and might be
+classified under a certain SIC code because it produces more of a
+certain product marginally.
+
+\subsection{Showing the Evidence}\label{showing-the-evidence}
+
+\begin{table}
+
+\caption{\label{tbl-ielas-top5}Intermediate elasticities for
+Corporations (Non-Evaders) and non-Corporations (Evaders) for different
+industries. Estimates were obtained using GNR (2020) method assuming a
+CD functional form. Intermediates are defined as raw materials.
+\(\varepsilon\) is defined as \textbf{measurement error}. The Tax
+Evasion Test displays the coefficient of the statistical test, where the
+null hypothesis states that there is no tax evasion through cost
+overreporting. Among the industry characteristics, Sales is the
+industry's market share of the total sales in Colombia between 1981 and
+1991. Sales Tax Rate is the average sales tax reported rate. Exports is
+the average share of exports of the industry total sales, and Exporters
+is the share of firms exporting 10 percent or more of their total sales.
+Bias-corrected bootstrap confidence intervals at 95\% significanve level
+are displayed in brackets. *, **, *** denote significance at the 10\%,
+5\%, and 1\% levels (one-sided).}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
+\cline{2-3} \cline{4-4} \cline{8-10}
+SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
+\hline
+ & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
+\cline{1-10}
+ & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
+\cline{2-10}
+\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-ielas}Intermediate elasticities for Corporations
+(Non-Evaders) and non-Corporations (Evaders) for different industries.
+Estimates were obtained using GNR (2020) method assuming a CD functional
+form. Intermediates are defined as raw materials. \(\varepsilon\) is
+defined as \textbf{measurement error}. The Tax Evasion Test displays the
+coefficient of the statistical test, where the null hypothesis states
+that there is no tax evasion through cost overreporting. Among the
+industry characteristics, Sales is the industry's market share of the
+total sales in Colombia between 1981 and 1991. Sales Tax Rate is the
+average sales tax reported rate. Exports is the average share of exports
+of the industry total sales, and Exporters is the share of firms
+exporting 10 percent or more of their total sales. Bias-corrected
+bootstrap confidence intervals at 95\% significanve level are displayed
+in brackets. *, **, *** denote significance at the 10\%, 5\%, and 1\%
+levels (one-sided).}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{c|c|c|c|c|c|c|c|c|c}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{Elasticities} & \multicolumn{1}{c|}{Test} & \multicolumn{3}{c|}{ } & \multicolumn{3}{c}{Sales Tax Rate} \\
+\cline{2-3} \cline{4-4} \cline{8-10}
+SIC & Corps. & Others & Tax Ev. & N & N (Corps.) & Sales (Mkt \%) & Effective & Sales & Purchases\\
+\hline
+\multicolumn{10}{l}{\textbf{31 Food \& Beverages}}\\
+\hline
+\hspace{1em} & 0.6 & 0.61 & 0.02* & 888 & 147 & 23.6 & -0.1 & 0.2 & 0.5\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 311} & [0.57, 0.62] & [0.59, 0.62] & [-0.02, 0.08] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.58 & 0.57 & -0.01 & 188 & 41 & 5.3 & -0.3 & 0.2 & 0.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 312} & [0.49, 0.64] & [0.51, 0.63] & [-0.11, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.29 & 0.35 & 0.18*** & 130 & 74 & 9.7 & 7.7 & 8.4 & 2.3\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 313} & [0.26, 0.3] & [0.32, 0.39] & [0.07, 0.32] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{32 Textile, Apparel \& Leather}}\\
+\hline
+\hspace{1em} & 0.39 & 0.44 & 0.13*** & 470 & 71 & 7.4 & 6.2 & 8.0 & 4.6\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 321} & [0.36, 0.42] & [0.42, 0.45] & [0.08, 0.24] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.35 & 0.42 & 0.2*** & 737 & 22 & 2.5 & 6.5 & 8.1 & 4.6\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 322} & [0.3, 0.4] & [0.4, 0.43] & [0.07, 0.35] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.56 & 0.47 & -0.19 & 99 & 13 & 1.2 & 5.3 & 8.1 & 5.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 323} & [0.5, 0.59] & [0.45, 0.5] & [-0.26, -0.07] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.43 & 0.46 & 0.07** & 192 & 9 & 1.0 & 5.9 & 8.0 & 4.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 324} & [0.36, 0.47] & [0.44, 0.48] & [-0.01, 0.22] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{33 Wood \& Wood Products}}\\
+\hline
+\hspace{1em} & 0.32 & 0.41 & 0.24** & 172 & 13 & 0.6 & 5.0 & 5.6 & 1.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 331} & [0.24, 0.37] & [0.38, 0.44] & [0.05, 0.46] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.36 & 0.35 & -0.03 & 193 & 12 & 0.3 & 9.2 & 10.6 & 4.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 332} & [0.26, 0.43] & [0.33, 0.37] & [-0.23, 0.21] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{34 Paper \& Printing}}\\
+\hline
+\hspace{1em} & 0.49 & 0.47 & -0.05 & 153 & 41 & 5.1 & 6.7 & 9.0 & 4.7\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 341} & [0.43, 0.52] & [0.43, 0.49] & [-0.17, 0.07] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.34 & 0.37 & 0.07** & 347 & 40 & 2.9 & 6.4 & 7.7 & 3.7\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 342} & [0.29, 0.36] & [0.36, 0.39] & [-0.01, 0.2] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{35 Chemicals, Petroleum, Rubber \& Plastic}}\\
+\hline
+\hspace{1em} & 0.34 & 0.37 & 0.09 & 116 & 68 & 7.5 & 5.9 & 7.0 & 3.2\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 351} & [0.28, 0.37] & [0.29, 0.43] & [-0.14, 0.33] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.41 & 0.44 & 0.06** & 300 & 100 & 8.5 & 5.2 & 6.8 & 3.8\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 352} & [0.38, 0.43] & [0.42, 0.47] & [0, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.5 & 0.45 & -0.1 & 272 & 53 & 3.4 & 7.0 & 10.0 & 6.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 356} & [0.48, 0.54] & [0.43, 0.46] & [-0.17, -0.04] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{36 Non-Metallic Mineral Products}}\\
+\hline
+\hspace{1em} & 0.24 & 0.3 & 0.2*** & 274 & 58 & 3.4 & 5.0 & 5.5 & 2.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 369} & [0.19, 0.27] & [0.28, 0.33] & [0.05, 0.38] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{38 Fabricated Metal Products, Machinery \& Equipment}}\\
+\hline
+\hspace{1em} & 0.41 & 0.41 & -0.01 & 633 & 85 & 4.0 & 7.3 & 9.3 & 4.9\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 381} & [0.38, 0.44] & [0.4, 0.43] & [-0.08, 0.06] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.38 & 0.37 & -0.02 & 364 & 46 & 2.0 & 6.4 & 7.9 & 4.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 382} & [0.33, 0.4] & [0.35, 0.38] & [-0.09, 0.1] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.4 & 0.42 & 0.04 & 213 & 57 & 3.9 & 7.1 & 8.9 & 4.6\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 383} & [0.35, 0.43] & [0.39, 0.44] & [-0.05, 0.16] &  &  &  &  &  & \\
+\cline{1-10}
+\hspace{1em} & 0.44 & 0.39 & -0.13 & 238 & 42 & 6.9 & 5.5 & 7.7 & 5.0\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 384} & [0.37, 0.48] & [0.37, 0.42] & [-0.21, 0.02] &  &  &  &  &  & \\
+\cline{1-10}
+\multicolumn{10}{l}{\textbf{39 Other Manufacturing}}\\
+\hline
+\hspace{1em} & 0.34 & 0.35 & 0.04 & 179 & 18 & 0.9 & 9.8 & 11.2 & 4.1\\
+\cline{2-10}
+\hspace{1em}\multirow[t]{-2}{*}{\centering\arraybackslash 390} & [0.26, 0.39] & [0.33, 0.37] & [-0.15, 0.27] &  &  &  &  &  & \\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+31 Food \& Beverages:
+
+\begin{itemize}
+\tightlist
+\item
+  311 Food Products (Meat, Dairy, Sugar, Bakery, etc.)
+\item
+  312 Food Products (Animal feeds, Others)
+\item
+  313 Beverages (Soft drinks, Alcoholic beverages, etc.)
+\end{itemize}
+
+In the Food and Beverages industry classification, industry 313 beverges
+displays suspicious activity of overreporting. This finding is
+consistent with the model because, in contrast to 311 and 312, industry
+313 is not exempt from the sales tax. In fact, the effective sales tax
+rate for industries 311 and 312 is negative, implying that these firms
+were receving refunds from the government. In comparison, industries in
+313 industry would have higher incentives to overreport because of their
+positive effective sales tax.
+
+32 Textile, Apparel \& Leather:
+
+\begin{itemize}
+\tightlist
+\item
+  321 Textiles
+\item
+  322 Wearing apparel
+\item
+  323 Leather and Fur Products
+\item
+  324 Footwear
+\end{itemize}
+
+Table~\ref{tbl-ielas} also shows evidence for potential tax evasion by
+overreporting in industries 321, 322, and 324. Again, from the theory
+perspective, these firms face positie effective tax rates, tax rates
+generate incentives to evade. This is consistent with the model.
+Corporations in industries 321, 322, and 324 display intermediate
+elasticities statistically smaller than the rest of the firms and the
+tax evasion test display a significantly positive coefficient.
+
+What about industry 323? The effective sales tax rate is positive but
+does not display evidence of evasion according to the test, moreover the
+coefficient of the test is negative and statistically significant as
+indicated by the confidence intervals.
+
+Most likely, it is not a good idea to compare corporations with the rest
+of the firms in this industry. First, looking at the sample size, we
+note that the number of corporations in this industry is small. While
+this is also true for industry 324, looking more closely, we can also
+note that industry 323 groups classifications 3231 (Leather Tanning and
+Finishing), 3232 (Fur dressing and Dyeing), and 3233 (Leather products,
+except footwear and wearing apparel). In contrast, industry 324, only
+includes 3240 (Footwear, except plastic). The two most important groups
+of 323 are 3231 (30\% of all the firms) and 3233 (60\%). However, the
+composition of these subindustries is different between corporations
+(60/40) and non-corporations (22/73).
+
+Although technologies between small and large firms were similar at the
+core, the processes were significantly different which raises the
+question on the validity of the comparision between corporations and the
+other firms. During this period, small firms were tipically artisanal
+producers. These smaller establishments relied primarily on traditional
+local tanning methods based on vegetable extracts such as quebracho and
+chestnut. The process is long, typically requiring several weeks,
+however the products are highly valued because their durability and the
+distinctive patina it acquires as it ages. Their products were destined
+for the local market.
+
+In contrast, large firms used a chrome-based mineral tanning, mechanized
+drums and automated finishing machinery. Chromium tanning is faster and
+allows for mass scale consistent quality. The product is softer and
+water resistant. These characteristics make chrome-based tanning leather
+suitable for exporting to the US and European markets. However, chromium
+disposal requires advanced waste water treatment necessary to remove
+havey metals and prevent chromium discharge into the environment.
+Furthermore, these firms need to comply with strict enviromental
+regulations including regular monitoring, hazard assessment, and
+reporting.
+
+The data shows that corporations are more oriented to the foreign market
+than the rest of the firms, with highest average share of exports (28
+vs.~13\%), highest share of exporters (80 vs 35\%).
+
+33 Wood \& Wood Products; 34 Paper \& Printing:
+
+\begin{itemize}
+\tightlist
+\item
+  331 Wood Products except furniture (Sawmills, Containers, etc.)
+\item
+  332 Wood Furniture (Wooden furniture and fixtures)
+\item
+  341 Paper and Paper Products
+\item
+  342 Printing, publishing and allied industries
+\end{itemize}
+
+In these categories, we find that industries 331 and 342 display
+suspicious activity of overreporting. However, results should be taken
+with caution in particular for industry 331 because the sample of
+corporations is relatively small.
+
+Again, failing to reject the null hypothesis of no tax evasion could
+only mean that cost overreporting cannot be identfied with the data
+available using corporations as reference group.
+
+35 Chemicals, Petroleum, Rubber \& Plastic; 36 Non-Metallic Mineral
+Products:
+
+\begin{itemize}
+\tightlist
+\item
+  351 Industrial Chemicals (Basic chemicals, Fertilizers, Synthetic
+  resins and fibers)
+\item
+  352 Other Chemicals (Paints and lacquers, Drugs, Soap and cosmetics,
+  etc.)
+\item
+  356 Other Plastic Products (not classified elsewhere)
+\item
+  369 Non-Metallic Mineral Products (Structural clay products, Cement
+  and plaster, Other non-metallic mineral products)
+\end{itemize}
+
+I find significant evidence for industry 369 Non-Metallic Mineral
+Products, and some evidence for industry 352. Results should be taken
+with caution as both industries include different types of products,
+processes might vary significantly from one another. On the other hand,
+the sample of corporations is not small and there are observations
+across all subindustries, suggesting that the comparison between
+corporations and the rest of the firms might not be unreasonable.
+
+Regarding industry 356, the perspicaz reader might notice that the
+coefficient of the tax evasion test is negative and statistically
+significant. However, in this category is not clear the composition of
+the subcategories included, as it covers other plastic products not
+classfied elsewhere. Unlike other categories, this one only includes one
+subcategory, 3560 (Plastic products, not elsewhere classified). As in
+other industries, corporations have higher average share of exports and
+their share of exporters is higher than the non-incorporated firms. Does
+this matter? Likely. How? It is not clear.
+
+38 Fabricated Metal Products, Machinery \& Equipment; 39 Other
+Manufacturing:
+
+\begin{itemize}
+\tightlist
+\item
+  381 Fabricated Metal Products (Structural metal products, Cutlery,
+  Hand tools, etc.)
+\item
+  382 Machinery and Equipment (Agricultural machinery, Metalworking
+  machinery, etc.)
+\item
+  383 Electrical Machinery and Apparatus (Electric motors, Generators,
+  etc.)
+\item
+  384 Transport Equipment (Motor vehicles, Aircraft, Ships, etc.)
+\item
+  390 Other Manufacturing (Jewelry, Musical instruments, etc.)
+\end{itemize}
+
+I cannot reject the null hypothesis of no tax evasion by overreporting
+for these industries. It is interesting to note that agricultural
+machinery, transportation equipment, and equipment were exempt from
+sales tax since 1974. In 1984, exemptions for agricultural machinery and
+transportation equipment were removed.
+
+If these results are valid, this could imply that there is a dynamic
+component to the tax evasion decision. Meaning that the desicion of tax
+evasion in the current period depends critically on the past periodl.
+For example, if a firm did not evade in the previous year, it might be
+less likely to evade in the current year. The fact that there is no
+evidence of tax evasion might suggest that this effect is persistent
+over time.
+
+How does this dynamic decision could enter the economic model? Firms in
+the agricultural machinery and transportation equipment sectors started
+facing incentives to evade after 1984. However, they have been providing
+truthful information to the tax authority for over a decade. They know
+that the probability of detection for them is high, given that the
+authority can easily compare their records with previous years and
+detect anomalies.
+
+\subsubsection{Results Summary}\label{results-summary}
+
+I find that four out of the top five (nine of the to top twenty)
+industries display activities consistent with tax evasion through cost
+overreporting in Colombia between 1981 and 1991. Firms might overreport
+up to 22 percent of their costs. Consisten with the model, firms in
+industries with exempt products and negative effective sales tax rates
+display minor or no evidence of tax evasion. Furthermore, the evidence
+could suggest that the tax evasion decision is dynamic, as there is a
+lack of evidence of tax evasion in industries that lost exemption after
+a decade.
+
+Of course, the results should be taken with the usual precautions. The
+main assumption of the model is that evaders and non-evaders share a
+common technology. This assumption might be not unreasonable in most
+cases. However, commonly available data might group firms with similar
+products, but the technological processes might differ.
+
+On the other hand, failing to reject the null hypothesis of no tax
+evasion does not necessarily mean that firms in this industry are not
+overreporting; it might mean that overreporting cannot be identified
+with the data available at this industry level using corporations as the
+reference group. A researcher suspecting tax evasion in a particular
+industry should exhaustively investigate if the assumptions of the model
+are not unreasonable for said industry. In particular, she should inform
+herself about the industry technological processeses and asses if
+evaders and non-evaders can be compared.
+
+\begin{figure}
+
+\centering{
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.9\textwidth,height=\textheight]{images/tables/COL-Mat-InsProd-1985.pdf}
+
+}
+
+\caption{IO-Matrix 1985 Colombia}
+
+\end{figure}%
+
+}
+
+\caption{\label{fig-io-mat-1985}}
+
+\end{figure}%
+
+\begin{table}
+
+\caption{\label{tbl-comp-test}Comparison of different methods to
+estimate the bias corrected confidence intervals and the p-values. The
+null hypothesis states that firms do not commit tax evasion through
+cost-overreporting. The alternative is that they do. The first column is
+a difference of the means test (includes error of the estimator, but
+assumes independence of the samples). The different methods showon in
+the rest of the columns are combinations of two different procedures
+when sampling the bootstrap ---sampling from corporations and
+non-corporations, or sampling full data--- and two different methods to
+estimate the coefficient of the test --- using all the firms or only the
+non-incorporated firms. When not fixing the number of corporations,
+Bayesian sampling was used to ensure there would be at least one
+corporation needed to estimate the first-stage parameter. The numbers in
+parenthesis are the standard errors of the mean difference test. The
+numbers in brackets represent the bias-corrected bootstrap confidence
+intervals at 95\% significance level. *, **, *** denote significance at
+the 10\%, 5\%, and 1\% levels (one-sided).}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{r|l|l|l|l|l}
+\hline
+\multicolumn{2}{c|}{ } & \multicolumn{4}{c}{Bootstrap} \\
+\cline{3-6}
+\multicolumn{2}{c|}{ } & \multicolumn{2}{c|}{Two Group Sampling} & \multicolumn{2}{c}{Bayesian} \\
+\cline{3-4} \cline{5-6}
+SIC & Mean Diff. & All & Others & All  & Others \\
+\hline
+ & 0.02** & 0.02* & 0.02* & 0.02 & 0.02\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 311} & (0.011) & [-0.01, 0.06] & [-0.01, 0.08] & [-0.03, 0.07] & [-0.04, 0.08]\\
+\cline{1-6}
+ & -0.01 & -0.01 & -0.01 & -0.01 & -0.01\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 312} & (0.034) & [-0.09, 0.11] & [-0.15, 0.14] & [-0.16, 0.12] & [-0.2, 0.15]\\
+\cline{1-6}
+ & 0.18*** & 0.07*** & 0.18*** & 0.07** & 0.18***\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 313} & (0.026) & [0.03, 0.12] & [0.05, 0.32] & [0.01, 0.12] & [0.03, 0.34]\\
+\cline{1-6}
+ & 0.13*** & 0.11*** & 0.13*** & 0.11*** & 0.13***\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 321} & (0.018) & [0.06, 0.19] & [0.09, 0.24] & [0.02, 0.18] & [0.02, 0.25]\\
+\cline{1-6}
+ & 0.2*** & 0.2*** & 0.2*** & 0.2** & 0.2**\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 322} & (0.039) & [0.06, 0.32] & [0.07, 0.32] & [0.03, 0.35] & [-0.03, 0.36]\\
+\cline{1-6}
+ & -0.19 & -0.15 & -0.19 & -0.15 & -0.19\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 323} & (0.026) & [-0.24, -0.07] & [-0.26, -0.08] & [-0.26, -0.05] & [-0.35, -0.08]\\
+\cline{1-6}
+ & 0.07** & 0.07** & 0.07** & 0.07 & 0.07\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 324} & (0.03) & [-0.02, 0.23] & [-0.01, 0.23] & [-0.07, 0.24] & [-0.07, 0.25]\\
+\cline{1-6}
+ & 0.24*** & 0.22*** & 0.24*** & 0.22** & 0.24**\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 331} & (0.044) & [0.05, 0.42] & [0.04, 0.47] & [-0.06, 0.42] & [0, 0.49]\\
+\cline{1-6}
+ & -0.03 & -0.03 & -0.03 & -0.03 & -0.03\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 332} & (0.057) & [-0.24, 0.18] & [-0.27, 0.2] & [-0.28, 0.27] & [-0.42, 0.27]\\
+\cline{1-6}
+ & -0.05 & -0.03 & -0.05 & -0.03 & -0.05\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 341} & (0.024) & [-0.12, 0.05] & [-0.17, 0.06] & [-0.12, 0.06] & [-0.18, 0.09]\\
+\cline{1-6}
+ & 0.07*** & 0.06* & 0.07** & 0.06 & 0.07\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 342} & (0.027) & [-0.01, 0.17] & [-0.02, 0.19] & [-0.08, 0.18] & [-0.09, 0.19]\\
+\cline{1-6}
+ & 0.09** & 0.03 & 0.09 & 0.03 & 0.09\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 351} & (0.046) & [-0.04, 0.11] & [-0.13, 0.33] & [-0.06, 0.12] & [-0.18, 0.39]\\
+\cline{1-6}
+ & 0.06*** & 0.04** & 0.06** & 0.04 & 0.06\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 352} & (0.017) & [0, 0.1] & [-0.01, 0.16] & [-0.03, 0.1] & [-0.05, 0.15]\\
+\cline{1-6}
+ & -0.1 & -0.08 & -0.1 & -0.08 & -0.1\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 356} & (0.018) & [-0.15, -0.04] & [-0.17, -0.05] & [-0.15, -0.01] & [-0.19, 0]\\
+\cline{1-6}
+ & 0.2*** & 0.14*** & 0.2*** & 0.14** & 0.2**\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 369} & (0.036) & [0.05, 0.3] & [0.06, 0.43] & [0, 0.27] & [0, 0.38]\\
+\cline{1-6}
+ & -0.01 & -0.01 & -0.01 & -0.01 & -0.01\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 381} & (0.017) & [-0.06, 0.05] & [-0.09, 0.07] & [-0.08, 0.09] & [-0.11, 0.08]\\
+\cline{1-6}
+ & -0.02 & -0.02 & -0.02 & -0.02 & -0.02\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 382} & (0.026) & [-0.08, 0.09] & [-0.09, 0.08] & [-0.12, 0.06] & [-0.13, 0.07]\\
+\cline{1-6}
+ & 0.04** & 0.03 & 0.04 & 0.03 & 0.04\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 383} & (0.025) & [-0.03, 0.11] & [-0.04, 0.17] & [-0.06, 0.12] & [-0.1, 0.17]\\
+\cline{1-6}
+ & -0.13 & -0.1 & -0.13 & -0.1 & -0.13\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 384} & (0.029) & [-0.19, 0.01] & [-0.24, 0.01] & [-0.21, 0.02] & [-0.3, 0.02]\\
+\cline{1-6}
+ & 0.04 & 0.04 & 0.04 & 0.04 & 0.04\\
+\cline{2-6}
+\multirow[t]{-2}{*}{\raggedleft\arraybackslash 390} & (0.046) & [-0.13, 0.25] & [-0.15, 0.24] & [-0.17, 0.27] & [-0.23, 0.31]\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-sec11-inds-char-coprs-vs-others}Comparison of
+industry characteristics between corporations and non-corporations.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{N} & \multicolumn{2}{c|}{Avg. Age} & \multicolumn{2}{c|}{Sales (Sales Tax Rate)} & \multicolumn{2}{c|}{Purchases (Sales Tax Rate)} & \multicolumn{2}{c|}{Mkt \% (Sales)} & \multicolumn{2}{c|}{Exports (Avg. \%)} & \multicolumn{2}{c|}{Imports (Avg. \%)} & \multicolumn{2}{c|}{Exporters (N \%)} & \multicolumn{2}{c}{Importers (N \%)} \\
+\cline{2-3} \cline{4-5} \cline{6-7} \cline{8-9} \cline{10-11} \cline{12-13} \cline{14-15} \cline{16-17} \cline{18-19}
+SIC & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others & Corp's & Others\\
+\hline
+311 & 147 & 783 & 27 & 20 & 0.5 & 0.1 & 0.9 & 0.4 & 15.2 & 8.4 & 5.4 & 4.3 & 17.5 & 6.1 & 27.0 & 5.7 & 55.4 & 11.2\\
+\hline
+312 & 41 & 161 & 26 & 21 & 0.2 & 0.2 & 1.2 & 0.7 & 3.9 & 1.4 & 6.4 & 1.3 & 11.9 & 5.1 & 28.4 & 4.5 & 75.7 & 20.4\\
+\hline
+313 & 74 & 61 & 31 & 31 & 4.5 & 14.8 & 1.6 & 3.5 & 7.7 & 2.0 & 0.1 & 0.3 & 10.6 & 3.1 & 0.4 & 9.8 & 49.6 & 35.6\\
+\hline
+321 & 71 & 422 & 26 & 17 & 8.2 & 8.0 & 3.8 & 4.8 & 5.1 & 2.4 & 4.3 & 2.0 & 20.3 & 5.4 & 46.6 & 11.5 & 64.5 & 18.8\\
+\hline
+322 & 22 & 724 & 24 & 14 & 7.9 & 8.1 & 4.1 & 4.6 & 0.5 & 2.0 & 13.6 & 3.2 & 6.2 & 1.6 & 64.6 & 9.8 & 37.2 & 5.5\\
+\hline
+323 & 13 & 90 & 35 & 17 & 6.5 & 8.5 & 4.8 & 5.0 & 0.7 & 0.5 & 28.0 & 13.4 & 9.4 & 3.9 & 80.2 & 35.1 & 82.1 & 28.7\\
+\hline
+324 & 9 & 186 & 35 & 14 & 8.1 & 8.0 & 5.5 & 4.8 & 0.6 & 0.4 & 16.4 & 2.9 & 7.7 & 1.0 & 93.2 & 10.7 & 91.5 & 10.6\\
+\hline
+331 & 13 & 160 & 21 & 18 & 6.6 & 5.5 & 1.9 & 1.8 & 0.4 & 0.2 & 6.0 & 1.6 & 3.8 & 1.4 & 49.0 & 4.4 & 38.5 & 7.6\\
+\hline
+332 & 12 & 187 & 25 & 15 & 9.5 & 10.6 & 4.3 & 4.0 & 0.1 & 0.2 & 5.0 & 0.5 & 7.7 & 1.2 & 19.3 & 3.3 & 29.8 & 6.7\\
+\hline
+341 & 41 & 119 & 26 & 20 & 8.7 & 9.1 & 3.8 & 5.0 & 4.5 & 0.6 & 4.9 & 0.2 & 21.1 & 2.6 & 43.3 & 5.2 & 60.1 & 14.6\\
+\hline
+342 & 40 & 324 & 25 & 22 & 5.1 & 8.0 & 2.9 & 3.8 & 1.3 & 1.6 & 8.4 & 1.3 & 34.7 & 9.3 & 42.6 & 7.7 & 76.2 & 25.1\\
+\hline
+351 & 68 & 55 & 24 & 17 & 7.3 & 6.4 & 3.0 & 3.6 & 6.5 & 0.9 & 7.0 & 3.2 & 30.3 & 14.3 & 54.2 & 21.7 & 72.1 & 48.7\\
+\hline
+352 & 100 & 216 & 30 & 24 & 7.1 & 6.7 & 3.8 & 3.8 & 7.3 & 1.2 & 2.0 & 1.1 & 45.5 & 20.0 & 52.6 & 10.4 & 96.2 & 56.4\\
+\hline
+356 & 53 & 241 & 20 & 15 & 9.6 & 10.2 & 5.7 & 6.1 & 2.1 & 1.3 & 5.6 & 1.8 & 37.7 & 15.7 & 53.4 & 17.3 & 86.1 & 40.5\\
+\hline
+369 & 58 & 223 & 29 & 19 & 4.9 & 5.7 & 1.7 & 2.0 & 3.0 & 0.4 & 4.2 & 0.4 & 12.9 & 5.9 & 29.4 & 4.1 & 39.7 & 19.2\\
+\hline
+381 & 85 & 569 & 24 & 17 & 9.0 & 9.4 & 4.8 & 4.9 & 2.6 & 1.4 & 5.3 & 1.2 & 30.3 & 12.8 & 52.8 & 9.8 & 78.0 & 32.2\\
+\hline
+382 & 46 & 330 & 26 & 20 & 8.1 & 7.8 & 4.2 & 4.0 & 1.0 & 0.9 & 6.4 & 3.7 & 39.1 & 13.9 & 54.7 & 18.3 & 85.7 & 43.5\\
+\hline
+383 & 57 & 168 & 23 & 18 & 9.3 & 8.8 & 4.5 & 4.6 & 3.1 & 0.8 & 3.5 & 2.0 & 52.1 & 23.8 & 49.2 & 13.5 & 95.3 & 57.3\\
+\hline
+384 & 42 & 209 & 26 & 17 & 8.7 & 7.4 & 5.0 & 5.0 & 5.9 & 0.9 & 5.2 & 2.0 & 48.4 & 14.5 & 39.8 & 8.8 & 80.3 & 38.7\\
+\hline
+390 & 18 & 163 & 24 & 21 & 9.6 & 11.4 & 4.1 & 4.1 & 0.4 & 0.5 & 15.1 & 3.1 & 43.6 & 13.6 & 82.3 & 19.6 & 90.3 & 40.7\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-tims-test}Rejection frequencies of the
+\(\mathcal{V}_{it}\) for Corporations and Non-Corporations. The
+rejection frequencies of the one tail test are the average number of
+observations that fell above the 95\% region of the
+\(f_{\varepsilon}(\varepsilon)\) distribution recovered in the first
+stage. The rejection frequencies of the two tail test are the average
+number of observations that fell above the 97.5\% or below the 2.5\%
+region.}
+
+\centering{
+
+\centering
+\begin{tabular}[t]{l|r|r|r|r}
+\hline
+\multicolumn{1}{c|}{ } & \multicolumn{2}{c|}{One Tail} & \multicolumn{2}{c}{Two Tail} \\
+\cline{2-3} \cline{4-5}
+SIC & Corp & Non-Corp & Corp  & Non-Corp \\
+\hline
+311 & 5.1 & 9.3 & 5.1 & 8.7\\
+\cline{1-5}
+312 & 5.1 & 3.2 & 5.1 & 6.8\\
+\cline{1-5}
+322 & 4.4 & 26.3 & 3.5 & 8.9\\
+\cline{1-5}
+381 & 4.9 & 4.6 & 4.9 & 6.3\\
+\cline{1-5}
+321 & 4.9 & 21.4 & 5.1 & 12.7\\
+\cline{1-5}
+382 & 5.0 & 5.2 & 5.0 & 5.4\\
+\cline{1-5}
+384 & 5.0 & 0.6 & 4.7 & 4.3\\
+\cline{1-5}
+383 & 4.9 & 2.6 & 5.1 & 2.9\\
+\cline{1-5}
+313 & 5.0 & 17.9 & 5.0 & 12.9\\
+\cline{1-5}
+341 & 5.0 & 4.4 & 5.0 & 8.1\\
+\cline{1-5}
+324 & 5.1 & 10.4 & 5.1 & 11.2\\
+\cline{1-5}
+342 & 5.1 & 6.3 & 5.1 & 5.9\\
+\cline{1-5}
+369 & 5.1 & 12.5 & 4.8 & 12.8\\
+\cline{1-5}
+332 & 5.3 & 4.3 & 5.3 & 8.5\\
+\cline{1-5}
+390 & 4.4 & 1.1 & 4.4 & 1.0\\
+\cline{1-5}
+351 & 4.8 & 11.2 & 4.8 & 10.5\\
+\cline{1-5}
+352 & 4.9 & 12.1 & 5.0 & 9.9\\
+\cline{1-5}
+356 & 5.2 & 3.9 & 5.2 & 8.6\\
+\cline{1-5}
+331 & 5.8 & 26.1 & 4.8 & 22.7\\
+\cline{1-5}
+323 & 4.7 & 1.5 & 3.8 & 12.6\\
+\hline
+\end{tabular}
+
+}
+
+\end{table}%
+
 \section{Fortran GNR}\label{fortran-gnr}
 
 \subsection{Non-Parametric Production
@@ -5146,15 +4738,15 @@ Ind. & Inter. & m & l & k & bigE & si\_mean & err\_mean & err\_sd\\
 
 \begin{minipage}{\linewidth}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-44-1.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-46-1.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-44-2.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-46-2.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-44-3.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-46-3.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-44-4.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-46-4.pdf}
 
-\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-44-5.pdf}
+\includegraphics{Tax-Prod_files/figure-pdf/unnamed-chunk-46-5.pdf}
 
 \end{minipage}%
 
