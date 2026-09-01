@@ -222,15 +222,25 @@ fit_one_lambda_A <- function(lambda, run_sample, n_burn, n_keep, par_init) {
          max_abs_gamma = max(abs(res2$par[-(1:4)])))
 }
 
-## maxeval (2026-08-29): nloptr::bobyqa's default (1000) is dimension-
-## INDEPENDENT -- fine for A's 12-dim inner problem (converges in ~150-250
-## evals in practice), but B's inner problem is 4+J+(8+J+6) ~ 75-dim, and
-## every B smoke test hit conv=5 (the maxeval cap, not real convergence) at
-## every single lambda point. Raised here, not for A (which doesn't need
-## it) -- a modest bump first (not jumping straight to something drastic),
-## to see whether that alone is enough before spending more compute.
+## maxeval/xtol_rel/maxtime (2026-08-29, revised 2026-09-01): nloptr::bobyqa's
+## defaults (maxeval=1000, xtol_rel=1e-6, no maxtime) are fine for A's 12-dim
+## inner problem (converges in ~150-250 evals in practice), but B's inner
+## problem is 4+J+(8+J+6) ~75-dim, and every B smoke test hit conv=5 (the
+## maxeval cap, not real convergence) at every single lambda point -- a modest
+## maxeval bump alone (the first thing tried) wasn't enough. Revised, scoped
+## to B only (A already converges cleanly, not touched): (i) maxeval raised
+## further (1000->5000) as a secondary safety net; (ii) xtol_rel loosened two
+## orders of magnitude (1e-6->1e-4) -- the objective has real MC noise from
+## the finite Metropolis chain, so resolving parameter changes to 1-in-a-
+## million is likely tighter than the noise floor supports at this dimension;
+## (iii) maxtime added (not previously set at all) as the PRACTICAL binding
+## constraint -- at the real-scale per-call cost (~376ms, measured after the
+## 2026-08-31 Accelerate fusion), 600s allows ~1600 evals, comfortably above
+## the raised maxeval, so maxtime should bind before maxeval in the worst
+## case, bounding wall-clock time per lambda point directly regardless of how
+## slowly a given point's problem happens to be behaving.
 fit_one_lambda_B <- function(lambda, run_sample, J, mu_m_lower, mu_m_upper, n_burn, n_keep, par_init,
-                              maxeval = 1000) {
+                              maxeval = 5000, xtol_rel = 1e-4, maxtime = 600) {
     dat <- run_sample
     n_dropped <- 0L
     p_boundary <- boundary_fraction(dat, lambda)
@@ -239,9 +249,10 @@ fit_one_lambda_B <- function(lambda, run_sample, J, mu_m_lower, mu_m_upper, n_bu
     obj <- function(par) cue_objective_B(par, lambda, dat, J, n_burn, n_keep)
     lower <- c(rep(-DELTA_BOUND, 3), 0,     mu_m_lower, rep(-Inf, d_g))
     upper <- c(rep( DELTA_BOUND, 3), 0.999, mu_m_upper, rep( Inf, d_g))
+    ctrl <- list(maxeval = maxeval, xtol_rel = xtol_rel, maxtime = maxtime)
 
-    res1 <- nloptr::bobyqa(x0 = par_init, fn = obj, lower = lower, upper = upper, control = list(maxeval = maxeval))
-    res2 <- nloptr::bobyqa(x0 = res1$par, fn = obj, lower = lower, upper = upper, control = list(maxeval = maxeval))
+    res1 <- nloptr::bobyqa(x0 = par_init, fn = obj, lower = lower, upper = upper, control = ctrl)
+    res2 <- nloptr::bobyqa(x0 = res1$par, fn = obj, lower = lower, upper = upper, control = ctrl)
 
     gamma_idx <- (4 + J + 1):(4 + J + d_g)
     list(lambda = lambda, value = res2$value, par = res2$par, n = nrow(dat), n_dropped = n_dropped,
@@ -387,7 +398,7 @@ run_stage2_elvis_AB <- function(ins_choice, moment_set = c("A", "B"), warmstart,
                                  grid_probs = c(0.5, 0.25, 0.1, 0.05, 0.01),
                                  lambda_grid_override = NULL,   # explicit lambda values; NULL = quantile-based
                                  corner_mode = c("drop", "include_zero"),
-                                 maxeval_b = 1000,
+                                 maxeval_b = 5000, xtol_rel_b = 1e-4, maxtime_b = 600,
                                  refine = TRUE, refine_points = 10) {
     moment_set  <- match.arg(moment_set)
     corner_mode <- match.arg(corner_mode)
@@ -472,15 +483,15 @@ run_stage2_elvis_AB <- function(ins_choice, moment_set = c("A", "B"), warmstart,
         # evidence of misspecification, just evidence the box let them go
         # somewhere they structurally shouldn't.
         mu_m_upper <- logMstar_by_j$mu - 0.01
-        cat(sprintf("[%s, B, corner_mode=%s] n=%d (%d corner), J=%d industries, n_burn=%d, n_keep=%d, maxeval_b=%d, lambda grid: %s\n",
-                    ins_choice, corner_mode, nrow(run_sample), sum(run_sample$corner), J, n_burn, n_keep, maxeval_b,
+        cat(sprintf("[%s, B, corner_mode=%s] n=%d (%d corner), J=%d industries, n_burn=%d, n_keep=%d, maxeval_b=%d, xtol_rel_b=%g, maxtime_b=%d, lambda grid: %s\n",
+                    ins_choice, corner_mode, nrow(run_sample), sum(run_sample$corner), J, n_burn, n_keep, maxeval_b, xtol_rel_b, maxtime_b,
                     paste(signif(lambda_grid, 3), collapse = ", ")))
         par_init0 <- c(delta_init, 0, mu_m_init, rep(0, 8 + J + 6))   # eta0=0, same rationale as A
         run_grid_B <- function(grid, par_init) {
             out <- vector("list", length(grid))
             for (i in seq_along(grid)) {
                 out[[i]] <- fit_one_lambda_B(grid[i], run_sample, J, mu_m_lower, mu_m_upper, n_burn, n_keep, par_init,
-                                              maxeval = maxeval_b)
+                                              maxeval = maxeval_b, xtol_rel = xtol_rel_b, maxtime = maxtime_b)
                 if (!is.na(out[[i]]$value)) par_init <- out[[i]]$par
             }
             list(fits = out, par_init = par_init)
@@ -535,13 +546,16 @@ DEFAULTS <- list(
     grid_probs  = seq(0.01, 0.5, length.out = 5),
     lambda_grid = numeric(0),   # explicit, arithmetically-spaced lambda values; overrides grid_probs when non-empty
     n_cores     = 1,
-    maxeval_b   = 1000,  # moment set B only; A converges fine at nloptr::bobyqa's own default
+    maxeval_b   = 5000,   # moment set B only; A converges fine at nloptr::bobyqa's own default (2026-09-01: raised 1000->5000, see fit_one_lambda_B's header comment)
+    xtol_rel_b  = 1e-4,   # moment set B only; loosened from nloptr's 1e-6 default (2026-09-01)
+    maxtime_b   = 600,    # moment set B only; seconds per BOBYQA call, not previously set at all (2026-09-01)
     refine        = TRUE,  # auto linear-refinement pass around the quantile grid's argmin (bracket_local_min/build_linear_refinement)
     refine_points = 10     # build_linear_refinement()'s n_points
 )
 opt <- parse_cli_args(DEFAULTS)
 opt$n_cores <- as.integer(opt$n_cores)
 opt$maxeval_b <- as.integer(opt$maxeval_b)
+opt$maxtime_b <- as.integer(opt$maxtime_b)
 opt$refine_points <- as.integer(opt$refine_points)
 stopifnot(
     opt$ins %in% names(WARMSTARTS),
@@ -557,7 +571,7 @@ fits <- run_stage2_elvis_AB(
     grid_probs = opt$grid_probs,
     lambda_grid_override = if (length(opt$lambda_grid) > 0) opt$lambda_grid else NULL,
     corner_mode = opt$corner_mode,
-    maxeval_b = opt$maxeval_b,
+    maxeval_b = opt$maxeval_b, xtol_rel_b = opt$xtol_rel_b, maxtime_b = opt$maxtime_b,
     refine = opt$refine, refine_points = opt$refine_points
 )
 

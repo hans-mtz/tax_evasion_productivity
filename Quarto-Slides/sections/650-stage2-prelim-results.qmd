@@ -48,10 +48,37 @@ Both evaluated via the same per-firm Metropolis chain the estimator itself uses 
 
 $\hat\mu_e\gg\hat\theta_e$ in both cases — a right-skewed evasion distribution: most firms evade modestly (10.3% are $\tau_P=0$ corner firms, $e\equiv0$ exactly), a long right tail of aggressive evaders pulls the mean well above the median. All four implied probabilities sit comfortably inside $(0,0.5)$ — no red flag on $\hat\lambda$, and the mean/median gap is itself a substantive, plausible feature of the fit, not noise.
 
+## Implementation — Moment Set B
+
+Adds per-industry $\ln M$ targets ($\mu_{m,j}$, jointly estimated, $J=29$ industries) and the omega-anchored heteroskedasticity block to A's 8 rows: $d_g=8+J+6\approx43$, $\theta_{\text{smooth}}=(\delta_0,\delta_1,\delta_2,\eta,\mu_{m,1},\dots,\mu_{m,J})$ — a $\sim$75-dimensional inner BOBYQA problem, versus A's 12.
+
+- **Same objective, sampler, two-phase $\lambda$ search** as A — no methodology change, only the moment row list and parameter count grow.
+- **Needed two fixes A didn't**, both scoped to B only (A's already-validated results untouched):
+  - *Optimizer settings*: at A's defaults (`xtol_rel=1e-6`, `maxeval=1000`, no time cap), **every single B point hit the `maxeval` cap** — not real convergence. Loosened `xtol_rel` to `1e-4` (the objective has real Monte Carlo noise from the finite Metropolis chain; resolving parameter changes to 1-in-a-million is tighter than the noise floor supports at this dimension), raised `maxeval` to 5000, and added a `maxtime=600s` safety net per BOBYQA call (not previously set at all).
+  - *Speed*: B's `cov(Ghat)` step was ~12% of total per-call time (measured, not assumed — an earlier "too small to matter" read came from a synthetic benchmark at the wrong scale). Replaced with Apple's Accelerate/CBLAS (`cblas_dsyrk`), fused into the same C++ call that builds the moment matrix so it never crosses back to R — 157.6ms → 138.25ms per call (~12.3% faster), verified bit-close (relative difference $\sim3\times10^{-13}$) before being trusted.
+- **Result**: overnight run (real scale, `n_burn=500, n_keep=1000`), **31 of 32 lambda points across both instruments converged for real** (`conv=1`, via `xtol_rel`) — one non-final quantile-phase point hit the `maxtime` cap.
+
+## $\hat L_n(\lambda)$ — Moment Set B
+
+![](../Paper/images/1214-stage2-B-lhat-lambda.png){height="75%" fig-align="center"}
+
+##
+
+**Reading the picture**: same qualitative shape as A — both instruments' minimum sits at the smallest tested $\lambda$, rising away from it. `lag_2_cal_W` (right panel) is visibly noisier near its minimum than `lag_m`, and its full-range panel shows the one `maxtime`-capped point (open circle) sitting off the smooth trend the converged points trace — consistent with it not having finished the search.
+
+## Headline Estimates — Moment Set B
+
+| Instrument | $\hat\lambda$ | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*$ | $\max\vert\gamma\vert$ | conv |
+|:--|--:|--:|--:|--:|--:|--:|--:|:--|
+| `lag_m` | $5.88\times10^{-7}$ | 0.00113 | $-1.236$ | 1.236 | **0.183** | 3.38 | 2.43 | 16/16 |
+| `lag_2_cal_W` | $5.88\times10^{-7}$ | 0.00553 | $-0.515$ | 0.890 | **0.064** | 6.97 | 4.83 | 15/16 |
+
+**`lag_m` agrees closely with A** ($\hat\omega^*=3.38$ vs. A's 3.34 — near-exact). **`lag_2_cal_W` moved substantially**: A gave $\hat\omega^*=2.35$, $\hat\delta_2=0.396$; B gives $\hat\omega^*=6.97$, $\hat\delta_2=0.064$ — a much flatter cost curvature. Plausible (B carries real extra information A doesn't — the per-industry $\ln M$ moments), but a large enough jump that it needs understanding, not just reporting, before it goes in front of anyone as a headline number.
+
 ## Notes for Discussion
 
-- **Both minima sit at their grid's edge** — extend the refinement below $\lambda\approx6\times10^{-7}$ before reporting either $\hat\lambda$ as final.
-- **`lag_2_cal_W`'s $\gamma$ grows large** (up to $\sim1{,}700$) toward the high-$\lambda$ end of its refined grid — expected under Schennach's theory, not a numerical concern, but worth watching as the grid extends.
+- **All four fits — both moment sets, both instruments — have their minimum at the exact same boundary**, $\lambda=5.877\times10^{-7}$, the smallest point in every refined grid. Not a coincidence at this point: a strong, consistent signal the true optimum lies below what's been searched everywhere, not just for A. This is the one blocking item before any of today's numbers should be called final — the grid needs a second refinement pass extending further down.
+- **`lag_2_cal_W`'s B estimate moved a lot from A's** ($\hat\omega^*$: 2.35 → 6.97) while `lag_m`'s barely moved (3.34 → 3.38) — worth understanding *why* before trusting either instrument's B number at face value. Candidates: genuine extra identifying information from B's per-industry moments, or an artifact of the still-unresolved edge-of-grid issue propagating differently into each instrument's fit.
+- **`lag_2_cal_W`'s $\gamma$ grows large** (up to $\sim1{,}700$ under A, $\sim$tens under B) toward the high-$\lambda$ end of its grid — expected under Schennach's theory (a large/degenerate $\gamma$ is a valid solution, not a numerical failure), not a numerical concern, but worth watching as the grid extends.
 - **No formal confidence region yet.** The test statistic for the $\chi^2_{d_g}$ comparison is $2n\hat L_n$ (AK2020's own convention, `TSMC=2*minf*n` in their `1App_main.jl`) — not yet wired into the driver.
-- **Moment set B** (adds per-industry $\ln M$ targets, $d_g\approx8+J+6\approx43$) is running in parallel; not yet at this scale.
 - **Next methodological improvement, not yet applied:** `build_lambda_grid`'s $\lambda$ grid is calibrated off $\text{quantile}(M^*,\cdot)$ — a conservative proxy for $\text{Med}(e)$ chosen only because $e$ itself wasn't directly observable. Now that $\mathcal V_{it}$ (hence an implied $e$) is directly in hand for every firm, the grid/bracket should be calibrated off $\mathcal V$'s own distribution instead of $M^*$ — tighter, less conservative, and removes an approximation step. Flagged for a follow-up run, not applied to the results above.
