@@ -244,3 +244,118 @@ List mh_tilted_moments_B_cpp(
 
     return List::create(Named("dvec") = dvec, Named("Omega") = Omega);
 }
+
+// ---- Auxiliary-parameter diagnostic: pooled e AND omega, moment set B ----
+// (2026-09-01) Mirrors tilted_e_omega_diag_A_cpp in the main file, for B --
+// no B-specific diagnostic previously existed at all. Same chain as
+// TiltedMomentWorkerB above, additionally tracking e_current/om_current
+// alongside g_current so both can be pooled in one pass at the already-
+// fitted (theta_hat, gamma_hat). No Accelerate needed here (this is a
+// per-firm Metropolis diagnostic, not the CUE objective's covariance step),
+// but it lives in this file since that's where moment_g_B_one/
+// TiltedMomentWorkerB's helpers already are.
+struct TiltedEOmegaDiagWorkerB : public Worker {
+    const RVector<double>  Mstar, V, Wt, tau_rho, beta, mu_omega, sigma_omega, gamma, mu_m;
+    const RVector<int>     row_id, corner, industry_idx;
+    const double lambda, delta0, delta1, delta2, eta;
+    const int n_burn, n_keep, base_seed, J, d_g, n_pool;
+    RMatrix<double> e_pool_out, omega_pool_out;
+
+    TiltedEOmegaDiagWorkerB(
+        const NumericVector& Mstar_, const NumericVector& V_, const NumericVector& Wt_, const NumericVector& tau_rho_,
+        const NumericVector& beta_, const NumericVector& mu_omega_, const NumericVector& sigma_omega_,
+        const IntegerVector& row_id_, const IntegerVector& corner_, const IntegerVector& industry_idx_,
+        double lambda_, double delta0_, double delta1_, double delta2_, double eta_,
+        const NumericVector& gamma_, const NumericVector& mu_m_,
+        int n_burn_, int n_keep_, int base_seed_, int J_, int d_g_, int n_pool_,
+        NumericMatrix& e_pool_out_, NumericMatrix& omega_pool_out_
+    ) : Mstar(Mstar_), V(V_), Wt(Wt_), tau_rho(tau_rho_), beta(beta_),
+        mu_omega(mu_omega_), sigma_omega(sigma_omega_), gamma(gamma_), mu_m(mu_m_),
+        row_id(row_id_), corner(corner_), industry_idx(industry_idx_),
+        lambda(lambda_), delta0(delta0_), delta1(delta1_), delta2(delta2_), eta(eta_),
+        n_burn(n_burn_), n_keep(n_keep_), base_seed(base_seed_), J(J_), d_g(d_g_), n_pool(n_pool_),
+        e_pool_out(e_pool_out_), omega_pool_out(omega_pool_out_) {}
+
+    void operator()(std::size_t begin, std::size_t end) {
+        int pool_stride = std::max(1, n_keep / n_pool);
+        for (std::size_t ii = begin; ii < end; ii++) {
+            int i = static_cast<int>(ii);
+            int idx = industry_idx[i];
+
+            if (corner[i] == 1) {
+                double om_pt = omega_of_M(Mstar[i], Mstar[i], V[i], Wt[i], beta[i]);
+                for (int p = 0; p < n_pool; p++) { e_pool_out(i, p) = 0.0; omega_pool_out(i, p) = om_pt; }
+                continue;
+            }
+
+            std::mt19937_64 rng(static_cast<uint64_t>(base_seed) + static_cast<uint64_t>(row_id[i]));
+            std::uniform_real_distribution<double> unif(0.0, 1.0);
+
+            std::vector<double> g_current(d_g), g_try(d_g);
+            double M_current = draw_from_rho_eta(unif(rng), Mstar[i], lambda, eta);
+            moment_g_B_one(M_current, Mstar[i], V[i], Wt[i], tau_rho[i], beta[i], lambda,
+                           delta0, delta1, delta2, mu_omega[i], sigma_omega[i], idx, mu_m, J, g_current);
+            double e_current  = e_of_M(M_current, Mstar[i]);
+            double om_current = omega_of_M(M_current, Mstar[i], V[i], Wt[i], beta[i]);
+
+            int pool_idx = 0;
+
+            for (int r = -n_burn + 1; r <= n_keep; r++) {
+                double M_try = draw_from_rho_eta(unif(rng), Mstar[i], lambda, eta);
+                moment_g_B_one(M_try, Mstar[i], V[i], Wt[i], tau_rho[i], beta[i], lambda,
+                               delta0, delta1, delta2, mu_omega[i], sigma_omega[i], idx, mu_m, J, g_try);
+                double e_try  = e_of_M(M_try, Mstar[i]);
+                double om_try = omega_of_M(M_try, Mstar[i], V[i], Wt[i], beta[i]);
+
+                double log_ratio = 0.0;
+                for (int t = 0; t < d_g; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
+
+                if (std::log(unif(rng)) < log_ratio) {
+                    g_current = g_try;
+                    e_current = e_try;
+                    om_current = om_try;
+                }
+                if (r > 0) {
+                    if ((r - 1) % pool_stride == 0 && pool_idx < n_pool) {
+                        e_pool_out(i, pool_idx) = e_current;
+                        omega_pool_out(i, pool_idx) = om_current;
+                        pool_idx++;
+                    }
+                }
+            }
+            while (pool_idx < n_pool) { e_pool_out(i, pool_idx) = e_current; omega_pool_out(i, pool_idx) = om_current; pool_idx++; }
+        }
+    }
+};
+
+// [[Rcpp::export]]
+List tilted_e_omega_diag_B_cpp(
+    NumericVector Mstar, NumericVector V, NumericVector Wt, NumericVector tau_rho,
+    NumericVector beta, NumericVector mu_omega, NumericVector sigma_omega,
+    IntegerVector row_id, IntegerVector corner, IntegerVector industry_idx,
+    double lambda, double delta0, double delta1, double delta2, double eta,
+    NumericVector gamma, NumericVector mu_m,
+    int n_burn, int n_keep, int n_pool = 20,
+    int base_seed = 20260901
+) {
+    int n = Mstar.size();
+    int J = mu_m.size();
+    int d_g = 8 + J + 6;
+    if (gamma.size() != d_g) stop("gamma length must equal 8+J+6 (moment set B)");
+    if (corner.size() != n) stop("corner length must equal n");
+    if (row_id.size() != n) stop("row_id length must equal n");
+    if (industry_idx.size() != n) stop("industry_idx length must equal n");
+    if (mu_omega.size() != n || sigma_omega.size() != n) stop("mu_omega/sigma_omega length must equal n");
+    if (eta < 0.0 || eta >= 1.0) stop("eta must be in [0,1)");
+
+    NumericMatrix e_pool(n, n_pool), omega_pool(n, n_pool);
+    TiltedEOmegaDiagWorkerB worker(
+        Mstar, V, Wt, tau_rho, beta, mu_omega, sigma_omega,
+        row_id, corner, industry_idx,
+        lambda, delta0, delta1, delta2, eta, gamma, mu_m,
+        n_burn, n_keep, base_seed, J, d_g, n_pool,
+        e_pool, omega_pool
+    );
+    RcppParallel::parallelFor(0, n, worker);
+    return List::create(Named("e_pool") = e_pool, Named("omega_pool") = omega_pool);
+}

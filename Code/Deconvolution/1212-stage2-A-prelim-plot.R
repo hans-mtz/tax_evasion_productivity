@@ -45,12 +45,16 @@ print(best[, c("ins", "phase", "lambda", "Lhat", "delta0", "delta1", "delta2", "
 cat("\n(For E[e]/Med[e] auxiliary parameters, see 1213-stage2-A-aux-e.R)\n")
 
 ## %% Figure -----------------------------------------------------------------
+## Instrument labels (2026-09-01, per user): lag_m = m*_(it-1), lag_2_cal_W =
+## W_(it-2). Plain-text approximation here (ggplot2 legends can't render full
+## LaTeX/calligraphic fonts) -- the slide prose/tables use the exact LaTeX
+## ($m^*_{it-1}$, $\mathcal{W}_{it-2}$) where it renders natively.
+INS_LABELS <- c(lag_m = "m*(t−1)", lag_2_cal_W = "\U0001D4B2(t−2)")
 wong_cb_palette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#d0c536", "#0072B2", "#D55E00", "#CC79A7")
-ins_colors <- c(lag_m = wong_cb_palette[6], lag_2_cal_W = wong_cb_palette[7])
+ins_colors <- setNames(wong_cb_palette[6:7], INS_LABELS[c("lag_m", "lag_2_cal_W")])
 
 df$phase_lbl <- ifelse(df$phase == "quantile", "Quantile grid", "Linear refinement")
-df$ins_lbl   <- factor(df$ins, levels = c("lag_m", "lag_2_cal_W"),
-                        labels = c("lag_m", "lag_2_cal_W"))
+df$ins_lbl   <- factor(INS_LABELS[df$ins], levels = INS_LABELS[c("lag_m", "lag_2_cal_W")])
 
 p <- df %>%
     arrange(ins, lambda) %>%

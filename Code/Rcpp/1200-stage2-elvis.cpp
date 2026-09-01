@@ -682,6 +682,114 @@ List tilted_e_diag_A_cpp(
     return List::create(Named("e_mean") = e_mean, Named("e_pool") = e_pool);
 }
 
+// ---- Auxiliary-parameter diagnostic: pooled e AND omega, moment set A ----
+// (2026-09-01) A new function, not a modification of TiltedEDiagWorkerA/
+// tilted_e_diag_A_cpp above -- zero risk to that already-validated code.
+// Same chain mechanics, same post-hoc-at-fitted-(theta,gamma) logic, just
+// also tracking omega_current alongside e_current so both can be pooled in
+// ONE pass (no reason to run the chain twice). Requested to compare
+// omega_star=delta1/(2*delta2) against the ACTUAL tilted omega distribution
+// (is it near the median firm, or a tail firm?), and to get e's upper-tail
+// percentiles (p80/p90/p95/p99) for a detection-probability check beyond
+// just the mean/median already in 1213.
+struct TiltedEOmegaDiagWorkerA : public Worker {
+    const RVector<double>  Mstar, V, Wt, tau_rho, beta, gamma;
+    const RVector<int>     row_id, corner;
+    const double lambda, delta0, delta1, delta2, eta;
+    const int n_burn, n_keep, n_pool, base_seed;
+    RMatrix<double> e_pool_out, omega_pool_out;
+
+    TiltedEOmegaDiagWorkerA(
+        const NumericVector& Mstar_, const NumericVector& V_, const NumericVector& Wt_, const NumericVector& tau_rho_,
+        const NumericVector& beta_, const NumericVector& gamma_,
+        const IntegerVector& row_id_, const IntegerVector& corner_,
+        double lambda_, double delta0_, double delta1_, double delta2_, double eta_,
+        int n_burn_, int n_keep_, int n_pool_, int base_seed_,
+        NumericMatrix& e_pool_out_, NumericMatrix& omega_pool_out_
+    ) : Mstar(Mstar_), V(V_), Wt(Wt_), tau_rho(tau_rho_), beta(beta_), gamma(gamma_),
+        row_id(row_id_), corner(corner_),
+        lambda(lambda_), delta0(delta0_), delta1(delta1_), delta2(delta2_), eta(eta_),
+        n_burn(n_burn_), n_keep(n_keep_), n_pool(n_pool_), base_seed(base_seed_),
+        e_pool_out(e_pool_out_), omega_pool_out(omega_pool_out_) {}
+
+    void operator()(std::size_t begin, std::size_t end) {
+        int pool_stride = std::max(1, n_keep / n_pool);
+        for (std::size_t ii = begin; ii < end; ii++) {
+            int i = static_cast<int>(ii);
+
+            if (corner[i] == 1) {
+                // structural non-evader: M=Mstar known exactly, e=0, omega deterministic
+                double om_pt = omega_of_M(Mstar[i], Mstar[i], V[i], Wt[i], beta[i]);
+                for (int p = 0; p < n_pool; p++) { e_pool_out(i, p) = 0.0; omega_pool_out(i, p) = om_pt; }
+                continue;
+            }
+
+            std::mt19937_64 rng(static_cast<uint64_t>(base_seed) + static_cast<uint64_t>(row_id[i]));
+            std::uniform_real_distribution<double> unif(0.0, 1.0);
+
+            GVecA g_current, g_try;
+            double M_current = draw_from_rho_eta(unif(rng), Mstar[i], lambda, eta);
+            moment_g_A_one(M_current, Mstar[i], V[i], Wt[i], tau_rho[i],
+                           beta[i], lambda, delta0, delta1, delta2, g_current);
+            double e_current  = e_of_M(M_current, Mstar[i]);
+            double om_current = omega_of_M(M_current, Mstar[i], V[i], Wt[i], beta[i]);
+
+            int pool_idx = 0;
+
+            for (int r = -n_burn + 1; r <= n_keep; r++) {
+                double M_try = draw_from_rho_eta(unif(rng), Mstar[i], lambda, eta);
+                moment_g_A_one(M_try, Mstar[i], V[i], Wt[i], tau_rho[i],
+                               beta[i], lambda, delta0, delta1, delta2, g_try);
+                double e_try  = e_of_M(M_try, Mstar[i]);
+                double om_try = omega_of_M(M_try, Mstar[i], V[i], Wt[i], beta[i]);
+
+                double log_ratio = 0.0;
+                for (int t = 0; t < D_G_A; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
+
+                if (std::log(unif(rng)) < log_ratio) {
+                    g_current = g_try;
+                    e_current = e_try;
+                    om_current = om_try;
+                }
+                if (r > 0) {
+                    if ((r - 1) % pool_stride == 0 && pool_idx < n_pool) {
+                        e_pool_out(i, pool_idx) = e_current;
+                        omega_pool_out(i, pool_idx) = om_current;
+                        pool_idx++;
+                    }
+                }
+            }
+            while (pool_idx < n_pool) { e_pool_out(i, pool_idx) = e_current; omega_pool_out(i, pool_idx) = om_current; pool_idx++; }
+        }
+    }
+};
+
+// [[Rcpp::export]]
+List tilted_e_omega_diag_A_cpp(
+    NumericVector Mstar, NumericVector V, NumericVector Wt, NumericVector tau_rho,
+    IntegerVector row_id, NumericVector beta,
+    double lambda, double delta0, double delta1, double delta2, double eta,
+    NumericVector gamma,
+    IntegerVector corner,
+    int n_burn, int n_keep, int n_pool = 20,
+    int base_seed = 20260901
+) {
+    int n = Mstar.size();
+    if (gamma.size() != D_G_A) stop("gamma length must equal 8 (moment set A)");
+    if (corner.size() != n) stop("corner length must equal n");
+    if (row_id.size() != n) stop("row_id length must equal n");
+    if (eta < 0.0 || eta >= 1.0) stop("eta must be in [0,1)");
+
+    NumericMatrix e_pool(n, n_pool), omega_pool(n, n_pool);
+    TiltedEOmegaDiagWorkerA worker(
+        Mstar, V, Wt, tau_rho, beta, gamma, row_id, corner,
+        lambda, delta0, delta1, delta2, eta, n_burn, n_keep, n_pool, base_seed,
+        e_pool, omega_pool
+    );
+    RcppParallel::parallelFor(0, n, worker);
+    return List::create(Named("e_pool") = e_pool, Named("omega_pool") = omega_pool);
+}
+
 // ---- Moment set B moved to 1200-stage2-elvis-B.cpp (2026-08-31) -------
 // -- moment_g_B_one, TiltedMomentWorkerB, mh_tilted_average_B_cpp all live
 // there now, so that file alone can take on an Accelerate/CBLAS dependency

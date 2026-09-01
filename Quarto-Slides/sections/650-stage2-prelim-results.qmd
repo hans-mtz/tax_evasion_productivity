@@ -22,8 +22,8 @@ Moment set A (row list authoritative in `Code/Rcpp/1200-stage2-elvis.cpp`'s head
 
 | Instrument | $\hat\lambda$ | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ | $\max\vert\gamma\vert$ |
 |:--|--:|--:|--:|--:|--:|--:|--:|
-| `lag_m` | $1.18\times10^{-6}$ | 0.0108 | $-1.099$ | 1.453 | **0.218** | 3.34 | 2.08 |
-| `lag_2_cal_W` | $5.88\times10^{-7}$ | 0.0073 | $-1.305$ | 1.859 | **0.396** | 2.35 | 1.43 |
+| $m^*_{it-1}$ | $1.18\times10^{-6}$ | 0.0108 | $-1.099$ | 1.453 | **0.218** | 3.34 | 2.08 |
+| $\mathcal{W}_{it-2}$ | $5.88\times10^{-7}$ | 0.0073 | $-1.305$ | 1.859 | **0.396** | 2.35 | 1.43 |
 
 $\hat\delta_2>0$ for both — the cost function opens the correct (U-shaped) way — and $\hat\omega^*$ lands in a plausible range for both instrument choices.
 
@@ -43,8 +43,8 @@ Both evaluated via the same per-firm Metropolis chain the estimator itself uses 
 
 | Instrument | $\hat\mu_e=E[e]$ | $\hat\theta_e=\text{Med}[e]$ | $\hat\lambda\hat\mu_e$ | $\hat\lambda\hat\theta_e$ |
 |:--|--:|--:|--:|--:|
-| `lag_m` | 5,269 | 569 | 0.62% | 0.067% |
-| `lag_2_cal_W` | 3,858 | 184 | 0.23% | 0.011% |
+| $m^*_{it-1}$ | 5,269 | 569 | 0.62% | 0.067% |
+| $\mathcal{W}_{it-2}$ | 3,858 | 184 | 0.23% | 0.011% |
 
 $\hat\mu_e\gg\hat\theta_e$ in both cases — a right-skewed evasion distribution: most firms evade modestly (10.3% are $\tau_P=0$ corner firms, $e\equiv0$ exactly), a long right tail of aggressive evaders pulls the mean well above the median. All four implied probabilities sit comfortably inside $(0,0.5)$ — no red flag on $\hat\lambda$, and the mean/median gap is itself a substantive, plausible feature of the fit, not noise.
 
@@ -64,21 +64,47 @@ Adds per-industry $\ln M$ targets ($\mu_{m,j}$, jointly estimated, $J=29$ indust
 
 ##
 
-**Reading the picture**: same qualitative shape as A — both instruments' minimum sits at the smallest tested $\lambda$, rising away from it. `lag_2_cal_W` (right panel) is visibly noisier near its minimum than `lag_m`, and its full-range panel shows the one `maxtime`-capped point (open circle) sitting off the smooth trend the converged points trace — consistent with it not having finished the search.
+**Reading the picture**: same qualitative shape as A — both instruments' minimum sits at the smallest tested $\lambda$, rising away from it. $\mathcal{W}_{it-2}$ (right panel) is visibly noisier near its minimum than $m^*_{it-1}$, and its full-range panel shows the one `maxtime`-capped point (open circle) sitting off the smooth trend the converged points trace — consistent with it not having finished the search.
 
 ## Headline Estimates — Moment Set B
 
 | Instrument | $\hat\lambda$ | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*$ | $\max\vert\gamma\vert$ | conv |
 |:--|--:|--:|--:|--:|--:|--:|--:|:--|
-| `lag_m` | $5.88\times10^{-7}$ | 0.00113 | $-1.236$ | 1.236 | **0.183** | 3.38 | 2.43 | 16/16 |
-| `lag_2_cal_W` | $5.88\times10^{-7}$ | 0.00553 | $-0.515$ | 0.890 | **0.064** | 6.97 | 4.83 | 15/16 |
+| $m^*_{it-1}$ | $5.88\times10^{-7}$ | 0.00113 | $-1.236$ | 1.236 | **0.183** | 3.38 | 2.43 | 16/16 |
+| $\mathcal{W}_{it-2}$ | $5.88\times10^{-7}$ | 0.00553 | $-0.515$ | 0.890 | **0.064** | 6.97 | 4.83 | 15/16 |
 
-**`lag_m` agrees closely with A** ($\hat\omega^*=3.38$ vs. A's 3.34 — near-exact). **`lag_2_cal_W` moved substantially**: A gave $\hat\omega^*=2.35$, $\hat\delta_2=0.396$; B gives $\hat\omega^*=6.97$, $\hat\delta_2=0.064$ — a much flatter cost curvature. Plausible (B carries real extra information A doesn't — the per-industry $\ln M$ moments), but a large enough jump that it needs understanding, not just reporting, before it goes in front of anyone as a headline number.
+**$m^*_{it-1}$ agrees closely with A** ($\hat\omega^*=3.38$ vs. A's 3.34 — near-exact). **$\mathcal{W}_{it-2}$ moved substantially**: A gave $\hat\omega^*=2.35$, $\hat\delta_2=0.396$; B gives $\hat\omega^*=6.97$, $\hat\delta_2=0.064$ — a much flatter cost curvature. Plausible (B carries real extra information A doesn't — the per-industry $\ln M$ moments), but a large enough jump that it needs understanding, not just reporting, before it goes in front of anyone as a headline number.
+
+## Interpreting $\hat\omega^*$ and $\hat\lambda$ Against the Data
+
+Two more auxiliary-parameter checks, same post-hoc-at-fitted-$(\hat\theta,\hat\gamma)$ machinery as the $E[e]/\text{Med}[e]$ check above (new exports `tilted_e_omega_diag_A_cpp`/`_B_cpp`, pooling both $e$ and $\omega$ in one pass): (i) where does $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ actually sit in the tilted $\omega$ distribution — a typical firm, or a tail one? (ii) extending the detection-probability check to $e$'s upper tail (P90/P95/P99), not just its mean/median.
+
+| | $\hat\omega^*$ | percentile of $\hat\omega^*$ | $\text{Med}(\omega)$ | P75$(\omega)$ | P95$(\omega)$ |
+|:--|--:|--:|--:|--:|--:|
+| A, $m^*_{it-1}$ | 3.34 | 71.9% | 2.79 | 3.42 | 4.20 |
+| B, $m^*_{it-1}$ | 3.38 | 71.0% | 2.83 | 3.51 | 4.54 |
+| A, $\mathcal{W}_{it-2}$ | 2.35 | 29.9% | 2.95 | 3.84 | 4.78 |
+| B, $\mathcal{W}_{it-2}$ | **6.97** | **99.9%** | 2.76 | 3.70 | 4.76 |
+
+**This sharpens the earlier flag on B's $\mathcal{W}_{it-2}$ estimate into something concrete.** Its $\hat\omega^*$ sits at the 99.9th percentile — essentially the single most productive firm in the sample. Economically: the U-shaped cost curve is barely a U over the range that matters, since almost every firm sits on the downward-sloping side and cost only turns back up for a sliver of firms at the very top. $m^*_{it-1}$ is unremarkable and consistent across both moment sets (~71st percentile, both times).
+
+##
+
+| | P90$(e)$ | P95$(e)$ | P99$(e)$ | $\hat\lambda\cdot$P90 | $\hat\lambda\cdot$P95 | $\hat\lambda\cdot$P99 |
+|:--|--:|--:|--:|--:|--:|--:|
+| A, $m^*_{it-1}$ | 10,392 | 21,297 | 84,430 | 1.22% | 2.50% | 9.92% |
+| B, $m^*_{it-1}$ | 6,010 | 13,470 | 62,740 | 0.35% | 0.79% | 3.69% |
+| A, $\mathcal{W}_{it-2}$ | 7,720 | 15,666 | 57,918 | 0.45% | 0.92% | 3.40% |
+| B, $\mathcal{W}_{it-2}$ | 19,829 | 42,873 | 212,589 | 1.17% | 2.52% | 12.49% |
+
+Even at the 99th percentile of (tilted) evasion, detection probability stays well under the 50% FOC ceiling in all four cases — no sign of $\hat\lambda$ pushing anyone near the boundary, aggressive-evader tail included.
+
+Aside — **why is $E[e]$ (0.62% detection for A, $m^*_{it-1}$) above even P80** (not shown above, but computed): $e$'s pooled distribution is extremely heavy-tailed — the top 1% of firms hold 32-35% of all pooled $e$ mass, the top 5% hold 62-65%. That concentration is enough to pull the mean above the 80th percentile (to the 82.7th for $m^*_{it-1}$, 83.2nd for $\mathcal{W}_{it-2}$) — not an error, a direct, verified consequence of the already-noted $\mu_e\gg\theta_e$ skew.
 
 ## Notes for Discussion
 
 - **All four fits — both moment sets, both instruments — have their minimum at the exact same boundary**, $\lambda=5.877\times10^{-7}$, the smallest point in every refined grid. Not a coincidence at this point: a strong, consistent signal the true optimum lies below what's been searched everywhere, not just for A. This is the one blocking item before any of today's numbers should be called final — the grid needs a second refinement pass extending further down.
-- **`lag_2_cal_W`'s B estimate moved a lot from A's** ($\hat\omega^*$: 2.35 → 6.97) while `lag_m`'s barely moved (3.34 → 3.38) — worth understanding *why* before trusting either instrument's B number at face value. Candidates: genuine extra identifying information from B's per-industry moments, or an artifact of the still-unresolved edge-of-grid issue propagating differently into each instrument's fit.
-- **`lag_2_cal_W`'s $\gamma$ grows large** (up to $\sim1{,}700$ under A, $\sim$tens under B) toward the high-$\lambda$ end of its grid — expected under Schennach's theory (a large/degenerate $\gamma$ is a valid solution, not a numerical failure), not a numerical concern, but worth watching as the grid extends.
+- **$\mathcal{W}_{it-2}$'s B estimate moved a lot from A's** ($\hat\omega^*$: 2.35 → 6.97) while $m^*_{it-1}$'s barely moved (3.34 → 3.38) — sharpened by the percentile check above from "the number moved" into "the number moved to an economically implausible place" ($\hat\omega^*$ at the 99.9th percentile of $\omega$, essentially no U-shape over the observed range). Worth understanding *why* before trusting this B number at face value. Candidates: genuine extra identifying information from B's per-industry moments, or an artifact of the still-unresolved edge-of-grid issue propagating differently into each instrument's fit.
+- **$\mathcal{W}_{it-2}$'s $\gamma$ grows large** (up to $\sim1{,}700$ under A, $\sim$tens under B) toward the high-$\lambda$ end of its grid — expected under Schennach's theory (a large/degenerate $\gamma$ is a valid solution, not a numerical failure), not a numerical concern, but worth watching as the grid extends.
 - **No formal confidence region yet.** The test statistic for the $\chi^2_{d_g}$ comparison is $2n\hat L_n$ (AK2020's own convention, `TSMC=2*minf*n` in their `1App_main.jl`) — not yet wired into the driver.
 - **Next methodological improvement, not yet applied:** `build_lambda_grid`'s $\lambda$ grid is calibrated off $\text{quantile}(M^*,\cdot)$ — a conservative proxy for $\text{Med}(e)$ chosen only because $e$ itself wasn't directly observable. Now that $\mathcal V_{it}$ (hence an implied $e$) is directly in hand for every firm, the grid/bracket should be calibrated off $\mathcal V$'s own distribution instead of $M^*$ — tighter, less conservative, and removes an approximation step. Flagged for a follow-up run, not applied to the results above.
