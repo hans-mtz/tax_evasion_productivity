@@ -131,79 +131,14 @@
 // (mclapply-parallelized and serial) versions before replacing them.
 
 // [[Rcpp::depends(RcppParallel)]]
-#include <Rcpp.h>
-#include <RcppParallel.h>
-#include <random>
-#include <array>
-#include <algorithm>
-using namespace Rcpp;
-using namespace RcppParallel;
+// Shared includes + structural maps (e_of_M, eps_of_M, omega_of_M, h_of_e,
+// draw_from_rho, draw_from_rho_eta) moved to 1200-stage2-elvis-common.h
+// (2026-08-31) when moment set B was split into its own file
+// (1200-stage2-elvis-B.cpp) -- see that header's own comment for why.
+#include "1200-stage2-elvis-common.h"
 
 static const int D_G = 15;
 typedef std::array<double, D_G> GVec;
-
-// ---- structural maps (exported individually for interactive spot-checks) ----
-
-// [[Rcpp::export]]
-double e_of_M(double M, double Mstar) {
-    return Mstar - M;
-}
-
-// [[Rcpp::export]]
-double eps_of_M(double M, double Mstar, double V) {
-    return std::log(Mstar / M) - V;
-}
-
-// [[Rcpp::export]]
-double omega_of_M(double M, double Mstar, double V, double Wt, double beta) {
-    return Wt - (1.0 - beta) * eps_of_M(M, Mstar, V);
-}
-
-// [[Rcpp::export]]
-double h_of_e(double e, double tau_rho, double lambda) {
-    return std::log(tau_rho) + std::log(1.0 - 2.0 * lambda * e);
-}
-
-// [[Rcpp::export]]
-double draw_from_rho(double u01, double Mstar, double lambda) {
-    // u01=0 -> Mstar ; u01=1 -> max(0, Mstar - 1/(2*lambda))
-    //
-    // Floored at 0, fixed 2026-08-29: the FOC-domain constraint e<1/(2*lambda)
-    // (needed for h(e)=ln(tau_rho)+ln(1-2*lambda*e) to be defined) gives the
-    // lower bound Mstar-1/(2*lambda), but that constraint is only THE binding
-    // one when it's tighter than the physical constraint M>=0 (equivalently
-    // e<=Mstar, since you cannot overreport more materials than you have room
-    // for). When Mstar<1/(2*lambda), M>=0 is the tighter constraint, and the
-    // correct support is (0, Mstar), not (Mstar-1/(2*lambda), Mstar) [which
-    // would extend below 0]. Previously firms with Mstar<1/(2*lambda) were
-    // dropped ENTIRELY by a per-lambda feasibility filter in the R driver
-    // instead of having their support truncated -- that filter has been
-    // removed (Code/Deconvolution/1211-stage2-elvis-driver-AB.R) since no firm
-    // ever actually needs to be excluded once the true (possibly narrower)
-    // support is used. This was the mechanism behind sample size shrinking
-    // sharply at small lambda grid points, confirmed in-session before this
-    // fix (a firm's inclusion should not depend on lambda at all).
-    double lo = std::max(0.0, Mstar - 1.0 / (2.0 * lambda));
-    return Mstar - u01 * (Mstar - lo);
-}
-
-// [[Rcpp::export]]
-double draw_from_rho_eta(double u01, double Mstar, double lambda, double eta) {
-    // Same as draw_from_rho, but floors the support at eta*Mstar instead of 0
-    // (2026-08-29, moment set A only -- see Code/Rcpp/1200-stage2-elvis.cpp's
-    // "Moment set A: relative-evasion floor" header below for the economic
-    // argument). eta in [0,1): M>=eta*Mstar, equivalently e<=(1-eta)*Mstar --
-    // a RELATIVE cap on evasion (unitless, scale-consistent across firms of
-    // very different size), not an absolute currency-level floor. eta=0
-    // recovers draw_from_rho exactly (no additional restriction beyond M>=0).
-    // Implemented as a SUPPORT restriction (AK2020 Theorem 4: an inequality
-    // moment never needs its own gamma component, enforced on the sampler
-    // instead), not a gamma-weighted moment row -- eta is a smooth,
-    // box-bounded member of theta_smooth, jointly optimized with
-    // (delta0,delta1,delta2) via BOBYQA, but does not add a row to g().
-    double lo = std::max(eta * Mstar, Mstar - 1.0 / (2.0 * lambda));
-    return Mstar - u01 * (Mstar - lo);
-}
 
 // ---- moment vector for one firm-period at one candidate M ----
 // (internal helper, thread-safe: plain doubles in, std::array out, no R API)
@@ -747,148 +682,10 @@ List tilted_e_diag_A_cpp(
     return List::create(Named("e_mean") = e_mean, Named("e_pool") = e_pool);
 }
 
-// ---- Moment set B ------------------------------------------------------
-// g_out is a caller-allocated std::vector<double> sized 8+J+6 (d_g varies at
-// runtime with J = number of industries in the run sample, so this cannot
-// use a compile-time std::array like GVecA/GVec above); allocated ONCE per
-// firm (outside the MCMC step loop) in the worker below, not per step.
-static void moment_g_B_one(
-    double M, double Mstar, double V, double Wt, double tau_rho,
-    double beta, double lambda, double delta0, double delta1, double delta2,
-    double mu_omega_i, double sigma_omega_i,
-    int industry_idx_i, const RVector<double>& mu_m, int J,
-    std::vector<double>& g_out
-) {
-    double e     = e_of_M(M, Mstar);
-    double eps   = eps_of_M(M, Mstar, V);
-    double om    = omega_of_M(M, Mstar, V, Wt, beta);
-    double psi   = h_of_e(e, tau_rho, lambda) - delta0 + delta1 * om - delta2 * om * om;
-    double lnM   = std::log(M);
-    double mu_m_i = mu_m[industry_idx_i];
-    double lnM_c  = lnM - mu_m_i;
-    double om_c   = om - mu_omega_i;
-    double om2_c  = om * om - sigma_omega_i;
-
-    g_out[0] = psi;
-    g_out[1] = eps;
-    g_out[2] = psi * lnM;
-    g_out[3] = psi * om;
-    g_out[4] = psi * om * om;
-    g_out[5] = eps * lnM;
-    g_out[6] = eps * e;
-    g_out[7] = eps * om;
-
-    for (int jj = 0; jj < J; jj++) g_out[8 + jj] = 0.0;
-    g_out[8 + industry_idx_i] = lnM_c;
-
-    int base = 8 + J;
-    g_out[base + 0] = om_c;
-    g_out[base + 1] = om2_c;
-    g_out[base + 2] = psi * om_c;
-    g_out[base + 3] = psi * om2_c;
-    g_out[base + 4] = psi * lnM_c;
-    g_out[base + 5] = psi * eps * om;
-}
-
-struct TiltedMomentWorkerB : public Worker {
-    const RVector<double>  Mstar, V, Wt, tau_rho, beta, mu_omega, sigma_omega, gamma, mu_m;
-    const RVector<int>     row_id, corner, industry_idx;
-    const double lambda, delta0, delta1, delta2, eta;
-    const int n_burn, n_keep, base_seed, J, d_g;
-    RMatrix<double> Ghat;
-
-    TiltedMomentWorkerB(
-        const NumericVector& Mstar_, const NumericVector& V_, const NumericVector& Wt_, const NumericVector& tau_rho_,
-        const NumericVector& beta_, const NumericVector& mu_omega_, const NumericVector& sigma_omega_,
-        const IntegerVector& row_id_, const IntegerVector& corner_, const IntegerVector& industry_idx_,
-        double lambda_, double delta0_, double delta1_, double delta2_, double eta_,
-        const NumericVector& gamma_, const NumericVector& mu_m_,
-        int n_burn_, int n_keep_, int base_seed_, int J_, int d_g_,
-        NumericMatrix& Ghat_
-    ) : Mstar(Mstar_), V(V_), Wt(Wt_), tau_rho(tau_rho_), beta(beta_),
-        mu_omega(mu_omega_), sigma_omega(sigma_omega_), gamma(gamma_), mu_m(mu_m_),
-        row_id(row_id_), corner(corner_), industry_idx(industry_idx_),
-        lambda(lambda_), delta0(delta0_), delta1(delta1_), delta2(delta2_), eta(eta_),
-        n_burn(n_burn_), n_keep(n_keep_), base_seed(base_seed_), J(J_), d_g(d_g_),
-        Ghat(Ghat_) {}
-
-    void operator()(std::size_t begin, std::size_t end) {
-        for (std::size_t ii = begin; ii < end; ii++) {
-            int i = static_cast<int>(ii);
-            int idx = industry_idx[i];
-
-            if (corner[i] == 1) {
-                double eps_pt = eps_of_M(Mstar[i], Mstar[i], V[i]);
-                double om_pt  = omega_of_M(Mstar[i], Mstar[i], V[i], Wt[i], beta[i]);
-                double lnM_pt = std::log(Mstar[i]);
-                for (int t = 0; t < d_g; t++) Ghat(i, t) = 0.0;
-                Ghat(i, 1) = eps_pt;
-                Ghat(i, 5) = eps_pt * lnM_pt;
-                Ghat(i, 7) = eps_pt * om_pt;
-                Ghat(i, 8 + idx)   = lnM_pt - mu_m[idx];
-                Ghat(i, 8 + J + 0) = om_pt - mu_omega[i];
-                Ghat(i, 8 + J + 1) = om_pt * om_pt - sigma_omega[i];
-                continue;
-            }
-
-            std::mt19937_64 rng(static_cast<uint64_t>(base_seed) + static_cast<uint64_t>(row_id[i]));
-            std::uniform_real_distribution<double> unif(0.0, 1.0);
-
-            std::vector<double> g_current(d_g), g_try(d_g), g_run(d_g, 0.0);
-            double M_current = draw_from_rho_eta(unif(rng), Mstar[i], lambda, eta);
-            moment_g_B_one(M_current, Mstar[i], V[i], Wt[i], tau_rho[i], beta[i], lambda,
-                           delta0, delta1, delta2, mu_omega[i], sigma_omega[i], idx, mu_m, J, g_current);
-
-            for (int r = -n_burn + 1; r <= n_keep; r++) {
-                double M_try = draw_from_rho_eta(unif(rng), Mstar[i], lambda, eta);
-                moment_g_B_one(M_try, Mstar[i], V[i], Wt[i], tau_rho[i], beta[i], lambda,
-                               delta0, delta1, delta2, mu_omega[i], sigma_omega[i], idx, mu_m, J, g_try);
-
-                double log_ratio = 0.0;
-                for (int t = 0; t < d_g; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
-
-                if (std::log(unif(rng)) < log_ratio) {
-                    g_current = g_try;
-                }
-                if (r > 0) {
-                    for (int t = 0; t < d_g; t++) g_run[t] += g_current[t] / n_keep;
-                }
-            }
-            for (int t = 0; t < d_g; t++) Ghat(i, t) = g_run[t];
-        }
-    }
-};
-
-// [[Rcpp::export]]
-NumericMatrix mh_tilted_average_B_cpp(
-    NumericVector Mstar, NumericVector V, NumericVector Wt, NumericVector tau_rho,
-    NumericVector beta, NumericVector mu_omega, NumericVector sigma_omega,
-    IntegerVector row_id, IntegerVector corner, IntegerVector industry_idx,  // industry_idx: 0-based, < J
-    double lambda, double delta0, double delta1, double delta2, double eta,
-    NumericVector gamma, NumericVector mu_m,   // mu_m: length J, one per industry
-    int n_burn, int n_keep,
-    int base_seed = 20260829
-) {
-    int n = Mstar.size();
-    int J = mu_m.size();
-    int d_g = 8 + J + 6;
-    if (gamma.size() != d_g) stop("gamma length must equal 8+J+6 (moment set B)");
-    if (corner.size() != n) stop("corner length must equal n");
-    if (row_id.size() != n) stop("row_id length must equal n");
-    if (industry_idx.size() != n) stop("industry_idx length must equal n");
-    if (mu_omega.size() != n || sigma_omega.size() != n) stop("mu_omega/sigma_omega length must equal n");
-    if (eta < 0.0 || eta >= 1.0) stop("eta must be in [0,1)");
-
-    NumericMatrix Ghat(n, d_g);
-    TiltedMomentWorkerB worker(
-        Mstar, V, Wt, tau_rho, beta, mu_omega, sigma_omega,
-        row_id, corner, industry_idx,
-        lambda, delta0, delta1, delta2, eta, gamma, mu_m,
-        n_burn, n_keep, base_seed, J, d_g, Ghat
-    );
-    RcppParallel::parallelFor(0, n, worker);
-    return Ghat;
-}
+// ---- Moment set B moved to 1200-stage2-elvis-B.cpp (2026-08-31) -------
+// -- moment_g_B_one, TiltedMomentWorkerB, mh_tilted_average_B_cpp all live
+// there now, so that file alone can take on an Accelerate/CBLAS dependency
+// without requiring it here too. See that file's header comment.
 
 // ---- diagnostic: per-firm TILTED-AVERAGE omega(M), added 2026-08-29 -------
 // Separate function, does NOT touch mh_tilted_average_cpp or its Worker --

@@ -38,7 +38,9 @@ library(nloptr)
 library(RcppParallel)
 
 source("Code/Deconvolution/utils-cli.R")
-sourceCpp("Code/Rcpp/1200-stage2-elvis.cpp")
+sourceCpp("Code/Rcpp/1200-stage2-elvis.cpp")      # old 15-moment system + moment set A (Accelerate-free)
+Sys.setenv(PKG_LIBS = "-framework Accelerate")    # moment set B's file needs this for cblas_dsyrk
+sourceCpp("Code/Rcpp/1200-stage2-elvis-B.cpp")    # moment set B (2026-08-31: split out so it alone can use Accelerate/CBLAS)
 load("Code/Products/1200-stage2-data.RData")            # stage2_data
 load("Code/Products/1205-stage2-warmstart.RData")       # warmstart_lag_m, warmstart_lag2W (delta0-2 reused; sigma2_psi unused here)
 load("Code/Products/1207-stage2-omega-targets.RData")   # omega_targets (moment set B only)
@@ -84,9 +86,14 @@ add_industry_idx <- function(run_sample) {
 
 ## %% CUE objective, both moment sets -----------------------------------
 
-cue_objective_common <- function(Ghat) {
-    dvec  <- colMeans(Ghat)
-    Omega <- cov(Ghat)
+## Split into a (dvec,Omega)-only core (2026-08-31) so moment set B can call
+## it directly with its fused C++ output (mh_tilted_moments_B_cpp,
+## Code/Rcpp/1200-stage2-elvis-B.cpp -- computes dvec/Omega via Accelerate/
+## cblas_dsyrk without ever returning the full Ghat matrix to R), while A's
+## path (cue_objective_A below) stays byte-for-byte unchanged, still calling
+## cue_objective_common(Ghat) exactly as before -- zero risk to A's already-
+## validated results.
+cue_objective_from_moments <- function(dvec, Omega) {
     eig   <- eigen(Omega, symmetric = TRUE)
     pos   <- eig$values > 1e-8 * max(eig$values)
     A     <- eig$vectors[, pos, drop = FALSE]
@@ -97,6 +104,10 @@ cue_objective_common <- function(Ghat) {
     ## dividing by the eigenvalues directly is the same generalized inverse,
     ## just without the wasted matrix build + inversion (2026-08-31).
     0.5 * sum(d2^2 / eig$values[pos])
+}
+
+cue_objective_common <- function(Ghat) {
+    cue_objective_from_moments(colMeans(Ghat), cov(Ghat))
 }
 
 ## eta (2026-08-29): relative-evasion floor, M>=eta*Mstar i.e. e<=(1-eta)*Mstar,
@@ -123,18 +134,25 @@ cue_objective_A <- function(par, lambda, dat, n_burn, n_keep) {
 ## (draw_from_rho_eta), not a gamma-weighted row -- see the .cpp file's "eta
 ## extended to B" header note for why this was added despite mu_m,j already
 ## providing a mean-level guard.
+## 2026-08-31: calls the fused mh_tilted_moments_B_cpp (Accelerate/cblas_dsyrk
+## for cov(), Ghat never crosses back to R) instead of the old two-step
+## mh_tilted_average_B_cpp+cue_objective_common(Ghat) -- measured 157.6ms ->
+## 138.25ms per call (~12.3% reduction, 1.14x) on real fitted (theta,gamma),
+## verified bit-close (relative diff ~3e-13 in the objective value) before
+## being wired in here. See Code/Rcpp/1200-stage2-elvis-B.cpp's header and
+## CLAUDE.md's 2026-08-31 entries for the full measurement trail.
 cue_objective_B <- function(par, lambda, dat, J, n_burn, n_keep) {
     delta0 <- par[1]; delta1 <- par[2]; delta2 <- par[3]; eta <- par[4]
     mu_m   <- par[5:(4 + J)]
     gamma  <- par[-(1:(4 + J))]
-    Ghat <- mh_tilted_average_B_cpp(
+    mom <- mh_tilted_moments_B_cpp(
         dat$M_star, dat$cal_V, dat$tilde_cal_W, dat$sales_tax_rate_purchases,
         dat$beta, dat$mu_omega, dat$sigma_omega,
         dat$.row_id, dat$corner, dat$industry_idx,
         lambda, delta0, delta1, delta2, eta, gamma, mu_m,
         n_burn, n_keep
     )
-    cue_objective_common(Ghat)
+    cue_objective_from_moments(mom$dvec, mom$Omega)
 }
 
 ## %% Bounds ------------------------------------------------------------
