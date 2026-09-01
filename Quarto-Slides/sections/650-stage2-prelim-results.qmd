@@ -1,0 +1,57 @@
+# Stage-2 ELVIS: Preliminary Results
+
+## Implementation
+
+Moment set A (row list authoritative in `Code/Rcpp/1200-stage2-elvis.cpp`'s header comment): $\theta_{\text{smooth}}=(\delta_0,\delta_1,\delta_2,\eta)$, 8 moments ($d_g=8$), no per-industry demeaning — `psi`, `eps`, `psi·lnM`, `psi·om`, `psi·om²`, `eps·lnM`, `eps·e`, `eps·om`.
+
+- **Objective**: CUE quadratic, $\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g$, $\hat\Omega^-$ an eigenvalue-truncated generalized inverse (drops near-zero eigenvalues of the tilted-moment covariance) — same construction AK2020 use
+- **Sampler**: per-firm Metropolis chain (RcppParallel, `n_burn=500`, `n_keep=1000`), deterministic per-firm RNG reseed — same $(\theta,\gamma)$ always sees the same chain
+- **Solver**: BOBYQA, unbounded $\gamma$ (Schennach 2014, p.359 — a large/degenerate $\gamma$ is an expected solution, not a numerical failure), two-pass refinement (warm-started from pass 1)
+- **$\lambda$ search, two phases**: (i) a quantile grid, $\lambda=p/\text{quantile}(M^*,0.5)$ for $p\in\{0.01,\dots,0.9\}\cap(0,0.5]$; (ii) an automatic linear-refinement grid bracketing the quantile grid's minimum, warm-started from the fit *at* that minimum
+- **Sample**: 32,378 unincorporated firm-periods (3,340 at the $\tau_P=0$ corner, included as centered non-evaders), two productivity-instrument choices for $(\alpha_K,\alpha_L,\beta)$
+
+## $\hat L_n(\lambda)$ — Quantile Grid + Linear Refinement
+
+![](../Paper/images/1212-stage2-A-lhat-lambda.png){height="80%" fig-align="center"}
+
+##
+
+**Reading the picture**: both instruments' true minimum sits *below* the smallest $\lambda$ the refinement grid reached — a further refinement pass, not shown here, is the natural next step before treating either $\hat\lambda$ as final.
+
+## Headline Estimates
+
+| Instrument | $\hat\lambda$ | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ | $\max\vert\gamma\vert$ |
+|:--|--:|--:|--:|--:|--:|--:|--:|
+| `lag_m` | $1.18\times10^{-6}$ | 0.0108 | $-1.099$ | 1.453 | **0.218** | 3.34 | 2.08 |
+| `lag_2_cal_W` | $5.88\times10^{-7}$ | 0.0073 | $-1.305$ | 1.859 | **0.396** | 2.35 | 1.43 |
+
+$\hat\delta_2>0$ for both — the cost function opens the correct (U-shaped) way — and $\hat\omega^*$ lands in a plausible range for both instrument choices.
+
+## A Data-Side Check on $\hat\lambda$: Auxiliary Parameters $E[e]$, $\text{Med}[e]$
+
+Does $\hat\lambda$ imply a sane detection probability at a typical evading firm? $u=\ln\big((M+e)/M\big)$ is **nonlinear** in $e$, so $\mathcal V=u-\varepsilon$ never decomposes additively into $e$ at all — no shortcut through $\mathcal V$'s own moments works. The correct approach is Schennach's own auxiliary-parameter device (her $E[U]$ worked example), applied to $e(M)$ directly, evaluated **post-hoc at the already-fitted $(\hat\theta,\hat\gamma)$** — no re-optimization:
+
+$$
+E[e(M)]-\mu_e=0 \qquad\text{vs.}\qquad E\big[\mathbb 1(e(M)\le\theta_e)-\tfrac12\big]=0
+$$
+
+These are **not** the same moment relabeled: the first is linear and identifies the **mean** $\mu_e$; a literal "$\text{Med}[e]-\theta_e=0$" isn't a valid moment at all (there's no expectation of a median) — the indicator/quantile-GMM form on the right is what actually identifies $\theta_e=\text{Med}[e]$. Solving $E[e-\theta]=0$ for $\theta$ always recovers the mean, regardless of the label.
+
+##
+
+Both evaluated via the same per-firm Metropolis chain the estimator itself uses (`tilted_e_diag_A_cpp`, `Code/Rcpp/1200-stage2-elvis.cpp`) — $\mu_e$ from a running per-firm average (free), $\theta_e$ from the empirical median of pooled, thinned post-burn-in draws across all firms:
+
+| Instrument | $\hat\mu_e=E[e]$ | $\hat\theta_e=\text{Med}[e]$ | $\hat\lambda\hat\mu_e$ | $\hat\lambda\hat\theta_e$ |
+|:--|--:|--:|--:|--:|
+| `lag_m` | 5,269 | 569 | 0.62% | 0.067% |
+| `lag_2_cal_W` | 3,858 | 184 | 0.23% | 0.011% |
+
+$\hat\mu_e\gg\hat\theta_e$ in both cases — a right-skewed evasion distribution: most firms evade modestly (10.3% are $\tau_P=0$ corner firms, $e\equiv0$ exactly), a long right tail of aggressive evaders pulls the mean well above the median. All four implied probabilities sit comfortably inside $(0,0.5)$ — no red flag on $\hat\lambda$, and the mean/median gap is itself a substantive, plausible feature of the fit, not noise.
+
+## Notes for Discussion
+
+- **Both minima sit at their grid's edge** — extend the refinement below $\lambda\approx6\times10^{-7}$ before reporting either $\hat\lambda$ as final.
+- **`lag_2_cal_W`'s $\gamma$ grows large** (up to $\sim1{,}700$) toward the high-$\lambda$ end of its refined grid — expected under Schennach's theory, not a numerical concern, but worth watching as the grid extends.
+- **No formal confidence region yet.** The test statistic for the $\chi^2_{d_g}$ comparison is $2n\hat L_n$ (AK2020's own convention, `TSMC=2*minf*n` in their `1App_main.jl`) — not yet wired into the driver.
+- **Moment set B** (adds per-industry $\ln M$ targets, $d_g\approx8+J+6\approx43$) is running in parallel; not yet at this scale.
+- **Next methodological improvement, not yet applied:** `build_lambda_grid`'s $\lambda$ grid is calibrated off $\text{quantile}(M^*,\cdot)$ — a conservative proxy for $\text{Med}(e)$ chosen only because $e$ itself wasn't directly observable. Now that $\mathcal V_{it}$ (hence an implied $e$) is directly in hand for every firm, the grid/bracket should be calibrated off $\mathcal V$'s own distribution instead of $M^*$ — tighter, less conservative, and removes an approximation step. Flagged for a follow-up run, not applied to the results above.
