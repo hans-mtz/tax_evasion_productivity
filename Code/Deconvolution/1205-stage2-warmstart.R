@@ -103,7 +103,8 @@ get_warmstart <- function(ins_choice, S = opt$S, data = stage2_data) {
         idx  <- which(unincorp$sic_chr == sic_chr)
         pool <- get_pool(sic_chr)
         n_j  <- length(idx)
-        eps_mat <- matrix(sample(pool, n_j * S, replace = TRUE), nrow = n_j, ncol = S)
+        # eps_mat <- matrix(sample(pool, n_j * S, replace = TRUE), nrow = n_j, ncol = S)
+        eps_mat <- matrix((quantile(pool, probs = runif(n_j * S), names = FALSE, na.rm = TRUE)), nrow = n_j, ncol = S)  # alternative: quantile-based resampling (2026-08-29)
         stacked_list[[sic_chr]] <- unincorp[rep(idx, times = S), ] %>%
             mutate(eps_s = as.vector(eps_mat))
     }
@@ -138,9 +139,9 @@ get_warmstart <- function(ins_choice, S = opt$S, data = stage2_data) {
     ## gradient grind for ~40min instead of the usual ~1min (measured directly
     ## on real data before reverting). Back to the P99-based start, which sits
     ## deep in the feasible region (<1% clipped).
-    lambda0    <- unname(1 / (2 * quantile(stacked$e_hat, 0.99, na.rm = TRUE)))
+    lambda0    <- unname(1 / (2 * quantile(stacked$e_hat, 0.75, na.rm = TRUE))) # 0.99
     lambda_max <- unname(0.999 / (2 * median(stacked$e_hat, na.rm = TRUE)))
-    lambda_min <- 1e-12  # historical fixed lower bound; lambda is gridded independently downstream (1211), not seeded from here
+    lambda_min <- unname(1 / (2 * max(stacked$e_hat, na.rm = TRUE))) # 1e-12  # historical fixed lower bound; lambda is gridded independently downstream (1211), not seeded from here
     ## %% Explicit 4-moment GMM fit on the stacked (firm x draw) sample -------
     ## g(theta) = (E[psi], E[om*psi], E[psi*om^2], E[psi*ln M]) -- exactly
     ## identified (4 moments, 4 parameters), equal-weighted (no gamma/tilt:
@@ -153,12 +154,24 @@ get_warmstart <- function(ins_choice, S = opt$S, data = stage2_data) {
         lambda <- par[1]; delta0 <- par[2]; delta1 <- par[3]; delta2 <- par[4]
         arg     <- pmax(1 - 2*lambda*stacked$e_hat, 1e-6)   # clip infeasible draws instead of erroring
         h       <- log(stacked$sales_tax_rate_purchases) + log(arg)
+        h_prime <- ifelse(1 - 2*lambda*stacked$e_hat == 0, -9e200, -2*stacked$e_hat / (1 - 2*lambda*stacked$e_hat))  # derivative of h wrt lambda
+        h_prime_c <- (h_prime - mean(h_prime)) / sd(h_prime)  # standardized h' for numerical stability (2026-08-31)
+        stopifnot(
+            "1/lambda is not finite"=is.finite(1/lambda),
+            "e_hat is not finite"=all(is.finite(stacked$e_hat)),
+            # "1/2e=lambda"=all(2*lambda*stacked$e_hat != 1, na.rm = TRUE),
+            "h' is not finite"=all(is.finite(h_prime)),
+            "h' centered is not finite"=all(is.finite(h_prime_c))
+            )
+        # stopifnot("e_hat is not finite"=all(is.finite(stacked$e_hat)))
+        # stopifnot("h' is not finite"=all(is.finite(h_prime)))
+        # stopifnot("exp(-h') is not finite"=all(is.finite(exp(-h_prime))))
         psi_hat <- h - delta0 + delta1*stacked$omega_hat - delta2*stacked$omega_hat^2
         g <- c(
             mean(psi_hat),
             mean(psi_hat * stacked$omega_hat),
-            mean(psi_hat * stacked$omega_hat^2),
-            mean(psi_hat * lnM_hat)
+            mean(psi_hat * stacked$omega_hat*stacked$omega_hat), # was ^2 (faster?)
+            mean(psi_hat * h_prime_c) # Naive moment: psi not independent of e; Was psi*lnM_hat
         )
         sum(g^2)
     }

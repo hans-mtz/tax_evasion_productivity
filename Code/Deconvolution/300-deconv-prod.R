@@ -1,3 +1,5 @@
+## Estimate remaining parameters of the production function
+
 # %% Load data and packages ---------------
 library(tidyverse)
 library(ivreg)
@@ -5,15 +7,22 @@ library(parallel)
 # load("Code/Products/colombia_data.RData")
 load("Code/Products/test_data.RData")
 load("Code/Products/global_vars.RData")
-load("Code/Products/deconv_funs.Rdata")
 # load("Code/Products/deconv.RData")
 # load("Code/Products/boot_tax_ev_mmt.RData") # Top evading industries
 # load("Code/Products/boot_deconv_mle.RData")
 load("Code/Products/fs.RData") # Fist stage results
 load("Code/Products/run-vars.RData") # Fist stage results for ME
+load("Code/Products/deconv_funs.Rdata")
+# sys.source("Code/Deconvolution/021-deconv-funs.R", attach(NULL, name = "env-deconv"))
 
-# %%  Setting up folders and vars ----------------
-folder_results <- "/Volumes/SSD Hans 1/Github/gnr/Data/"
+## Note July 27, 2026: Change from previous estimates is that now we are trimming
+# observations in first stage estimation log_mats_share > log(threshold_cut)
+# Second change is that, previously I used the double lag of cal_W-alpha_Kk- alpha_Ll 
+# instead of double lag of cal_W.
+# previous results saved in "Code/Products/deconv_prod_fun.RData" 
+# new results saved in "Code/Products/deconv_prod_fun_trim.RData"
+
+folder_results <- "/Volumes/SSD Hans/Github/gnr/Data/"
 mc_cores <- detectCores()-2
 
 # select_fs <- grep("log_deductible(_\\w+)+",names(fs_list), value = FALSE) 
@@ -23,7 +32,7 @@ ins_v = c(
     "lag_k",
     "lag_l",
     "lag_m",
-    "lag_2_w_eps"
+    "lag_2_cal_W" #was "lag_2_w_eps" before
 )
 
 # Deductible intermediates
@@ -71,7 +80,8 @@ names(prod_fun_list_ivar1)<-paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"])
 
 save(
     prod_fun_list_ivar1,
-    file="Code/Products/deconv_prod_fun.RData"
+    # file="Code/Products/deconv_prod_fun.RData"
+    file="Code/Products/deconv_prod_fun_trim.RData"
 )
 
 ## %% ME results -----------------------------------
@@ -94,7 +104,8 @@ names(pf_me_list)<-paste(run_vars_iv[,"inds"],run_vars_iv[,"ins"])
 
 save(
     pf_me_list, prod_fun_list_ivar1,
-    file="Code/Products/deconv_prod_fun.RData"
+    # file="Code/Products/deconv_prod_fun.RData"
+    file="Code/Products/deconv_prod_fun_trim.RData"
 )
 
 ### h - third degree polynomial
@@ -160,7 +171,8 @@ save(
 
 # rownames(evasion_tbl) <- paste0(top_evading_inds[1:5])
 
-"Code/Products/deconv_prod_fun.RData" |> load()
+# "Code/Products/deconv_prod_fun.RData" |> load()
+
 
 evasion_tbl_ivar1<-sapply(
     names(prod_fun_list_ivar1),
@@ -247,7 +259,8 @@ save(
     pf_me_list, pf_me_df,
     CD_fortran_tbl_R, ols_CD,
     gnr_cd_me,
-    file="Code/Products/deconv_prod_fun.RData"
+    # file="Code/Products/deconv_prod_fun.RData"
+    file="Code/Products/deconv_prod_fun_trim.RData"
 )
 
 ## %% Comparing Results -----------------------------------
@@ -292,7 +305,7 @@ PF_tbl<-evasion_tbl_ivar1 %>%
         `TE-GNR:  lag_k`,
         `TE-GNR:  lag_l`,
         `TE-GNR:  lag_m`, 
-        `TE-GNR:  lag_2_w_eps`, 
+        `TE-GNR:  lag_2_cal_W`, 
         `CD-GNR`, OLS
     ) #%>%
     # knitr::kable()
@@ -336,7 +349,7 @@ PF_me_tbl <- pf_me_df %>%
         `TE-GNR:  lag_k`,
         `TE-GNR:  lag_l`,
         `TE-GNR:  lag_m`, 
-        `TE-GNR:  lag_2_w_eps`, 
+        `TE-GNR:  lag_2_cal_W`, 
         `CD-GNR`, OLS
     )
 
@@ -374,9 +387,10 @@ save(
     CD_fortran_tbl_R, ols_CD,
     PF_tbl, PF_me_tbl, gnr_cd_me,
     tsls_1s_diag_tbl, tsls_1s_diag_me_tbl,
-    file="Code/Products/deconv_prod_fun.RData"
+    # file="Code/Products/deconv_prod_fun.RData"
+    file="Code/Products/deconv_prod_fun_trim.RData"
 )
 
 ## Reviewing results ----------------------------
 
-# load("Code/Products/deconv_prod_fun.RData")
+load("Code/Products/deconv_prod_fun_trim.RData")

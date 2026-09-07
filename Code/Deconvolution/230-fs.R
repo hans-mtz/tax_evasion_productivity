@@ -1,11 +1,15 @@
+## Estimate Beta and get epsilon from Corporations
+
 # %% Load data and packages ---------------
+renv::restore(prompt = FALSE)
 library(tidyverse)
 library(parallel)
 # load("Code/Products/colombia_data.RData")
 load("Code/Products/test_data.RData")
-load("Code/Products/global_vars.RData")
+# load("Code/Products/global_vars.RData")
+# sys.source("Code/Deconvolution/021-deconv-funs.R", attach(NULL, name = "envDeconv"))
 load("Code/Products/deconv_funs.Rdata")
-load("Code/Products/run-vars.RData") 
+load("Code/Products/run-vars.RData")
 # load("Code/Products/intermediates.RData") #Top evading industries
 # load("Code/Products/boot_tax_ev_mmt.RData") # run_vars
 
@@ -110,18 +114,20 @@ fs_list[[1]]$data$epsilon |> na.omit() |>
 eps_pdf <- approxfun(eps_density$x, eps_density$y, yleft = 0, yright = 0)
 eps_pdf <- splinefun(eps_density$x, eps_density$y, method = "natural")
 
-curve(
-    eps_pdf,
-    from = min(eps_density$x)-3, to = max(eps_density$x)+3,
-    xlab = "Epsilon",
-    ylab = "Density",
-    main = "Non-parametric Epsilon Density",
-    col = "blue", lwd=2
-)
-lines(
-    density(fs_list[[1]]$data$epsilon, na.rm=TRUE, bw="nrd0"),
-    col="red", lwd=2
-)
+if (interactive()){
+    curve(
+        eps_pdf,
+        from = min(eps_density$x)-3, to = max(eps_density$x)+3,
+        xlab = "Epsilon",
+        ylab = "Density",
+        main = "Non-parametric Epsilon Density",
+        col = "blue", lwd=2
+    )
+    lines(
+        density(fs_list[[1]]$data$epsilon, na.rm=TRUE, bw="nrd0"),
+        col="red", lwd=2
+    )
+}
 
 ## %% My own function -----------------------------
 
@@ -147,41 +153,45 @@ vepdf(1:10, fs_list[[1]]$data$epsilon |> na.omit(), bw="bcv")
 x <- fs_list[[1]]$data$epsilon |> na.omit()
 sum(gl$weights * vepdf(gl$nodes,x))
 bws <- c("nrd0", "nrd", "SJ-ste", "SJ-dpi", "ucv", "bcv")
-curve(
-    eps_pdf,
-    from = min(fs_list[[1]]$data$epsilon, na.rm = TRUE), 
-    to = max(fs_list[[1]]$data$epsilon, na.rm = TRUE),
-    xlab = "Epsilon",
-    ylab = "Density",
-    main = "Custom Epsilon Density Function",
-    col = "black", lwd=2
-)
-my_colors <- rainbow(length(bws))
-names(my_colors) <- bws  # Generate random colors for each bandwidth
-for (bw in bws) {
+
+if (interactive()){
     curve(
-        vepdf(x, fs_list[[1]]$data$epsilon |> na.omit(), bw=bw),
+        eps_pdf,
         from = min(fs_list[[1]]$data$epsilon, na.rm = TRUE), 
         to = max(fs_list[[1]]$data$epsilon, na.rm = TRUE),
-        add = TRUE,
-        lwd=2, lty = 2,
-        col =   my_colors[bw]# Random color for each curve
+        xlab = "Epsilon",
+        ylab = "Density",
+        main = "Custom Epsilon Density Function",
+        col = "black", lwd=2
     )
-}
-legend(
-    "topright",
-    legend = paste("Bandwidth:", bws),
-    col = my_colors,
-    lty = 2, lwd = 2
-)
 
-for (bw in bws) {
-    lines(
-        density(fs_list[[1]]$data$epsilon |> na.omit(), bw=bw),
-        add = TRUE,
-        lwd=2, lty = 2,
-        col =   my_colors[bw]# Random color for each curve
+    my_colors <- rainbow(length(bws))
+    names(my_colors) <- bws  # Generate random colors for each bandwidth
+    for (bw in bws) {
+        curve(
+            vepdf(x, fs_list[[1]]$data$epsilon |> na.omit(), bw=bw),
+            from = min(fs_list[[1]]$data$epsilon, na.rm = TRUE), 
+            to = max(fs_list[[1]]$data$epsilon, na.rm = TRUE),
+            add = TRUE,
+            lwd=2, lty = 2,
+            col =   my_colors[bw]# Random color for each curve
+        )
+    }
+    legend(
+        "topright",
+        legend = paste("Bandwidth:", bws),
+        col = my_colors,
+        lty = 2, lwd = 2
     )
+
+    for (bw in bws) {
+        lines(
+            density(fs_list[[1]]$data$epsilon |> na.omit(), bw=bw),
+            add = TRUE,
+            lwd=2, lty = 2,
+            col =   my_colors[bw]# Random color for each curve
+        )
+    }
 }
 # ## %% stuff ------------------------------
 

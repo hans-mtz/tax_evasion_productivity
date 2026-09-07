@@ -1,0 +1,106 @@
+---
+author: Hans Martinez
+format: pdf
+date: last-modified
+---
+
+## Why this note exists
+
+Built while constructing `stage2_data` for the stage-2 ELVIS estimator: the single-$\tau$ model's "benefit shifter" $\tau\rho_t$ was being proxied by the *corrected effective sales tax rate* $\tau_{\tilde C,it}=\tau_{S,it}-\tau_{P,it}\beta$ (`600-opt-tax.qmd`'s "What about $\tau$?" slide). That proxy is $\le 0$ for **26.5%** of unincorp firm-periods (stable ~24–29% every year 1981–91, not an early "pre-tax era" artifact) — meaning $h(e)=\ln(\tau\rho_t)+\ldots$ is undefined for over a quarter of the estimation sample under that proxy.
+
+> If I use a single tax rate in the model that captures the effective sales tax rate (the ratio of the difference in sales taxes paid on sales and the sales taxes paid on purchases over sales),then the marginal benefit in the model becomes undefined for more than a quarter of the unincorporated firms that have a negative rate. We lose a quarter of observations going in this direction. 
+
+A negative $\tau_{\tilde C,it}$ means the ($\beta$-scaled) tax credit claimed on purchases exceeds the tax owed on sales. In this case, the firm is due a **refund** from the tax authority. Firms in industries exempted from paying sales taxes on their sales, such as food industry, commonly had negative tax rates because they paid taxes on their materials inputs. 
+
+Since the data separately report $\tau_S$ (sales tax rate on sales) and $\tau_P$ (sales tax rate on purchases), we can incorporate these data by allowing our model to have $\tau_S\ne\tau_P$. I derived this model below.
+
+## The two-tax profit function
+
+Firm buys the true quantity $M$ of materials at price $\rho_t$ (cash cost $\rho_tM$), but *reports* $M^*=M+e$ to the tax authority in order to claim a purchases-tax credit at rate $\tau_P$ on the reported amount. It sells $Y$ at price $P_t$ and owes sales tax at rate $\tau_S$ on that revenue. If audited (probability $q(e)$, "always caught" upon audit, extra penalty multiplier $1+\phi$ on the fraudulently claimed credit), the excess credit on the $e$ overreported units must be repaid. Expected profit, net of the evasion cost $\kappa(e,\omega)$:
+
+$$
+\begin{aligned}
+   \pi=(1-q(e))&\left[P_tE_{\varepsilon}[Y_{it}]-\rho_tM_{it}-(\tau_SP_tY_{it}-\tau_P\rho_t(M_{it}+e_{it}))\right]\\
+   &+q(e)\left[P_tE_{\varepsilon}[Y_{it}]-\rho_tM_{it}-(\tau_SP_tY_{it}-\tau_P\rho_tM_{it})-\phi\rho_te_{it}\right]\\
+   &-\kappa_{it}(e_{it},\omega_{it})
+\end{aligned}
+$$
+
+Simplifying, 
+$$
+\pi = \underbrace{(1-\tau_S)P_tY}_{\text{after-tax revenue}} - \underbrace{\rho_tM}_{\text{cash cost of true purchases}} + \underbrace{\tau_P\rho_t(M+e)}_{\text{credit claimed on reported purchases}} - \underbrace{q(e)(1+\phi)\,\tau_P\rho_te}_{\text{expected clawback}} - \kappa(e,\omega)
+$$
+
+Collecting terms:
+
+$$
+\pi = (1-\tau_S)P_tY - (1-\tau_P)\rho_tM + \tau_P\rho_te\big[1-(1+\phi)q(e)\big] - \kappa(e,\omega)
+$$ {#eq-two-tax-profit}
+
+This model nests the single-$\tau$ version. By setting $\tau_S=\tau_P=\tau$ collapses @eq-two-tax-profit to $P_tY(1-\tau)-\rho_tM(1-\tau)+\tau\rho_te[1-(1+\phi)q(e)]-\kappa$, the same structure as the previous model.
+
+## Evasion FOC: only $\tau_P$ survives
+
+$\partial\pi/\partial e$: the $(1-\tau_S)P_tY$ term doesn't depend on $e$ at all and drops out entirely.
+
+$$
+\tau_P\rho_t\big[1-(1+\phi)(q+q'e)\big] = \frac{\partial\kappa}{\partial e}
+$$ {#eq-two-tax-evasion-foc}
+
+This FOC indicates that the relevant rate is the sales tax on purchases. Identical in form to the model's existing evasion FOC, with the benefit-shifter now unambiguously $\tau_P\rho_t$. Under the old single-$\tau$ assumption this was indistinguishable from $\tau_S\rho_t$ or any combination, but with two rates it is **only $\tau_P$**. $\tau_{S,it}$ (`sales_tax_rate_sales`) never belongs in $h(e)$ at all; $\tau_{P,it}$ (`sales_tax_rate_purchases`) does, directly, with no correction or combination needed.
+
+**Comparative static, solved explicitly.** Under the headline linear-$q$ spec ($q=\lambda e$, $\phi=0$, $\kappa$ linear in $e$ so $\partial\kappa/\partial e=C(\omega,\psi)$ is constant in $e$), @eq-two-tax-evasion-foc solves in closed form:
+$$
+e^* = \frac{1}{2\lambda} - \frac{C(\omega,\psi)}{2\lambda\,\tau_P\rho_t}
+\qquad\Longrightarrow\qquad
+\frac{\partial e^*}{\partial\tau_P} = \frac{C(\omega,\psi)}{2\lambda\rho_t\,\tau_P^2} > 0.
+$$
+
+**Higher $\tau_P$ increases optimal evasion.** This is not an artifact of the linear-$q$ functional form: by the implicit function theorem, $\partial e^*/\partial\tau_P=-F_{\tau_P}/F_e$ where $F_{\tau_P}=\kappa'(e^*)/\tau_P>0$ (directly from the FOC, since $\kappa'>0$) and $F_e<0$ is exactly the second-order condition for $e^*$ to be a maximum — so the sign is forced by the SOC holding at all, for any $q(\cdot)$. Intuition for why this isn't "more gets clawed back if caught, so the net benefit falls" (an earlier, wrong reading in this session): the clawback term $(1+\phi)(q+q'e)$ scales with $e$, not with $\tau_P$ — raising $\tau_P$ scales up the *entire* bracket, kept portion and clawback-risk portion together, uniformly. Every unit of $e$ becomes more valuable whether or not the firm is caught, so the firm optimally overreports more, up to where the rising detection probability catches up.
+
+> **A regression of $\mathcal V_{it}$ on $\tau_{P,it}$ cannot test this — mechanical confound, not a sign check.** `sales_tax_rate_purchases = t2/s10` (`Code/Colombia/10_data_wrangling.R:131`), where `s10`=`nom_mats`= nominal $M^*_{it}$; `log_mats_share = log(nom_mats/nom_gross_output)` (line 275) also uses $M^*_{it}$, in the numerator. So $\mathcal V_{it}$ and $\tau_{P,it}$ share $M^*_{it}$ in opposite positions: any firm that overreports more shows a mechanically higher $\mathcal V_{it}$ *and* a mechanically lower $\tau_{P,it}$ (same tax paid, divided by an inflated $M^*$), independent of the true economics. This is the same class of problem `CLAUDE.md` already flags for regressing $\mathcal V_{it}$ on $M^*_{it}$ directly. Confirmed empirically: `feols(cal_V ~ sales_tax_rate_purchases | sic_3+year)` gives $-1.890^{***}$; controlling for `sales_tax_rate_sales` jointly still gives $-2.025^{***}$ on the purchases rate — the mechanical contamination survives conditioning on $\tau_S$. **None of these regressions are valid evidence against the derivation above** — a clean test would need the same fix already prescribed for the $\mathcal V\sim M^*$ problem (instrument or bucket by something that doesn't enter $\mathcal V_{it}$'s own construction, e.g. $K_{it}$ or $L_{it}$), not attempted here.
+
+## Materials FOC: the tax wedge
+
+$\partial\pi/\partial M$ (through $Y=K^{\alpha_K}L^{\alpha_L}M^\beta e^{\omega+\varepsilon}$), holding $e$ fixed so $\partial M^*/\partial M=1$ contributes nothing new — the $\tau_P\rho_te$ term has zero derivative in $M$ once $e$ is held fixed:
+
+$$
+(1-\tau_S)P_t\,\beta\frac{Y}{M} = \rho_t(1-\tau_P)
+\quad\Longrightarrow\quad
+\frac{\rho_tM_{it}}{P_tY_{it}} = \beta\cdot\frac{1-\tau_{S,it}}{1-\tau_{P,it}}\cdot e^{-\varepsilon_{it}}
+$$ {#eq-two-tax-materials-foc}
+
+$M\perp e$ is preserved exactly ($e$ drops out of this FOC entirely, same as before) — but the materials FOC now carries a multiplicative tax wedge $(1-\tau_S)/(1-\tau_P)$ that the model's documented $\varepsilon_{it}(M_{it})=\ln\beta-\ln(\rho_tM_{it}/P_tY_{it})$ (`9999-elvis.qmd`, `eq-full-eps`) does not have. This is the consequential part: $\varepsilon(M)$ is the single most load-bearing map in the whole ELVIS construction, feeding $\omega(M)$, $h(e)$, every moment — and it also underlies **stage 1's own regression** (`first_stage_panel_me` regresses `log_mats_share` on a constant among *corp* firms only, whose residual is $-\varepsilon$). Corp firms face the same varying $\tau_S,\tau_P$ as everyone else — evasion status is irrelevant to which tax rates apply — so if the wedge varies across corp observations, it is currently an **omitted variable** contaminating $\hat\beta$ and the recovered $\hat\varepsilon$ residuals, not a stage-2-only issue.
+
+> The tax authority have real effects on firms' optimality input decision, by changing either the sales tax on sales or purchases, the government affects the net price ratio and the optimal decision of the firm. If $\frac{(1-\tau_P)}{(1-\tau_S)}>1$, then the relative prices increase, firm optimal input level consumption decreases, firms use less M, and viceversa, a ratio less than one decreases relative prices leading firms to consume more inputs.
+
+## The fix: redefine the ratio, don't add a term
+
+Solving @eq-two-tax-materials-foc for $\varepsilon$ and regrouping the two logs into one ratio:
+
+$$
+\varepsilon_{it}(M_{it}) = \ln\beta - \ln\frac{\rho_tM_{it}(1-\tau_{P,it})}{P_tY_{it}(1-\tau_{S,it})}
+$$ {#eq-two-tax-eps-net}
+
+— i.e. use the ratio of **net-of-tax nominal purchases to net-of-tax nominal sales** in place of the gross ratio, rather than tacking on a separate wedge term. Purely a repackaging of @eq-two-tax-materials-foc algebraically, but the better way to think about it: both legs of the ratio are still directly-observed nominal quantities times directly-observed tax rates — no price index, no deflator, nothing new to estimate. This means the "nominal log-share needs only the ratio, immune to price-index quality" result (`CLAUDE.md`, 2026-08-25 entry) survives completely unchanged; the wedge only ever needs $\tau_{S,it},\tau_{P,it}$ themselves, both already columns in `stage2_data`.
+
+**Nothing downstream changes in functional form.** $\mathcal V_{it}=u_{it}-\varepsilon_{it}$ is a definitional identity that holds for whichever $\varepsilon$ is plugged in — it was never tied to the no-wedge case. Re-deriving $\mathcal W_{it}=y_{it}-\beta(m_{it}-\mathcal V_{it})$ with the wedge-corrected $\varepsilon$ still collapses to $\alpha_Kk_{it}+\alpha_Ll_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}$ by the same algebra as before (the derivation only used the $\mathcal V=u-\varepsilon$ identity and the production identity, never the specific formula for $\varepsilon(M)$).
+
+> This is true because the identity $u=\ln\left(\frac{M^*}{M}\right)$ remains the same, we just have to add and substract the log of the net after tax ratio of purchases to sales. I double-checked the algebra.
+
+> $\beta$ first-stage results might be biased since the intercept of the regression captured $\ln\beta +E[\ln((1-\tau_S)/(1-\tau_P))]$. Deconvolution results might also change because any random variation of the ratio would have gone to $\varepsilon_{it}$. Since I use the density of $\varepsilon$ to deconvolve the distribution of $u$, then $f_u$ might be biased. **Do they change? How much? Have results ready in case supervisors ask. Review and analyze results.**
+
+So `e_of_M`, `eps_of_M`, `omega_of_M`, `h_of_e` in `Code/Rcpp/1200-stage2-elvis.cpp` need **no changes**. Only two upstream data-construction pieces do:
+
+1. **First-stage regression LHS** (`021-deconv-funs.R`, `first_stage_panel`/`first_stage_panel_me`): replace `var="log_mats_share"` with a new column
+   $$\texttt{log\_mats\_share\_net} = \texttt{log\_mats\_share} + \ln(1-\tau_P) - \ln(1-\tau_S)$$
+   so the corp-only regression recovers $\ln\beta$ cleanly instead of $\ln\beta+\ln\frac{1-\tau_S}{1-\tau_P}$ (both $\tau_S,\tau_P$ already exist as raw data columns — nothing new to construct beyond this one line). This is the piece that reopens stage 1, currently supervisor-approved/read-only per `CLAUDE.md`.
+2. **$h(e)$'s tax input** (`1200-stage2-data.R` / the driver): use `sales_tax_rate_purchases` ($\tau_P$) directly, replacing `tau_rho_proxy`/`eff_tax_rate_c`.
+
+## Status and scope
+
+**Not yet applied to any code** — this note documents the derivation for the supervisor conversation, per the user's request, before touching `021-deconv-funs.R` or re-running stage 1. Because @eq-two-tax-profit nests the currently-approved single-$\tau$ model exactly at $\tau_S=\tau_P$, this is a strict generalization using a variable already sitting in the data, not a competing identification strategy — the "cost" is re-running stage 1 with the corrected regressor, not redesigning anything.
+
+**Maintained, not tested:** $\tau_S,\tau_P$ are treated as exogenous to the firm's $M$/$e$ choices (set by tax policy/product classification, not chosen by the firm). If firms could manipulate which goods they report selling to shift tax brackets, this would reintroduce endogeneity — no different in kind from the maintained exogeneity of $\rho_t,P_t$ already relied on elsewhere, but worth flagging as an assumption rather than a proven fact.
+
+> This paper focuses on overreporting inputs, not underreporting sales. First, it is documented underreporting sales is more concentrated in retailers, B2C firms, than in B2B, most manufacturing firms, which is the focus of this paper. Second, firms selling to other firms face counter-incentives; the firms selling wants to underreport its sales, but the firm buying from selling firm wants to overreport the purchase, therefore they are not likely to cooperate, so we assume sales from manufacturing firms that sell to other firms do not underreport sales. In contrast, firms can buy fake invoices to claim additional deductions from sales taxes. The key difference is that there is one real transaction in the sales of products in which partipants need to coordinate when firms underreport sales, in the case of firms selling to consumers, since consumers pay the final price and do not have incentives to deduct their purchases, firms might offer consumers a lower price if the consumer accepts not requesting an invoice. In the overreporting of inputs, there is no real transaction, no exchange of goods, only the price of paying someone (with a ghost firm, usually) a fee for fabricating fake invoices.

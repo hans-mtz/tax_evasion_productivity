@@ -1,0 +1,138 @@
+## Non-random Auditing
+
+In our model, the probability of detection summarizes two probabilities: the probability of being audited and the probability of being caught evading taxes conditional on being audited. In the baseline model, I assume that the tax authority audits firms at random and that if the firm is audited and is evading it is caught with probability one.
+
+Firms might believe however that their probability of being detected evading taxes is increasing in their size. In other words, the larger the firm, the more likely it gets audited by the tax authority. This scenario corresponds to a strategic audit, as opposed to a random audit.
+
+What matters for firms is what they believe about their audit probability. We can model the probability of detection as $q(e_{it},M_{it})$. So, now the probability of detection depends not only on the firm's overreporting of inputs $e_{it}$, but also on the firm's level of true intermediate inputs, $M_{it}$. 
+
+Other measures of size may be preferred, such as revenues, because that is a popular way for tax authorities to classify firms for taxing purposes. I use intermediate inputs because they are direclty related to the firm's size in terms of ouptput, revenues, or market share and to simplfy the identification of the model.
+
+Then, the problem of the firms becomes,
+
+$$
+\begin{aligned}
+  \max_{K_{it},L_{it},M_{it}, e_{it}} \big(1-q(e_{it},M_{it})\big)&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  &-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)-\kappa_i(e_{it})\bigg]\\
+  +q(e_{it},M_{it})&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
+  &-\kappa_i(e_{it})-\phi\rho_t\tau e_{it}\bigg] \\
+  \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$ {#eq-non-random-audit}
+
+The first order conditions render the following equations,
+
+$$
+\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}\left(1+\frac{\tau}{(1-\tau)}(1+\phi)\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)
+$$ {#eq-foc-q-m}
+
+$$
+\rho_t\tau\left(1-(1+\phi)\left(q(e_{it}, M_{it})+\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}} e_{it}\right)\right) =\kappa_i'(e_{it})
+$$ {#eq-foc-q-e}
+
+We can still manipulate @eq-foc-q-m to obtain en equation in terms of the output elasticity of interdmediate inputs as in @Gandhi2020,
+
+$$
+\beta \mathcal{E}\exp\{-\varepsilon_{it}\}=\frac{\rho_{t} M_{it}}{P_t Y_{it}}\left(1+\frac{\tau}{(1-\tau)}(1+\phi)\frac{\partial q(e_{it},M_{it})}{\partial M_{it}}e_{it}\right)
+$$ {#eq-foc-q-m-2}
+
+As in the base case, @eq-foc-q-e will not hold for Corporations, for any positive $e_{it}>0$ . Consequently, Corporations will choose not to evade taxes, $e_{it}=0$. This implies that for these firms, @eq-foc-q-e becomes,
+
+$$
+\rho_t\tau \le\kappa_i'(0)
+$$ {#eq-foc-q-e-0}
+
+Likewise, for these firms @eq-foc-q-m-2 becomes,
+
+$$
+\beta \mathcal{E}\exp\{-\varepsilon_{it}\}=\frac{\rho_{t} M_{it}}{P_t Y_{it}}
+$$ {#eq-foc-q-m-3}
+
+Now, I have four equations. I can try to parametrize $q(e_{it}, M_{it})$,  $\kappa_i(e_{it})$, normalize $\phi=0$, and estimate the parameters of this function along with the other parameters of the model.
+
+First, the probability of detection needs to have the following properties, $q(0,M_{it})=0$, $q(\infty, M_{it})=1$, $\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}}>0$, and $\frac{\partial q(e_{it}, M_{it})}{\partial M_{it}}>0$.
+
+One possible functional form that satisfies these properties is, $q(e_{it}, M_{it})=1-\exp\{-\lambda_0 e_{it}-\mathbb{1}[e_{it}>0]\lambda_1 M_{it}\}$, with $\lambda_0,\lambda_1>0$. Then, for the evaders the derivates are given by, $\frac{\partial q(e_{it}, M_{it})}{\partial e_{it}}=\lambda_0\exp\{-\lambda_0 e_{it}-\lambda_1 M_{it}\}$, and  $\frac{\partial q(e_{it}, M_{it})}{\partial M_{it}}=\lambda_1\exp\{-\lambda_0 e_{it}-\lambda_1 M_{it}\}$.
+
+Likewise, the cost of evasion function needs to satisfy the following properties, $\kappa_i(0)=0$, $\kappa_i'(e_{it})>0$. In addition, I need to allow for Corporations to have larger costs of evasion than non-Corporations. One possible functional form that satisfies these properties is, $\kappa_i(e_{it})=(\gamma_0 +\gamma_1 \mathbb{1}[i\in \text{Corp}])e_{it}$
+
+Then, the derivative is given by, $\kappa_i'(e_{it})=\gamma_0 +\gamma_1 \mathbb{1}[i\in \text{Corp}]$.
+
+With these functional forms, I can rewrite the first order conditions as moments to estimate the parameters $\lambda_0,\lambda_1,\gamma_0,\gamma_1$ along with the other parameters of the model, $\alpha_K,\alpha_L,\beta$, and the densities of the error term $f_{\varepsilon}(\varepsilon)$ and of overrerporting $f_e(e)$.
+
+The four equations are given by,
+
+$$
+\beta \mathcal{E}\exp\{-\varepsilon_{it}\}=\frac{\rho_{t} M_{it}}{P_t Y_{it}}
+$$ {#eq-foc-nr-moment-3}
+
+$$
+\rho_t\tau \le\gamma_0 +\gamma_1
+$$ {#eq-foc-nr-moment-4}
+
+for the non-evaders, and
+
+$$
+\beta \mathcal{E}\exp\{-\varepsilon_{it}\}=\frac{\rho_{t} M_{it}}{P_t Y_{it}}\left(1+\frac{\tau}{(1-\tau)}\lambda_1\exp\{-\lambda_0 e_{it}-\lambda_1 M_{it}\}e_{it}\right)
+$$ {#eq-foc-nr-moment-1}
+
+$$
+\rho_t\tau\left(1-\left(1-\exp\{-\lambda_0 e_{it}-\lambda_1 M_{it}\}+\lambda_0\exp\{-\lambda_0 e_{it}-\lambda_1 M_{it}\} e_{it}\right)\right) =\gamma_0 
+$$ {#eq-foc-nr-moment-2}
+
+for the evaders, where $e_{it}>0$.
+
+### Implementation
+
+The challenge again is that as in the base model, $e_{it}$ and $\varepsilon_{it}$ are unobserved. Similarly, what we observe in the data is $M^*_{it}=M_{it}+e_{it}$, the reported intermediate inputs.
+
+I can start with the non-evaders. For these firms, reported intermediate inputs are the true inputs. By taking logs, I can use @eq-foc-nr-moment-3 to identify $\beta$ and $f_{\varepsilon}(\varepsilon)$ as in the baseline model. 
+
+$$
+\ln\left(\frac{\rho_{t} M_{it}}{P_t Y_{it}}\right)=\ln(\beta)+\ln(\mathcal{E}) -\varepsilon_{it}
+$$ {#eq-log-nr-moment-3}
+
+Next, I can use @eq-foc-nr-moment-4 to identify $\gamma_0$ and $\gamma_1$.
+
+Here I have several options depending how $\tau$ is defined. In the model, $\tau$ is the sales tax rate, and raw materials can be deducted at the same rate. However, in Colombia firms might face two different sales tax rates, one of sales , $\tau_0$, and a different for purchases, $\tau_1$. In the data, I observe paid sales taxes of sales, $\tau_0P_tY_{it}$, and purchases , $\tau_1\rho_t M_{it}$.
+
+What matters for the firm's decision to evade is the effective tax rate, which is given by, $\tau_{it}=\frac{\tau_0P_tY_{it}-\tau_1\rho_t M_{it}}{P_tY_{it}}=\tau_0-\tau_1\frac{\rho_t M_{it}}{P_tY_{it}}$. The intermediates cost share of revenue is $\frac{\rho_t M_{it}}{P_tY_{it}}=\beta\mathcal{E}$, so the effective tax rate can be rewritten as, 
+
+$$
+\tau_{it}=\tau_0-\tau_1\beta\mathcal{E} 
+$$ {#eq-effective-tax-rate}
+
+where the subscript $it$ indicates that there would be an estimate for each firm-year.
+
+Then, I can rewrite @eq-foc-nr-moment-4 as,
+
+$$
+\tau_{it}\rho_t \le \tilde\gamma
+$$ {#eq-foc-nr-moment-4-mult}
+
+where $\tilde\gamma=\gamma_0 +\gamma_1$.
+
+
+For the evaders, what I observe in the data is $M^*_{it}=M_{it}+e_{it}$. I can rewrite @eq-foc-nr-moment-1 and @eq-foc-nr-moment-2 substituting $e_{it}=M^*_{it}-M_{it}$, using @eq-effective-tax-rate, and taking logs as,
+
+$$
+\ln\left(\frac{\rho_{t} M_{it}}{P_t Y_{it}}\right)=\ln(\beta\mathcal{E}) -
+\ln\left(1+\frac{\tau_{it}}{(1-\tau_{it})}\lambda_1\exp\{-\lambda_0( M^*_{it}-M_{it})-\lambda_1 M_{it}\}( M^*_{it}-M_{it})\right)-\varepsilon_{it}
+$$ {#eq-log-nr-moment-1}
+
+$$
+\ln(\tau_{it}\rho_t)=\ln(\gamma_0)+\lambda_0 ( M^*_{it}-M_{it})+\lambda_1 (M_{it})-\ln(1-\lambda_0( M^*_{it}-M_{it}))
+$$ {#eq-log-nr-moment-2}
+
+
+
+How to estimate? Decovluting @eq-log-nr-moment-1 by Non-Parametric MLE, using $\beta$ and the distribution of $\varepsilon_{it}$ from the non-evaders, subject to @eq-log-nr-moment-2 and @eq-foc-nr-moment-4-mult.
+
+$$
+\begin{aligned}
+  \max_{\lambda_0,\lambda_1,\gamma_0,\gamma_1, f_{M|M*}(M|M^*)} &\sum_{i,t:e_{it}>0}\ln\left(\int \hat{f}_{\varepsilon}\left(\ln\left(\frac{\rho_{t} M_{it}}{P_t Y_{it}}\right)+\ln\left(1+\frac{\tau_{it}}{(1-\tau_{it})}\lambda_1\exp\{-\lambda_0( M^*_{it}-M_{it})-\lambda_1 M_{it}\}( M^*_{it}-M_{it})\right)-\ln(\beta\mathcal{E})\right)f_{M|M^*}(M_{it}|M^*_{it})\text{d}M_{it}\right) \\
+  \text{s.t. }& \mathbb{E}_{M^*_{it}}\left[\ln(\tau_{it}\rho_t)-\ln(\gamma_0)-\int\Big(\lambda_0 ( M^*_{it}-M_{it})-\lambda_1 (M_{it})+\ln(1-\lambda_0( M^*_{it}-M_{it}))\Big)f_{M|M^*}(M_{it}|M^*_{it})\text{d}M_{it}\right]=0\\
+  & \mathbb{E}[\tau_{it}\rho_t -\tilde\gamma]\le0
+\end{aligned}
+$$
+

@@ -1,0 +1,69 @@
+## Revised Model of Tax Evasion by Overreporting Inputs
+
+With the previous empirical findings in mind and what the literature has documented, I propose a revised theoretical model. Something missing in previous work is:
+
+1. focusing on input overreporting as the main strategy for tax evasion. Previous work has largely focused on underreporting sales or income, but overreporting inputs is a common and understudied method of evasion. The literature has documented that underreporing of sales is mostly done by downstream firms, firms that sell directly to consumers. To underreport sales, the firm needs to collude with its customer. In other words, the customer must agree to not declare this transaction to the tax authority and leave no record of the sales transaction. By studying manufacturing firms in Colombia, whose most of its sales were directed to wholesalers and other manufacture firms, we can study input overreporting.
+
+2. the effect of size on tax evasion behaviour. To the best of my knowledge, no previous theoretical model has explicitly modelled the positive relationship between firm size and tax evasion via input overreporting. Contrary to common belief, the empirical evidence of this paper and the literature suggests a non-linear relationship between size and evasion. Overreporting seems to increase with size up to a point, after which it drops to zero for the largest firms. 
+
+As discussed previously, this non-linear relationship arises due to the interaction of the cost of evasion and the probability of detection. A fundamental problem is that without data on audits or on the costs of evasion, it is not possible to separately identify these two components. We can try however to identify the joint effect of these two components by making some assumptions on their functional form. 
+
+For example, it is likely that the probability of detection is nondecreasing in size, as it would not make sense that larger firms are less likely to be audited or detected. So, let's assume it is flat with respect to size. Therefore, to obtain the nonlinear relationship between size and evasion, the cost of evasion must be decreasing in size at a decreasing rate, but it must increase sharply for the largest firms. This is consistent with the idea that larger firms have more resources and capabilities to engage in evasion, but the largest firms have access to other sophisticated legal tax avoidance strategies rendering the relative cost of engaging in illegal tax evasion by overreporting inputs larger for any non-zero amount of evasion.
+
+### Model Setup
+
+The main difference with respect @sec-model is that now, in addition to how much a firm overreports, the probability of detection $q(e_{it}, \mathbb{E}[P_t Y_{it}])$ and the cost of evasion $\kappa_i(e_{it}, \mathbb{E}[P_t Y_{it}])$ depend also on size, measured as the level of expected revenue $P_t \mathbb{E}[Y_{it}]$.
+
+@eq-eva-2 becomes,
+
+$$
+\begin{aligned}
+      \max_{K_{it}, L_{it},M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
+  &+[1-q(e_{it}, P_t\mathbb{E}[Y_{it}])]\left(\rho_{t}\tau e_{it}\right)
+  -q(e_{it}, P_t\mathbb{E}[Y_{it}])\phi\rho_t\tau e_{it}-\kappa_i(e_{it}, P_t\mathbb{E}[Y_{it}]) \\
+  \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$
+
+The first-order condition with respect to $M_{it}$ is now,
+
+$$
+\beta\frac{\mathbb{E}[Y_{it}]}{M_{it}} = \frac{(1-\tau)}{\left[(1-\tau) - \rho_t\tau e_{it}(1+\phi)q_Y - \kappa_{i,Y}\right]}\frac{\rho_t}{P_t}
+$$
+
+our classic OFC now includes a wedge that affects the optimal input. Since the probability of detection is nondecreasing in size, then $q_Y \geq 0$. Also, since the cost of evasion is decreasing in size at a decreasing rate, then $\kappa_{i,Y} < 0$. Therefore, the overall effect of size on the wedge is ambiguous. If $\kappa_Y>\rho_t\tau e_{it}(1+\phi)q_Y$, then tax evasion decreases the relative prices, leading to firms using more inputs. However, if $\kappa_Y<\rho_t\tau e_{it}(1+\phi)q_Y$, then tax evasion increases the relative prices, leading to firms using less inputs.
+
+The first-order condition with respect to $e_{it}$ remains similar to @eq-foc-e,
+
+$$
+\rho_t\tau\left[1-(1+\phi)(q + q_e \cdot e_{it})\right] = \kappa_{i,e}
+$$
+
+Let's assume that the probability of detection is zero when there is no evasion, $q(0, P_t\mathbb{E}[Y_{it}])=0$, if a firms does not evade it cannot be caught cheating. Also, the partial derivative of the evasion cost with respect to size is zero when there is no evasion, $\kappa_{i,Y}(0, P_t\mathbb{E}[Y_{it}])=0$, but it can be non-zero for the partial derivative with respect to evasion, $\kappa_{i,e}(0, P_t\mathbb{E}[Y_{it}])>0$.
+
+For a subset of firms, the optimal level of evasion is zero, $e_{it}^*=0$. This occurs when the marginal cost of evasion is higher than the marginal benefit at $e_{it}=0$,
+
+$$
+\rho_t\tau < \kappa_{i,e}(0, P_t\mathbb{E}[Y_{it}])
+$$
+
+for these firms, there is no effect of evasion on the input choice:
+
+$$
+\beta\frac{\mathbb{E}[Y_{it}]}{M_{it}} = \frac{\rho_t}{P_t}
+$$
+
+
+### Estimating the Model
+
+To estimate the model, we would need to specify functional forms for the probability of detection and the cost of evasion, and make simplifying assumptions to be able to identify the parameters of interest. 
+
+First, as stated earlier, without data on audits or on the costs of evasion, it is not possible to separately identify the probability of detection and the cost of evasion. So, let's assume that the probability of detection is constant with respect to size, $q(e_{it}, P_t\mathbb{E}[Y_{it}])=q(e_{it})$. This implies that $\frac{\partial q(\cdot)}{\partial Y}\equiv q_Y=0$. In addition, we need that $\frac{\partial q}{\partial e} > 0$, and $q(0)=0$, $q(\infty)=1$.
+
+Then, to obtain the nonlinear relationship between size and evasion, the cost of evasion must be decreasing in size at a decreasing rate, but it must increase sharply for the largest firms. In other words, we need to assume that $\kappa_{i,Y}(e_{it}, P_t\mathbb{E}[Y_{it}])<0$ for $e_{it}>0$, but $\kappa_{i,Y}(e_{it}, P_t\mathbb{E}[Y_{it}])$ becomes positive for very large $P_t\mathbb{E}[Y_{it}]$. In addition, we need $\kappa_{Y}(0, P_t\mathbb{E}[Y_{it}])=0$, but $\kappa_{i,e}(0, P_t\mathbb{E}[Y_{it}])>0$.
+
+Finally, firms might be heterogeneous in their cost of evasion, due to instrinsic characteristics, such as risk aversion, or differences tax evasion management skills. 
+
+So, we can specify the cost of evasion as follows:
+
+

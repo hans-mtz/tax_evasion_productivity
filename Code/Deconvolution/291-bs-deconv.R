@@ -1,3 +1,7 @@
+## Semi and Non Parametric Deconvolution of Tax Evasion using B-splines
+## Semi: using functional form for epsilon distribution
+## Non-parametric: using kernel density estimation for epsilon distribution
+
 ## %% --- Load libraries and setup ---
 library(splines)
 library(statmod)
@@ -57,7 +61,7 @@ lapply(
 
 
 ## %% Get statistics from distributions --------------------- 
-
+load("Code/Products/bs_mle_data.RData")
 
 get_stats(sp_deconv_list[[1]]$theta, sp_deconv_list[[1]]$params)
 

@@ -1,0 +1,130 @@
+### Who are the evaders?
+
+As a first attempt to characterize the firms that evade taxes, I try to capture differences in the output elasticities of materials between different types of firms using a simple regression model with interaction terms.
+
+I am interested to see if there are systematic differences between firms with different characteristics.
+
+Based on the models of tax evasion presented in the Theory section, the most suspicious firms are the following:
+
+- Small firms in terms of labor (conditional on capital) might evade more due to lower marginal cost of evasion or lower probability of detection.
+
+Informality can be viewed as the extreme form of tax evasion. The literature has documented that smaller firms are more likely to be informal. Therefore, it is likely that smaller firms also evade more. Why? In my base model with random auditing, it could be that smaller firms face lower marginal cost of evasion (lower $\kappa'(e)$). Small firms commonly have employees working in multiple roles. In the extreme case of one-person firms, the owner does sales, purchases, merchandising, and importantly, accounting and business decisions. Thus, one person might be responsible for keeping the two books, the one presented to the authority and the one used in managerial decisions. As the firm grows more employees need to be involved in the keeping of the double books, increasing the marginal cost of evasion. 
+
+In the model with strategic auditing, smaller firms could face lower probability of detection (lower $q(e,M)$). As the firm grows in number of employees, the probability that one of them reports the evasion to the tax authority increases. Therefore, larger firms might face a higher probability of detection.
+
+- Large firms in terms of capital (conditional on labor) might evade more due an increase in the effective tax rate. 
+
+Even though capital is exempt of sales tax In Colombia, firms are subject to a presumptive income tax which is based on the firm's capital. Firms cannot declare an income lower than 8 percent of their capital stock. Therefore, firms with a high capital stock may have higher incentives to evade taxes by overreporting their inputs to reduce their declared income. In both models, the effective sales tax rate $\tau$ is higher for firms with high capital stock.
+
+- Exporters might evade less. 
+
+Why? Exports are not subject to sales taxes. Therefore, the higher the share of sales is exported the lower the incentives to overreport their inputs, as their sales tax liability decreases. In both models, the effective sales tax rate $\tau$ is lower for exporters.
+
+- Importers might evade more.
+
+Even though imports are subject to sales taxes, firms pay in addition import tariffs. While imports might not be easily overreported due to a larger paper trail, firms might overreport their domestic purchases to compensate for the higher cost of imports. In both models, the effective sales tax rate $\tau$ is higher for importers. In particular, import tariffs increase the effective sales tax rate by decreasing the share of purchases that might be deducted from sales tax liability.
+
+I use a regression model with industry fixed effects, a Non-Corporation dummy ($D_{NC,it}=1$ if firms $i$ is not a Corporation in time $t$, and zero otherwise), and a characteristic of interest, $D_{ijt}$.
+
+The characteristics of interest are small firms in terms of labor and capital, this dichotomic variable takes the value of one if the firm's labor is below the median labor or capital across industries (overall); exporter —1 if the firm exports a positive percentage of their sales— and importer —1 if the firm imports a positive percentage of their materials purchases. 
+
+In a second step, $D_{ijt}$ is a continuous variable: the percentile of labor or capital across firms in all industries, the share of exports over sales, and the share of imports over materials purchases.
+
+I also estimate the model breaking down firms into their juridical organization and taking Corporations as the baseline category. The other categories are: Limited Liability Companies (LLCs), Proprietorships, and Others (including partnerships and government firms).
+
+#### Empirical approach
+
+Again, for the truth-reporters, corporations,
+
+$$
+s^C_{ijt} = \gamma_j +  \varepsilon_{ijt}
+$$
+
+For the evaders, non-corporations,
+
+$$
+s^{NC}_{ijt} = \gamma_j + e_{ijt}(q,\kappa) +\varepsilon_{ijt}
+$$
+
+
+$$
+(1-D_{NC})s_{ijt} + D_{NC} s_{ijt} = \gamma_j + D_{NC} e_{ijt}(q,\kappa) +\varepsilon_{ijt}
+$$
+
+
+
+The regression model is the following:
+
+$$
+\begin{aligned}
+    s_{ijt} =& \beta_0 D_{NC} + \beta_1 D_{NC} \times D_{ijt} + \gamma_j +  \varepsilon_{ijt}
+\end{aligned}
+$$
+
+where $\gamma_j$ stands for industry fixed effects, and $\varepsilon_{ijt}$ is the error term. The coefficient of interest is $\beta_1$, the interaction term between the industry dummies and $D_i$ and $D_{NC}$.
+
+$\beta_1$ can be interpreted as the difference in overreporting of the different types of Non-Corporations. Because Corporations do not evade taxes by overreporting their inputs, the industry fixed effects capture the true output elasticity of materials for each industry. $\beta_0$ is the comparison group of Non-Corporations.
+
+#### Results
+
+![](../Code/Products/911-all-dic-plot.png){#fig-evaders-dic}
+
+![](../Code/Products/911-all-lev-plot.png){#fig-evaders-lev}
+
+
+What makes sense:
+
+- Small firms in terms of labor overreport more, holding the other factors constant.
+
+- Increasing (decreasing) the percentile of your size measured by labor decreases (increases) overreporting.
+
+The larger the number of employees the harder to overreport because 1) it is more likely someone to whistle-blow to the authority the illicit activities of the firm increasing the probability of detection and 2) accounting departments of large firms in terms of employees might be larger and thus more people are involved in keeping double books, so the marginal cost of overreporting is larger.
+
+- Small firms in terms of capital overreport less.
+
+- Increasing (decreasing) the percentile of your size measured by capital increases (decreases) overreporting.
+
+Even though capital is sales tax-free in Colombia, JOs are subject to presumptive income tax based on their capital stock. That is, firms cannot report income below 8[^pres-inc] percent of their assets (capital). Therefore, the smaller the capital, the lower the presumptive income, the lower the incentive to overreport.
+
+[^pres-inc]: The presumptive income tax threshold is 2 percent after 1983, and it was extended to include LLCs and to the retail sector.
+
+- Non-exporters overreport more.
+
+- Increasing your share of exports decreases overreporting at a decreasing rate. 
+
+Exports are not subject to sales tax, so the larger the share of exports, the lower the incentive to overreport. 97 percents of firms export 38 percent or less of their output. So the increase in overreporting by increasing your share of exports past this threshold is true only for 3 percent of firms.
+
+- Non-importers overreport less.
+
+- Increasing your share of imports increases overreporting.
+
+In addition to import tariffs, imports are subject to sales tax. Unlike sales taxes paid on imports, import tariffs cannot be deducted from the sales tax collected from sales. Thus, imports increase the total cost of production but decrease the share of the total cost that can be deducted from sales tax liability. In addition, imports are harder to overreport because of the larger paper trail. Consequently, the larger the share of imports, the larger the incentive to overreport local materials to compensate for the extra cost of import tariffs.
+
+- LLCs seem to be driving most of the results among Non-Corporations.
+
+When breaking down Non-Corporations by their juridical organization, only LLCs show significant differences in overreporting. Moreover, the patterns are similar to those found for Non-Corporations as a whole.
+
+
+::: {#tbl-who-evades layout-ncol="1"}
+
+```{r}
+#| echo: false
+#| output: asis
+#| cache: false
+
+load("../Code/Products/911-all_inds-2.Rdata")
+
+# res_df <- wip_df
+
+etable(
+  reg_ncrp_dic[5],
+  reg_ncrp_lev[5],
+  reg_jo_dic[5],
+  reg_jo_lev[5],
+  dict = dict
+)
+
+
+```
+
+:::

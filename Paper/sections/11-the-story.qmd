@@ -1,4 +1,4 @@
-## Getting the Story Straight
+## Getting the Story Straight {#sec-the-story}
 
 Firms face incentives to evade sales taxes by overreporting their input costs. Firms overreport their cost by acquiring fake invoices to claim additional deductions of their sales taxes, maximizing after-tax profits. The higher the sales tax, the greater the incentive to evade. However, the probability of detection and the threat of penalties limit how much firms overreport.
 
@@ -7,13 +7,31 @@ The key incentive for firms is the **effective sales tax rate** — the amount f
 $$
 \begin{aligned}
 \tau &= \frac{\tau_0P_tY_{it} - \tau_1\rho_t M_{it}}{P_tY_{it}} \\
-&= \tau_0 - \tau_1 \beta
+&= \tau_0 - \tau_1 \frac{\rho_t M_{it}}{P_tY_{it}}
 \end{aligned}
 $$
 
+
+In the data, I observe sales taxes paid on sales, $\tau_0P_tY_{it}$, and on purchases, $\tau_1\rho_t M_{it}$. I can directly estimate the effective sales tax rate. 
+
+However, if firms are overreporting their inputs, this reported effective sales tax rate will be lower than the true effective sales tax rate,
+
+$$
+\tau_0 -\tau_1 \frac{\rho_t M^*_{it}}{P_tY_{it}} < \tau_0-\tau_1 \frac{\rho_t M_{it}}{P_tY_{it}}
+$$
+
+I can use the estimated output elasticity of material inputs to get a corrected estimate of the effective sales tax rate, since $\beta\mathcal{E} = \mathbb{E}\left[\frac{\rho_t M_{it}}{P_tY_{it}}\right]$. Thus, I can estimate the true effective sales tax rate as,
+
+$$
+\tau =\tau_0 -\tau_1 \beta\mathcal{E} 
+$$
+
+
 In Colombia, the total amount charged by the firm as sales tax depends on the statutory tax rate of each product sold domestically; **exports are exempt** from sales tax. Low statutory sales tax rates and exempt products result in lower sales tax collected by the firm and thus, a lower effective tax rate. Consequently, firms whose products are exempt from sales tax or taxed with **low statutory rates** have low incentives to evade. Likewise, as the share of their exports increases, exporter firms bear decreasing incentives to evade taxes because a larger portion of their sales is exempt from sales tax, reducing the effective sales tax rate.
 
-On the other hand, the total amount paid by the firm as sales tax depends on the statutory tax rate of each of its inputs, including imports. **Imports**, in contrast to exports, are **not exempt**. Hence, the composition of the foreign and domestic inputs does not affect the effective sales tax rate, nor the incentives to evade. However, the tax system imposed a zero sales tax rate on **unprocessed primary inputs**, such as forestry, mining, fishing, and agriculture. Therefore, firms consuming a high share of primary inputs face a higher effective sales tax rate and thus, greater incentives to evade. 
+On the other hand, the total amount paid by the firm as sales tax depends on the statutory tax rate of each of its inputs, including imports. **Imports**, in contrast to exports, are **not exempt**. Hence, the composition of the foreign and domestic inputs does not affect the effective sales tax rate, nor the incentives to evade. 
+
+However, the tax system imposed a zero sales tax rate on **unprocessed primary inputs**, such as forestry, mining, fishing, and agriculture. Therefore, firms consuming a high share of primary inputs face a higher effective sales tax rate and thus, greater incentives to evade. 
 
 Note that the effective sales tax rate might naturally be **negative** for firms in certain industries. Before the 1983 reform in Colombia, there were four different statutory sales tax rates: 4, 10, 15 and 25 percent. Because the sales tax was applied at the product level, *the total amount paid as sales tax by the firms on its inputs could be larger than the total amount charged by the firm as sales tax on its products.* This situation would result in a negative effective sales tax rate. Firms in this situation would receive a refund from the tax authority. 
 
@@ -31,9 +49,9 @@ Whether firms in certain industries have incentives to overreport their inputs t
 
 A first contribution of this paper is to provide practitioners and policymakers a way to identify industries where tax evasion through cost-overreporting might be non-trivial and can be identified from data. The simple model employed in this paper to investigate the mechanisms of tax evasion provides conditions that can be tested with data. As a result, I propose a statistical test where the null hypothesis states that firms in an industry of interest do not evade sales taxes by overreporting; the alternative states that firms do commit tax evasion [@sec-tax-ev-test].
 
-Failing to reject the null hypothesis does not necessarily imply that firms in this industry are not overreporting. If a researcher suspects this practcie on a particular industry, he would have to investigate if the assumptions of the model are not unreasonable for said industry. The main assumption comes from the production function method, even though they might differ in their productivity, evaders and non-evaders share a common technology. 
+Failing to reject the null hypothesis does not necessarily imply that firms in this industry are not overreporting. If a researcher suspects this practice on a particular industry, he would have to investigate if the assumptions of the model are not unreasonable for said industry. The main assumption comes from the production function method, even though they might differ in their productivity, evaders and non-evaders share a common technology. 
 
-With this in mind, in any dataset using SIC codes, it should be considered that the SIC codes groups firms with similar products, but some categories might group products that require different technologies. Furthermore, most firms are multiproducts, and might be classified under a certain SIC code because it produces more of a certain product marginally.
+With this in mind, in any dataset using SIC codes, it should be considered that the SIC codes groups firms with similar products, but some categories might group products that require different technologies. Furthermore, most firms are multiproduct, and might be classified under a certain SIC code because it produces more of a certain product marginally.
 
 ### Showing the Evidence 
 
@@ -47,9 +65,12 @@ load("../Code/Products/i_elas.RData")
 # col_names <- c("SIC", "Corps.", 
 #         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases","N (%)","Qty. (Avg. %)","N (%) ","Qty. (Avg. %) ")
 
-col_names <- c("SIC", "Corps.", 
-        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
+# col_names <- c("SIC", "Corps.", 
+#         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
 
+col_names <- c("SIC", "Corps.", 
+        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Sales ($\\tau_0$)","Purchases ($\\tau_1$)","$\\tau_1\\frac{\\rho_tM^*_{it}}{P_tY_{it}}$","$\\tau_1\\beta$", "$\\tau$ Reported", "$\\tau$ Corrected")
+        
 main_tbl %>% 
     mutate(
         across(n:share_imports_materials, ~replace(.x, type=="CI", NaN))
@@ -58,7 +79,7 @@ main_tbl %>%
         sic_3 %in% top_10_revenue$sic_3[1:5]
     ) %>%
     select(
-        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, sales_sales_tax_rate:effective_sales_tax_rate_corrected
         # exporters:share_imports_materials
     ) %>%
     kbl(
@@ -70,7 +91,7 @@ main_tbl %>%
     # column_spec(2:4, width = "9em") %>%
     kable_classic(full_width=F, html_font = "Cambria") %>%
     add_header_above(
-        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=6)#, "Exports"=2, "Imports"=2)
     ) %>%
     collapse_rows(columns = 1, valign = "top") #%>%
     # pack_rows(
@@ -104,7 +125,7 @@ main_tbl %>%
         across(n:share_imports_materials, ~replace(.x, type=="CI", NaN))
     ) %>%
     select(
-        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, sales_sales_tax_rate:effective_sales_tax_rate_corrected
         # exporters:share_imports_materials
     ) %>%
     kbl(
@@ -116,7 +137,7 @@ main_tbl %>%
     # column_spec(2:4, width = "9em") %>%
     kable_classic(full_width=F, html_font = "Cambria") %>%
     add_header_above(
-        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=6)#, "Exports"=2, "Imports"=2)
     ) %>%
     collapse_rows(columns = 1, valign = "top") %>%
     pack_rows(
@@ -129,12 +150,42 @@ main_tbl %>%
             "36 Non-Metallic Mineral Products" = 2,
             # "37 Basic Metals" = 4,
             "38 Fabricated Metal Products, Machinery & Equipment" = 8,
-            "39 Other Manufacturing" = 2
+            "39 Other Manufacturing" = 1
         )
     )
     
 
 ```
+
+#### Overall tendencies
+
+What makes sense:
+
+- Downward sloping relationship between the average materials overreporting (test coefficient) and the sales tax rate of purchases ($\tau_1$), reported ($\tau_1\exp(s_{it})$) and corrected ($\tau_1\beta$) sales taxes paid on purchases as a share of sales [@fig-test-pur-share-sales; @fig-test-pur-r].
+
+As the share of purchases sales taxes increases, the effective tax rate decreases, reducing the incentives to evade. Thus, firms overreport less of their inputs. Alternatively, as the sales tax rate on purchases increases, the share of the firm's total cost that can be deducted from sales tax liability increases, reducing the effective tax rate, and thus, the incentives to evade. Therefore, firms overreport less of their inputs.
+
+![Test coefficient vs Tax Rates — Purchases Sales Taxes Share of Sales](images/graphs/251-pur-share-sales.png){#fig-test-pur-share-sales width="90%"}
+
+![Test coefficient vs Tax Rates — Sales Tax Rate of Purchases](images/graphs/251-purchases.png){#fig-test-pur-r width="90%"}
+
+- When the effective sales tax rate is corrected using the output elasticity of materials inputs instead of the reported share of material, there is slight but positive relationship between the test coefficient and the effective sales tax rate. If left uncorrected, there seems to be no relationship between the test coefficient and the effective sales tax rate [@fig-fig-test-effective].
+
+As the effective sales tax rate increases, the incentives to evade increase, leading firms to overreport more of their inputs. The flat relationship between the uncorrected effective sales tax rate and the overreporting might suggest a rule of thumb used by firms to decide how much to overreport based on the sales tax rate on sales. In other words, given the sales tax rate on sales, firms might have a target effective sales tax rate in mind, and overreport enough inputs to reach said target effective sales tax rate. @fig-test-effective reveals that most uncorrected effective sales tax rates are clustered between 3 and 5 %, while the corrected effective sales tax rates are more dispersed. These results should be taken with caution, as the relationship is weak, and there are few observations for high effective sales tax rates, that are not statistically significant.
+
+![Test coefficient vs Tax Rates — Effective Sales Tax Rate](images/graphs/251-effective.png){#fig-test-effective width="90%"}
+
+![Test coefficient vs Tax Rates — Sales Tax Rate on Sales](images/graphs/251-sales.png){#fig-test-sales width="90%"}
+
+What does not make sense:
+
+- Sales tax rate of sales displays a negative relationship with the test coefficient. 
+
+This is counterintuitive, as higher sales tax rates lead to higher effective sales tax rates, increasing the incentives to evade, and thus, leading firms to overreport more of their inputs. However
+
+![Test coefficient vs Tax Rates](images/graphs/251-plot_all_but_sales.png){#fig-coef-test-vs-tax-rate width="90%"}
+
+#### Industry-level results
 
 31 Food & Beverages:
 
@@ -142,7 +193,7 @@ main_tbl %>%
 - 312 Food Products (Animal feeds, Others)
 - 313 Beverages (Soft drinks, Alcoholic beverages, etc.)
 
-In the Food and Beverages industry classification, industry 313 beverges displays suspicious activity of overreporting. This finding is consistent with the model because, in contrast to 311 and 312, industry 313 is not exempt from the sales tax. In fact, the effective sales tax rate for industries 311 and 312 is negative, implying that these firms were receving refunds from the government. In comparison, industries in 313 industry would have higher incentives to overreport because of their positive effective sales tax. 
+In the Food and Beverages industry classification, industry 313 beverages displays suspicious activity of overreporting. This finding is consistent with the model because, in contrast to 311 and 312, industry 313 is not exempt from the sales tax. In fact, the effective sales tax rate for industries 311 and 312 is negative, implying that these firms were receiving refunds from the government. In comparison, industries in 313 industry would have higher incentives to overreport because of their positive effective sales tax. 
 
 32 Textile, Apparel & Leather: 
 
@@ -211,14 +262,11 @@ I find that four out of the top five (nine of the to top twenty) industries disp
 
 Of course, the results should be taken with the usual precautions. The main assumption of the model is that evaders and non-evaders share a common technology. This assumption might be not unreasonable in most cases. However, commonly available data might group firms with similar products, but the technological processes might differ. 
 
-On the other hand, failing to reject the null hypothesis of no tax evasion does not necessarily mean that firms in this industry are not overreporting; it might mean that overreporting cannot be identified with the data available at this industry level using corporations as the reference group. A researcher suspecting tax evasion in a particular industry should exhaustively investigate if the assumptions of the model are not unreasonable for said industry. In particular, she should inform herself about the industry technological processeses and asses if evaders and non-evaders can be compared.
+On the other hand, failing to reject the null hypothesis of no tax evasion does not necessarily mean that firms in this industry are not overreporting; it might mean that overreporting cannot be identified with the data available at this industry level using corporations as the reference group. A researcher suspecting tax evasion in a particular industry should exhaustively investigate if the assumptions of the model are not unreasonable for said industry. In particular, she should inform herself about the industry technological processes and asses if evaders and non-evaders can be compared.
 
 
-::: {#fig-io-mat-1985}
+![IO-Matrix 1985 Colombia](images/tables/COL-Mat-InsProd-1985.pdf){#fig-io-mat-1985 width="90%"}
 
-![IO-Matrix 1985 Colombia](images/tables/COL-Mat-InsProd-1985.pdf){width="90%"}
-
-:::
 
 <!-- 
 
@@ -274,12 +322,12 @@ names(header) <- names_header
 inds_char_tbl_corp %>%
     kbl(
         table.attr = 'data-quarto-disable-processing="true"',
-        col.names = c("SIC", rep(c("Corp's", "Others"), 9))
+        # col.names = c("SIC", rep(c("Corp's", "Others"), 9))
     ) %>%
-    kable_classic(full_width=F, html_font = "Cambria") %>%
-    add_header_above(
-        c(" "=1, header)
-    )
+    kable_classic(full_width=F, html_font = "Cambria")# %>%
+    # add_header_above(
+    #     c(" "=1, header)
+    # )
 
 ```
 

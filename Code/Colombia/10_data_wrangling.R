@@ -127,8 +127,10 @@ cdf <- col_df %>%
         real_raw_material_foreign = s11 / p_gdp_new,
         real_import_tax_raw_mat = t4 / p_gdp_new,
         share_sales_tax = real_sales_taxes / real_sales,
-        sales_tax_sales = t1 / nom_sales,
-        sales_tax_purchases = t2 / nom_sales,
+        sales_tax_rate_sales = t1 / nom_sales,
+        sales_tax_rate_purchases = t2 / s10,
+        sales_tax_pur_share_sales = t2 / nom_sales,
+        effective_sales_tax_rate = (t1-t2)/ nom_sales,
         skilled_wage_bill_share = (skwages / p_gdp_new) / pg,
         unskilled_wage_bill_share = (unskwages / p_gdp_new) / pg,
         fuels = c2/p_gdp_new,
@@ -160,8 +162,8 @@ cdf <- col_df %>%
         log_share,
         indirect_taxes = real_indirect_taxes,
         consumption_taxes_on_sales = real_consumption_taxes,
-        sales_taxes = real_sales_taxes,
-        # sales_tax_purchases,
+        sales_tax_sales = real_sales_taxes,
+        sales_tax_purchases = real_sales_tax_purchases,
         export_taxes,
         import_taxes = real_import_taxes,
         share_fem_owners,
@@ -213,8 +215,10 @@ cdf <- col_df %>%
         nom_energy = e7,
         nom_repair_maint = c5,
         nom_sales,
-        sales_tax_purchases,
-        sales_tax_sales
+        sales_tax_rate_purchases,
+        sales_tax_rate_sales,
+        effective_sales_tax_rate,
+        sales_tax_pur_share_sales
         # share
     )
 
@@ -231,12 +235,12 @@ colombia_data_frame <- cdf %>%
     arrange(plant,year) %>%
     group_by(plant) %>%
     mutate(
-        lag_gross_output = lag(gross_output),
-        lag_sales = lag(sales),
-        lag_indirect_tax = lag(indirect_taxes),
+        # lag_gross_output = lag(gross_output),
+        # lag_sales = lag(sales),
+        # lag_indirect_tax = lag(indirect_taxes),
         # lag_M = lag(intermediate_inputs),
-        lag_K = lag(capital),
-        lag_sales_tax = lag(sales_taxes),
+        # lag_K = lag(capital),
+        # lag_sales_tax = lag(sales_taxes),
         # lag_imex_tax = lag(imex_taxes),
         # lag_consumption_tax = lag(consumption_taxes),
         # lag_gen_exp = lag(general_expenditure),
@@ -251,6 +255,7 @@ colombia_data_frame <- cdf %>%
         log_sales = log(sales),
         # den = nom_gross_output, #nom_gross_output in GNR
         lag_log_sales = lag(log_sales),
+        lag_2_log_sales = lag(log_sales,2),
         capital_share = capital/sales, #gross_output
         materials_share = nom_mats/nom_gross_output,
         # mats_serv_share = nom_mats_serv/nom_gross_output,

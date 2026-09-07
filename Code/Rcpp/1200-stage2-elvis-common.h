@@ -41,6 +41,40 @@ inline double h_of_e(double e, double tau_rho, double lambda) {
     return std::log(tau_rho) + std::log(1.0 - 2.0 * lambda * e);
 }
 
+// Score moment for lambda (2026-09-05): d(h)/d(lambda) for the linear-q
+// h_of_e above. The existing moment system already has this structure for
+// every OTHER smooth parameter without it being named as such -- psi =
+// d(psi)/d(delta0)*psi, psi*om = d(psi)/d(delta1)*psi, psi*om^2 =
+// -d(psi)/d(delta2)*psi are already the Schennach-style score moments for
+// delta0,delta1,delta2. h_prime*eps closes the same gap for lambda: eps is
+// NOT an argument of e's own defining FOC the way psi/omega are (so this
+// isn't the "psi*e" tautology, rejected 2026-08-28 -- eps _|_ (psi,omega) is
+// already maintained, which implies eps _|_ e, hence eps _|_ h_prime(e)).
+// See CLAUDE.md's 2026-09-05 "Moment system upgrade" entry for the full
+// derivation, including which analogous moments were considered and
+// rejected (h_prime*omega -- tautological, omega IS an argument of e's own
+// FOC).
+inline double h_prime_of_e(double e, double lambda) {
+    double denom = 1.0 - 2.0 * lambda * e;
+    return -2.0 * e / denom;
+}
+
+// Concave/exponential q=1-exp(-lambda*e) variant (2026-09-05), added to test
+// whether the linear-q result (lambda pinned near 0, apparently by a few
+// extreme-e firms whose ceiling 2*lambda*e->1 makes h(e) blow up) survives
+// under a functional form whose own ceiling sits at TWICE the lambda*e value
+// (lambda*e<1, not <1/2). From the FOC MB(e)=tau_rho*(1-(q+q'e)) with
+// q'=lambda*exp(-lambda*e): q+q'e = 1-exp(-lambda*e)*(1-lambda*e), so
+// MB(e)=tau_rho*exp(-lambda*e)*(1-lambda*e), h(e)=ln(MB/tau_rho) below.
+// Verified (CLAUDE.md, same date): d h/d lambda = -e[1+1/(1-lambda*e)] here,
+// vs -2e/(1-2*lambda*e) for the linear form -- both equal -2e as lambda*e->0
+// (identical sensitivity for typical/small-e firms), but this one stays
+// FINITE (-3e) at linear's own blow-up point lambda*e=1/2, exploding only at
+// lambda*e=1 instead.
+inline double h_of_e_concave(double e, double tau_rho, double lambda) {
+    return std::log(tau_rho) - lambda * e + std::log(1.0 - lambda * e);
+}
+
 inline double draw_from_rho(double u01, double Mstar, double lambda) {
     // u01=0 -> Mstar ; u01=1 -> max(0, Mstar - 1/(2*lambda))
     //
@@ -77,6 +111,13 @@ inline double draw_from_rho_eta(double u01, double Mstar, double lambda, double 
     // box-bounded member of theta_smooth, jointly optimized with
     // (delta0,delta1,delta2) via BOBYQA, but does not add a row to g().
     double lo = std::max(eta * Mstar, Mstar - 1.0 / (2.0 * lambda));
+    return Mstar - u01 * (Mstar - lo);
+}
+
+// Same role as draw_from_rho_eta, but for h_of_e_concave: ceiling is e<1/lambda
+// (not e<1/(2*lambda)), matching h_of_e_concave's own domain restriction.
+inline double draw_from_rho_eta_concave(double u01, double Mstar, double lambda, double eta) {
+    double lo = std::max(eta * Mstar, Mstar - 1.0 / lambda);
     return Mstar - u01 * (Mstar - lo);
 }
 

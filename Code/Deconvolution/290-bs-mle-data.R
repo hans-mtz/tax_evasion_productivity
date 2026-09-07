@@ -245,12 +245,62 @@ lapply(
 
 ## %% Get statistics from distributions --------------------- 
 
-get_stats <- function(theta, params) {
+
+integrate_eps_np_pdf <- function(x, eps_pdf, x_min, x_max){
+    # This function integrates the non-parametric epsilon PDF from
+    # x_min to x
+    # x: points to evaluate
+    # eps_pdf: function for the epsilon PDF
+    # x_min, x_max: range of the epsilon PDF
+
+    # Constant of normalization
+    const <- adaptive_integrate.both_ways(eps_pdf, x_min, x_max, gl)
+    # Integrate f up to x
+    if (x < x_min) {
+        cdf_x <- 0
+    } else if (x > x_max) {
+        cdf_x <- 1
+    } else {
+        cdf_x <- adaptive_integrate.both_ways(eps_pdf, x_min, x, gl)/const
+    }
+    return(cdf_x)
+}
+
+invert_eps_np_dens <- function(p, eps_pdf, x_min, x_max, verbose=FALSE){
+    #This function takes a probability and return the 
+    # corresponding point in the non-parametric epsilon density
+
+    # p: probability to invert
+    # eps_pdf: function for the epsilon PDF
+    # x_min, x_max: range of the epsilon PDF
+    # control: list with control parameters for the root finding algorithm
+    f <- function(x) (integrate_eps_np_pdf(x, eps_pdf, x_min, x_max) - p)^2
+    # x0 <- x_min + (x_max - x_min) * p # initial guess
+    res <- optimize(f, interval = c(x_min, x_max))
+    # if (res$convergence != 0) {
+    #     warning("Root finding did not converge")
+    # }
+    if (verbose) cat(" Inverted p:", p, " to x:", res$minimum, ", value:", res$objective, "\n")
+    return(res$minimum)
+}
+
+get_stats.m <- function(theta, params) {
   f <- function(e) f_e(e, theta, params)
   mean_e <- adaptive_integrate(function(e) e * f(e), params$a, params$b, params$gl)
   var_e <- adaptive_integrate(function(e) (e - mean_e)^2 * f(e), params$a, params$b, params$gl)
+  Q1 <- invert_eps_np_dens(0.25, f, params$a, params$b)
+  Q3 <- invert_eps_np_dens(0.75, f, params$a, params$b)
+  median <- invert_eps_np_dens(0.5, f, params$a, params$b)
   skweness_e <- adaptive_integrate(function(e) ((e - mean_e)^3) * f(e), params$a, params$b, params$gl) / (var_e^(3/2))
-  return(c(mean = mean_e, sd = sqrt(var_e), skewness = skweness_e))
+  return(
+    c(
+      mean = mean_e, 
+      sd = sqrt(var_e),
+      Q1 = Q1,
+      median = median,
+      Q3 = Q3,
+      skewness = skweness_e)
+  )
 }
 
 get_stats(sp_deconv_list[[1]]$theta, sp_deconv_list[[1]]$params)

@@ -1,0 +1,83 @@
+
+# Appendix {.plain .noframenumbering}
+
+
+## 
+
+\appendix
+
+<!-- ```{=latex}
+%\end{frame}
+%\appendix
+%\begin{frame}
+``` -->
+
+##
+
+![Figure 1B from @Carrillo2022 [$\hookleftarrow$](#tax-evasion-and-size)](../Paper/images/f1b-Carrillo2022.jpg){#fig-carrillo2022 height="90%" fig-align="center"}
+
+# Robust Check for Size Heterogeneity
+
+## 
+
+
+$$
+\begin{aligned}
+    \mathcal{V}_{ijt} =& \sum_{z\in Z}\sum_{h\in{1,2}}\mu_{z,h}{x}_{z,ijt}^{h} +\eta_{ijt}
+\end{aligned}
+$$ {#eq-reg-mrg-size-rob}
+
+
+
+## 
+
+::: {#tbl-mrg-boot-se-coefs}
+
+![](../Paper/tbls/932-coefs.png){height="90%"}
+
+[Coefficient estimates . 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+:::
+
+## 
+
+::: {#tbl-mrg-boot-se-avg-elas}
+
+![](../Paper/tbls/932-avg-elas.png){height="90%"}
+
+[Coefficient estimates. Percentile of size of different variables. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+:::
+
+
+## Why the Negative Sign for Some Small Firms?
+
+- Smaller firms are more likely to be Proprietorships and less formal
+- Proprietorships report their industrial activity as part of their individual income taxes. They need to keep track of their personal expenses and their industrial activity expenses
+- Because they are more likely to be less formal than larger firms, they may lack a rigorous expense report system
+- Thus, they might be consistently underreporting their expenses
+
+[[$\hookleftarrow$](#but-why)]{.footlineextra}
+
+## Densities of $\mathcal{V}$ and $\varepsilon$ {#sec-denisities-plot}
+
+![](../Paper/images/280-plot-V-n-eps.png){height="90%"}
+
+
+## Empirical Exercises using $\mathcal{V}$ {#sec-emp-exrcs}
+
+Empirical exercises remain valid as long as changes in $V$ (tax evasion proxy) are not explained by changes in $M$ (or $\varepsilon$) but only by $e$ or $e/M$
+
+- Changes in the proxy are explained by changes to incentives to adjust overrerporting not firms adjusting their optimal choice of true inputs.
+
+- Fiscal Reform of 1983:
+  - Alternative argument, changes in true inputs explain the increase in the overreporting share. How? Suppose $e$ is unchanged. This implies that after the policy reform unincorporated firms decrease their level of inputs by either an increase in relative prices or productivity shocks. Productivity shocks are unrelated to tax rates, to this is unlikely. According to the FOC, taxes do not show in the optimal choice of firms. Besides, we see an increase after the reform, while the reform made only a one-time change. So this alternative argument does not hold.
+  - Our argument is more transparent: an increase in the sales tax rate lead to an increase in the overreporting share because a higher tax rate increases the marginal benefit of overreporting.
+
+## Empirical Exercises using $\mathcal{V}$ (Continued)
+
+- Tax Evasion heterogeneity along firm size:
+  - Alternative argument, correlation between true inputs and size explain why the overreporting share increases along the size distribution and drops at the top. How? fix $e$. CD could not be capturing the relationship between labour (or capital) and materials. A non-linear relationship could explain the pattern in the data.
+  - However, the pattern is consistent with evidence from other papers with administrative data. As a robustness check, I also use the lag and double lag labour and capital and the pattern persist.
+
+
+[[$\hookleftarrow$](#sec-linking)]{.footlineextra}
+

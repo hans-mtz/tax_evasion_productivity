@@ -1,0 +1,383 @@
+
+# Tax Evasion and Firm Heterogeneity
+
+## Tax Evasion and Size
+
+- Are there systematic differences in tax evasion across firms with different characteristics?
+
+- Why? Firms might face different probabilities of detection, cost of evading taxes, and even different tax rates —thus, different incentives— depending on their characteristics.
+
+- Size in particular:
+    - Common intuition is that larger firms face higher probabilities of detection, and thus evade less. 
+    - However, recent evidence suggests that tax evasion increases along the size distribution (revenue) and then drops at the top of the distribution [@Carrillo2022].
+
+<!-- - For example, larger firms in terms of labour might face higher probabilities of detection — they are more likely that an employee denounces the firm to the tax authorities— and higher costs of evading taxes —they need more employees to collude with the firm to evade taxes— than smaller firms. -->
+
+## Empirical Strategy
+
+Starting from FOC, as before, for corporations, the truth-reporters, we have,
+
+$$
+s^C_{ijt} = \gamma_j -  \varepsilon_{ijt}
+$$ {#eq-corp-het-sec}
+
+Having recovered $\hat\gamma_j$ from the Corporations, we can use it to estimate the tax evasion of unincorporated firms, the evaders.
+
+We can form, 
+
+$$
+ \mathcal{V}_{ijt} \equiv s_{ijt} - \hat\gamma_j = e_{ijt} -\varepsilon_{ijt}
+$$
+
+
+<!-- ##
+
+For unincorporated firms, the evaders, we now have,
+
+$$
+s^{N}_{ijt} = \gamma_j + e_{ijt}(\tau, q,\kappa) +\varepsilon_{ijt}
+$$ {#eq-evaders-het}
+
+
+- where the tax evasion, $e_{ijt}(\tau, q,\kappa)$, is a function of 
+    - the effective sales tax rate $\tau$, 
+    - the probability of detection $q$ and 
+    - the cost of evasion $\kappa$.
+- $\gamma_j$ and $\varepsilon_{ijt}$ are defined as before.
+
+## Empirical Strategy (Cont.)
+
+Combining the two types of firms, we have,
+
+$$
+\begin{aligned}
+(1-D_{ijt}^N)s_{ijt} + D_{ijt}^N s_{ijt} =& (1-D_{ijt}^N)(\gamma_j +  \varepsilon_{ijt})\\
+&+ D_{ijt}^N (\gamma_j + e_{ijt}(\tau, q,\kappa) +\varepsilon_{ijt}) \\
+s_{ijt} =& \gamma_j + D_{ijt}^N e_{ijt}(\tau, q,\kappa) +\varepsilon_{ijt}
+\end{aligned}    
+$$ {#eq-reg-evasion-het}
+
+- where $D_{ijt}^N$ is defined as before
+ -->
+
+
+## Empirical Strategy (Cont.)
+
+- The objective is to find systematic differences in tax evasion between firms with different characterisitcs
+
+- Empirically, we would like to estimate the expected tax evasion conditional on some size measure, $E[e_{ijt}|x_{ijt}]$
+
+<!-- - Since tax evasion $e_{ijt}(\cdot)$, the probability of detection $q$, and the cost of evasion $\kappa$ are all **unobserved**, we could use a flexible function of **firm characteristics**, $x_{ijt}$, that are likely to influence them -->
+
+<!-- - Size for example. 
+    - Common intuition is that larger firms face higher probabilities of detection, and thus evade less. 
+    - However, recent evidence suggests that tax evasion increases along the size distribution (revenue) and then drops at the top of the distribution [@Carrillo2022]. -->
+
+<!-- ## Which Firm Characteristics? -->
+
+- The error terms is theoretically independent of most firm characteristic that could influence tax evasion, $E[\varepsilon_{ijt}|x_{ijt}]=0$, such as labor, capital, exports, imports, and even last period revenue
+
+- Current revenue however is not independent of the error term, as it is part of the firm's output, and thus is correlated with the error term of the production function
+
+<!-- - Nevertheless, I can learn the expected value of the error term conditional on the firm's characteristics, $E[\varepsilon_{ijt}|x_{ijt}]$, from the Corporations. -->
+
+<!-- ## Taking Expectations
+
+Taking expectation of @eq-reg-evasion-het, 
+$$
+\begin{aligned}
+    E[s_{ijt}|D^{N}=0, x_{ijt}] =& \gamma_j + E[\varepsilon_{ijt}|D^{N}=0, x_{ijt}] \\
+    =&\gamma_j+E[\varepsilon_{ijt}|x_{ijt}] \\
+    E[s_{ijt}|D^{N}=1, x_{ijt}] =& \gamma_j + E[e_{ijt}|D^{N}=1, x_{ijt}] + E[\varepsilon_{ijt}|D^{N}=1, x_{ijt}]\\
+    =& \gamma_j + E[e_{ijt}|D^{N}=1, x_{ijt}] + E[\varepsilon_{ijt}|x_{ijt}]
+\end{aligned}
+$$
+
+where the second and fourth line follow from the independence of the error term across Corporations and Unicorporated firms, $E[\varepsilon_{ijt}|D^N,x_{ijt}]=E[\varepsilon_{ijt}|x_{ijt}]$.
+
+In addition, when $x_{ijt}$ is not current revenue, then $E[\varepsilon_{ijt}|x_{ijt}]=0$ holds. 
+
+## Taking Expectations (Cont.)
+
+Finally,
+
+$$
+\begin{aligned}    
+    E[s_{ijt}|D^{N}=1,x_{ijt}]-E[s_{ijt}|D^{N}=0, x_{ijt}] =& E[e_{ijt}(\tau,q,\kappa)|D^{N}=1, x_{ijt}]\\
+    \equiv& \mu_x(\tau,q,\kappa)
+\end{aligned}
+$$
+ -->
+
+## Regression Specification
+
+First, I use the following regression specification to estimate the expected tax evasion conditional on size deciles,
+
+$$
+\begin{aligned}
+    \mathcal{V}_{ijt} =&  \sum_{h=1}^{10}\mathbb{1}\!\left[x_{ijt}\in\mathcal{X}_{h}\right]\mu_{h} + \eta_{ijt}
+\end{aligned}
+$$ {#eq-reg-evasion-het-size-deciles}
+
+- $x_{it}$ are the firm's decile of size measured as either labor, capital, current revenue, and previous year revenue ($t-1$)
+    - $\mu_h$, the coefficients and capture the average tax evasion of firms in each decile of size
+- $\gamma_j$, industry fixed effects, and $\eta_{ijt}$ the error term, includes the component of tax evasion that is not captured by the size deciles, $\xi_{ijt}$ and $\varepsilon_{ijt}$
+- I use revenue$_{t-1}$ as instrument for current revenue to correct for the endogeneity with $\varepsilon_{ijt}$
+
+<!-- ## Tax Evasion Increases Along the Size Distribution and Then Drops at the Top
+
+![](../Paper/images/915.1-size-ntiles-1.png){height="90%" fig-align="center"}
+
+## Tax Evasion Increases Along the Size Distribution and Then Drops at the Top
+
+![](../Paper/images/915.1-size-ntiles-2.png){height="90%" fig-align="center"} -->
+
+<!-- ## Correcting Gamma and Standard Errors
+
+Using @eq-reg-evasion-het-size-deciles, estimates of $\gamma_j$ might be somewhat different from my previous estimates when deconvolving the distribution of tax evasion.
+
+More importantly, standard errors need to be corrected to account for the estimation error of $\gamma_j$ in the 'first stage' regression of Corporations.
+
+Let $\mathcal{V}_{ijt}=s_{ijt} - \hat\gamma_j$, where $\hat\gamma_j$ is estimated from Corporations using @eq-corp-het-sec with OLS, then the regression specification is given by,
+
+$$
+\begin{aligned}
+    \mathcal{V}_{ijt} =& \sum_{h=1}^{10}\mathbb{1}\!\left[x_{ijt}\in\mathcal{X}_{h}\right]\mu_{h} + \eta_{ijt}
+\end{aligned}
+$$ 
+
+-->
+
+## Tax Evasion Increases Along the Size Distribution and Then Drops at the Top
+
+![](../Paper/images/930.5-boot-se-se-plot.png){height="90%" fig-align="center"}
+
+## Same pattern for Lag and Double Lag K and L
+
+![](../Paper/images/930.5-boot-se-lag-plot.png){height="90%" fig-align="center"}
+
+## Same pattern for Lag and Double Lag K and L
+
+![](../Paper/images/930.5-boot-se-lag2-plot.png){height="90%" fig-align="center"}
+
+## Tax Evasion Increases Along the Size Distribution and Then Declines Towards the Top
+
+![](../Paper/images/930.5-boot-se-se-plot-1.png){height="90%" fig-align="center"}
+
+<!-- ## 
+
+![](../Paper/images/930.5-boot-se-se-plot-2.png){height="90%" fig-align="center"} -->
+
+## 
+
+::: {#tbl-size-het-boot-se}
+
+![](../Paper/tbls/930.5-dec-boot-se.png){height="90%"}
+
+[Tax evasion estimates by size decile. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+:::
+<!-- 
+## 
+
+::: {#tbl-size-het-boot-se-1}
+
+![](../Paper/tbls/930.5-dec-boot-se-1.png){height="90%"}
+
+[Tax evasion estimates by size decile. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+:::
+
+## 
+
+::: {#tbl-size-het-boot-se-2}
+
+![](../Paper/tbls/930.5-dec-boot-se-2.png){height="90%"}
+
+[Tax evasion estimates by size decile. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+:::
+
+## 
+
+::: {#tbl-size-het-boot-se-3}
+
+![](../Paper/tbls/930.5-dec-boot-se-3.png){height="90%"}
+
+[Tax evasion estimates by size decile. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+::: -->
+
+## 
+
+::: {#tbl-corp-top-deciles}
+
+![](../Paper/tbls/940-char-dec-tbl.png){height="90%"}
+
+[Median of Different Characterisitics by Corporation and Top Three Deciles of Unincorporated Firms]{.tiny}
+:::
+
+## Tax Evasion and Size
+
+- Similar pattern across size measures: Tax evasion increases along the size distribution and then drops/declines at the top of the distribution
+
+- Surprisingly consistent with recent evidence in the literature using more detailed tax admin data (@fig-carrillo2022).
+
+- Large firms evade more than small firms, but the largest firms do not evade taxes. 
+
+## But Why?
+
+- Since the probability of detection cannot be, by logic, decreasing in size,
+    - Most likely it is flat along the size distribution, and then increases rapidly at the top of the distribution
+
+- It then follows that the cost of evasion should be decreasing along the size distribution, and then it might (or might not) increase at the top of the distribution.
+
+
+[[Why the negative sign for some small firms? ](#why-the-negative-sign-for-some-small-firms)]{.footlineextra}
+
+<!-- 
+## Marginal Effects of Size on Tax Evasion
+
+Natural follow up questions:
+
+- Is a particular size measure more strongly correlated with tax evasion than the others?
+- What is the effect of a change in a particular size measure on tax evasion, holding the other size measures constant?
+- When considering two firms with similar characteristics but different in one measure of size, which one can we predict to be more likely to be evading taxes?
+
+
+## Why do we care?
+
+1. Internal consistency between the model and the data: Does the pattern of tax evasion across size measures make sense?
+    - Different size measures might predict similar effects on the probability of detection, $q$, but different effects on the cost of evasion, $\kappa$.
+        - $\kappa$ any resource allocated to the tax evasion activity that could have been allocated to the productive activity (e.g. manager's time, economic cost of acquiring fake invoices, etc.). Not the tax evasion penalty, $\phi$.
+        - $q$ probability of being audited and probability of being caught evading taxes if audited and evading taxes
+    - Example: A larger size in labour $\rightarrow$ higher $q$ and higher $\kappa$; while a larger size in revenue $\rightarrow$ higher $q$ but lower $\kappa$
+
+## Why do we care? (Cont.)
+
+2. Improving Tax Authority Auditing process and potentially increasing expected tax revenue recovery: When considering two firms with similar characteristics but different in one measure of size, which one is more likely to be evading taxes? 
+    - This can help the tax authority to design more efficient audits and detection strategies, by targeting firms with characteristics that are more likely to be associated with higher tax evasion.
+
+1. Practitioners and policymakers: Can we recover $q$ and $\kappa$ from the data with no information on auditing or the cost of evasion? 
+    - By using the observed patterns and imposing reasonable functional forms, for example?
+
+
+## Regression Specification
+
+I use the following regression specification to investigate the marginal effects of different size measures on tax evasion,
+
+$$
+\begin{aligned}
+    \mathcal{V}_{ijt} =& \sum_{h_1+...+h_n\le h}\mu_{h_1, ..., h_n}{x}_{1,ijt}^{h_1}\dots x_{n,ijt}^{h_n} +\eta_{ijt}
+\end{aligned}
+$$ {#eq-reg-mrg-size}
+
+- where now ${x}_{r,ijt}$ stands for the firm's **percentile** of different measures of size: labour, capital, current revenue
+    - previous year revenue is used as instrument for current revenue to correct for the endogeneity with $\varepsilon_{ijt}$
+- Polynomial of degree $h=2$, to capture non-linearities, including interactions between size measures
+- $\mu_h$, the corresponding coefficients
+- $\gamma_j$ and $\eta_{ijt}$ same as before
+
+
+
+## 
+
+![](../Paper/images/932.6-boot-se-mrg-plot.png){height="90%" fig-align="center"}
+
+## 
+
+::: {#tbl-mrg-boot-se}
+
+![](../Paper/tbls/932.6-coefs.png){height="90%"}
+
+[Coefficient estimates. Percentile of size of different variables. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+:::
+
+## 
+
+
+The marginal effect of size measure $x_1$, for example, is given by 
+
+$$
+\begin{aligned}    
+    \frac{\partial E[\mathcal{V}_{ijt}| \mathcal{X}]}{\partial {x}_{1,ijt}} =& \frac{\partial E[e_{ijt}|\mathcal{X}]}{\partial {x}_{1,ijt}} + 0 \\
+    =& \mu_{1,0,0} + 2\mu_{2,0,0} {x}_{1,ijt}+\mu_{1,1,0}x_{2,ijt}+\mu_{1,0,1}x_{3,ijt}
+\end{aligned}
+$$
+
+- I compute the marginal effects of each size measure at each observation and report the average marginal effect across the sample, as well as the 95\% confidence interval using bootstrap with 250 replications.
+
+## 
+
+::: {#tbl-avg-elas-boot-se}
+
+![](../Paper/tbls/932.6-avg-elas.png){width="80%"}
+
+[Average Marginal Effects of Different Size Measures on Tax Evasion. 95\% Bootstrap CI with 250 replications. Stars denote Bootstrap p-value significance at \(\*\*\*\) 0.001, \(\*\*\) 0.05, and \(\*\) 0.1 level.]{.tiny}
+::: -->
+
+<!-- ## 
+
+![](../Paper/images/931-mrg-curves-1.png){height="90%" fig-align="center"}
+
+
+## 
+
+![](../Paper/images/931-mrg-curves-2.png){height="90%" fig-align="center"} -->
+
+<!-- ## Marginal Effects of Different Size Measures
+
+Holding other size measures constant, as firms grow in  
+
+- **labour**, tax evasion **decreases** on average. The function displays a marginal increasing rate (decreasing and concave) 
+- **revenue** and **revenue**$_{t-1}$, tax evasion **increases** on average. The function displays a marginal decreasing rate (increasing and concave) 
+- **capital**, tax evasion seems **decrease** on average. However, the estimated function **does not** show a clear pattern, as the CI include zero for the linear part of the function and the interactions
+
+## Does This Make Sense? Labour
+
+Comparing two firms with similar characteristics but different percentiles of labour, the firm with a *higher* percentile of labour *evades less*
+
+- As firms grow in labour, they face *higher probabilities of detection*, as the probability of being denounced to the tax authority by an employee increases
+
+- They might also face *higher costs of evading taxes* as more employees need to be involved in the evasion scheme (e.g. larger accounting department and more complex operations, keeping double accounting books,  warehouse employees might also need to be involved, etc.). 
+    - So the time and resources these employees need to allocate to tax evasion, instead of productive work, increases, and thus the cost of evading taxes increases as firms grow in labour.
+
+## Revenue
+
+Comparing two firms with similar characteristics but different percentiles of revenue$_{t-1}$, the firm with a *higher* percentile of revenue *evades more*
+
+- As firms grow in revenue, they have more resources to allocate to tax evasion, and thus face *lower costs of evading taxes relatively to low revenue firms*
+- The *cost of evasion* might *abruptly increase for the largest* firms. 
+    - The largest firms might be able to implement more sophisticated but *legal tax avoidance* strategies (e.g. profit offshoring), and thus the cost of evading taxes *illegally* increases significantly relative to legal schemes
+        - [In 2016 during his presidential campaign, Donald Trump famously admitted avoiding paying income tax for years and that he was *smart* for doing so [@Barstow2016].]{.sm}
+    - The reputational cost of being caught evading taxes might be higher for the largest firms, as they are more visible to the public and potential investors.
+
+## Revenue (Cont.)
+
+- Larger revenue might also increase the *probability of detection*, as visibility increases
+    - The evidence suggests that the increase in the detection probability due to larger revenue should be relatively smaller than the decrease in the evasion cost for most of the size distribution
+- However, at the *top of the revenue distribution*, the probability of detection might *increase significantly* as it becomes strategically targeted by the tax authority, and thus tax evasion drops for the largest firms -->
+
+<!-- ## Imports
+
+- Imports in Colombia are subject to ST on top of the regular import duties. 
+- Imports are also harder to misreport because they leave larger paper trails, and thus the authority can more easily trace them.
+- Consequently, a larger share of imports increases the incentives to evade taxex by overreporting local input costs
+    - larger share of imports increases the share of total material costs that cannot be claimed as deductions from ST, resulting in lower net after-tax profits, and thus increasing incentives for tax evasion
+
+## Imports (Cont.)
+
+This explains why firm in the highest percentiles of imports evade more
+
+- At lower levels (below the 40th perc.), incentives are small. Evasion looks like it decreases with imports at low levels
+- As firms move above the 40th percentile however, the incentives to evade taxes increase significantly -->
+
+## Takeaways
+
+Overall, these results suggest that the non-linear pattern observed in the previous section might be explained by:
+
+1. a probability of detection that remains flat (or increases slowly) along most of the size distribution, but then increases sharply for the largest firms. 
+    - The detection probability increases sharply for the largest firms because they are more visible to the tax authority, and because 
+    - these firms are more likely to be denounced to the tax authority by an employee
+
+## Takeaways (Cont.)
+
+2. a cost of evasion that decreases along the size distribution (but then it might increase rapidly for the largest firms). This is because 
+    - firms with small revenues face higher relative costs of evasion as they have fewer resources to allocate to tax evasion. As firms increase in revenue, they can allocate more resources to tax evasion, reducing the relative cost of evasion. 
+    - For the largest revenue firms however, the cost of evasion might increase abruptly due to the higher costs of illegal evasion relative to legal avoidance strategies accessible mostly for the largest firms only, and higher reputational costs if caught evading taxes.

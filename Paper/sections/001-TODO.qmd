@@ -1,46 +1,50 @@
 ## TODO {-}
 
-- Correct tests: 
-  - Use corps to get beta, test on non-corps
-  - Use corps to get beta, test on all
-  - Bootstrap all (Use bayesian bootstrap)
-- Why are there true negatives?
-  - Only two industries: 323 Leather and Leather Products and 356 Plastic Products
-- Other Data: Ecuador, (Spain?)
-- Summarize main points of Lit in Slides
+- JMP Structure:
+  - Introduction
+  - Literature Review
+  - Motivating model
+    - Key assumptions:
+      - Firms artificially inflate material inputs to reduce sales tax liability (VAT type) and CIT (increasing costs reduces taxable income)
+      - Detection probability independent of input choice
+      - Corporations do not evade taxes through input overreporting because the marginal economic cost of evasion exceeds the marginal benefit for any non-zero level of evasion
+  - Testing for tax evasion through input overreporting
+  - Why? Testing is robust to relaxing the the assumption of the probability of detection being independent of input choice
+    - In Colombia: By industry
+      - Bootstrap
+      - Randomization inference
+    - Other countries (Spain, India, Chile)
+  - Empirical approach: Heterogeneity in tax evasion 
+    - Across firms: Who evades more?
+      - in COL: Small firms, exporters, importers, by J.O.
+      - Other countries (?): Spain, India
+    - Across Time: Exploiting tax policy changes in Colombia
+      - Triple difference identification strategy
+  - Deconvolution approach:
+    - NP deconvolution of densities:
+      - tax evasion
+      - productivity
+    - Countries: Colombia (main), Chile, Spain, and India
+    - Application: 
+      - Compare Productivity and PF estimates with naive estimation
+      - Back of envelope estimates of tax revenue losses due to evasion
+      - Misallocation measure
+  - Possible extensions:
+    - Estimate detection probability/tax evasion cost function from unused FOC
+    - Non-random auditing from tax authority
+    - More flexible functional forms for production function (Translog)
+    - More flexible process for productivity (ELVIS)
 
 
-## Updates {-}
+- Other Data: Spain, India, and Chile
+  - All include Type of Firm (Juridical Organization)
+  - Spain data needs to be bought
+  - Indian data is publicly available
+    - Need to download and consolidate
+  - Chile data is ready
+  
 
-- Tax Evasion and Productivity: Using PF to identify tax evasion through input overreporting
-  - CD
-    - Preliminary results of Tax Evasion: Moments, MLE (Truncated Normal and LogNormal)
-    - Identification of PF parameters when $h$ AR(1)
-    - **New** Discussion: Variance of the error term and Choosing intermediates in GNR-CD.
-    - **New** Preliminary results of PF parameters
-    - **New** Productivity results
-
-  - TransLog
-    - Identification strategy for tax evasion
-
-- Leveraging Tax Policy change to identify changes in tax evasion
-  - Why? Relax common technology assumption
-  - Triple difference identification strategy (with CD)
+- Summarize main points of Lit Review
 
 
-
-## Next Steps {-}
-
-- Tax Evasion and Productivity
-  - Back of Envelope estimates for Gov Losses in Tax Revenue
-  - App of Productivity: Aggregate Productivity and Resource Misallocations
-  - Translog Tax Evasion results
-  - Translog PF identification strategy
-  - Translog PF results
-  - Translog Productivity results
-  - Using ELVIS to allow for more flexible functional forms of $h$ the markov process of productivity
-  - Non-parametric Deconvolution
-  - Non-parametric PF
-- DDD
-  - Relaxing parallel trends: Linear trends that in the absence of policy change would have continued
 

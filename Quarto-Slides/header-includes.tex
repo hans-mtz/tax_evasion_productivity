@@ -1,0 +1,55 @@
+\usepackage{xcolor} % Carga el paquete de colores
+\usepackage{appendixnumberbeamer} % Asegura que las diapositivas del apéndice no cuenten para el número total de diapositivas
+% \usepackage{etoolbox} % Carga el paquete para modificar comandos
+
+% \setbeamertemplate{footline}{\quad\hfill\insertframenumber/\inserttotalframenumber\strut\quad} 
+\setbeamertemplate{footline}[frame number]
+% \addtobeamertemplate{title page}{}{\setcounter{frame number}{0}\addtocounter{framenumber}{-1}}
+% \makeatletter
+% \apptocmd{\maketitle}{\setcounter{framenumber}{0}\addtocounter{framenumber}{-1}}{}{}
+% \makeatother
+% Guarda el comando original y lo redefine
+% \let\oldsmall\small
+% \renewcommand{\small}{\footnotesize\color{gray}} % Cambia 'blue' por el color que prefieras
+% \apptocmd{\small}{\textcolor{blue}{#1}}{}{} % Asegura que el color se aplique a todo el texto pequeño
+\newcommand{\sm}[1]{\textcolor{gray}{\footnotesize #1}} % Define un nuevo comando para texto pequeño y gris
+% Source - https://tex.stackexchange.com/a/5558
+% Posted by LJN
+% Retrieved 2026-05-04, License - CC BY-SA 2.5
+\usepackage{tikz}
+\newcommand{\footlineextra}[1]{
+    \begin{tikzpicture}[remember picture,overlay]
+        \node[yshift=2ex,anchor=south west] at (current page.south west) {\sm{\hspace{2ex}#1}};
+    \end{tikzpicture}
+}
+
+
+\newcommand{\ind}{{\perp\!\!\!\perp}}
+
+%% Tinytable settings
+% \usepackage{tabularray}
+% \usepackage{float}
+% \usepackage{graphicx}
+% \usepackage{rotating}
+% \usepackage[normalem]{ulem}
+% \UseTblrLibrary{siunitx}
+% \newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+% \newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+% \NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}
+
+%% KableExtra settings
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}

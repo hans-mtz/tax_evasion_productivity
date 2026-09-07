@@ -16,6 +16,109 @@ lambda <- 10
 
 # select_fs_l <- paste0(top_5_ev_inds, " log_mats_share")
 # select_fs_l <- grep("log_mats",names(fs_list), value = TRUE) # Get all industries with log_mats_share
+## %% 20 ielas funs ----------------------
+
+
+do_fs_cond <- function(sic, var, r_var, data, cond) {
+    fml <- paste0(var,"~1") |> as.formula()
+    fs_reg <- data %>%
+        # select(
+        #     !c(log_mats_share, log_deductible_intermediates_share,log_share)
+        # ) %>%
+        # mutate(
+        #     treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp"),
+        #     log_mats_share = log(nom_mats / nom_gross_output),
+        #     log_deductible_intermediates_share = log(nom_deductible_intermediates / nom_gross_output),
+        #     log_share = log(nom_intermediates / nom_gross_output)
+        # ) %>%
+        filter(
+            sic_3 == sic,
+            # juridical_organization == 3,
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut),
+            eval(cond, envir = .)
+        ) %>%
+        lm(fml, data = .) # %>%
+        # fixest::feols(fml, data = .)
+
+    log_D <- coefficients(fs_reg)[[1]]
+    epsilon <- residuals(fs_reg)
+    big_E <- 1
+    beta <- exp(log_D - log(big_E))
+    mean_epsilon <- mean(-epsilon)
+    variance_epsilon <- var(-epsilon)
+
+    ## Deconvolution ------------------------
+
+    tbl <- data %>%
+        # select(
+        #     !c(log_mats_share, log_deductible_intermediates_share,log_share)
+        # ) %>%
+        # mutate(
+        #     treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp"),
+        #     log_mats_share = log(nom_mats / nom_gross_output),
+        #     log_deductible_intermediates_share = log(nom_deductible_intermediates / nom_gross_output),
+        #     log_share = log(nom_intermediates / nom_gross_output)
+        # ) %>%
+        filter(
+            sic_3 == sic,
+            is.finite(.data[[var]]),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            .data[[var]] > log(threshold_cut)
+        ) %>%
+        mutate(
+            # y = log(gross_output),
+            cal_V = .data[[var]] - log_D,
+            m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
+            cal_W = y - beta*(m - cal_V)
+        ) %>%
+        filter(
+            is.finite(cal_V),
+            is.finite(cal_W),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y)
+        ) %>%
+        select(
+            sic_3, year, plant, cal_V, cal_W, m, k, l, y
+        )
+
+    result_list <- list(
+        data = tbl,
+        epsilon_mu = mean_epsilon,
+        epsilon_sigma = sqrt(variance_epsilon),
+        beta = beta,
+        big_E = big_E,
+        sic_3 = sic,
+        inter = r_var
+    )
+    return(result_list)
+}
+
+
+get_table <- function(l){
+    tbl <- sapply(
+        seq_along(l),
+        \(x){
+            c(
+                sic_3 = l[[x]]$sic_3,
+                intermediate = l[[x]]$inter,
+                m = l[[x]]$beta |> round(2),
+                `$\\mathcal{E}$` = l[[x]]$big_E |> round(2),
+                `err sd` = l[[x]]$epsilon_sigma |> round(2)
+            )
+        }
+    ) |> t() |> as.data.frame()
+    return(tbl)
+}
 
 
 ## %% --- Second difference matrix for roughness penalty ---
@@ -46,7 +149,7 @@ get_bspline_spec <- function(V, n_knots = n_knots, spline_degree = pspline_degre
 
 get_bspline_spec_W <- function(W, n_knots = n_knots, spline_degree = pspline_degree) {
   knot_candidates <- quantile(W, probs = seq(0.01, 0.99, length.out = n_knots))
-  boundary_knots <- c(min(W) -0.1, max(W) + 0.1)
+  boundary_knots <- c(min(W) - 0.1, max(W) + 0.1)
   bspline_spec <- list(
     knots = knot_candidates[-c(1, length(knot_candidates))],
     intercept = FALSE,
@@ -59,7 +162,7 @@ get_bspline_spec_W <- function(W, n_knots = n_knots, spline_degree = pspline_deg
 ## %% --- Define spline function: s(e; θ) ---
 s <- function(e, theta, bspline_spec) {
   theta0 <- c(theta, 0) #Drop last B-Spline for identifiability
-  basis <- bs(
+  basis <- splines::bs(
     e,
     knots = bspline_spec$knots,
     intercept = bspline_spec$intercept,
@@ -79,7 +182,7 @@ s <- function(e, theta, bspline_spec) {
 ## --- Gauss-Legendre adaptive integration ---
 lcv <- function(x, a, b) (x + 1) * (b - a) / 2 + a
 
-adaptive_integrate <- function(f, a, b, gl, depth = 0) {
+adaptive_integrate <- function(f, a, b, gl=gl, depth = 0) {
   m <- (a + b) / 2
   if (depth >= 3) {
     nodes <- lcv(gl$nodes, a, b)
@@ -113,10 +216,28 @@ C_recursive <- function(theta, params) {
   adaptive_integrate(f, params$a, params$b, params$gl)
 }
 
-## --- Density function f_e(e; θ) ---
-f_e <- function(e, theta, params) {
+C_recursive.adp <- function(theta, params) {
+  f <- function(e) exp(s(e, theta, params$bspline))
+  int <- try(integrate(f, params$a, params$b, stop.on.error = FALSE), silent = TRUE)
+  return(
+    ifelse(
+      !inherits(int, "try-error"),
+      int$value,
+      .Machine$double.eps
+    )
+  )
+}
+
+## --- Density function f_e.np(e; θ) ---
+f_e.np <- function(e, theta, params) {
   numerator <- exp(s(e, theta, params$bspline))
   denom <- C_recursive(theta, params)
+  return(numerator / denom)
+}
+
+f_e.np.adp <- function(e, theta, params) {
+  numerator <- exp(s(e, theta, params$bspline))
+  denom <- C_recursive.adp(theta, params)
   return(numerator / denom)
 }
 
@@ -192,7 +313,7 @@ pen_log_likelihood_W <- function(theta, W_squig, params, lambda = lambda, parall
 initialize_theta <- function(V, bspline_spec) {
   d <- density(V[V >= 0], n = 512)
   d$y <- d$y + 1e-5  # avoid log(0)
-  basis <- bs(
+  basis <- splines::bs(
     d$x,
     knots = bspline_spec$knots,
     intercept = bspline_spec$intercept,
@@ -207,7 +328,7 @@ initialize_theta <- function(V, bspline_spec) {
 initialize_theta_W <- function(W, bspline_spec) {
   d <- density(W, n = 512)
   d$y <- d$y + 1e-5  # avoid log(0)
-  basis <- bs(
+  basis <- splines::bs(
     d$x,
     knots = bspline_spec$knots,
     intercept = bspline_spec$intercept,
@@ -355,14 +476,14 @@ estimate_theta_W <- function(fs_list, pf_list, gl, lambda = lambda, parallel = T
 ## %% Save results ---------------------
 
 # save(
-#   sp_deconv_list, #f_e, adaptive_integrate,
+#   sp_deconv_list, #f_e.np, adaptive_integrate,
 #   file = "Code/Products/bs_mle_data.RData"
 # )
 # load("Code/Products/bs_mle_data.RData")
 ## %% Plot results ---------------------
 
 # x <- seq(result$params$a, result$params$b, length.out = 1000)
-# plot(x, f_e(x, result$theta, result$params), type = "l", col = "blue", lwd = 2,
+# plot(x, f_e.np(x, result$theta, result$params), type = "l", col = "blue", lwd = 2,
 #      xlab = "e", ylab = "Density", main = "Density of e")
 
 ### %% Plot results for all industries ---------------------
@@ -372,7 +493,7 @@ estimate_theta_W <- function(fs_list, pf_list, gl, lambda = lambda, parallel = T
 #   seq_along(sp_deconv_list),
 #   function(i) {
 #     x <- seq(sp_deconv_list[[i]]$params$a, sp_deconv_list[[i]]$params$b, length.out = 1000)
-#     plot(x, f_e(x, sp_deconv_list[[i]]$theta, sp_deconv_list[[i]]$params), type = "l", col = "blue", lwd = 2,
+#     plot(x, f_e.np(x, sp_deconv_list[[i]]$theta, sp_deconv_list[[i]]$params), type = "l", col = "blue", lwd = 2,
 #          xlab = "e", ylab = "Density", main = paste("Density of e for industry", select_fs_l[i]))
 #   }
 # )
@@ -381,7 +502,7 @@ estimate_theta_W <- function(fs_list, pf_list, gl, lambda = lambda, parallel = T
 ## %% Get statistics from distributions --------------------- 
 
 get_stats <- function(theta, params) {
-  f <- function(e) f_e(e, theta, params)
+  f <- function(e) f_e.np(e, theta, params)
   mean_e <- adaptive_integrate(function(e) e * f(e), params$a, params$b, params$gl)
   var_e <- adaptive_integrate(function(e) (e - mean_e)^2 * f(e), params$a, params$b, params$gl)
   skweness_e <- adaptive_integrate(function(e) ((e - mean_e)^3) * f(e), params$a, params$b, params$gl) / (var_e^(3/2))
@@ -771,6 +892,72 @@ estimate_np_theta_omega <- function(fs_list, pf_list, eps_pdf_list, gl, lambda =
 #   mc.cores = detectCores() - 2
 # )
 # names(full_np_deconv_list) <- select_fs_l
+
+## %% Get stats from densities ---------------------
+
+integrate_eps_np_pdf <- function(x, eps_pdf, x_min, x_max){
+    # This function integrates the non-parametric epsilon PDF from
+    # x_min to x
+    # x: points to evaluate
+    # eps_pdf: function for the epsilon PDF
+    # x_min, x_max: range of the epsilon PDF
+
+    # Constant of normalization
+    # const <- adaptive_integrate.both_ways(eps_pdf, x_min, x_max, gl)
+    const <- adaptive_integrate(eps_pdf, x_min, x_max, gl)
+    # Integrate f up to x
+    if (x < x_min) {
+        cdf_x <- 0
+    } else if (x > x_max) {
+        cdf_x <- 1
+    } else {
+        # cdf_x <- adaptive_integrate.both_ways(eps_pdf, x_min, x, gl)/const
+        cdf_x <- adaptive_integrate(eps_pdf, x_min, x, gl)/const
+    }
+    return(cdf_x)
+}
+
+invert_eps_np_dens <- function(p, eps_pdf, x_min, x_max, verbose=FALSE){
+    #This function takes a probability and return the 
+    # corresponding point in the non-parametric epsilon density
+
+    # p: probability to invert
+    # eps_pdf: function for the epsilon PDF
+    # x_min, x_max: range of the epsilon PDF
+    # control: list with control parameters for the root finding algorithm
+    # f <- function(x) (integrate_eps_np_pdf(x, eps_pdf, x_min, x_max) - p)^2
+    f <- function(x) integrate_eps_np_pdf(x, eps_pdf, x_min, x_max) - p
+    # x0 <- x_min + (x_max - x_min) * p # initial guess
+    # res <- optimize(f, interval = c(x_min, x_max), tol = 1e-8)
+    res <- uniroot(f, interval = c(x_min, x_max), tol = 1e-8)
+    # if (res$convergence != 0) {
+    #     warning("Root finding did not converge")
+    # }
+    # if (verbose) cat(" Inverted p:", p, " to x:", res$minimum, ", value:", res$objective, "\n")
+    # return(res$minimum)
+    if (verbose) cat(" Inverted p:", p, " to x:", res$root, ", value:", res$f.root, "\n")
+    return(res$root)
+}
+
+get_stats.m <- function(theta, params) {
+  f <- function(e) f_e.np(e, theta, params)
+  mean_e <- adaptive_integrate(function(e) e * f(e), params$a, params$b, params$gl)
+  var_e <- adaptive_integrate(function(e) (e - mean_e)^2 * f(e), params$a, params$b, params$gl)
+  Q1 <- invert_eps_np_dens(0.25, f, params$a, params$b)
+  Q3 <- invert_eps_np_dens(0.75, f, params$a, params$b)
+  median <- invert_eps_np_dens(0.5, f, params$a, params$b)
+  skweness_e <- adaptive_integrate(function(e) ((e - mean_e)^3) * f(e), params$a, params$b, params$gl) / (var_e^(3/2))
+  return(
+    c(
+      mean = mean_e, 
+      sd = sqrt(var_e),
+      Q1 = Q1,
+      median = median,
+      Q3 = Q3,
+      skewness = skweness_e)
+  )
+}
+
 
 ## %% Save results ---------------------
 

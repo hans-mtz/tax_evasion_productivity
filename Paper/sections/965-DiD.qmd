@@ -1,0 +1,381 @@
+
+### Over-time tax evasion patterns
+
+Incentives to evade taxes may change over time due to changes in fiscal policy. In particular, there were two major tax reforms in Colombia in 1983 and in 1986.
+
+#### Fiscal Reforms of 1983 and 1986
+
+##### 1983 Reform
+
+###### Sales Tax Changes
+
+In 1983, the government tried to homogenize the sales tax rates across industries which led to some industries facing higher sales tax rates while others faced lower rates or were exempted. The 1983 reform relatively unified the sales tax rates by combining previously taxed goods at 6 and 15 percent into 10 percent. 
+
+The number of the products and services that were levied expanded. The sales tax was extended to the retail level, with a *simplified system* being made available to small retailers to ease compliance costs and the administrative burden.
+
+###### Income Tax Changes
+
+However, these were not the only changes in fiscal policy. The 1983 reform also adjusted the income tax rates for limited liability companies and individuals. For individuals, the income tax rate increased by 8% in most scales, while the maximum was reduced from 56 to 49%. For limited liability companies, the CIT was reduced from 20 to 18%.
+
+Lastly, 1983 saw the extension of the presumptive income tax to limited liability companies, which before were exempted. This meant that LLCs could not declare an income lower than 2 percent of their capital stock.
+
+##### 1986 Reform
+
+In 1986, there were further changes to the income tax rates for individuals, limited liability companies, and corporations. For individuals, the highest income tax rate was reduced from 49\% to 30%. The CIT for LLCs and Corporations was homogenized at 30\%. Before the reform, Corporations faced a 40\% CIT rate, while LLCs faced an 18\% CIT rate.
+
+#### Theoretical implications
+
+According to our model, both the sales tax rate and the corporate income tax rate affect the incentives to evade taxes by overreporting inputs.
+
+An increase in the sales tax rate of the corporate income tax rate would increase the incentives to evade taxes by overreporting inputs. Conversely, a decrease in either the sales tax rate or the corporate income tax rate would decrease the incentives to evade taxes. Therefore, it is ambiguous what to expect from these fiscal reforms.
+
+1983 Fiscal Policy:
+
+- Changes *across* industries: Changes to Sales tax rate, some increased, some decreased depending on the industry, still others remained exempted;
+
+- Changes *within* industries: Changes to CIT of Proprietorship (individuals income tax) and LLCs; 
+  - Some individuals got an increase, others a decrease. Most individuals 8 percent increase, top was reduced from 56 to 49.
+  - LLCs received a decrease from 20 to 18 percent of their income. However, they were also subject to the presumptive income tax starting in 1983.
+
+### Empirical approach
+
+According to our model, Corporations are the truth reporters. In other words, Corporations do not overreport inputs to evade taxes —they might have other more-sophisticated strategies to avoid taxes, though. So for Corporations $i$ in industry $j$ at year $t$, the FOC implies,
+
+$$
+s_{ijt}^{C} = \gamma_{j} + \varepsilon_{ijt}
+$$ {#eq-corp}
+
+Where $s_{ijt}^{C}$ is the share of materials' cost over sales, $\gamma_{j}$ is the output elasticity of materials for industry $j$, and $\varepsilon_{ijt}$ is the error term.
+
+CIT and ST generate tax evasion incentives for non-Corporations $\text{NonCorp}=\{\text{Proprietorship}, \text{LLC}, \text{Other}\}$ in taxed industries. For a non-corporation firm $i$ in taxed industry $j$ and year $t$, thus we have,
+
+$$
+s_{ijt}^{NC} = \gamma_{j} + e^{ST}_{ijt} + e^{CIT}_{ijt}+\varepsilon_{ijt} \quad j \in \text{Taxed} 
+$$ {#eq-noncorp-taxed}
+
+where $e^{ST}_{ijt}$ and $e^{CIT}_{ijt}$ are the overreporting due to sales tax and corporate income tax, respectively. Since the fiscal reform of 1983 affected both the ST and CIT, these terms will vary accordingly.
+
+Finally, because firms in exempt of ST industries are subject only to CIT, we have,
+
+$$
+s_{ijt}^{NC} = \gamma_{j} + e^{CIT}_{ijt}+\varepsilon_{ijt} \quad j \in \text{Exempt}
+$$ {#eq-noncorp-exempt}
+
+Then, let $D_{NC}$ be a dummy indicating whether the firm is not incorporated. Furthermore, let $D_{NE}$ be a dummy indicating whether the industry is ST-liable (not exempted of ST), and $D_{E}$ be a dummy indicating whether the industry is ST-exempted, such that $D_{E} + D_{NE} = 1$. Thus, for firms in taxed industries,
+
+$$
+\begin{aligned}
+  (1-D_{NC})s_{ijt} + D_{NC} s_{ijt} =& (1-D_{NC})(\gamma_{j} + \varepsilon_{ijt})\\
+  &+ D_{NC} ( \gamma_{j} + e^{ST}_{ijt} + e^{CIT}_{ijt} + \varepsilon_{ijt}) \\
+  s_{ijt} =& \gamma_{j} + D_{NC} ( e^{ST}_{ijt} + e^{CIT}_{ijt}) + \varepsilon_{ijt} \\
+  s_{ijt} =& \gamma_{j} + D_{NC} ( e^{ST}_{ijt} + e^{CIT}_{ijt}) + \varepsilon_{ijt} \quad j \in \text{Non-Exempt}
+\end{aligned}
+$$
+
+Likewise, for firms in exempt industries, 
+
+$$
+\begin{aligned}
+  (1-D_{NC})s_{ijt} + D_{NC} s_{ij't} &= \gamma_{j} + D_{NC} e^{CIT}_{ijt} + \varepsilon_{ijt} \\
+  s_{ijt} &= \gamma_{j} + D_{NC} e^{CIT}_{ijt} + \varepsilon_{ijt} \quad j\in \text{Exempt}
+\end{aligned}
+$$
+
+Then, combining firms in both types of industries, we have,
+
+$$
+\begin{aligned}
+  D_{E}s_{ijt} + D_{NE} s_{ijt} =& D_{E} \left( \gamma_{j} + D_{NC} e^{CIT}_{ijt}+ \varepsilon_{ijt}\right) + D_{NE} \left( \gamma_{j} + D_{NC} ( e^{ST}_{ijt} + e^{CIT}_{ijt})+ \varepsilon_{ijt} \right)  \\
+  (D_{E} +D_{NE})s_{ijt} =& (D_{E} +D_{NE})\gamma_{j}+ D_{E}D_{NC} e^{CIT}_{ijt}\\
+   &+ D_{NE} D_{NC} ( e^{ST}_{ijt} + e^{CIT}_{ijt})  + (D_{E} +D_{NE})\varepsilon_{ijt} \\
+  s_{ijt}&= \gamma_{j} + D_{E}D_{NC} e^{CIT}_{ijt}  + D_{NE} D_{NC} ( e^{ST}_{ijt} + e^{CIT}_{ijt})  + \varepsilon_{ijt} \\
+\end{aligned}
+$$ {#eq-emp-lvl}
+
+So, by taking the expectation, 
+$$
+E[s_{ijt}|D_{E},D_{NE},D_{NC}] = \gamma_{j} + \mu^{CIT}_E  + \mu^{ST+CIT}_{NE},
+$$
+
+we can learn the average overreporting by firms in exempt, $\mu^{CIT}_E$, and taxed industries, $\mu^{ST+CIT}_{NE}$.
+
+We can also take the expectation over time to learn how overreporting changes from year to year due to fiscal policy changes in sales tax rates and income tax rates.
+
+$$
+E[s_{ijt}|D_{E},D_{NE},D_{NC},t] = \gamma_{j} + \mu^{CIT}_{E,t}  + \mu^{CIT+ST}_{NE,t}
+$$
+
+In this approach, $\mu^{CIT}_{E,t}$ captures the average overreporting in exempt industries at year $t$. $\mu^{CIT+ST}_{NE,t}$ captures the average overreporting due to ST and CIT for firms in taxed industries at year $t$. Note that in this approach we cannot separate the effect of ST and CIT for firms in taxed industries.
+
+In the case of the fiscal policy changes, we are interested in the difference in average tax evasion with respect to the year before the fiscal reform of 1983. Thus, we have two periods, $t'$ after the reform and $t$ before the reform.
+$$
+E[s_{ijt}|D_{E},D_{NE},D_{NC},t'] - E[s_{ijt}|D_{E},D_{NE},D_{NC},t] = \Delta^{CIT}_E+\Delta ^{CIT+ST}_{NE}
+$$
+
+Where $\Delta^{CIT}_E = \mu^{CIT}_{E,t'} - \mu^{CIT}_{E,t}$, $\Delta ^{CIT+ST}_{NE} = \mu^{CIT+ST}_{NE,t'} - \mu^{CIT+ST}_{NE,t}$.
+
+Since most ST-liable industries received an increase in the tax rate of 4 percentage points, we expect an increase in average tax evasion after the fiscal reform of 1983.
+
+With respect to CIT, the expected change is ambiguous for both exempt and taxed industries. In both industries, Proprietorships faced an average increase of eight percent in their income tax rates, while LLCs faced a decrease in their CIT from 20 to 18 percent. Consequently, Proprietorships faced an increase in their incentives to evade taxes, while LLCs a decrease. Thus, the net effect on tax evasion due to changes in CIT depends on the relative weight of Proprietorships and LLCs in each industry and the magnitude of the changes in their income tax rates.
+
+Alternatively, we could be interested in separating the effect of changes in CIT from changes in ST on tax evasion. In this case, we can rearrange the equations for firms in exempt and taxed industries to obtain the following,
+
+$$
+\begin{aligned}
+  (1-D_{NE})s_{ijt}+D_{NE}s_{ijt} =& (1-D_{NE})\left( \gamma_{j} + D_{NC} e^{CIT}_{ijt}+ \varepsilon_{ijt} \right) \\
+  &  + D_{NE} \left( \gamma_{j} + D_{NC} ( e^{ST}_{ijt} + e^{CIT}_{ijt}) + \varepsilon_{ijt}\right)  \\
+  s_{ijt} =& \gamma_{j} + D_{NC} e^{CIT}_{ijt} + D_{NC} D_{NE} e^{ST}_{ijt}  + \varepsilon_{ijt}
+\end{aligned}
+$$ {#eq-emp-sep}
+
+Since CIT rates depend on the juridical organization and not on the industry, we assume that CIT generates the same incentives to evade taxes across industries, whether they are exempt of ST or not.
+
+(Because we aggregate different juridical organizations in exempt and taxed industries into non-Corporations, this assumption might break if the composition of juridical organizations is non-trivially different between exempt and taxed industries.)
+
+Then, taking expectations and conditioning on time,
+
+$$
+E[s_{ijt}|D_{NE},D_{NC}] = \gamma_{j} +  \mu^{ST}_t + \mu^{CIT}_t.
+$$
+
+Finally, taking differences before and after the fiscal reform of 1983,
+
+$$
+E[s_{ijt'}^k|t'] - E[s_{ijt}^k|t] = \Delta^{CIT} + \Delta^{ST}
+$$
+
+
+In regression form:
+
+1. @eq-emp-lvl becomes, 
+
+  $$
+  \begin{aligned}
+      s_{ijt} =&  D_{NC} D_{E} \mathbf{D}_t\Gamma_{0,t}' \\
+      &+ D_{NC} D_{NE} \mathbf{D}_t \Gamma_{1,t}' + \gamma_j +  \varepsilon_{ijt}
+  \end{aligned}
+  $$ {#eq-emp-lvl-reg}
+
+2. @eq-emp-sep becomes,
+
+  $$
+  \begin{aligned}    
+    s_{ijt} =& D_{NC} \mathbf{D}_t \Gamma_{0,t}'\\
+    &+ D_{NC} D_{NE} \mathbf{D}_t \Gamma_{1,t}' + \gamma_j +  \varepsilon_{ijt}
+  \end{aligned}
+  $$ {#eq-emp-lvl-sep-reg}
+
+
+
+Where $D_{NC}$ is a dummy indicating whether the firm is not a Corporation, $D_{NE}$ a dummy indicating whether the industry is taxed (not exempt), and $\mathbf{D}_t$ a $1\times T$ vector of year dummies. Finally, $\gamma_j$ are industry fixed effects, and $\varepsilon_{ijt}$ is the error term. Consistent with the empirical approach, the industry fixed effects capture the true materials elasticity of outputs, while the coefficients of the interaction terms capture the overreporting due to changes in CIT and ST.
+
+$\Gamma_{0,t}$ and $\Gamma_{1,t}$ are $1\times T$ vectors of coefficients. In the first specification (@eq-emp-lvl-reg), $\Gamma_{0,t}$ captures the change in tax evasion due to changes in CIT for firms in exempt industries, while $\Gamma_{1,t}$ captures the change in tax evasion due to changes in sales tax rates and CIT for firms in taxed industries.
+
+In the second specification (@eq-emp-lvl-sep-reg), $\Gamma_{0,t}$ captures the change in tax evasion due to changes in CIT for all non-Corporations, while $\Gamma_{1,t}$ captures the change in tax evasion due to changes in sales tax rates for non-Corporations in taxed industries.
+
+To estimate the difference in tax evasion after the 1983 fiscal reform, I use the following regression specification,
+
+1. First approach, with the effect of changes in CIT and ST combined,
+
+  $$
+  \begin{aligned}    
+    s_{ijt} =& \beta_0D_{NC}+\beta_1D_{NC}D_{E}+\beta_2D_{NC}D_{NE}\\
+    &+D_{NC} D_{E}  \mathbf{\tilde D}_{t}\tilde\Gamma_{0,t}'\\
+    &+ D_{NC} D_{NE}  \mathbf{\tilde D}_t \tilde\Gamma_{1,t}' + \gamma_j +  \varepsilon_{ijt}
+  \end{aligned}
+  $$ {#eq-reg-lvl-tdiff}
+
+
+2. Second approach, separating the effect of changes in CIT from changes in sales tax rates,
+
+  $$
+  \begin{aligned}    
+    s_{ijt} =& \beta_0 D_{NC} + \beta_1 D_{NC} D_{NE} + \beta_2D_{NC} D_{E}\\
+    & + D_{NC}  \mathbf{\tilde D}_t\tilde\Gamma_1'\\
+    &+ D_{NC} D_{E}  \mathbf{\tilde D}_t\tilde\Gamma_0' + \gamma_j +  \varepsilon_{ijt}
+  \end{aligned}
+  $$ {#eq-reg-lvl-tdiff-sep}
+
+where now $\mathbf{\tilde D}_t$ is a $1\times (T-1)$ vector of year dummies that excludes the year before the fiscal reform of 1983, which is the reference year. $\tilde\Gamma_{0,t}$ and $\tilde\Gamma_{1,t}$ are the corresponding vectors of coefficients. Thus, in @eq-reg-lvl-tdiff, $\tilde\Gamma_{0,t}$ captures the change in tax evasion due to changes in CIT for firms in exempt industries relative to the year before the fiscal reform of 1983, while $\tilde\Gamma_{1,t}$ captures the change in tax evasion due to changes in sales tax rates and CIT for firms in taxed industries relative to the year before the fiscal reform of 1983.
+
+In @eq-reg-lvl-tdiff-sep, $\tilde\Gamma_0$ captures the change in tax evasion due to changes in CIT for all non-Corporations relative to the year before the fiscal reform of 1983, while $\tilde\Gamma_1$ captures the change in tax evasion due to changes in sales tax rates for non-Corporations in taxed industries relative to the year before the fiscal reform of 1983.
+
+
+#### Comparison of Specifications
+
+![](images/921-1-joint.png){#fig-grid-joint}
+
+![](images/921-1-sep.png){#fig-grid-sep}
+
+- **I prefer first specification with the combined effects of changes in CIT and ST and the difference with respect to the year before the fiscal reform of 1983 **
+
+It is more straightforward to interpret the results in terms of changes in tax evasion relative to the year before the fiscal reform of 1983, which is what we are interested in.
+
+- Why are the standard error so much larger in the levels compared to the differences with respect to the year before the fiscal reform of 1983?
+
+#### Results
+
+Previous specification,
+
+$$
+\begin{aligned}
+    s_{ijt} =& \beta_0 D_{NC} + \beta_1 D_{NC} D_{NE} \\
+    &+ \beta_2D_{NC} D_{E}\\ 
+    &+ D_{NC} D_{E} \mathbf{D}_t\Gamma_1'\\
+    &+ D_{NC} D_{NE} \mathbf{D}_t\Gamma_2'\\
+    & +\gamma_j +  \varepsilon_{ijt}
+\end{aligned}
+$$
+
+
+![](../Code/Products/922-exempt-ncrp-het.png){#fig-exempt-ncrp-het}
+
+- **After the fiscal reform of 1983, non-Corporations in exempt industries increase tax evasion slightly, while non-Corporations in taxed industries increase tax evasion significantly (@fig-exempt-ncrp-het)**
+
+Since firms in exempt industries are not subject to sales taxes, the effect on tax evasion is due onlyt to the changes in individual and corporate income tax rates. The slight increase in tax evasion by non-Corporations in exempted industries reflects the combined effects of the increase in the income tax rate for individuals, which was eight percent on average across the different brackets, and the slight decrease in CIT for LLCs, from 20 to 18 percent. In other words, the observed increase in tax evasion by unincorporated firms implies that the effect of the increase in income tax rates for individuals, and thus for Proprietorships, dominates the effect of the decrease in CIT for LLCs.
+
+On the other hand, firms in ST-liable industries face both the changes in sales tax rates and income tax rates. The significant increase in tax evasion by non-Corporations in taxed industries results from the combined effect of the increase in sales tax rates for most industries, and the changes in income tax rates.
+
+Breaking down exempt and non-exempt industries into juridical organizations, 
+
+![](../Code/Products/922-exempt-LLC-het.png){#fig-exempt-LLC-het}
+
+- **LLCs in taxed industries show a significant increase in tax evasion, while LLCs in exempt industries show no significant change (@fig-exempt-LLC-het)**
+
+LLCs in exempt industries mainly faced a decrease in their CIT. This decrease in would lead to lower incentives to evade taxes. However, since the reduction in CIT is small, it is not unreasonable to find no evidence of significant changes in tax evasion for these industries.
+
+In taxed industries, LLCs faced two opposing effects: the increase in sales tax rates, which would increase incentives to evade taxes, and the decrease in CIT, which would decrease incentives to evade taxes. The evidence suggests that the increase in sales tax rates dominates the effect of the decrease in CIT, leading to a significant increase in tax evasion for LLCs in taxed industries.
+
+![](../Code/Products/922-exempt-PRT-het.png){#fig-exempt-PRT-het}
+
+- **Proprietorships in exempt industries show a moderate but significant increase in tax evasion (@fig-exempt-PRT-het)**
+
+This result and the lack of response from LLCs in exempt industry suggest that Propietorships were driving the previously discussed increase in tax evasion by non-Corporations in exempt industries. This is even more evident in @fig-exemp-by-jo-het, where we can see that Proprietorships in exempt industries significantly increase tax evasion after 1983, while LLCs in exempt industries show no significant change.
+
+- **Proprietorships in taxed industries mostly behaved no differently than proprietorships in exempt industries (@fig-exempt-PRT-het)**
+
+Except for 1985, Proprietorships in taxed industries are not significantly different from their counterparts in exempt industries. Their standard errors are generally quite large however, and thus they are either not significantly different from Corporations, except from 1986 to 1988. The larger standard errors might be due to higher heterogeneity in this group of firms.
+
+
+<!-- What makes sense: -->
+
+<!-- - In contrast to Corporations, Non-Corporations in exempt industries slightly increase their overreporting after 1983 [@fig-exempt-ncrp-het].
+
+An upward trend before 1983 suggests that Non-Corporations stabilized their overreporting after 1983. This might be due to the changes in CIT for individuals and LLCs. This variable is capturing the effect of all juridical organizations lumped together.
+
+- In non-exempt industries, non-Corporations revert downward trend in overreporting relative to firms in exempt industries significantly after in 1983 [@fig-exempt-ncrp-het].
+
+We can observe a downward trend before 1983, which reverses after 1983.  -->
+
+<!-- It is likely that firms were anticipating the fiscal reform. One, there are lobbying groups looking after the interests of firms, specially for Corporations and firms in industries like agriculture. Two, there was a public debate following the publication in 1981 of a report by a technical mission led by Eduardo Wiesner (Colombian economist) and Richard Bird (international tax expert) on the Colombian tax system [@Perry1986]. -->
+
+
+
+<!-- - LLCs in exempt industries show no significant change in overreporting relative to Corporations, while LLCs in non-exempt industries show significant increases in overreporting relative to corporations. -->
+
+<!-- - Proprietorships in exempt industries show significant increases in overreporting relative to Corporations after 1983 but in general lower in magnitude than LLCs in taxed industries. 
+
+For LLCs, the changes in sales tax rates lead to higher incentives to evade taxes in non-exempt industries, while the decrease in CIT led to no significant change in exempt industries.
+
+For Proprietorships, the increase in CIT seems to dominate the effect of changes in sales tax rates, leading to higher incentives to evade taxes significantly in exempt industries, while no significant change in non-exempt industries due to high variability in their reponse leading to high standard errors. -->
+
+
+##### By Exempt vs Taxed Industries
+
+![](../Code/Products/922-exempt-jo-het.png){#fig-exemp-by-jo-het}
+
+![](../Code/Products/922-taxed-jo-het.png){#fig-taxed-by-jo-het}
+
+<!-- :::: {#tbl-did-grp layout-ncol="1" include="false"}
+
+::: {.content-visible when-format="html"}
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+#| output: asis
+
+
+load("../Code/Products/921-DD2.RData")
+
+etable(
+  reg_nc_exe_het,
+  reg_jo_exe_het,
+  dict = dict
+)
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+#| output: asis
+
+# load("../Code/Products/921-DD2.RData")
+
+etable(
+  reg_nc_exe_het,
+  reg_jo_exe_het,
+  
+  dict = dict,
+  tex = FALSE
+) %>%
+  kbl(
+    table.attr = 'data-quarto-disable-processing="true"',
+    longtable = TRUE,
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    latex_options = c("repeat_header")
+  )
+
+```
+
+::: 
+
+:::: -->
+
+<!-- #### Pre-trends
+
+Pre-trends might be a concern in particular for Non-Corporations in Taxed industries which show a significant downward trend before 1983.
+
+In general, what we want is parallel trends between treated and control groups before the policy change. The assumption is that in the absence of the policy change, both groups would have followed the same trend. So that the difference between both groups after the policy change can be attributed to the policy change.
+
+In our case, what we have is a **clean comparison group, Corporations, that will not react to the policy changes** because the assumption is that these firms do not evade taxes by overreporting. Thus, we can interpret the estimates as the change in overreporting relative to the year preceding the fiscal reform.
+
+How to explain the downward pre-trend in Non-Corporations in taxed industries before 1983, then? 
+
+The policy changes of the time were the result of a public debate following the publication of a report in 1981 by a technical mission led by Eduardo Wiesner (Colombian economist) and Richard Bird (international tax expert) on the Colombian tax system [@Perry1990]. These changes aimed to modernize the Colombian tax system by improving efficiency, simplifying tax administration, and increasing tax revenues.
+
+A plausible scenario is that **firms could have reduced their overreporting during the public debate as a way to signal compliance and avoid further tax increases**, and then reverted their behavior after the reform was enacted. 
+
+If this is the case, then part of the increase in overreporting after 1983 is a return to previous levels of tax evasion. More data points before 1981 would help to clarify this issue.
+
+Parallel trends would be relevant in two particular cases:
+
+1. If we want to **isolate the effect on tax evasion due to changes in the sales tax rates from changes in income tax rates**. In this case, we would need parallel trends between Non-Corporations in exempt industries and Non-Corporations in taxed industries before 1983. 
+
+2. We could **allow for different technologies** within an industry **between Corporations and the other juridical organizations**. Suppose furthermore that these technologies vary over time. In this case, we could recover the change in tax evasion due to the fiscal policy reform if we have parallel trends between Corporations and Non-Corporations within each industry before 1983. -->
+
+<!-- In general, pre-trends are a concern if they could explain the the effect after the policy change. In other words, the subjects would have followed the same trend in the absence of the treatment. In our case, what we observe is a reversal of the pre-trend after the policy change, which goes against the idea that the pre-trend could explain the post-policy change effect.
+
+The relevant case is that there could be a confounding factor that causes both the changes in overreporting and the policy change. However, it is hard to think of a confounding factor that would cause a reversal of the pre-trend after the policy change.
+
+For example, if input prices were decreasing before 1983 leading to lower overreporting, and then input prices started increasing after 1983 leading to higher overreporting, this could explain the reversal of the trend. However, why would input prices lead to a change in fiscal policy in 1983 that tried to homogenize sales tax rates across industries and increased income tax rates for individuals but decrease slightly for LLCs? -->
+
+
+<!-- #### De-trended Outcomes
+
+Assuming linear pre-trends, I de-trend the outcome variable by regressing the log share of materials on a linear time trend for each group defined by juridical organization (Corporations vs non-Corporations, and Corporations vs Proprietorships and LLCs) and whether the industry is exempted or not. Then, I use the residuals of this regression as the outcome variable in the Diff-in-Diff regression.
+
+![](../Code/Products/923-exempt-ncrp-het-det.png){#fig-exempt-ncrp-het-det}
+
+![](../Code/Products/923-exempt-LLC-het-det.png){#fig-exempt-LLC-het-det}
+
+![](../Code/Products/923-exempt-PRT-het-det.png){#fig-exempt-PRT-het-det} -->
+

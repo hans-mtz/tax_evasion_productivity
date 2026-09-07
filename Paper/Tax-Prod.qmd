@@ -27,8 +27,7 @@ author:
       - name: University of Western Ontario
         department: Department of Economics
 abstract: |
-  I propose a novel strategy that uses production functions to estimate corporate tax evasion through cost overreporting. Employing a structural production function approach using validation data with correctly reported costs, I investigate potential tax evasion by testing the presence of cost overreporting on a testing data, where the statistically significant differences on the output elasticities of the overreported input in the correct direction are interpreted as evidence of tax evasion. I apply this method to a well-known dataset where I find evidence suggesting that cost overreporting is widespread and quantitatively large. My results indicate that ignoring cost overreporting leads to consistently larger elasticities of intermediate inputs. The bias on the intermediate inputs spreads to the elasticities of labor and capital, whose bias direction varies by industry. Finally, I find significant differences in the productivity distributions. 
-  How much cheating there could be (back-of-envelope calculation, be careful
+  I propose a novel strategy that uses production functions to estimate corporate tax evasion through cost overreporting. Employing a structural production function approach using validation data with correctly reported costs, I investigate potential tax evasion by testing the presence of cost overreporting on a testing data, where the statistically significant differences on the output elasticities of the overreported input in the correct direction are interpreted as evidence of tax evasion. I apply this method to a well-known dataset where I find evidence suggesting that cost overreporting is widespread and quantitatively large. My results indicate that ignoring cost overreporting leads to consistently larger elasticities of intermediate inputs. The bias on the intermediate inputs spreads to the elasticities of labor and capital, whose bias direction varies by industry. Finally, I find significant differences in the productivity distributions. How much cheating there could be (back-of-envelope calculation, be careful)
 keywords:
   - Tax Evasion
   - Cost Overreporting
@@ -42,6 +41,8 @@ bibliography:
   - biblio/b100422.bib
   - biblio/b270123.bib
   - biblio/b100424.bib
+  - biblio/bib-103125.bib
+  - biblio/references.bib
 filters:
   - custom-numbered-blocks
   - latex-environment
@@ -178,7 +179,8 @@ setFixest_dict(c(
 
 ```
 
-
+<!-- TODO -->
+{{< include sections/001-TODO.qmd >}}
 
 <!-- Intro -->
 {{< include sections/010-intro.qmd >}}
@@ -228,19 +230,38 @@ setFixest_dict(c(
 <!-- Production Function -->
 {{< include sections/250-pf.qmd >}}
 
+<!-- DiD Analysis -->
+{{< include sections/965-DiD.qmd >}}
+
+<!-- Tax evasion and firm heterogeneity -->
+
+<!-- {{< include sections/960-who-evades.qmd >}} -->
+
+{{< include sections/961-evasion-het.qmd >}}
+
+<!-- {{< include sections/970-david-tbl.qmd >}} -->
+
+```{=latex}
+\appendix
+```
 
 ## References {.appendix}
 
 ::: {#refs}
 :::
 
+{{< include sections/950-384-369.qmd >}}
+
+{{< include sections/11-the-story.qmd >}}
+
+{{< include sections/980-non-random-q.qmd >}}
+
 <!-- Misallocation -->
 {{< include sections/300-misallocation.qmd >}}
 
 <!-- Literature Review -->
-{{< include sections/30-lit-rev.qmd >}}
 
-{{< include sections/11-the-story.qmd >}}
+{{< include sections/30-lit-rev.qmd >}}
 
 {{< include sections/910-GNR-rep.qmd >}}
 

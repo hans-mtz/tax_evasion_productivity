@@ -1,0 +1,316 @@
+# Estimating the Cost and Detection Functions
+
+## Functional Forms
+
+The probability of detection, $q(e_{it})$, and the cost of evasion, $\kappa_{it}(e_{it},\omega_{it})$, satisfy:
+
+- $q(e_{it})=\min\{\lambda e_{it},1\}$ &nbsp; — &nbsp; **linear** detection; $q(0)=0$, increasing, $q''=0$ so the SOC holds *unconditionally*. (Robustness: concave $1-\textbf{e}^{-\lambda e}$ or power $(\lambda e)^k$.)
+- $\kappa_{it}(e_{it},\omega_{it})=e_{it}\,\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}}$ &nbsp; — &nbsp; $\kappa\ge0$, $\kappa(0,\cdot)=0$, convex in $\omega$, **U-shaped** in $\omega$ (minimized at $\omega^*=\delta_1/2\delta_2$).
+
+**No corporation dummy.** The cost turns up at high $\omega$: the most productive firms face a high *relative* cost of crude overreporting (they substitute toward legal avoidance), so optimal evasion is small at *both* tails of $\omega$. Corporations are treated as **constrained non-evaders** (audited statements, third-party reporting) — *outside* the evasion FOC, used only in the first stage. The evasion model is estimated on **unincorporated** firms.
+
+$\psi_{it}$ is an idiosyncratic shock to the cost of evasion. Its distribution $f_\psi$ is the central object to recover, together with $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$.
+
+## FOC for Tax Evasion
+
+Plug $q(e)=\lambda e$ (so $q'(e)=\lambda$, $q''=0$) and $\partial\kappa/\partial e=\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}$ into the FOC $\tau\rho_t\big(1-(q+q'e)\big)=\partial\kappa/\partial e$ (with $\phi=0$). Since $1-(q+q'e)=1-2\lambda e$, an interior solution satisfies
+
+$$
+\tau\rho_t\,(1-2\lambda e_{it})=\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}}.
+$$
+
+Taking logs and defining
+$$
+h(e_{it})\;\equiv\;\ln(\tau\rho_t)+\ln(1-2\lambda e_{it}),
+\qquad e_{it}\in(0,\tfrac1{2\lambda}),
+$$
+the evasion FOCs become
+
+$$
+\begin{aligned}
+\textbf{Corner } (e=0):\quad & \psi_{it}\;\ge\;c(\omega_{it})\equiv\ln(\tau\rho_t)-\delta_0+\delta_1\omega_{it}-\delta_2\omega_{it}^2, \\[4pt]
+\textbf{Interior } (e>0):\quad & \psi_{it}\;=\;h(e_{it})-\delta_0+\delta_1\omega_{it}-\delta_2\omega_{it}^2.
+\end{aligned}
+$$ {#eq-foc-psi}
+
+These are **regimes, not firm types**: an unincorporated firm corners when $\psi\ge c(\omega)$. In estimation we treat unincorporated firms as **interior** — the data show no sharp mass at zero, and the U-shaped cost already drives interior evasion to $\approx0$ at both tails of $\omega$ (see appendix). Net marginal benefit is positive only for $e<1/2\lambda$ (evasion bounded), and $c(\omega)$ is the $e\to0^+$ limit of the interior branch.
+
+## What is observed
+
+I never observe $e_{it}$, $\varepsilon_{it}$, $\omega_{it}$, or $\psi_{it}$ at the firm level. From the first stage (`56-id-evasion.qmd`) I construct **two observed residuals** and recover **three distributions**:
+
+$$
+\underbrace{\mathcal V_{it}=u_{it}-\varepsilon_{it}}_{\text{eq-ob-ev}},
+\qquad
+\underbrace{\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}}_{\text{eq-w-squiggle}},
+$$
+
+with $u_{it}=\ln\!\big(M^*_{it}/M_{it}\big)$ and the additive evasion $e_{it}=M^*_{it}\big(1-\textbf{e}^{-u_{it}}\big)$.
+
+From the first stage I already know $\beta$, and the densities $f_\varepsilon$, $f_\omega$, $f_e$.
+
+**To estimate:** $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$ and the density $f_\psi$.
+
+## The key observation: $e$ and $\varepsilon$ are *one* latent, not two
+
+A previous version integrated out $e$ **and** $\varepsilon$ as if they were two independent latents, weighting by $f_e(e)\,f_\varepsilon(\varepsilon)$. That double-counts.
+
+Given the observed $\mathcal V_{it}$, the relation $\mathcal V_{it}=u_{it}-\varepsilon_{it}$ ties $u_{it}$ (hence $e_{it}$) to $\varepsilon_{it}$:
+
+$$
+u_{it}=\mathcal V_{it}+\varepsilon_{it},
+\qquad
+e_{it}=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon_{it}}\big).
+$$
+
+There is **only one latent dimension to integrate out**, and it is $\varepsilon_{it}$ — precisely the variable that made $e_{it}$ unobservable in the first place. $f_e$ was *already consumed* in the first stage to get here, so it does **not** reappear in this likelihood.
+
+## Corporations: constrained non-evaders
+
+Corporations file audited statements and face third-party reporting, so $e=0$ is a **hard constraint**, not a choice. They are *outside* the evasion FOC and serve only the **first stage**: with $e=0$, $\mathcal V_{it}=-\varepsilon_{it}$ reveals each $\varepsilon_{it}$, identifying $f_\varepsilon$ — hence, by deconvolution, $f_e$ — and $\beta$. **No $\delta_C$.**
+
+Why not let corps choose the corner *endogenously*? A full-support $f_\psi$ would give a low-$\psi$ corp positive evasion, so $E[e\mid\text{Corp}]>0$ — contradicting the first-stage assumption $E[e\mid\text{Corp}]=0$, which (since $e\ge0$) *forces* $e=0$ for every corp. The institutional constraint removes the contradiction.
+
+**Validation.** The estimated model should imply low evasion at corp-level $\omega$ (high $\omega$ → high cost) — rationalizing, out of sample, why corporations don't evade.
+
+## Unincorporated: one integral over $\varepsilon$
+
+For each unincorporated firm (all treated as interior) I do not observe $e_{it}$, so I integrate out the single latent $\varepsilon$. For each value of $\varepsilon$ everything else is pinned down:
+
+$$
+e(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big),
+\quad
+\omega(\varepsilon)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon,
+\quad
+\psi(\varepsilon)=h\big(e(\varepsilon)\big)-\delta_0+\delta_1\,\omega(\varepsilon)-\delta_2\,\omega(\varepsilon)^2.
+$$
+
+The likelihood contribution is the density the model assigns to the observed $(\mathcal V_{it},\tilde{\mathcal W}_{it})$:
+
+$$
+\boxed{\;
+\mathcal L_i^{\text{unc}}(\theta)
+=\int f_\psi\!\big(\psi(\varepsilon)\big)\;
+J_i(\varepsilon)\;
+f_\omega\!\big(\omega(\varepsilon)\big)\;
+f_\varepsilon(\varepsilon)\;d\varepsilon
+\;}
+$$ {#eq-Lunc}
+
+A **single** integral, against the *known* densities $f_\varepsilon$ and $f_\omega$, evaluating the *unconditional* $f_\psi$ at the FOC-implied $\psi(\varepsilon)$.
+
+## The pieces of @eq-Lunc
+
+- **$f_\psi(\psi(\varepsilon))$** — the object to estimate, evaluated at the FOC residual. It is $f_\psi$, not $f_{\psi\mid e}$: since $\psi\perp(e,\varepsilon)$, conditioning is vacuous; the $e$-dependence is *deterministic*, through the residual.
+- **$f_\omega,\ f_\varepsilon$** — known from the first stage. Three primitives $(\psi,\omega,\varepsilon)$, two observables $(\mathcal V,\tilde{\mathcal W})$, so exactly one is integrated out.
+- **$J_i(\varepsilon)$** — the change-of-variables Jacobian from the primitive $\psi$ to the observed $\mathcal V_{it}$ (it depends on $\lambda$, so it cannot be dropped):
+
+$$
+J_i(\varepsilon)=\left|\frac{\partial\psi}{\partial\mathcal V_{it}}\right|
+=\big|h'(e)\big|\,\big(M^*_{it}-e\big),
+\qquad
+h'(e)=\frac{-2\lambda}{1-2\lambda e}<0,
+$$
+
+with $e=e(\varepsilon)$ and $M^*_{it}-e=M^*_{it}\textbf{e}^{-\mathcal V_{it}-\varepsilon}$. ($h'<0$ on $(0,1/2\lambda)$, so $h$ is invertible and $e^*(\psi)$ is well defined.)
+
+*(Equivalently, condition on $\tilde{\mathcal W}_{it}$ and integrate the posterior $f_{\varepsilon\mid\tilde{\mathcal W}}\propto f_\varepsilon(\varepsilon)f_\omega(\omega(\varepsilon))$; same MLE since $f_{\tilde{\mathcal W}}$ does not depend on $\theta$.)*
+
+## Full log-likelihood
+
+$$
+\mathcal L(\theta,f_\psi)=
+\sum_{i\in\text{Unincorp}}\ln\!\left(\int f_\psi(\psi(\varepsilon))\,J_i(\varepsilon)\,f_\omega(\omega(\varepsilon))\,f_\varepsilon(\varepsilon)\,d\varepsilon\right).
+$$ {#eq-loglik}
+
+Corporations are not in the likelihood (constrained non-evaders, first stage only). With no corner mass to anchor the level of $f_\psi$, impose a location normalization — $\operatorname{median}(\psi)=0$.
+
+## Relation to the first stage: $\Psi=\psi+\nu$
+
+The approved first stage rests on a clean convolution: $\mathcal V_{it}=u_{it}-\varepsilon_{it}$ with $u\perp\varepsilon$ (timing assumption), so $f_{\mathcal V}=f_{u}*f_{-\varepsilon}$ and $f_{u}$ is recovered by **deconvolving** the known $f_\varepsilon$.
+
+It is tempting to do the same for $\psi$. Construct, from data and a parameter guess, $\Psi_{it}(\theta)\equiv\delta_1\tilde{\mathcal W}_{it}-\delta_0$. Substituting $\omega=\tilde{\mathcal W}-(1-\beta)\varepsilon$ into the interior FOC gives the *exact* decomposition
+
+$$
+\Psi_{it}(\theta)=\psi_{it}+\nu_{it},\qquad \nu_{it}=\delta_1(1-\beta)\varepsilon_{it}-h(e_{it})+\delta_2\omega_{it}^2.
+$$ {#eq-psi-decomp}
+
+So $\Psi$ really is "$\psi$ plus a shock in data and $\varepsilon$" — the structure one hopes for.
+
+## Why it is *not* a deconvolution
+
+Deconvolution needs $\psi\perp\nu$ with a **fixed, known** noise density. Both fail:
+
+$$
+\operatorname{Cov}(\psi_{it},\nu_{it})=\underbrace{\delta_1(1-\beta)\operatorname{Cov}(\psi,\varepsilon)}_{=0}-\operatorname{Cov}\!\big(\psi,h(e)\big)\neq0.
+$$
+
+- **Endogenous response.** Evasion is the firm's optimal reaction to its own cost shock, $e_{it}=e^*(\psi_{it},\omega_{it})$, so $h(e_{it})$ — hence $\nu_{it}$ — moves with $\psi_{it}$. Unlike $u\perp\varepsilon$, there is **no** independence between $\psi$ and $e$.
+- **Firm-specific kernel.** $\nu_{it}$ contains $h\big(e(\mathcal V_{it},\varepsilon)\big)$, a *nonlinear, firm-specific, $\lambda$-dependent* transformation — not one noise density that can be divided out of the whole sample.
+
+You can *write* @eq-psi-decomp, but you cannot recover $f_\psi$ by deconvolution. The correct object is the structural likelihood @eq-Lunc — a **structural MLE** in the sense of @Hausman1985, where the likelihood is built directly from the optimization FOC via a change of variables, integrating out unobserved heterogeneity.
+
+## Why the Jacobian and $f_\omega$ are unavoidable
+
+Both are the price of returning to the independent primitives $(\psi,\omega,\varepsilon)$ and transforming honestly:
+
+- **Jacobian.** The likelihood is the density of observed $\mathcal V_{it}$, but $f_\psi$ is the density of $\psi$. The nonlinear FOC map carries $J_i(\varepsilon)=\big|\partial\psi/\partial\mathcal V_{it}\big|=|h'(e)|(M^*_{it}-e)$. It depends on $\lambda$, so dropping it biases the score and the MLE is **inconsistent**. (It would vanish only if $h$ were linear.)
+- **$f_\omega$.** Productivity enters the FOC and is unobserved; conditional on $\tilde{\mathcal W}_{it}$, the split $\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon$ is weighted by $f_\omega(\omega)f_\varepsilon(\varepsilon)$ — equivalently, the relevant law of $\varepsilon$ is the posterior $f_{\varepsilon\mid\tilde{\mathcal W}}\propto f_\varepsilon(\varepsilon)f_\omega(\tilde{\mathcal W}-(1-\beta)\varepsilon)$. It drops only if $\delta_1=\delta_2=0$.
+
+What **is** shared with the approved approach: we integrate out the *known-distribution* latents $(\varepsilon,\omega)$. That principle is identical; only the deconvolution shortcut is unavailable.
+
+## How to estimate it (simulated structural MLE)
+
+Reuse the first-stage outputs $(\hat\beta,\hat f_\varepsilon,\hat f_\omega)$ and posit a family for $f_\psi$ (e.g. $N(\mu_\psi,\sigma_\psi^2)$, or a flexible mixture). For each candidate $(\theta,f_\psi)$:
+
+1. **Each unincorporated firm** — approximate @eq-Lunc by simulation [@Train2009; @GourierouxMonfort1996],
+$$
+\widehat{\mathcal L}_i^{\text{unc}}=\frac1S\sum_{s=1}^{S}
+f_\psi\!\big(\psi(\varepsilon^{(s)})\big)\,J_i(\varepsilon^{(s)})\,f_\omega\!\big(\omega(\varepsilon^{(s)})\big),
+\qquad \varepsilon^{(s)}\sim \hat f_\varepsilon,
+$$
+or Gauss–Hermite quadrature if $\varepsilon$ is Gaussian.
+2. Maximize @eq-loglik over $(\theta,f_\psi)$ subject to the location normalization; use common random numbers across $\theta$ for a smooth objective.
+
+## Preferred implementation: quadrature + sieve $f_\psi$
+
+The integral @eq-Lunc is **one-dimensional** (only $\varepsilon$), so deterministic quadrature beats simulation — more accurate at fixed cost, no simulation bias, and a smooth objective for gradient-based optimizers.
+
+- **Integration.** Gauss–Legendre on a truncated support (or adaptive quadrature), carrying $f_\varepsilon$ inside the integrand since $\hat f_\varepsilon$ is the estimated, possibly non-Gaussian first-stage density. Watch the tails of $J_i(\varepsilon)$.
+- **Flexible $f_\psi$ via a sieve** [@Chen2007]. Use a **logspline**, $f_\psi\propto\exp\{\sum_k c_k B_k(\cdot)\}$ [@KooperbergStone1991]: positivity is automatic and normalization is one 1-D integral. Penalize roughness (P-splines, [@EilersMarx1996]); pick the penalty by CV/IC. Nest the estimation — $\theta$ outer, concave spline-coefficient problem inner.
+
+## Identification of the detection parameters
+
+With a flexible $f_\psi$, the cross-section of evasion alone cannot separate $\lambda$ from $f_\psi$. The detection parameters are identified from the **response of evasion to the benefit shifter $\tau\rho_t$ across sector–time cells**:
+
+- Within a cell $\rho_t$ is constant — absorbed into the location of $f_\psi$ — so detection is identified **between** cells: firms facing higher $\tau\rho_t$ evade more, and the magnitude of that response pins $\lambda$.
+- $f_\psi$ then absorbs only the cost heterogeneity **orthogonal** to $\tau\rho_t$ (and to $\omega$, through $\delta_1,\delta_2$).
+
+**Honest caveat.** $q$ and $\kappa$ are not separately identified from audit data; identification rests on $\tau\rho_t$ variation. A curvature parameter (power $k$) is identified only from the *shape* of that response — **weak if $\tau\rho_t$ varies little**, which is why I lead with the single-parameter linear form.
+
+## Identification of the location
+
+$\psi$ enters as $h(e)-\delta_0+\delta_1\omega-\delta_2\omega^2$, so $\delta_0$ and the **location** of $f_\psi$ are not separately identified: $\delta_0\to\delta_0+c$ with $f_\psi$ shifted by $c$ gives an identical likelihood.
+
+- With no corner mass in the likelihood, **impose a normalization** — $\operatorname{median}(\psi)=0$ (or $E[\psi]=0$); $\delta_0$ absorbs the level. (Same for a parametric $f_\psi$: fix $\mu_\psi=0$.)
+- Only relative shifts of $f_\psi$ and the productivity terms $\delta_1,\delta_2$ are identified — which is what the counterfactual needs.
+
+Keep a parametric $f_\psi$ (e.g. normal) as a benchmark/robustness spec.
+
+## Implicit Assumptions
+
+- $\psi_{it}\perp(\varepsilon_{it},e_{it})$ and $\psi_{it}\perp$ data, conditional on $\omega_{it}$.
+- Functional forms for $q$ and $\kappa$ are correctly specified and time-invariant; $\delta_2>0$ (cost turns up at high $\omega$).
+- Corporations are **constrained** non-evaders ($e=0$ by audited reporting), used only in the first stage; they are *outside* the evasion FOC — no shifter $\delta_C$, and no corner term in the likelihood.
+- No entry/exit; partial equilibrium (input choices and output are separable from the evasion decision).
+
+# Alternative: Power (Convex) Detection $q=(\lambda e)^k$
+
+## What changes with power detection
+
+Replace linear $q=\lambda e$ with the **power** form $q(e)=(\lambda e)^k$, $k>0$, keeping the same cost. Then
+$$
+q'(e)=k\lambda(\lambda e)^{k-1},\qquad q(e)+q'(e)e=(1+k)(\lambda e)^k.
+$$
+
+- **Nests linear:** $k=1$ gives $q=\lambda e$; $k>1$ is convex (detection accelerates with overreporting).
+- **SOC holds for all $k>0$:** $-q''e/q'=1-k<2$ always — no curvature restriction.
+- **One extra parameter** $k$, so $\theta=(\lambda,k,\delta_0,\delta_1,\delta_2)$.
+
+## FOC and the feasibility ceiling
+
+$1-(q+q'e)=1-(1+k)(\lambda e)^k$, so the log marginal benefit is
+$$
+h(e_{it})=\ln(\tau\rho_t)+\ln\!\big(1-(1+k)(\lambda e_{it})^k\big),\qquad \lambda e_{it}<(1+k)^{-1/k}.
+$$
+
+- The interior requires $(1+k)(\lambda e)^k<1$, i.e. $\lambda e<(1+k)^{-1/k}<1$ — **strictly below 1**, and shrinking in $k$ ($0.58$ at $k=2$).
+- So one **cannot** normalize $\lambda e\in[0,1]$: the largest evaders would drive the log term negative. Keep $\lambda$ **free** and impose feasibility $\lambda e_i<(1+k)^{-1/k}$ for *every* firm (penalize/clip in the objective).
+
+## The likelihood under power detection
+
+The machinery of @eq-Lunc is **unchanged** — only the evasion map $h$ and its slope change:
+$$
+h'(e)=-\,\frac{(1+k)\,k\lambda(\lambda e)^{k-1}}{1-(1+k)(\lambda e)^k}<0,
+\qquad
+J_i(\varepsilon)=|h'(e)|\,(M^*_{it}-e).
+$$
+
+- Same single integral over $\varepsilon$, same known $f_\omega,f_\varepsilon$, same sieve $f_\psi$.
+- **Nest and test:** estimate $(\lambda,k)$ jointly and test $H_0:k=1$ (linear). Since $q=\lambda^k e^k$, $\lambda$ and $k$ are identified jointly from the evasion response to $\tau\rho_t$.
+
+## Identification and recommendation (power)
+
+- $k$ (curvature) is identified only from the **shape** of the evasion response to $\tau\rho_t$ across sector–time cells — more demanding than the single $\lambda$ of the linear form, and **weak when $\tau\rho_t$ varies little**.
+- The feasibility constraint ties $\lambda$ to $k$ and to the (deconvolved, noisy) upper support of $e$ — a further reason curvature is fragile.
+
+**Recommendation.** Headline the **linear** spec; report free-$k$ power as a curvature **robustness check** and the test of $k=1$.
+
+# Appendix: Deriving the Unincorporated Likelihood
+
+## A1 — Primitives and the map to data
+
+Three independent primitives, so the joint is the product:
+$$
+f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)=f_\psi(\psi)\,f_\omega(\omega)\,f_\varepsilon(\varepsilon).
+$$
+
+Two observables are built from them. With $G(\psi,\omega)\equiv u\big(e^*(\psi,\omega)\big)$, where $e^*$ inverts the FOC $\psi=h(e)-\delta_0+\delta_1\omega-\delta_2\omega^2$ and $u=\ln\frac{M^*}{M^*-e}$:
+$$
+\mathcal V=G(\psi,\omega)-\varepsilon,\qquad \tilde{\mathcal W}=\omega+(1-\beta)\varepsilon.
+$$
+
+Two observables, three primitives $\Rightarrow$ change variables **first**, then marginalize. (You cannot integrate $\varepsilon$ out of the primitive joint — $\varepsilon$ lives *inside* the observables.)
+
+## A2 — One change of variables $(\psi,\omega,\varepsilon)\to(\mathcal V,\tilde{\mathcal W},\varepsilon)$
+
+Keep $a=\varepsilon$ as the auxiliary to integrate out afterwards:
+$$
+\frac{\partial(\mathcal V,\tilde{\mathcal W},a)}{\partial(\psi,\omega,\varepsilon)}=
+\begin{bmatrix} G_\psi & G_\omega & -1\\[2pt] 0 & 1 & 1-\beta\\[2pt] 0 & 0 & 1\end{bmatrix},
+\qquad \det = G_\psi.
+$$
+
+Block-triangular, so the determinant is $G_\psi=u'(e)\,e^*_\psi$: the $\omega$- and $\varepsilon$-rows contribute their unit diagonals, and even $G_\omega$ (the dependence of $\mathcal V$ on $\omega$) sits in the upper triangle and drops out. With $e^*_\psi=1/h'(e)$ and $u'(e)=1/(M^*-e)$,
+$$
+\frac1{|\det|}=|h'(e)|\,(M^*_{it}-e)\;\equiv\;J_i(\varepsilon).
+$$
+
+## A3 — Integrate out the auxiliary $\varepsilon$
+
+$$
+f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V_i,\tilde{\mathcal W}_i)=\int f_\psi(\psi(\varepsilon))\,J_i(\varepsilon)\,f_\omega(\omega(\varepsilon))\,f_\varepsilon(\varepsilon)\,d\varepsilon,
+$$
+
+evaluated at $\;\omega(\varepsilon)=\tilde{\mathcal W}_i-(1-\beta)\varepsilon,\;\; e=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_i-\varepsilon}\big),\;\; \psi(\varepsilon)=h(e)-\delta_0+\delta_1\omega(\varepsilon)-\delta_2\omega(\varepsilon)^2.$ This is @eq-Lunc.
+
+## A4 — Why no separate Jacobian for $f_\omega$?
+
+**One** change of variables produces **one** determinant — not one per variable. The delta-function view makes the bookkeeping explicit; each collapsed integral leaves a factor $1/|\text{slope}|$:
+$$
+f_{\mathcal V,\tilde{\mathcal W}}=\iiint f_\psi f_\omega f_\varepsilon\,
+\delta\big(\mathcal V-G(\psi,\omega)+\varepsilon\big)\,
+\delta\big(\tilde{\mathcal W}-\omega-(1-\beta)\varepsilon\big)\,d\psi\,d\omega\,d\varepsilon.
+$$
+
+- **Collapse $\omega$:** argument linear in $\omega$, slope $-1$ $\Rightarrow$ factor $\mathbf 1$ — **no Jacobian**.
+- **Collapse $\psi$:** argument nonlinear through $G$, slope $G_\psi$ $\Rightarrow$ factor $J_i(\varepsilon)$ — **the Jacobian**.
+- **$\varepsilon$:** the surviving integration variable, $f_\varepsilon(\varepsilon)\,d\varepsilon$ kept as is.
+
+$\omega$ is not special — its measurement equation $\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon$ is a **unit-slope translation**, which preserves volume. A Jacobian attaches only to the *nonlinear* link $\psi\mapsto\mathcal V$. If instead $\tilde{\mathcal W}=g(\omega)+(1-\beta)\varepsilon$ with $g$ nonlinear, then $\omega$ would carry $1/|g'(\omega)|$ too; if $h$ were linear, the $\psi$-Jacobian would be constant and droppable. It is curvature, not the variable's name, that creates a Jacobian.
+
+# Appendix: Why no corner term in estimation
+
+## The data fit the interior, U-shaped cost
+
+Small firms **and** the largest firms evade $\approx0$ (imprecisely — large SEs), middle firms more: a **hump-shaped** evasion–$\omega$ profile. This is exactly what the symmetric U-shaped cost $\textbf{e}^{-\delta_1\omega+\delta_2\omega^2}$ predicts — high cost at both tails ⟹ small *interior* evasion there. No literal corner is needed to match it, and the hump shape identifies $\delta_1,\delta_2$.
+
+## Why not a corner term
+
+- We never observe $e_i$ per firm, so corner firms **cannot be classified exogenously**.
+- The only valid corner is an endogenous mixture ($\Pr=1-F_\psi(c(\omega))$); with corps out (constrained) and only noisy near-zero data, it is **weakly identified**.
+- So we estimate **unincorporated firms as interior** and normalize $f_\psi$'s location. The U-shaped cost carries the tails through the interior channel.
+
+## Validation check
+
+Plot first-stage $\hat\omega$: corporations should sit high in the distribution, and the fitted model should imply low evasion there — rationalizing, out of sample, why corporations don't evade.

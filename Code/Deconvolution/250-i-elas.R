@@ -1,3 +1,5 @@
+## Comparing estimates of Beta for All, Corporations, and Non-Corporations
+
 # %% Load packages and data ---------------
 
 library(tidyverse)
@@ -393,6 +395,9 @@ save(
 
 # %% Industry Characteristics Table ------------------------
 
+load("Code/Products/i_elas.RData")
+load("Code/Products/boot_tax_ev_2ttst.RData")
+
 inds_char_tbl_corp <- colombia_data_frame %>%
     filter(
         is.finite(y),
@@ -407,10 +412,10 @@ inds_char_tbl_corp <- colombia_data_frame %>%
         total_sales = sum(sales, na.rm = TRUE),
         total_deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE),
         total_materials = sum(materials, na.rm = TRUE),
-        total_share_exports = mean(share_exports, na.rm = TRUE),
-        total_share_imports = mean(share_imports, na.rm = TRUE),
-        total_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
-        total_share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        avg_share_exports = mean(share_exports, na.rm = TRUE),
+        avg_share_imports = mean(share_imports, na.rm = TRUE),
+        avg_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        avg_share_sales_tax = mean(sales_tax_rate_sales, na.rm = TRUE),
         importer = ifelse(share_imports > 0, 1, 0),
         exporter = ifelse(share_exports > 0, 1, 0),
         importer_mats = ifelse(share_imports_materials > 0, 1, 0),
@@ -426,8 +431,10 @@ inds_char_tbl_corp <- colombia_data_frame %>%
         n = unique(plant) |> length(),
         avg_age = mean(age, na.rm = TRUE),
         # n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
-        sales_sales_tax = mean(share_sales_tax, na.rm = TRUE),
-        purchases_sales_tax = mean(sales_tax_purchases, na.rm = TRUE),
+        sales_sales_tax_rate = mean(sales_tax_rate_sales, na.rm = TRUE),
+        purchases_sales_tax_rate = mean(sales_tax_rate_purchases, na.rm = TRUE),
+        pur_sales_tax_share_sales = mean(sales_tax_pur_share_sales, na.rm = TRUE),
+        effective_sales_tax_rate = mean(effective_sales_tax_rate, na.rm = TRUE),
         # gross_output = sum(gross_output, na.rm = TRUE)/max(total_gross_output, na.rm = TRUE),
         sales = sum(sales, na.rm = TRUE)/max(total_sales, na.rm = TRUE),
         # deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE)/max(total_deductible_intermediates, na.rm = TRUE),
@@ -440,7 +447,7 @@ inds_char_tbl_corp <- colombia_data_frame %>%
         importers_mats = mean(importer_mats, na.rm = TRUE)
     ) %>%
     mutate(
-        across(sales_sales_tax:importers_mats, ~ round(.x*100, 1)),
+        across(sales_sales_tax_rate:importers_mats, ~ round(.x*100, 1)),
         avg_age = round(avg_age, 0),
     ) %>%
     pivot_wider(
@@ -449,7 +456,7 @@ inds_char_tbl_corp <- colombia_data_frame %>%
         names_sep = "_"
     )# |> View()
 
-inds_char_tbl_corp
+inds_char_tbl_corp |> View()
 
 inds_char_tbl <- colombia_data_frame %>%
     filter(
@@ -465,10 +472,10 @@ inds_char_tbl <- colombia_data_frame %>%
         total_sales = sum(sales, na.rm = TRUE),
         total_deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE),
         total_materials = sum(materials, na.rm = TRUE),
-        total_share_exports = mean(share_exports, na.rm = TRUE),
-        total_share_imports = mean(share_imports, na.rm = TRUE),
-        total_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
-        total_share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
+        avg_share_exports = mean(share_exports, na.rm = TRUE),
+        avg_share_imports = mean(share_imports, na.rm = TRUE),
+        avg_share_imports_materials = mean(share_imports_materials, na.rm = TRUE),
+        avg_share_sales_tax = mean(share_sales_tax, na.rm = TRUE),
         importer = ifelse(share_imports > 0, 1, 0),
         exporter = ifelse(share_exports > 0, 1, 0),
         importer_mats = ifelse(share_imports_materials > 0, 1, 0),
@@ -484,8 +491,10 @@ inds_char_tbl <- colombia_data_frame %>%
         n = unique(plant) |> length(),
         n_Corp = unique(plant*as.numeric(juridical_organization==3)) |> length()-1,
         avg_age = mean(age, na.rm = TRUE),
-        sales_sales_tax = mean(share_sales_tax, na.rm = TRUE),
-        purchases_sales_tax = mean(sales_tax_purchases, na.rm = TRUE),
+        sales_sales_tax_rate = mean(sales_tax_rate_sales, na.rm = TRUE),
+        purchases_sales_tax_rate = mean(sales_tax_rate_purchases, na.rm = TRUE),
+        pur_sales_tax_share_sales = mean(sales_tax_pur_share_sales, na.rm = TRUE),
+        effective_sales_tax_rate = mean(effective_sales_tax_rate, na.rm = TRUE),
         # gross_output = sum(gross_output, na.rm = TRUE)/max(total_gross_output, na.rm = TRUE),
         sales = sum(sales, na.rm = TRUE)/max(total_sales, na.rm = TRUE),
         # deductible_intermediates = sum(deductible_intermediates, na.rm = TRUE)/max(total_deductible_intermediates, na.rm = TRUE),
@@ -498,7 +507,7 @@ inds_char_tbl <- colombia_data_frame %>%
         # importers = mean(importer, na.rm = TRUE),
     ) %>%
     mutate(
-        across(sales_sales_tax:share_imports_materials, ~ round(.x*100, 1)),
+        across(sales_sales_tax_rate:share_imports_materials, ~ round(.x*100, 1)),
         avg_age = round(avg_age, 0),
     ) #%>%
     # pivot_wider(
@@ -506,12 +515,12 @@ inds_char_tbl <- colombia_data_frame %>%
     #     values_from = n:importers_mats,
     #     names_sep = "_"
     # )# |> View()
-inds_char_tbl
+inds_char_tbl |> View()
 
 ## %% Combining tbls ------------------------
 
-load("Code/Products/i_elas.RData")
-load("Code/Products/boot_tax_ev_2ttst.RData")
+# load("Code/Products/i_elas.RData")
+# load("Code/Products/boot_tax_ev_2ttst.RData")
 
 i_elas_tbl
 tst_2t2s_tbl
@@ -550,13 +559,31 @@ main_tbl <- i_elas_tbl %>%
         by = "sic_3",
     ) %>% 
     mutate(
-        effective_tax_rate = ifelse(
+        tau_1_beta = ifelse(
             type == "coeff",
-            round((sales_sales_tax-purchases_sales_tax*as.numeric(corps)),1),
+            round(purchases_sales_tax_rate*as.numeric(corps),1),
             NaN
         ),
-        .before = sales_sales_tax
-    )#|> View()
+        # effective_sales_tax_rate_corrected = ifelse(
+        #     type == "coeff",
+        #     round((sales_sales_tax_rate-tau_1_beta),1),
+        #     NaN
+        # ),
+        .after = pur_sales_tax_share_sales
+    ) %>%
+    mutate(
+        # tau_1_beta = ifelse(
+        #     type == "coeff",
+        #     round(purchases_sales_tax_rate*as.numeric(corps),1),
+        #     NaN
+        # ),
+        effective_sales_tax_rate_corrected = ifelse(
+            type == "coeff",
+            round((sales_sales_tax_rate-tau_1_beta),1),
+            NaN
+        ),
+        .after = effective_sales_tax_rate
+    )#|> View()#|> View()
 
 ## %% Saving the main table ------------------------
 

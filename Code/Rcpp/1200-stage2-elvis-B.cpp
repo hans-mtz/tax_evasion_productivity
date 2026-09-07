@@ -21,7 +21,7 @@
 #include <vecLib/cblas.h>
 
 // ---- Moment set B ------------------------------------------------------
-// g_out is a caller-allocated std::vector<double> sized 8+J+6 (d_g varies at
+// g_out is a caller-allocated std::vector<double> sized 8+J+7 (d_g varies at
 // runtime with J = number of industries in the run sample, so this cannot
 // use a compile-time std::array like GVecA/GVec in the main file); allocated
 // ONCE per firm (outside the MCMC step loop) in the worker below, not per
@@ -38,6 +38,7 @@ static void moment_g_B_one(
     double om    = omega_of_M(M, Mstar, V, Wt, beta);
     double psi   = h_of_e(e, tau_rho, lambda) - delta0 + delta1 * om - delta2 * om * om;
     double lnM   = std::log(M);
+    double hprime = h_prime_of_e(e, lambda);
     double mu_m_i = mu_m[industry_idx_i];
     double lnM_c  = lnM - mu_m_i;
     double om_c   = om - mu_omega_i;
@@ -49,7 +50,7 @@ static void moment_g_B_one(
     g_out[3] = psi * om;
     g_out[4] = psi * om * om;
     g_out[5] = eps * lnM;
-    g_out[6] = eps * e;
+    g_out[6] = hprime * eps;
     g_out[7] = eps * om;
 
     for (int jj = 0; jj < J; jj++) g_out[8 + jj] = 0.0;
@@ -62,6 +63,9 @@ static void moment_g_B_one(
     g_out[base + 3] = psi * om2_c;
     g_out[base + 4] = psi * lnM_c;
     g_out[base + 5] = psi * eps * om;
+    g_out[base + 6] = hprime * lnM_c;   // 2026-09-05: score moment for lambda, materials-FOC side
+                                        // (structurally identical validity argument to psi*lnM_c
+                                        // above -- see CLAUDE.md's 2026-09-05 entry)
 }
 
 struct TiltedMomentWorkerB : public Worker {
@@ -145,8 +149,8 @@ NumericMatrix mh_tilted_average_B_cpp(
 ) {
     int n = Mstar.size();
     int J = mu_m.size();
-    int d_g = 8 + J + 6;
-    if (gamma.size() != d_g) stop("gamma length must equal 8+J+6 (moment set B)");
+    int d_g = 8 + J + 7;
+    if (gamma.size() != d_g) stop("gamma length must equal 8+J+7 (moment set B)");
     if (corner.size() != n) stop("corner length must equal n");
     if (row_id.size() != n) stop("row_id length must equal n");
     if (industry_idx.size() != n) stop("industry_idx length must equal n");
@@ -199,8 +203,8 @@ List mh_tilted_moments_B_cpp(
 ) {
     int n = Mstar.size();
     int J = mu_m.size();
-    int d_g = 8 + J + 6;
-    if (gamma.size() != d_g) stop("gamma length must equal 8+J+6 (moment set B)");
+    int d_g = 8 + J + 7;
+    if (gamma.size() != d_g) stop("gamma length must equal 8+J+7 (moment set B)");
     if (corner.size() != n) stop("corner length must equal n");
     if (row_id.size() != n) stop("row_id length must equal n");
     if (industry_idx.size() != n) stop("industry_idx length must equal n");
@@ -340,8 +344,8 @@ List tilted_e_omega_diag_B_cpp(
 ) {
     int n = Mstar.size();
     int J = mu_m.size();
-    int d_g = 8 + J + 6;
-    if (gamma.size() != d_g) stop("gamma length must equal 8+J+6 (moment set B)");
+    int d_g = 8 + J + 7;
+    if (gamma.size() != d_g) stop("gamma length must equal 8+J+7 (moment set B)");
     if (corner.size() != n) stop("corner length must equal n");
     if (row_id.size() != n) stop("row_id length must equal n");
     if (industry_idx.size() != n) stop("industry_idx length must equal n");

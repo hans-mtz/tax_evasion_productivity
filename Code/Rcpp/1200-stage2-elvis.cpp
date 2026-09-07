@@ -363,7 +363,14 @@ NumericMatrix mh_tilted_average_cpp(
 //   [3] psi*om                           -- psi _|_ omega
 //   [4] psi*om^2                         -- extends [3] to the omega^2 term
 //   [5] eps*lnM                          -- eps _|_ true inputs
-//   [6] eps*e                            -- eps _|_ evasion level
+//   [6] h_prime*eps                      -- score moment for lambda (2026-09-05,
+//                                            replaces the old eps*e row: not
+//                                            especially lambda-informative and
+//                                            redundant with [5]/[7]); h_prime =
+//                                            d(h)/d(lambda), see h_prime_of_e's
+//                                            own header comment for why eps is
+//                                            a valid (non-tautological)
+//                                            partner, unlike omega
 //   [7] eps*om                           -- eps _|_ omega (stage-1-inherited
 //                                            spec check)
 //
@@ -407,6 +414,14 @@ NumericMatrix mh_tilted_average_cpp(
 //                                           throughout, not just in
 //                                           aggregate, so this factors
 //                                           through E[eps|j]=0 for every j)
+//   [8+J+6] h_prime*(lnM - mu_m[j])      -- score moment for lambda, materials-
+//                                           FOC side (2026-09-05) -- same
+//                                           validity argument as [8+J+4]
+//                                           (psi*lnM_c), see h_prime_of_e's
+//                                           own comment and CLAUDE.md
+//
+// d_g for moment set B is now 8+J+7 (was 8+J+6 before the h_prime row was
+// added, 2026-09-05).
 //
 // Rows [8+J+2..5] and [8+J+4] use a per-industry ANCHOR (mu_omega,
 // sigma_omega, or the current mu_m guess) multiplied by a RAW quantity from
@@ -456,6 +471,7 @@ static void moment_g_A_one(
     double om    = omega_of_M(M, Mstar, V, Wt, beta);
     double psi   = h_of_e(e, tau_rho, lambda) - delta0 + delta1 * om - delta2 * om * om;
     double lnM   = std::log(M);
+    double hprime = h_prime_of_e(e, lambda);
 
     g_out[0] = psi;
     g_out[1] = eps;
@@ -463,7 +479,7 @@ static void moment_g_A_one(
     g_out[3] = psi * om;
     g_out[4] = psi * om * om;
     g_out[5] = eps * lnM;
-    g_out[6] = eps * e;
+    g_out[6] = hprime * eps;
     g_out[7] = eps * om;
 }
 

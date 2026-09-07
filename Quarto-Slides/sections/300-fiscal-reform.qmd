@@ -1,0 +1,325 @@
+
+# Fiscal Policy Reform of 1983
+
+## Tax Evasion Over Time
+
+Incentives to evade taxes by cost overreporting changed over time due to changes in fiscal policy
+
+The reform of 1983 increased, from 6\% to 10\%, the Sales Tax (ST) rate of most industries. 
+
+<!-- - Differences *across* industries:  -->
+<!-- - Sales Tax (ST) rate *increased* for most industries from 6\% to 10\%.  -->
+<!-- - ST-exempt industries before the reform *remained exempt* after the reform.
+- Differences *within* industries *across* juridical organizations (JO): 
+    - Corporate Income Tax (CIT) increased 8\% on average for most Proprietorships (PRTs) [(through Individual Income Tax)]{.sm}, while 
+    - CIT decreased 2 percentage points, from 20\% to 18\%, for Limited Liability Companies (LLCs) -->
+
+## Empirical Approach
+
+Taking the *FOC* and stacking over industries. For Corporations, the truth-reporters, $i$ in industry $j$ at year $t$, we have,
+
+$$
+s_{ijt}^{C} = \gamma_{j} - \varepsilon_{ijt}
+$$ {#eq-corp}
+
+Where $s_{ijt}^{C}$ is the share of materials' cost over sales, $\gamma_{j}$ is the output elasticity of materials for industry $j$ (CD-PF), and $\varepsilon_{ijt}$ is the error term
+
+## Unincorporated Firms
+
+Unincorporated firms, the evaders, we have,
+
+$$
+s_{ijt}^{N} = \gamma_{j} + e_{ijt} - \varepsilon_{ijt}
+$$ {#eq-unincorp}
+
+Where $e_{ijt}$ is the overreporting of materials' cost due to tax evasion.
+
+## Combining Corporations and Unincorporated Firms
+
+Let $D_{ijt}^N$ be a dummy indicating whether the firm is an unincorporated firm
+
+$$
+\begin{aligned}
+  (1-D_{ijt}^N)s_{ijt} + D_{ijt}^N s_{ijt} =& (1-D_{ijt}^N)(\gamma_{j} - \varepsilon_{ijt}) \\
+  &+ D_{ijt}^N \bigg(\gamma_{j} + e_{ijt}  - \varepsilon_{ijt}\bigg) \\
+    s_{ijt} =& \gamma_{j} + D_{ijt}^N  e_{ijt} - \varepsilon_{ijt}  
+\end{aligned}
+$$ {#eq-emp-lvl-simple}
+
+## Taking Expectations
+
+$$
+\begin{gathered}
+    E[s_{ijt}|D^{N}=0]=\gamma_j \\
+    \\
+    E[s_{ijt}|D^{N}=1]-E[s_{ijt}|D^{N}=0]= \mu \\
+\end{gathered}
+$$ {#eq-emp-diff-simple}
+
+we can identify the average overreporting level, $\mu$
+
+## Changes Over Time
+
+In the case of the fiscal policy changes, we might be interested in the changes in average tax evasion after the 1983 fiscal reform. 
+
+We can take the difference of the expectations between year $t'$ and $t=1983$.
+
+$$
+\begin{aligned}
+    s_{ijt'} - s_{ij{t=1983}}
+     &= D_{ijt}^N  (e_{ijt'} - e_{ij{t=1983}}) - (\varepsilon_{ijt'} - \varepsilon_{ij{t=1983}}) \\
+    E[s_{ijt'}-s_{ij{t=1983}}|D^{N}=1] &= \mu_{t'} - \mu_{{t=1983}}\\
+    & \equiv \Delta_{t'}
+\end{aligned}
+$$ {#eq-emp-time-diff-simple}
+
+$\mu_t$ is the annual average tax evasion of year $t$, and $\Delta_{t}$ is the change in average tax evasion between year $t$ and 1983, the fiscal reform year.
+
+## In Regression Form
+
+To estimate @eq-emp-lvl-simple, I use the following regression specification, 
+
+$$
+    s_{ijt} =  \gamma_j + \sum_{t=1981}^{1991} \mu_t D_{ijt}^N    +  \eta_{ijt}
+$$ {#eq-emp-lvl-reg}
+
+- Where $\mu_t$ are year dummies,
+    - $\mu_{t}$ is the average tax evasion of unincorporated firms in year $t$
+- $\gamma_j$, the industry fixed effects, captures the output elasticity of materials of each industry
+- $D_{ijt}^N$ and  are defined as before.
+- $\eta_{ijt}=\xi_{ijt}-\varepsilon_{ijt}$, where $e_{ijt} = \sum_t \mu_t + \xi_{ijt}$, and $\xi_{ijt}$ is the idiosyncratic component of tax evasion that is not captured by the year dummies
+
+## In Regression Form: Differences Over Time
+
+Likewise, the following regression specification is employed to estimate @eq-emp-time-diff-simple,
+
+$$
+    s_{ijt} =  \mu D_{ijt}^N+\sum_{t=1981}^{1991} \mathbb{1}\![t\not=1983]\Delta_t D_{ijt}^N   + \gamma_j +  \eta_{ijt}
+$$ {#eq-emp-time-diff-reg}
+
+- Where $\Delta_t$ are year dummies,
+    - $\Delta_{t}$ is the difference in tax evasion of unincorporated firms between year $t$ and 1983, the fiscal reform year
+- $\mu$, the average tax evasion of unincorporated firms in 1983
+- $\gamma_j$, $D_{ijt}^N$ and $\eta_{ijt}$ are defined as before.
+
+## Tax Evasion Increases after the Fiscal Reform of 1983
+
+![](../Paper/images/921-2-all-inds.png){height="90%" fig-align="center"}
+
+## Results
+
+- After the fiscal reform of 1983 increased the sales tax rate, tax evasion through input overreporting increased gradually
+- Input overreporting reached an average of 8\% in 1987, where it stabilized until 1990
+<!-- - The large standard errors of the level estimates suggest that tax evasion is widely heterogeneous across firms in different industries
+- The tight confidence intervals of the differences over time suggest that the heterogeneity is constant over time -->
+
+## Why Do The Standard Errors Look So Different?
+
+- Levels: The large error terms suggest that tax evasion is widely heterogeneous across firms
+    - [Where does this heterogeneity come from? Differences in the tax rate due to firm characteristics (industry, JO, and exports), the (perceived) probability of detection (model assumes risk neutrality, but firms might have different perceived probs), and the cost of evasion across firms.]{.sm}
+
+- Differences over time: Tight standard errors suggest that tax evasion heterogeneity is constant over time.
+    - [This might imply that the distributions of the firm characteristics, perceived probability of detection, and cost of evasion are constant over time.]{.sm}
+
+## Tax Evasion Over Time (Continued)
+
+The 1983 fiscal reform changed incentives to evade taxes over time *differently* for firms in ST-liable and ST-exempt industries,
+
+- Most ST-liable industries faced a Sales Tax (ST) rate *increase* from 6\% to 10\%. 
+- ST-exempt industries *remained exempt* before and after the reform.
+
+Note that firms in *all* industries are subject to Corporate Income Tax (CIT).
+
+- CIT also generates incentives to evade taxes by overreporting input costs. 
+    - [Lower reported profits due to higher input costs reduce the tax base, and thus the tax liability.]{.sm}
+- Therefore, CIT and ST generate tax evasion incentives for firms in ST-liable industries, while only CIT for firms in ST-exempt industries.
+
+<!-- - Differences *within* industries *across* juridical organizations (JO): 
+    - Corporate Income Tax (CIT) increased 8\% on average for most Proprietorships (PRTs) [(through Individual Income Tax)]{.sm}, while 
+    - CIT decreased 2 percentage points, from 20\% to 18\%, for Limited Liability Companies (LLCs) -->
+
+
+## Unincorporated Firms by Industry Tax Liability
+
+For unincorporated firms, the ST and CIT generated different incentives to evade taxes depending on whether they belong to an ST-exempt industry or not,
+
+$$
+s_{ijt}^{N} = \gamma_{j} + e^{ST}_{ijt} + e^{CIT}_{ijt}-\varepsilon_{ijt} \quad j \in \text{ST-Liable} 
+$$ {#eq-noncorp-taxed}
+
+$$
+s_{ijt}^{N} = \gamma_{j} + e^{CIT}_{ijt}-\varepsilon_{ijt} \quad j \in \text{ST-Exempt}
+$$ {#eq-noncorp-exempt}
+
+where $e^{ST}_{ijt}$ and $e^{CIT}_{ijt}$ stand for the overreporting due to ST and CIT, respectively.
+
+## Combining All Firms
+
+- Let $D^E_{ijt}$ be a dummy indicating whether the industry is ST-exempted; and
+- $D^{L}_{ijt}$, a dummy indicating whether the industry is ST-liable
+    - such that $D^E_{ijt} + D^{L}_{ijt} = 1$.
+
+## Unincorporated Firms in ST-Liable and ST-Exempt Industries
+
+Combining @eq-noncorp-exempt with @eq-noncorp-taxed,
+
+$$
+\begin{aligned}
+  D^E_{ijt}s_{ijt}^{N} + D^{L}_{ijt} s_{ijt}^{N} =& D^E_{ijt}\left(\gamma_{j}+ e^{CIT}_{ijt} - \varepsilon_{ijt}\right)\\
+    &+ D^{L}_{ijt} \left(\gamma_{j} + e^{ST}_{ijt} + e^{CIT}_{ijt}-\varepsilon_{ijt}\right) \\
+    (D^E_{ijt} + D^{L}_{ijt})s_{ijt}^{N} =& (D^E_{ijt} + D^{L}_{ijt})\gamma_{j} + D^E_{ijt} e^{CIT}_{ijt} \\
+    &+ D^{L}_{ijt} (e^{ST}_{ijt} + e^{CIT}_{ijt}) - (D^E_{ijt} + D^{L}_{ijt})\varepsilon_{ijt} \\
+    s_{ijt}^{N} =& \gamma_{j} + D^E_{ijt} e^{CIT}_{ijt} + D^{L}_{ijt} (e^{ST}_{ijt} + e^{CIT}_{ijt}) - \varepsilon_{ijt}
+\end{aligned}
+$$ {#eq-noncorp}
+
+## Corporations and Unincorporated Firms
+
+Likewise, combining @eq-corp with @eq-noncorp,
+
+$$
+\begin{aligned}
+  (1-D_{ijt}^N)s_{ijt} + D_{ijt}^N s_{ijt} =& (1-D_{ijt}^N)(\gamma_{j} - \varepsilon_{ijt}) \\
+  &+ D_{ijt}^N \bigg(\gamma_{j} + D^E_{ijt} e^{CIT}_{ijt} \\
+  &+ D^{L}_{ijt} (e^{ST}_{ijt} + e^{CIT}_{ijt}) - \varepsilon_{ijt}\bigg) \\
+    s_{ijt} =& \gamma_{j} + D_{ijt}^N D^E_{ijt} e^{CIT}_{ijt} \\
+    &+ D_{ijt}^N D^{L}_{ijt} (e^{ST}_{ijt} + e^{CIT}_{ijt}) - \varepsilon_{ijt}  
+\end{aligned}
+$$ {#eq-emp-lvl}
+
+
+## Taking Expectations
+
+$$
+\begin{gathered}
+    E[s_{ijt}|D^{N}=0]=\gamma_j \\
+    \\
+    E[s_{ijt}|D^{N}=1,D^E=1,D^{L}=0]-E[s_{ijt}|D^{N}=0]= \mu^{CIT}_E \\
+    \\
+    E[s_{ijt}|D^{N}=1,D^E=0,D^{L}=1]-E[s_{ijt}|D^{N}=0]= \underbrace{\mu^{ST}_{L}+\mu^{CIT}_{L}}_{\mu^{ST+CIT}_{L}}
+\end{gathered}
+$$
+
+we can identify the average overreporting by firms in ST-exempt, $\mu^{CIT}_E$, and in ST-liable industries, $\mu^{ST+CIT}_{L}$
+
+[If we assume $\mu^{CIT}_E = \mu^{CIT}_{L}$, we can also identify the overreporting due to ST, $\mu^{ST}_{L}$.]{.sm}
+
+## Changes Over Time
+
+In the case of the fiscal policy changes, we might be interested in the changes in average tax evasion after the 1983 fiscal reform. 
+
+We can take the difference of the expectations of year $t'$ after the reform and the reform year, $t=1983$,
+
+$$
+\begin{aligned}    
+    E[s_{ijt'}-s_{ijt={1983}}| D^{N}=1, D^{E}=1, D^{L}=0] &= \mu^{CIT}_{E,t'} - \mu^{CIT}_{E,t={1983}} \\
+    &\equiv \Delta^{CIT}_{E,t'} \\
+    \\
+    E[s_{ijt'}-s_{ijt={1983}}| D^{N}=1, D^{E}=0, D^{L}=1] &= \mu^{CIT+ST}_{L,t'} - \mu^{CIT+ST}_{L,t={1983}} \\
+    &\equiv \Delta ^{CIT+ST}_{L,t'}
+\end{aligned}
+$$
+
+
+## In Regression Form
+
+To estimate @eq-emp-lvl, I use the following regression specification, 
+
+$$
+\begin{aligned}
+    s_{ijt} =& \gamma_j +  \sum_{t=1981}^{1991} \mu_{E,t}D_{ijt}^N D^E_{ijt}  \\
+    &+ \sum_{t=1981}^{1991} \mu_{L,t}D_{ijt}^N D^{L}_{ijt} +  \eta_{ijt}
+\end{aligned}
+$$ {#eq-emp-lvl-reg-2}
+
+- $\mu_{E,t}$ are the coefficients of input overreporting by firms in ST-exempt in year $t$, and $\mu_{L,t}$ of firms in ST-liable industries 
+- $\gamma_j$, $D_{ijt}^N$, $D^E_{ijt}$, $D^{L}_{ijt}$, and $\eta_{ijt}$ are defined as before.
+
+## Differences Over Time in Regression Form
+
+$$
+\begin{aligned}    
+s_{ijt} =& \gamma_j +  \mu_0D_{ijt}^N+\mu_1D_{ijt}^ND^E_{ijt}+\mu_2D_{ijt}^ND^{L}_{ijt}\\
+&+ \sum_{t=1981}^{1991} \mathbb{1}\![t\not=1983] \Delta_{E,t} D_{ijt}^N D^E_{ijt}   \\
+&+ \sum_{t=1981}^{1991} \mathbb{1}\![t\not=1983] \Delta_{L,t} D_{ijt}^N D^{L}_{ijt}  + \eta_{ijt}
+\end{aligned}
+$$ {#eq-reg-lvl-tdiff}
+
+- $\Delta_{E,t}$ are the coefficients of the change in average tax evasion of firms in ST-exempt relative to 1983 and $\Delta_{L,t}$ of firms in ST-liable industries
+- $\mu_0$, $\mu_1$, and $\mu_2$ capture the average tax evasion of firms in 1983 of firms in both ST-liable and ST-exempt industries
+- $\gamma_j$, $D_{ijt}^N$, $D^E_{ijt}$, $D^{L}_{ijt}$, and $\eta_{ijt}$ are defined as before.
+
+## Firms Facing Larger Incentives Evade More
+
+![](../Paper/images/921-2-joint.png){height="90%" fig-align="center"}
+
+
+
+## Unincorporated Firms in Both Types of Industries
+
+After the fiscal reform of 1983, we observe:
+
+- Firms in ST-liable industries increased tax evasion gradually until 1987, where it stabilized until 1990
+
+- Firms in ST-exempt industries show a moderate but significant increase in tax evasion after the fiscal reform of 1983, it then increased again between 1987 and 1990
+
+- The increase is *larger* for ST-liable firms, the most affected by the fiscal reform of 1983
+
+<!-- - In ST-exempt industries, the observed increase in tax evasion suggests that the *increase* in CIT for *PRTs dominates* the effect of the decrease for LLCs. -->
+
+
+
+# Splitting Unincorporated Firms by JO into LLCs and Proprietorships
+
+
+## Changes in Tax Evasion Over Time by Industry Type and Juridical Organization (JO)
+
+The tax evasion incentives generated by the 1983 fiscal policy reform also differed by JO,
+
+- Differences *across* industries:
+    - Most ST-liable industries faced a Sales Tax (ST) rate *increase* from 6\% to 10\%. 
+    - ST-exempt industries before the reform *remained exempt* after the reform.
+
+- Differences *across* juridical organizations (JO) *within* industries: 
+    - Corporate Income Tax (CIT) increased 8\% on average for most Proprietorships (PRTs) [(through Individual Income Tax)]{.sm}, while 
+    - CIT decreased 2 percentage points, from 20\% to 18\%, for Limited Liability Companies (LLCs)
+
+## Expected Changes in Tax Evasion After the Fiscal Reform of 1983
+
+- Since the **ST** rate *increased* for most ST-liable industries, we expect an *increase* in average *tax evasion* by these firms
+- With respect to **CIT**, the expected change is *ambiguous*
+    - Proprietorships faced an *increase* in their incentives to evade taxes, while 
+    - LLCs a small *decrease*. 
+    <!-- - The net effect would depend on the *relative weight* of each JO in each industry categorty (exempt and liable) and the *magnitude* of the change in their *response *to the CIT changes. -->
+
+## LLCs with Larger Incentives Evade More
+
+![](../Paper/images/921-2-joint-3.png){height="90%" fig-align="center"}
+
+## Proprietorships Response is More Heterogeneous
+
+![](../Paper/images/921-2-joint-2.png){height="90%" fig-align="center"}
+
+## LLCs vs Proprietorships
+
+- LLCs in ST-liable industries show a significant increase in tax evasion after the fiscal reform of 1983, consistent with the increase in their incentives to evade taxes due to the increase in the ST rate
+
+- LLCs in ST-exempt industries show no significant change, suggesting that the small decrease in CIT for LLCs did not generate a significant decrease in tax evasion
+
+## LLCs vs Proprietorships (Cont.)
+
+- Proprietorships in ST-exempt industries show a moderate but significant increase in tax evasion, consistent with the increase in their incentives to evade taxes due to the increase in CIT
+
+- Proprietorships in ST-liable industries show no immediate change in tax evasion (1984-1985), but an increase between 1986 and 1989 <!-- consistent with the increase in their incentives to evade taxes due to the increase in the ST rate. -->
+    <!-- - [The small but significant increase in tax evasion between 1986 and 1988 might be due to the 1986 reform.]{.sm} -->
+- Overall, Proprietorships show a more heterogeneous response, as shown by the larger standard errors. 
+    - [This makes sense, Proprietorships are likely to be more heterogeneous in characteristics (grandpa's workshop vs. young entrepreneurs, varying levels of process standardization, etc)]{.sm}
+
+## Takeaways
+
+- Evidence suggests firms increase tax evasion by overreporting their inputs (materials) in response to increases in CIT and ST
+
+- Overall, firms facing *larger increases* in ST and CIT tax rates evade more by overreporting a larger share of their input costs
+
+- Firms facing a decrease in tax rates, such as LLCs in ST-exempt industries, show no significant decrease in tax evasion. 
+    - This finding suggests that firms might respond *asymmetrically* to changes in their incentives to evade taxes.

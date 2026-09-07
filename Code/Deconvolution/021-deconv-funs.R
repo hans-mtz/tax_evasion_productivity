@@ -13,9 +13,10 @@ library(MCMCprecision)
 
 # %% Use Gaus-Hermite -----------------------
 
-gauss_hermite<-gauss.quad(10,"hermite")
-gauss_laguerre<-gauss.quad(10,"laguerre")
+gauss_hermite<-statmod::gauss.quad(10,"hermite")
+gauss_laguerre<-statmod::gauss.quad(10,"laguerre")
 threshold_cut <- 0.05
+upper_threshold_cut <- 0.75 # Only for industry 369, for now
 
 # Deconvolution using Moments ---------------
 ## Deconvolution functions ----------------------------
@@ -709,10 +710,8 @@ first_stage <- function(sic, var, data) {
 first_stage_panel <- function(sic, var, r_var, data) {
     fml <- paste0(var,"~1") |> as.formula()
     corp_data <- data %>%
-        mutate(
-            treat = ifelse(juridical_organization == 3, "Corp", "Non-Corp")
-        ) %>%
-        filter(
+        ungroup() %>%
+        dplyr::filter(
             sic_3 == sic,
             juridical_organization == 3,
             is.finite(.data[[var]]),
@@ -721,9 +720,8 @@ first_stage_panel <- function(sic, var, r_var, data) {
             is.finite(m),
             is.finite(y),
             .data[[var]] > log(threshold_cut)
-        ) #%>%
-    fs_reg <- lm(fml, data = corp_data) # %>%
-        # fixest::feols(fml, data = .)
+        ) 
+    fs_reg <- lm(fml, data = corp_data)
 
     log_D <- coefficients(fs_reg)[[1]]
     epsilon <- residuals(fs_reg)
@@ -733,15 +731,12 @@ first_stage_panel <- function(sic, var, r_var, data) {
     variance_epsilon <- var(-epsilon)
 
     corp_data$epsilon <- -epsilon
+    
 
     ## Deconvolution ------------------------
 
     tbl <- data %>%
-        left_join(
-            corp_data %>% select(plant, year, epsilon),
-            by = c("plant", "year")
-        ) %>%
-        filter(
+        dplyr::filter(
             sic_3 == sic,
             is.finite(.data[[var]]),
             is.finite(k),
@@ -750,14 +745,18 @@ first_stage_panel <- function(sic, var, r_var, data) {
             is.finite(y),
             .data[[var]] > log(threshold_cut)
         ) %>%
-        select(!m) %>%
+        left_join(
+            corp_data %>% dplyr::select(plant, year, epsilon),
+            by = c("plant", "year")
+        ) %>%
+        dplyr::select(!m) %>%
         mutate(
             # y = log(gross_output),
             cal_V = .data[[var]] - log_D,
             m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
             cal_W = y-beta*(m-cal_V)
         ) %>%
-        filter(
+        dplyr::filter(
             is.finite(cal_V),
             is.finite(cal_W),
             is.finite(k),
@@ -765,7 +764,7 @@ first_stage_panel <- function(sic, var, r_var, data) {
             is.finite(m),
             is.finite(y)
         ) %>%
-        select(
+        dplyr::select(
             sic_3, year, plant, cal_V, cal_W, m, k, l, y, epsilon
         )
 
@@ -783,19 +782,50 @@ first_stage_panel <- function(sic, var, r_var, data) {
 
 first_stage_panel_me <- function(sic, var, r_var, data) {
     fml <- paste0(var,"~1") |> as.formula()
-    corp_data <- data %>%
-        filter(
-            sic_3 == sic,
-            juridical_organization == 3,
-            is.finite(.data[[var]]),
-            is.finite(k),
-            is.finite(l),
-            is.finite(m),
-            is.finite(y),
-            .data[[var]] > log(threshold_cut)
+    if (sic==369){
+        corp_data <- data %>%
+            ungroup() %>%
+            dplyr::filter(
+                sic_3 == sic,
+                juridical_organization == 3,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                .data[[var]] < log(upper_threshold_cut)
+            )
+    } else {
+        corp_data <- data %>%
+            ungroup() %>%
+            dplyr::filter(
+                sic_3 == sic,
+                juridical_organization == 3,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut)
+            )
+    }
+    # corp_data %>% group_by(Corp,sic_3) %>% summarise(n=n()) |> print()
+    if( nrow(corp_data) < 2){
+        cat("Not enough type of firms in this SIC ", sic,"skipping...\n")
+        return(
+            list(
+                data = NULL,
+                epsilon_mu = NA,
+                epsilon_sigma = NA,
+                beta = NA,
+                big_E = NA,
+                sic_3 = sic,
+                inter = r_var
+            )
         )
-    fs_reg <- lm(fml, data = corp_data) # %>%
-    # fixest::feols(fml, data = .)
+    }
+    fs_reg <- lm(fml, data = corp_data) 
 
     log_D <- coefficients(fs_reg)[[1]]
     epsilon <- residuals(fs_reg)
@@ -808,38 +838,74 @@ first_stage_panel_me <- function(sic, var, r_var, data) {
 
     ## Deconvolution ------------------------
 
-    tbl <- data %>%
-        filter(
-            sic_3 == sic,
-            is.finite(.data[[var]]),
-            is.finite(k),
-            is.finite(l),
-            is.finite(m),
-            is.finite(y),
-            .data[[var]] > log(threshold_cut)
-        ) %>%
-        left_join(
-            corp_data %>% select(plant, year, epsilon),
-            by = c("plant", "year")
-        ) %>%
-        select(!m) %>%
-        mutate(
-            # y = log(gross_output),
-            cal_V = .data[[var]] - log_D,
-            m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
-            cal_W = y-beta*(m-cal_V)
-        ) %>%
-        filter(
-            is.finite(cal_V),
-            is.finite(cal_W),
-            is.finite(k),
-            is.finite(l),
-            is.finite(m),
-            is.finite(y)
-        ) %>%
-        select(
-            sic_3, year, plant, cal_V, cal_W, m, k, l, y, epsilon
-        )
+    if (sic==369){
+        tbl <- data %>%
+            dplyr::filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut),
+                .data[[var]] < log(upper_threshold_cut)
+            ) %>%
+            left_join(
+                corp_data %>% dplyr::select(plant, year, epsilon),
+                by = c("plant", "year")
+            ) %>%
+            dplyr::select(!m) %>%
+            mutate(
+                # y = log(gross_output),
+                cal_V = .data[[var]] - log_D,
+                m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
+                cal_W = y-beta*(m-cal_V)
+            ) %>%
+            dplyr::filter(
+                is.finite(cal_V),
+                is.finite(cal_W),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y)
+            ) %>%
+            dplyr::select(
+                sic_3, year, plant, cal_V, cal_W, m, k, l, y, epsilon
+            )
+    } else {
+        tbl <- data %>%
+            dplyr::filter(
+                sic_3 == sic,
+                is.finite(.data[[var]]),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y),
+                .data[[var]] > log(threshold_cut)
+            ) %>%
+            left_join(
+                corp_data %>% dplyr::select(plant, year, epsilon),
+                by = c("plant", "year")
+            ) %>%
+            dplyr::select(!m) %>%
+            mutate(
+                # y = log(gross_output),
+                cal_V = .data[[var]] - log_D,
+                m  = log(.data[[r_var]]), #log(materials/sales)+log(sales)=log(materials)
+                cal_W = y-beta*(m-cal_V)
+            ) %>%
+            dplyr::filter(
+                is.finite(cal_V),
+                is.finite(cal_W),
+                is.finite(k),
+                is.finite(l),
+                is.finite(m),
+                is.finite(y)
+            ) %>%
+            dplyr::select(
+                sic_3, year, plant, cal_V, cal_W, m, k, l, y, epsilon
+            )
+    }
 
     result_list <- list(
         data = tbl,
@@ -1028,24 +1094,41 @@ obj_fun_f<- function(theta,f,V,params,...){
 
 ## Bootstrapping -----------------------
 
-resample_by_group<-function(data,...){
+resample_by_group<-function(.data_in,vars){
 
-    sampled_plants_by_corp <- data %>%
+    sampled_plants_by_corp <- .data_in %>%
+        dplyr::filter(
+            is.finite(log_mats_share),
+            is.finite(k),
+            is.finite(l),
+            is.finite(m),
+            is.finite(y),
+            log_mats_share > log(threshold_cut)
+        ) %>%
         ungroup() %>%
         mutate(
             Corp = ifelse(juridical_organization==3,"Corp","Other")
         ) %>%
-        group_by(...,Corp) %>%
+        group_by({{ vars }},Corp) %>%
         reframe(
-            plant = sample(unique(plant), replace = TRUE)
+            plant = sample(unique(plant), size = unique(plant) |> length(), replace = TRUE)
         ) 
-
+    # sampled_plants_by_corp %>% group_by({{ vars }},Corp) %>% summarise(n=n()) |> print()
     resampled_data <-sampled_plants_by_corp %>% 
         left_join(
-            data,
-            by = c("plant","sic_3"),
+            .data_in ,
+            by = intersect(names(sampled_plants_by_corp), names(.data_in)),
             relationship = "many-to-many"
         )
+        # ) %>%
+        # dplyr::filter(
+        #     is.finite(log_mats_share),
+        #     is.finite(k),
+        #     is.finite(l),
+        #     is.finite(m),
+        #     is.finite(y),
+        #     log_mats_share > log(threshold_cut)
+        # )
     return(resampled_data)
 }
 
@@ -1062,7 +1145,7 @@ bayesian_sampling <- function(data, ..., alpha=4){
                 prob = MCMCprecision::rdirichlet(1, rep(alpha, length(unique_plants)))
             )
         ) %>%
-        select(plant = sampled_plants, ...)
+        dplyr::select(plant = sampled_plants, ...)
 
     resampled_data <- tmp %>%
         left_join(
@@ -1131,8 +1214,8 @@ deconvolute_norm<-function(x,prod_fun_list,fs_list){
 }
 
 deconvolute_norm_iv<-function(x,ins,prod_fun_list,fs_list){
-    select <- paste(x,ins)
-    alpha <- prod_fun_list[[select]]$coeffs
+    dplyr::select <- paste(x,ins)
+    alpha <- prod_fun_list[[dplyr::select]]$coeffs
 
     params<-list(
         gauss_int=gauss_hermite,
@@ -1431,8 +1514,8 @@ obj_fun_ivar1_bounds<-function(alpha,data,params,ins){
             lag_2_w_eps = lag(w_eps, 2,order_by = year),
             lag_k = lag(k, order_by = year),
             lag_l = lag(l, order_by = year),
-            lag_m = lag(m, order_by = year)
-            
+            lag_m = lag(m, order_by = year),
+            lag_2_cal_W = lag(cal_W, 2, order_by = year)
         )
 
     eta <- ivreg::ivreg(fml, data=df, na.action = "na.exclude") |>
@@ -1496,11 +1579,11 @@ estimate_prod_fn_bounds<-function(x,fs_list,f,ins){
         mutate(
             w_eps = cal_W - res$par[["k"]]*k-res$par[["l"]]*l,
             lag_w_eps = lag(w_eps, order_by = year),
-            lag_2_w_eps = lag(w_eps, 2,order_by = year),
+            lag_2_w_eps = lag(w_eps, 2, order_by = year),
             lag_k = lag(k, order_by = year),
             lag_l = lag(l, order_by = year),
-            lag_m = lag(m, order_by = year)
-            
+            lag_m = lag(m, order_by = year),
+            lag_2_cal_W = lag(cal_W, 2, order_by = year)
         ) %>%
         ivreg::ivreg(fml, data=.) |>
         summary(diagnostics =TRUE)
@@ -1528,7 +1611,267 @@ estimate_prod_fn_bounds<-function(x,fs_list,f,ins){
     )
 }
 
+## Render tables from lists (Bootstrapping results) --------------------
 
+
+render_tbl <- function(boot_l, smpl_l, cond=FALSE){
+    if(cond){
+        tmp_smpl_l <- do.call(rbind, smpl_l) %>% 
+            filter( 
+                cond == "juridical_organization != 3"
+            ) %>%
+            dplyr::select(-c("rej_rule", "test_result","cond"))
+    } else {
+        tmp_smpl_l <- do.call(rbind, smpl_l) %>% 
+                    as_tibble() %>%
+                    dplyr::select(-c("rej_rule", "test_result"))
+    }
+
+    tmp_tbl <- boot_l |> do.call(rbind,args=_) %>%
+        dplyr::select(-c("rej_rule", "test_result")) %>%
+        as_tibble() %>%
+        left_join(
+            tmp_smpl_l,
+            by = c("sic_3", "intermediates"),
+            suffix = c("", ".t0"),
+            relationship = "many-to-one"
+        ) %>%
+        mutate(
+            bc_mean_V = mean_V - mean_V.t0
+        ) %>%
+        group_by(sic_3, intermediates) %>%
+        reframe(
+            # val_mean_V = quantile(bc_mean_V, c(0.975, 0.025)),
+            val_mean_V = quantile(bc_mean_V, c(0.975, 0.025)),
+            probs = c(0.975, 0.025),
+            CI = c("LCI", "UCI"),
+            CI_mean_V = max(mean_V.t0)- val_mean_V,
+            coeff_mean_V = max(mean_V.t0),
+            coeff_se = 2*max(se.t0)-mean(se),
+            prob = ecdf(bc_mean_V)(max(mean_V.t0)),
+            p_val = 1 - prob#2*min(1 - prob, prob) # Equal tail booststrap p-value 
+        ) %>% #filter(sic_3 == 331, intermediates == "log_mats_share")%>%
+        # dplyr::select(sic_3, p_val, CI_mean_V, coeff_mean_V)
+        pivot_wider(
+            id_cols = c(sic_3, intermediates, coeff_mean_V, p_val),
+            names_from = CI,
+            values_from = c(CI_mean_V),
+            names_prefix = "CI_"
+        ) %>%
+        mutate(
+            stars = case_when(
+                p_val < 0.01 ~ "***",
+                p_val < 0.05 ~ "**",
+                p_val < 0.1 ~ "*",
+                TRUE ~ ""
+            ),
+            CI_mean_V = glue::glue("[{round(CI_LCI, 2)}, {round(CI_UCI, 2)}]"),
+            coeff_mean_V= glue::glue("{round(coeff_mean_V, 2)}{stars}")
+        ) %>%
+        dplyr::select(
+            sic_3, intermediates, coeff_mean_V, CI_mean_V
+        ) %>%
+        pivot_longer(
+            cols = starts_with(c("CI","coeff")),
+            names_to = c("type","var"),
+            values_to = c("value"),
+            names_pattern = "^(CI|coeff)_(.*)"
+        ) %>%
+        pivot_wider(
+            names_from = c(var, intermediates),
+            values_from = value
+        ) %>%
+        arrange(
+            sic_3, desc(type)
+        )# |> View()
+
+    return(tmp_tbl)
+}
+
+
+render_tbl.tbl <- function(boot_l, smpl_t){
+    # if(cond){
+    #     tmp_smpl_l <- do.call(rbind, smpl_l) %>% 
+    #         filter( 
+    #             cond == "juridical_organization != 3"
+    #         ) %>%
+    #         dplyr::select(-c("rej_rule", "test_result","cond"))
+    # } else {
+    #     tmp_smpl_l <- do.call(rbind, smpl_l) %>% 
+    #                 as_tibble() %>%
+    #                 dplyr::select(-c("rej_rule", "test_result"))
+    # }
+    tmp_smpl_t <- smpl_t %>% dplyr::select(-c("rej_rule", "test_result"))
+    tmp_tbl <- boot_l |> do.call(rbind,args=_) %>%
+        dplyr::select(-c("rej_rule", "test_result")) %>%
+        as_tibble() %>%
+        left_join(
+            tmp_smpl_t,
+            by = c("sic_3", "intermediates"),
+            suffix = c("", ".t0"),
+            relationship = "many-to-one"
+        ) %>%
+        mutate(
+            bc_mean_V = mean_V - mean_V.t0
+        ) %>%
+        group_by(sic_3, intermediates) %>%
+        reframe(
+            # val_mean_V = quantile(bc_mean_V, c(0.975, 0.025)),
+            val_mean_V = quantile(bc_mean_V, c(0.975, 0.025)),
+            probs = c(0.975, 0.025),
+            CI = c("LCI", "UCI"),
+            CI_mean_V = max(mean_V.t0)- val_mean_V,
+            coeff_mean_V = max(mean_V.t0),
+            coeff_se = 2*max(se.t0)-mean(se),
+            prob = ecdf(bc_mean_V)(max(mean_V.t0)),
+            p_val = 1 - prob#2*min(1 - prob, prob) # Equal tail booststrap p-value 
+        ) %>% #filter(sic_3 == 331, intermediates == "log_mats_share")%>%
+        # dplyr::select(sic_3, p_val, CI_mean_V, coeff_mean_V)
+        pivot_wider(
+            id_cols = c(sic_3, intermediates, coeff_mean_V, p_val),
+            names_from = CI,
+            values_from = c(CI_mean_V),
+            names_prefix = "CI_"
+        ) %>%
+        mutate(
+            stars = case_when(
+                p_val < 0.01 ~ "***",
+                p_val < 0.05 ~ "**",
+                p_val < 0.1 ~ "*",
+                TRUE ~ ""
+            ),
+            CI_mean_V = glue::glue("[{round(CI_LCI, 2)}, {round(CI_UCI, 2)}]"),
+            coeff_mean_V= glue::glue("{round(coeff_mean_V, 2)}{stars}")
+        ) %>%
+        dplyr::select(
+            sic_3, intermediates, coeff_mean_V, CI_mean_V
+        ) %>%
+        pivot_longer(
+            cols = starts_with(c("CI","coeff")),
+            names_to = c("type","var"),
+            values_to = c("value"),
+            names_pattern = "^(CI|coeff)_(.*)"
+        ) %>%
+        pivot_wider(
+            names_from = c(var, intermediates),
+            values_from = value
+        ) %>%
+        arrange(
+            sic_3, desc(type)
+        )# |> View()
+
+    return(tmp_tbl)
+}
+
+get_table <- function(l){
+    tbl <- sapply(
+        seq_along(l),
+        \(x){
+            c(
+                sic_3 = l[[x]]$sic_3,
+                intermediate = l[[x]]$inter,
+                m = l[[x]]$beta |> round(2),
+                `$\\mathcal{E}$` = l[[x]]$big_E |> round(2),
+                `err sd` = l[[x]]$epsilon_sigma |> round(2)
+            )
+        }
+    ) |> t() |> as.data.frame()
+    return(tbl)
+}
+
+get_table.l <- function(l){
+    # x <- 1
+    tbl <- c(
+                sic_3 = l$sic_3,
+                intermediate = l$inter,
+                m = l$beta |> round(2),
+                `$\\mathcal{E}$` = l$big_E |> round(2),
+                `err sd` = l$epsilon_sigma |> round(2)
+            )|> t() |> as.data.frame()
+    return(tbl)
+}
+
+render_boot_elas_tbl <- function(boot_l, fs_tbl){
+    tmp_tbl <- do.call(rbind, boot_l) %>%
+    as.data.frame() %>%
+    left_join(
+        fs_tbl,
+        by = c("sic_3", "intermediate"),
+        suffix = c("", ".t0")
+    ) %>%
+    mutate(
+        across(
+            !c(sic_3,intermediate),
+            as.numeric
+        )
+    ) %>%
+    mutate(
+        bc_boot_m_all = `m - all` - `m - all.t0`,
+        bc_boot_m_corps = `m - corps` - `m - corps.t0`,
+        bc_boot_m_others = `m - others` - `m - others.t0`
+    ) %>%
+    group_by(
+        sic_3, intermediate
+    ) %>%
+    reframe(
+        val_m_all = quantile(bc_boot_m_all, c(0.975, 0.025)),
+        val_m_corps = quantile(bc_boot_m_corps, c(0.975, 0.025)),
+        val_m_others = quantile(bc_boot_m_others, c(0.975, 0.025)),
+        probs = c(0.975, 0.025),
+        CI = c("LCI", "UCI"),
+        CI_all = max(`m - all.t0`) - val_m_all, # Bias Corrected Bootstrap CI
+        CI_corps = max(`m - corps.t0`) - val_m_corps, # Bias Corrected Bootstrap CI
+        CI_others = max(`m - others.t0`) - val_m_others, # Bias Corrected Bootstrap CI
+        m_all = max(`m - all.t0`), # point estimate
+        m_corps = max(`m - corps.t0`), # point estimate
+        m_others = max(`m - others.t0`), # point estimate
+    ) %>%
+    mutate(
+        across(
+            where(is.numeric),
+            ~ round(.x, 2)
+        )
+    ) %>%
+    dplyr::select(
+        sic_3, intermediate,
+        CI:m_others
+    ) %>%
+    pivot_wider(
+        names_from = CI, 
+        values_from = c(CI_all, CI_corps, CI_others),
+        names_sep = "_"
+    ) %>%
+    mutate(
+        CI_all = glue::glue("[{CI_all_LCI}, {CI_all_UCI}]"),
+        CI_corps = glue::glue("[{CI_corps_LCI}, {CI_corps_UCI}]"),
+        CI_others = glue::glue("[{CI_others_LCI}, {CI_others_UCI}]"),
+        across(
+            m_all:m_others,
+            ~ glue::glue("{x}", x=.x)#,
+            # .names = "coef_{col}"
+        ),
+    )%>%
+    dplyr::select(
+        sic_3,
+        m_all, CI_all,
+        m_corps, CI_corps,
+        m_others, CI_others
+    ) %>%
+    pivot_longer(
+        cols = -sic_3,
+        names_to = c("type", "group"),
+        names_pattern = "(.*)_(.*)",
+        values_to = "value"
+    ) %>%
+    pivot_wider(
+        names_from = group,
+        values_from = value
+    ) %>%
+    dplyr::select(
+        sic_3, type, corps, others
+    )
+    return(tmp_tbl)
+}
 
 ## Saving functions --------------------
 

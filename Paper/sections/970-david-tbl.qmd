@@ -1,0 +1,101 @@
+## Sorted tables
+
+
+```{r}
+#| label: tbl-ielas-desc-purch
+#| tbl-cap: Intermediate elasticities for Corporations (Non-Evaders) and non-Corporations (Evaders) for different industries. Estimates were obtained using GNR (2020) method assuming a CD functional form. Intermediates are defined as raw materials. $\varepsilon$ is defined as **measurement error**. The Tax Evasion Test displays the coefficient of the statistical test, where the null hypothesis states that there is no tax evasion through cost overreporting. Among the industry characteristics, Sales is the industry's market share of the total sales in Colombia between 1981 and 1991. Sales Tax Rate is the average sales tax reported rate. Exports is the average share of exports of the industry total sales, and Exporters is the share of firms exporting 10 percent or more of their total sales. Bias-corrected bootstrap confidence intervals at 95% significanve level are displayed in brackets. \\*, \\*\\*, \\*\\*\\* denote significance at the 10%, 5%, and 1% levels (one-sided).
+
+load("../Code/Products/i_elas.RData")
+
+# col_names <- c("SIC", "Corps.", 
+#         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases","N (%)","Qty. (Avg. %)","N (%) ","Qty. (Avg. %) ")
+
+main_tbl %>% 
+    mutate(
+        across(n:share_imports_materials, ~replace(.x, type=="CI", NaN))
+    ) %>%
+    select(
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        # exporters:share_imports_materials
+    ) %>%   
+    group_by(sic_3) %>%
+    arrange(desc(purchases_sales_tax)) %>%
+    kbl(
+        # digits = 2,
+        align = "c",
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    # column_spec(2:4, width = "9em") %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+    ) %>%
+    collapse_rows(columns = 1, valign = "top")# %>%
+    # pack_rows(
+    #     index = c(
+    #         "31 Food & Beverages" = 6,
+    #         "32 Textile, Apparel & Leather" = 8,
+    #         "33 Wood & Wood Products" = 4,
+    #         "34 Paper & Printing" = 4,
+    #         "35 Chemicals, Petroleum, Rubber & Plastic" = 6,
+    #         "36 Non-Metallic Mineral Products" = 2,
+    #         # "37 Basic Metals" = 4,
+    #         "38 Fabricated Metal Products, Machinery & Equipment" = 8,
+    #         "39 Other Manufacturing" = 2
+    #     )
+    # )
+    
+
+```
+
+
+```{r}
+
+
+sales_sic <- read.csv("tbls/sic_distribution.csv")
+
+names(sales_sic)<- c("sic_3", "retailers", "public", "retailers and public", "govt","wholesalers")
+
+main_tbl %>% 
+    mutate(
+        across(n:share_imports_materials, ~replace(.x, type=="CI", NaN))
+    ) %>%
+    select(
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        # exporters:share_imports_materials
+    ) %>%   
+    left_join(
+        sales_sic,
+        by = "sic_3"
+    ) %>%
+    group_by(sic_3) %>%
+    arrange(desc(wholesalers)) %>%
+    kbl(
+        # digits = 2,
+        align = "c",
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    # column_spec(2:4, width = "9em") %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+    ) %>%
+    collapse_rows(columns = 1, valign = "top")# %>%
+    # pack_rows(
+    #     index = c(
+    #         "31 Food & Beverages" = 6,
+    #         "32 Textile, Apparel & Leather" = 8,
+    #         "33 Wood & Wood Products" = 4,
+    #         "34 Paper & Printing" = 4,
+    #         "35 Chemicals, Petroleum, Rubber & Plastic" = 6,
+    #         "36 Non-Metallic Mineral Products" = 2,
+    #         # "37 Basic Metals" = 4,
+    #         "38 Fabricated Metal Products, Machinery & Equipment" = 8,
+    #         "39 Other Manufacturing" = 2
+    #     )
+    # )
+
+
+```

@@ -2,13 +2,13 @@
 
 ### Testing for the Presence of Tax Evasion Through Overreporting {#sec-tax-ev-test}
 
-@eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$ and define the null hypothesis as the absence of cost overreporting and the alternative hypothesis as the presence of cost overreporting. . Consequently, to verify for the presence of tax evasion by overreporting, we can use a one-sided test where under the alternative hypothesis $H_1: \mu_{\mathcal{V}}>0$, and unde the null, $H_0: \mu_{\mathcal{V}}\le0$.
+@eq-ob-ev suggest a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$ and define the null hypothesis as the absence of cost overreporting and the alternative hypothesis as the presence of cost overreporting. Consequently, to verify for the presence of tax evasion by overreporting, we can use a one-sided test where under the alternative hypothesis $H_1: \mu_{\mathcal{V}}>0$, and unde the null, $H_0: \mu_{\mathcal{V}}\le0$.
 
 I use a bootstrap hypothesis test to verify the presence of tax evasion. @tbl-ielas-most-least-likely displays the estimated elasticities of intermediates for corporations and non-corporations for different industries. The table also displays the estimated value of the test statistic for the null hypothesis of no tax evasion.
 
 I test the three least likely and the three most likely industries to evade taxes. The three least likely industries are exempt of sales taxes or lost exemption during the sample period. Exempt industries include 311 and 312 (Food Products), while industry 384 (Transport Equipment) lost exemption in 1984. Exempt industries are less likely to evade taxes because the sales tax rate is zero, so there is no incentive to overreport costs.
 
-The three mos likely industries have low purchase sales tax rates. Lower purchase sales tax rate imply higher incentives to overreport costs to claim additional deductions to the sales taxes owed to the government. These industries include 313 (Beverages), 331 (Wood Products except Furniture), and 369 (Non-Metallic Mineral Products).
+The three most likely industries have low purchase sales tax rates. Lower purchase sales tax rate imply higher incentives to overreport costs to claim additional deductions to the sales taxes owed to the government. These industries include 313 (Beverages), 331 (Wood Products except Furniture), and 369 (Non-Metallic Mineral Products).
 
 ::: {.content-hidden unless-meta="draft" }
 
@@ -57,20 +57,20 @@ load("../Code/Products/i_elas.RData")
 #         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases","N (%)","Qty. (Avg. %)","N (%) ","Qty. (Avg. %) ")
 
 col_names <- c("SIC", "Corps.", 
-        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
+        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Sales ($\\tau_0$)","Purchases ($\\tau_1$)","$\\tau_1\\frac{\\rho_tM^*_{it}}{P_tY_{it}}$","$\\tau_1\\beta$", "$\\tau$ Reported", "$\\tau$ Corrected")
 
 main_tbl %>% 
     filter(
         # sic_3 %in% top_10_revenue$sic_3[1:5]
-        sic_3 %in% c(311, 312, 384, 313, 369, 331)
+        sic_3 %in% c(311, 312, 313, 369, 331)
     ) %>%
     mutate(
         across(n:share_imports_materials, ~replace(.x, type=="CI", NaN)),
-        sic_3 = factor(sic_3, levels=c(311, 312, 384, 313, 369, 331))
+        sic_3 = factor(sic_3, levels=c(311, 312, 313, 369, 331))
     ) %>%
     arrange(sic_3) %>%
     select(
-        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, sales_sales_tax_rate:effective_sales_tax_rate_corrected
         # exporters:share_imports_materials
     ) %>%
     kbl(
@@ -82,13 +82,13 @@ main_tbl %>%
     # column_spec(2:4, width = "9em") %>%
     kable_classic(full_width=F, html_font = "Cambria") %>%
     add_header_above(
-        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=6)#, "Exports"=2, "Imports"=2)
     ) %>%
     collapse_rows(columns = 1, valign = "top") %>%
     pack_rows(
         index = c(
-            "3 Least Likely Industries" = 6,
-            "3 Most Likely Industries" = 6
+            "2 Least Likely Industries" = 4,
+            "3 Most Likely Industries" = 5
             # "33 Wood & Wood Products" = 4,
             # "34 Paper & Printing" = 4,
             # "35 Chemicals, Petroleum, Rubber & Plastic" = 6,
@@ -113,8 +113,8 @@ load("../Code/Products/i_elas.RData")
 # col_names <- c("SIC", "Corps.", 
 #         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases","N (%)","Qty. (Avg. %)","N (%) ","Qty. (Avg. %) ")
 
-col_names <- c("SIC", "Corps.", 
-        "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
+# col_names <- c("SIC", "Corps.", 
+#         "Others","Tax Ev.","N","N (Corps.)","Sales (Mkt %)", "Effective", "Sales","Purchases")
 
 main_tbl %>% 
     filter(
@@ -125,7 +125,7 @@ main_tbl %>%
         sic_3 = factor(sic_3, levels=top_10_revenue$sic_3[1:5])
     ) %>%
     select(
-        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, effective_tax_rate:purchases_sales_tax,
+        sic_3, corps:mean_V_log_mats_share, n, n_Corp, sales, sales_sales_tax_rate:effective_sales_tax_rate_corrected
         # exporters:share_imports_materials
     ) %>%
     arrange(sic_3) %>%
@@ -138,7 +138,7 @@ main_tbl %>%
     # column_spec(2:4, width = "9em") %>%
     kable_classic(full_width=F, html_font = "Cambria") %>%
     add_header_above(
-        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=3)#, "Exports"=2, "Imports"=2)
+        c(" "=1, "Elasticities"=2, "Test"=1, " "=3, "Sales Tax Rate"=6)#, "Exports"=2, "Imports"=2)
     ) %>%
     collapse_rows(columns = 1, valign = "top") #%>%
     # pack_rows(

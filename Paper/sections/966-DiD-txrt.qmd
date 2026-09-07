@@ -1,0 +1,249 @@
+
+
+#### By Change in Effective Sales Tax Rate
+
+In a second exercise, I group industries by the change in their effective sales tax rate due to the 1983 fiscal reform. @tbl-sic-per-1983 shows the industries by their change in effective sales tax rate. 
+
+:::: {#tbl-sic-per-1983 layout-ncol="1"}
+
+::: {.content-visible when-format="html"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+
+load("../Code/Products/921-DD2.RData")
+
+eff_tbl %>%
+  kbl(
+    table.attr = 'data-quarto-disable-processing="true"'  
+  ) %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+
+eff_tbl %>%
+  kbl(
+    table.attr = 'data-quarto-disable-processing="true"'  
+  ) %>%
+  kable_styling(
+    position = "center"
+  )
+
+```
+
+:::
+
+Industries by change in effective sales tax rate due to 1983 fiscal reform
+::::
+
+Based on @tbl-sic-per-1983, ex-ante expectations are that industries with an increase in their effective sales tax rate will have higher incentives to evade taxes, and thus we would see a positive coefficient on the interaction $\Gamma_3$ for those industries. Conversely, industries with a decrease in their effective sales tax rate should have lower incentives to evade taxes, and thus firms might adjust downward or not adjust at all their overreporting of materials, leading to a negative or non-significant coefficient on the interaction $\Gamma_3$ for those industries.
+
+LLCs and Proprietorships are our JOs of interest, since they compose the majority of Non-Corporation firms. In addition, both JOs had changes to their income tax rates in 1983, which would affect their incentives to evade taxes. In particular, Proprietorships might have higher incentives to evade taxes since most individuals faced an increase in their income tax rates. On the other hand, LLCs might have lower incentives to evade taxes since they faced a decrease in their corporate income tax rates.
+
+I used firms in exempt industries (311 and 312) as the control group, since they have the lowest incentives to evade taxes due to sales tax changes (none at all). While there are industries with no changes to their sales tax rates, they still face incentives to evade due to the pre-existing sales tax rates and CITs. Firms in exempt industries have only faced incentives to evade taxes due to their income tax rates. This makes them a better control group to isolate the effect of changes in sales tax rates from changes in income tax rates.
+
+![](../Code/Products/922-exempt-cit.png)
+
+![](../Code/Products/922-eff-tau-increase-jo.png)
+
+![](../Code/Products/922-eff-tau-decrease-jo.png)
+
+![](../Code/Products/922-eff-tau-no-change-jo.png)
+
+What makes sense:
+
+- Proprietorships in exempt industries increase their overreporting in comparisson to corporations starting in 1983, while LLCs do not significantly change. 
+
+The increase in overreporting by Proprietorships is consistent with the increase in income tax rates for individuals, which would increase Proprietorships incentives to evade taxes. On the other hand, LLCs received a decrease in CIT, leading to lower incentives to evade taxes, which is consistent with the lack of significant change in overreporting.
+
+- In industries with an increase in the effective sales tax rate, LLCs increase their overreporting relative to LLcs in exempt industries, while Proprietorships do not significantly change. 
+
+The increase in overreporting by LLCs is consistent with the increase in the incentives to evade taxes due to the higher sales tax rate. 
+
+With respect to Proprietorships, the effect of the increase in the CIT might dominate the effect of the increase in the sales tax rate, leading to no significant difference with respect to exempt industries. In fact, we do not observe significant changes in overreporting by Proprietorships in the rest of the industries, whether the effective sales tax rate decreased or did not change, as we will see next.
+
+- In industries with a decrease or no change in the effective sales tax rate, LLCs increase their overreporting relative to LLCs in exempt industries, while Proprietorships do not significantly change. 
+
+As explained before, for Proprietorships the change in CIT might be dominating the effect of the Sales Tax. 
+
+The increase in overreporting by LLCs is somewhat puzzling however, since we would expect lower incentives to evade taxes due to the decrease or no change in the sales tax rate.
+
+Before looking for alternative explanations, I look into whether it matters if the decrease or no change in the effective sales tax rate is due a change in the sales tax rate of sales, in purchases, or both. 
+
+@tbl-sic-per-1983 shows that industries with a decrease in the effective sales tax rate all received a decrease in the sales tax rate of sales, however, four industries received an increase in the sales tax rate of purchases, while two others received either a decrease or no change in the sales tax rate of purchases.
+
+@fig-eff-tau-dec-bkdn shows the change in overreporting by LLCs in industries with a decrease in the effective sales tax rate, broken down by changes in the sales tax rate of sales and purchases. Industries who saw a decrease in both the sales tax rate of sales and purchases show no significant change in overreporting by LLCs relative to exempt industries. On the other hand, industries who saw a decrease in the sales tax rate of sales but an increase or no change in the sales tax rate of purchases show an increase in overreporting by LLCs relative to exempt industries.
+
+- Firms in industries with a decrease in the effective sales tax rate due to a decrease in both the sales tax rate of sales and purchases do not significantly change their overreporting relative to exempt industries.
+
+- Firms in industries with a decrease in the effective sales tax rate due to a decrease in the sales tax rate of sales but an increase or no change in the sales tax rate of purchases increase their overreporting relative to exempt industries.
+
+@tbl-sic-per-1983 also shows that industries with no change in the effective sales tax rate can be grouped into four categories: (i) no change in both sales and purchases sales tax rates, (ii) no change in sales but increase in purchases sales tax rate, (iii) increases in both, and (iv) decreases in both. Most groups are composed of only one industry, except for group (i) which is composed of two industries.
+
+@fig-eff-tau-no-change-bkdn shows however that all these groups show an increase in overreporting by LLCs relative to exempt industries. The magnitude of the increase is lower for firms in industries with no change in both sales and purchases sales tax rates, but it is still significant. Even more puzzling is the increase in overreporting by LLCs in the industry with decreases in both sales and purchases sales tax rates.
+
+How can we explain these results?
+
+- Other changes in fiscal policy in 1983 affecting LLCs?
+  - Extension of sales taxes to some services. Only looking at materials here. Firms might be increasing overreporting of materials to evade sales taxes on services.
+  - Extension of presumptive income tax to LLCs.
+- Idiosyncrasies of these industries? Breaking down into groups by changes in sales and purchases sales tax rates leads to single industries in most cases. Some of these industries aggregate very different economic activities.
+
+:::: {#tbl-tax-grp-1983 layout-ncol="1"}
+
+::: {.content-visible when-format="html"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+
+load("../Code/Products/921-DD2.RData")
+
+both_tbl %>%
+  kbl(
+    table.attr = 'data-quarto-disable-processing="true"'  
+  ) %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+
+both_tbl %>%
+  kbl(
+    table.attr = 'data-quarto-disable-processing="true"'  
+  ) %>%
+  kable_styling(
+    position = "center"
+  )
+
+```
+
+:::
+
+Industries by change in sales, purchases, and effective sales tax rate—1983 fiscal reform
+::::
+
+
+![](../Code/Products/922-eff-tau-dec-bkdn.png){#fig-eff-tau-dec-bkdn}
+
+![](../Code/Products/922-eff-tau-no-change-bkdn.png){#fig-eff-tau-no-change-bkdn}
+
+
+
+
+:::: {#tbl-reg-did layout-ncol="1"}
+
+:::{.content-visible when-format="html"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+#| output: asis
+
+
+
+did_grp_reg |> etable(
+    dict = dict
+  )
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+
+did_grp_reg |> etable(
+    dict = dict,
+    tex = FALSE
+  ) %>%
+  kbl(
+    table.attr = 'data-quarto-disable-processing="true"',
+    longtable = TRUE,
+    booktabs = TRUE
+  ) %>%
+  kable_styling(
+    latex_options = c("repeat_header")
+  )
+
+```
+
+:::
+
+Regression table for Difference-in-Differences model
+::::
+
+::: {#tbl-tax-policy .content-visible when-format="html"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+#| cache: true
+
+load("../Code/Products/921-DD2.RData")
+
+sales_tax_rate_tbl %>%
+  filter(
+    tax_measure %in% c("tau_0","tau_1","tau","tau_1_beta"),
+    stat %in% c("mean","se")
+  ) %>%
+  left_join(
+    sales_tax_83_group,
+    by = "sic_3"
+  ) %>%
+  select(
+    !c(tau_0, tau_1, tau)
+  ) %>%
+  mutate(
+    tax_measure_str = case_when(
+      tax_measure == "tau_0" ~ "$\\tau_0$",
+      tax_measure == "tau_1" ~ "$\\tau_1$",
+      tax_measure == "tau" ~ "$\\tau$",
+      tax_measure == "tau_1_beta" ~ "$\\tau_1\\beta$",
+      .default = ""
+    )
+  ) %>%
+  arrange(
+    delta_tx_83, sic_3, tax_measure, stat
+  ) %>%
+  select(!c(stat,tax_measure)) %>%
+  select(delta_tx_83, sic_3, tax_measure_str, setdiff(names(.), c("delta_tx_83","sic_3","tax_measure_str"))) %>%
+kbl(
+  col.names = c("Tax Change","SIC","Tax Rate","1983","1986"),
+  table.attr = 'data-quarto-disable-processing="true"'
+) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  add_header_above(c(" " = 1, "Fiscal Policy Reforms - Change in sales tax rate" = 4)) %>%
+  collapse_rows(columns = 1:3, valign = "top")
+
+```
+
+Average tax rates by fiscal law period and industry
+:::
+

@@ -1,0 +1,325 @@
+
+# Model
+
+## The Model
+
+$$
+\begin{aligned}
+  \max_{K_{it},L_{it},M_{it}, e_{it}} \big(1-q(e_{it})\big)&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  &-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\bigg]\\
+  +q(e_{it})&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
+  &-\phi\rho_t\tau e_{it}\bigg]-\kappa_{it}(e_{it}, \omega_{it}) \\
+  \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$ {#eq-eva}
+
+## Important Assumptions
+
+- Following seminal work of @Allingham1972, tax authority audits firms at random and always detects tax evasion
+    - The probability of detection, $q(e_{it})$, is a function of the level of tax evasion, $e_{it}$. It might depend on other exogenous variables such as the monitoring technology of the tax authority, for example.
+    - Impose assumption from Empirical model which assumes that choosing M does not enter the probability of detection or the cost of evasion. In other words, choosing M is independent of choosing e.
+
+## Important Assumptions (Cont.)
+
+The cost of evasion, $\kappa_{it}(e_{it}, \omega_{it})$: any resources of the firm allocated to the tax evasion activity that could have been employed in a productive activity (e.g. manager's time spent on tax evasion instead of managing the firm).
+
+  - Unlike the penalty of tax evasion, $\phi$, it does not depend on whether you are detected or not
+  - Increasing in the level of tax evasion, $e_{it}$
+  - Decreasing in firm's productivity, $\omega_{it}$, but spikes at the top of the productivity distribution.
+
+## Important Assumptions - discussion on $\kappa$
+
+  - More productive firms have more resources to allocate to tax evasion, but since huge firms have access to more sophisticated legal tax avoidance strategies, the cost of illegal tax evasion is higher for the most productive firms.
+  - It could also be the case that the probability of detection is flat with respect to productivity except for huge (top productive) firms which could have a probability close to 1.
+  - Empirically, without data on cost of evasion or auditing information, $q$ and $\kappa$ are not separately identified. During estimation, we assume functional forms that allow us to reproduce the empirical patterns of tax evasion across the productivity distribution.
+
+## Model (Cont.)
+
+The firms' problem (@eq-eva) can be rewritten as follows,
+$$
+\begin{aligned}
+  \max_{K_{it}, L_{it},M_{it},e_{it}} \mathbb{E}[\pi_{it}|\Gamma] = &(1-\tau)\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it}\right)-r_tK_{it}-w_tL_{it}\\
+  &+[1-q(e_{it})]\left(\rho_{t}\tau e_{it}\right)
+  -q(e_{it})\phi\rho_t\tau e_{it}-\kappa_{it}(e_{it}, \omega_{it}) \\
+  \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$ {#eq-eva-2}
+
+## First Order Condition (FOC)
+
+An interior solution leads to following first-order conditions,
+
+$$
+\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{-(1-\beta)}\exp(\omega_{it})=\frac{\rho_{t}}{P_t}
+$$ {#eq-foc-m}
+
+
+$$
+\tau\rho_t\left(1-(1+\phi)\left(q(e_{it})+q'(e_{it}) e_{it}\right)\right) =\frac{\partial \kappa_{it}(e_{it}, \omega_{it})}{\partial e_{it}}
+$$ {#eq-foc-e}
+
+($\varepsilon_{ijt}$ is measurement error, so $\mathcal{E}\equiv E[\exp(\varepsilon_{ijt})]=1$)
+
+[
+    [$\hookrightarrow$](#numerical-strategy)
+]{.footlineextra}
+
+## Tax Evasion
+
+To better understand the incentives to overreport inputs, we can rewrite @eq-foc-e in terms of the evasion elasticity of the probability of detection, $\xi_{q,e}=\frac{\partial q(e_{it})}{\partial e_{it}}\frac{e_{it}}{q(e_{it})}$, as follows,
+
+$$
+\tau\rho_t\bigg(1-(1+\phi)\left(1+\xi_{q,e}\right)q(e_{it})\bigg) =\frac{\partial \kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}}
+$$ {#eq-foc-e-elas}
+
+<!-- [
+    [$\hookrightarrow$](#numerical-strategy)
+]{.footlineextra} -->
+
+## Corner Solution
+
+Note that some firms will optimally choose not to evade, $e_{it}=0$. 
+
+For these firms, the marginal cost of tax evasion is greater than the marginal benefit for any non-zero level of tax evasion. 
+
+This implies that for these firms, @eq-foc-e becomes,
+
+$$
+\tau\rho_t \le \frac{\partial \kappa_{it}(0, \omega_{it})}{\partial e_{it}}
+$$ {#eq-foc-noeva}
+
+[
+    [$\hookrightarrow$](#numerical-strategy)
+]{.footlineextra}
+
+## Second Order Condition (SOC)
+
+To gurantee a unique solution, the hessian matrix of the firm's problem must be negative definite.
+
+$$
+\nabla^2 \mathbb{E}[\pi_{it}|\Gamma] = \begin{bmatrix}
+\frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial e_{it}^2} & 0 & 0 & 0  \\
+0 & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial M_{it}^2} & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial M_{it}\partial L_{it}} & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial M_{it}\partial K_{it}} \\
+0 & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial L_{it}\partial M_{it}} & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial L_{it}^2} & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial L_{it}\partial K_{it}} \\
+0 & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial K_{it}\partial M_{it}} & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial K_{it}\partial L_{it}} & \frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial K_{it}^2}    
+\end{bmatrix}
+$$ {#eq-soc-e}
+
+## SOC
+
+- For a negative definite hessian matrix, the leading principal minors must alternate signs, 
+  - odd order minors must be negative and even-order minors positive. 
+- In our case, since 
+  - 1) the production function is strictly concave (CD) and
+  - 2) choosing the level of tax evasion does not depend on the production function inputs; second cross derivaties are zero, 
+  - we would only have to check the first leading principal minor —the second derivative with respect to $e_{it}$— is negative, 
+
+$$
+\frac{\partial^2 \mathbb{E}[\pi_{it}|\Gamma]}{\partial e_{it}^2} = -\tau\rho_t(1+\phi)\left(2 q'(e_{it})+ e_{it}q''(e_{it})\right) - \frac{\partial^2\kappa_{it}(e_{it}, \omega_{it})}{\partial e_{it}^2} < 0
+$$ {#eq-soc-e}
+
+## SOC
+
+For strict concavity, we need only one of the following two conditions to be strictly positive, 
+
+$$
+  \frac{\partial^2\kappa_{it}(e_{it}, \omega_{it})}{\partial e_{it}^2} \ge 0
+$$ {#eq-soc-e-k}
+
+$$
+\tau\rho_t(1+\phi)\left(2 q'(e_{it})+ e_{it}q''(e_{it})\right) \ge 0
+$$ {#eq-soc-e-q}
+
+## SOC
+
+The second condition can be simplified to
+
+$$
+-\frac{q''(e_{it})}{q'(e_{it})}e_{it} < 2
+$$ {#eq-soc-e-qs}
+
+since economic theory implies that $q'(e_{it})>0$ and $e_{it}>0$, this condition imposes a **restriction on the curvature** of the detection function, $q(e_{it})$
+
+  - **Linear** detection **always** satisfies the SOC, since $q''(e_{it})=0$.
+  - **Convex** also satisfies the SOC **always**, since $q''(e_{it})>0$.
+  - **Concave** works if not too concave, i.e. **inequality holds**.
+
+## What does this inequality imply in practice?
+
+<!-- 
+$$
+\dfrac{d\log q'(e_{it})}{d\log e_{it}} > -2
+$$
+
+The SOC bounds the **elasticity of marginal detection**: $q'$ may fall with $e$, but no faster than $-2$. Equivalently, expected detected overreporting $q(e)\,e$ is convex — the deterrent rises with evasion.
+
+## $h(e)$ and three detection functions 
+-->
+
+With $\phi=0$, logs of the interior FOC $\tau\rho_t(1-q-q'e)=\partial\kappa/\partial e$ define  
+
+- the **log marginal benefit** $h(e)\equiv\ln(\tau\rho_t)+\ln(1-q(e)-q'(e)e)$, 
+  - with FOC $h(e)=\ln(\partial\kappa/\partial e)$. 
+<!-- - The detection function enters only through $h$; its domain is the **evasion ceiling**. -->
+
+| | $q(e)$ | SOC | $h(e)-\ln(\tau\rho_t)$ | FOC ceiling |
+|:-- |:--:|:--:|:--:|:--:|
+|Linear | $\min\{\lambda e,1\}$ | $0<2$ | $\ln(1-2\lambda e)$ | $\lambda e<\tfrac12$ |
+|Concave | $1-\textbf{e}^{-\lambda e}$ | $\lambda e<2$ | $-\lambda e+\ln(1-\lambda e)$ | $\lambda e<1$ |
+|Convex | $\min\{(\lambda e)^k,1\}$ $k>1$ | $1-k<2$ | $\ln(1-(1{+}k)(\lambda e)^k)$ | $\lambda e<(1{+}k)^{-1/k}$ |
+
+- All satisfy the SOC on their interior (exp's $\lambda e<2 \impliedby \lambda e<1$); 
+- All impose a restriction on $\lambda e$.
+
+## A detection technology: the audit threshold
+
+- The firm chooses overreporting $e$. 
+- The tax authority draws a threshold $T\sim U[0,1/\lambda]$ and audits the firm if $e\ge T$.
+  - An audit always uncovers evasion [@Allingham1972].
+  - $T$ is random to the firm (audit selection, third-party cross-checks, which inspector).
+
+$$
+q(e)=\Pr(T\le e)=\min\{\lambda e,1\}.
+$$
+
+- **Threshold scale**: $1/\lambda$ is the largest overreporting any audit draw tolerates; the *average* audit-triggering threshold is $1/2\lambda$.
+- **Evasion bound**: the FOC stops firms at $\lambda e<\tfrac12$
+  - the most aggressive evader overreports below the *average* audit-triggering threshold, 
+  - at threshold, $q(1/2\lambda)=50\%$ (a coin flip)
+
+If $q(e)$ is concave, $T\sim\text{Exp}(\lambda)$ and $q(e)=1-\textbf{e}^{-\lambda e}$, mean threshold $1/\lambda$, detection $\approx63\%$ at $e=1/\lambda$.
+
+## How likely is the most aggressive evader caught?
+
+At the FOC ceiling, the largest evasion drives the marginal benefit to zero, $q(b)+q'(b)b=1$. 
+
+
+
+<!-- With the detection elasticity $\xi_{q,e}=q'(e)e/q(e)$, so that $q'e=\xi_{q,e}q$,
+
+$$
+q^*(1+\xi_{q,e})=1\quad\Longrightarrow\quad q^*=\frac{1}{1+\xi_{q,e}}.
+$$
+
+Constant-elasticity forms give clean numbers; the exponential's elasticity varies, so evaluate at its ceiling $\lambda e=1$: -->
+
+| | $b$ | $q(b)$ | $\left.\xi_{q,e}\right|_{e=b}$ | $E[T]$ |
+|:---|:--:|:--:|:--:|:--:|
+| Linear | $\frac{1}{2\lambda}$ | $50\%$ | 1 (unit elastic) | $\frac{1}{2\lambda}$ |
+| Exponential | $\frac{1}{\lambda}$ | $63\%$ | $\tfrac{\lambda b}{\textbf{e}^{\lambda b}-1}<1$ (inelastic)| $\frac{1}{\lambda}$ |
+| Power | $\frac{1}{\lambda(1+k)^{1/k}}$ | $\tfrac{1}{1+k}<50\%$ | $k>1$ (elastic)| $\frac{k}{\lambda(k+1)}$ |
+
+- $\xi_{q,e}=q'(e)e/q(e)$ is the evasion elasticity of the detection probability
+- $\frac{1}{\textbf{e}-1}=0.58$
+
+## Discussion
+
+- Power (convex) form produces the lowest average audit-triggering threshold, 
+  - Exponential (concave) the largest.
+  - Linear is intuitive: at max evasion, the tax authority flips a coin to audit/caught the firm
+- An increase in 1\% in the level of evasion increases the probability of being caught, by
+  - 1\% if linear (constant)
+  - more than 1\% if convex (constant)
+  - less than 1\% if concave (increasing), $\left.\xi_{q,e}\right|_{e=0}=0$ and $\left.\xi_{q,e}\right|_{e=1/\lambda}=0.58$. 
+- The extra dollar the firm hides increase its probability of detection more than the previous dollar.
+- For linear and exponential, the FOC bounds evasion *at* the expected value of $T$
+  - For power, FOC bounds evasion *below* its expected value: At $k=2$, $\frac{1}{\lambda \sqrt{3}}<\frac{2}{\lambda 3}$
+
+## Estimation and recommendation
+
+<!-- **What identifies detection.** With a flexible $f_\psi$, the detection parameters come from the response of evasion to the benefit shifter $\tau\rho_t$ **across sector–time cells** — within a cell $\rho_t$ is absorbed into $f_\psi$'s location. $f_\psi$ absorbs only cost heterogeneity orthogonal to that benefit. -->
+
+- **Linear** and **exponential** carry a single parameter $\lambda$
+<!-- - → identified whenever $e$ responds to $\tau\rho_t$. -->
+- **Power** $(\lambda e)^k$ adds a parameter, curvature $k$
+<!-- -  identified from the *shape* of that response → fragile when $\tau\rho_t$ varies little. -->
+
+Do **linear** and **power**,
+
+- Start with **linear** ($k=1$). Linear is the $k=1$ case of the power form (ceiling $(1{+}k)^{-1/k}=\tfrac12$).
+
+- Then, estimate power $(\lambda,k)$, imposing feasibility $\lambda e<(1{+}k)^{-1/k}$ for *every* firm. Test if $k=1$.
+
+
+
+
+[
+    [$\hookrightarrow$](#functional-forms)
+]{.footlineextra}
+
+<!-- 
+# Robustness: Multiplicative Evasion
+
+## Setup
+
+Replace $M^*_{it}=M_{it}+e_{it}$ with $M^*_{it}=M_{it}\textbf{e}^{u_{it}}$. Evaded tax base is now $\rho_t(M^*_{it}-M_{it})=\rho_tM_{it}(\textbf{e}^{u_{it}}-1)$, and the caught-penalty scales with the same evaded amount:
+
+$$
+\begin{aligned}
+  \max_{K_{it},L_{it},M_{it},u_{it}} \big(1-q(u_{it})\big)&\bigg[P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}-r_tK_{it}-w_tL_{it}\\
+  &-\tau\left(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it}\textbf{e}^{u_{it}}\right)\bigg]\\
+  +q(u_{it})&\bigg[(1-\tau)(P_t\mathbb{E}_{\varepsilon}[Y_{it}]-\rho_{t} M_{it})-r_tK_{it}-w_tL_{it}\\
+  &-\phi\rho_t\tau M_{it}\left(\textbf{e}^{u_{it}}-1\right)\bigg]-\kappa_{it}(u_{it}, \omega_{it}) \\
+  \text{s.t. }\; Y_{it}&=K_{it}^{\alpha_k}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$ {#eq-eva-mult}
+
+Same structure as @eq-eva — only the reported-cost and penalty terms change from $e_{it}$ (level) to $M_{it}(\textbf{e}^{u_{it}}-1)$ (proportional, scaled by the firm's true input).
+
+## Robustness: Multiplicative Evasion (Cont.)
+
+Expanding exactly as in @eq-eva $\to$ @eq-eva-2, and defining
+
+$$
+\Phi(u_{it})\equiv \textbf{e}^{u_{it}}-(1+\phi)\,q(u_{it})\left(\textbf{e}^{u_{it}}-1\right),
+$$
+
+the problem collapses to
+
+$$
+\mathbb{E}[\pi_{it}|\Gamma] = (1-\tau)P_t\mathbb{E}[Y_{it}]-\rho_tM_{it}\Big[1-\tau\Phi(u_{it})\Big]-r_tK_{it}-w_tL_{it}-\kappa_{it}(u_{it},\omega_{it})
+$$ {#eq-eva-mult-2}
+
+Compare @eq-eva-2: there, the $M_{it}$ and $e_{it}$ terms are additively separable. Here they are not — $u_{it}$ enters as a **multiplicative factor on $\rho_tM_{it}$**.
+
+## FOC — Multiplicative Evasion
+
+$$
+(1-\tau)\,\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{-(1-\beta)}\exp(\omega_{it}) = \frac{\rho_{t}}{P_t}\Big[1-\tau\Phi(u_{it})\Big]
+$$ {#eq-foc-m-mult}
+
+$$
+\tau\rho_tM_{it}\,\Psi(u_{it}) = \frac{\partial \kappa_{it}(u_{it}, \omega_{it})}{\partial u_{it}}, \qquad \Psi(u_{it})\equiv\Phi'(u_{it})
+$$ {#eq-foc-e-mult}
+
+With $\phi=0$: $\Psi(u_{it})=\textbf{e}^{u_{it}}\big(1-q(u_{it})\big)-q'(u_{it})\big(\textbf{e}^{u_{it}}-1\big)$.
+
+Contrast @eq-foc-m: there $M_{it}$ solves independently of $e_{it}$. Here, @eq-foc-m-mult and @eq-foc-e-mult are a **simultaneous system** in $(M_{it},u_{it})$.
+
+## Solving the System
+
+From @eq-foc-m-mult:
+
+$$
+M_{it}=\frac{(1-\tau)\beta P_t\mathbb{E}[Y_{it}]}{\rho_t\big[1-\tau\Phi(u_{it})\big]}
+$$ {#eq-m-sol-mult}
+
+Substituting into @eq-foc-e-mult, $\rho_t$ **cancels**:
+
+$$
+\tau(1-\tau)\beta P_t\mathbb{E}[Y_{it}]\cdot\frac{\Psi(u_{it})}{1-\tau\Phi(u_{it})}=\frac{\partial \kappa_{it}(u_{it},\omega_{it})}{\partial u_{it}}
+$$ {#eq-system-mult}
+
+- One nonlinear equation in $u_{it}$ alone, given data $(P_t\mathbb{E}[Y_{it}],\tau)$ and parameters $(\beta,\omega_{it},\psi_{it})$ — **no $\rho_t$**
+- No closed form (the $\textbf{e}^{u_{it}}$ terms don't cancel) — needs numerical root-finding, firm by firm, at every trial $\theta$
+- **Corner check:** at $u_{it}=0$, $\Phi(0)=1$ for any $q(0)=0$ (true of all three detection forms), so @eq-m-sol-mult collapses exactly to @eq-foc-m, $M_{it}=\beta P_t\mathbb{E}[Y_{it}]/\rho_t$ — additive and multiplicative **agree exactly at the corner** (corporations)
+
+## Why the Additive Version is Preferred
+
+**1. Tractability.** Additive + linear $q$ gives $e_{it}$ in closed form directly from @eq-foc-e (no root-finding). Multiplicative requires solving @eq-system-mult numerically for every firm, every likelihood evaluation.
+
+**2. No stage-1/stage-2 circularity.** The two models agree exactly at $u=0$, so first-stage identification (built entirely on corporations) is unaffected either way. But stage 2 needs $M_{it}=\beta P_t Y_{it}\textbf{e}^{-\varepsilon_{it}}/\rho_t$ to hold **for evaders too**, computable from data alone. That's only true under the additive primitive — under multiplicative, $M_{it}$ depends on $u_{it}$ (via @eq-m-sol-mult), so recovering $M_{it}$ requires already knowing $\theta$, the very object stage 2 estimates.
+
+**3. Economic argument.** @eq-system-mult shows evasion under the multiplicative primitive is **insensitive to $\rho_t$**: a higher materials price raises the peso value of each percentage point overreported, but shrinks the firm's optimal true input $M_{it}$ by the same proportion (unit price elasticity from Cobb-Douglas) — the two effects cancel exactly. Additive evasion has no such offset: $\tau\rho_te_{it}$ is a direct peso benefit, so $\rho_t$ genuinely shifts the FOC (@eq-foc-e).
+
+This matters directly for identification: $\tau\rho_t$ is the benefit shifter behind identifying $\lambda$ (cross sector–time variation, [Estimation and recommendation](#estimation-and-recommendation)). If firms evaded multiplicatively, that strategy would return **no** effect of $\rho_t$ — not weak identification, but a structural null. The choice of primitive is therefore **testable**: does the overreport wedge respond to $\rho_t$ once $\tau$ and scale ($P_tY$) are controlled for? A positive response supports additive; a null supports multiplicative/proportional invoice-padding. -->

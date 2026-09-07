@@ -1,0 +1,53 @@
+
+# The Geography of Tax Evasion
+
+## How Does a Firm's Location Affect its Tax Evasion?
+
+Firms located in different regions might face different probabilities of detection and different tax rates, and thus different incentives to evade taxes. 
+
+- Tax rates: 
+    - Departments and municipalities in Colombia can set their own tax rates similar to sales tax, for example the Industry and Commerce Tax
+    - Special tax regimes for firms located in certain regions, such as the Free Trade Zones (Zonas Francas) and the Special Economic Zones (Zonas Económicas Especiales)
+    - Special ownership model in Atlantic coast
+    - Some variation in tax rates is observed in the data
+
+
+## How Does a Firm's Location Affect its Tax Evasion?
+
+- Probability of detection: Two hypothesis
+    1. Firms located near the tax authority's offices might have access to the tax authority (lobbying, bribery, etc.) and thus face a lower probability of detection
+    2. Firms located farther away from the tax authority's offices might face a lower probability of detection, because the auditing cost for the tax authority increases with distance, and thus they are less likely to be audited
+
+## Data
+
+In the dataset from Colombia, I have two geographic variables:
+
+- `section_country_code`: Section of the country (eg. Antioquia, Atlantico, Bogota D.E., etc.)
+- `metro_area_code`: Metropolitan Area (eg. Bogota, Cali, Medellin, Barranquila).
+
+## Metro Area Summary Statistics
+
+![](../Paper/tbls/935-ev-loc-metro-summary.png){height="90%" fig-align="center"}
+
+## Section of the Country Summary Statistics
+
+![](../Paper/tbls/935-ev-loc-depto-summary.png){height="90%" fig-align="center"}
+
+## Prelim Results (Metro Area)
+
+![](../Paper/tbls/935-evasion-loc-metro.png){height="90%" fig-align="center"}
+
+## Prelim Results (Departamento)
+
+![](../Paper/tbls/935-evasion-loc-dept.png){height="90%" fig-align="center"}
+
+## On the Map
+
+![](../Paper/images/935-ev-loc-dept-map.png){height="90%" fig-align="center"}
+
+## Next Steps
+
+- Are there any patterns? Do they make sense?
+- Can any of these regions be linked to Free Trade Zones or Special Economic Zones? Since when are these in place?
+    - Zonas Francas: started in 1958. During this period, there were changes made in 1981 and 1985, and 1991. 1981-1984, firms in Zonas Francas were exempt from income and sales taxes, as well as from import duties. They were under strict vigilance by the tax authority and confined to specific locations. Since to be eligible, your products had to be exported, most traditinal firms choose not to locate in ZFs. Mostly multinationals and exporting Maquilas took advantage of ZFs. There were ZFs in Barranquilla, Cartagena, Santa Marta, and Buenaventura.
+    - Zonas Económicas Especiales: started in 2020

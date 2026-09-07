@@ -1,0 +1,69 @@
+
+\documentclass{standalone}
+\usepackage{xcolor}
+\usepackage{tabularray}
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{rotating}
+\UseTblrLibrary{siunitx}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\UseTblrLibrary{siunitx}
+\newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+\newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+\NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}
+
+\begin{document}
+\begin{table}
+\centering
+\begin{tblr}[         %% tabularray outer open
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]},
+cell{2}{1}={r=2,}{valign=h,},
+cell{4}{1}={r=2,}{valign=h,},
+cell{6}{1}={r=2,}{valign=h,},
+cell{8}{1}={r=2,}{valign=h,},
+cell{10}{1}={r=2,}{valign=h,},
+cell{12}{1}={r=2,}{valign=h,},
+cell{14}{1}={r=2,}{valign=h,},
+cell{16}{1}={r=2,}{valign=h,},
+cell{18}{1}={r=2,}{valign=h,},
+cell{20}{1}={r=2,}{valign=h,},
+cell{22}{1}={r=2,}{valign=h,},
+cell{24}{1}={r=2,}{valign=h,},
+cell{26}{1}={r=2,}{valign=h,},
+}                     %% tabularray inner close
+\toprule
+& IV: Lagged Capital & IV: Lagged Labour & IV: Lagged Revenue & OLS: Lagged Revenue \\ \midrule %% TinyTableHeader
+Revenue           & 6.7256             & 2.1743            & 1.8012***          &                    \\
+Revenue           & [-15.7024, 17.114] & [-1.7595, 3.7019] & [1.5787, 2.0631]   &                    \\
+Revenue$^2$       & -5.2472            & -3.865            & -0.7594***         &                    \\
+Revenue$^2$       & [-12.208, 11.3721] & [-5.6127, 2.9171] & [-1.0441, -0.5446] &                    \\
+Revenue$_{t-1}$   &                    &                   &                    & 1.456***           \\
+Revenue$_{t-1}$   &                    &                   &                    & [1.2889, 1.668]    \\
+Revenue$_{t-1}^2$ &                    &                   &                    & -0.5586***         \\
+Revenue$_{t-1}^2$ &                    &                   &                    & [-0.7974, -0.3865] \\
+Labour            & -3.0871            & -0.4764           & -0.7149***         & -0.4281***         \\
+Labour            & [-8.6713, 8.1967]  & [-1.192, 0.7206]  & [-0.8989, -0.5559] & [-0.6, -0.2852]    \\
+Labour$^2$        & 1.9925             & 0.9482            & 0.1051             & -0.09              \\
+Labour$^2$        & [-6.3022, 4.934]   & [-0.9114, 1.6084] & [-0.0465, 0.3163]  & [-0.241, 0.1115]   \\
+Capital           & -1.4852            & -0.2091           & -0.1124            & -0.022             \\
+Capital           & [-4.3967, 4.8567]  & [-0.7056, 0.905]  & [-0.2648, 0.0731]  & [-0.1775, 0.1634]  \\
+Capital$^2$       & 1.0603             & 0.96              & -0.2332**          & -0.2997***         \\
+Capital$^2$       & [-3.0878, 3.7949]  & [-1.4369, 1.5333] & [-0.4361, -0.0368] & [-0.5, -0.107]     \\
+Imports           & -2.144             & -3.2931*          & -1.1048***         & -1.1253***         \\
+Imports           & [-8.9736, 2.1156]  & [-3.969, 0.3169]  & [-1.3818, -0.7821] & [-1.4142, -0.8008] \\
+Imports$^2$       & 2.5099             & 4.136*            & 1.3084***          & 1.3469***          \\
+Imports$^2$       & [-3.0122, 13.2061] & [-0.4317, 4.9962] & [0.9173, 1.6522]   & [0.9674, 1.7043]   \\
+Exports           & -1.1443            & -4.122*           & -0.1127            & -0.2759            \\
+Exports           & [-20.5529, 8.7466] & [-5.3968, 1.824]  & [-0.6834, 0.3988]  & [-0.8484, 0.1993]  \\
+Exports$^2$       & 1.2094             & 4.5706            & 0.066              & 0.2503             \\
+Exports$^2$       & [-9.9392, 23.1562] & [-2.1067, 5.9964] & [-0.5017, 0.6979]  & [-0.2698, 0.8869]  \\
+Non-Corp          & -0.3061            & -0.1357           & -0.1309***         & -0.1158***         \\
+Non-Corp          & [-0.6618, 0.5245]  & [-0.2095, 0.0264] & [-0.1666, -0.0958] & [-0.1489, -0.0798] \\
+\bottomrule
+\end{tblr}
+\end{table}
+\end{document}

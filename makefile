@@ -1,6 +1,6 @@
 # Usually, only these lines need changing
 QPAPFILE = Tax-Prod
-QSLIFILE = JMP-update
+QSLIFILE = Tax-Prod
 RDIR = ./Code/Colombia
 RDIR2 = ./Code/Deconvolution
 
@@ -85,13 +85,15 @@ clean:
 	rm -fv $(OUT_FILES) 
 	rm -fv *.Rout *.RData
 	rm -fv *.aux *.log *.toc *.blg *.bbl *.synctex.gz *.out *.bcf *blx.bib *.run.xml
-	rm -fv *.fdb_latexmk *.fls
+	rm -fv *.fdb_latexmk *.fls *.nav *.snm 
 #	rm -fv $(TEXFILE).pdf
 clean-out:
 	rm -fv $(OUT_FILES) *.Rout
 
 clean-tex:
 	rm -fv Paper/*.aux Paper/*.log Paper/*.toc Paper/*.blg Paper/*.bbl Paper/*.synctex.gz
-	rm -fv Paper/*.fdb_latexmk Paper/*.fls
-
+	rm -fv Paper/*.fdb_latexmk Paper/*.fls 
+	rm -fv Quarto-Slides/*.aux Quarto-Slides/*.log Quarto-Slides/*.toc Quarto-Slides/*.blg Quarto-Slides/*.bbl Quarto-Slides/*.synctex.gz
+	rm -fv Quarto-Slides/*.fdb_latexmk Quarto-Slides/*.fls Quarto-Slides/*.nav Quarto-Slides/*.snm Quarto-Slides/*.vrb
+	rm -fv Paper/tbls/*.aux Paper/tbls/*.fls Paper/tbls/*.log Paper/tbls/*.synctex.gz Paper/tbls/*.fdb_latexmk 
 .PHONY: all clean paper slides clean-tex clean-out

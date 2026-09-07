@@ -1,0 +1,196 @@
+
+
+The objective of this section is to see if the data shows any patterns consistent with these fiscal reforms.
+
+The regression model is now,
+
+$$
+\begin{aligned}
+    s_{ijt} =& \beta_0 D_{NC,it} + \beta_1 D_{NC,it} \times D_{ijt} \\ 
+    & +D_{NC,it}\times \gamma_t '\Gamma_0+ D_{NC,it} \times D_{ijt}\times \gamma_t'\Gamma_1\\
+    & +\gamma_j +  \varepsilon_{ijt}
+\end{aligned}
+$$
+
+where $\gamma_t$ are year dummies, and it is interacted only with the Non-Corporation dummy variable and the interaction term between Non-Corporation and the characteristic of interest, $D_{ijt}$.
+
+In the following figures, I plot the coefficients of the interaction terms between the year dummies with Non-Corporation, and the interaction between Non-Corporation and the characteristic of interest, $D_{ijt}$. The base year is 1983. 
+
+::: {#fig-who-evades layout-ncol="1"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+
+
+# load("../Code/Products/910-reg-results.Rdata")
+
+palette("ggplot2")
+
+coefplot(regs_non_corp_time[1:3],
+  keep = "%Other:year",
+  dict = dict,
+  group = list(`Non-Corp` = "^^corp::Other:year::"),
+  ref = list("corp::Other:year::83" = 4),
+  pch = 16
+)
+
+legend(
+  "topleft",
+  col=1:3,
+  lwd=2,
+  pch=16,
+  legend = c("Non-Corp", "Large Non-Corp", "Exporter Non-Corp")
+)
+
+coefplot(regs_non_corp_time[2],
+  keep = "non_corp_small",
+  dict = dict,
+  group = list(`Non-Corp x Small x Year` = "^^non_corp_small::Other:Small L:year::"),
+  ref = list("non_corp_small::Other:Small L:year::83" = 15)
+)
+
+coefplot(regs_non_corp_time[3],
+  keep = "Non-Exporter:",
+  dict = dict,
+  group = list(`Non-Corp x Non-Exporter x Year` = "^^non_corp_non_exporter::Other:Non-Exporter:year::"),
+  ref = list("non_corp_non_exporter::Other:Non-Exporter:year::83" = 15)
+)
+
+```
+
+
+:::
+
+
+::: {#tbl-who-evades-t layout-ncol="1"}
+
+```{r}
+#| echo: false
+#| output: asis
+#| cache: false
+
+# load("../Code/Products/910-reg-results.Rdata")
+
+# res_df <- wip_df
+
+etable(regs_non_corp_time, dict = dict )
+
+
+```
+
+:::
+
+:::: {#tbl-who-fxef layout-ncol="1"}
+
+::: {.content-visible when-format="html"}
+
+```{r}
+#| echo: false
+#| cache: true
+
+sanity_tbl %>%
+  mutate(
+    across(
+      `(1)`:`(3)`,
+      ~ replace(.x, type == "CI", NA)
+    )
+  ) %>%
+  select(!type) %>%
+  kbl(
+    col.names = c("SIC","Corps.","Others","Tax Ev.", "(1)","(2)","(3)"),
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) %>%
+  kable_classic(full_width = F, html_font = "Cambria") %>%
+  add_header_above(c(" " = 1, "Elasticities" = 2, "Test" = 1, "SIC FE - Model"=3)) %>%
+  collapse_rows(columns = 1, valign = "top")
+
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+#| echo: false
+#| cache: true
+
+sanity_tbl %>%
+  mutate(
+    across(
+      `(1)`:`(3)`,
+      ~ replace(.x, type == "CI", NA)
+    )
+  ) %>%
+  select(!type) %>%
+  kbl(
+    col.names = c("SIC","Corps.","Others","Tax Ev.", "(1)","(2)","(3)"),
+    table.attr = 'data-quarto-disable-processing="true"',
+    booktabs = TRUE
+  ) %>%
+  kable_styling(position="center") %>%
+  add_header_above(c(" " = 1, "Elasticities" = 2, "Test" = 1, "SIC FE - Model"=3)) %>%
+  collapse_rows(columns = 1, valign = "top")
+
+
+```
+
+:::
+
+::::
+
+
+
+
+::: {#fig-policy-changes .conten-visible when-format="html" layout-ncol="1"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| error: false
+#| cache: true
+
+lapply(
+  top_20_inds$sic_3[-1] |> sort(),
+  \(x){
+    prop_pattrn <- paste0("jo_sic_year::Proprietorship:",x,":82")
+    llc_pattrn <- paste0("jo_sic_year::Ltd. Co.:",x,":82")
+    tbl_pos_prop <- did_reg |> coef() |> names() |> grep(prop_pattrn,x=_, value=FALSE)
+    tbl_pos_llcs <- did_reg |> coef() |> names() |> grep(llc_pattrn,x=_, value=FALSE)
+    ref_vec_prop <- tbl_pos_prop+1
+    names(ref_vec_prop) <- paste0("jo_sic_year::Proprietorship:",x,":83")
+    ref_vec_llcs <- tbl_pos_llcs+1
+    names(ref_vec_llcs) <- paste0("jo_sic_year::Ltd. Co.:",x,":83")
+    
+    coefplot(
+      did_reg,
+      keep = paste0("%Ltd. Co.:",x), #"%Ltd. Co.:312",
+      dict = dict,
+      group = list(`JO x SIC x Year`=paste0("^^jo_sic_year::Ltd. Co.:",x,":")),# "^^jo_sic_year::Ltd. Co.:312:"),
+      ref = ref_vec_llcs,
+      col = "blue", alpha = 0.5,
+      main = paste0("Industry ",x)
+    )
+    coefplot(
+      did_reg,
+      keep = paste0("%Proprietorship:",x),#"%Proprietorship:312",
+      dict = dict,
+      group = list(`JO x SIC x Year`=paste0("^^jo_sic_year::Proprietorship:",x,":")),#"^^jo_sic_year::Proprietorship:312:"),
+      ref = ref_vec_prop,
+      add = TRUE, col = "red", alpha = 0.5,
+      x.shift = 0.2
+    )
+    legend(
+      "topleft",
+      col=c("blue","red"),
+      lwd=2,
+      legend = c("LLCs", "Proprietorships")
+    )
+  }
+) |> invisible()
+
+```
+
+::: 

@@ -1,0 +1,141 @@
+### Tax Evasion and Firm Heterogeneity
+
+As a first attempt to characterize the firms that evade taxes, I try to capture differences in the output elasticities of materials between different types of firms using a simple regression model with interaction terms.
+
+I am interested to see if there are systematic differences between firms with different characteristics. The characteristics of interest are different measures of size, such as revenue, capital, and labour. Other relevant characteristics are the exports and imports of the firm.
+
+- The literature has documented that, to the contrary of common intuition, larger firms evade more by overreporting their inputs [@Carrillo2022].
+
+Initially, my prior was that size was inversely related to tax evasion. The intuition was that the larger the firms, the more likely to be caught evading taxes. Higher probability of detection, lower incentives to evade taxes. 
+
+This intuition assumes that the probability of detection is increasing with size. However, it is standard in the literature that the probability of detection is independent of any firm characteristic. The probability of detection is a simplification of two probabilities: The probability of being audited by the tax authority, and the probability of being detected cheating conditional on being audited. It is common in the literature to simplify these probabilities, in particular in empirical papers, by assuming that firms are detected every time if they are audited, and that the tax authority audits firms at random. Thus, the probability of detection is independent of firm characteristics, including size. The probability of detection depends only on the level of evasion —the more overreporting— and an exogenous component from the firm side, which is effort from the tax authority. The idea is that you can be audited at random. Then, if you are audited, you will be compared to similar firms. The more you overreport, the more likely you are to be detected.
+
+Another relevant component in the tax evasion decision is the cost of evasion. This cost includes accounting and managing costs associated with tax evasion, including the extra work of accounting employees to keep two books of records, one for the tax authority and one for internal use —the firm would need to know its true profits to make business decisions—, as well as economic costs, such as lost investment opportunities due to investors not liking low profits, or distrusting the firm because of suspected tax evasion. Although previous work has allowed for heterogeneity in the cost of evasion, an explicit relationship between size and evasion cost has not been explicitly modeled. @Almunia2018 suggest that costs of evasion might be heterogeneous among firms for several reasons, including the number of employees with which the employer needs to collude to evade taxes (this reason would suggest that larger firms might face higher costs of evasion, as more employees need to collude). Other reasons evasion costs might vary are manager's preferences (e.g., risk aversion, ethical considerations), or the time and skills invested in the misreporting activity rather than allocating them to productive activities.
+
+Recently however, new evidence has shown that tax evasion by overreporting is increasing in revenue percentile, but it collapses for the largest firms, in particular, for very large corporations [@Carrillo2022]. The same paper finds that in Ecuador, corporations evaded 1.7\% and sole Proprietorships, 11.5\%. The authors find that overreporting firms are larger than other firms, with higher revenues, costs, and tax liabilities (makes sense, higher the tax liability, higher the incentives to evade taxes). The authors show that the probability of overreporting increases monotonically in firm revenue. Furthermore, the share of fake deductions out of total deductions due to overreporting increases throughout the revenue distribution, except at the very top. Authors suggest that the sharp drop at the top might be due to corporations having stronger incentives to avoid illegal behaviour, or that they can use more sophisticated and effective measures of tax avoidance, that do not require misreporting expenses.
+
+
+- Exporters might evade less. 
+
+Why? Exports are not subject to sales taxes. Therefore, the higher the share of sales is exported the lower the incentives to overreport their inputs, as their sales tax liability decreases. In both models, the effective sales tax rate $\tau$ is lower for exporters.
+
+- Importers might evade more.
+
+Even though imports are subject to sales taxes, firms pay in addition import tariffs. While imports might not be easily overreported due to a larger paper trail, firms might overreport their domestic purchases to compensate for the higher cost of imports. In both models, the effective sales tax rate $\tau$ is higher for importers. In particular, import tariffs increase the effective sales tax rate by decreasing the share of purchases that might be deducted from sales tax liability.
+
+#### Empirical Strategy
+
+Again, for the truth-reporters, corporations,
+
+$$
+s^C_{ijt} = \gamma_j +  \varepsilon_{ijt}
+$$
+
+For the evaders, non-corporations,
+
+$$
+s^{NC}_{ijt} = \gamma_j + e_{ijt}(\tau, q,\kappa) +\varepsilon_{ijt}
+$$
+
+
+where $e_{ijt}(\tau, q,\kappa)$ is the overreporting of inputs for firm $i$ in industry $j$ at time $t$, which is a function of the effective sales tax rate $\tau$, the probability of detection $q$ and the cost of evasion $\kappa$.
+
+Combining these equations, we can write the following,
+
+$$
+\begin{aligned}
+(1-D_{NC})s_{ijt} + D_{NC} s_{ijt} =& (1-D_{NC})(\gamma_j +  \varepsilon_{ijt})\\
+&+ D_{NC} (\gamma_j + e_{ijt}(q,\kappa) +\varepsilon_{ijt}) \\
+s_{ijt} =& \gamma_j + D_{NC} e_{ijt}(\tau, q,\kappa) +\varepsilon_{ijt}
+\end{aligned}    
+$$ {#eq-reg-evasion-het}
+
+Since the probability of detection and the cost of evasion are not observed, we could use firms characteristics that are likely to influence them, and thus lead to systematic differences in the overreporting of inputs across firms. For example, if we want to investigate the relationship between size and tax evasion by overreporting inputs, we can use the interaction between a Non-Corporation dummy and different measures of size to capture the heterogeneity in overreporting of inputs across firms due to size.
+
+In theory, I could use any firm characteristic since error terms is not part of the information set of the firm, and thus $\mathbb{E}[\varepsilon_{ijt}|e_{ijt}]=0$. In practice however I would like to avoid variables that could be mechanically correlated with the explained variable, the input cost share. For example, if I use current revenue as a measure of size, it could be mechanically correlated with the input cost share, as the denominator of the input cost share is revenue.
+
+#### Firm Size and Tax Evasion
+
+As, previously discussed, size could be correlated with tax evasion. To investigate the effects of size, I use @eq-reg-evasion-het and estimate the following regression model:
+
+$$
+\begin{aligned}
+    s_{ijt} =& \gamma_j + D_{NC} \mathbf{X}_{it}\Gamma_{0}' +  \varepsilon_{ijt}
+\end{aligned}
+$$ {#eq-reg-evasion-het-size-deciles}
+
+where $\gamma_j$ stands for industry fixed effects, and $\varepsilon_{ijt}$ is the error term. $X_{it}$ is a set of dummy variables for each decile of size measured by labor, capital, revenue last year, and revenue two years ago. I use revenue lagged one and two years to avoid spurious correlation depending on the construction of the explained variable, which uses current year revenue to compute the input cost share. $\Gamma_{0}$ is a vector of coefficients for the interaction between the Non-Corporation dummy and the deciles of size. The coefficient of interest is $\Gamma_{0}$, the interaction term between the deciles of each size measure $X_{it}$ and Non-Corporations $D_{NC}$.
+
+$\Gamma_0$ is vector of coefficients of interest and can be interpreted as the average overreporting of each size decile for Non-Corporations. 
+
+@fig-ev-size-ntiles plots the regression results for the deciles of the different characteristics of interest separately.
+
+![](images/915-size-ntiles.png){#fig-ev-size-ntiles}
+
+- **Tax evasion by overreporting is increasing along firm size, but it drops at the last decile (@fig-ev-size-ntiles).**
+
+What I observe is that tax evasion by overreporting inputs is increasing in firm size, measured by revenue, capital, and labour. In particular, the percentage of inputs costs that firms overreport increases along the deciles of revenue, capital, and labour for Non-Corporations. Furthermore, all these measures of size show a similar pattern: the percentage of overreported inputs increases steadily from the first to the ninth decile, but then it collapses at the tenth decile. 
+
+- **This pattern is consistent with the evidence for Ecuador (@fig-carrillo-fig1b).**
+
+![Figure 1B from @Carrillo2022](images/f1b-Carrillo2022.jpg){#fig-carrillo-fig1b width="90%"}
+
+<!-- But why? Following the tradition of @Allingham1972, let's assume that the probability of detection is independent of size, or any firm characteristic. Then, what could explain this pattern is the cost of evasion. 
+
+The cost of evasion should be decreasing in size along most of the distribution of size, but then it should increase abruptly for the largest firms. For firms with small revenues, the relative cost of overreporting inputs is high, as they have less resources to allocate to tax evasion activities. As firms grow larger in revenue, they can allocate more resources to tax evasion, reducing the relative cost of evasion. 
+
+However, for the largest firms, the cost of evasion might increase due to several reasons. First, the cost of *illegal* tax evasion might abruptly increase relative to more sophisticated *legal* tax avoidance strategies once a firm can implement them (e.g. offshoring profits). Second, the reputational cost of being caught evading taxes might be higher for larger firms, as they are more visible to the public and stakeholders. Third, the internal cost of evasion might increase for larger firms, as more employees need to collude to evade taxes, increasing the risk of detection from within the firm. -->
+
+
+### Marginal Effects
+
+The previous measures are correlated with size. Which one is the most relevant? What is the marginal effect of each size measure holding the others constant?
+
+I investigate these questions by estimating the following regression model:
+
+$$
+\begin{aligned}
+    s_{ijt} =&\gamma_j +  \beta_0 D_{NC} + D_{NC} \mathbf{X}_{it}\Gamma_{0}'  \\
+    &+ D_{NC} \mathbf{X}^2_{it}\Gamma_{1}' +\varepsilon_{ijt}
+\end{aligned}
+$$
+
+where the characteristics $\mathbf{X}_{it}$ are the percentiles of: labour, capital, revenue (lagged two years), exports, and imports. I include a square term for each characteristic $\mathbf{X}_{it}$ to capture non-linearities in the relationship between each characteristic and tax evasion by overreporting inputs. 
+
+@fig-ev-size-cond-eff shows the relevant marginal effects are labour, revenue (lagged two years), and imports. @fig-ev-size-cond-curves shows the predicted overreporting curves for each characteristic holding the others at their median (50th percentile).
+
+![](images/915-size-cond-effects.png){#fig-ev-size-cond-eff}
+
+![](images/915-size-cond-curves.png){#fig-ev-size-cond-curves}
+
+- **Holding all other characteristics constant, increasing the labour percentile decreases tax evasion.** 
+
+The reduction in overreporting is more pronounced as we move to higher percentiles of labour. This result suggests that if we take two firms with similar revenue, capital, exports, and imports, the one with more employees evades less by overreporting inputs. 
+
+This makes sense for several reasons. **First, the marginal cost of evasion would be higher** for the firm with more employees, as more employees need to collude with the firm to evade taxes illegally. **Second, more employees involved also increases the probability of detection** from within the firm, as the probability that an employee might be willing to anonymously report the illegal activity to the tax authority increases.
+
+- **Moving up in the revenue distribution increases tax evasion by overreporting inputs, holding constant the other characteristics.**
+
+The statistical significance of the quadratic term is likely due to the non-linear pattern observed in the previous section, where tax evasion increases along the revenue distribution but then collapses at the very top.
+
+For firms with small revenues, the relative cost of overreporting inputs is high, as they have less resources to allocate to tax evasion activities. As firms grow larger in revenue, they can allocate more resources to tax evasion, reducing the relative cost of evasion.
+
+However, for the largest revenue firms, the cost of evasion might increase due to several reasons. The cost of *illegal* tax evasion might abruptly increase relative to more sophisticated *legal* tax avoidance strategies once a firm can implement them (e.g. offshoring profits). The reputational cost of being caught evading taxes might be higher for larger firms, as they are more visible to the public and stakeholders. 
+
+<!-- Third, the internal cost of evasion might increase for larger firms, as more employees need to collude to evade taxes, increasing the risk of detection from within the firm. -->
+
+- **Finally, imports are negatively correlated with tax evasion by overreporting inputs, holding constant the other characteristics, but the effect is convex.**
+
+By observing @fig-ev-size-cond-curves, we observe that after the 40th percentile, the percentage of overreported inputs increases with imports. This result is consistent with the previous discussion that **importers face higher incentives to overreport their domestic purchases to compensate for the higher costs due to import tariffs**. However, the convexity of the relationship suggests that for firms with low imports, the incentives to overreport domestic purchases are not strong enough to increase tax evasion. **Only for firms with large imports, the incentives become strong enough to increase tax evasion by overreporting inputs.**
+
+Overall, these results suggest that the non-linear pattern observed in the previous section might be explained by:
+
+- a probability of detection that increases slowly along most of the size distribution, but then increases sharply for the largest firms. The probability of detection might in fact be flat for most of the size distribution. It then increases sharply for the largest firms because they are more visible to the tax authority, and because internal detection from within the firm becomes more likely as more employees need to collude to evade taxes. 
+
+- a cost of evasion that decreases along most of the size distribution, but then it increases for the largest firms. This is because firms with small revenues have high relative costs of evasion. As firms increase in revenue, they can allocate more resources to tax evasion, reducing the relative cost of evasion. However, for the largest revenue firms, the cost of evasion might increase due to the higher costs of illegal evasion relative to legal avoidance strategies, and higher reputational costs. 
+
+### Robustness Check
+
+![](images/917-size-ntiles-robust.png){#fig-ev-size-ntiles-robust}
+
+![](images/917-sz-mrg-eff-robust.png){#fig-ev-size-cond-eff-robust}

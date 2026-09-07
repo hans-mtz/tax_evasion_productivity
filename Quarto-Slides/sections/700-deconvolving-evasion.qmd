@@ -1,0 +1,248 @@
+# Estimating Tax Evasion by Deconvolution
+
+## Objective
+
+- Empirical exercise to motivate structural model
+
+## What can be deconvoled and what can't {#sec-what-can-deconv}
+
+::: {.callout-note icon="false"  title="Convolution (Meister, 2009)"}
+
+The density of the sum of two **independent** random variables is equal to the **convolution** of the densities of both addends; hence
+
+$$
+f_V = \int f_\varepsilon(V - u)f_u(u)du
+$$
+
+:::
+
+Under $\varepsilon \ind M, e$ and $e \ind M$, with known $f_\varepsilon$ and $u=\ln\left(\frac{M+e}{M}\right)$. Also $M^*=M+e$, and $V=u+\varepsilon$.
+
+Then, I can deconvolve:
+
+- $f_u$: $f_V = \int f_\varepsilon(V - u)f_u(u)du$
+
+<!-- - I could do a change of variable and integrate over $e$, : $f_V = \int f_\varepsilon(V - u(e))f_u(u(e))u'(e)de$
+  - but that would still not give me $f_e$ -->
+<!-- 
+- $f_{\ln M}$: By letting $V-\ln M^*=-\ln M+\varepsilon$, I can deconvolve: $f_{V-\ln M^*}=\int f_\varepsilon(V-\ln M^*+\ln M)f_{\ln M}(\ln M)d\ln M$ -->
+
+## I don't need $f_e$, actually
+
+<!-- - $f_{u}$ is a more interesting object by itself
+- $f_e$ is the unconditional distribution of overreported quantity of materials.
+  - For a particular $\bar e$, $f_e$ would let me know $P(e<\bar e)$,
+  - but I would not know if, relative to the true materials, $\bar e$ is a large or small quantity,
+  - this is what $f_{u}$ tells me!
+- $f_{u}$ describes the overreported relative to the true inputs,
+  - The same draw of $u\sim f_{u}$ represents wildly different levels of overreporting depending on the level of true inputs
+- The probability that a firm overreports a particular level of materials might be small or large depending on its true level of materials,
+- but the probability that a firm overreports a particular percentage of its true inputs might be the same regardless of your true level of materials
+  - so it's safer to assume firm-independent
+  -
+## A note on the empirical strategy -->
+
+<!-- - Theory: $M^*_{it}=M_{it}+e_{it}$ (additive; $e\ge0$ is the structural object entering $q(e)$, $\kappa(e,\omega)$) -->
+
+What deconvolution recovers is the **overreporting log-ratio**, $u_{it}\equiv\ln\left(\frac{M^*_{it}}{M_{it}}\right)=\ln\left(1+\frac{e_{it}}{M_{it}}\right)$,
+
+- the *share of overreported over true inputs*
+- the same object discussed previously, now given an explicit structural interpretation
+- Since it's a ratio, it's adjusted by the firm's true materials level and hence informative about the intensity of tax evasion
+- Had I recovered $e$, I would have to normalize somehow to compare firms of different levels of material utilization
+<!-- - $\mathcal V_{it}=u_{it}-\varepsilon_{it}$ -->
+
+<!--
+- This is a property of the **current identification strategy under CD**, not a claim about firm behavior: the firm's optimal true input is $M_{it}=\beta P_tY_{it}/\rho_t$, a *ratio*, so any wedge between $M^*$ and $M$ can only enter the log residual $\mathcal V_{it}$ as $\ln(M^*/M)$ — never the level $e_{it}$ itself
+  - Under a different functional form (e.g. translog) the specific map from $e$ to the recoverable object would need to be rederived, but the general principle wouldn't change: whatever enters the log residual additively with $-\varepsilon$ is some transform of $e$ scaled by $M$, not the raw level
+-->
+<!--
+- Building out the structural model (additive $e$, entering $q(e)$, $\kappa(e,\omega)$) doesn't change what was recovered before, it gives the previously-recovered object an explicit link to the structural $e$
+
+## Example $f_e$ vs $f_{u}$
+
+| Firm | $M$ | $M^*$ | $e=M^*-M$ | e/M |
+|---|---|---|---|---|
+| A | 100 | 110 | 10 | 0.1 |
+| B | 1,000 | 1,100 | 100 | 0.1 |
+| C | 1,000 | 1,010 | 10  | 0.01 |
+
+
+- Firm A \& B get same draw of $e/M$, $e$ differs 10$\times$ but they are not unreasonable considering the level of $M$ of each firm
+- Firm A \& C get same draw of $e$, $e/M$ differs 10$\times$, however the level of $e$ looks way small for the level of input $M$. The firm would leave money on the table which contradicts economic intuition of optimization behaviour
+- Pooling $e_{it}$ across firms of different sizes mixes draws from distributions with different scales
+- $f_e$ could not be firm-invariant, while it is not unreasonable to assume $f_{e/M}$ does not vary with the level of $M$ of each firm
+
+-->
+<!-- ## Deconvolving the overreporting log-ratio
+
+- Deconvolution recovers the distribution of the **overreporting log-ratio** $u_{it}\equiv\ln\left(1+\frac{e_{it}}{M_{it}}\right)$, $f_{u}$.
+  - the *share of overreported over true inputs* in logs
+- Same object discussed previously, no change in estimation
+- Clear link to model: 
+  - the structural $e$ is explicitly identified inside the empirically recovered object, 
+  - rather than $u$ standing in as an alternative definition of tax evasion
+
+$$
+\mathcal{V}_{it} = u_{it}-\varepsilon_{it}
+$$ {#eq-eva-deconv} 
+
+-->
+
+[
+    [Plotting $\mathcal{V}$ and $\varepsilon$ $\hookrightarrow$](#sec-denisities-plot)
+]{.footlineextra}
+
+## Getting rid of the log
+
+<!-- We said $M^*\not\ind e,M$, but we have more than that:
+
+- There is *deterministic mapping* that is **monotonic** and **differentiable** ($C^1$) -->
+
+If I'm interested in only the density of the ratio, I can use a **density transformation**
+
+**Theorem 1.7.1 [@Hogg2019]**: Let $X$ be a continuous random variable with pdf $f_X(x)$ and support $\mathbfcal{S}_X$. Let $Y=g(X)$ where $g(x)$ is a one-to-one *[monotonic] differentiable* function on the support of $X$, $\mathbfcal{S}_X$. Denote the inverse of $g$ by $x=g^{-1}(y)$ and $dx/dy=d[g^{-1}(y)]/dy$. Then, the pdf of $Y$ is given by
+
+$$
+  f_Y(y)=f_X(g^{-1}(y))\Bigg|\frac{dx}{dy}\Bigg|, \text{for } y\in \mathbfcal{S}_Y
+$$
+
+where the support of $Y$ is the set $\mathbfcal{S}_Y=\{y=g(x):x\in\mathbfcal{S}_X\}$
+
+
+## Getting density of the ratio
+
+<!-- Therefore, with the $f_u$ density on hand, we can get $f_{\frac eM}$ or $f_{e}$ by a **density transformation**, using the identities
+$$
+u=\ln\left(1+\frac eM\right)\qquad u=\ln\left(\frac{M^*}{M^*-e}\right)
+$$ 
+-->
+
+Therefore, with $X=u$ and $g^{-1}(y)=\ln (1+y)$
+
+$$
+f_{\frac eM}(y)= f_u\big(\ln (1+y)\big)\Bigg|\frac{1}{1+y}\Bigg|
+$$ {#eq-ratio-dens}
+
+<!-- and with $Y=e$, and $g^{-1}(y)=\ln \left(\frac{M+y}{M}\right)$
+$$
+f_{e}(y) = f_{u}\left(\ln\left(\frac{M^*}{M^*-y}\right)\right)\Bigg|\frac{1}{M^*}\Bigg|
+$$ {#eq-e-dens}
+
+since $u$ is a ratio, we scale @eq-e-dens by $M^*$ -->
+
+## Informal proof
+
+If $U = g(R)$ for a strictly monotonic differentiable $g$, then $f_R(r) = f_U(g(r))|g'(r)|$
+
+**Proof (via CDFs).** Take $g$ strictly increasing (your case). Then
+$$
+F_R(r) = P(R\le r) = P\big(g(R)\le g(r)\big) = P(U\le g(r)) = F_U(g(r)),
+$$
+
+using that $g$ increasing preserves the inequality direction. 
+
+Differentiate both sides in $r$:
+$$
+f_R(r) = \frac{d}{dr}F_U(g(r)) = f_U(g(r))g'(r).
+$$
+
+If $g$ were decreasing instead, the inequality flips ($P(U\ge g(r))=1-F_U(g(r))$), and differentiating introduces a minus sign that exactly cancels the sign of $g'(r)$, hence $|g'(r)|$ of the general formula. 
+
+Everything goes through unchanged conditional on $Z=z$ [(just work with $F_{R|Z}(\cdot\mid z)$, $F_{u|Z}(\cdot\mid z)$ throughout).]{.sm}
+
+## Discussion
+
+Deconvolution estimates the unconditional $f_u$ because of how we set it up
+
+- From $f_u$, we can learn the probability of a firm of overreporting $u$, $P(U<u)=\int_0^uf_u(t)dt$, or
+  - the expected overreportig $\mu_u=\int u f_u(u)du$
+- This is the uncoditional probability, the same for all firms regardless of their characteristics
+- We might be interested in the *probability of overreporting conditional* on the firm size
+
+
+## What if we are interested in the conditional density?
+
+$$
+\begin{aligned}
+    f_{V|Z}(V\mid Z)&=\frac{f_{V,Z}(V,Z)}{f_Z(Z)}\\
+    &=\int f_{V|u,Z}(V\mid u,Z)\,f_{u|Z}(u\mid Z)\,du\\
+    &=\int f_\varepsilon(V-u)\,f_{u|Z}(u\mid Z)\,du
+\end{aligned}
+$$
+
+using
+
+  - $f_{V|u,Z}(V\mid u,Z)=f_{\varepsilon|u,Z}(V-u\mid u,Z)$ — $V=u+\varepsilon$ conditional on $u$
+  - $\varepsilon\perp(u,Z)$ **jointly**, so $f_{\varepsilon|u,Z}=f_\varepsilon$
+
+with $u\not\ind Z$ (otherwise conditioning on $Z$ would be pointless).
+
+## Estimating the Conditional distribution {#sec-estimating-cond-deconv}
+
+- **Discrete/bucketed $Z$** (e.g. quintiles of $K_{it}$ or $L_{it}$): the same 1-D deconvolution separately within each bucket.
+  - We've already looked into $E[u|Z]$
+- **Continuous $Z$**: nonparametric deconvolution with a continuous covariate 
+  - Literature: $f_{u|V}(u|V)$ [@Wang2015], $E[Z|u]$ [@FanTruong1993], and $f_{Z|u}$ [@HuangZhou2020]
+  - $f_{u|Z}$: feasible using [characteristic functions and kernels](#sec-cond-deconv-appendix)
+<!-- - The previous argument to recover $f_{e|Z}$ and $f_{e/M|Z}$ from $f_{u|Z}$ follows by the previous argument on the inconditional density -->
+- Ideally, what I want is $f_{e|\omega}$, but that's what $f_\psi$ is, the object I wil obtain with the structural approach
+
+
+# Conditional Deconvolution — Backup
+
+## What About the Full Distribution? {#sec-cond-deconv-appendix}
+
+- So far: $E[u_{ijt}\mid Z_{ijt}]$, and only at 10 decile bins of $Z$
+
+- Natural next question: the whole conditional density $f_{u\mid Z}(u\mid z)$, for $Z$ continuous
+    - Is the size gradient in the *level* of evasion, its *spread*, or its *shape*?
+
+## Aside: How Deconvolution Works
+
+We never observe $u_{ijt}$ directly — only $V_{ijt}=u_{ijt}+\varepsilon_{ijt}$, a "blurred" version of it
+
+- A histogram of $V$ mixes the true shape of $u$ with the noise $\varepsilon$ — the density of a sum of independent things is the *convolution* of their densities, $f_V=f_u * f_\varepsilon$
+
+- Convolutions are hard to undo directly, but they become simple *multiplication* after a Fourier transform (the characteristic function):
+$$
+\phi_V(t)=\phi_u(t)\,\phi_\varepsilon(t) \quad\Longrightarrow\quad \phi_u(t)=\frac{\phi_V(t)}{\phi_\varepsilon(t)}
+$$
+
+- Estimate $\phi_V$ from the data, divide by the already-known $\phi_\varepsilon$, transform back $\to \hat f_u$
+
+- This is exactly the (unconditional) trick behind the first-stage results [@CarrollHall1988; @StefanskiCarroll1990]
+
+## Conditional Version: Add a Local Window
+
+Same trick, done separately for each value of $Z$:
+
+- Instead of using *all* firms to build one blurred distribution, use only firms with $Z_i$ close to $z$ — a moving local window, weighted by a kernel $K$
+- Un-blur *that* local distribution the same way as before
+
+$$
+\hat\phi_{V\mid Z=z}(t)=\frac{\sum_i K\!\left(\frac{Z_i-z}{h}\right)e^{itV_i}}{\sum_i K\!\left(\frac{Z_i-z}{h}\right)}
+\;\;\Longrightarrow\;\;
+\hat f_{u\mid Z=z}(u)=\frac{1}{2\pi}\int e^{-itu}\,\frac{\hat\phi_{V\mid Z=z}(t)}{\phi_\varepsilon(t)}\,\omega(t)\,dt
+$$
+
+- $\omega(t)$: a damping weight, standard in any deconvolution, to keep the division numerically stable
+- Valid because $\varepsilon\perp(u,Z)$: within any $Z$-window, the noise is still independent of $u$ — the same assumption used throughout this section
+
+## Is This Standard?
+
+- [@FanTruong1993], already cited on the "is it feasible?" slide, addresses the *mirror-image* problem: a noisy covariate and a clean outcome (see also [@HuangZhou2020] for the conditional-density version of that same direction)
+- Ours runs the other way — clean $Z$, noisy $u$ — which is why the conditional *mean* never needed correcting: $\varepsilon\perp Z \Rightarrow E[V\mid Z]=E[u\mid Z]$
+- Only the *density* needs deconvolving, and the tool is just the classical deconvolution kernel [@CarrollHall1988; @StefanskiCarroll1990], applied inside a local window — a natural combination, not (to our knowledge) a named result in the literature
+
+## Do We Need the Full Density?
+
+- The conditional mean already carries the headline story: evasion rises then falls with size — going further only pays off if it answers a question the mean can't
+
+- The one moment that would matter: the conditional **variance** $\mathrm{Var}(u\mid Z=z)$
+    - Does "large firms don't evade" mean (a) *every* large firm individually evades a little — tight distribution near zero, like the corporations — or (b) a mix of some firms still evading heavily and others near zero that cancel out in the mean?
+    - (a) vs. (b) is a real audit-targeting question: under (a), size alone is a good targeting rule at the top; under (b) it isn't — some large firms are still hiding substantial evasion behind the average
+
+- If pushed further: the full nonparametric conditional deconvolution (previous slides) is the general method; cumulant/method-of-moments matching is a cheap over-identification check on the variance estimate, not a substitute for it
+
+[[$\hookleftarrow$](#sec-estimating-cond-deconv)]{.footlineextra}

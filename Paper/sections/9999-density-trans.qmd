@@ -1,0 +1,263 @@
+---
+author: Hans Martinez
+format: pdf
+date: last-modified
+---
+
+## Density transformation in $R^n$
+
+
+### Theorem 7.5.3 Change of Variables in $R^n$ @Judd1998
+
+Assume that $\Phi: X \subset R^n \to R^n$ is $C^1$ and that there is a $C^1$ inverse map $\Phi^{-1}: Y \subset R^n \to X$ where $Y=\Phi(X)$ and $Y$ and $X$ are open. If $f$ is integrable on $X$, then
+
+$$
+\int_Y f(y)dy = \int_Xf(\Phi(x))|\det J(\Phi)(x)| dx,
+$$
+
+where $J(\Phi)(x)$ is the Jacobian of $\Phi$ at $x$.
+
+### Corollary: Density transformation
+
+A direct corollary from the change of variables theorem is the density transformation [Section 2.7 in @Hogg2019].
+
+Let $f_X$ be the joint pdf of $X$,and $B$ any region in the support of $Y$, and let $A=\Phi^{-1}(B)$. Then, $P(X\in A)=P(\Phi(X)\in\Phi(A))=P(Y\in B)$. Then, applying Theorem 7.5.3 (@Judd1998),
+
+$$
+\begin{aligned}
+    P(X\in A)=&\int_A f_X(x)dx\\
+    =&\int_{\Phi(A)} f_X(\Phi^{-1}(y))|\det J\Phi^{-1}(y)|dy\\
+    =&\int_B f_X(\Phi^{-1}(y))|\det J\Phi^{-1}(y)|dy\\
+\end{aligned}
+$$
+
+Since $B$ is arbitrary and using $J\Phi^{-1}(y)=[J\Phi(x)]^{-1}$ (inverse function theorem) at $x=\Phi^{-1}(y)$, then the joint pdf of $Y$ must be,
+
+$$
+f_Y(y)= \frac{f_X(x)}{|\det J\Phi(x)|}\bigg|_{x=\Phi^{-1}(y)}
+$$ {#eq-dens-trans}
+
+@eq-dens-trans is what is applied to my setting.
+
+## Applying it to my model
+
+We want the density of observables $f_Y=f_{\mathcal{V},\tilde{\mathcal{W}}}(\mathcal{V},\tilde{\mathcal{W}})$ transforming the density of the primitives $f_X=f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)$.
+
+Because of independence $f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)=f_\psi(\psi)f_\omega(\omega)f_\varepsilon(\varepsilon)$.
+
+Define $G(\psi,\omega)\equiv u\big(e^*(\psi,\omega)\big)$, where $e^*$ inverts the FOC $\psi=h(e)-\delta_0+\delta_1\omega-\delta_2\omega^2$ and $u=\ln\frac{M_{it}+e}{M_{it}}$, with $M_{it}$ the true (unobserved) materials level — fixed as $e$ varies, since it comes from a separate production-side FOC that doesn't involve $e$ ($M\perp e\mid\omega$). Note $M^*_{it}=M_{it}+e$ is *not* the right thing to hold fixed here: it's an outcome that moves whenever $e$ does.
+
+Keep the auxiliary $a=\varepsilon$ and let $\Phi:(\psi,\omega,\varepsilon)\mapsto(\mathcal{V},\tilde{\mathcal{W}},a)$ to match the theorem's dimension requirement ($\Phi: R^3\to R^3$). We will integrate out the auxiliary afterwards.
+
+$$
+\mathcal V=G(\psi,\omega)-\varepsilon,\qquad \tilde{\mathcal W}=\omega+(1-\beta)\varepsilon,\qquad a=\varepsilon
+$$
+
+Having defined the transformation $\Phi$, we can get the Jacobian,
+
+$$
+J\Phi=\frac{\partial(\mathcal V,\tilde{\mathcal W},a)}{\partial(\psi,\omega,\varepsilon)}=
+\begin{pmatrix} G_\psi & G_\omega & -1\\ 0 & 1 & 1-\beta\\ 0 & 0 & 1\end{pmatrix}
+$$
+
+read directly off the three equations above ($G_\psi\equiv\partial G/\partial\psi$, $G_\omega\equiv\partial G/\partial\omega$).
+
+Expand along column 1 (only $G_\psi$ is nonzero there):
+$$
+\det J\Phi = G_\psi\cdot\det\begin{pmatrix}1 & 1-\beta\\ 0&1\end{pmatrix}=G_\psi\cdot1=G_\psi
+$$
+
+$G_\omega$ never enters — every cofactor multiplying it comes from a zero in column 1. Mechanically: $\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon$ has **unit coefficient on $\omega$**, a flat translation, so it contributes no curvature. A Jacobian only appears where the map is genuinely curved, the $\psi\to\mathcal V$ link through $G$, not $\omega\to\tilde{\mathcal W}$.
+
+Since $G=u\circ e^*$ is a composition, by the chain rule $G_\psi=u'(e^*)\cdot e^*_\psi$.
+
+From $u(e)=\ln(M_{it}+e)-\ln M_{it}$, with $M_{it}$ fixed,
+$$
+u'(e)=\frac{1}{M_{it}+e}
+$$
+
+Evaluated at $e=e^*$, the accounting identity $M_{it}+e^*=M^*_{it}$ gives $u'(e^*)=1/M^*_{it}$ directly in terms of the **observed** total — no need to pass through the unobserved $M_{it}$ at all.
+
+**Where the earlier draft went wrong.** The previous version of this note wrote $u(e)=\ln M^*_{it}-\ln(M^*_{it}-e)$ and differentiated holding $M^*_{it}$ fixed, giving $u'(e)=1/(M^*_{it}-e)=1/M_{it}$. That's a partial-vs-total-derivative error: the chain-rule step $G_\psi=u'(e^*)\cdot e^*_\psi$ is only valid if $u(\cdot)$'s *other* argument is genuinely constant as $\psi$ (hence $e^*$) varies with $\omega$ fixed. $M^*_{it}=M_{it}+e^*(\psi,\omega)$ fails that — it moves whenever $e^*$ does — so treating it as fixed silently assumes $\partial M^*_{it}/\partial e=0$, which is false. $M_{it}$ is the quantity that's actually invariant to $\psi$ here (materials FOC doesn't involve $e$), so it's the one that belongs inside a single-variable $u(e)$. Confirmed by redoing the calculation as a full total derivative of $G(\psi,\omega)=\ln M^*(\psi,\omega)-\ln(M^*(\psi,\omega)-e^*(\psi,\omega))$, correctly letting $M^*$ move with $e^*$: it collapses to the same $e^*_\psi/M^*_{it}$. The *value* of $u_{it}$ is identical either way (both are $\ln(M^*_{it}/M_{it})$) — only the derivative used in the Jacobian differs, by a factor of $M^*_{it}/M_{it}$.
+
+To obtain $e^*_\psi$, differentiate the FOC identity $\psi=h(e^*(\psi,\omega))-\delta_0+\delta_1\omega-\delta_2\omega^2$ w.r.t. $\psi$ (implicit function theorem, valid since $h'\neq0$):
+$$
+1=h'(e^*)\cdot e^*_\psi \quad\Longrightarrow\quad e^*_\psi=\frac{1}{h'(e^*)}
+$$
+
+Combining both,
+$$
+G_\psi=\frac{1}{M^*_{it}\,h'(e)}
+$$
+
+From the @eq-dens-trans, the multiplying factor is $1/|\det J\Phi|=1/|G_\psi|$:
+$$
+J_i(\varepsilon)\equiv\frac{1}{|G_\psi|}=\big|h'(e)\big|\,M^*_{it}
+$$
+
+Every piece is traceable: $|h'(e)|$ from inverting the FOC ($\psi\to e$), $M^*_{it}$ from the log-ratio definition ($e\to\mathcal V$, holding the true $M_{it}$ fixed). They multiply because $G=u\circ e^*$ is a composition, so the chain rule stacks them.
+
+Applying the density transformation formula gives the joint density of $(\mathcal V,\tilde{\mathcal W},a)$. However, only $(\mathcal V,\tilde{\mathcal W})$ are observed; $a$ was bookkeeping. 
+
+Integrating it $a$ out (an ordinary single integral, not part of the theorem) gives the likelihood contribution of firm $i$:
+
+$$
+f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_\psi\big(\psi(\varepsilon)\big)\,J_i(\varepsilon)\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)\,d\varepsilon
+$$ {#eq-Lunc}
+
+($f_\omega$ here is left generic — *which* density of $\omega$ belongs in this slot, and what it's implicitly conditioned on, is exactly what "Extending to a dynamic likelihood" below has to pin down; don't read the bare unconditional marginal into it yet.)
+
+A 3-for-3 change of variables that ends in a 1-D integral: the theorem handles the square transformation and hands back a Jacobian; marginalizing the unobserved auxiliary coordinate is the separate, ordinary step left over once the theorem's job is done.
+
+## Sanity check: is $M^*_{it}$ missing from the likelihood?
+
+My supervisor's question, roughly: we observe $M^*_{it}$ (the overreported materials figure) directly in the data — shouldn't the likelihood be the *joint* density $f_{\mathcal V,\tilde{\mathcal W},M^*}$, or at least $f_{\mathcal V,\tilde{\mathcal W}\mid M^*}$, rather than the unconditional $f_{\mathcal V,\tilde{\mathcal W}}$ used in @eq-Lunc? This section works out the algebra to answer that precisely — and the answer is: neither. $M^*_{it}$ is already fully inside $\mathcal V_{it}$; it isn't missing, and it shouldn't be conditioned on either.
+
+### What $\mathcal V$ and $\tilde{\mathcal W}$ actually contain
+
+From `56-id-evasion.qmd` (lowercase = logs; $k,l,y,m^*$ are the raw observables, $c_1\equiv\ln\rho_t-\ln P_t-\ln\beta-\ln\mathcal E$ a constant already pinned down in stage 1):
+
+$$
+\mathcal V_{it}=m^*_{it}-y_{it}+c_1 \tag{eq-ob-ev, rearranged}
+$$
+
+$$
+\tilde{\mathcal W}_{it}= y_{it}-\beta m^*_{it}+\beta\mathcal V_{it}-\alpha_Kk_{it}-\alpha_Ll_{it} \tag{eq-big-w + eq-w-squiggle}
+$$
+
+Substitute the first equation into the second — the $m^*_{it}$ terms cancel exactly:
+
+$$
+\tilde{\mathcal W}_{it}=(1-\beta)\,y_{it}+\beta c_1-\alpha_Kk_{it}-\alpha_Ll_{it}
+$$ {#eq-wtilde-reduced}
+
+That cancellation is not an accident. The text right after `eq-big-w` in `56-id-evasion.qmd` says it in words: $\tilde{\mathcal W}$ is built by "trading unobservables, the unobserved tax evasion for the output shock" — i.e. $\tilde{\mathcal W}$ is *constructed* to purge tax evasion from the productivity residual. Once that trade is made, of course $\tilde{\mathcal W}$ can't also be carrying information about $m^*_{it}$ — that information has been swept entirely into $\mathcal V_{it}$.
+
+### $(\mathcal V,\tilde{\mathcal W})\leftrightarrow(y,m^*)$ is a linear bijection
+
+Given $(k_{it},l_{it})$, treat $(y_{it},m^*_{it})$ as the two "new" pieces of randomness for firm $i$ at $t$ (everything else — $k,l,\rho_t,P_t,\hat\beta,\mathcal E$ — is either predetermined or already estimated in stage 1). The pair of equations above is a linear (affine) map
+
+> **Measurement caveat.** $m^*_{it}$ and $y_{it}$ here denote the deflated real-log quantities the *production* identity needs, not primitives independently observed the same way $\mathcal V_{it}$ is. $\mathcal V_{it}$ itself is built directly from the nominal materials-to-sales ratio (`eq-eva-emp` in `600-opt-tax.qmd`) — $\rho_t,P_t$ cancel in that ratio, so $\mathcal V_{it}$ never required $m^*_{it}$ or $y_{it}$ to be separately deflated in the first place. The bijection argument below is unaffected (it only needs $\det A\ne0$), but treat $m^*_{it},y_{it}$ as constructed objects here, not as separately-clean survey data. See `Paper/sections/9999-elvis.qmd`'s "note on measurement" and the corresponding CLAUDE.md entry.
+
+$$
+\Phi:(y_{it},m^*_{it})\;\mapsto\;(\mathcal V_{it},\tilde{\mathcal W}_{it}),\qquad
+\begin{pmatrix}\mathcal V\\ \tilde{\mathcal W}\end{pmatrix}
+=\underbrace{\begin{pmatrix}-1 & 1\\ 1-\beta & 0\end{pmatrix}}_{A}
+\begin{pmatrix}y\\ m^*\end{pmatrix}
++\begin{pmatrix}c_1\\ \beta c_1-\alpha_Kk-\alpha_Ll\end{pmatrix}.
+$$
+
+> **Reminder: linear (affine) bijection.** A map $\Phi(x)=Ax+b$ on $\mathbb R^n$ is a bijection **iff $\det A\ne0$**; when it is, the inverse is affine too, $\Phi^{-1}(y)=A^{-1}(y-b)$, and — this is the part worth remembering — its Jacobian is $A^{-1}$, a **constant matrix**. It doesn't vary point to point the way the Jacobian of a curved map does. That's a much stronger statement than "invertible at this particular point," which is all Theorem 7.5.3 promises for a general $C^1$ map. It's *why* checking $\det A\ne0$ once is enough here, instead of needing an implicit-function-theorem argument at each $(y,m^*)$.
+
+Here $\det A = (-1)(0)-(1)(1-\beta)=-(1-\beta)$, and $0<\beta<1$ always (materials share), so $\det A\ne0$ unconditionally — $\Phi$ is a bijection for every firm, every $\theta$, no knife-edge case to worry about.
+
+That bijection is the whole answer to the supervisor's question. It means $(\mathcal V_{it},\tilde{\mathcal W}_{it})$ and $(y_{it},m^*_{it})$ are two labels for the exact same information — nothing is lost by working in $(\mathcal V,\tilde{\mathcal W})$-space, and nothing is gained by tacking $M^*_{it}$ back on as though it were a separate fact. $M^*_{it}$ is already inside $\mathcal V_{it}$, one-for-one. The three cases below spell out why that rules out (b) and (c); a separate aside afterward works out the actual size of $\Phi$'s Jacobian, which is a related but different question from the one just answered.
+
+### Three candidate objects
+
+**(a) $f_{\mathcal V,\tilde{\mathcal W}\mid K,L}$ — the right *target*, but not simply @eq-Lunc as originally written.** Because $\Phi$ is a bijection, $f_{\mathcal V,\tilde{\mathcal W}\mid K,L}$ is just the joint density of the two raw endogenous outcomes $(Y_{it},M^*_{it})$ conditional on the predetermined state $(K_{it},L_{it})$, reparametrized through $\Phi^{-1}$ and rescaled by $\Phi$'s Jacobian (a $\theta$-free constant — worked out in the aside below). Nothing about $M^*_{it}$'s randomness is missing; it's just been relabeled — that part of the argument is unaffected by anything below.
+
+> **Correction.** An earlier version of this note stopped here and declared this equal to @eq-Lunc as originally written (bare, unconditional $f_\omega$). That equality only holds under the extra assumption $\omega_{it}\perp(K_{it},L_{it})$ — which turns out to be untenable: $\omega$ is AR(1)-persistent and $K$ is a dynamically accumulated state chosen anticipating that persistence, and asserting independence here would strip the very AR(1) moment conditions that identify $\alpha_K,\alpha_L$ of any instrument relevance. The correct formula replaces bare $f_\omega$ with the AR(1) innovation density $f_\eta$, conditioned on the firm's own lagged $\tilde{\mathcal W}_{it-1}$ (a sufficient statistic for $(K,L)$'s relevance to $\omega_{it}$) — worked out in "Extending to a dynamic likelihood" below, @eq-Lunc-dynamic.
+
+**(b) $f_{\mathcal V,\tilde{\mathcal W},M^*}$ — ill-posed, don't use.** Given $(\mathcal V_{it},\tilde{\mathcal W}_{it},K_{it},L_{it})$, $M^*_{it}$ is *not* an independent third random draw — it's pinned down exactly by rearranging the definition of $\mathcal V_{it}$ itself (`eq-ob-ev` above): $m^*_{it}=\mathcal V_{it}+y_{it}-c_1$. The joint law of $(\mathcal V,\tilde{\mathcal W},M^*)$ given $(K,L)$ lives entirely on a 2-dimensional surface inside $\mathbb R^3$ (the graph of $\Phi^{-1}$), which has zero Lebesgue measure in $\mathbb R^3$. A genuine 3-D density doesn't exist for it — you'd need a Dirac delta pinning $M^*$ to that surface, and multiplying that in just reproduces (a) with an extra factor of "1" dressed up as a third dimension. Intuitively: there are only two independent sources of firm-$it$ randomness feeding this part of the likelihood ($Y_{it}$ and $M^*_{it}$, equivalently $\varepsilon_{it}$ and $u_{it}$'s realization); asking for a *third* independent coordinate over-counts.
+
+> **Counterexample: try to add $M^*$, watch the extended matrix degenerate.** $M^*_{it}$ isn't a new draw — it's just $m^*_{it}$ itself. Tack it on as a third output of the same linear map:
+> $$
+> \begin{pmatrix}\mathcal V\\ \tilde{\mathcal W}\\ M^*\end{pmatrix}
+> =\underbrace{\begin{pmatrix}-1 & 1\\ 1-\beta & 0\\ 0 & 1\end{pmatrix}}_{A_{\text{ext}}}
+> \begin{pmatrix}y\\ m^*\end{pmatrix}+\begin{pmatrix}c_1\\ \beta c_1-\alpha_Kk-\alpha_Ll\\ 0\end{pmatrix}.
+> $$
+> $A_{\text{ext}}$ is $3\times2$: three outputs built from only two free primitives $(y,m^*)$. Three vectors in $\mathbb R^2$ (its three rows) can never be linearly independent — $\operatorname{rank}(A_{\text{ext}})\le2<3$ on dimension-counting grounds alone, no computation needed. Eliminating $(y,m^*)$ between the three defining equations pins down the exact dependency: taking $(1-\beta)\times(\text{row }1)+1\times(\text{row }2)-(1-\beta)\times(\text{row }3)$ cancels $y$ and $m^*$ entirely, leaving
+> $$
+> (1-\beta)M^*_{it}-(1-\beta)\mathcal V_{it}-\tilde{\mathcal W}_{it}=\alpha_Kk_{it}+\alpha_Ll_{it}-c_1.
+> $$
+> This is a *fixed, non-random* affine constraint linking $(\mathcal V_{it},\tilde{\mathcal W}_{it},M^*_{it})$ given $(k_{it},l_{it})$ — the algebraic fingerprint of "lives on a 2-D surface in $\mathbb R^3$": not a description, an exact equation. And if you insist on making the map square, as Theorem 7.5.3 literally requires ($\Phi:\mathbb R^n\to\mathbb R^n$), the only way is to invent a third primitive $z$ for $M^*$ to depend on — but none exists in the model. Appending one that (honestly) enters none of the three equations gives
+> $$
+> J\Phi_{\text{ext}}=\frac{\partial(\mathcal V,\tilde{\mathcal W},M^*)}{\partial(y,m^*,z)}=\begin{pmatrix}-1&1&0\\ 1-\beta&0&0\\ 0&1&0\end{pmatrix},\qquad \det J\Phi_{\text{ext}}=0
+> $$
+> a zero column forces $\det=0$ outright. Theorem 7.5.3's invertibility hypothesis fails by construction — (b) isn't just a bad modeling choice, it's algebraically ill-posed.
+
+**(c) $f_{\mathcal V,\tilde{\mathcal W}\mid M^*}$ — well-defined, but the wrong target.** This one is a legitimate density (conditioning on one coordinate of a bijection just fixes it), but conditioning on $M^*_{it}$ throws away exactly the randomness the model is supposed to explain. $M^*_{it}=M_{it}+e^*_{it}(\psi_{it},\omega_{it};\theta)$ is the firm's *endogenous* evasion outcome — the object generated by the evasion FOC — and it's the channel through which the benefit shifter $\tau\rho_t$ moves evasion and thereby identifies $\lambda$ (see the "Identification of $\lambda/k$" note in the model doc). Treating $M^*_{it}$ as given and conditioning on it is like conditioning a wage regression on the wage: what's left to fit is just $\tilde{\mathcal W}_{it}$, i.e. $y_{it}$ alone — a plain productivity-process likelihood with no remaining leverage on $\theta$ at all.
+
+**So:** $M^*_{it}$ is already fully determined, given $(\mathcal V_{it},Y_{it})$, by the bijection — it isn't missing from @eq-Lunc, and there's nothing to gain by adding it back in. (b) asks for a coordinate that doesn't independently exist; (c) throws away the randomness the model exists to explain; (a) already has $M^*_{it}$, for free, exactly because $\Phi$ is invertible.
+
+### The Jacobian of $\Phi$, and why it's not $J_i(\varepsilon)$
+
+The bijection argument above only needed $\det A\ne0$ — it never needed the actual *value* of the Jacobian. A separate, narrower question: translating $f_{y,m^*}$ into $f_{\mathcal V,\tilde{\mathcal W}}$ does pick up a Jacobian factor from the density-transformation formula (@eq-dens-trans) — could that factor be hiding some $\theta$-dependence that @eq-Lunc isn't accounting for?
+
+Solving $\Phi^{-1}$:
+
+$$
+y_{it}=\frac{\tilde{\mathcal W}_{it}+\alpha_Kk_{it}+\alpha_Ll_{it}-\beta c_1}{1-\beta},\qquad
+m^*_{it}=\mathcal V_{it}+y_{it}-c_1,
+$$
+
+with constant Jacobian $|\det A^{-1}|=1/(1-\beta)$ — a number that depends only on $\hat\beta$ (fixed, from stage 1), never on $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$. That matters: it means relabeling from $(y,m^*)$-space to $(\mathcal V,\tilde{\mathcal W})$-space can't itself be doing any estimation work. A constant can't move the argmax of the likelihood over $\theta$ — so no, nothing is hiding in it.
+
+Contrast that with $J_i(\varepsilon)=|h'(e)|\,M^*_{it}$ (derived earlier in this note), which comes from a different map entirely, $(\psi,\omega,\varepsilon)\to(\mathcal V,\tilde{\mathcal W},a)$ — the one that actually appears inside @eq-Lunc. That map is **nonlinear** ($G=u\circ e^*$ curves), so its Jacobian varies pointwise with $e$ (hence with $\varepsilon$), is only *locally* invertible, and depends on $\theta$ through $\lambda$ (inside $h'$) — so it *is* doing estimation work and can't be dropped. The two Jacobians both happen to involve $M^*_{it}$, which invites confusion, but they answer different questions: this section's Jacobian just confirms the $(\mathcal V,\tilde{\mathcal W})$ reparametrization is free — it's never actually used in estimation, since the likelihood is built directly in $(\mathcal V,\tilde{\mathcal W})$-space from the primitives; $J_i(\varepsilon)$ is a load-bearing piece of the likelihood itself.
+
+### Summary
+
+- $M^*_{it}$ **is** in the likelihood — one-for-one, via $\mathcal V_{it}$, given $(K_{it},L_{it})$, because $\Phi$ is a bijection.
+- The right object is $f_{\mathcal V,\tilde{\mathcal W}\mid K,L}$ — but its correct formula is @eq-Lunc-dynamic (see "Extending to a dynamic likelihood" below), not the bare-$f_\omega$ @eq-Lunc as first written: that required the extra, rejected assumption $\omega\perp(K,L)$.
+- $f_{\mathcal V,\tilde{\mathcal W},M^*}$ double-counts — no genuine third dimension of randomness exists.
+- $f_{\mathcal V,\tilde{\mathcal W}\mid M^*}$ conditions away the model's own endogenous outcome and would leave $\theta$ unidentified.
+- $\Phi$'s own Jacobian, $1/(1-\beta)$, is a $\theta$-free constant — it's not secretly doing estimation work, unlike $J_i(\varepsilon)$ inside @eq-Lunc.
+
+## Extending to a dynamic likelihood: conditioning on $\omega_{it-1}$ instead of $(K,L)$
+
+The sanity check above correctly identified $f_{\mathcal V,\tilde{\mathcal W}\mid K,L}$ as the right target, but flagged its own overclaim that this equals @eq-Lunc as originally written. This section works out the actual formula. Unlike $M^*_{it}$ (redundant by a *bijection*, an algebraic fact true regardless of the DGP), whether conditioning on $(K,L)$ matters for $\omega$ is a *distributional* question — and it does matter here, because $\omega$ is AR(1)-persistent while $K$ is a dynamically accumulated state chosen anticipating exactly that persistence. Asserting $\omega_{it}\perp(K_{it},L_{it})$ to make the issue disappear would be inconsistent with the very AR(1) moment conditions (`eq-eta-moments` in `56-id-evasion.qmd`) that identify $\alpha_K,\alpha_L$ in the first place — if $\omega_{it}$ carried no relationship to $(K_{it},L_{it})$, there would be no instrument-relevance left for that regression to exploit.
+
+> **Notation clash, resolved locally.** `56-id-evasion.qmd`'s AR(1) drift (`eq-prod-markov`) is called $h$, with linear case $h(\xi)=\delta_0+\delta_1\xi$ (`eq-big-w-reg`) — both symbols are already spoken for in this note ($h$ is the cost-FOC inverse map from @eq-Lunc; $\delta_0,\delta_1,\delta_2$ are $\kappa$'s U-shape parameters). Purely so formulas below stay parseable, rename the AR(1) drift here only: $g(\xi)=\gamma_0+\gamma_1\xi$, $\eta_{it}$ kept as in the source paper. `56-id-evasion.qmd` itself is untouched/read-only — translate when cross-referencing.
+
+### Why $(K,L)$-conditioning reduces to $\omega_{it-1}$-conditioning
+
+$\omega_{it}=g(\omega_{it-1})+\eta_{it}$. $(K_{it},L_{it})$ are functions of the firm's $t-1$ information set (predetermined); $\eta_{it}$ is news arriving strictly after that, independent of $(\omega_{it-1},K_{it},L_{it})$ jointly — exactly what the paper's orthogonality table already asserts for $\eta_{it}$ (orthogonal to $k_{it},l_{it}$ **and** to $\omega_{it-1}$). Conditional on $\omega_{it-1}$, the only randomness left in $\omega_{it}$ is $\eta_{it}$, which doesn't depend on $(K_{it},L_{it})$:
+
+$$
+f_{\omega_{it}\mid \omega_{it-1},K_{it},L_{it}}(\omega_{it})=f_\eta\big(\omega_{it}-g(\omega_{it-1})\big)=f_{\omega_{it}\mid \omega_{it-1}}(\omega_{it}).
+$$
+
+So $\omega_{it-1}$ is a **sufficient statistic**: once it's known, $(K_{it},L_{it})$ adds nothing (extending this to the full triple $(\psi_{it},\omega_{it},\varepsilon_{it})$ needs $\psi_{it},\varepsilon_{it}\perp(K_{it},L_{it})\mid\omega_{it-1}$ too, already on the same footing as the model's other idiosyncratic-shock assumptions). This licenses building the likelihood directly around $\omega_{it-1}$ — the true state variable — rather than around $(K,L)$, which was only ever a noisy proxy for it and, as flagged in the sanity check, leads to a regress ($f_{\omega_{it-1}\mid K,L}$ is exactly as hard a problem as the one just solved, one period earlier) if pursued directly.
+
+### Step 1 — $\omega_{it}$'s density conditional on the lag
+
+$$
+f_{\omega_{it}\mid\omega_{it-1}}(\omega_{it})=f_\eta\big(\omega_{it}-g(\omega_{it-1})\big).
+$$
+
+### Step 2 — redo the change of variables, $\omega_{it-1}$ held fixed
+
+The $\Phi$ map is untouched — $\mathcal V_{it}=G(\psi_{it},\omega_{it})-\varepsilon_{it}$, $\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$, $a=\varepsilon_{it}$ — and so is its Jacobian $J_i(\varepsilon_{it})=|h'(e)|\,M^*_{it}$: $\omega_{it-1}$ never enters the map, exactly like $(K,L)$ before it, so it only ever shifts *which* $\omega$-density gets plugged in, never the curvature. Substituting the conditional density from Step 1 for the marginal $f_\omega$ in @eq-Lunc:
+$$
+f_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \omega_{it-1}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g(\omega_{it-1})\Big)\,f_\varepsilon(\varepsilon_{it})\,d\varepsilon_{it}.
+$$ {#eq-Lunc-cond-lag}
+
+### Step 3 — $\omega_{it-1}$ isn't observed; peel it off using $\tilde{\mathcal W}_{it-1}$
+
+From `eq-w-squiggle`, $\omega_{it-1}=\tilde{\mathcal W}_{it-1}-(1-\beta)\varepsilon_{it-1}$. $\tilde{\mathcal W}_{it-1}$ is firm-$i$ *data* — already constructed and used to estimate the AR(1) in stage 1 — leaving only $\varepsilon_{it-1}$ unknown, with known density $f_\varepsilon$ (same as stage 1, by stationarity) and independent of everything else in @eq-Lunc-cond-lag: $\varepsilon_{it-1}\perp\varepsilon_{it},\eta_{it}$ is in the orthogonality table directly; $\varepsilon_{it-1}\perp\psi_{it}$ is not — it's a new maintained assumption introduced here, extending the model's existing $\psi\perp\varepsilon$ (same period) across time, on the same footing as that assumption rather than independently established. Marginalizing $\varepsilon_{it-1}$ out is therefore an ordinary integral — no Jacobian, same bookkeeping move already used to dispose of $a=\varepsilon_{it}$ in the original derivation, not a new instance of the theorem:
+$$
+f_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \tilde{\mathcal W}_{it-1}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\iint f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g\big(\tilde{\mathcal W}_{it-1}-(1-\beta)\varepsilon_{it-1}\big)\Big)\,f_\varepsilon(\varepsilon_{it})\,f_\varepsilon(\varepsilon_{it-1})\,d\varepsilon_{it}\,d\varepsilon_{it-1}.
+$$ {#eq-Lunc-dynamic}
+
+This is the corrected likelihood contribution: @eq-Lunc with the unconditional $f_\omega$ replaced by the AR(1) innovation density $f_\eta$, evaluated at a lag-productivity argument that is itself integrated against the one genuinely unknown piece, $\varepsilon_{it-1}$.
+
+### Recovering $f_\eta$
+
+Worked out via `eq-big-w-reg` (renamed): define the fully constructible residual
+$$
+\zeta_{it}\equiv \mathcal W_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(\mathcal W_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big)=(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it},
+$$
+
+a sum of three mutually independent pieces (orthogonality table again), the first two known up to the already-deconvolved stage-1 $f_\varepsilon$. Fourier deconvolution recovers the third:
+$$
+\phi_\eta(t)=\frac{\phi_\zeta(t)}{\phi_\varepsilon\big((1-\beta)t\big)\,\phi_\varepsilon\big(-\gamma_1(1-\beta)t\big)}\ \longrightarrow\ f_\eta,
+$$
+
+the same deconvolution class as stage 1's $f_e$/$f_\varepsilon$ recovery, just against a two-factor known-error density instead of one.
+
+### Consistency check: nests the static case
+
+If productivity had no persistence, $g(\xi)\equiv\gamma_0$ (constant, $\gamma_1=0$), the $\varepsilon_{it-1}$ integral in @eq-Lunc-dynamic becomes a no-op — $f_\eta(\omega(\varepsilon_{it})-\gamma_0)$ doesn't depend on $\varepsilon_{it-1}$, so it integrates out of a term that doesn't contain it, leaving exactly @eq-Lunc with $f_\omega(\cdot)\equiv f_\eta(\cdot-\gamma_0)$. The dynamic likelihood collapses to the static one exactly when the thing that made $(K,L)$-conditioning necessary — persistence — is switched off. That's the intended sanity check: the fix activates precisely in proportion to $\gamma_1$, not unconditionally.
+
+**Practical caveat (not resolved here):** @eq-Lunc-dynamic needs $\tilde{\mathcal W}_{it-1}$, so it only applies to firm-periods with an observed predecessor. A firm's first observed period has no lag to condition on — the standard dynamic-panel initial-conditions problem (e.g. Heckman 1981); such periods would fall back to @eq-Lunc's unconditional $f_\omega$ (interpreted as $\omega$'s stationary/ergodic marginal) rather than @eq-Lunc-dynamic. Flagging this rather than resolving it — it's a separate design choice from the derivation above.

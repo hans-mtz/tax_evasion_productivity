@@ -1,0 +1,674 @@
+---
+title: "Tax Evasion and Productivity"
+subtitle: ""
+author: "Hans Martinez"
+institute: "Western University"
+date: 06-01-2024
+date-format: long
+format:
+  revealjs: 
+    slide-number: true
+    # chalkboard: 
+    #   buttons: false
+    preview-links: true
+    incremental: true
+    theme: [simple, theme.scss ]
+    width: 1260
+    height: 700
+    embed-resources: true
+    navigation-mode: linear
+    # revealjs-plugins:
+    #   - fullscreen
+    # include-in-header: packages.tex
+    # css: [style.css, xaringan-themer.css]
+    # logo: images/quarto.png
+    # footer: <https://quarto.org>
+# resources:
+#   - Paper/WP-LCFI.pdf
+bibliography:
+  - biblio/export.bib
+  - biblio/export2.bib
+  - biblio/export3.bib
+  - biblio/export31072022.bib
+  - biblio/b100422.bib
+  - biblio/b270123.bib
+  - biblio/b100424.bib
+
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(ggplot2)
+library(modeest)
+library(fixest)
+library(kableExtra)
+library(modelsummary)
+library(tinytable)
+library(stringr)
+
+load("../Code/Products/colombia_data.RData")
+load("../Code/Products/global_vars.RData")
+options(knitr.kable.NA = '')
+
+# The style of the table
+# my_style = style.tex("aer", model.format = "(i)")
+
+# markdown = TRUE is only useful in Rmarkdown documents
+setFixest_etable(markdown = TRUE)
+
+setFixest_dict(c(
+    share_sales_tax = "Sales Tax Rate",
+    `relevel(factor(juridical_organization),ref="3")0` = "Proprietorships",
+    `relevel(factor(juridical_organization),ref="3")1` = "Ld. Liability Co.",
+    `relevel(factor(juridical_organization),ref="3")2` = "Collective",
+    `relevel(factor(juridical_organization),ref="3")3` = "Corporation",
+    `relevel(factor(juridical_organization),ref="3")4` = "De Facto Corp.",
+    `relevel(factor(juridical_organization),ref="3")5` = "Joint Partnership",
+    `relevel(factor(juridical_organization),ref="3")6` = "Joint Stock Co.",
+    `relevel(factor(juridical_organization),ref="3")7` = "Cooperative",
+    `relevel(factor(juridical_organization),ref="3")8` = "Official Entity",
+    `relevel(factor(juridical_organization),ref="3")9` = "Religious Comm.",
+    `polym(m,k,l,degree=2,raw=TRUE)1.0.0` = "\\(m\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)2.0.0` = "\\(m^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.1.0` = "\\(k\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.2.0` = "\\(k^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.0.1` = "\\(l\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.0.2` = "\\(l^2\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.1.0` = "\\(mk\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)1.0.1` = "\\(ml\\)",
+    `polym(m,k,l,degree=2,raw=TRUE)0.1.1` = "\\(kl\\)",
+    log_share = "Interm.",
+    sic_3 = "Industry",
+    year = "Year",
+    `log(consumed_energy/sales)` = "\\(log(Energy/Revenue)\\)",
+    `log(mats_serv/sales)` = "Mats+Serv",
+    `log(mats_deduct_share)` = "Mats+Deduc",
+    `log(materials/sales)` = "Materials",
+    `log(deductibles/sales)` = "Log Share of Deductibles",
+    metro_area_code = "Metro Area",
+    `factor(fiscal_period)83` = "84-86 F.P.",
+    `factor(fiscal_period)86` = "87-91 F.P.",
+    capital_share = "Capital",
+    consumed_energy_share = "Energy",
+    materials_share = "Materials",
+    skilled_wage_bill_share = "Skilled Labor",
+    unskilled_wage_bill_share = "Unskilled Labor",
+    total_expenses_share = "Total Expenditure",
+    serv_share_exp = "Services",
+    inds_exp_share_exp = "Industrial Expenditure",
+    deductible_expenses_share_exp = "Deductible Expenditure",
+    CorpOther = "Non-Corporation",
+    `factor(year)82`= "Year 82",
+    `factor(year)83`= "Year 83",
+    `factor(year)84`= "Year 84",
+    `factor(year)85`= "Year 85",
+    `factor(year)86`= "Year 86",
+    `factor(year)87`= "Year 87",
+    `factor(year)88`= "Year 88",
+    `factor(year)89`= "Year 89",
+    `factor(year)90`= "Year 90",
+    `factor(year)91`= "Year 91",
+    JO_classProprietorship = "Proprietorship",
+    JO_classLtd.Co. = "LLC",
+    JO_classPartnership = "Partnership",
+    juridical_organizationLLCs = "LLC",
+    juridical_organizationProprietorships = "Proprietorship",
+    `treatNon-Corp` = "Non-Corp.",
+    year83 = "1983",
+    year84 = "1984",
+    year85 = "1985",
+    year86 = "1986",
+    `treat_3increased`="Increment",
+    `treat_3exempt`="Exempt",
+    `treat_3nochange`="No Change",
+    `log(services_exp_share)` = "Services",
+    `log(industrial_exp_share)` = "Industrial",
+    `log(deductible_exp_share)` = "Deductibles"#,
+    # "note 1" = "Reference group is J.O. (9) in 1981. Production Function Polynomial and interactions not displayed.",
+    # "note 2" = "Reference group is J.O. (9) in Fiscal Period 1981-1983. Only interactions displayed."
+))
+
+
+colombia_data_frame <- colombia_data_frame %>%
+    ungroup() %>%
+    left_join(jo_class, by = join_by( juridical_organization == JO_code))
+
+```
+
+
+## Introduction {visibility="uncounted"}
+
+- A tax evasion strategy often overlooked by the literature is cost overreporting [@Almunia2018]
+
+- Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added (VAT) and corporate income taxes (CIT) [@Carrillo2022]
+    -  “fake invoicing”, “ghost firms”, “invoice mills”, or “missing traders”
+
+- According to the OECD [@OECD2017], cost overreporting spreads globally leading to significant tax revenue losses for governments
+
+
+## The problem
+
+- Detecting cost overreporting is a difficult task for tax authorities [@Slemrod2019]
+    - Firms have incentives to hide their fraudulent activities
+    - Tax authorities have limited resources to audit all firms
+    - Tax authorities have limited information about firms’ activities
+
+
+## The question
+
+- How can we identify and measure this type of tax evasion?
+- How do firms adjust their misreporting due to changes in fiscal policies?
+- What are the tax revenue losses due to cost overreporting?
+
+## What am I doing to tackle the question?
+
+- To address these questions I will use production functions [@Olley1996;  @Levinsohn2003; @Ackerberg2015; @Gandhi2020]
+
+- Intuitively, output is a function of true inputs; and indirect measure
+
+- If we can somehow invert it, the difference between the true inputs and reported inputs is a measure of misreporting
+
+## Where does Productivity come in?
+
+- The problem of using production functions to detect tax evasion dealing with productivity
+    - heterogeneous, unobserved
+
+- Why is this a problem? Both productivity and misreporting are unobserved and both affect the observed output
+
+- Intuitively, for a given level of output, high input utilization might be due to cost overreporting or because of a negative productivity shock
+
+## Contribution
+
+- I provide a novel strategy to estimate tax evasion through cost overreporting using production functions
+
+- Second, I also formally show that ignoring cost overreporting leads to downward biased productivity and production function parameters
+
+- I demonstrate how to recover productivity in the presence of tax evasion
+
+## Today's talk
+
+- For the sake of time, I will provide evidence of cost overreporting using data from manufacturing firms in Colombia 1981-1986
+
+- Roadmap:
+
+    1. Measure of tax evasion
+    2. Minimal context for Colombia
+    3. Evidence
+
+## Setting
+
+- We observe output $Y_{it}$, reported inputs $K_{it},L_{it}, M_{it}$, and output $P_t$ and intermediate input prices $\rho_t$
+
+- Firms overreport their true intermediate inputs $M_{it}=M^*_{it}\exp(e_{it})$ to evade taxes
+
+- We can't use $Y_{it}=G(M_{it},K_{it},L_{it})\exp(\omega_{it}+\varepsilon_{it})$
+
+## Strategy
+
+- To fix ideas, assume the production function is Cobb-Douglas, 
+- 
+    $$
+    G(M_{it}, K_{it}, L_{it})\exp(\omega_{it}+\varepsilon_{it})=M^{*\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})
+    $$
+
+- Using the FOC of the cost-minimization problem of the firm, we can get
+    $$
+        \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right)+e_{it}=\ln\beta + \ln \mathcal{E}- \varepsilon^Y_{it}
+    $$
+
+
+[FOC](#optimization-problem-of-the-firm){.footer}
+
+## Identifying tax evasion
+
+- In the following, I will use $s_{it}\equiv \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)+e_{it}$
+
+- Intuitively, changes in incentives to evade taxes will affect $e$ but not $\varepsilon$
+
+- I use the 1983 tax reform in Colombia as a natural experiment to identify tax evasion
+
+## Colombia Minimal Context
+
+- The relevant corporate taxes for input overreporting in Colombia during this period are 
+    - the Corporate Income Tax (CIT), varies by type of juridical organization, and 
+    - the Sales Tax, or Value-Added Tax (VAT), varies by industry
+- Three main types of JO: Corporations, Limited Liability Companies (LLCs), and Proprietorships
+    - Corporations have the lowest incentives to evade: [Closely monitored by the Superintendent of Corporations, free-tradable shares valued by the market, and CIT is paid on distributed dividends (not on profits)]{.small}
+
+
+[J.O. in Colombia](#jo-col){.footer}
+
+
+## The 1983 Tax Reform
+
+- The 1983 reform changed the VAT rate differently for different industries [@Perry1990]
+    - Some increased (Wearing Apparel, Metal Products, and others)
+    - Some exempt industries remained exempted (Food Products)
+- The 1983 tax reform also introduced changes in CIT for Proprietorships and LLCs
+    - LLC CIT went from 20 to 18%;
+    - Proprietorships 8% increase on average, but max tax rate reduced from 56 to 49%
+
+[Tax Reforms](#tax-reforms-in-colombia){.footer}
+
+## What data I'm using
+
+- The Colombian dataset comes from the Annual Survey of Manufacturing (EAM) and contains information about manufacturing firms with more than 10 employees from 1981 to 1991.
+
+- Besides the information on output, intermediates, capital, and labor, the dataset includes the type of juridical organization and the sales taxes, and metropolitan area.
+
+[Summary Statistics](#summary-statistics){.footer}
+
+## Empirical Strategy
+
+- Given the changes in sales taxes, it's natural to think on a diff-in-diff approach, [By industry, using Corporations as the control group]{.small}
+
+- However, the reform also affected the CIT, so the result would be ambiguous
+
+- Hence, I use a triple-diff approach: Corporations vs Not Corporation vs Exempt Industry
+
+[Identification](#triple-diff-identification){.footer}
+
+## What's the evidence {.scrollable}
+
+::: {#tbl-reg-didid layout-ncol="1"}
+
+```{r}
+#| echo: false
+#| warning: false
+#| results: asis
+
+did_3_inds <- lapply(
+    setdiff(top_20_inds$sic_3,c(311,312)),
+    \(x)
+    colombia_data_frame %>%
+    left_join(sales_tax_change) %>%
+    filter(
+        # year <= 86,
+        JO_class != "Other",
+        juridical_organization != 6,
+        # juridical_organization %in% c(0, 1, 3)
+        # year >= 83
+        sic_3 %in% c(x,311)#c(x,311,312) #
+    ) %>%
+    mutate(
+        juridical_organization = factor(juridical_organization),
+        metro_area_code = factor(metro_area_code),
+        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        JO_class = factor(
+            JO_class, 
+            levels = c("Corporation", "Proprietorship", "Ltd. Co.", "Partnership")
+        ),
+        time = case_when(
+            year <= 83 ~ "before",
+            .default = as.character(year),
+        ),
+        time = factor(time, levels = c("before","84","85","86")),
+        treat = ifelse(juridical_organization==3,"Corp","Non-Corp"),
+        treat_2 = ifelse(JO_class=="Corporation","Corp","Non-Corp"),
+        treat_3 = ifelse(sic_3==x,"tax_treat","exempt_ctrl"),
+        treat = factor(treat, levels = c("Corp","Non-Corp")),
+        treat_2 = factor(treat_2, levels = c("Corp","Non-Corp")),
+        year = relevel(factor(year), ref="83"),
+        sic_3 = relevel(factor(sic_3), ref="311"),
+        treat_3 = factor(treat_3, levels = c("exempt_ctrl","tax_treat"))
+    ) %>%
+    feols( sw(log_share,log(mats_serv/sales),log(mats_deduct_share),log(materials/sales))~ year*treat*sic_3+share_sales_tax+polym(k, l, degree = 2, raw = TRUE)
+        | plant+year,
+        data = ., cluster=~year#~plant+year
+    )
+)
+
+names(did_3_inds)<-paste0(setdiff(top_20_inds$sic_3,c(311,312)))
+
+for (x in paste0(setdiff(industries$sic_3,c(311,312)))[1:2]){
+    etable(
+        did_3_inds[[x]],
+        keep = c(
+            # "%^share",
+            "%^year8(4|5|6):treatNon-Corp:sic_\\d{4}"#,
+            # "%^year8(4|5|6):treatNon-Corp:treat_3\\w+",
+            # "%^treatNon-Corp$"
+        ),
+        headers = list(
+            Industry=paste0(
+                str_sub(
+                    paste0(
+                        top_20_inds[top_20_inds$sic_3==x,'description'][[1]]
+                    ),
+                    1,30
+                ),
+                "..."
+            ),#x,#paste0(setdiff(unique(colombia_data_frame$sic_3),c(311,312)))[x]#,
+            `Tax Change`=str_to_title(
+                paste0(
+                    top_20_inds[top_20_inds$sic_3==x,'Change'][[1]]
+                )
+            )
+        ),
+        div.class = "table"
+    ) |> print()
+}
+
+
+```
+
+Log of Inputs Cost Share of Revenue by Industry. Triple diff-in-diff. The reference group is Corporations in industries exempted from the Tax Rate the year before the Reform of 1983 (1982).
+
+:::
+
+
+## Discussion
+
+- The results show that firms reacted to the changes in sales taxes by adjusting the log of the inputs cost share of revenues
+- Under the model's assumptions, this implies that firms were evading taxes by overreporting inputs
+- In particular, non-corporation firms in industries where the sales tax increased responded by increasing tax evasion by overreporting inputs
+
+## {.center}
+
+::: {.center}
+```{r, out.width="90%"}
+library(qrcode)
+qr <- qrcode::qr_code('https://hansmartinez.com')
+plot(qr)
+
+```
+
+[hansmartinez.com](https://hansmartinez.com)
+
+:::
+
+# Appendix {.title visibility="uncounted"}
+
+## Summary Statistics {.smaller .scrollable visibility="uncounted"}
+
+
+```{r}
+#| label: tbl-sum-stats
+#| tbl-cap: Summary Statistics, Manufacturing Firms in Colombia (1981-1991)
+#| html-table-processing: none
+#| echo: false
+#| warning: false
+
+
+
+labels <- c(
+    # 'capital' = 'Capital',
+    # 'mats_serv' = 'Materials & Services',
+    # 'skilled_labor' = 'Labor (Skilled)',
+    # 'unskilled_labor' = 'Labor (Unskilled)',
+    # 'sales' = 'Revenue',
+    # 'sales_taxes' = 'Sales Taxes',
+    # 'JO_class' = 'J. Org.',
+    'skilled_wage_bill_share' = 'Skilled Labor (Wages)',
+    'unskilled_wage_bill_share' = 'Unskilled Labor (Wages)',
+    'share_sales_tax' = 'Sales Taxes',
+    'intermediates_share' = 'Intermediates',
+    'mats_serv_share' = 'Materials + Services',
+    'mats_deduct_share' = 'Materials + Deductibles',
+    'materials_share' = 'Materials',
+    'capital_share' = 'Capital',
+    'total_expenses_share' = 'Total Expenditure',
+    'services_exp_share' = 'Services',
+    'industrial_exp_share' = 'Industrial',
+    'deductible_exp_share' = 'Deductible'
+)
+
+tbl_data<-colombia_data_frame %>%
+    filter(
+        sales > 0 ,
+        capital > 0,
+        unskilled_labor >0,
+        skilled_labor >0,
+        total_expenditure >0,
+        JO_class != "Other",
+        juridical_organization!= 6
+        # share_sales_tax <1
+    ) %>%
+    mutate(
+        juridical_organization = factor(juridical_organization),
+        sic_3 = factor(sic_3),
+        metro_area_code = factor(metro_area_code),
+        JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership")),
+        intermediates_share = intermediate_inputs/sales,
+        mats_serv_share = mats_serv/sales,
+        mats_deduct_share = rowSums(cbind(materials,deductible_expenses), na.rm = TRUE)/sales,
+        materials_share = materials/sales,
+        capital_share = capital/sales,
+        total_expenses_share = total_expenditure/sales,
+        services_exp_share = services/total_expenditure,
+        industrial_exp_share = industrial_expenditure/total_expenditure,
+        deductible_exp_share = deductible_expenses/total_expenditure,
+    ) %>%
+    select(
+        # capital,
+        # mats_serv,
+        # skilled_labor,
+        # unskilled_labor,
+        # sales,
+        # sales_taxes,
+        # age,
+        # consumed_energy,
+        # deductible_expenses,
+        # year,
+        `J. Org.`= JO_class,
+        share_sales_tax,
+        # sic_3,
+        # metro_area_code
+        ends_with("share") & !starts_with("log") #& !contains("bill")
+    )
+
+for (var in names(labels)) {
+  tbl_data[[var]] <- haven::labelled(
+    tbl_data[[var]], label = labels[var]
+    )
+}
+
+datasummary_skim(
+    tbl_data,
+    fun_numeric = list(
+        Missing = PercentMissing, 
+        Mean = Mean, 
+        SD = SD, 
+        Q1 = P25,
+        Median = Median,
+        Q3 = P75
+    ),
+    fmt = 3,
+    # output = 'kableExtra',
+    # table.attr = 'data-quarto-disable-processing="true"'
+    ) |> 
+    group_tt(
+        i = list(
+            "Share of Revenues" = 1,
+            "Share of Total Expenditure" = 10
+        )
+    ) |>
+    style_tt(
+        i = c(1,11,15),
+        bold = TRUE,
+        line = "b"
+    ) |>
+    style_tt(
+        i = 12,
+        line = "b",
+        line_color = "white"
+    )
+
+```
+
+
+[Back](#what-data-im-using){.footer}
+
+## Optimization Problem of the Firm {visibility="uncounted"}
+
+$$
+\begin{aligned}
+  \max_{M_{it}, e_{it}\in [0,\infty)} [1-q(e_{it}|\theta_{it})]&\left[(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\tau\left(P_t\mathbb{E}[Y_{it}]-\rho_{t} (M_{it}+e_{it})\right)\right]\\
+  +q(e_{it}|\theta_{it})&\left[(1-\tau)(P_t\mathbb{E}[Y_{it}]-\rho_{t} M_{it})-\kappa(e)\right] \\
+  \text{s.t. }\; Y_{it}=G(M_{it})&\exp(\omega_{it}+\varepsilon_{it})
+\end{aligned}
+$$ {#eq-eva}
+
+$$
+G_M(M_{it})\exp(\omega_{it})\mathcal{E}=\frac{\rho_{t}}{P_t}
+$$ {#eq-foc:ind}
+
+[Back](#strategy){.footer}
+
+## Juridical Organizations in Colombia {#jo-col .smaller visibility="uncounted"}
+
+::: {#tbl-jo-sum-tbl}
+
+| Organization | Corporate Income Tax | Liability | Capital | Owners |
+|:----------------------:|:---:|:---------:|:-------:|:----------:|
+| Corporation           | 40% (on distributed dividends) | Limited to capital participation | Tradable capital shares | $N\ge5$ |
+| Limited Co. | 20% (on profits) | Limited to capital participation | Non-tradable capital shares | $2\le N \le 20 (25)$ |
+| Partnership | 20% (on profits) | Full | Not a capital association | $N\ge2$ |
+| Proprietorship | Individual Income Tax | Full | Owner | $N=1$ |
+
+
+Juridical Organizations in Colombia (1980s), A Summary 
+
+:::
+
+[Back](#colombia-minimal-context){.footer}
+
+## Tax Reforms in Colombia {.smaller .scrollable visibility="uncounted"}
+
+
+```{r}
+#| label: tbl-cit-summary
+#| tbl-cap: Income Tax Reforms in Colombia (1980-1986)
+#| echo: false
+#| warning: false
+
+
+income_tax_reforms <- tribble(
+    ~JO, ~Year,~Change,
+    "Individuals", 1983, "8% increase in most scales; Max tax rate was reduced from 56 to 49%",
+    "Ltd. Co.", 1983, "Reduction from 20 to 18%; Now subject to presumptive income",
+    "Individuals" , 1986, "Max tax rate applied was reduced from 49 to 30%",
+    "Ltd. Co.", 1986, "Increased from 18 to 30%",
+    "Corporations", 1986, "Decreased from 40 to 30%"
+)
+
+income_tax_reforms[,c(2,1,3)] %>%
+    kbl(
+        digits = 2,
+        col.names = c("Reform Year", "J.O. Affected", "Income Tax Change"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>% 
+    collapse_rows(columns = 1, valign = "top")
+
+```
+
+```{r}
+#| label: tbl-vat-summary
+#| tbl-cap: Sales Tax Reforms in Colombia (1980-1986)
+#| echo: false
+#| warning: false
+
+
+sales_tax_change %>%
+    left_join(
+        ciiu_3[,2:3],
+        by = join_by(sic_3 == `Código`)
+    ) %>% 
+    mutate(
+        description = str_remove(`Descripción`,"Manufacture of |Manufacture ot "),
+        description = str_replace_all(
+            str_to_title(description),
+            c(" And " = " and ", " Of " = " of ", " Or | Ord " = " or ")
+        ),
+    ) %>%
+    filter(
+        Perry != " "
+    ) %>%
+    select(
+        Perry_inds_desc, Perry,sic_3, description
+    ) %>%
+    kbl(
+        digits = 2,
+        col.names = c("Industry Description", "Sales Tax Change", "SIC","Industry"),
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    add_header_above(
+        c("P&T (1990)"=2," "=2)#,
+        # escape = F
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")  %>% 
+    collapse_rows(columns = 1, valign = "top")
+
+```
+
+[Back](#the-1983-tax-reform){.footer}
+
+## Triple Diff Identification {.smaller .scrollable visibility="uncounted"}
+
+
+To evaluate the change in tax evasion by input cost overreporting due to the change in the sales tax, I apply a triple difference approach. I use corporations in the industries exempted from sales taxes the year before the policy change as the control group. 
+
+Formally, non-corporations in industry $k$, which might have received an increment or decrement in their sales tax rate,
+
+$$
+s_{1,j,t}^k=\lambda^k_t+\mu^k_1+e^{VAT}_{j,t}+e^{CIT}_{j,t}+\varepsilon_{jt}
+$$
+
+Corporations in industry $k$,
+$$
+s_{0,j,t}^k=\lambda^k_t+\mu^k_0+\varepsilon_{jt}
+$$
+
+Likewise, Non-corporations and Corporations in an industry exempt from sales taxes
+
+$$
+\begin{aligned}
+    s_{1,j,t}^{E}&=\lambda^{E}_t+\mu^E_1+e^{CIT}_{j,t}+\varepsilon_{jt}\\
+    s_{0,j,t}^E&=\lambda^E_t+\mu^E_0+\varepsilon_{jt}
+\end{aligned}
+$$
+
+Taking the difference between time $t'$ and $t$ in industry $k$ for both, corporations and non-corporations,
+
+$$
+\begin{aligned}
+    \mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]&=\Delta_\lambda^k+\Delta_e^{VAT}+\Delta_e^{CIT}\\
+    \mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]&=\Delta_\lambda^k
+\end{aligned}
+$$
+
+The diff-in-diff method will recover the joint effect of both policy changes,
+$$
+\mathbb{E}[s_{1,j,t'}^k]-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)=\Delta_e^{VAT}+\Delta_e^{CIT}
+$$
+
+The joint effect might be ambiguous because an increase in the sales tax rate will increase the incentive to overreport inputs cost but a decrease in the CIT might decrease the incentive. 
+
+To recover the effect of the change in the sales tax rate, we can use the firms of the industries that are exempted from the sales tax. Intuitively, exempted firms would not react to the change in the sales tax —which is industry-specific—, but only to the CIT —which affects all industries. 
+
+So we have, 
+
+$$
+\begin{aligned}    
+    \mathbb{E}[s_{1,j,t'}^k]&-\mathbb{E}[s_{1,j,t}^k]-\left(\mathbb{E}[s_{0,j,t'}^k]-\mathbb{E}[s_{0,j,t}^k]\right)\\ 
+    &- \left[\mathbb{E}[s_{1,j,t'}^{E}]-\mathbb{E}[s_{1,j,t}^{E}]-\left(\mathbb{E}[s_{0,j,t'}^{E}]-\mathbb{E}[s_{0,j,t}^{E}]\right)\right]=\Delta_e^{VAT}
+\end{aligned}
+$$
+
+In regression form,
+
+$$
+s_{jt}=\alpha \left[ \mathbb{1}\{t=t'\}\times\mathbb{1}\{\text{treat}=\text{Non-Corp}\}\times\mathbb{1}\{k\not=E\} \right]+\beta'_ZZ_{jt}+\gamma_j+\gamma_t+\varepsilon_{jt}
+$$
+
+[Back](#empirical-strategy){.footer}
+
+## References {.smaller .scrollable visibility="uncounted"}
+
+::: {#refs}
+:::

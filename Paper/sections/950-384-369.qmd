@@ -1,0 +1,296 @@
+## Industries 381-384 and 369
+
+According to some records, agricultural machinery (382) and transportation equipment (384) were exempted from sales tax before 1984.  I investigate in this section if the data can confirm this affirmation. In particular, I look at industry 38 Fabricated Metal Products, Machinery & Equipment:
+
+- 381 Fabricated Metal Products (Structural metal products, Cutlery, Hand tools, etc.)
+- 382 Machinery and Equipment (Agricultural machinery, Metalworking machinery, etc.)
+- 383 Electrical Machinery and Apparatus (Electric motors, Generators, etc.)
+- 384 Transport Equipment (Motor vehicles, Aircraft, Ships, etc.)
+
+
+If these industries were exempted, then both industries would be candidates for least likely industries to evade taxes by overreporting input purchases. Furthermore, the increase in the sales tax after 1984 should have increased the incentives to overreport input purchases. All else equal, we would expect to see an increase in the materials share after 1984.
+
+There are some complications when analyzing these industries in the data. First, I have just a vague description of the changes in the exemption. To the best of my understanding, agricultural machinery falls under sic code 382 (3822 in particular) and transportation equipment under sic code 384. Industry 382, however, also includes other types of machinery that might have not been exempted, such as engines and turbines (3821), metal and wood working (3823), special industrial (3824), etc. Likewise, industry 384 a wide range of transportation equipment, like shipbuilding (3841), railroad equipment (3842), motor vehicles (3843), motorcycles (3844), aircraft (3845), and other transportation equipment (3849). Which of these industries were exempted? It is not clear.
+
+Second, the 1983-1984 Colombian tax reforms adjusted the sales rate tax for many other industries besides 381-384 and simultaneously also adjusted the corporate income tax for some juridical organizations. In particular, the reform modified the income tax rate of proprietorship firms, through changes to the individuals' income tax rate, and the limited liability companies (LLCs). Most brackets of the individuals' income tax received an 8 percent increase, while the maximum rate was reduced from 56 to 49 percent. LLCs were granted a small reduction of the CIT rate from 20 to 18 percent.
+
+In @tbl-sic-381-384, the data shows an increase in the sales and purchases sales tax rate after 1984, but I do not find evidence that these industries were exempted like industries 311 and 312 before 1984. 
+
+Given that the increase from non-zero sales tax rate before 1984 and the change in the CIT for Proprietorships and LLCS are not exclusive to industries 381-384, a difference-in-differences approach would capture the effect of both the change in the sales tax and the change in the income tax.
+
+I explore a triple difference approach using industries 311 and 312 as a control group. These industries were exempted from the sales tax before and after 1984, but they faced the same changes in the income tax as industries 381-384. However, I prefer to perform this analysis for all industries in the second paper of the thesis.
+
+:::: {#tbl-sic-381-384}
+
+::: {.content-visible when-format="html"}
+
+```{r}
+
+load("../Code/Products/251-380s-inds.RData")
+
+tax_380s_tbl %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 2,
+        col.names = c("SIC","Before 1984","After 1984", "Before 1984 ", "After 1984 "),
+        # format = "html",
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria") %>%
+    add_header_above(c(" " = 1, "Sales" = 2, "Purchases" = 2)) %>%
+    add_header_above(c(" " = 1, "Sales Tax Rate" = 4))
+
+# tax_380s_tbl %>%
+#     kbl(
+#         booktabs = TRUE,
+#         digits = 2,
+#         format = "latex"#,
+#         # table.attr = 'data-quarto-disable-processing="true"'
+#     ) %>%
+#     kable_styling(position="center", latex_options = c("hold_position","scale_down"))
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+
+load("../Code/Products/251-380s-inds.RData")
+
+# tax_380s_tbl %>%
+#     kbl(
+#         booktabs = TRUE,
+#         digits = 2,
+#         format = "html",
+#         table.attr = 'data-quarto-disable-processing="true"'
+#     ) %>%
+#     kable_classic(full_width=F, html_font = "Cambria")
+
+tax_380s_tbl %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 2,
+        col.names = c("SIC","Before 1984","After 1984", "Before 1984 ", "After 1984 "),
+        # caption = "Sales and Purchases Sales Tax Rates for Industries 381-384"
+        # format = "latex"#,
+        # table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_styling(position="center")  %>%
+    add_header_above(c(" " = 1, "Sales" = 2, "Purchases" = 2)) %>%
+    add_header_above(c(" " = 1, "Sales Tax Rate" = 4))
+
+
+```
+
+:::
+
+Sales and Purchases Sales Tax Rates for Industries 381-384
+
+::::
+
+### Industry 369
+
+The tax evasion density due to overreporting for industry 369 Non-Metallic Mineral Products (Structural clay products, Cement and plaster, Other non-metallic mineral products) displays an extremely high skewness. This skewness may be the reason behind the small standard deviation of the productivity density estimates. 
+
+I find that trimming the data to remove outliers in the materials share distribution helps reduce the skewness of the tax evasion density. 
+
+@fig-369-under-trim and @tbl-369-sum-stats both indicate the presence of outliers in the materials share distribution. There is a somewhat thing tail to the right of the distribution, above 0.75 on the density plot. This value, 0.75 is above the 99.5 percentile, and we can still see some observations above this value up to the maximum at 0.836.
+
+![](../Code/Products/density-369-under-trim.png){#fig-369-under-trim}
+
+:::: {#tbl-369-sum-stats}
+
+::: {.content-visible when-format="html"}
+```{r}
+load("../Code/Products/251-369-sum-stats.RData")
+
+col_names <- c("Obs.", "All (N)", "Corps. (N)", "Min", "Q1", "Median", "Q3", "P90", "P95", "P99", "P99.5","Max")
+
+sum_stats_369 %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = col_names,
+        # format = "html",
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+
+```{r}
+load("../Code/Products/251-369-sum-stats.RData")
+
+col_names <- c("Obs.", "All (N)", "Corps. (N)", "Min", "Q1", "Median", "Q3", "P90", "P95", "P99", "P99.5","Max")
+
+sum_stats_369 %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = col_names,
+        # format = "html",
+        # table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_styling(position="center", latex_options = c("scale_down"))
+
+```
+
+:::
+
+Summary statistics for industry 369 Non-Metallic Mineral Products
+::::
+
+Trimming at 0.75 removes less than 1 percent of the observations, but it removes a significant portion of the right tail. 90th percentile remains at 0.53, 95th percentile decreases from 0.59 to 0.57, and 99th percentile decreases from 0.72 to 0.63. 
+
+![](../Code/Products/density-369-under-over-trim.png){#fig-369-under-over-trim}
+
+:::: {#tbl-369-sum-stats-trim}
+
+::: {.content-visible when-format="html"}
+```{r}
+load("../Code/Products/251-369-sum-stats.RData")
+
+col_names <- c("Obs.", "All (N)", "Corps. (N)", "Min", "Q1", "Median", "Q3", "P90", "P95", "P99", "P99.5","Max")
+
+sum_stats_369_2trim %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = col_names,
+        # format = "html",
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+
+```{r}
+load("../Code/Products/251-369-sum-stats.RData")
+
+col_names <- c("Obs.", "All (N)", "Corps. (N)", "Min", "Q1", "Median", "Q3", "P90", "P95", "P99", "P99.5","Max")
+
+sum_stats_369_2trim %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = col_names,
+        # format = "html",
+        # table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_styling(position="center", latex_options = c("scale_down"))
+
+```
+
+:::
+
+Summary statistics for industry 369 Non-Metallic Mineral Products. Trimming observations not in \(0.05,0.7\).
+::::
+
+
+Trimming the data reduces skewness while barely affecting the no tax evasion test.
+
+@tbl-369-trim-test shows that, even though the statistic decreased marginally, we can still reject the null hypothesis of no tax evasion (one side test). The output elasticity of materials of non-evaders and evaders are still statistically different.
+
+@tbl-369-tax-dens-stats displays that the skewness of the tax evasion density decreased significantly, while the mean remained almost unchanged. The standard deviation is in line with the other industries. 
+
+:::: {#tbl-369-trim-test}
+
+::: {.content-visible when-format="html"}
+
+```{r}
+load("../Code/Products/900-369-trim.RData")
+
+col_names <- c("SIC", "Corps.", "Others", "Tax Evasion Test")
+
+# tax evasion test
+main_369_tbl[,-2] %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    collapse_rows(columns = 1) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+load("../Code/Products/900-369-trim.RData")
+
+# tax evasion test
+main_369_tbl[,-2] %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = col_names,
+    ) %>%
+    collapse_rows(columns = 1) %>%
+    kable_styling(position="center")       
+
+```
+
+:::
+
+Summary statistics for the tax evasion test for industry 369 Non-Metallic Mineral Products. Trimming observations not in \(0.05,0.7\).
+::::
+
+:::: {#tbl-369-tax-dens-stats}
+
+::: {.content-visible when-format="html"}
+
+```{r}
+
+tbl_col_names <- c("Mean", "SD", "Q1", "Median", "Q3", "Skewness")
+
+stats_369_ev_density_6 %>%
+    t() %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = tbl_col_names,
+        table.attr = 'data-quarto-disable-processing="true"'
+    ) %>%
+    kable_classic(full_width=F, html_font = "Cambria")
+
+```
+
+:::
+
+::: {.content-visible when-format="latex"}
+
+```{r}
+
+stats_369_ev_density_6 %>%
+    t() %>%
+    kbl(
+        booktabs = TRUE,
+        digits = 3,
+        col.names = tbl_col_names,
+    ) %>%
+    kable_styling(position="center")
+
+```
+
+:::
+
+Summary statistics for the tax evasion density for industry 369 Non-Metallic Mineral Products. Trimming observations not in \(0.05,0.7\).
+::::

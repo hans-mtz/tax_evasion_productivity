@@ -17,7 +17,9 @@
 ##       lower=-Inf/upper=Inf correctly (toy quadratic test, session log).
 ##
 ## Moment set A (8 moments, theta_smooth=(delta0,delta1,delta2)):
-##   psi, eps, psi*lnM, psi*om, psi*om^2, eps*lnM, eps*e, eps*om
+##   psi, eps, psi*lnM, psi*om, psi*om^2, eps*lnM, h_prime*eps, eps*om
+##   (h_prime*eps replaced eps*e 2026-09-05 -- score moment for lambda, see
+##   Code/Rcpp/1200-stage2-elvis-common.h's h_prime_of_e and CLAUDE.md)
 ## Moment set B (A's 8 + 7 more, theta_smooth=(delta0,delta1,delta2,mu_m[1:J])):
 ##   one industry-indicator row per industry defining mu_m[j] (jointly
 ##   estimated -- ln M has no external proxy, unlike omega), plus
@@ -49,7 +51,18 @@ load("Code/Products/1207-stage2-omega-targets.RData")   # omega_targets (moment 
 ## (no eps-target join here -- neither A nor B uses per-industry eps
 ## centering; that was specific to the superseded 15-moment system)
 
-build_run_sample <- function(ins_choice, data = stage2_data, corner_mode = c("drop", "include_zero")) {
+## trim_top_pct (2026-09-05): drops the top trim_top_pct share of INTERIOR
+## firms by M_star (threshold computed on the interior subset only, before
+## joining corner obs back in) -- a robustness check for whether a handful of
+## extreme-M*/extreme-implied-e firms are what's pinning lambda near zero
+## (CLAUDE.md's "Phase 0 finished" entry: e's pooled distribution is
+## extremely right-skewed, and under linear q only extreme evaders' psi is
+## sensitive to lambda near the 2*lambda*e->1 ceiling). Corner firms are left
+## untouched regardless of their own M_star -- they structurally can't be
+## "extreme evaders" (e=0 always), so trimming them wouldn't test this
+## mechanism and would just needlessly discard real eps-only information.
+build_run_sample <- function(ins_choice, data = stage2_data, corner_mode = c("drop", "include_zero"),
+                              trim_top_pct = 0) {
     corner_mode <- match.arg(corner_mode)
 
     base <- data %>% dplyr::filter(ins == ins_choice, !corp)
@@ -57,6 +70,14 @@ build_run_sample <- function(ins_choice, data = stage2_data, corner_mode = c("dr
     interior <- base %>%
         dplyr::filter(is.finite(sales_tax_rate_purchases), sales_tax_rate_purchases > 0) %>%
         mutate(corner = 0L)
+
+    if (trim_top_pct > 0) {
+        Mstar_cutoff <- quantile(interior$M_star, 1 - trim_top_pct, na.rm = TRUE)
+        n_before <- nrow(interior)
+        interior <- interior %>% dplyr::filter(M_star <= Mstar_cutoff)
+        cat(sprintf("  [trim_top_pct=%.4g] dropped %d/%d interior firms with M_star > %.4g (top %.2g%%)\n",
+                    trim_top_pct, n_before - nrow(interior), n_before, Mstar_cutoff, 100 * trim_top_pct))
+    }
 
     out <- if (corner_mode == "drop") {
         interior
@@ -129,7 +150,7 @@ cue_objective_A <- function(par, lambda, dat, n_burn, n_keep) {
     cue_objective_common(Ghat)
 }
 
-## par = (delta0,delta1,delta2,eta, mu_m[1:J], gamma[1:(8+J+6)]) -- eta added
+## par = (delta0,delta1,delta2,eta, mu_m[1:J], gamma[1:(8+J+7)]) -- eta added
 ## 2026-08-29 (same day), mirroring A: same sampler-restriction mechanism
 ## (draw_from_rho_eta), not a gamma-weighted row -- see the .cpp file's "eta
 ## extended to B" header note for why this was added despite mu_m,j already
@@ -203,7 +224,18 @@ boundary_fraction <- function(dat, lambda) {
     mean(dat$M_star[interior] <= 1 / (2 * lambda))
 }
 
-fit_one_lambda_A <- function(lambda, run_sample, n_burn, n_keep, par_init) {
+## xtol_rel/maxeval/maxtime (2026-09-05): fit_one_lambda_A previously ran
+## nloptr::bobyqa with NO control list at all (unlike B, which already got
+## these exact protections on 2026-09-01 for the same reason) -- fine for
+## every point tried up through today, but the trim-cutoff sweep hit a
+## (trim, lambda) combination in this flat, hard-to-converge low-lambda
+## region where BOBYQA's default xtol_rel=1e-6 with no maxeval cap ran for
+## 70+ CPU-minutes on a single point without finishing. Same fix as B:
+## loosen xtol_rel (the objective has real MC noise from the finite
+## Metropolis chain -- resolving to 1e-6 is tighter than the noise floor
+## supports), cap maxeval and add maxtime as a hard backstop.
+fit_one_lambda_A <- function(lambda, run_sample, n_burn, n_keep, par_init,
+                              xtol_rel = 1e-4, maxeval = 2000, maxtime = 300) {
     dat <- run_sample
     n_dropped <- 0L
     p_boundary <- boundary_fraction(dat, lambda)
@@ -211,9 +243,10 @@ fit_one_lambda_A <- function(lambda, run_sample, n_burn, n_keep, par_init) {
     obj <- function(par) cue_objective_A(par, lambda, dat, n_burn, n_keep)
     lower <- c(rep(-DELTA_BOUND, 3), 0,     rep(-Inf, 8))
     upper <- c(rep( DELTA_BOUND, 3), 0.999, rep( Inf, 8))
+    ctrl <- list(xtol_rel = xtol_rel, maxeval = maxeval, maxtime = maxtime)
 
-    res1 <- nloptr::bobyqa(x0 = par_init, fn = obj, lower = lower, upper = upper)
-    res2 <- nloptr::bobyqa(x0 = res1$par, fn = obj, lower = lower, upper = upper)   # AK2020-style refinement pass
+    res1 <- nloptr::bobyqa(x0 = par_init, fn = obj, lower = lower, upper = upper, control = ctrl)
+    res2 <- nloptr::bobyqa(x0 = res1$par, fn = obj, lower = lower, upper = upper, control = ctrl)   # AK2020-style refinement pass
 
     list(lambda = lambda, value = res2$value, par = res2$par, n = nrow(dat), n_dropped = n_dropped,
          p_boundary = p_boundary,
@@ -225,7 +258,7 @@ fit_one_lambda_A <- function(lambda, run_sample, n_burn, n_keep, par_init) {
 ## maxeval/xtol_rel/maxtime (2026-08-29, revised 2026-09-01): nloptr::bobyqa's
 ## defaults (maxeval=1000, xtol_rel=1e-6, no maxtime) are fine for A's 12-dim
 ## inner problem (converges in ~150-250 evals in practice), but B's inner
-## problem is 4+J+(8+J+6) ~75-dim, and every B smoke test hit conv=5 (the
+## problem is 4+J+(8+J+7) ~76-dim, and every B smoke test hit conv=5 (the
 ## maxeval cap, not real convergence) at every single lambda point -- a modest
 ## maxeval bump alone (the first thing tried) wasn't enough. Revised, scoped
 ## to B only (A already converges cleanly, not touched): (i) maxeval raised
@@ -245,7 +278,7 @@ fit_one_lambda_B <- function(lambda, run_sample, J, mu_m_lower, mu_m_upper, n_bu
     n_dropped <- 0L
     p_boundary <- boundary_fraction(dat, lambda)
 
-    d_g <- 8 + J + 6
+    d_g <- 8 + J + 7
     obj <- function(par) cue_objective_B(par, lambda, dat, J, n_burn, n_keep)
     lower <- c(rep(-DELTA_BOUND, 3), 0,     mu_m_lower, rep(-Inf, d_g))
     upper <- c(rep( DELTA_BOUND, 3), 0.999, mu_m_upper, rep( Inf, d_g))
@@ -399,11 +432,18 @@ run_stage2_elvis_AB <- function(ins_choice, moment_set = c("A", "B"), warmstart,
                                  lambda_grid_override = NULL,   # explicit lambda values; NULL = quantile-based
                                  corner_mode = c("drop", "include_zero"),
                                  maxeval_b = 5000, xtol_rel_b = 1e-4, maxtime_b = 600,
-                                 refine = TRUE, refine_points = 10) {
+                                 refine = TRUE, refine_points = 10,
+                                 trim_top_pct = 0,
+                                 par_init_override = NULL) {   # moment set A only, 2026-09-05: cross-trim-level
+                                                                # warm-starting (shell-orchestrated, see
+                                                                # run-trim-sequential.sh) -- when supplied, replaces
+                                                                # the naive untrimmed-warm-start par_init0, so a new
+                                                                # trim level's BOBYQA search starts from the PREVIOUS
+                                                                # trim level's own converged fit instead of resetting
     moment_set  <- match.arg(moment_set)
     corner_mode <- match.arg(corner_mode)
 
-    run_sample <- build_run_sample(ins_choice, corner_mode = corner_mode) %>%
+    run_sample <- build_run_sample(ins_choice, corner_mode = corner_mode, trim_top_pct = trim_top_pct) %>%
         mutate(.row_id = dplyr::row_number())
     if (moment_set == "B") run_sample <- add_industry_idx(run_sample)
     lambda_grid <- if (!is.null(lambda_grid_override)) {
@@ -426,11 +466,12 @@ run_stage2_elvis_AB <- function(ins_choice, moment_set = c("A", "B"), warmstart,
         cat(sprintf("[%s, A, corner_mode=%s] n=%d (%d corner), n_burn=%d, n_keep=%d, lambda grid: %s\n",
                     ins_choice, corner_mode, nrow(run_sample), sum(run_sample$corner), n_burn, n_keep,
                     paste(signif(lambda_grid, 3), collapse = ", ")))
-        par_init0 <- c(delta_init, 0, rep(0, 8))   # eta0=0: no extra floor beyond M>=0 until the data asks for one
+        par_init0 <- if (!is.null(par_init_override)) par_init_override else c(delta_init, 0, rep(0, 8))   # eta0=0 default: no extra floor beyond M>=0 until the data asks for one
         run_grid_A <- function(grid, par_init) {
             out <- vector("list", length(grid))
             for (i in seq_along(grid)) {
-                out[[i]] <- fit_one_lambda_A(grid[i], run_sample, n_burn, n_keep, par_init)
+                out[[i]] <- fit_one_lambda_A(grid[i], run_sample, n_burn, n_keep, par_init,
+                                              xtol_rel = xtol_rel_b, maxeval = maxeval_b, maxtime = maxtime_b)
                 if (!is.na(out[[i]]$value)) par_init <- out[[i]]$par
             }
             list(fits = out, par_init = par_init)
@@ -486,7 +527,7 @@ run_stage2_elvis_AB <- function(ins_choice, moment_set = c("A", "B"), warmstart,
         cat(sprintf("[%s, B, corner_mode=%s] n=%d (%d corner), J=%d industries, n_burn=%d, n_keep=%d, maxeval_b=%d, xtol_rel_b=%g, maxtime_b=%d, lambda grid: %s\n",
                     ins_choice, corner_mode, nrow(run_sample), sum(run_sample$corner), J, n_burn, n_keep, maxeval_b, xtol_rel_b, maxtime_b,
                     paste(signif(lambda_grid, 3), collapse = ", ")))
-        par_init0 <- c(delta_init, 0, mu_m_init, rep(0, 8 + J + 6))   # eta0=0, same rationale as A
+        par_init0 <- c(delta_init, 0, mu_m_init, rep(0, 8 + J + 7))   # eta0=0, same rationale as A
         run_grid_B <- function(grid, par_init) {
             out <- vector("list", length(grid))
             for (i in seq_along(grid)) {
@@ -546,11 +587,15 @@ DEFAULTS <- list(
     grid_probs  = seq(0.01, 0.5, length.out = 5),
     lambda_grid = numeric(0),   # explicit, arithmetically-spaced lambda values; overrides grid_probs when non-empty
     n_cores     = 1,
-    maxeval_b   = 5000,   # moment set B only; A converges fine at nloptr::bobyqa's own default (2026-09-01: raised 1000->5000, see fit_one_lambda_B's header comment)
-    xtol_rel_b  = 1e-4,   # moment set B only; loosened from nloptr's 1e-6 default (2026-09-01)
-    maxtime_b   = 600,    # moment set B only; seconds per BOBYQA call, not previously set at all (2026-09-01)
+    maxeval_b   = 5000,   # also used by A now (2026-09-05 fix, see fit_one_lambda_A's header comment -- A "converges fine at defaults" was only true for the (trim,lambda) combos tried before the trim-cutoff sweep; A defaults to 2000 internally if this arg somehow isn't threaded through, but the driver always passes it)
+    xtol_rel_b  = 1e-4,   # also used by A now; loosened from nloptr's 1e-6 default (2026-09-01, extended to A 2026-09-05)
+    maxtime_b   = 600,    # also used by A now; seconds per BOBYQA call (2026-09-01, extended to A 2026-09-05)
     refine        = TRUE,  # auto linear-refinement pass around the quantile grid's argmin (bracket_local_min/build_linear_refinement)
-    refine_points = 10     # build_linear_refinement()'s n_points
+    refine_points = 10,    # build_linear_refinement()'s n_points
+    trim_top_pct  = 0,     # drop the top trim_top_pct share of INTERIOR firms by M_star (2026-09-05 robustness check); 0 = no trim
+    par_init      = numeric(0)   # moment set A only, 2026-09-05: 12 comma-separated values (delta0,delta1,delta2,eta,gamma[1:8])
+                                  # from a PREVIOUS trim level's own converged fit -- overrides the naive untrimmed warm start,
+                                  # for cross-trim-level (and cross-machine "overtake") warm-starting; empty = use the default
 )
 opt <- parse_cli_args(DEFAULTS)
 opt$n_cores <- as.integer(opt$n_cores)
@@ -572,10 +617,21 @@ fits <- run_stage2_elvis_AB(
     lambda_grid_override = if (length(opt$lambda_grid) > 0) opt$lambda_grid else NULL,
     corner_mode = opt$corner_mode,
     maxeval_b = opt$maxeval_b, xtol_rel_b = opt$xtol_rel_b, maxtime_b = opt$maxtime_b,
-    refine = opt$refine, refine_points = opt$refine_points
+    refine = opt$refine, refine_points = opt$refine_points,
+    trim_top_pct = opt$trim_top_pct,
+    par_init_override = if (length(opt$par_init) > 0) opt$par_init else NULL
 )
 
-tag <- sprintf("%s-%s-%s-nburn%d-nkeep%d-maxevalb%d", opt$ins, opt$moment_set, opt$corner_mode, opt$n_burn, opt$n_keep, opt$maxeval_b)
+trim_tag <- if (opt$trim_top_pct > 0) sprintf("-trim%g", opt$trim_top_pct) else ""
+tag <- sprintf("%s-%s-%s-nburn%d-nkeep%d-maxevalb%d%s", opt$ins, opt$moment_set, opt$corner_mode, opt$n_burn, opt$n_keep, opt$maxeval_b, trim_tag)
 out_file <- sprintf("Code/Products/1211-stage2-elvis-AB-%s.RData", tag)
 save(fits, opt, file = out_file)
 cat(sprintf("Saved: %s\n", out_file))
+
+## Print the final converged par (last lambda grid point) in a shell-
+## grep-able line, so run-trim-sequential.sh can capture it into a variable
+## and pass it as the NEXT trim level's par_init -- see that script.
+final_par <- fits[[length(fits)]]$par
+if (!is.null(final_par) && !anyNA(final_par)) {
+    cat(sprintf("FINAL_PAR:%s\n", paste(final_par, collapse = ",")))
+}
