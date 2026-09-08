@@ -44,10 +44,16 @@ library(tidyverse)
 
 source("Code/Deconvolution/utils-cli.R")
 
-DEFAULTS <- list(S = 250, seed = 20260828)
+DEFAULTS <- list(S = 250, seed = 20260828, maxeval_nm = 2000, ins_only = "")
 opt <- parse_cli_args(DEFAULTS)
-opt$S    <- as.integer(opt$S)
-opt$seed <- as.integer(opt$seed)
+opt$S          <- as.integer(opt$S)
+opt$seed       <- as.integer(opt$seed)
+opt$maxeval_nm <- as.integer(opt$maxeval_nm)   # nloptr::neldermead's maxeval; 2000 default, raised via CLI
+                                                # to test how long lag_2_cal_W needs to actually reach xtol
+                                                # (2026-09-07: hit the 2000 cap at exp(h')'s first try)
+                                                # ins_only: "" = run both ins choices (default); "lag_m" or
+                                                # "lag_2_cal_W" = run just that one (for a targeted rerun,
+                                                # e.g. testing a higher maxeval_nm without paying for both)
 log_run_header("1205-stage2-warmstart.R", opt)
 
 load("Code/Products/1200-stage2-data.RData")           # stage2_data
@@ -154,38 +160,75 @@ get_warmstart <- function(ins_choice, S = opt$S, data = stage2_data) {
         lambda <- par[1]; delta0 <- par[2]; delta1 <- par[3]; delta2 <- par[4]
         arg     <- pmax(1 - 2*lambda*stacked$e_hat, 1e-6)   # clip infeasible draws instead of erroring
         h       <- log(stacked$sales_tax_rate_purchases) + log(arg)
-        h_prime <- ifelse(1 - 2*lambda*stacked$e_hat == 0, -9e200, -2*stacked$e_hat / (1 - 2*lambda*stacked$e_hat))  # derivative of h wrt lambda
-        h_prime_c <- (h_prime - mean(h_prime)) / sd(h_prime)  # standardized h' for numerical stability (2026-08-31)
+        ## h_prime reuses the SAME clipped `arg` as h (2026-09-07 fix), not the
+        ## raw unclipped denominator -- the two must agree, or h_prime reports a
+        ## huge nonzero slope exactly where the clip has made h locally flat in
+        ## lambda. This also removes the near-zero-denominator blowup: lambda_min
+        ## is defined as 1/(2*max(e_hat)), which is an EXACT root of the raw
+        ## denominator for the firm/draw achieving max(e_hat) (1-2*lambda_min*
+        ## e_max = 1-1 = 0) -- the old `== 0` guard never caught this in practice
+        ## (floating-point rounding lands near, not at, exactly 0, so h_prime
+        ## came back finite-but-astronomical, e.g. ~1e13-1e23, silently passing
+        ## every is.finite() check while still swamping mean(h_prime)/sd(h_prime)
+        ## for every other observation). Bounded now by construction: |h_prime|
+        ## <= 2*e_hat/1e-6, large for extreme e_hat but never singular.
+        h_prime   <- -2 * stacked$e_hat / arg
+        ## exp(h_prime), not z-score standardization (2026-09-07): with arg
+        ## floored above, h_prime <= 0 always (e>=0, arg>0), so exp(h_prime) is
+        ## bounded in (0,1] with NO dependence on the rest of the sample -- a
+        ## pointwise transform of this one observation's own e, unlike the
+        ## z-score version (mean(h_prime)/sd(h_prime) recomputed at every
+        ## candidate lambda, which changed the objective's shape at every
+        ## draw whose denom fell below the floor simultaneously and made
+        ## L-BFGS-B grind, see chat). The earlier "exp blew up" failure was
+        ## from exponentiating the RAW unclipped h_prime, which could be
+        ## unboundedly POSITIVE for draws past the ceiling (raw denom<0) --
+        ## the floor removes that possibility entirely, since arg can't go
+        ## negative.
+        h_prime_exp <- exp(h_prime)
         stopifnot(
             "1/lambda is not finite"=is.finite(1/lambda),
             "e_hat is not finite"=all(is.finite(stacked$e_hat)),
-            # "1/2e=lambda"=all(2*lambda*stacked$e_hat != 1, na.rm = TRUE),
             "h' is not finite"=all(is.finite(h_prime)),
-            "h' centered is not finite"=all(is.finite(h_prime_c))
+            "exp(h') is not finite"=all(is.finite(h_prime_exp))
             )
-        # stopifnot("e_hat is not finite"=all(is.finite(stacked$e_hat)))
-        # stopifnot("h' is not finite"=all(is.finite(h_prime)))
-        # stopifnot("exp(-h') is not finite"=all(is.finite(exp(-h_prime))))
         psi_hat <- h - delta0 + delta1*stacked$omega_hat - delta2*stacked$omega_hat^2
         g <- c(
             mean(psi_hat),
             mean(psi_hat * stacked$omega_hat),
             mean(psi_hat * stacked$omega_hat*stacked$omega_hat), # was ^2 (faster?)
-            mean(psi_hat * h_prime_c) # Naive moment: psi not independent of e; Was psi*lnM_hat
+            mean(psi_hat * h_prime_exp) # score moment for lambda (bounded exp(h') transform); was psi*lnM_hat
         )
         sum(g^2)
     }
 
-    fit <- optim(
-        par    = c(lambda = lambda0, delta0 = 0, delta1 = 0, delta2 = 0),
+    ## nloptr::neldermead, not stats::optim(method="L-BFGS-B") (2026-09-07):
+    ## L-BFGS-B's line search failed outright for lag_2_cal_W (convergence=52,
+    ## "ABNORMAL_TERMINATION_IN_LNSRCH") even after the h_prime floor+exp fix --
+    ## the arg<-pmax(...,1e-6) floor still introduces a kink (a threshold lambda
+    ## per observation where it crosses onto the floor), and with millions of
+    ## distinct e_hat values scattered across the search range, the numerically
+    ## finite-differenced gradient L-BFGS-B relies on can be locally unreliable
+    ## near enough of them. Nelder-Mead never estimates a gradient (compares
+    ## function VALUES at simplex vertices only), so it has no line search to
+    ## fail -- it can stall or converge slowly on a rough surface, but not error
+    ## out this way. Using nloptr's (not base R's) implementation specifically
+    ## because stats::optim(method="Nelder-Mead") silently IGNORES lower/upper
+    ## (base R only respects bounds for L-BFGS-B/Brent) -- would have quietly
+    ## stopped enforcing lambda_min/lambda_max and the delta box.
+    fit0 <- nloptr::neldermead(
+        x0     = c(lambda0, 0, 0, 0),
         fn     = gmm_obj,
-        method = "L-BFGS-B",
         lower  = c(lambda_min, -50, -50, -50),
         upper  = c(lambda_max, 50, 50, 50),
-        control = list(maxit = 200)  # safety net: this is a crude warm start (doesn't need to be
-                                      # consistent, just close), so a bad bounds/starting-point
-                                      # region should never be allowed to run unbounded again
+        control = list(maxeval = opt$maxeval_nm)  # generous vs. bobyqa's typical ~150-250 evals: Nelder-Mead
+                                         # usually needs more function calls than a quasi-Newton method
+                                         # on a smooth problem, but each call has no extra gradient
+                                         # evaluations (L-BFGS-B's finite-difference gradient costs
+                                         # n_par+1 extra calls per step on top of the line search itself)
     )
+    fit <- list(par = setNames(fit0$par, c("lambda", "delta0", "delta1", "delta2")),
+                convergence = fit0$convergence, message = fit0$message, iter = fit0$iter)
 
     ## sigma2_psi: not searched, falls out of the fitted residuals directly --
     ## it's psi's own defining moment (E[psi^2]=sigma2_psi), no extra param.
@@ -202,14 +245,34 @@ get_warmstart <- function(ins_choice, S = opt$S, data = stage2_data) {
         n_firms     = n_firms,
         n_rows      = nrow(stacked),
         S           = S,
-        convergence = fit$convergence
+        convergence = fit$convergence,
+        message     = fit$message,
+        iter        = fit$iter
     )
 }
 
-warmstart_lag_m <- get_warmstart("lag_m")
-warmstart_lag2W <- get_warmstart("lag_2_cal_W")
+## ins_only (2026-09-07): "" runs both and overwrites the shared product file
+## (1210/1211's default warm-start input); a specific ins name runs just that
+## one, timed, and writes to a SEPARATE -ins_only-tagged file so a targeted
+## rerun (e.g. testing a higher maxeval_nm) can never clobber the shared one.
+run_lag_m  <- opt$ins_only %in% c("", "lag_m")
+run_lag2W  <- opt$ins_only %in% c("", "lag_2_cal_W")
 
-cat("Warm start (ins = lag_m):\n");       print(warmstart_lag_m$par)
-cat("Warm start (ins = lag_2_cal_W):\n"); print(warmstart_lag2W$par)
+if (run_lag_m) {
+    t0 <- Sys.time(); warmstart_lag_m <- get_warmstart("lag_m"); t_lag_m <- Sys.time() - t0
+    cat("Warm start (ins = lag_m):\n"); print(warmstart_lag_m$par)
+    cat(sprintf("  elapsed: %s\n", format(t_lag_m)))
+}
+if (run_lag2W) {
+    t0 <- Sys.time(); warmstart_lag2W <- get_warmstart("lag_2_cal_W"); t_lag2W <- Sys.time() - t0
+    cat("Warm start (ins = lag_2_cal_W):\n"); print(warmstart_lag2W$par)
+    cat(sprintf("  elapsed: %s\n", format(t_lag2W)))
+}
 
-save(warmstart_lag_m, warmstart_lag2W, file = "Code/Products/1205-stage2-warmstart.RData")
+if (opt$ins_only == "") {
+    save(warmstart_lag_m, warmstart_lag2W, file = "Code/Products/1205-stage2-warmstart.RData")
+} else {
+    out_file <- sprintf("Code/Products/1205-stage2-warmstart-%s-maxeval%d.RData", opt$ins_only, opt$maxeval_nm)
+    save(list = ls(pattern = "^warmstart_"), file = out_file)
+    cat(sprintf("Saved: %s\n", out_file))
+}

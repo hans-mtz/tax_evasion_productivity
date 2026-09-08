@@ -17,13 +17,23 @@
 #ifndef STAGE2_ELVIS_COMMON_H
 #define STAGE2_ELVIS_COMMON_H
 
+// STAGE2_STANDALONE_BUILD (2026-09-07): defined by Code/C-estimator/Makefile
+// so this same header also compiles into the standalone (λ,δ1,δ2) grid
+// estimator (Code/C-estimator/grid_estimator.cpp), which links against
+// NLopt+Accelerate directly and never touches R. The pure-math functions
+// below (e_of_M...draw_from_rho_eta) have no Rcpp:: dependency at all -- only
+// this include block does -- so sharing this file (rather than forking a
+// duplicate that can drift) is a zero-behavior-change guard for the existing
+// Rcpp build.
+#ifndef STAGE2_STANDALONE_BUILD
 #include <Rcpp.h>
 #include <RcppParallel.h>
+using namespace Rcpp;
+using namespace RcppParallel;
+#endif
 #include <random>
 #include <array>
 #include <algorithm>
-using namespace Rcpp;
-using namespace RcppParallel;
 
 inline double e_of_M(double M, double Mstar) {
     return Mstar - M;
@@ -37,8 +47,31 @@ inline double omega_of_M(double M, double Mstar, double V, double Wt, double bet
     return Wt - (1.0 - beta) * eps_of_M(M, Mstar, V);
 }
 
+// Shared floor on h_of_e/h_prime_of_e's denominator (2026-09-07). Both MUST
+// use the same floored value -- see the warm-start fix in
+// Code/Deconvolution/1205-stage2-warmstart.R for the full diagnosis this
+// mirrors: the sampler (draw_from_rho/draw_from_rho_eta below) only
+// guarantees e < 1/(2*lambda) STRICTLY (u01 ~ Uniform[0,1) never reaches the
+// support's own upper edge exactly), not that e stays away from it -- a
+// continuous uniform draw puts positive density arbitrarily close to that
+// edge, so 1-2*lambda*e can land at ~1e-14 or smaller with nonzero
+// probability across enough draws (thousands of firms x n_burn+n_keep steps
+// x every BOBYQA evaluation). Unclipped, h_prime_of_e then returns a huge
+// (finite, so silently undetected) value that dominates cov(Ghat)'s
+// eigenvalues -- confirmed empirically in the trim=1% run (2026-09-05/06):
+// one moment row's variance at ~1e16x every other row's. h_of_e degrades
+// more gracefully on its own (log grows far slower than 1/x near 0) but is
+// floored here too for consistency: h_prime must be the derivative of the h
+// actually being evaluated, or it reports a nonzero slope exactly where the
+// floor has made h locally flat in lambda.
+constexpr double H_DENOM_FLOOR = 1e-6;
+
+inline double h_denom(double e, double lambda) {
+    return std::max(1.0 - 2.0 * lambda * e, H_DENOM_FLOOR);
+}
+
 inline double h_of_e(double e, double tau_rho, double lambda) {
-    return std::log(tau_rho) + std::log(1.0 - 2.0 * lambda * e);
+    return std::log(tau_rho) + std::log(h_denom(e, lambda));
 }
 
 // Score moment for lambda (2026-09-05): d(h)/d(lambda) for the linear-q
@@ -54,9 +87,49 @@ inline double h_of_e(double e, double tau_rho, double lambda) {
 // derivation, including which analogous moments were considered and
 // rejected (h_prime*omega -- tautological, omega IS an argument of e's own
 // FOC).
+//
+// Callers use exp(h_prime_of_e(...)), not the raw value (2026-09-07): with
+// h_denom floored above, h_prime_of_e <= 0 always (e>=0, denom>0), so
+// exp(.) is bounded in (0,1] with NO dependence on any other observation --
+// a pointwise transform of this one draw's own e. z-score standardization
+// (mean/sd over the whole sample) was tried first in the R warm-start
+// prototype and rejected: it made the R optimizer's search rough enough to
+// fail outright for one instrument (L-BFGS-B line-search error) even after
+// this same floor was applied, since a single still-large floored value can
+// still swing the pooled mean/sd from one BOBYQA evaluation to the next.
 inline double h_prime_of_e(double e, double lambda) {
-    double denom = 1.0 - 2.0 * lambda * e;
-    return -2.0 * e / denom;
+    return -2.0 * e / h_denom(e, lambda);
+}
+
+// Bounded score-moment transform, take 2 (2026-09-07) -- SUPERSEDES
+// exp(h_prime_of_e(...)) above (kept as the raw derivative for internal use,
+// no longer exponentiated at any call site). Found via the standalone grid
+// estimator's own cross-validation pass: exp(.) and tanh(.) both saturate
+// EXPONENTIALLY in |h'| -- exp underflows to a literal 0.0 once h'<~-745,
+// tanh rounds to exactly -1.0 in double precision once h'<~-20 (tanh
+// saturates numerically FASTER than exp, not slower). Since h'~=-2e and this
+// data's median e is ~841 (h'~=-1683), BOTH transforms were already deep in
+// their dead zones for ~73-75% of firms -- the row silently carried almost
+// no identifying content for the bulk of the sample, not just a numerical
+// edge case (checked directly against Code/Products/1225-stage2-grid-input-
+// lag_m-trim0.005.csv, not merely reasoned about).
+//
+// h'/(1-h') (equivalent to the general softsign h'/(1+|h'|) restricted to
+// h'<=0, which always holds given the floor above) decays only
+// POLYNOMIALLY (~1/h'^2) in its derivative, not exponentially -- e.g.
+// f(-1683)~=-0.99941 vs f(-236714)~=-0.999996, a ~6e-4 gap, far above double
+// precision's resolution at that scale, so firms across the WHOLE range of e
+// stay genuinely distinguishable, not just the lowest-e quartile. Still
+// monotonic (df/dh' = 1/(1-h')^2 > 0 for h'<=0) and bounded in (-1,0], so
+// the same "any function of e alone" independence argument (eps _|_
+// (psi,omega) => eps _|_ e => eps _|_ any f(e)) still licenses it -- validity
+// never depended on which specific bounded transform is used, only on
+// monotonicity being unnecessary for validity (informativeness only) and
+// boundedness being what keeps a single extreme draw from dominating
+// cov(Ghat)'s eigenvalues.
+inline double h_prime_bounded(double e, double lambda) {
+    double hp = h_prime_of_e(e, lambda);
+    return hp / (1.0 - hp);
 }
 
 // Concave/exponential q=1-exp(-lambda*e) variant (2026-09-05), added to test

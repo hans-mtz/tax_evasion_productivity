@@ -363,14 +363,24 @@ NumericMatrix mh_tilted_average_cpp(
 //   [3] psi*om                           -- psi _|_ omega
 //   [4] psi*om^2                         -- extends [3] to the omega^2 term
 //   [5] eps*lnM                          -- eps _|_ true inputs
-//   [6] h_prime*eps                      -- score moment for lambda (2026-09-05,
+//   [6] exp(h_prime)*eps                 -- score moment for lambda (2026-09-05,
 //                                            replaces the old eps*e row: not
 //                                            especially lambda-informative and
 //                                            redundant with [5]/[7]); h_prime =
 //                                            d(h)/d(lambda), see h_prime_of_e's
 //                                            own header comment for why eps is
 //                                            a valid (non-tautological)
-//                                            partner, unlike omega
+//                                            partner, unlike omega. Uses
+//                                            exp(h_prime), not the raw value
+//                                            (2026-09-07): raw h_prime blows
+//                                            up near the FOC ceiling (a
+//                                            single extreme draw could swamp
+//                                            cov(Ghat)'s eigenvalues, found in
+//                                            the trim=1% run); exp bounds it
+//                                            to (0,1] once h_prime_of_e's own
+//                                            denominator is floored (see
+//                                            common.h) -- pointwise, no
+//                                            dependence on other draws
 //   [7] eps*om                           -- eps _|_ omega (stage-1-inherited
 //                                            spec check)
 //
@@ -414,11 +424,14 @@ NumericMatrix mh_tilted_average_cpp(
 //                                           throughout, not just in
 //                                           aggregate, so this factors
 //                                           through E[eps|j]=0 for every j)
-//   [8+J+6] h_prime*(lnM - mu_m[j])      -- score moment for lambda, materials-
+//   [8+J+6] exp(h_prime)*(lnM - mu_m[j]) -- score moment for lambda, materials-
 //                                           FOC side (2026-09-05) -- same
 //                                           validity argument as [8+J+4]
-//                                           (psi*lnM_c), see h_prime_of_e's
-//                                           own comment and CLAUDE.md
+//                                           (psi*lnM_c); uses exp(h_prime),
+//                                           not the raw value, same reason
+//                                           as row [6] (2026-09-07), see
+//                                           h_prime_of_e's own comment and
+//                                           CLAUDE.md
 //
 // d_g for moment set B is now 8+J+7 (was 8+J+6 before the h_prime row was
 // added, 2026-09-05).
@@ -471,7 +484,7 @@ static void moment_g_A_one(
     double om    = omega_of_M(M, Mstar, V, Wt, beta);
     double psi   = h_of_e(e, tau_rho, lambda) - delta0 + delta1 * om - delta2 * om * om;
     double lnM   = std::log(M);
-    double hprime = h_prime_of_e(e, lambda);
+    double hprime = h_prime_bounded(e, lambda);   // bounded in (-1,0], see h_prime_bounded's own comment (2026-09-07)
 
     g_out[0] = psi;
     g_out[1] = eps;

@@ -38,7 +38,7 @@ static void moment_g_B_one(
     double om    = omega_of_M(M, Mstar, V, Wt, beta);
     double psi   = h_of_e(e, tau_rho, lambda) - delta0 + delta1 * om - delta2 * om * om;
     double lnM   = std::log(M);
-    double hprime = h_prime_of_e(e, lambda);
+    double hprime = h_prime_bounded(e, lambda);   // bounded in (-1,0], see h_prime_bounded's own comment (2026-09-07)
     double mu_m_i = mu_m[industry_idx_i];
     double lnM_c  = lnM - mu_m_i;
     double om_c   = om - mu_omega_i;
@@ -65,7 +65,9 @@ static void moment_g_B_one(
     g_out[base + 5] = psi * eps * om;
     g_out[base + 6] = hprime * lnM_c;   // 2026-09-05: score moment for lambda, materials-FOC side
                                         // (structurally identical validity argument to psi*lnM_c
-                                        // above -- see CLAUDE.md's 2026-09-05 entry)
+                                        // above -- see CLAUDE.md's 2026-09-05 entry). hprime here is
+                                        // already exp(h_prime_of_e(...)), bounded (0,1] -- see its
+                                        // declaration above and common.h's h_prime_of_e comment (2026-09-07)
 }
 
 struct TiltedMomentWorkerB : public Worker {
