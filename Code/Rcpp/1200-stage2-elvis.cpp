@@ -347,9 +347,22 @@ NumericMatrix mh_tilted_average_cpp(
 // already used elsewhere in this project for the analogous "unincorp evades
 // positively" inequality) -- guarantees M>=eta*Mstar for EVERY draw, not
 // just in aggregate expectation, which a moment-based E[M-U_2]=0 device
-// would not. D_G_A stays 8; eta adds one column to theta_smooth only.
+// would not. D_G_A is 9 (2026-09-08, was 8); eta adds one column to theta_smooth only.
 //
-// ---- Moment set A: 8 moments, theta_smooth=(delta0,delta1,delta2,eta) ----
+// ---- Moment set A: 9 moments, theta_smooth=(delta0,delta1,delta2,eta) ----
+// (2026-09-08: row [6]=eps*e RESTORED to its original definition -- the
+// 2026-09-05 swap to exp(h_prime)*eps, later h_prime_bounded*eps, is instead
+// APPENDED as a new row [8] below, not a replacement. Motivation: the
+// pre-swap 8-row system (this row list, moment sets A and B both) was the
+// one that returned economically sensible estimates (delta1,delta2>0 for
+// both instruments, Paper/images/1212-stage2-A-lhat-lambda.png /
+// Quarto-Slides/sections/650-stage2-prelim-results.qmd's headline table);
+// every fit run SINCE the swap (moment set A, any trim level 0-1%) has come
+// back with delta1,delta2<0 -- confirmed directly against the 2026-09-07
+// trim=0.5%/1% saved fits before restoring this row, not just recalled.
+// Approach going forward: add moments one at a time and see how theta
+// changes, per Schennach's own "more moments only helps" guidance -- don't
+// drop rows to fix weak identification.
 //   [0] psi
 //   [1] eps                              -- E[eps]=0 in the aggregate (eps's
 //                                            industry-conditional mean is
@@ -363,26 +376,28 @@ NumericMatrix mh_tilted_average_cpp(
 //   [3] psi*om                           -- psi _|_ omega
 //   [4] psi*om^2                         -- extends [3] to the omega^2 term
 //   [5] eps*lnM                          -- eps _|_ true inputs
-//   [6] exp(h_prime)*eps                 -- score moment for lambda (2026-09-05,
-//                                            replaces the old eps*e row: not
-//                                            especially lambda-informative and
-//                                            redundant with [5]/[7]); h_prime =
-//                                            d(h)/d(lambda), see h_prime_of_e's
-//                                            own header comment for why eps is
-//                                            a valid (non-tautological)
-//                                            partner, unlike omega. Uses
-//                                            exp(h_prime), not the raw value
-//                                            (2026-09-07): raw h_prime blows
-//                                            up near the FOC ceiling (a
-//                                            single extreme draw could swamp
-//                                            cov(Ghat)'s eigenvalues, found in
-//                                            the trim=1% run); exp bounds it
-//                                            to (0,1] once h_prime_of_e's own
-//                                            denominator is floored (see
-//                                            common.h) -- pointwise, no
-//                                            dependence on other draws
+//   [6] eps*e                            -- eps _|_ e (original row, restored
+//                                            2026-09-08; e is a raw function
+//                                            of M alone, same independence
+//                                            argument as [5]/[7])
 //   [7] eps*om                           -- eps _|_ omega (stage-1-inherited
 //                                            spec check)
+//   [8] h_prime_bounded(e,lambda)*eps    -- score moment for lambda
+//                                            (2026-09-05, ADDED as row [8] on
+//                                            2026-09-08, not a replacement
+//                                            for [6]); h_prime=d(h)/d(lambda),
+//                                            see h_prime_of_e's own header
+//                                            comment for why eps is a valid
+//                                            (non-tautological) partner,
+//                                            unlike omega. Uses
+//                                            h_prime_bounded=h'/(1-h')
+//                                            (2026-09-07, common.h), not the
+//                                            raw value or the superseded
+//                                            exp(h') -- see common.h's own
+//                                            comment (raw h' blows up near
+//                                            the FOC ceiling; exp(h')
+//                                            underflows to exactly 0 for
+//                                            ~73-75% of firms in this data).
 //
 // ---- Moment set B: A's 8 rows + 7 more, adding ONE genuinely new jointly-
 // estimated nuisance block (mu_m,j, industry mean of ln M) plus two
@@ -463,7 +478,7 @@ NumericMatrix mh_tilted_average_cpp(
 // applying the same sampler restriction here too, for consistency. Uses
 // draw_from_rho_eta exactly as in A; mu_m,j's own bounds/box are unaffected.
 
-static const int D_G_A = 8;
+static const int D_G_A = 9;
 typedef std::array<double, D_G_A> GVecA;
 
 // [[Rcpp::export]]
@@ -492,8 +507,9 @@ static void moment_g_A_one(
     g_out[3] = psi * om;
     g_out[4] = psi * om * om;
     g_out[5] = eps * lnM;
-    g_out[6] = hprime * eps;
+    g_out[6] = eps * e;
     g_out[7] = eps * om;
+    g_out[8] = hprime * eps;
 }
 
 struct TiltedMomentWorkerA : public Worker {
@@ -572,7 +588,7 @@ NumericMatrix mh_tilted_average_A_cpp(
     int base_seed = 20260829
 ) {
     int n = Mstar.size();
-    if (gamma.size() != D_G_A) stop("gamma length must equal 8 (moment set A)");
+    if (gamma.size() != D_G_A) stop("gamma length must equal 9 (moment set A)");
     if (corner.size() != n) stop("corner length must equal n");
     if (row_id.size() != n) stop("row_id length must equal n");
     if (eta < 0.0 || eta >= 1.0) stop("eta must be in [0,1)");
@@ -695,7 +711,7 @@ List tilted_e_diag_A_cpp(
     int base_seed = 20260831
 ) {
     int n = Mstar.size();
-    if (gamma.size() != D_G_A) stop("gamma length must equal 8 (moment set A)");
+    if (gamma.size() != D_G_A) stop("gamma length must equal 9 (moment set A)");
     if (corner.size() != n) stop("corner length must equal n");
     if (row_id.size() != n) stop("row_id length must equal n");
     if (eta < 0.0 || eta >= 1.0) stop("eta must be in [0,1)");
@@ -804,7 +820,7 @@ List tilted_e_omega_diag_A_cpp(
     int base_seed = 20260901
 ) {
     int n = Mstar.size();
-    if (gamma.size() != D_G_A) stop("gamma length must equal 8 (moment set A)");
+    if (gamma.size() != D_G_A) stop("gamma length must equal 9 (moment set A)");
     if (corner.size() != n) stop("corner length must equal n");
     if (row_id.size() != n) stop("row_id length must equal n");
     if (eta < 0.0 || eta >= 1.0) stop("eta must be in [0,1)");

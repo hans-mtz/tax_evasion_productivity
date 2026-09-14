@@ -1,0 +1,206 @@
+
+## Recasting in $M$
+
+The same trap reappears if we instead simulate $M^{(s)}_{it}=\beta P_tY_{it}/\rho_t\cdot\textbf{e}^{-\varepsilon^{(s)}}$ and form $e^{(s)}_{it}=M^*_{it}-M^{(s)}_{it}$ — this looks like it avoids $\mathcal V_{it}$, but
+
+$$
+e(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)=M^*_{it}-\underbrace{\frac{\beta P_tY_{it}}{\rho_t}\textbf{e}^{-\varepsilon}}_{=\,M(\varepsilon)}=M^*_{it}-M(\varepsilon)
+$$
+
+using $\textbf{e}^{-\mathcal V_{it}}=\beta P_tY_{it}/(\rho_tM^*_{it})$. **It's the identical map** — $\mathcal V_{it}$'s information is just $M^*_{it}$ and $P_tY_{it}/\rho_t$, so the $M$-version reconstructs it implicitly. Same nonlinearity, same missing reweighting, same problem.
+
+## What a valid simulated-moments design would need
+
+- Match a **data-computable, $\psi$-free** population object against a forward-simulated analog — e.g. $E[\mathcal V_{it}|Z]=E[u_{it}|Z]$ is directly computable from data (since $\varepsilon\perp Z$), while $u^{(s)}=u\big(e^*(\psi^{(s)},\omega^{(s)};\theta)\big)$ can be simulated forward from trial $(\psi^{(s)},\omega^{(s)})$ draws
+- This ties back to the deconvolved $f_{u}$ from stage 1 as the natural target
+- Delivers $\theta$ but not $f_\psi$, and needs its own machinery — no real gain over quadrature-MLE, which is already a cheap 1-D integral
+- **Not pursued further** — MSL/quadrature is the headline strategy
+
+## An Alternative: ELVIS (@Schennach2014)
+
+- The "Why not GMM" failure wasn't fundamental — it was a *naive-averaging* bug: swapping in $\bar\ell_{it}(\lambda)$ silently drops the firm-specific reweighting
+- Schennach (2014, *Econometrica*, "Entropic Latent Variable Integration via Simulation") targets exactly this class: $E[g(U,Z,\theta)]=0$ with $U$ unobserved, $g$ arbitrary — nonlinear, nonmonotone, nonseparable
+- Her own canonical example (errors-in-variables: unobserved true regressor $X^*$, observed $X=X^*+\Delta X$) is structurally our $M$ vs. $M^*$
+
+## Recasting the moment in $M$
+
+Take $M_{it}$ (true materials) — not $\varepsilon_{it}$ — as the one unobservable. Everything else is a deterministic function of $M$ and data:
+
+$$
+e(M)=M^*_{it}-M,\qquad \varepsilon(M)=\ln(M^*_{it}/M)-\mathcal V_{it},\qquad \omega(M)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon(M)
+$$
+
+$$
+g(M,Z_{it},\theta)\;\equiv\;\psi(M)\;=\;h\big(e(M)\big)-\delta_0+\delta_1\omega(M)-\delta_2\omega(M)^2
+$$ {#eq-elvis-g}
+
+- Support $\mathcal U_{Z,\theta}=\big(M^*_{it}-\tfrac1{2\lambda},\,M^*_{it}\big)$ — the feasibility ceiling $e<1/(2\lambda)$ becomes the domain, not a complication (ELVIS explicitly allows $\theta$-dependent support)
+- Same $\psi$ as before — recasting in $M$ only changes *which variable ELVIS treats as unobserved*, not the moment itself
+
+## The entropic fix
+
+Schennach's Theorem 2.1: the infinite-dimensional question "does *some* distribution of $M$ given $Z$ satisfy $E[g]=0$" is **equivalent** to a finite-dimensional system in $(\theta,\gamma)$:
+
+$$
+\inf_{\mu}\big\|E_{\mu\times\pi}[g(M,Z,\theta)]\big\|=0 \quad\Longleftrightarrow\quad \inf_{\gamma\in\mathbb R^{d_g}}\big\|E_\pi[\tilde g(Z,\theta,\gamma)]\big\|=0
+$$
+
+$$
+\tilde g(Z,\theta,\gamma)\equiv\frac{\int g(M,Z,\theta)\exp\big(\gamma'g(M,Z,\theta)\big)\,d\rho(M|Z)}{\int \exp\big(\gamma'g(M,Z,\theta)\big)\,d\rho(M|Z)}
+$$ {#eq-elvis-tilt}
+
+- The exponential tilt $\exp(\gamma'g(\cdot))$ **is** the missing reweighting — not assumed, but *solved for* as a Lagrange multiplier on the moment constraint
+- $\rho(M|Z)$ is any user-chosen dominating measure — by her Remark 2.3, its choice has **zero effect** on the resulting estimate, only support matters
+
+## Estimation
+
+Simulate $M^{(s)}\sim\rho(\cdot|Z_{it})$ (Metropolis) and form a ratio of averages:
+
+$$
+\hat g(Z_{it},\theta,\gamma)=\frac{\frac1S\sum_{s=1}^S g(M^{(s)},Z_{it},\theta)\exp\big(\gamma'g(M^{(s)},Z_{it},\theta)\big)}{\frac1S\sum_{s=1}^S \exp\big(\gamma'g(M^{(s)},Z_{it},\theta)\big)}
+$$ {#eq-elvis-sim}
+
+- Solve $(\hat\theta,\hat\gamma)$ jointly by standard GMM on $E\big[\hat g(Z_{it},\theta,\gamma)\big]=0$
+- $\lambda$ identified the same way as before: sector–time variation in $\tau\rho_t$ shifting the evasion FOC's benefit
+- 15 moments (finalized 2026-08-28), all built from independence assumptions the model already maintains — $\theta_{\text{smooth}}=(\delta_0,\delta_1,\delta_2,\sigma^2_\psi)$ (a new nuisance parameter, $\psi$'s own dispersion), $\lambda$ gridded separately; full list in `Code/Rcpp/1200-stage2-elvis.cpp` / CLAUDE.md
+
+## ELVIS vs. MSL vs. plain MSM
+
+| | recovers $f_\psi$? | needs $f_\varepsilon$? | valid despite nonlinearity? |
+|---|---|---|---|
+| MSL (headline) | yes | yes | yes (by construction) |
+| plain MSM | no | yes | **no** — naive-averaging bug |
+| ELVIS | no | **no** — only support of $M$ | yes (Thm 2.1) |
+
+- ELVIS's real payoff: stage 1's deconvolution of $f_\varepsilon$ becomes **optional** for stage 2 — only $\hat\beta$ is needed to construct $\mathcal V,\tilde{\mathcal W}$
+- $\hat f_\varepsilon$ can still be reused to build an efficient $\rho$ (less simulation noise) — a computational choice, not an identification requirement
+
+## Going Further: One Unified Estimation
+
+- If ELVIS works for stage 2 alone, it works for the *whole model* at once
+- **There is only one true unobservable: $M_{it}$** — true materials, for every firm-period, corp and unincorporated alike
+- No more $\mathcal V,\tilde{\mathcal W}$, no Jacobian, no density-transformation theorem — none of that machinery is needed once $M$ itself is the latent
+- Also sidesteps what made MSL "messier": the AR(1) correction there needed the *conditional density* $f_{\omega_{it}\mid\omega_{it-1}}$ (i.e. $f_\eta$, recovered by Fourier deconvolution). ELVIS only needs **moment orthogonality** $E[\eta_{it}Z_{it}]=0$ — no density of $\eta$ at all
+
+## From $M$ to $\varepsilon$
+
+The materials FOC pins $\varepsilon$ down exactly, given $M$:
+
+$$
+\varepsilon_{it}(M_{it}) = \ln\beta-\ln\left(\frac{\rho_tM_{it}}{P_tY_{it}}\right)
+$$ {#eq-full-eps}
+
+## From $M$ to $\omega$ — GNR's own trick, made exact
+
+Substituting @eq-full-eps into the production identity $\omega_{it}=y_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\beta\ln M_{it}-\varepsilon_{it}$, the $y_{it}$ terms **cancel exactly**:
+
+$$
+\omega_{it}(M_{it}) = (1-\beta)\ln M_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\ln\beta+\ln\rho_t-\ln P_t
+$$ {#eq-full-omega}
+
+- This is **not information loss** — it's Gandhi–Navarro–Rivers's own $\Phi_{it}=y_{it}-\hat\varepsilon_{it}$ step, specialized to constant (Cobb-Douglas) elasticity: their $\Phi$ loses $y_{it}$ the *same* way in this special case
+- Standard proxy-variable logic (Olley-Pakes/Levinsohn-Petrin/ACF/GNR): under the timing assumption, optimal $m$ is a monotonic function of $\omega$ *alone* — so $m$ already perfectly proxies $\omega$. $y_{it}$'s only job is revealing $\varepsilon_{it}$ (via the share equation); once that's done, $y_{it}$ has nothing further to say about $\omega$
+- $y_{it}$ is used exactly **once** — inside $\varepsilon_{it}(M_{it})$
+
+## The AR(1) moment
+
+Raw form (before substituting the FOC) — note the correct coefficients:
+
+$$
+y_{it}-\beta\ln M_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(y_{it-1}-\beta\ln M_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big) = \eta_{it}+\varepsilon_{it}-\gamma_1\varepsilon_{it-1}
+$$
+
+Since $\varepsilon$ is itself just a function of $M$ (@eq-full-eps), substitute @eq-full-omega directly — no $\varepsilon$ left anywhere:
+
+$$
+\eta_{it}(M_{it},M_{it-1}) = \omega_{it}(M_{it})-\gamma_0-\gamma_1\,\omega_{it-1}(M_{it-1})
+$$ {#eq-full-eta}
+
+## Evasion moments, by firm type
+
+**Unincorporated (interior FOC), same as before:**
+$$
+e_{it}(M_{it})=M^*_{it}-M_{it},\qquad \psi_{it}(M_{it})=h\big(e_{it}(M_{it})\big)-\delta_0+\delta_1\omega_{it}(M_{it})-\delta_2\omega_{it}(M_{it})^2
+$$
+
+**Corp — relaxed from a hard constraint to a centering moment:**
+$$
+E\big[e_{it}(M_{it})\mid\text{Corp}_i\big]=0 \qquad\text{or}\qquad \text{Med}\big[e_{it}(M_{it})\mid\text{Corp}_i\big]=0
+$$
+
+- No longer "corp never evade" imposed *outside* the estimation — corp can evade a little, just centered at zero, matching what the data already show (near-zero, imprecise evasion at both tails)
+
+**Unincorporated — evade on average, as an inequality:**
+$$
+E\big[e_{it}(M_{it})\cdot\mathbb 1(\text{Unincorp}_i)-U_2\big]=0,\qquad U_2\ge0
+$$
+
+- ELVIS's own device for inequalities (Example 1.3 in @Schennach2014) — no separate technique needed
+
+## The full moment system
+
+| Moment | Object | Identifies | Instruments |
+|---|---|---|---|
+| Materials FOC | $\varepsilon_{it}(M_{it})$ | $\beta$ (mainly via corp) | constant / sector |
+| AR(1) innovation | $\eta_{it}(M_{it},M_{it-1})$ | $\alpha_K,\alpha_L,\gamma_0,\gamma_1$ | $k_{it},l_{it}$, lagged $m^*$ |
+| Evasion FOC (unincorp) | $\psi_{it}(M_{it})$ | $\lambda,\delta_0,\delta_1,\delta_2$ | sector–time $\times\,\tau\rho_t$ |
+| Corp evasion | $e_{it}(M_{it})$ | pins $M_{it}\approx M^*_{it}$ for corp | — (centering) |
+| Unincorp evasion sign | $e_{it}(M_{it})\cdot\mathbb 1(\text{Unincorp})$ | tightens the identified set | — (inequality) |
+
+- All firm-periods, corp and unincorporated, enter **jointly** — no data thrown away at any stage
+- One draw of $M_{it}$ (and its lag) feeds the *whole* moment vector — not double-counting, this is standard for any GMM system with multiple moments per observation
+- **Before committing:** verify the stacked Jacobian $\partial E[g]/\partial\theta_{\text{full}}$ has full column rank numerically — algebra confirms the construction is sound, not that every parameter is well-identified in finite samples
+
+## More moments from assumptions we already make
+
+Every independence assumption already maintained — but never yet written as a moment — adds an (almost free) row to $g$:
+
+| Assumption | New moment |
+|---|---|
+| $\varepsilon\perp\psi$ | $E[\varepsilon_{it}(M_{it})\psi_{it}(M_{it})]=0$ |
+| $\omega\perp\varepsilon$ | $E[\omega_{it}(M_{it})\varepsilon_{it}(M_{it})]=0$ |
+| $\psi\perp\omega$ | $E[\psi_{it}(M_{it})\omega_{it}(M_{it})]=0$ — overidentifying check on the U-shape |
+| $\varepsilon_{it}\perp\varepsilon_{it-1}$ | $E[\varepsilon_{it}(M_{it})\varepsilon_{it-1}(M_{it-1})]=0$ — free, $M_{it-1}$ already drawn |
+| $\varepsilon_{it-1}\perp\psi_{it}$ | $E[\varepsilon_{it-1}(M_{it-1})\psi_{it}(M_{it})]=0$ — free, same draw |
+
+- Formal license: @Schennach2014's own supplement, Prop. B.1 (conditional-mean-zero ⟺ countable unconditional moments $E[Ye^{i\xi X}]=0$) and Prop. B.2 (independence, not just uncorrelatedness, factors the same way through characteristic functions)
+- Her own examples do this in practice — Example 1.5 (closest analog here) adds a cross-moment between its two error terms; the interval-regression example adds a variance/homoskedasticity moment purely to narrow the bounds
+- **Not free:** the confidence-region critical value is $\chi^2_{d_g,\alpha}$, $d_g$=number of moments — every row raises the bar. Recommended: add these six first, treat the full characteristic-function grid as a later robustness pass
+
+## What about the counterfactual?
+
+MSL's revenue integral weights by $f_\psi(\psi(\varepsilon))J_i(\varepsilon)f_\omega(\omega(\varepsilon))f_\varepsilon(\varepsilon)$ — needs the full recovered density, which ELVIS doesn't deliver.
+
+- ELVIS's own machinery for exactly this situation: Schennach's device for bounding a functional of the unobservable that isn't already one of the estimating moments — her worked example is literally recovering $E[U]$ this way (@Schennach2014, p.1250)
+- Reusing the tilted density from the *main* estimation as if it were "the" posterior would give *a* number, but understate uncertainty — that tilted distribution is only the entropy-*maximizing* member of the set of distributions consistent with the moments, not necessarily the true one (she is explicit about this). The honest version re-solves for the functional's own identified set
+
+## Implementing it: an auxiliary moment
+
+Hold $\hat\theta$ fixed (already estimated — the counterfactual is a forward simulation, not new estimation). Reuse the closed-form counterfactual evasion FOC already established:
+$$
+\tilde e_i(\tilde\tau)=\tilde e\big(\tilde\tau;\omega_i(M_i),\psi_i(M_i)\big)=\frac{\tilde\tau\rho_t-C(\omega_i,\psi_i)}{2\lambda\tilde\tau\rho_t},\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
+$$
+(true $M_i$ unchanged under the counterfactual — materials FOC doesn't depend on $\tau$, per the model's own maintained assumptions) and form firm $i$'s counterfactual revenue as a function of the *same* latent $M_i$:
+$$
+R_i(\tilde\tau;M_i)=\tilde\tau\Big[P_tY_{it}-\rho_tM_i-\big(1-q(\tilde e_i(\tilde\tau))\big)\rho_t\tilde e_i(\tilde\tau)\Big]
+$$
+
+For a candidate $\tilde\tau$, introduce an auxiliary parameter $\tilde\theta(\tilde\tau)\equiv\frac1N\sum_iE[R_i(\tilde\tau)\mid Z_i]$ and **append its own moment** to the system:
+$$
+E\big[R_i(\tilde\tau;M_i)-\tilde\theta\big]=0
+$$
+with $\theta$ fixed at $\hat\theta$ — only $\tilde\theta$ and an *extended* $\gamma$ (one more component, for the new moment) are free. Same simulated-draw, ratio-of-averages machinery as before (@eq-elvis-sim), just evaluated on the extended moment vector.
+
+## Point or set — decided by the procedure, not assumed
+
+For a fixed $\tilde\tau$, grid over **candidate revenue values** $\tilde\theta$ (not over $\theta$ this time):
+
+1. For each candidate $\tilde\theta$, solve the inner problem — maximize the objective (EL, or the CUE-type quadratic $-\tfrac12\hat g'\hat V^{-1}\hat g$) over the extended $\gamma$, with the $R_i(\tilde\tau;M_i)-\tilde\theta$ moment included
+2. That maximum is a criterion function $\hat L_n(\tilde\theta;\tilde\tau)$ — exactly the same construction used for $\theta$ itself
+3. **Profile against the unrestricted model:** $\hat Q_n(\tilde\theta;\tilde\tau)=-\big(\hat L_n(\tilde\theta;\tilde\tau)-\sup_{\theta',\gamma}\hat L_n(\theta',\gamma)\big)$ — subtracting the global max, not using $\hat L_n$ raw, is what gives the efficiency gain this construction is built for
+4. Region: $\{\tilde\theta:n\hat Q_n(\tilde\theta;\tilde\tau)\le c_\alpha\}$. $c_\alpha$ via subsampling (Chernozhukov–Hong–Tamer 2007) for a tight region, or a fast conservative first pass: $c_\alpha=\chi^2_{d_g,\alpha}$ (table lookup, no subsampling — skips step 3's profiling)
+
+- Repeat across a grid of $\tilde\tau$: **the shape decides.** A sharp trough at every $\tilde\tau$ → the Laffer curve comes out as a single curve, point-identified. A flat plateau at some $\tilde\tau$ → a genuine band there — the model just doesn't pin expected revenue down more tightly at that rate
+- We do **not** commit to point vs. set beforehand — both come out of the identical grid-and-criterion-function procedure; the width of the trough is the answer, not a modeling choice
+- $\tilde\tau^*$ (or a *range* of $\tilde\tau^*$, if the argmax band is itself wide) follows directly by reading off where the revenue band peaks
+- Convergence rate itself depends on the regime: root-$n$ if the objective is exactly flat over the identified set ("degeneracy," her interval/censored examples), only $\sqrt{\ln n/n}$ otherwise — a property of the fitted objective to check, not to assume

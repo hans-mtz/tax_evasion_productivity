@@ -1,0 +1,32 @@
+
+## What about $\tau$?
+
+- The data includes sales taxes paid on purchases, $\tau\rho_t M^*_{it}$ and sales taxes paid on sales, $\tau P_tY_{it}$.
+
+- I can estimate at the firm level the sales tax rate on sales $\tau_{S,it}=\frac{\tau P_tY_{it}}{P_tY_{it}}$ and the sales tax rate on purchases $\tau_{P,it}=\frac{\tau\rho_t M^*_{it}}{\rho_t M^*_{it}}$.
+
+- I can also estimate the reported effective sales tax rate $\tau_{R,it}=\frac{\tau P_tY_{it}-\tau\rho_t M^*_{it}}{P_tY_{it}}= \tau_{S,it}-\tau_{P,it}\frac{\rho_t M^*_{it}}{P_tY_{it}}$
+
+- and the *corrected* effective sales tax rate $\tau_{C,it}=\tau_{S,it}-\tau_{P,it}\frac{\rho_t M_{it}}{P_tY_{it}}=\tau_{S,it}-\tau_{P,it}\beta\textbf{e}^{-\varepsilon_{it}}$
+    - I use in regressions $\tau_{\tilde{C},it}=\tau_{S,it}-\tau_{P,it}\beta$
+
+## Is the variation in the different estimated tax rates relevant
+
+- I use the following regression model
+
+$$
+\mathcal{V}_{it}=\gamma_j + \gamma_t + \tau_{X,it} + \zeta_{it}
+$$
+
+- where $\gamma_j$ are industry fixed effects, 
+- $\gamma_t$ are year fixed effects, and 
+- $\tau_{X,it}$ is one of the estimated tax rates ($\tau_{S,it}$, $\tau_{P,it}$, $\tau_{R,it}$, or $\tau_{\tilde{C},it}$).
+
+## Variation in estimated $\tau$ predicts variation in tax evasion across firms
+
+![](../Paper/tbls/1000-tax-regs.png){height="90%" fig-align="center"}
+
+## Discussion
+
+- Results suggest negative correlation 
+The previous results could be a product of the mechanical relationship of the variables. Since in the data, I use the share of nominal materials over nominal sales, and to estimate taxes, nominal taxes paid on materials over nominal materials. Therefore the two are negatively correlated mechanically.

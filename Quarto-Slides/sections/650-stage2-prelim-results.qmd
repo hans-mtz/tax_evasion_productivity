@@ -2,7 +2,7 @@
 
 ## Implementation
 
-Moment set A (row list authoritative in `Code/Rcpp/1200-stage2-elvis.cpp`'s header comment): $\theta_{\text{smooth}}=(\lambda,\delta_0,\delta_1,\delta_2,\eta)$, 8 moments ($d_g=8$), no nuisance parameters (additional to $\gamma$'s) :
+Moment set A (row list authoritative in `Code/Rcpp/1200-stage2-elvis.cpp`'s header comment): $\theta_{\text{smooth}}=(\lambda,\delta_0,\delta_1,\delta_2)$, 9 moments ($d_g=9$), no nuisance parameters beyond $\gamma$:
 
 $$
 g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
@@ -13,164 +13,58 @@ g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
 \psi(M,Z)\omega(M,Z)^2 \\
 \varepsilon(M,Z)\ln M \\
 \varepsilon(M,Z) e(M,Z) \\
-\varepsilon(M,Z)\omega(M,Z)
-\end{pmatrix}
-$$
-
-$$
-g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
-\psi(M,Z) \\
-\psi(M,Z)\omega(M,Z) \\
-\psi(M,Z)\omega(M,Z)^2 \\
-\varepsilon(M,Z)\exp(\partial h/\partial\lambda) \\
-\psi(M,Z)\varepsilon(M,Z) \\
-\psi(M,Z)\varepsilon(M,Z)\omega(M,Z)
+\varepsilon(M,Z)\omega(M,Z) \\
+h'(e,\lambda)\,\varepsilon(M,Z)
 \end{pmatrix}
 $$
 
 ## Implementation Details
 
-- **Objective**: CUE quadratic, $\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g$, $\hat\Omega^-$ an eigenvalue-truncated generalized inverse (drops near-zero eigenvalues of the tilted-moment covariance) — same construction AK2020 use
-- **Sampler**: per-firm Metropolis chain (RcppParallel, `n_burn=500`, `n_keep=1000`), deterministic per-firm RNG reseed — same $(\theta,\gamma)$ always sees the same chain
-- **Solver**: BOBYQA, unbounded $\gamma$ (Schennach 2014, p.359 — a large/degenerate $\gamma$ is an expected solution, not a numerical failure), two-pass refinement (warm-started from pass 1)
+- **Objective**: CUE quadratic, $\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g$, $\hat\Omega^-$ an eigenvalue-truncated generalized inverse — same construction AK2020 use
+- **Sampler**: per-firm Metropolis chain, `n_burn=1000, n_keep=3000`, deterministic per-firm RNG reseed
+- **Solver**: Nelder-Mead (beats BOBYQA decisively on this problem), unbounded $\gamma$ (a large/degenerate $\gamma$ is an expected solution, Schennach 2014 — not a numerical failure), two-pass refinement
+- **Seeding**: every $\lambda$ grid point seeded independently from the same validated starting point — no chaining across grid points
 
-## Implementation
+## $\lambda$ Search
 
-- **$\lambda$ search, two phases**: (i) a quantile grid, $\lambda=p/\text{quantile}(M^*,0.5)$ for $p\in\{0.01,\dots,0.9\}\cap(0,0.5]$; (ii) an automatic linear-refinement grid bracketing the quantile grid's minimum, warm-started from the fit *at* that minimum
-- **Sample**: 32,378 unincorporated firm-periods (3,340 at the $\tau_P=0$ corner, included as centered non-evaders), two productivity-instrument choices for $(\alpha_K,\alpha_L,\beta)$
+- $\lambda$ bounds derived directly from the data: the smallest $\lambda$ for which not even the largest firm's evasion is ever constrained, up to the largest $\lambda$ for which even the smallest firm is constrained
+- 16-point log-spaced grid (coarse pass, then a finer pass bracketing the region of interest)
+- **Sample**: 32,232 unincorporated firm-periods (3,340 at the $\tau_P=0$ corner), top 0.5% trimmed by $M^*$; two productivity-instrument choices for $(\alpha_K,\alpha_L,\beta)$
 
-## $\hat L_n(\lambda)$ — Quantile Grid + Linear Refinement
+## $\hat L_n(\lambda)$ — Both Instruments
 
-![](../Paper/images/1212-stage2-A-lhat-lambda.png){height="80%" fig-align="center"}
+![](../Paper/images/1285-lambdagrid-slide.png){height="75%" fig-align="center"}
 
 ##
 
 **Reading the picture**:
 
-- $\mathcal{W}_{it-2}$'s minimum sits below the smallest $\lambda$ its refinement grid reached — real evidence it needs to extend further. 
-- $m^*_{it-1}$ is different: its quantile-phase minimum was *interior* ($\lambda=2.351\times10^{-6}$), so the refinement window was built from immediate neighbors, not an edge extension — it never actually probed below $1.175\times10^{-6}$ at all. Its own minimum sits at that window's edge, but nothing smaller has been tested, so whether it too needs to extend is an open question, not yet evidence either way. 
-- A further refinement pass — genuinely new territory for $m^*_{it-1}$, a continued extension for $\mathcal{W}_{it-2}$ — is the natural next step before treating either $\hat\lambda$ as final.
+- $m^*_{it-1}$: a clean V-shape, genuine minimum, real rejection on both sides — a proper confidence interval
+- $\tilde{\mathcal W}_{it-2}$: also rejects everywhere except two points — its own interior minimum, and separately the smallest $\lambda$ we tested. That second pass just means: for this instrument, we can't rule out arbitrarily weak detection either — we only get an upper bound on $\lambda$ from it, not a full interval. Consistent with it being the weaker of the two instruments overall.
 
 ## Headline Estimates
 
-| Instrument | $\hat\lambda$ | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ | $\max\vert\gamma\vert$ |
-|:--|--:|--:|--:|--:|--:|--:|--:|
-| $m^*_{it-1}$ | $1.18\times10^{-6}$ | 0.0108 | $-1.099$ | 1.453 | **0.218** | 3.34 | 2.08 |
-| $\mathcal{W}_{it-2}$ | $5.88\times10^{-7}$ | 0.0073 | $-1.305$ | 1.859 | **0.396** | 2.35 | 1.43 |
+| Instrument | $\hat\lambda$ | 95% region | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ | $\max\vert\gamma\vert$ |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|
+| $m^*_{it-1}$ | $3.50\times10^{-7}$ | $[2.26,5.43]\times10^{-7}$ | 0.000387 | 3.459 | 4.315 | **0.541** | 3.99 | 0.64 |
+| $\tilde{\mathcal W}_{it-2}$ | $5.43\times10^{-7}$ | $5.43\times10^{-7}$ (point) | 0.000401 | 10.206 | 7.460 | **0.972** | 3.84 | 1.86 |
 
-$\hat\delta_2>0$ for both — the cost function opens the correct (U-shaped) way — and $\hat\omega^*$ lands in a plausible range for both instrument choices.
+$\hat\delta_2>0$ for both — the cost function opens the correct (U-shaped) way. $\hat\omega^*$ lands in a similar plausible range for both, even though the individual $\hat\delta_1,\hat\delta_2$ differ — expected: the two instruments come from different first-stage residuals, so they carry somewhat different implied productivity distributions.
 
-## A Data-Side Check on $\hat\lambda$: Auxiliary Parameters $E[e]$, $\text{Med}[e]$
+## A Data-Side Check on $\hat\lambda$: What Detection Probability Does This Imply?
 
-Does $\hat\lambda$ imply a sane detection probability at a typical evading firm?
+Does $\hat\lambda$ imply a sane detection probability at a typical evading firm? Quick check by forward-simulating each firm's own evasion at the fitted $(\hat\theta,\hat\gamma)$ and reading off the population mean/median — **a ballpark reading, not the formal way to pin this down** (that would need its own auxiliary moment, jointly re-estimated with everything else, not a post-hoc average):
 
-- Approach: Schennach's own auxiliary-parameter device (her $E[U]$ worked example), applied to $e(M)$ directly, evaluated **post-hoc at the already-fitted $(\hat\theta,\hat\gamma)$**. No re-optimization:
-
-$$
-E[e(M)]-\mu_e=0 \qquad\text{vs.}\qquad E\big[\mathbb 1(e(M)\le\theta_e)-\tfrac12\big]=0
-$$
-
-<!-- These are **not** the same moment relabeled: the first is linear and identifies the **mean** $\mu_e$; a literal "$\text{Med}[e]-\theta_e=0$" isn't a valid moment at all (there's no expectation of a median) — the indicator/quantile-GMM form on the right is what actually identifies $\theta_e=\text{Med}[e]$. Solving $E[e-\theta]=0$ for $\theta$ always recovers the mean, regardless of the label. -->
-
-Both evaluated via the same per-firm Metropolis chain the estimator itself uses (`tilted_e_diag_A_cpp`, `Code/Rcpp/1200-stage2-elvis.cpp`)
-
-##
-
-— $\mu_e$ estimated from a running per-firm average (free)
-- $\theta_e$, from the empirical median of pooled, thinned post-burn-in draws across all firms:
-
-| Instrument | $\hat\mu_e=E[e]$ | $\hat\theta_e=\text{Med}[e]$ | $q(\hat\mu_e)=\hat\lambda\hat\mu_e$ | $q(\hat\theta_e)$ |
+| Instrument | $E[e]$ | Med$[e]$ | $q(E[e])=\hat\lambda\cdot E[e]$ | $q(\text{Med}[e])$ |
 |:--|--:|--:|--:|--:|
-| $m^*_{it-1}$ | 5,269 | 569 | 0.62% | 0.067% |
-| $\mathcal{W}_{it-2}$ | 3,858 | 184 | 0.23% | 0.011% |
+| $m^*_{it-1}$ | 2,545 | 625 | 0.089% | 0.022% |
+| $\tilde{\mathcal W}_{it-2}$ | 3,189 | 685 | 0.173% | 0.037% |
 
-- $\hat\mu_e\gg\hat\theta_e$ in both cases, a right-skewed evasion distribution: most firms evade modestly, a long right tail of aggressive evaders pulls the mean well above the median. 
-- All four implied probabilities inside $(0,0.5)$ but are too low.
-
-## Implementation — Moment Set B
-
-Adding nuisance parameters to A's 8 moments:
-
-$$
-g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
-A\text{moments} \\
-\ln M_j-\theta_{m,j} \\
-\omega(M,Z)_j-\theta_{\omega,j}\\
-\omega(M,Z)_j^2-\theta_{\omega^2,j}\\
-\psi(M,Z)(\omega(M,Z)_j-\theta_{\omega,j}) \\
-\psi(M,Z)(\omega(M,Z)_j^2-\theta_{\omega^2,j}) \\
-\psi(M,Z)(\ln M_j-\theta_{m,j}) \\
-\psi(M,Z)\varepsilon(M,Z)\omega(M,Z)
-\end{pmatrix}
-$$
-
-
-- Per-industry $\ln M$ targets ($\theta_{m,j}$, jointly estimated, $J=29$ industries) and 
-- Omega-anchored heteroskedasticity block, $\theta_{\omega,j}$ and $\theta_{\omega^2,j}$, $j=1,\dots,J$ are estimated from sample, before optimiation, so cheap, no work for the optimizer, except for the additional associated $\gamma$ nuisance parameters (one per new moment row) that the optimizer must handle.
-- Total: $d_g=8+J+6=43$, $\theta_{\text{smooth}}=(\delta_0,\delta_1,\delta_2,\eta,\mu_{m,1},\dots,\mu_{m,J})$ — a $\sim$ 76-dimensional (43 $\gamma$, 4 $theta$, 29 nuisance $\theta_{m,j}$ ) inner BOBYQA problem, versus A's 12 (8 $\gamma$, 4 $\theta$).
-
-## 
-
-- **Same objective, sampler, two-phase $\lambda$ search** as A, no methodology change, only the moment row list and parameter count grow.
-- **Needed two fixes A didn't**, both scoped to B only (A's already-validated results untouched):
-  - *Optimizer settings*: at A's defaults (`xtol_rel=1e-6`, `maxeval=1000`, no time cap), **every single B point hit the `maxeval` cap** — not real convergence. Loosened `xtol_rel` to `1e-4` (the objective has real Monte Carlo noise from the finite Metropolis chain; resolving parameter changes to 1-in-a-million is tighter than the noise floor supports at this dimension), raised `maxeval` to 5000, and added a `maxtime=600s` safety net per BOBYQA call (not previously set at all).
-  - *Speed*: B's `cov(Ghat)` step was ~12% of total per-call time (measured, not assumed — an earlier "too small to matter" read came from a synthetic benchmark at the wrong scale). Replaced with Apple's Accelerate/CBLAS (`cblas_dsyrk`), fused into the same C++ call that builds the moment matrix so it never crosses back to R — 157.6ms → 138.25ms per call (~12.3% faster), verified bit-close (relative difference $\sim3\times10^{-13}$) before being trusted.
-- **Result**: overnight run (real scale, `n_burn=500, n_keep=1000`), **31 of 32 lambda points across both instruments converged for real** (`conv=1`, via `xtol_rel`). Only one non-final quantile-phase point hit the `maxtime` cap.
-
-## $\hat L_n(\lambda)$ — Moment Set B
-
-![](../Paper/images/1214-stage2-B-lhat-lambda.png){height="75%" fig-align="center"}
-
-##
-
-**Reading the picture**: both instruments' minimum sits at the smallest tested $\lambda$, rising away from it. 
-
-Obj fun value dropping more rapidly than A's and reaching lower levels, but the minimum is still off the left edge of the grid — a further extension is needed before either $\hat\lambda$ can be treated as final.
-
-## Headline Estimates — Moment Set B
-
-| Instrument | $\hat\lambda$ | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*$ | $\max\vert\gamma\vert$ | conv |
-|:--|--:|--:|--:|--:|--:|--:|--:|:--|
-| $m^*_{it-1}$ | $5.88\times10^{-7}$ | 0.00113 | $-1.236$ | 1.236 | **0.183** | 3.38 | 2.43 | 16/16 |
-| $\mathcal{W}_{it-2}$ | $5.88\times10^{-7}$ | 0.00553 | $-0.515$ | 0.890 | **0.064** | 6.97 | 4.83 | 15/16 |
-
-- **$m^*_{it-1}$ agrees closely with A** ($\hat\omega^*=3.38$ vs. A's 3.34 — near-exact). 
-- **$\mathcal{W}_{it-2}$ moved substantially**: A gave $\hat\omega^*=2.35$, $\hat\delta_2=0.396$; B gives $\hat\omega^*=6.97$, $\hat\delta_2=0.064$. Flatter cost curvature. Plausible (B carries real extra information,the per-industry $\ln M$ moments), but a large jump.
-
-## Interpreting $\hat\omega^*$ and $\hat\lambda$ Against the Data
-
-Two more auxiliary-parameter checks, same as the $E[e]/\text{Med}[e]$
-- where does $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ actually sit in the tilted $\omega$ distribution — a typical firm, or a tail one?
-- extending the detection-probability check to $e$'s upper tail (P90/P95/P99), not just its mean/median.
-
-| | $\hat\omega^*$ | percentile of $\hat\omega^*$ | $\text{Med}(\omega)$ | P75$(\omega)$ | P95$(\omega)$ |
-|:--|--:|--:|--:|--:|--:|
-| A, $m^*_{it-1}$ | 3.34 | 71.9% | 2.79 | 3.42 | 4.20 |
-| B, $m^*_{it-1}$ | 3.38 | 71.0% | 2.83 | 3.51 | 4.54 |
-| A, $\mathcal{W}_{it-2}$ | 2.35 | 29.9% | 2.95 | 3.84 | 4.78 |
-| B, $\mathcal{W}_{it-2}$ | **6.97** | **99.9%** | 2.76 | 3.70 | 4.76 |
-
-## 
-
-- $\mathcal{W}_{it-2}$: Under A, $\mathcal{W}_{it-2}$ puts $\hat\omega^*$ at the 29.9th percentile: cost is already rising for roughly 70% of firms. Not consistent with large/high productivity firms evade less: "cost rises past a low bar" than "cost rises specifically for the most productive." Under B, the *same instrument* swings to the opposite extreme, 99.9th percentile, cost rising only for a sliver of 0.1% at the very top. 
-- $m^*_{it-1}$, stable at ~71st percentile in **both** moment sets. Cost rises for roughly the top quartile, consistent for both moment sets. More trustworthy instrument of the two.
-
-##
-
-| | P90$(e)$ | P95$(e)$ | P99$(e)$ | $\hat\lambda\cdot$P90 | $\hat\lambda\cdot$P95 | $\hat\lambda\cdot$P99 |
-|:--|--:|--:|--:|--:|--:|--:|
-| A, $m^*_{it-1}$ | 10,392 | 21,297 | 84,430 | 1.22% | 2.50% | 9.92% |
-| B, $m^*_{it-1}$ | 6,010 | 13,470 | 62,740 | 0.35% | 0.79% | 3.69% |
-| A, $\mathcal{W}_{it-2}$ | 7,720 | 15,666 | 57,918 | 0.45% | 0.92% | 3.40% |
-| B, $\mathcal{W}_{it-2}$ | 19,829 | 42,873 | 212,589 | 1.17% | 2.52% | 12.49% |
-
-Even at the 99th percentile of (tilted) evasion, detection probability stays well under the 50% FOC ceiling in all four cases — no sign of $\hat\lambda$ pushing anyone near the boundary, aggressive-evader tail included.
-
-<!-- Aside — **why is $E[e]$ (0.62% detection for A, $m^*_{it-1}$) above even P80** (not shown above, but computed): $e$'s pooled distribution is extremely heavy-tailed — the top 1% of firms hold 32-35% of all pooled $e$ mass, the top 5% hold 62-65%. That concentration is enough to pull the mean above the 80th percentile (to the 82.7th for $m^*_{it-1}$, 83.2nd for $\mathcal{W}_{it-2}$) — not an error, a direct, verified consequence of the already-noted $\mu_e\gg\theta_e$ skew. -->
+- $E[e]\gg\text{Med}[e]$ for both — a right-skewed evasion distribution: most firms evade modestly, a long right tail of aggressive evaders pulls the mean well above the median
+- Both implied detection probabilities are small, well under the 50% FOC ceiling — no sign of $\hat\lambda$ pushing anyone near the boundary
 
 ## Notes for Discussion
 
-- **Three of the four fits share the same unresolved edge; one is a different situation.** A's $\mathcal{W}_{it-2}$, B's $m^*_{it-1}$, and B's $\mathcal{W}_{it-2}$ all bottom out at $\lambda=5.877\times10^{-7}$, with $\hat L_n$ still falling as the refinement — which genuinely extended past the original quantile grid's own edge — approaches it: real evidence the true optimum lies further down for these three. A's $m^*_{it-1}$ is different: its quantile-phase minimum landed on an *interior* point ($\lambda=2.351\times10^{-6}$, correctly triggering `bracket_local_min`'s interior-neighbor branch, not the edge-extension one), so its refinement window ($1.175\times10^{-6}$ to $5.877\times10^{-6}$) never tested anything smaller than the quantile grid already had. Its own minimum ($\hat\lambda=1.175\times10^{-6}$) sits at that window's edge, but nothing below it has ever been tried — an untested gap, not the same kind of evidence. Either way, extending the grid further down is the right next step for all four — just for a different reason in $m^*_{it-1}$'s case, and this is still the one blocking item before any of today's numbers should be called final.
-- **$\mathcal{W}_{it-2}$ is unstable across moment sets in a way that matters economically, not just numerically.** $\hat\omega^*$'s percentile swings from 29.9% under A to 99.9% under B — the *same* instrument implying, in one fit, that cost rises for 70% of firms, and in the other, that it rises for only the top 0.1%. Neither matches the intended "large/high-productivity firms specifically" story well, and they disagree with each other in direction, not just magnitude. $m^*_{it-1}$ stays at ~71st percentile in both fits — stable *and* a moderate, plausible reading. That stability makes $m^*_{it-1}$ the more trustworthy instrument right now; $\mathcal{W}_{it-2}$ needs to be understood (genuine extra identifying information from B's per-industry moments? an artifact of the still-unresolved edge-of-grid issue landing differently on each fit?) before either of its numbers goes in front of anyone.
-- **$\mathcal{W}_{it-2}$'s $\gamma$ grows large** (up to $\sim1{,}700$ under A, $\sim$tens under B) toward the high-$\lambda$ end of its grid — expected under Schennach's theory (a large/degenerate $\gamma$ is a valid solution, not a numerical failure), not a numerical concern, but worth watching as the grid extends.
-- **No formal confidence region yet.** The test statistic for the $\chi^2_{d_g}$ comparison is $2n\hat L_n$ (AK2020's own convention, `TSMC=2*minf*n` in their `1App_main.jl`) — not yet wired into the driver.
+- **$m^*_{it-1}$ is the instrument to lead with**: a genuine, contiguous confidence interval, stable $\hat\delta_1,\hat\delta_2$ across the whole search
+- **$\tilde{\mathcal W}_{it-2}$ confirms the same qualitative story but is the weaker instrument**: real rejection pattern, a real interior optimum, but can only bound $\lambda$ from above, not below
+- **No formal joint confidence region for $(\lambda,\delta_1,\delta_2)$ yet** — next step, to get a stronger justification for one fixed $\hat\theta$ to carry into the counterfactual

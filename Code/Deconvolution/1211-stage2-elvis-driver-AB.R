@@ -16,11 +16,16 @@
 ##       solution, not a numerical failure). Confirmed nloptr::bobyqa handles
 ##       lower=-Inf/upper=Inf correctly (toy quadratic test, session log).
 ##
-## Moment set A (8 moments, theta_smooth=(delta0,delta1,delta2)):
-##   psi, eps, psi*lnM, psi*om, psi*om^2, eps*lnM, h_prime*eps, eps*om
-##   (h_prime*eps replaced eps*e 2026-09-05 -- score moment for lambda, see
-##   Code/Rcpp/1200-stage2-elvis-common.h's h_prime_of_e and CLAUDE.md)
-## Moment set B (A's 8 + 7 more, theta_smooth=(delta0,delta1,delta2,mu_m[1:J])):
+## Moment set A (9 moments, theta_smooth=(delta0,delta1,delta2)):
+##   psi, eps, psi*lnM, psi*om, psi*om^2, eps*lnM, eps*e, eps*om, h_prime_bounded*eps
+##   (eps*e is the ORIGINAL row [6] -- restored 2026-09-08 after the
+##   2026-09-05 swap to h_prime*eps came back with the wrong (delta1,delta2)
+##   sign for both instruments; h_prime_bounded*eps is instead APPENDED as a
+##   new row [8], not a replacement, see Code/Rcpp/1200-stage2-elvis.cpp's
+##   header comment and CLAUDE.md)
+## Moment set B (still A's OLD 8-row list + 7 more -- NOT yet updated to A's
+## new 9-row list, 2026-09-08; out of scope for that session's change,
+## theta_smooth=(delta0,delta1,delta2,mu_m[1:J])):
 ##   one industry-indicator row per industry defining mu_m[j] (jointly
 ##   estimated -- ln M has no external proxy, unlike omega), plus
 ##   om-mu_omega, om^2-sigma_omega, psi*(om-mu_omega), psi*(om^2-sigma_omega),
@@ -241,8 +246,8 @@ fit_one_lambda_A <- function(lambda, run_sample, n_burn, n_keep, par_init,
     p_boundary <- boundary_fraction(dat, lambda)
 
     obj <- function(par) cue_objective_A(par, lambda, dat, n_burn, n_keep)
-    lower <- c(rep(-DELTA_BOUND, 3), 0,     rep(-Inf, 8))
-    upper <- c(rep( DELTA_BOUND, 3), 0.999, rep( Inf, 8))
+    lower <- c(rep(-DELTA_BOUND, 3), 0,     rep(-Inf, 9))
+    upper <- c(rep( DELTA_BOUND, 3), 0.999, rep( Inf, 9))
     ctrl <- list(xtol_rel = xtol_rel, maxeval = maxeval, maxtime = maxtime)
 
     res1 <- nloptr::bobyqa(x0 = par_init, fn = obj, lower = lower, upper = upper, control = ctrl)
@@ -466,7 +471,7 @@ run_stage2_elvis_AB <- function(ins_choice, moment_set = c("A", "B"), warmstart,
         cat(sprintf("[%s, A, corner_mode=%s] n=%d (%d corner), n_burn=%d, n_keep=%d, lambda grid: %s\n",
                     ins_choice, corner_mode, nrow(run_sample), sum(run_sample$corner), n_burn, n_keep,
                     paste(signif(lambda_grid, 3), collapse = ", ")))
-        par_init0 <- if (!is.null(par_init_override)) par_init_override else c(delta_init, 0, rep(0, 8))   # eta0=0 default: no extra floor beyond M>=0 until the data asks for one
+        par_init0 <- if (!is.null(par_init_override)) par_init_override else c(delta_init, 0, rep(0, 9))   # eta0=0 default: no extra floor beyond M>=0 until the data asks for one
         run_grid_A <- function(grid, par_init) {
             out <- vector("list", length(grid))
             for (i in seq_along(grid)) {
@@ -593,7 +598,7 @@ DEFAULTS <- list(
     refine        = TRUE,  # auto linear-refinement pass around the quantile grid's argmin (bracket_local_min/build_linear_refinement)
     refine_points = 10,    # build_linear_refinement()'s n_points
     trim_top_pct  = 0,     # drop the top trim_top_pct share of INTERIOR firms by M_star (2026-09-05 robustness check); 0 = no trim
-    par_init      = numeric(0)   # moment set A only, 2026-09-05: 12 comma-separated values (delta0,delta1,delta2,eta,gamma[1:8])
+    par_init      = numeric(0)   # moment set A only, 2026-09-05: 13 comma-separated values (delta0,delta1,delta2,eta,gamma[1:9])
                                   # from a PREVIOUS trim level's own converged fit -- overrides the naive untrimmed warm start,
                                   # for cross-trim-level (and cross-machine "overtake") warm-starting; empty = use the default
 )

@@ -187,6 +187,53 @@ inline double draw_from_rho_eta(double u01, double Mstar, double lambda, double 
     return Mstar - u01 * (Mstar - lo);
 }
 
+// draw_from_rho_checked (2026-09-10): eta DROPPED (see CLAUDE.md/Research-log
+// -- eta, a single global relative floor, was found to compete with lambda
+// for the same identifying role: whenever eta binds, EVERY such firm gets
+// the same fixed e/M ratio 1/eta-1, letting lambda drift toward 0 at no
+// fitting cost since eta silently does lambda's job instead). Physical M>0
+// and the FOC-domain ceiling e<1/(2*lambda) are the only two inequalities
+// left -- draw_from_rho's own max(0,...) already analytically guarantees
+// BOTH hold for every draw (never exactly reaches the floor, since u01 in
+// [0,1) never hits 1 -- same guarantee already relied on for the ceiling
+// elsewhere, see the 2026-09-07 log entry). This wrapper is a belt-and-
+// suspenders numerical safety net, not a structural fix: it recomputes the
+// RAW (pre-H_DENOM_FLOOR) domain value directly and recurses (redraws) on
+// the rare chance floating-point cancellation in "Mstar - u01*(Mstar-lo)"
+// lands inside the same 1e-6 margin H_DENOM_FLOOR already treats as
+// unreliable elsewhere -- expected to almost never trigger, exactly because
+// the analytic bound already guarantees the inequality holds; if it fires
+// often in practice that itself is a signal something upstream is off.
+inline double draw_from_rho_checked(std::mt19937_64 &rng, double Mstar, double lambda) {
+    std::uniform_real_distribution<double> unif(0.0, 1.0);
+    double u01 = unif(rng);
+    double lo = std::max(0.0, Mstar - 1.0 / (2.0 * lambda));
+    double M = Mstar - u01 * (Mstar - lo);
+    double e = Mstar - M;
+    double raw_denom = 1.0 - 2.0 * lambda * e;
+    if (raw_denom <= H_DENOM_FLOOR) return draw_from_rho_checked(rng, Mstar, lambda);
+    return M;
+}
+
+// Counting twin of draw_from_rho_checked (2026-09-10), used ONLY by the
+// standalone redrawdiag diagnostic mode -- never called from the hot path
+// (compute_dvec_omega_A/R), so the extra redraw_count increment costs
+// nothing in any real fit. Answers "how often does the recursive redraw
+// actually fire" empirically instead of just arguing it should be rare.
+inline double draw_from_rho_checked_counted(std::mt19937_64 &rng, double Mstar, double lambda, uint64_t &redraw_count) {
+    std::uniform_real_distribution<double> unif(0.0, 1.0);
+    double u01 = unif(rng);
+    double lo = std::max(0.0, Mstar - 1.0 / (2.0 * lambda));
+    double M = Mstar - u01 * (Mstar - lo);
+    double e = Mstar - M;
+    double raw_denom = 1.0 - 2.0 * lambda * e;
+    if (raw_denom <= H_DENOM_FLOOR) {
+        redraw_count++;
+        return draw_from_rho_checked_counted(rng, Mstar, lambda, redraw_count);
+    }
+    return M;
+}
+
 // Same role as draw_from_rho_eta, but for h_of_e_concave: ceiling is e<1/lambda
 // (not e<1/(2*lambda)), matching h_of_e_concave's own domain restriction.
 inline double draw_from_rho_eta_concave(double u01, double Mstar, double lambda, double eta) {

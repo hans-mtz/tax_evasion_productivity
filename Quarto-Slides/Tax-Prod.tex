@@ -279,7 +279,7 @@
 \title{\texorpdfstring{Tax Evasion and
 Productivity}{Tax Evasion and Productivity}}
 \author{Hans Martinez}
-\date{September 3, 2026}
+\date{September 11, 2026}
 \institute{Western University}
 
 \begin{document}
@@ -860,838 +860,6 @@ Do \textbf{linear} and \textbf{power},
 \protect\phantomsection\label{testing}
 \end{frame}
 
-\section{Empirical Strategy}\label{empirical-strategy}
-
-\begin{frame}{Functional Forms}
-\protect\phantomsection\label{functional-forms}
-The probability of detection, \(q(e_{it})\), and the cost of evasion,
-\(\kappa_{it}(e_{it}, \omega_{it})\), functions should display the
-following properties to be consistent with the observed patterns in the
-data and with theory:
-
-\begin{itemize}
-\tightlist
-\item
-  \(q(e_{it})=\min\{\lambda e, 1\}\)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \(q(e_{it})\in [0,1]\), \(q(0)=0\), \(q(\infty)=1\), and
-    \(q(e_{it})\) is increasing in \(e\). Since I do not have variation
-    in government audit effort, \(\lambda\) is treated as constant
-    across firms and time
-  \end{itemize}
-\item
-  \(\kappa_{it}(e_{it}, \omega_{it})=e_{it}\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}\)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \(\kappa_{it}(e_{it}, \omega_{it})\in [0,\infty)\),
-    \(\kappa_{it}(0, \omega_{it})=0\),
-    \(\frac{\partial \kappa_{it}(0, \omega_{it})}{\partial e_{it}}\ge0\).
-  \item
-    \(\frac{\partial \kappa_{it}(e_{it}, \omega_{it})}{\partial \omega_{it}}\le0\)
-    and
-    \(\frac{\partial^2 \kappa_{it}(e_{it}, \omega_{it})}{\partial \omega_{it}^2}\ge0\)
-    to be consistent with the observed patterns in the data.
-  \item
-    U-shape not ideal, but simple and captures the idea of decreasing
-    cost at high \(\omega\)
-  \item
-    Corporations out of the FOC
-  \item
-    \(\psi_{it}\) idiosyncratic shock to the cost of evasion to explain
-    tax evasion heterogeneity observed in empirical analsys
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{FOC}
-\protect\phantomsection\label{foc}
-Using the functional forms defined above, the FOCs wrt tax evasion
-become for unincorporated firms,
-
-\[
-\tau\rho_t(1-2\lambda e_{it}) = \textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
-\]
-
-Taking logs and defining \[
-h(e_{it})\;\equiv\;\ln(\tau\rho_t)+\ln(1-2\lambda e_{it}),
-\qquad e_{it}\in(0,\frac{1}{2\lambda}),
-\]
-
-the evasion FOC become
-
-\begin{equation}\protect\phantomsection\label{eq-foc-psi}{
-\psi_{it}\;=\;h(e_{it})-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{How to estimate?}
-\protect\phantomsection\label{how-to-estimate}
-\begin{itemize}
-\tightlist
-\item
-  \(\tau\rho_t\) is \hyperlink{what-about-tau}{\emph{computed from
-  data}}
-\end{itemize}
-
-I do not observe \(e_{it}\) nor \(\omega_{it}\) at the firm level.
-
-\begin{itemize}
-\tightlist
-\item
-  However, using the estimated \textbf{parameters of the production}
-  function, we can
-\item
-  rewrite the FOC in terms of data, parameters, and
-\item
-  \emph{only one} independent unobservable \(\varepsilon\)
-\end{itemize}
-
-How to estimate the production function parameters and the distribution
-of \(\varepsilon\)? \textbf{Same as before}
-\end{frame}
-
-\begin{frame}{Estimating \(\beta\)}
-\protect\phantomsection\label{estimating-beta}
-\textbf{Same as before:} From Corporations, the truth-reporters, I
-recover
-
-\begin{itemize}
-\tightlist
-\item
-  the output elasticity of materials, \(\beta\), and the
-\item
-  distribution of the error term, \(f_\varepsilon\),
-\end{itemize}
-
-For Corporations, \(M^*_{it}=M_{it}\), and thus,
-
-\[
-\ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)=\ln(\beta)-\varepsilon_{it}
-\]
-\end{frame}
-
-\begin{frame}{Production Function Estimation}
-\protect\phantomsection\label{production-function-estimation}
-\begin{itemize}
-\tightlist
-\item
-  Having recovered \(\beta\), for everyone, I can form the following
-  variable,
-\end{itemize}
-
-\begin{equation}\protect\phantomsection\label{eq-eva-emp}{
-\begin{aligned}
-    \mathcal{V}_{it} \equiv & \ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln(\beta)\\
-    % =&\ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln(\beta)\\
-    =&\ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln\left(\frac{\rho_t M_{it}}{P_tY_{it}}\right)+\ln\left(\frac{\rho_t M_{it}}{P_tY_{it}}\right)-\ln(\beta)\\
-    =&\ln\left(\frac{M^*_{it}}{M_{it}}\right)-\varepsilon_{it}
-    % =&\ln\left(\frac{M_{it}+e_{it}}{M_{it}}\right)-\varepsilon_{it}=\ln\left(1+\frac{e_{it}}{M_{it}}\right)-\varepsilon_{it}
-\end{aligned}
-}\end{equation}
-
-\footlineextra{\hyperlink{sec-what-can-deconv}{Deconvolving Tax
-Evasion}}
-\end{frame}
-
-\begin{frame}{Production Function Estimation (Cont.)}
-\protect\phantomsection\label{production-function-estimation-cont.}
-\begin{itemize}
-\tightlist
-\item
-  To recover the remaining production function parameters, the
-  \textbf{original strategy is still valid}
-\end{itemize}
-
-To see why, note that,
-
-\begin{equation}\protect\phantomsection\label{eq-cal-omega}{
-\begin{aligned}
-    \mathcal{W}_{it} \equiv & y_{it}-\beta(m^*_{it}-\mathcal{V}_{it})\\
-    =& y_{it}-\beta(m^*_{it}-\ln\left(\frac{M^*_{it}}{M_{it}}\right)+\varepsilon_{it})\\
-    =& y_{it}-\beta(m^*_{it}-\ln(M^*_{it})+\ln (M_{it}))-\beta \varepsilon_{it}\\
-    =& y_{it}-\beta m_{it}-\beta \varepsilon_{it}\\
-    =& \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
-\end{aligned}
-}\end{equation}
-
-the last equality is \emph{exactly the same} as the original discussed
-strategy
-\end{frame}
-
-\begin{frame}{Using productivity's Markov process to recover remaining
-PF parameters}
-\protect\phantomsection\label{using-productivitys-markov-process-to-recover-remaining-pf-parameters}
-Therefore, the \textbf{previous approach is still valid} to recover the
-remaining production function parameters, productivity's Markov process,
-and the distribution of the productivity shock
-(\(\alpha_K, \alpha_L, \omega_{it}\)).
-
-Assuming, productivity follows an AR(1) Markov process,
-
-\begin{equation}\protect\phantomsection\label{eq-omega-markov}{
-    \omega_{it}=\gamma_0 + \gamma_1 \omega_{it-1}+\eta_{it}
-}\end{equation}
-
-we recover the PF parameters, by substituting
-Equation~\ref{eq-cal-omega}, into Equation~\ref{eq-omega-markov},
-
-\begin{equation}\protect\phantomsection\label{eq-cal-omega-reg}{
-\begin{aligned}
-    \mathcal{W}_{it}=&\gamma_0+\alpha_Kk_{it}+\alpha_Ll_{it}\\
-    &+\gamma_1\left(\mathcal{W}_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\right)\\
-    &+(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it}
-\end{aligned}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Estimating Equation~\ref{eq-cal-omega-reg}}
-\protect\phantomsection\label{estimating-eq-cal-omega-reg}
-By finding instruments, we can estimate Equation~\ref{eq-cal-omega-reg},
-using the conditional moment,
-
-\[
-E[(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it}|Z_{it}]=0
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  I use capital and labour as instruments for themselves and reported
-  materials and \(\mathcal{W}_{it-2}\) as instruments to control for
-  endogeneity between \(\mathcal{W}_{it-1}\) and \(\varepsilon_{it-1}\)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \(Z=\{k_{it},l_{it},m^*_{it-1}, \mathcal{W}_{it-2}\}\)
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Using the estimated parameters of the production function}
-\protect\phantomsection\label{using-the-estimated-parameters-of-the-production-function}
-\textbf{As previously discussed,} with \(\alpha_K\) and \(\alpha_L\) at
-hand form,
-\begin{equation}\protect\phantomsection\label{eq-tilde-big-w}{
-\tilde{\mathcal{W}}_{it}\equiv \mathcal{W}_{it}-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}
-}\end{equation}
-
-and recover \(f_\omega\) using deconvolution,
-
-\[
-f_{\tilde{\mathcal{W}}}=\int f_\varepsilon\left(\frac{1}{1-\beta}\big(\tilde{\mathcal{W}}-\omega\big)\right)f_\omega(\omega)d\omega
-\]
-\end{frame}
-
-\begin{frame}{Solving for \(M\) and \(e\)}
-\protect\phantomsection\label{solving-for-m-and-e}
-\textbf{NEW} From Equation~\ref{eq-eva-emp}, I can \emph{algebraically
-solve} for true inputs as function of observed variables and an the
-error term,
-
-\begin{itemize}
-\tightlist
-\item
-  \(M_{it}=M^*_{it}\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}\).
-\end{itemize}
-
-Therefore,
-
-\[
-\begin{aligned}
-    e_{it}=&M^*_{it}-M_{it}\\
-    =&M^*_{it}\left(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}\right)
-\end{aligned}
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  \(\varepsilon_{it}\) is not observed firm-by-firm, only its
-  distribution \(f_\varepsilon\)
-\item
-  not a literal point recovery of \(e_{it}\), but the map that could be
-  evaluated for some draw of \(\varepsilon^{(s)}\sim\hat f_\varepsilon\)
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Recast in terms of one unobservable}
-\protect\phantomsection\label{recast-in-terms-of-one-unobservable}
-I can do the same and solve for \(\omega_{it}\) from
-Equation~\ref{eq-tilde-big-w}
-
-For each value of \(\varepsilon\) everything else is pinned down:
-
-\begin{align}
-e_{it}(\varepsilon)&=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)\label{eq-e-eps} \\
-\omega_{it}(\varepsilon)&=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon\label{eq-w-eps}\\
-\psi_{it}(\varepsilon)&=h\big(e_{it}(\varepsilon)\big)-\delta_0+\delta_1\,\omega_{it}(\varepsilon)-\delta_2\omega_{it}(\varepsilon)^2.\label{eq-psi-eps}
-\end{align}
-\end{frame}
-
-\begin{frame}{MSL}
-\protect\phantomsection\label{msl}
-\begin{itemize}
-\tightlist
-\item
-  We could estimate \(f_\psi\) and
-  \(\theta=\{\lambda,\delta_0,\delta_1,\delta_2\}\) by Maximum Simulated
-  Likelihood (MSL)
-\item
-  After the recast, one unobservable remains: \(\varepsilon_{it}\), with
-  known distribution \(f_\varepsilon\) (from stage 1),
-\item
-  we also know the distribution of \(\omega\)
-\item
-  I would need a \emph{density transformation} to get from the
-  primitives' density
-  \(f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)\) to the
-  density of the observables
-  \(f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V,\tilde{\mathcal W})\)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    accounting for the nonlinear map from \(\psi\) to \(\mathcal V\)
-    (Theorem 7.5.3, next slide) \emph{and}
-  \item
-    integrating out \(\varepsilon\) \textless!-- \[
-    f_{\mathcal V_{it},\tilde{\mathcal W}_{it}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_{\psi}(\psi(\varepsilon_{it}))\,f_{\omega}(\omega(\varepsilon_{it}))\,f_\varepsilon(\varepsilon_{it})\,|\det J\Phi^{-1}(\varepsilon)|\,d\varepsilon_{it}
-    \]
-  \end{itemize}
-\end{itemize}
-
-The object to estimate is \(f_\psi\) and
-\(\theta=(\lambda, \delta_0,\delta_1,\delta_2)\), since \(f_\omega\) and
-\(f_\varepsilon\) are already known --\textgreater{}
-\end{frame}
-
-\begin{frame}{Theorem 7.5.3 Change of Variables in \(R^n\) Judd (1998)}
-\protect\phantomsection\label{theorem-7.5.3-change-of-variables-in-rn-judd1998}
-Assume that \(\Phi: X \subset R^n \to R^n\) is \(C^1\) and that there is
-a \(C^1\) inverse map \(\Phi^{-1}: Y \subset R^n \to X\) where
-\(Y=\Phi(X)\) and \(Y\) and \(X\) are open. If \(f\) is integrable on
-\(X\), then
-
-\[
-\int_Y f(y)dy = \int_Xf(\Phi(x))|\det J(\Phi)(x)| dx,
-\]
-
-where \(J(\Phi)(x)\) is the Jacobian of \(\Phi\) at \(x\).
-\end{frame}
-
-\begin{frame}{Corollary: Density transformation}
-\protect\phantomsection\label{corollary-density-transformation}
-Let \(f_X(x)\) be the joint pdf of \(X\), \(B\) any region in the
-support of \(Y\), and \(A=\Phi^{-1}(B)\)
-
-For \(Y=\Phi(X)\): \(P(X\in A)=P(\Phi(X)\in\Phi(A))=P(Y\in B)\). Apply
-the theorem with \(\Psi\equiv\Phi^{-1}\) in place of \(\Phi\)
-(\(\Phi^{-1}\) is \(C^1\) with \(C^1\) inverse \(\Phi\)) to
-\(g=f_X\cdot\mathbf 1_{A}\): \[
-P(X\in A)=\int_{A}f_X(x)\,dx=\int_B f_X\big(\Phi^{-1}(y)\big)\,\big|\det J\Phi^{-1}(y)\big|\,dy.
-\]
-
-Since \(B\) is arbitrary, and using \(J\Phi^{-1}(y)=[J\Phi(x)]^{-1}\)
-(inverse function theorem) at \(x=\Phi^{-1}(y)\), then, the joint pdf of
-\(Y\) is: \begin{equation}\protect\phantomsection\label{eq-dens-trans}{
-f_Y(y)=\frac{f_X(x)}{|\det J\Phi(x)|}\bigg|_{x=\Phi^{-1}(y)}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Target Density}
-\protect\phantomsection\label{target-density}
-To find the correct target density of observables, note that, given
-(\(K_{it},L_{it}\)), the variables
-(\(\mathcal{V}_{it},\tilde{\mathcal{W}}_{it}\) ) form an affine map in
-the (\(Y_{it},M^*_{it}\))-space,
-
-\[
-\mathcal V_{it}=m^*_{it}-y_{it}+c_1 \tag{\ref{eq-eva-emp} rearranged}
-\]
-
-\[
-\tilde{\mathcal W}_{it}= y_{it}-\beta (m^*_{it}-\mathcal V_{it})-\alpha_Kk_{it}-\alpha_Ll_{it} \tag{equivalent to \ref{eq-tilde-big-w}}
-\]
-
-where \(c_1\equiv \ln\left(\frac{\rho_t}{P_t\beta}\right)\)
-
-Substituting the first equation into the second cancels the \(m^*_{it}\)
-terms exactly:
-
-\begin{equation}\protect\phantomsection\label{eq-wtilde-reduced}{
-\tilde{\mathcal W}_{it}=(1-\beta)\,y_{it}+\beta c_1-\alpha_Kk_{it}-\alpha_Ll_{it}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{\(\Phi\) is a linear bijection in
-\((y_{it},m^*_{it})\)-space}
-\protect\phantomsection\label{phi-is-a-linear-bijection-in-y_itm_it-space}
-\[
-\Phi:(y_{it},m^*_{it})\;\mapsto\;(\mathcal V_{it},\tilde{\mathcal W}_{it})
-\]
-
-\[
-\begin{pmatrix}\mathcal V\\ \tilde{\mathcal W}\end{pmatrix}
-=\underbrace{\begin{pmatrix}-1 & 1\\ 1-\beta & 0\end{pmatrix}}_{A}
-\begin{pmatrix}y\\ m^*\end{pmatrix}
-+\begin{pmatrix}c_1\\ \beta c_1-\alpha_Kk-\alpha_Ll\end{pmatrix}.
-\]
-
-Since \(\det A = -(1-\beta)\ne0\) (\(0<\beta<1\)) \(\implies\) \(\Phi\)
-is an affine bijection
-
-\begin{itemize}
-\item
-  \(\implies\) (\(\mathcal{V}_{it},\tilde{\mathcal{W}}_{it}\)) contain
-  the same information as (\(Y_{it},M^*_{it}\))
-\item
-  Therefore, the correct target density
-  \(f_{\mathcal V,\tilde{\mathcal W}\mid K,L}\)
-\item
-  \textbf{No need} to include \(M^*\) in the joint density or condition
-  on \sm{(\(\mathcal{V}\) contains all information of \(M^*\))}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Conditioning on \(\omega_{it-1}\) instead of
-\((K_{it},L_{it})\)}
-\protect\phantomsection\label{conditioning-on-omega_it-1-instead-of-k_itl_it}
-Due to the Markov process of productivity,
-\(\omega_{it}=g(\omega_{it-1})+\eta_{it}\),
-\(\eta_{it}\ind(\omega_{it-1},k_{it},l_{it})\),
-
-\[
-f_{\omega_{it}\mid \omega_{it-1},K_{it},L_{it}}(\omega_{it})=f_{\omega_{it}\mid \omega_{it-1}}(\omega_{it})=f_\eta\big(\omega_{it}-g(\omega_{it-1})\big)
-\]
-
-Conditional on \(\omega_{it-1}\), the only randomness left in
-\(\omega_{it}\) is \(\eta_{it}\), which doesn't depend on
-\((K_{it},L_{it})\)
-
-\begin{itemize}
-\tightlist
-\item
-  \(\omega_{it-1}\) is a \textbf{sufficient statistic}: once it's known,
-  \((K_{it},L_{it})\) adds nothing.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Setting \(\Phi\) in the
-\((\psi_{it},\omega_{it},\varepsilon_{it})\)-space}
-\protect\phantomsection\label{setting-phi-in-the-psi_itomega_itvarepsilon_it-space}
-\(\Phi:(\psi_{it},\omega_{it},\varepsilon_{it})\mapsto(\mathcal V_{it},\tilde{\mathcal W}_{it},a)\),
-padding with the auxiliary \(a\equiv\varepsilon_{it}\) so
-\(\Phi:\mathbb R^3\to\mathbb R^3\) matches the theorem's dimension
-requirement:
-
-Define
-\(G(\psi_{it},\omega_{it})\equiv u\big(e^*(\psi_{it},\omega_{it})\big)\),
-
-\begin{itemize}
-\item
-  where \(u(e)=\ln\!\big((M_{it}+e)/M_{it}\big)\), holding \(M_{it}\)
-  fixed as \(e\) varies (\(M\perp e\mid\omega\)), and
-\item
-  \(e^*(\psi_{it},\omega_{it})=h^{-1}(\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it})\)
-  inverts the FOC for \(e_{it}\), \[
-  \mathcal V=G(\psi,\omega)-\varepsilon,\qquad \tilde{\mathcal W}=\omega+(1-\beta)\varepsilon,\qquad a=\varepsilon
-  \]
-\item
-  Like \((K_{it},L_{it})\) before, \(\omega_{it-1}\) does not enter the
-  map
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Conditional density}
-\protect\phantomsection\label{conditional-density}
-Let \(J_i(\varepsilon_{it})=|\det J\Phi^{-1}|\), then,
-
-\begin{equation}\protect\phantomsection\label{eq-Lunc-cond-lag}{
-\begin{aligned}
-    f&_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \omega_{it-1}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\\
-&\int f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g(\omega_{it-1})\Big)\,f_\varepsilon(\varepsilon_{it})\,d\varepsilon_{it}.
-\end{aligned}
-}\end{equation}
-
-Assuming
-\(\psi_{it},\varepsilon_{it}\perp(K_{it},L_{it})\mid\omega_{it-1}\) \#\#
-Since \(\omega_{it-1}\) isn't observed, use
-\(\tilde{\mathcal W}_{it-1}\)
-
-\(\tilde{\mathcal W}_{it-1}\) is firm-\(i\) \emph{data}
-
-\begin{itemize}
-\tightlist
-\item
-  \(\varepsilon_{it-1}\) unobserved, but with known density
-  \(f_\varepsilon\) (same as stage 1, by stationarity) and
-\item
-  already assumed independent
-  \(\varepsilon_{it-1}\perp\varepsilon_{it},\eta_{it}\) in stage 1,
-\item
-  extending \(\varepsilon_{it-1}\perp\psi_{it}\)
-\item
-  therefore, we can marginalize \(\varepsilon_{it-1}\) with an ordinary
-  integral,
-\end{itemize}
-
-\begin{equation}\protect\phantomsection\label{eq-Lunc-dynamic}{
-\begin{aligned}
-    f&_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \tilde{\mathcal W}_{it-1}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\\
-    &\iint f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g\big(\tilde{\mathcal W}_{it-1}-(1-\beta)\varepsilon_{it-1}\big)\Big)\,f_\varepsilon(\varepsilon_{it})\,f_\varepsilon(\varepsilon_{it-1})\,d\varepsilon_{it}\,d\varepsilon_{it-1}.
-\end{aligned}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Recovering \(f_\eta\)}
-\protect\phantomsection\label{recovering-f_eta}
-Define the residual used in the AR(1) productivity process, \[
-\zeta_{it}\equiv \mathcal W_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(\mathcal W_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big)=(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it},
-\]
-
-a sum of three mutually independent variables, two with known densities,
-\(f_\varepsilon\). Fourier deconvolution recovers the third: \[
-\phi_\eta(t)=\frac{\phi_\zeta(t)}{\phi_\varepsilon\big((1-\beta)t\big)\,\phi_\varepsilon\big(-\gamma_1(1-\beta)t\big)}\ \longrightarrow\ f_\eta,
-\]
-\end{frame}
-
-\begin{frame}{The Jacobian matrix}
-\protect\phantomsection\label{the-jacobian-matrix}
-\[
-J\Phi=\frac{\partial(\mathcal V,\tilde{\mathcal W},a)}{\partial(\psi,\omega,\varepsilon)}=
-\begin{pmatrix} G_\psi & G_\omega & -1\\ 0 & 1 & 1-\beta\\ 0 & 0 & 1\end{pmatrix}
-\]
-
-where \(G_\psi\equiv\partial G/\partial\psi\) and
-\(G_\omega\equiv\partial G/\partial\omega\)
-\end{frame}
-
-\begin{frame}{Determinant}
-\protect\phantomsection\label{determinant}
-Expand along column 1 (only \(G_\psi\) is nonzero there): \[
-\det J\Phi = G_\psi\cdot\det\begin{pmatrix}1 & 1-\beta\\ 0&1\end{pmatrix}=G_\psi\cdot1=G_\psi
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  \(G_\omega\) never enters because every cofactor multiplying it comes
-  from a zero in column 1.
-\item
-  Mechanically: \(\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon\) has
-  \textbf{unit coefficient on \(\omega\)}, a flat translation, so it
-  contributes no curvature.
-\item
-  A Jacobian only appears where the map is genuinely curved: the
-  \(\psi\to\mathcal V\) link through \(G\), not
-  \(\omega\to\tilde{\mathcal W}\).
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Unpacking \(G_\psi\)}
-\protect\phantomsection\label{unpacking-g_psi}
-\(G=u\circ e^*\), so by the chain rule \(G_\psi=u'(e^*)\cdot e^*_\psi\).
-
-\begin{itemize}
-\tightlist
-\item
-  \(u'(e)\): from \(u(e)=\ln(M_{it}+e)-\ln M_{it}\), with \(M_{it}\)
-  fixed, \[
-  u'(e)=\frac{1}{M_{it}+e}
-  \] evaluated at \(e=e^*\), \(M_{it}+e^*=M^*_{it}\),
-  \(\implies u'(e)=1/M^*_{it}\)
-\item
-  \(e^*_\psi\): differentiate the FOC identity
-  \(\psi=h(e^*(\psi,\omega))-\delta_0+\delta_1\omega-\delta_2\omega^2\)
-  w.r.t. \(\psi\) (implicit function theorem, valid since \(h'\neq0\)):
-  \[
-  1=h'(e^*)\cdot e^*_\psi \quad\Longrightarrow\quad e^*_\psi=\frac{1}{h'(e^*)}
-  \]
-\end{itemize}
-
-Combine: \[
-G_\psi=\frac{1}{M^*_{it}\,h'(e)}
-\]
-\end{frame}
-
-\begin{frame}{Assembling \(J_i(\varepsilon)\)}
-\protect\phantomsection\label{assembling-j_ivarepsilon}
-From Equation~\ref{eq-dens-trans}, the multiplying factor is
-\(1/|\det J\Phi|=1/|G_\psi|\): \[
-J_i(\varepsilon)\equiv\frac{1}{|G_\psi|}=\big|h'(e)\big|\,M^*_{it}
-\]
-
-Every piece is traceable: - \(|h'(e)|\) from inverting the FOC
-(\(\psi\to e\)), - \(M^*_{it}\) from the log-ratio definition
-(\(e\to\mathcal V\), holding the \emph{true} \(M_{it}\) fixed) - they
-multiply because \(G=u\circ e^*\) is a \textbf{composition}, so the
-chain rule stacks them.
-\end{frame}
-
-\begin{frame}{Marginalizing out the auxiliary}
-\protect\phantomsection\label{marginalizing-out-the-auxiliary}
-Applying the density formula gives the joint density of
-\((\mathcal V,\tilde{\mathcal W},a)\), but only
-\((\mathcal V,\tilde{\mathcal W})\) are observed;
-
-\begin{itemize}
-\tightlist
-\item
-  Integrating \(a\) out (an ordinary single integral, not part of the
-  theorem) gives the likelihood contribution of firm \(i\):
-\end{itemize}
-
-\begin{equation}\protect\phantomsection\label{eq-Lunc}{
-f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_\psi\big(\psi(\varepsilon)\big)\,J_i(\varepsilon)\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)\,d\varepsilon
-}\end{equation}
-
-A 3-for-3 change of variables that ends in a 1-D integral:
-
-\begin{itemize}
-\tightlist
-\item
-  the theorem handles the square transformation and hands back a
-  Jacobian;
-\item
-  marginalizing the unobserved auxiliary coordinate is the separate,
-  ordinary step left over once the theorem's job is done.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Simulated log-likelihood}
-\protect\phantomsection\label{simulated-log-likelihood}
-\begin{equation}\protect\phantomsection\label{eq-loglik}{
-\begin{aligned}
-\mathcal L(\theta,f_\psi)=\sum_{i\in\text{Unincorp}}\ln\!\left(\int f_\psi(\psi(\varepsilon))\,J_i(\varepsilon)\,f_\omega(\omega(\varepsilon))\,f_\varepsilon(\varepsilon)\,d\varepsilon\right)
-\end{aligned}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Simulating the likelihood}
-\protect\phantomsection\label{simulating-the-likelihood}
-Approximate Equation~\ref{eq-Lunc} by \textbf{Monte Carlo}
-
-\begin{equation}\protect\phantomsection\label{eq-msl-sim}{
-\widehat{\mathcal L}_i(\theta)=\frac1S\sum_{s=1}^S f_\psi\big(\psi(\varepsilon^{(s)})\big)\,J_i(\varepsilon^{(s)})\,f_\omega\big(\omega(\varepsilon^{(s)})\big),\qquad \varepsilon^{(s)}\overset{iid}\sim \hat f_\varepsilon
-}\end{equation}
-
-\begin{itemize}
-\tightlist
-\item
-  Draws \(\varepsilon^{(s)}\) come from \emph{exactly} the density
-  \(\hat f_\varepsilon(\varepsilon)\,d\varepsilon\) multiplying the
-  integrand --- this is plain Monte Carlo integration, unbiased for
-  \textbf{any} \(S\ge1\)
-\item
-  Alternatively, use \textbf{deterministic quadrature} to integrate
-  Equation~\ref{eq-Lunc}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Why this works despite \(\varepsilon\) entering \(e\)
-nonlinearly}
-\protect\phantomsection\label{why-this-works-despite-varepsilon-entering-e-nonlinearly}
-\begin{itemize}
-\tightlist
-\item
-  \(e(\varepsilon)=M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\)
-  is nonlinear in \(\varepsilon\)
-\item
-  But Equation~\ref{eq-msl-sim} averages the \textbf{density value}
-  \(f_\psi(\psi(\varepsilon^{(s)}))\,J_i(\varepsilon^{(s)})\,f_\omega(\omega(\varepsilon^{(s)}))\)
-  at each draw
-
-  \begin{itemize}
-  \tightlist
-  \item
-    never averages \(\psi(\varepsilon^{(s)})\) \emph{by itself}
-  \end{itemize}
-\item
-  Monte Carlo integration of a (possibly wild) function against its own
-  sampling density is unbiased regardless of the function's shape
-
-  \begin{itemize}
-  \tightlist
-  \item
-    nonlinearity only breaks things if the reweighting is skipped
-  \end{itemize}
-\item
-  Every simulated \(\varepsilon^{(s)}\ne\) the firm's true
-  \(\varepsilon_{it}\), almost surely
-
-  \begin{itemize}
-  \tightlist
-  \item
-    but draws implying an implausible \((\psi,\omega)\) pair get
-    down-weighted by \(f_\psi\cdot J_i\cdot f_\omega\); only draws near
-    the truth carry weight,
-  \item
-    so the weighted average reconstructs the correct posterior-weighted
-    integral even though no single draw is the truth
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Convergence --- a known theorem}
-\protect\phantomsection\label{convergence-a-known-theorem}
-\textbf{Lee (1992)}: if the simulator of a likelihood contribution is
-(i) unbiased and continuous in \(\theta\), and (ii) built from draws
-i.i.d. across firms and replicates, then under standard M-estimation
-regularity (compactness, identification, dominance) the simulated-MLE is
-consistent and \(\sqrt N\)-equivalent to the infeasible exact MLE,
-\textbf{provided \(\sqrt N/S\to0\)} as \(N,S\to\infty\) (fixed \(S\)
-leaves an \(O(1/S)\) bias, since \(\ln(\text{average})\ne\) average of
-\(\ln\))
-
-\begin{itemize}
-\tightlist
-\item
-  Unbiasedness (i): shown above, holds by construction
-\item
-  Continuity (ii): \(h\), \(q\), and \(J_i(\varepsilon)\) are smooth
-  throughout the interior domain \(e\in(0,\tfrac1{2\lambda})\)
-\item
-  Draws i.i.d. across \(i,t,s\), independent of \(\theta\): by
-  construction
-\end{itemize}
-\end{frame}
-
-\begin{frame}{An even cleaner argument: quadrature}
-\protect\phantomsection\label{an-even-cleaner-argument-quadrature}
-\begin{itemize}
-\tightlist
-\item
-  The preferred implementation is \textbf{deterministic quadrature}, not
-  Monte Carlo simulation, for this 1-D integral
-\item
-  Quadrature avoids simulation noise because it is deterministic and can
-  be driven arbitrarily small by adding nodes
-\item
-  The \(\sqrt N/S\to0\) condition above is then moot: with negligible
-  quadrature error, ordinary MLE consistency applies directly
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Caveat: this is a two-step estimator}
-\protect\phantomsection\label{caveat-this-is-a-two-step-estimator}
-\begin{itemize}
-\tightlist
-\item
-  \(\beta\) and \(f_\varepsilon\) are \textbf{first-stage estimates},
-  not the truth
-\item
-  Still consistent under standard conditions, but naive stage-2 standard
-  errors ignore stage-1 estimation uncertainty
-\item
-  Use the Murphy and Topel (1985) two-step correction, or bootstrap both
-  stages jointly
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Would GMM work ?}
-\protect\phantomsection\label{would-gmm-work}
-Substituting and simplifying
-
-\begin{equation}\protect\phantomsection\label{eq-psi-mom}{
-\begin{aligned}
-    \psi_{it}+&\delta_1(1-\beta)\varepsilon=\\
-    &\ln(\tau\rho_t)+\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))\\
-    &-\delta_0+2\delta_2(1-\beta)\tilde{\mathcal{W}}_{it}\varepsilon-\delta_2(1-\beta)^2\varepsilon^2\\
-    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
-\end{aligned}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Taking conditional expectation}
-\protect\phantomsection\label{taking-conditional-expectation}
-Using \(\psi\perp Z\), \(\varepsilon\perp Z\), and
-\(\omega\perp\varepsilon\) (the same independence MSL already relies
-on).
-\(\varepsilon\perp Z\Rightarrow E[\delta_1(1-\beta)\varepsilon\mid Z]=\delta_1(1-\beta)E[\varepsilon\mid Z]=0\)
-
-\begin{equation}\protect\phantomsection\label{eq-psi-mom-exp}{
-\begin{aligned}
-    0=&\ln(\tau\rho_t)+E[\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))|Z]\\
-    &\underbrace{-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2}_{\textit{Constant (known from stage 1)}}\\
-    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
-\end{aligned}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Why not GMM with instruments?}
-\protect\phantomsection\label{why-not-gmm-with-instruments}
-Everything in Equation~\ref{eq-psi-mom-exp} is a known function of data
-and \(\theta\), \textbf{except}: \[
-\ell_{it}(\varepsilon;\lambda)\equiv\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)
-\]
-
-so the moment reads \[
-0=\ln(\tau\rho_t)+E[\ell_{it}(\varepsilon;\lambda)\mid Z]-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2+\delta_1\tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
-\]
-\end{frame}
-
-\begin{frame}{Simulating the nonlinear term}
-\protect\phantomsection\label{simulating-the-nonlinear-term}
-If we hold firm \(it\)'s own \((M^*_{it},\mathcal V_{it})\) fixed and
-simulate \(\varepsilon\), \[
-\hat\ell_{it}^S(\lambda)=\frac1S\sum_{s=1}^S\ell_{it}(\varepsilon^{(s)};\lambda),\qquad \varepsilon^{(s)}\stackrel{iid}{\sim}\hat f_\varepsilon
-\]
-
-By the LLN, as \(S\to\infty\): \[
-\hat\ell_{it}^S(\lambda)\xrightarrow{a.s.}\bar\ell_{it}(\lambda)\equiv\int\ell_{it}(\varepsilon;\lambda)\,f_\varepsilon(\varepsilon)\,d\varepsilon
-\]
-
-A specific, computable number given
-\((M^*_{it},\mathcal V_{it},\lambda)\). Looks like it solved the problem
---- no more unobserved \(\varepsilon\).
-\end{frame}
-
-\begin{frame}{But it's the wrong number}
-\protect\phantomsection\label{but-its-the-wrong-number}
-The moment needs \(\ell_{it}(\varepsilon_{it};\lambda)\)
-
---- firm \(it\)'s value at its \textbf{own realized}
-\(\varepsilon_{it}\) --- not the average over every value
-\(\varepsilon\) could have taken.
-
-\(\ell_{it}(\cdot;\lambda)\) is nonlinear in \(\varepsilon\), so
-generically \[
-\bar\ell_{it}(\lambda)\ne\ell_{it}(\varepsilon_{it};\lambda)
-\]
-
-Let
-\(\eta_{it}(\lambda)\equiv\ell_{it}(\varepsilon_{it};\lambda)-\bar\ell_{it}(\lambda)\ne0\).
-Swapping in \(\bar\ell_{it}(\lambda)\) silently injects
-\(-\eta_{it}(\lambda)\) into every firm's moment.
-\end{frame}
-
-\begin{frame}{Conclusion: this doesn't work}
-\protect\phantomsection\label{conclusion-this-doesnt-work}
-\begin{itemize}
-\tightlist
-\item
-  \(\eta_{it}(\lambda)\) is a nonlinear function of firm \(it\)'s own
-  \(\varepsilon_{it}\), entangled with \((M^*_{it},\mathcal V_{it})\)
-\item
-  For \(Z\) to be \emph{relevant} for \(\lambda\), it must correlate
-  with the firm's evasion behavior (\(M^*_{it},\mathcal V_{it}\)), but
-  \(\eta_{it}(\lambda)\) depends on them
-\item
-  \(\varepsilon\perp Z\) alone doesn't deliver
-  \(E[Z\cdot\eta_{it}(\lambda_0)]=0\)
-\item
-  Nonlinearity plus averaging over the unconditional marginal throws
-  away exactly the firm-specific information tying \(\varepsilon_{it}\)
-  to its own data
-\end{itemize}
-\end{frame}
-
 \begin{frame}{Recasting in \(M\)}
 \protect\phantomsection\label{recasting-in-m}
 The same trap reappears if we instead simulate
@@ -2199,6 +1367,549 @@ For a fixed \(\tilde\tau\), grid over \textbf{candidate revenue values}
 \end{itemize}
 \end{frame}
 
+\section{Stage-2 ELVIS: Preliminary
+Results}\label{stage-2-elvis-preliminary-results}
+
+\begin{frame}[fragile]{Implementation}
+\protect\phantomsection\label{implementation}
+Moment set A (row list authoritative in
+\texttt{Code/Rcpp/1200-stage2-elvis.cpp}'s header comment):
+\(\theta_{\text{smooth}}=(\lambda,\delta_0,\delta_1,\delta_2)\), 9
+moments (\(d_g=9\)), no nuisance parameters beyond \(\gamma\):
+
+\[
+g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
+\psi(M,Z) \\
+\varepsilon(M,Z) \\
+\psi(M,Z)\ln M \\
+\psi(M,Z)\omega(M,Z) \\
+\psi(M,Z)\omega(M,Z)^2 \\
+\varepsilon(M,Z)\ln M \\
+\varepsilon(M,Z) e(M,Z) \\
+\varepsilon(M,Z)\omega(M,Z) \\
+h'(e,\lambda)\,\varepsilon(M,Z)
+\end{pmatrix}
+\]
+\end{frame}
+
+\begin{frame}[fragile]{Implementation Details}
+\protect\phantomsection\label{implementation-details}
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Objective}: CUE quadratic,
+  \(\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g\),
+  \(\hat\Omega^-\) an eigenvalue-truncated generalized inverse --- same
+  construction AK2020 use
+\item
+  \textbf{Sampler}: per-firm Metropolis chain,
+  \texttt{n\_burn=1000,\ n\_keep=3000}, deterministic per-firm RNG
+  reseed
+\item
+  \textbf{Solver}: Nelder-Mead (beats BOBYQA decisively on this
+  problem), unbounded \(\gamma\) (a large/degenerate \(\gamma\) is an
+  expected solution, Schennach 2014 --- not a numerical failure),
+  two-pass refinement
+\item
+  \textbf{Seeding}: every \(\lambda\) grid point seeded independently
+  from the same validated starting point --- no chaining across grid
+  points
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\(\lambda\) Search}
+\protect\phantomsection\label{lambda-search}
+\begin{itemize}
+\tightlist
+\item
+  \(\lambda\) bounds derived directly from the data: the smallest
+  \(\lambda\) for which not even the largest firm's evasion is ever
+  constrained, up to the largest \(\lambda\) for which even the smallest
+  firm is constrained
+\item
+  16-point log-spaced grid (coarse pass, then a finer pass bracketing
+  the region of interest)
+\item
+  \textbf{Sample}: 32,232 unincorporated firm-periods (3,340 at the
+  \(\tau_P=0\) corner), top 0.5\% trimmed by \(M^*\); two
+  productivity-instrument choices for \((\alpha_K,\alpha_L,\beta)\)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\(\hat L_n(\lambda)\) --- Both Instruments}
+\protect\phantomsection\label{hat-l_nlambda-both-instruments}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.75\textheight,keepaspectratio]{../Paper/images/1285-lambdagrid-slide.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{}
+\protect\phantomsection\label{section}
+\textbf{Reading the picture}:
+
+\begin{itemize}
+\tightlist
+\item
+  \(m^*_{it-1}\): a clean V-shape, genuine minimum, real rejection on
+  both sides --- a proper confidence interval
+\item
+  \(\tilde{\mathcal W}_{it-2}\): also rejects everywhere except two
+  points --- its own interior minimum, and separately the smallest
+  \(\lambda\) we tested. That second pass just means: for this
+  instrument, we can't rule out arbitrarily weak detection either --- we
+  only get an upper bound on \(\lambda\) from it, not a full interval.
+  Consistent with it being the weaker of the two instruments overall.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Headline Estimates}
+\protect\phantomsection\label{headline-estimates}
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Instrument
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\hat\lambda\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+95\% region
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\hat L_n\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\hat\delta_0\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\hat\delta_1\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\hat\delta_2\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\hat\omega^*=\hat\delta_1/2\hat\delta_2\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(\max\vert\gamma\vert\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\(m^*_{it-1}\) & \(3.50\times10^{-7}\) & \([2.26,5.43]\times10^{-7}\) &
+0.000387 & 3.459 & 4.315 & \textbf{0.541} & 3.99 & 0.64 \\
+\(\tilde{\mathcal W}_{it-2}\) & \(5.43\times10^{-7}\) &
+\(5.43\times10^{-7}\) (point) & 0.000401 & 10.206 & 7.460 &
+\textbf{0.972} & 3.84 & 1.86 \\
+\bottomrule\noalign{}
+\end{longtable}
+}
+
+\(\hat\delta_2>0\) for both --- the cost function opens the correct
+(U-shaped) way. \(\hat\omega^*\) lands in a similar plausible range for
+both, even though the individual \(\hat\delta_1,\hat\delta_2\) differ
+--- expected: the two instruments come from different first-stage
+residuals, so they carry somewhat different implied productivity
+distributions.
+\end{frame}
+
+\begin{frame}{A Data-Side Check on \(\hat\lambda\): What Detection
+Probability Does This Imply?}
+\protect\phantomsection\label{a-data-side-check-on-hatlambda-what-detection-probability-does-this-imply}
+Does \(\hat\lambda\) imply a sane detection probability at a typical
+evading firm? Quick check by forward-simulating each firm's own evasion
+at the fitted \((\hat\theta,\hat\gamma)\) and reading off the population
+mean/median --- \textbf{a ballpark reading, not the formal way to pin
+this down} (that would need its own auxiliary moment, jointly
+re-estimated with everything else, not a post-hoc average):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Instrument
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(E[e]\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Med\([e]\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(q(E[e])=\hat\lambda\cdot E[e]\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\(q(\text{Med}[e])\)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\(m^*_{it-1}\) & 2,545 & 625 & 0.089\% & 0.022\% \\
+\(\tilde{\mathcal W}_{it-2}\) & 3,189 & 685 & 0.173\% & 0.037\% \\
+\bottomrule\noalign{}
+\end{longtable}
+}
+
+\begin{itemize}
+\tightlist
+\item
+  \(E[e]\gg\text{Med}[e]\) for both --- a right-skewed evasion
+  distribution: most firms evade modestly, a long right tail of
+  aggressive evaders pulls the mean well above the median
+\item
+  Both implied detection probabilities are small, well under the 50\%
+  FOC ceiling --- no sign of \(\hat\lambda\) pushing anyone near the
+  boundary
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Notes for Discussion}
+\protect\phantomsection\label{notes-for-discussion}
+\begin{itemize}
+\tightlist
+\item
+  \textbf{\(m^*_{it-1}\) is the instrument to lead with}: a genuine,
+  contiguous confidence interval, stable \(\hat\delta_1,\hat\delta_2\)
+  across the whole search
+\item
+  \textbf{\(\tilde{\mathcal W}_{it-2}\) confirms the same qualitative
+  story but is the weaker instrument}: real rejection pattern, a real
+  interior optimum, but can only bound \(\lambda\) from above, not below
+\item
+  \textbf{No formal joint confidence region for
+  \((\lambda,\delta_1,\delta_2)\) yet} --- next step, to get a stronger
+  justification for one fixed \(\hat\theta\) to carry into the
+  counterfactual
+\end{itemize}
+\end{frame}
+
+\section{Empirical Strategy}\label{empirical-strategy}
+
+\begin{frame}{Functional Forms}
+\protect\phantomsection\label{functional-forms}
+The probability of detection, \(q(e_{it})\), and the cost of evasion,
+\(\kappa_{it}(e_{it}, \omega_{it})\), functions should display the
+following properties to be consistent with the observed patterns in the
+data and with theory:
+
+\begin{itemize}
+\tightlist
+\item
+  \(q(e_{it})=\min\{\lambda e, 1\}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(q(e_{it})\in [0,1]\), \(q(0)=0\), \(q(\infty)=1\), and
+    \(q(e_{it})\) is increasing in \(e\). Since I do not have variation
+    in government audit effort, \(\lambda\) is treated as constant
+    across firms and time
+  \end{itemize}
+\item
+  \(\kappa_{it}(e_{it}, \omega_{it})=e_{it}\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(\kappa_{it}(e_{it}, \omega_{it})\in [0,\infty)\),
+    \(\kappa_{it}(0, \omega_{it})=0\),
+    \(\frac{\partial \kappa_{it}(0, \omega_{it})}{\partial e_{it}}\ge0\).
+  \item
+    \(\frac{\partial \kappa_{it}(e_{it}, \omega_{it})}{\partial \omega_{it}}\le0\)
+    and
+    \(\frac{\partial^2 \kappa_{it}(e_{it}, \omega_{it})}{\partial \omega_{it}^2}\ge0\)
+    to be consistent with the observed patterns in the data.
+  \item
+    U-shape not ideal, but simple and captures the idea of decreasing
+    cost at high \(\omega\)
+  \item
+    Corporations out of the FOC
+  \item
+    \(\psi_{it}\) idiosyncratic shock to the cost of evasion to explain
+    tax evasion heterogeneity observed in empirical analsys
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{FOC}
+\protect\phantomsection\label{foc}
+Using the functional forms defined above, the FOCs wrt tax evasion
+become for unincorporated firms,
+
+\[
+\tau\rho_t(1-2\lambda e_{it}) = \textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
+\]
+
+Taking logs and defining \[
+h(e_{it})\;\equiv\;\ln(\tau\rho_t)+\ln(1-2\lambda e_{it}),
+\qquad e_{it}\in(0,\frac{1}{2\lambda}),
+\]
+
+the evasion FOC become
+
+\begin{equation}\protect\phantomsection\label{eq-foc-psi}{
+\psi_{it}\;=\;h(e_{it})-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{How to estimate?}
+\protect\phantomsection\label{how-to-estimate}
+\begin{itemize}
+\tightlist
+\item
+  \(\tau\rho_t\) is \hyperlink{what-about-tau}{\emph{computed from
+  data}}
+\end{itemize}
+
+I do not observe \(e_{it}\) nor \(\omega_{it}\) at the firm level.
+
+\begin{itemize}
+\tightlist
+\item
+  However, using the estimated \textbf{parameters of the production}
+  function, we can
+\item
+  rewrite the FOC in terms of data, parameters, and
+\item
+  \emph{only one} independent unobservable \(\varepsilon\)
+\end{itemize}
+
+How to estimate the production function parameters and the distribution
+of \(\varepsilon\)? \textbf{Same as before}
+\end{frame}
+
+\begin{frame}{Estimating \(\beta\)}
+\protect\phantomsection\label{estimating-beta}
+\textbf{Same as before:} From Corporations, the truth-reporters, I
+recover
+
+\begin{itemize}
+\tightlist
+\item
+  the output elasticity of materials, \(\beta\), and the
+\item
+  distribution of the error term, \(f_\varepsilon\),
+\end{itemize}
+
+For Corporations, \(M^*_{it}=M_{it}\), and thus,
+
+\[
+\ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)=\ln(\beta)-\varepsilon_{it}
+\]
+\end{frame}
+
+\begin{frame}{Production Function Estimation}
+\protect\phantomsection\label{production-function-estimation}
+\begin{itemize}
+\tightlist
+\item
+  Having recovered \(\beta\), for everyone, I can form the following
+  variable,
+\end{itemize}
+
+\begin{equation}\protect\phantomsection\label{eq-eva-emp}{
+\begin{aligned}
+    \mathcal{V}_{it} \equiv & \ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln(\beta)\\
+    % =&\ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln(\beta)\\
+    =&\ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln\left(\frac{\rho_t M_{it}}{P_tY_{it}}\right)+\ln\left(\frac{\rho_t M_{it}}{P_tY_{it}}\right)-\ln(\beta)\\
+    =&\ln\left(\frac{M^*_{it}}{M_{it}}\right)-\varepsilon_{it}
+    % =&\ln\left(\frac{M_{it}+e_{it}}{M_{it}}\right)-\varepsilon_{it}=\ln\left(1+\frac{e_{it}}{M_{it}}\right)-\varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+\footlineextra{\hyperlink{sec-what-can-deconv}{Deconvolving Tax
+Evasion}}
+\end{frame}
+
+\begin{frame}{Production Function Estimation (Cont.)}
+\protect\phantomsection\label{production-function-estimation-cont.}
+\begin{itemize}
+\tightlist
+\item
+  To recover the remaining production function parameters, the
+  \textbf{original strategy is still valid}
+\end{itemize}
+
+To see why, note that,
+
+\begin{equation}\protect\phantomsection\label{eq-cal-omega}{
+\begin{aligned}
+    \mathcal{W}_{it} \equiv & y_{it}-\beta(m^*_{it}-\mathcal{V}_{it})\\
+    =& y_{it}-\beta(m^*_{it}-\ln\left(\frac{M^*_{it}}{M_{it}}\right)+\varepsilon_{it})\\
+    =& y_{it}-\beta(m^*_{it}-\ln(M^*_{it})+\ln (M_{it}))-\beta \varepsilon_{it}\\
+    =& y_{it}-\beta m_{it}-\beta \varepsilon_{it}\\
+    =& \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+the last equality is \emph{exactly the same} as the original discussed
+strategy
+\end{frame}
+
+\begin{frame}{Using productivity's Markov process to recover remaining
+PF parameters}
+\protect\phantomsection\label{using-productivitys-markov-process-to-recover-remaining-pf-parameters}
+Therefore, the \textbf{previous approach is still valid} to recover the
+remaining production function parameters, productivity's Markov process,
+and the distribution of the productivity shock
+(\(\alpha_K, \alpha_L, \omega_{it}\)).
+
+Assuming, productivity follows an AR(1) Markov process,
+
+\begin{equation}\protect\phantomsection\label{eq-omega-markov}{
+    \omega_{it}=\gamma_0 + \gamma_1 \omega_{it-1}+\eta_{it}
+}\end{equation}
+
+we recover the PF parameters, by substituting
+Equation~\ref{eq-cal-omega}, into Equation~\ref{eq-omega-markov},
+
+\begin{equation}\protect\phantomsection\label{eq-cal-omega-reg}{
+\begin{aligned}
+    \mathcal{W}_{it}=&\gamma_0+\alpha_Kk_{it}+\alpha_Ll_{it}\\
+    &+\gamma_1\left(\mathcal{W}_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\right)\\
+    &+(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it}
+\end{aligned}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{Estimating Equation~\ref{eq-cal-omega-reg}}
+\protect\phantomsection\label{estimating-eq-cal-omega-reg}
+By finding instruments, we can estimate Equation~\ref{eq-cal-omega-reg},
+using the conditional moment,
+
+\[
+E[(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it}|Z_{it}]=0
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  I use capital and labour as instruments for themselves and reported
+  materials and \(\mathcal{W}_{it-2}\) as instruments to control for
+  endogeneity between \(\mathcal{W}_{it-1}\) and \(\varepsilon_{it-1}\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \(Z=\{k_{it},l_{it},m^*_{it-1}, \mathcal{W}_{it-2}\}\)
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Using the estimated parameters of the production function}
+\protect\phantomsection\label{using-the-estimated-parameters-of-the-production-function}
+\textbf{As previously discussed,} with \(\alpha_K\) and \(\alpha_L\) at
+hand form,
+\begin{equation}\protect\phantomsection\label{eq-tilde-big-w}{
+\tilde{\mathcal{W}}_{it}\equiv \mathcal{W}_{it}-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}
+}\end{equation}
+
+and recover \(f_\omega\) using deconvolution,
+
+\[
+f_{\tilde{\mathcal{W}}}=\int f_\varepsilon\left(\frac{1}{1-\beta}\big(\tilde{\mathcal{W}}-\omega\big)\right)f_\omega(\omega)d\omega
+\]
+\end{frame}
+
+\begin{frame}{Would GMM work ?}
+\protect\phantomsection\label{would-gmm-work}
+Substituting and simplifying
+
+\begin{equation}\protect\phantomsection\label{eq-psi-mom}{
+\begin{aligned}
+    \psi_{it}+&\delta_1(1-\beta)\varepsilon=\\
+    &\ln(\tau\rho_t)+\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))\\
+    &-\delta_0+2\delta_2(1-\beta)\tilde{\mathcal{W}}_{it}\varepsilon-\delta_2(1-\beta)^2\varepsilon^2\\
+    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
+\end{aligned}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{Taking conditional expectation}
+\protect\phantomsection\label{taking-conditional-expectation}
+Using \(\psi\perp Z\), \(\varepsilon\perp Z\), and
+\(\omega\perp\varepsilon\) (the same independence MSL already relies
+on).
+\(\varepsilon\perp Z\Rightarrow E[\delta_1(1-\beta)\varepsilon\mid Z]=\delta_1(1-\beta)E[\varepsilon\mid Z]=0\)
+
+\begin{equation}\protect\phantomsection\label{eq-psi-mom-exp}{
+\begin{aligned}
+    0=&\ln(\tau\rho_t)+E[\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))|Z]\\
+    &\underbrace{-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2}_{\textit{Constant (known from stage 1)}}\\
+    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
+\end{aligned}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{Why not GMM with instruments?}
+\protect\phantomsection\label{why-not-gmm-with-instruments}
+Everything in Equation~\ref{eq-psi-mom-exp} is a known function of data
+and \(\theta\), \textbf{except}: \[
+\ell_{it}(\varepsilon;\lambda)\equiv\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)
+\]
+
+so the moment reads \[
+0=\ln(\tau\rho_t)+E[\ell_{it}(\varepsilon;\lambda)\mid Z]-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2+\delta_1\tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
+\]
+\end{frame}
+
+\begin{frame}{Simulating the nonlinear term}
+\protect\phantomsection\label{simulating-the-nonlinear-term}
+If we hold firm \(it\)'s own \((M^*_{it},\mathcal V_{it})\) fixed and
+simulate \(\varepsilon\), \[
+\hat\ell_{it}^S(\lambda)=\frac1S\sum_{s=1}^S\ell_{it}(\varepsilon^{(s)};\lambda),\qquad \varepsilon^{(s)}\stackrel{iid}{\sim}\hat f_\varepsilon
+\]
+
+By the LLN, as \(S\to\infty\): \[
+\hat\ell_{it}^S(\lambda)\xrightarrow{a.s.}\bar\ell_{it}(\lambda)\equiv\int\ell_{it}(\varepsilon;\lambda)\,f_\varepsilon(\varepsilon)\,d\varepsilon
+\]
+
+A specific, computable number given
+\((M^*_{it},\mathcal V_{it},\lambda)\). Looks like it solved the problem
+--- no more unobserved \(\varepsilon\).
+\end{frame}
+
+\begin{frame}{But it's the wrong number}
+\protect\phantomsection\label{but-its-the-wrong-number}
+The moment needs \(\ell_{it}(\varepsilon_{it};\lambda)\)
+
+--- firm \(it\)'s value at its \textbf{own realized}
+\(\varepsilon_{it}\) --- not the average over every value
+\(\varepsilon\) could have taken.
+
+\(\ell_{it}(\cdot;\lambda)\) is nonlinear in \(\varepsilon\), so
+generically \[
+\bar\ell_{it}(\lambda)\ne\ell_{it}(\varepsilon_{it};\lambda)
+\]
+
+Let
+\(\eta_{it}(\lambda)\equiv\ell_{it}(\varepsilon_{it};\lambda)-\bar\ell_{it}(\lambda)\ne0\).
+Swapping in \(\bar\ell_{it}(\lambda)\) silently injects
+\(-\eta_{it}(\lambda)\) into every firm's moment.
+\end{frame}
+
+\begin{frame}{Conclusion: this doesn't work}
+\protect\phantomsection\label{conclusion-this-doesnt-work}
+\begin{itemize}
+\tightlist
+\item
+  \(\eta_{it}(\lambda)\) is a nonlinear function of firm \(it\)'s own
+  \(\varepsilon_{it}\), entangled with \((M^*_{it},\mathcal V_{it})\)
+\item
+  For \(Z\) to be \emph{relevant} for \(\lambda\), it must correlate
+  with the firm's evasion behavior (\(M^*_{it},\mathcal V_{it}\)), but
+  \(\eta_{it}(\lambda)\) depends on them
+\item
+  \(\varepsilon\perp Z\) alone doesn't deliver
+  \(E[Z\cdot\eta_{it}(\lambda_0)]=0\)
+\item
+  Nonlinearity plus averaging over the unconditional marginal throws
+  away exactly the firm-specific information tying \(\varepsilon_{it}\)
+  to its own data
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Implicit Assumptions}
 \protect\phantomsection\label{implicit-assumptions}
 \begin{itemize}
@@ -2222,67 +1933,6 @@ For a fixed \(\tilde\tau\), grid over \textbf{candidate revenue values}
     Firms are already assumed to be price takers
   \end{itemize}
 \end{itemize}
-\end{frame}
-
-\begin{frame}{What about \(\tau\)?}
-\protect\phantomsection\label{what-about-tau}
-\begin{itemize}
-\item
-  The data includes sales taxes paid on purchases,
-  \(\tau\rho_t M^*_{it}\) and sales taxes paid on sales,
-  \(\tau P_tY_{it}\).
-\item
-  I can estimate at the firm level the sales tax rate on sales
-  \(\tau_{S,it}=\frac{\tau P_tY_{it}}{P_tY_{it}}\) and the sales tax
-  rate on purchases
-  \(\tau_{P,it}=\frac{\tau\rho_t M^*_{it}}{\rho_t M^*_{it}}\).
-\item
-  I can also estimate the reported effective sales tax rate
-  \(\tau_{R,it}=\frac{\tau P_tY_{it}-\tau\rho_t M^*_{it}}{P_tY_{it}}= \tau_{S,it}-\tau_{P,it}\frac{\rho_t M^*_{it}}{P_tY_{it}}\)
-\item
-  and the \emph{corrected} effective sales tax rate
-  \(\tau_{C,it}=\tau_{S,it}-\tau_{P,it}\frac{\rho_t M_{it}}{P_tY_{it}}=\tau_{S,it}-\tau_{P,it}\beta\textbf{e}^{-\varepsilon_{it}}\)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    I use in regressions
-    \(\tau_{\tilde{C},it}=\tau_{S,it}-\tau_{P,it}\beta\)
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Is the variation in the different estimated tax rates
-relevant}
-\protect\phantomsection\label{is-the-variation-in-the-different-estimated-tax-rates-relevant}
-\begin{itemize}
-\tightlist
-\item
-  I use the following regression model
-\end{itemize}
-
-\[
-\mathcal{V}_{it}=\gamma_j + \gamma_t + \tau_{X,it} + \zeta_{it}
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  where \(\gamma_j\) are industry fixed effects,
-\item
-  \(\gamma_t\) are year fixed effects, and
-\item
-  \(\tau_{X,it}\) is one of the estimated tax rates (\(\tau_{S,it}\),
-  \(\tau_{P,it}\), \(\tau_{R,it}\), or \(\tau_{\tilde{C},it}\)).
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Variation in estimated \(\tau\) predicts variation in tax
-evasion across firms}
-\protect\phantomsection\label{variation-in-estimated-tau-predicts-variation-in-tax-evasion-across-firms}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/tbls/1000-tax-regs.png}
-\end{center}
 \end{frame}
 
 \section{Couterfactual Question}\label{couterfactual-question}
@@ -2365,7 +2015,7 @@ simplifying,
 \end{frame}
 
 \begin{frame}{}
-\protect\phantomsection\label{section}
+\protect\phantomsection\label{section-1}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item
@@ -2396,7 +2046,7 @@ where
 \end{frame}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-1}
+\protect\phantomsection\label{section-2}
 \begin{enumerate}
 \setcounter{enumi}{4}
 \item
@@ -2408,531 +2058,58 @@ where
 \end{enumerate}
 \end{frame}
 
-\section{Stage-2 ELVIS: Preliminary
-Results}\label{stage-2-elvis-preliminary-results}
-
-\begin{frame}[fragile]{Implementation}
-\protect\phantomsection\label{implementation}
-Moment set A (row list authoritative in
-\texttt{Code/Rcpp/1200-stage2-elvis.cpp}'s header comment):
-\(\theta_{\text{smooth}}=(\lambda,\delta_0,\delta_1,\delta_2,\eta)\), 8
-moments (\(d_g=8\)), no nuisance parameters (additional to \(\gamma\)'s)
-:
-
-\[
-g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
-\psi(M,Z) \\
-\varepsilon(M,Z) \\
-\psi(M,Z)\ln M \\
-\psi(M,Z)\omega(M,Z) \\
-\psi(M,Z)\omega(M,Z)^2 \\
-\varepsilon(M,Z)\ln M \\
-\varepsilon(M,Z) e(M,Z) \\
-\varepsilon(M,Z)\omega(M,Z)
-\end{pmatrix}
-\]
-\end{frame}
-
-\begin{frame}[fragile]{Implementation Details}
-\protect\phantomsection\label{implementation-details}
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Objective}: CUE quadratic,
-  \(\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g\),
-  \(\hat\Omega^-\) an eigenvalue-truncated generalized inverse (drops
-  near-zero eigenvalues of the tilted-moment covariance) --- same
-  construction AK2020 use
-\item
-  \textbf{Sampler}: per-firm Metropolis chain (RcppParallel,
-  \texttt{n\_burn=500}, \texttt{n\_keep=1000}), deterministic per-firm
-  RNG reseed --- same \((\theta,\gamma)\) always sees the same chain
-\item
-  \textbf{Solver}: BOBYQA, unbounded \(\gamma\) (Schennach 2014, p.359
-  --- a large/degenerate \(\gamma\) is an expected solution, not a
-  numerical failure), two-pass refinement (warm-started from pass 1)
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Implementation}
-\protect\phantomsection\label{implementation-1}
-\begin{itemize}
-\tightlist
-\item
-  \textbf{\(\lambda\) search, two phases}: (i) a quantile grid,
-  \(\lambda=p/\text{quantile}(M^*,0.5)\) for
-  \(p\in\{0.01,\dots,0.9\}\cap(0,0.5]\); (ii) an automatic
-  linear-refinement grid bracketing the quantile grid's minimum,
-  warm-started from the fit \emph{at} that minimum
-\item
-  \textbf{Sample}: 32,378 unincorporated firm-periods (3,340 at the
-  \(\tau_P=0\) corner, included as centered non-evaders), two
-  productivity-instrument choices for \((\alpha_K,\alpha_L,\beta)\)
-\end{itemize}
-\end{frame}
-
-\begin{frame}{\(\hat L_n(\lambda)\) --- Quantile Grid + Linear
-Refinement}
-\protect\phantomsection\label{hat-l_nlambda-quantile-grid-linear-refinement}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{../Paper/images/1212-stage2-A-lhat-lambda.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{}
-\protect\phantomsection\label{section-2}
-\textbf{Reading the picture}:
-
-\begin{itemize}
-\tightlist
-\item
-  \(\mathcal{W}_{it-2}\)'s minimum sits below the smallest \(\lambda\)
-  its refinement grid reached --- real evidence it needs to extend
-  further.
-\item
-  \(m^*_{it-1}\) is different: its quantile-phase minimum was
-  \emph{interior} (\(\lambda=2.351\times10^{-6}\)), so the refinement
-  window was built from immediate neighbors, not an edge extension ---
-  it never actually probed below \(1.175\times10^{-6}\) at all. Its own
-  minimum sits at that window's edge, but nothing smaller has been
-  tested, so whether it too needs to extend is an open question, not yet
-  evidence either way.
-\item
-  A further refinement pass --- genuinely new territory for
-  \(m^*_{it-1}\), a continued extension for \(\mathcal{W}_{it-2}\) ---
-  is the natural next step before treating either \(\hat\lambda\) as
-  final.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Headline Estimates}
-\protect\phantomsection\label{headline-estimates}
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 14\tabcolsep) * \real{0.1250}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Instrument
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat L_n\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_0\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_1\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_2\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\omega^*=\hat\delta_1/2\hat\delta_2\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\max\vert\gamma\vert\)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\(m^*_{it-1}\) & \(1.18\times10^{-6}\) & 0.0108 & \(-1.099\) & 1.453 &
-\textbf{0.218} & 3.34 & 2.08 \\
-\(\mathcal{W}_{it-2}\) & \(5.88\times10^{-7}\) & 0.0073 & \(-1.305\) &
-1.859 & \textbf{0.396} & 2.35 & 1.43 \\
-\bottomrule\noalign{}
-\end{longtable}
-}
-
-\(\hat\delta_2>0\) for both --- the cost function opens the correct
-(U-shaped) way --- and \(\hat\omega^*\) lands in a plausible range for
-both instrument choices.
-\end{frame}
-
-\begin{frame}[fragile]{A Data-Side Check on \(\hat\lambda\): Auxiliary
-Parameters \(E[e]\), \(\text{Med}[e]\)}
-\protect\phantomsection\label{a-data-side-check-on-hatlambda-auxiliary-parameters-ee-textmede}
-Does \(\hat\lambda\) imply a sane detection probability at a typical
-evading firm?
-
-\begin{itemize}
-\tightlist
-\item
-  Approach: Schennach's own auxiliary-parameter device (her \(E[U]\)
-  worked example), applied to \(e(M)\) directly, evaluated
-  \textbf{post-hoc at the already-fitted \((\hat\theta,\hat\gamma)\)}.
-  No re-optimization:
-\end{itemize}
-
-\[
-E[e(M)]-\mu_e=0 \qquad\text{vs.}\qquad E\big[\mathbb 1(e(M)\le\theta_e)-\tfrac12\big]=0
-\]
-
-Both evaluated via the same per-firm Metropolis chain the estimator
-itself uses (\texttt{tilted\_e\_diag\_A\_cpp},
-\texttt{Code/Rcpp/1200-stage2-elvis.cpp})
-\end{frame}
-
 \begin{frame}{}
 \protect\phantomsection\label{section-3}
---- \(\mu_e\) estimated from a running per-firm average (free) -
-\(\theta_e\), from the empirical median of pooled, thinned post-burn-in
-draws across all firms:
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Instrument
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\mu_e=E[e]\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\theta_e=\text{Med}[e]\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(q(\hat\mu_e)=\hat\lambda\hat\mu_e\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(q(\hat\theta_e)\)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\(m^*_{it-1}\) & 5,269 & 569 & 0.62\% & 0.067\% \\
-\(\mathcal{W}_{it-2}\) & 3,858 & 184 & 0.23\% & 0.011\% \\
-\bottomrule\noalign{}
-\end{longtable}
-}
-
-\begin{itemize}
-\tightlist
-\item
-  \(\hat\mu_e\gg\hat\theta_e\) in both cases, a right-skewed evasion
-  distribution: most firms evade modestly, a long right tail of
-  aggressive evaders pulls the mean well above the median.
-\item
-  All four implied probabilities inside \((0,0.5)\) but are too low.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Implementation --- Moment Set B}
-\protect\phantomsection\label{implementation-moment-set-b}
-Adding nuisance parameters to A's 8 moments:
-
-\[
-g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
-A\text{moments} \\
-\ln M_j-\theta_{m,j} \\
-\omega(M,Z)_j-\theta_{\omega,j}\\
-\omega(M,Z)_j^2-\theta_{\omega^2,j}\\
-\psi(M,Z)(\omega(M,Z)_j-\theta_{\omega,j}) \\
-\psi(M,Z)(\omega(M,Z)_j^2-\theta_{\omega^2,j}) \\
-\psi(M,Z)(\ln M_j-\theta_{m,j}) \\
-\psi(M,Z)\varepsilon(M,Z)\omega(M,Z)
-\end{pmatrix}
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  Per-industry \(\ln M\) targets (\(\theta_{m,j}\), jointly estimated,
-  \(J=29\) industries) and
-\item
-  Omega-anchored heteroskedasticity block, \(\theta_{\omega,j}\) and
-  \(\theta_{\omega^2,j}\), \(j=1,\dots,J\) are estimated from sample,
-  before optimiation, so cheap, no work for the optimizer, except for
-  the additional associated \(\gamma\) nuisance parameters (one per new
-  moment row) that the optimizer must handle.
-\item
-  Total: \(d_g=8+J+6=43\),
-  \(\theta_{\text{smooth}}=(\delta_0,\delta_1,\delta_2,\eta,\mu_{m,1},\dots,\mu_{m,J})\)
-  --- a \(\sim\) 76-dimensional (43 \(\gamma\), 4 \(theta\), 29 nuisance
-  \(\theta_{m,j}\) ) inner BOBYQA problem, versus A's 12 (8 \(\gamma\),
-  4 \(\theta\)).
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{}
-\protect\phantomsection\label{section-4}
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Same objective, sampler, two-phase \(\lambda\) search} as A,
-  no methodology change, only the moment row list and parameter count
-  grow.
-\item
-  \textbf{Needed two fixes A didn't}, both scoped to B only (A's
-  already-validated results untouched):
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \emph{Optimizer settings}: at A's defaults (\texttt{xtol\_rel=1e-6},
-    \texttt{maxeval=1000}, no time cap), \textbf{every single B point
-    hit the \texttt{maxeval} cap} --- not real convergence. Loosened
-    \texttt{xtol\_rel} to \texttt{1e-4} (the objective has real Monte
-    Carlo noise from the finite Metropolis chain; resolving parameter
-    changes to 1-in-a-million is tighter than the noise floor supports
-    at this dimension), raised \texttt{maxeval} to 5000, and added a
-    \texttt{maxtime=600s} safety net per BOBYQA call (not previously set
-    at all).
-  \item
-    \emph{Speed}: B's \texttt{cov(Ghat)} step was \textasciitilde12\% of
-    total per-call time (measured, not assumed --- an earlier ``too
-    small to matter'' read came from a synthetic benchmark at the wrong
-    scale). Replaced with Apple's Accelerate/CBLAS
-    (\texttt{cblas\_dsyrk}), fused into the same C++ call that builds
-    the moment matrix so it never crosses back to R --- 157.6ms →
-    138.25ms per call (\textasciitilde12.3\% faster), verified bit-close
-    (relative difference \(\sim3\times10^{-13}\)) before being trusted.
-  \end{itemize}
-\item
-  \textbf{Result}: overnight run (real scale,
-  \texttt{n\_burn=500,\ n\_keep=1000}), \textbf{31 of 32 lambda points
-  across both instruments converged for real} (\texttt{conv=1}, via
-  \texttt{xtol\_rel}). Only one non-final quantile-phase point hit the
-  \texttt{maxtime} cap.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{\(\hat L_n(\lambda)\) --- Moment Set B}
-\protect\phantomsection\label{hat-l_nlambda-moment-set-b}
 \begin{center}
-\includegraphics[width=\linewidth,height=0.75\textheight,keepaspectratio]{../Paper/images/1214-stage2-B-lhat-lambda.png}
+\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/images/1280-pct-change-from-prev.png}
 \end{center}
 \end{frame}
 
-\begin{frame}{}
-\protect\phantomsection\label{section-5}
-\textbf{Reading the picture}: both instruments' minimum sits at the
-smallest tested \(\lambda\), rising away from it.
-
-Obj fun value dropping more rapidly than A's and reaching lower levels,
-but the minimum is still off the left edge of the grid --- a further
-extension is needed before either \(\hat\lambda\) can be treated as
-final.
-\end{frame}
-
-\begin{frame}{Headline Estimates --- Moment Set B}
-\protect\phantomsection\label{headline-estimates-moment-set-b}
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 16\tabcolsep) * \real{0.1111}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Instrument
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat L_n\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_0\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_1\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_2\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\omega^*\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\max\vert\gamma\vert\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-conv
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\(m^*_{it-1}\) & \(5.88\times10^{-7}\) & 0.00113 & \(-1.236\) & 1.236 &
-\textbf{0.183} & 3.38 & 2.43 & 16/16 \\
-\(\mathcal{W}_{it-2}\) & \(5.88\times10^{-7}\) & 0.00553 & \(-0.515\) &
-0.890 & \textbf{0.064} & 6.97 & 4.83 & 15/16 \\
-\bottomrule\noalign{}
-\end{longtable}
-}
+\begin{frame}{Headline Result}
+\protect\phantomsection\label{headline-result}
+At the current best-fit operating point (\(m^*_{it-1}\),
+\(\hat\lambda=3.5\times10^{-7}\), \(\hat\delta_1=4.3\),
+\(\hat\delta_2=0.54\)) --- forward-simulated, not yet run through formal
+test inversion:
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{\(m^*_{it-1}\) agrees closely with A} (\(\hat\omega^*=3.38\)
-  vs.~A's 3.34 --- near-exact).
+  A 1\% cut in \(\tau_P\) raises real revenue \textbf{+3.5\%}
 \item
-  \textbf{\(\mathcal{W}_{it-2}\) moved substantially}: A gave
-  \(\hat\omega^*=2.35\), \(\hat\delta_2=0.396\); B gives
-  \(\hat\omega^*=6.97\), \(\hat\delta_2=0.064\). Flatter cost curvature.
-  Plausible (B carries real extra information,the per-industry \(\ln M\)
-  moments), but a large jump.
+  The next 1\% cut only buys \textbf{+0.8\%} more --- diminishing fast
+\item
+  A mere 0.1\% \emph{increase} costs \textbf{-3.1\%} --- a tenth of the
+  move undoes more than the first full point of cutting bought
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Interpreting \(\hat\omega^*\) and \(\hat\lambda\) Against
-the Data}
-\protect\phantomsection\label{interpreting-hatomega-and-hatlambda-against-the-data}
-Two more auxiliary-parameter checks, same as the \(E[e]/\text{Med}[e]\)
-- where does \(\hat\omega^*=\hat\delta_1/2\hat\delta_2\) actually sit in
-the tilted \(\omega\) distribution --- a typical firm, or a tail one? -
-extending the detection-probability check to \(e\)'s upper tail
-(P90/P95/P99), not just its mean/median.
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\omega^*\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-percentile of \(\hat\omega^*\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\text{Med}(\omega)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-P75\((\omega)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-P95\((\omega)\)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-A, \(m^*_{it-1}\) & 3.34 & 71.9\% & 2.79 & 3.42 & 4.20 \\
-B, \(m^*_{it-1}\) & 3.38 & 71.0\% & 2.83 & 3.51 & 4.54 \\
-A, \(\mathcal{W}_{it-2}\) & 2.35 & 29.9\% & 2.95 & 3.84 & 4.78 \\
-B, \(\mathcal{W}_{it-2}\) & \textbf{6.97} & \textbf{99.9\%} & 2.76 &
-3.70 & 4.76 \\
-\bottomrule\noalign{}
-\end{longtable}
-}
+\begin{frame}{Why}
+\protect\phantomsection\label{why}
+Linear \(q\) + linear \(\kappa\) \(\Rightarrow\) new evasion is exactly
+linear in the firm's own baseline evasion, with an intercept identical
+across every firm:
+\[\tilde e(\Delta)=\frac{e_i}{1+\Delta}+\frac{\Delta}{2\lambda(1+\Delta)}\]
+\(1/\lambda\) is large, so that intercept dominates almost immediately
+past \(\Delta=0\) --- the same shift for every firm, regardless of size.
 \end{frame}
 
-\begin{frame}{}
-\protect\phantomsection\label{section-6}
+\begin{frame}{The Optimal Cut, Not the Corner}
+\protect\phantomsection\label{the-optimal-cut-not-the-corner}
 \begin{itemize}
 \tightlist
 \item
-  \(\mathcal{W}_{it-2}\): Under A, \(\mathcal{W}_{it-2}\) puts
-  \(\hat\omega^*\) at the 29.9th percentile: cost is already rising for
-  roughly 70\% of firms. Not consistent with large/high productivity
-  firms evade less: ``cost rises past a low bar'' than ``cost rises
-  specifically for the most productive.'' Under B, the \emph{same
-  instrument} swings to the opposite extreme, 99.9th percentile, cost
-  rising only for a sliver of 0.1\% at the very top.
+  Revenue keeps rising as \(\Delta\to-1\) mathematically --- no evasion
+  left, government keeps 100\% of the sales tax --- but that's not a
+  serious answer: ignores why a purchases-side credit exists at all
+  (cascading taxation), and pushes past where \((\omega,\psi)\) can be
+  taken as fixed
 \item
-  \(m^*_{it-1}\), stable at \textasciitilde71st percentile in
-  \textbf{both} moment sets. Cost rises for roughly the top quartile,
-  consistent for both moment sets. More trustworthy instrument of the
-  two.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{}
-\protect\phantomsection\label{section-7}
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-P90\((e)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-P95\((e)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-P99\((e)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\cdot\)P90
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\cdot\)P95
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\cdot\)P99
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-A, \(m^*_{it-1}\) & 10,392 & 21,297 & 84,430 & 1.22\% & 2.50\% &
-9.92\% \\
-B, \(m^*_{it-1}\) & 6,010 & 13,470 & 62,740 & 0.35\% & 0.79\% &
-3.69\% \\
-A, \(\mathcal{W}_{it-2}\) & 7,720 & 15,666 & 57,918 & 0.45\% & 0.92\% &
-3.40\% \\
-B, \(\mathcal{W}_{it-2}\) & 19,829 & 42,873 & 212,589 & 1.17\% & 2.52\%
-& 12.49\% \\
-\bottomrule\noalign{}
-\end{longtable}
-}
-
-Even at the 99th percentile of (tilted) evasion, detection probability
-stays well under the 50\% FOC ceiling in all four cases --- no sign of
-\(\hat\lambda\) pushing anyone near the boundary, aggressive-evader tail
-included.
-\end{frame}
-
-\begin{frame}[fragile]{Notes for Discussion}
-\protect\phantomsection\label{notes-for-discussion}
-\begin{itemize}
-\tightlist
+  Marginal revenue of the next cut flattens to a mechanical floor by
+  \(\Delta\approx-20\%\) to \(-25\%\) --- the smallest cut that already
+  captures nearly all the behavioral benefit
 \item
-  \textbf{Three of the four fits share the same unresolved edge; one is
-  a different situation.} A's \(\mathcal{W}_{it-2}\), B's
-  \(m^*_{it-1}\), and B's \(\mathcal{W}_{it-2}\) all bottom out at
-  \(\lambda=5.877\times10^{-7}\), with \(\hat L_n\) still falling as the
-  refinement --- which genuinely extended past the original quantile
-  grid's own edge --- approaches it: real evidence the true optimum lies
-  further down for these three. A's \(m^*_{it-1}\) is different: its
-  quantile-phase minimum landed on an \emph{interior} point
-  (\(\lambda=2.351\times10^{-6}\), correctly triggering
-  \texttt{bracket\_local\_min}'s interior-neighbor branch, not the
-  edge-extension one), so its refinement window (\(1.175\times10^{-6}\)
-  to \(5.877\times10^{-6}\)) never tested anything smaller than the
-  quantile grid already had. Its own minimum
-  (\(\hat\lambda=1.175\times10^{-6}\)) sits at that window's edge, but
-  nothing below it has ever been tried --- an untested gap, not the same
-  kind of evidence. Either way, extending the grid further down is the
-  right next step for all four --- just for a different reason in
-  \(m^*_{it-1}\)'s case, and this is still the one blocking item before
-  any of today's numbers should be called final.
-\item
-  \textbf{\(\mathcal{W}_{it-2}\) is unstable across moment sets in a way
-  that matters economically, not just numerically.} \(\hat\omega^*\)'s
-  percentile swings from 29.9\% under A to 99.9\% under B --- the
-  \emph{same} instrument implying, in one fit, that cost rises for 70\%
-  of firms, and in the other, that it rises for only the top 0.1\%.
-  Neither matches the intended ``large/high-productivity firms
-  specifically'' story well, and they disagree with each other in
-  direction, not just magnitude. \(m^*_{it-1}\) stays at
-  \textasciitilde71st percentile in both fits --- stable \emph{and} a
-  moderate, plausible reading. That stability makes \(m^*_{it-1}\) the
-  more trustworthy instrument right now; \(\mathcal{W}_{it-2}\) needs to
-  be understood (genuine extra identifying information from B's
-  per-industry moments? an artifact of the still-unresolved edge-of-grid
-  issue landing differently on each fit?) before either of its numbers
-  goes in front of anyone.
-\item
-  \textbf{\(\mathcal{W}_{it-2}\)'s \(\gamma\) grows large} (up to
-  \(\sim1{,}700\) under A, \(\sim\)tens under B) toward the
-  high-\(\lambda\) end of its grid --- expected under Schennach's theory
-  (a large/degenerate \(\gamma\) is a valid solution, not a numerical
-  failure), not a numerical concern, but worth watching as the grid
-  extends.
-\item
-  \textbf{No formal confidence region yet.} The test statistic for the
-  \(\chi^2_{d_g}\) comparison is \(2n\hat L_n\) (AK2020's own
-  convention, \texttt{TSMC=2*minf*n} in their \texttt{1App\_main.jl})
-  --- not yet wired into the driver.
+  Not yet backed by a confidence set --- point estimate only
 \end{itemize}
 \end{frame}
 
@@ -3276,147 +2453,15 @@ Same trick, done separately for each value of \(Z\):
 \footlineextra{\hyperlink{sec-estimating-cond-deconv}{\(\hookleftarrow\)}}
 \end{frame}
 
-\section{The Geography of Tax
-Evasion}\label{the-geography-of-tax-evasion}
-
-\begin{frame}{How Does a Firm's Location Affect its Tax Evasion?}
-\protect\phantomsection\label{how-does-a-firms-location-affect-its-tax-evasion}
-Firms located in different regions might face different probabilities of
-detection and different tax rates, and thus different incentives to
-evade taxes.
-
-\begin{itemize}
-\tightlist
-\item
-  Tax rates:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Departments and municipalities in Colombia can set their own tax
-    rates similar to sales tax, for example the Industry and Commerce
-    Tax
-  \item
-    Special tax regimes for firms located in certain regions, such as
-    the Free Trade Zones (Zonas Francas) and the Special Economic Zones
-    (Zonas Económicas Especiales)
-  \item
-    Special ownership model in Atlantic coast
-  \item
-    Some variation in tax rates is observed in the data
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{How Does a Firm's Location Affect its Tax Evasion?}
-\protect\phantomsection\label{how-does-a-firms-location-affect-its-tax-evasion-1}
-\begin{itemize}
-\tightlist
-\item
-  Probability of detection: Two hypothesis
-
-  \begin{enumerate}
-  \tightlist
-  \item
-    Firms located near the tax authority's offices might have access to
-    the tax authority (lobbying, bribery, etc.) and thus face a lower
-    probability of detection
-  \item
-    Firms located farther away from the tax authority's offices might
-    face a lower probability of detection, because the auditing cost for
-    the tax authority increases with distance, and thus they are less
-    likely to be audited
-  \end{enumerate}
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{Data}
-\protect\phantomsection\label{data-1}
-In the dataset from Colombia, I have two geographic variables:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{section\_country\_code}: Section of the country (eg.
-  Antioquia, Atlantico, Bogota D.E., etc.)
-\item
-  \texttt{metro\_area\_code}: Metropolitan Area (eg. Bogota, Cali,
-  Medellin, Barranquila).
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Metro Area Summary Statistics}
-\protect\phantomsection\label{metro-area-summary-statistics}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/tbls/935-ev-loc-metro-summary.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{Section of the Country Summary Statistics}
-\protect\phantomsection\label{section-of-the-country-summary-statistics}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/tbls/935-ev-loc-depto-summary.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{Prelim Results (Metro Area)}
-\protect\phantomsection\label{prelim-results-metro-area}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/tbls/935-evasion-loc-metro.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{Prelim Results (Departamento)}
-\protect\phantomsection\label{prelim-results-departamento}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/tbls/935-evasion-loc-dept.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{On the Map}
-\protect\phantomsection\label{on-the-map}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/images/935-ev-loc-dept-map.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{Next Steps}
-\protect\phantomsection\label{next-steps}
-\begin{itemize}
-\tightlist
-\item
-  Are there any patterns? Do they make sense?
-\item
-  Can any of these regions be linked to Free Trade Zones or Special
-  Economic Zones? Since when are these in place?
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Zonas Francas: started in 1958. During this period, there were
-    changes made in 1981 and 1985, and 1991. 1981-1984, firms in Zonas
-    Francas were exempt from income and sales taxes, as well as from
-    import duties. They were under strict vigilance by the tax authority
-    and confined to specific locations. Since to be eligible, your
-    products had to be exported, most traditinal firms choose not to
-    locate in ZFs. Mostly multinationals and exporting Maquilas took
-    advantage of ZFs. There were ZFs in Barranquilla, Cartagena, Santa
-    Marta, and Buenaventura.
-  \item
-    Zonas Económicas Especiales: started in 2020
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
 \section{Appendix}\label{appendix}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-8}
+\protect\phantomsection\label{section-4}
 \appendix
 \end{frame}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-9}
+\protect\phantomsection\label{section-5}
 \begin{figure}
 
 \centering{
@@ -3435,7 +2480,7 @@ In the dataset from Colombia, I have two geographic variables:
 Heterogeneity}\label{robust-check-for-size-heterogeneity}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-10}
+\protect\phantomsection\label{section-6}
 \begin{equation}\protect\phantomsection\label{eq-reg-mrg-size-rob}{
 \begin{aligned}
     \mathcal{V}_{ijt} =& \sum_{z\in Z}\sum_{h\in{1,2}}\mu_{z,h}{x}_{z,ijt}^{h} +\eta_{ijt}
@@ -3444,7 +2489,7 @@ Heterogeneity}\label{robust-check-for-size-heterogeneity}
 \end{frame}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-11}
+\protect\phantomsection\label{section-7}
 \begin{table}
 
 \caption{\label{tbl-mrg-boot-se-coefs}\tiny{Coefficient estimates . 95\%
@@ -3461,7 +2506,7 @@ significance at (***) 0.001, (**) 0.05, and (*) 0.1 level.}}
 \end{frame}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-12}
+\protect\phantomsection\label{section-8}
 \begin{table}
 
 \caption{\label{tbl-mrg-boot-se-avg-elas}\tiny{Coefficient estimates.
@@ -3561,6 +2606,522 @@ evasion proxy) are not explained by changes in \(M\) (or
 \end{itemize}
 
 \footlineextra{\hyperlink{sec-linking}{\(\hookleftarrow\)}}
+\end{frame}
+
+\section{Maximum Simulated Likelihood
+(MSL)}\label{maximum-simulated-likelihood-msl}
+
+\begin{frame}{Solving for \(M\) and \(e\)}
+\protect\phantomsection\label{solving-for-m-and-e}
+\textbf{NEW} From Equation~\ref{eq-eva-emp}, I can \emph{algebraically
+solve} for true inputs as function of observed variables and an the
+error term,
+
+\begin{itemize}
+\tightlist
+\item
+  \(M_{it}=M^*_{it}\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}\).
+\end{itemize}
+
+Therefore,
+
+\[
+\begin{aligned}
+    e_{it}=&M^*_{it}-M_{it}\\
+    =&M^*_{it}\left(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}\right)
+\end{aligned}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(\varepsilon_{it}\) is not observed firm-by-firm, only its
+  distribution \(f_\varepsilon\)
+\item
+  not a literal point recovery of \(e_{it}\), but the map that could be
+  evaluated for some draw of \(\varepsilon^{(s)}\sim\hat f_\varepsilon\)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Recast in terms of one unobservable}
+\protect\phantomsection\label{recast-in-terms-of-one-unobservable}
+I can do the same and solve for \(\omega_{it}\) from
+Equation~\ref{eq-tilde-big-w}
+
+For each value of \(\varepsilon\) everything else is pinned down:
+
+\begin{align}
+e_{it}(\varepsilon)&=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)\label{eq-e-eps} \\
+\omega_{it}(\varepsilon)&=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon\label{eq-w-eps}\\
+\psi_{it}(\varepsilon)&=h\big(e_{it}(\varepsilon)\big)-\delta_0+\delta_1\,\omega_{it}(\varepsilon)-\delta_2\omega_{it}(\varepsilon)^2.\label{eq-psi-eps}
+\end{align}
+\end{frame}
+
+\begin{frame}{MSL}
+\protect\phantomsection\label{msl}
+\begin{itemize}
+\tightlist
+\item
+  We could estimate \(f_\psi\) and
+  \(\theta=\{\lambda,\delta_0,\delta_1,\delta_2\}\) by Maximum Simulated
+  Likelihood (MSL)
+\item
+  After the recast, one unobservable remains: \(\varepsilon_{it}\), with
+  known distribution \(f_\varepsilon\) (from stage 1),
+\item
+  we also know the distribution of \(\omega\)
+\item
+  I would need a \emph{density transformation} to get from the
+  primitives' density
+  \(f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)\) to the
+  density of the observables
+  \(f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V,\tilde{\mathcal W})\)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    accounting for the nonlinear map from \(\psi\) to \(\mathcal V\)
+    (Theorem 7.5.3, next slide) \emph{and}
+  \item
+    integrating out \(\varepsilon\) \textless!-- \[
+    f_{\mathcal V_{it},\tilde{\mathcal W}_{it}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_{\psi}(\psi(\varepsilon_{it}))\,f_{\omega}(\omega(\varepsilon_{it}))\,f_\varepsilon(\varepsilon_{it})\,|\det J\Phi^{-1}(\varepsilon)|\,d\varepsilon_{it}
+    \]
+  \end{itemize}
+\end{itemize}
+
+The object to estimate is \(f_\psi\) and
+\(\theta=(\lambda, \delta_0,\delta_1,\delta_2)\), since \(f_\omega\) and
+\(f_\varepsilon\) are already known --\textgreater{}
+\end{frame}
+
+\begin{frame}{Theorem 7.5.3 Change of Variables in \(R^n\) Judd (1998)}
+\protect\phantomsection\label{theorem-7.5.3-change-of-variables-in-rn-judd1998}
+Assume that \(\Phi: X \subset R^n \to R^n\) is \(C^1\) and that there is
+a \(C^1\) inverse map \(\Phi^{-1}: Y \subset R^n \to X\) where
+\(Y=\Phi(X)\) and \(Y\) and \(X\) are open. If \(f\) is integrable on
+\(X\), then
+
+\[
+\int_Y f(y)dy = \int_Xf(\Phi(x))|\det J(\Phi)(x)| dx,
+\]
+
+where \(J(\Phi)(x)\) is the Jacobian of \(\Phi\) at \(x\).
+\end{frame}
+
+\begin{frame}{Corollary: Density transformation}
+\protect\phantomsection\label{corollary-density-transformation}
+Let \(f_X(x)\) be the joint pdf of \(X\), \(B\) any region in the
+support of \(Y\), and \(A=\Phi^{-1}(B)\)
+
+For \(Y=\Phi(X)\): \(P(X\in A)=P(\Phi(X)\in\Phi(A))=P(Y\in B)\). Apply
+the theorem with \(\Psi\equiv\Phi^{-1}\) in place of \(\Phi\)
+(\(\Phi^{-1}\) is \(C^1\) with \(C^1\) inverse \(\Phi\)) to
+\(g=f_X\cdot\mathbf 1_{A}\): \[
+P(X\in A)=\int_{A}f_X(x)\,dx=\int_B f_X\big(\Phi^{-1}(y)\big)\,\big|\det J\Phi^{-1}(y)\big|\,dy.
+\]
+
+Since \(B\) is arbitrary, and using \(J\Phi^{-1}(y)=[J\Phi(x)]^{-1}\)
+(inverse function theorem) at \(x=\Phi^{-1}(y)\), then, the joint pdf of
+\(Y\) is: \begin{equation}\protect\phantomsection\label{eq-dens-trans}{
+f_Y(y)=\frac{f_X(x)}{|\det J\Phi(x)|}\bigg|_{x=\Phi^{-1}(y)}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{Target Density}
+\protect\phantomsection\label{target-density}
+To find the correct target density of observables, note that, given
+(\(K_{it},L_{it}\)), the variables
+(\(\mathcal{V}_{it},\tilde{\mathcal{W}}_{it}\) ) form an affine map in
+the (\(Y_{it},M^*_{it}\))-space,
+
+\[
+\mathcal V_{it}=m^*_{it}-y_{it}+c_1 \tag{\ref{eq-eva-emp} rearranged}
+\]
+
+\[
+\tilde{\mathcal W}_{it}= y_{it}-\beta (m^*_{it}-\mathcal V_{it})-\alpha_Kk_{it}-\alpha_Ll_{it} \tag{equivalent to \ref{eq-tilde-big-w}}
+\]
+
+where \(c_1\equiv \ln\left(\frac{\rho_t}{P_t\beta}\right)\)
+
+Substituting the first equation into the second cancels the \(m^*_{it}\)
+terms exactly:
+
+\begin{equation}\protect\phantomsection\label{eq-wtilde-reduced}{
+\tilde{\mathcal W}_{it}=(1-\beta)\,y_{it}+\beta c_1-\alpha_Kk_{it}-\alpha_Ll_{it}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{\(\Phi\) is a linear bijection in
+\((y_{it},m^*_{it})\)-space}
+\protect\phantomsection\label{phi-is-a-linear-bijection-in-y_itm_it-space}
+\[
+\Phi:(y_{it},m^*_{it})\;\mapsto\;(\mathcal V_{it},\tilde{\mathcal W}_{it})
+\]
+
+\[
+\begin{pmatrix}\mathcal V\\ \tilde{\mathcal W}\end{pmatrix}
+=\underbrace{\begin{pmatrix}-1 & 1\\ 1-\beta & 0\end{pmatrix}}_{A}
+\begin{pmatrix}y\\ m^*\end{pmatrix}
++\begin{pmatrix}c_1\\ \beta c_1-\alpha_Kk-\alpha_Ll\end{pmatrix}.
+\]
+
+Since \(\det A = -(1-\beta)\ne0\) (\(0<\beta<1\)) \(\implies\) \(\Phi\)
+is an affine bijection
+
+\begin{itemize}
+\item
+  \(\implies\) (\(\mathcal{V}_{it},\tilde{\mathcal{W}}_{it}\)) contain
+  the same information as (\(Y_{it},M^*_{it}\))
+\item
+  Therefore, the correct target density
+  \(f_{\mathcal V,\tilde{\mathcal W}\mid K,L}\)
+\item
+  \textbf{No need} to include \(M^*\) in the joint density or condition
+  on \sm{(\(\mathcal{V}\) contains all information of \(M^*\))}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conditioning on \(\omega_{it-1}\) instead of
+\((K_{it},L_{it})\)}
+\protect\phantomsection\label{conditioning-on-omega_it-1-instead-of-k_itl_it}
+Due to the Markov process of productivity,
+\(\omega_{it}=g(\omega_{it-1})+\eta_{it}\),
+\(\eta_{it}\ind(\omega_{it-1},k_{it},l_{it})\),
+
+\[
+f_{\omega_{it}\mid \omega_{it-1},K_{it},L_{it}}(\omega_{it})=f_{\omega_{it}\mid \omega_{it-1}}(\omega_{it})=f_\eta\big(\omega_{it}-g(\omega_{it-1})\big)
+\]
+
+Conditional on \(\omega_{it-1}\), the only randomness left in
+\(\omega_{it}\) is \(\eta_{it}\), which doesn't depend on
+\((K_{it},L_{it})\)
+
+\begin{itemize}
+\tightlist
+\item
+  \(\omega_{it-1}\) is a \textbf{sufficient statistic}: once it's known,
+  \((K_{it},L_{it})\) adds nothing.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Setting \(\Phi\) in the
+\((\psi_{it},\omega_{it},\varepsilon_{it})\)-space}
+\protect\phantomsection\label{setting-phi-in-the-psi_itomega_itvarepsilon_it-space}
+\(\Phi:(\psi_{it},\omega_{it},\varepsilon_{it})\mapsto(\mathcal V_{it},\tilde{\mathcal W}_{it},a)\),
+padding with the auxiliary \(a\equiv\varepsilon_{it}\) so
+\(\Phi:\mathbb R^3\to\mathbb R^3\) matches the theorem's dimension
+requirement:
+
+Define
+\(G(\psi_{it},\omega_{it})\equiv u\big(e^*(\psi_{it},\omega_{it})\big)\),
+
+\begin{itemize}
+\item
+  where \(u(e)=\ln\!\big((M_{it}+e)/M_{it}\big)\), holding \(M_{it}\)
+  fixed as \(e\) varies (\(M\perp e\mid\omega\)), and
+\item
+  \(e^*(\psi_{it},\omega_{it})=h^{-1}(\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it})\)
+  inverts the FOC for \(e_{it}\), \[
+  \mathcal V=G(\psi,\omega)-\varepsilon,\qquad \tilde{\mathcal W}=\omega+(1-\beta)\varepsilon,\qquad a=\varepsilon
+  \]
+\item
+  Like \((K_{it},L_{it})\) before, \(\omega_{it-1}\) does not enter the
+  map
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conditional density}
+\protect\phantomsection\label{conditional-density}
+Let \(J_i(\varepsilon_{it})=|\det J\Phi^{-1}|\), then,
+
+\begin{equation}\protect\phantomsection\label{eq-Lunc-cond-lag}{
+\begin{aligned}
+    f&_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \omega_{it-1}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\\
+&\int f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g(\omega_{it-1})\Big)\,f_\varepsilon(\varepsilon_{it})\,d\varepsilon_{it}.
+\end{aligned}
+}\end{equation}
+
+Assuming
+\(\psi_{it},\varepsilon_{it}\perp(K_{it},L_{it})\mid\omega_{it-1}\)
+\end{frame}
+
+\begin{frame}{Since \(\omega_{it-1}\) isn't observed, use
+\(\tilde{\mathcal W}_{it-1}\)}
+\protect\phantomsection\label{since-omega_it-1-isnt-observed-use-tildemathcal-w_it-1}
+\(\tilde{\mathcal W}_{it-1}\) is firm-\(i\) \emph{data}
+
+\begin{itemize}
+\tightlist
+\item
+  \(\varepsilon_{it-1}\) unobserved, but known density \(f_\varepsilon\)
+  (stationarity) and
+\item
+  already assumed independent
+  \(\varepsilon_{it-1}\perp\varepsilon_{it},\eta_{it}\) in
+  productivity's AR(1) estimation
+\item
+  extending \(\varepsilon_{it-1}\perp\psi_{it}\) (additional assumption)
+\item
+  therefore, we can marginalize \(\varepsilon_{it-1}\) with an ordinary
+  integral,
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Likelihood contribution of a firm}
+\protect\phantomsection\label{likelihood-contribution-of-a-firm}
+\begin{equation}\protect\phantomsection\label{eq-Lunc-dynamic}{
+\begin{aligned}
+    f_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \tilde{\mathcal W}_{it-1}}&(\mathcal V_{it},\tilde{\mathcal W}_{it}|\tilde{\mathcal W}_{it-1})=\\
+    \iint &f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g\big(\tilde{\mathcal W}_{it-1}-(1-\beta)\varepsilon_{it-1}\big)\Big)\\
+    &\times f_\varepsilon(\varepsilon_{it})\,f_\varepsilon(\varepsilon_{it-1})\,d\varepsilon_{it}\,d\varepsilon_{it-1}.
+\end{aligned}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{Recovering \(f_\eta\)}
+\protect\phantomsection\label{recovering-f_eta}
+Define the residual used in the AR(1) productivity process, \[
+\zeta_{it}\equiv \mathcal W_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(\mathcal W_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big)=(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it},
+\]
+
+a sum of three mutually independent variables, two with known densities,
+\(f_\varepsilon\). Fourier deconvolution recovers the third: \[
+\phi_\eta(t)=\frac{\phi_\zeta(t)}{\phi_\varepsilon\big((1-\beta)t\big)\,\phi_\varepsilon\big(-\gamma_1(1-\beta)t\big)}\ \longrightarrow\ f_\eta,
+\]
+\end{frame}
+
+\begin{frame}{The Jacobian matrix}
+\protect\phantomsection\label{the-jacobian-matrix}
+\[
+J\Phi=\frac{\partial(\mathcal V,\tilde{\mathcal W},a)}{\partial(\psi,\omega,\varepsilon)}=
+\begin{pmatrix} G_\psi & G_\omega & -1\\ 0 & 1 & 1-\beta\\ 0 & 0 & 1\end{pmatrix}
+\]
+
+where \(G_\psi\equiv\partial G/\partial\psi\) and
+\(G_\omega\equiv\partial G/\partial\omega\)
+\end{frame}
+
+\begin{frame}{Determinant}
+\protect\phantomsection\label{determinant}
+Expand along column 1 (only \(G_\psi\) is nonzero there): \[
+\det J\Phi = G_\psi\cdot\det\begin{pmatrix}1 & 1-\beta\\ 0&1\end{pmatrix}=G_\psi\cdot1=G_\psi
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(G_\omega\) never enters because every cofactor multiplying it comes
+  from a zero in column 1.
+\item
+  Mechanically: \(\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon\) has
+  \textbf{unit coefficient on \(\omega\)}, a flat translation, so it
+  contributes no curvature.
+\item
+  A Jacobian only appears where the map is genuinely curved: the
+  \(\psi\to\mathcal V\) link through \(G\), not
+  \(\omega\to\tilde{\mathcal W}\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Unpacking \(G_\psi\)}
+\protect\phantomsection\label{unpacking-g_psi}
+\(G=u\circ e^*\), so by the chain rule \(G_\psi=u'(e^*)\cdot e^*_\psi\).
+
+\begin{itemize}
+\tightlist
+\item
+  \(u'(e)\): from \(u(e)=\ln(M_{it}+e)-\ln M_{it}\), with \(M_{it}\)
+  fixed, \[
+  u'(e)=\frac{1}{M_{it}+e}
+  \] evaluated at \(e=e^*\), \(M_{it}+e^*=M^*_{it}\),
+  \(\implies u'(e)=1/M^*_{it}\)
+\item
+  \(e^*_\psi\): differentiate the FOC identity
+  \(\psi=h(e^*(\psi,\omega))-\delta_0+\delta_1\omega-\delta_2\omega^2\)
+  w.r.t. \(\psi\) (implicit function theorem, valid since \(h'\neq0\)):
+  \[
+  1=h'(e^*)\cdot e^*_\psi \quad\Longrightarrow\quad e^*_\psi=\frac{1}{h'(e^*)}
+  \]
+\end{itemize}
+
+Combine: \[
+G_\psi=\frac{1}{M^*_{it}\,h'(e)}
+\]
+\end{frame}
+
+\begin{frame}{Assembling \(J_i(\varepsilon)\)}
+\protect\phantomsection\label{assembling-j_ivarepsilon}
+From Equation~\ref{eq-dens-trans}, the multiplying factor is
+\(1/|\det J\Phi|=1/|G_\psi|\): \[
+J_i(\varepsilon)\equiv\frac{1}{|G_\psi|}=\big|h'(e)\big|\,M^*_{it}
+\]
+
+Every piece is traceable: - \(|h'(e)|\) from inverting the FOC
+(\(\psi\to e\)), - \(M^*_{it}\) from the log-ratio definition
+(\(e\to\mathcal V\), holding the \emph{true} \(M_{it}\) fixed) - they
+multiply because \(G=u\circ e^*\) is a \textbf{composition}, so the
+chain rule stacks them.
+\end{frame}
+
+\begin{frame}{Marginalizing out the auxiliary}
+\protect\phantomsection\label{marginalizing-out-the-auxiliary}
+Applying the density formula gives the joint density of
+\((\mathcal V,\tilde{\mathcal W},a)\), but only
+\((\mathcal V,\tilde{\mathcal W})\) are observed;
+
+\begin{itemize}
+\tightlist
+\item
+  Integrating \(a\) out (an ordinary single integral, not part of the
+  theorem) gives the likelihood contribution of firm \(i\):
+\end{itemize}
+
+\begin{equation}\protect\phantomsection\label{eq-Lunc}{
+f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_\psi\big(\psi(\varepsilon)\big)\,J_i(\varepsilon)\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)\,d\varepsilon
+}\end{equation}
+
+A 3-for-3 change of variables that ends in a 1-D integral:
+
+\begin{itemize}
+\tightlist
+\item
+  the theorem handles the square transformation and hands back a
+  Jacobian;
+\item
+  marginalizing the unobserved auxiliary coordinate is the separate,
+  ordinary step left over once the theorem's job is done.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Simulated log-likelihood}
+\protect\phantomsection\label{simulated-log-likelihood}
+\begin{equation}\protect\phantomsection\label{eq-loglik}{
+\begin{aligned}
+\mathcal L(\theta,f_\psi)=\sum_{i\in\text{Unincorp}}\ln\!\left(\int f_\psi(\psi(\varepsilon))\,J_i(\varepsilon)\,f_\omega(\omega(\varepsilon))\,f_\varepsilon(\varepsilon)\,d\varepsilon\right)
+\end{aligned}
+}\end{equation}
+\end{frame}
+
+\begin{frame}{Simulating the likelihood}
+\protect\phantomsection\label{simulating-the-likelihood}
+Approximate Equation~\ref{eq-Lunc} by \textbf{Monte Carlo}
+
+\begin{equation}\protect\phantomsection\label{eq-msl-sim}{
+\widehat{\mathcal L}_i(\theta)=\frac1S\sum_{s=1}^S f_\psi\big(\psi(\varepsilon^{(s)})\big)\,J_i(\varepsilon^{(s)})\,f_\omega\big(\omega(\varepsilon^{(s)})\big),\qquad \varepsilon^{(s)}\overset{iid}\sim \hat f_\varepsilon
+}\end{equation}
+
+\begin{itemize}
+\tightlist
+\item
+  Draws \(\varepsilon^{(s)}\) come from \emph{exactly} the density
+  \(\hat f_\varepsilon(\varepsilon)\,d\varepsilon\) multiplying the
+  integrand --- this is plain Monte Carlo integration, unbiased for
+  \textbf{any} \(S\ge1\)
+\item
+  Alternatively, use \textbf{deterministic quadrature} to integrate
+  Equation~\ref{eq-Lunc}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why this works despite \(\varepsilon\) entering \(e\)
+nonlinearly}
+\protect\phantomsection\label{why-this-works-despite-varepsilon-entering-e-nonlinearly}
+\begin{itemize}
+\tightlist
+\item
+  \(e(\varepsilon)=M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\)
+  is nonlinear in \(\varepsilon\)
+\item
+  But Equation~\ref{eq-msl-sim} averages the \textbf{density value}
+  \(f_\psi(\psi(\varepsilon^{(s)}))\,J_i(\varepsilon^{(s)})\,f_\omega(\omega(\varepsilon^{(s)}))\)
+  at each draw
+
+  \begin{itemize}
+  \tightlist
+  \item
+    never averages \(\psi(\varepsilon^{(s)})\) \emph{by itself}
+  \end{itemize}
+\item
+  Monte Carlo integration of a (possibly wild) function against its own
+  sampling density is unbiased regardless of the function's shape
+
+  \begin{itemize}
+  \tightlist
+  \item
+    nonlinearity only breaks things if the reweighting is skipped
+  \end{itemize}
+\item
+  Every simulated \(\varepsilon^{(s)}\ne\) the firm's true
+  \(\varepsilon_{it}\), almost surely
+
+  \begin{itemize}
+  \tightlist
+  \item
+    but draws implying an implausible \((\psi,\omega)\) pair get
+    down-weighted by \(f_\psi\cdot J_i\cdot f_\omega\); only draws near
+    the truth carry weight,
+  \item
+    so the weighted average reconstructs the correct posterior-weighted
+    integral even though no single draw is the truth
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Convergence --- a known theorem}
+\protect\phantomsection\label{convergence-a-known-theorem}
+\textbf{Lee (1992)}: if the simulator of a likelihood contribution is
+(i) unbiased and continuous in \(\theta\), and (ii) built from draws
+i.i.d. across firms and replicates, then under standard M-estimation
+regularity (compactness, identification, dominance) the simulated-MLE is
+consistent and \(\sqrt N\)-equivalent to the infeasible exact MLE,
+\textbf{provided \(\sqrt N/S\to0\)} as \(N,S\to\infty\) (fixed \(S\)
+leaves an \(O(1/S)\) bias, since \(\ln(\text{average})\ne\) average of
+\(\ln\))
+
+\begin{itemize}
+\tightlist
+\item
+  Unbiasedness (i): shown above, holds by construction
+\item
+  Continuity (ii): \(h\), \(q\), and \(J_i(\varepsilon)\) are smooth
+  throughout the interior domain \(e\in(0,\tfrac1{2\lambda})\)
+\item
+  Draws i.i.d. across \(i,t,s\), independent of \(\theta\): by
+  construction
+\end{itemize}
+\end{frame}
+
+\begin{frame}{An even cleaner argument: quadrature}
+\protect\phantomsection\label{an-even-cleaner-argument-quadrature}
+\begin{itemize}
+\tightlist
+\item
+  The preferred implementation is \textbf{deterministic quadrature}, not
+  Monte Carlo simulation, for this 1-D integral
+\item
+  Quadrature avoids simulation noise because it is deterministic and can
+  be driven arbitrarily small by adding nodes
+\item
+  The \(\sqrt N/S\to0\) condition above is then moot: with negligible
+  quadrature error, ordinary MLE consistency applies directly
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Caveat: this is a two-step estimator}
+\protect\phantomsection\label{caveat-this-is-a-two-step-estimator}
+\begin{itemize}
+\tightlist
+\item
+  \(\beta\) and \(f_\varepsilon\) are \textbf{first-stage estimates},
+  not the truth
+\item
+  Still consistent under standard conditions, but naive stage-2 standard
+  errors ignore stage-1 estimation uncertainty
+\item
+  Use the Murphy and Topel (1985) two-step correction, or bootstrap both
+  stages jointly
+\end{itemize}
 \end{frame}
 
 \begin{frame}{References}

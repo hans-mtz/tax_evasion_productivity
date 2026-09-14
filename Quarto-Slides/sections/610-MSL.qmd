@@ -1,0 +1,498 @@
+
+# Maximum Simulated Likelihood (MSL)
+
+## Solving for $M$ and $e$
+
+**NEW** From @eq-eva-emp, I can *algebraically solve* for true inputs as function of observed variables and an the error term,
+
+- $M_{it}=M^*_{it}\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}$.
+
+Therefore,
+
+$$
+\begin{aligned}
+    e_{it}=&M^*_{it}-M_{it}\\
+    =&M^*_{it}\left(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}\right)
+\end{aligned}
+$$
+
+- $\varepsilon_{it}$ is not observed firm-by-firm, only its distribution $f_\varepsilon$ 
+- not a literal point recovery of $e_{it}$, but the map that could be evaluated for some draw of $\varepsilon^{(s)}\sim\hat f_\varepsilon$
+
+
+## Recast in terms of one unobservable
+
+I can do the same and solve for $\omega_{it}$ from @eq-tilde-big-w
+
+For each value of $\varepsilon$ everything else is pinned down:
+
+```{=latex}
+\begin{align}
+e_{it}(\varepsilon)&=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)\label{eq-e-eps} \\
+\omega_{it}(\varepsilon)&=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon\label{eq-w-eps}\\
+\psi_{it}(\varepsilon)&=h\big(e_{it}(\varepsilon)\big)-\delta_0+\delta_1\,\omega_{it}(\varepsilon)-\delta_2\omega_{it}(\varepsilon)^2.\label{eq-psi-eps}
+\end{align}
+```
+
+
+## MSL
+
+- We could estimate $f_\psi$ and $\theta=\{\lambda,\delta_0,\delta_1,\delta_2\}$ by Maximum Simulated Likelihood (MSL)
+- After the recast, one unobservable remains: $\varepsilon_{it}$, with known distribution $f_\varepsilon$ (from stage 1),
+- we also know the distribution of $\omega$
+- I would need a *density transformation* to get from the primitives' density $f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)$ to the density of the observables $f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V,\tilde{\mathcal W})$
+  - accounting for the nonlinear map from $\psi$ to $\mathcal V$ (Theorem 7.5.3, next slide) *and* 
+  - integrating out $\varepsilon$ 
+<!-- 
+$$
+f_{\mathcal V_{it},\tilde{\mathcal W}_{it}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_{\psi}(\psi(\varepsilon_{it}))\,f_{\omega}(\omega(\varepsilon_{it}))\,f_\varepsilon(\varepsilon_{it})\,|\det J\Phi^{-1}(\varepsilon)|\,d\varepsilon_{it}
+$$
+
+The object to estimate is $f_\psi$ and $\theta=(\lambda, \delta_0,\delta_1,\delta_2)$, since $f_\omega$ and $f_\varepsilon$ are already known 
+-->
+
+## Theorem 7.5.3 Change of Variables in $R^n$ @Judd1998
+
+Assume that $\Phi: X \subset R^n \to R^n$ is $C^1$ and that there is a $C^1$ inverse map $\Phi^{-1}: Y \subset R^n \to X$ where $Y=\Phi(X)$ and $Y$ and $X$ are open. If $f$ is integrable on $X$, then
+
+$$
+\int_Y f(y)dy = \int_Xf(\Phi(x))|\det J(\Phi)(x)| dx,
+$$
+
+where $J(\Phi)(x)$ is the Jacobian of $\Phi$ at $x$.
+
+## Corollary: Density transformation
+
+Let $f_X(x)$ be the joint pdf of $X$, $B$ any region in the support of $Y$, and $A=\Phi^{-1}(B)$
+
+For $Y=\Phi(X)$: $P(X\in A)=P(\Phi(X)\in\Phi(A))=P(Y\in B)$. Apply the theorem with $\Psi\equiv\Phi^{-1}$ in place of $\Phi$ ($\Phi^{-1}$ is $C^1$ with $C^1$ inverse $\Phi$) to $g=f_X\cdot\mathbf 1_{A}$:
+$$
+P(X\in A)=\int_{A}f_X(x)\,dx=\int_B f_X\big(\Phi^{-1}(y)\big)\,\big|\det J\Phi^{-1}(y)\big|\,dy.
+$$
+
+Since $B$ is arbitrary, and using $J\Phi^{-1}(y)=[J\Phi(x)]^{-1}$ (inverse function theorem) at $x=\Phi^{-1}(y)$, then, the joint pdf of $Y$ is:
+$$
+f_Y(y)=\frac{f_X(x)}{|\det J\Phi(x)|}\bigg|_{x=\Phi^{-1}(y)}
+$$ {#eq-dens-trans}
+
+## Target Density
+
+To find the correct target density of observables, note that, given ($K_{it},L_{it}$), the variables ($\mathcal{V}_{it},\tilde{\mathcal{W}}_{it}$ ) form an affine map in the ($Y_{it},M^*_{it}$)-space,
+
+$$
+\mathcal V_{it}=m^*_{it}-y_{it}+c_1 \tag{\ref{eq-eva-emp} rearranged}
+$$
+
+$$
+\tilde{\mathcal W}_{it}= y_{it}-\beta (m^*_{it}-\mathcal V_{it})-\alpha_Kk_{it}-\alpha_Ll_{it} \tag{equivalent to \ref{eq-tilde-big-w}}
+$$
+
+where $c_1\equiv \ln\left(\frac{\rho_t}{P_t\beta}\right)$
+
+Substituting the first equation into the second cancels the $m^*_{it}$ terms exactly:
+
+$$
+\tilde{\mathcal W}_{it}=(1-\beta)\,y_{it}+\beta c_1-\alpha_Kk_{it}-\alpha_Ll_{it}
+$$ {#eq-wtilde-reduced}
+
+## $\Phi$ is a linear bijection in $(y_{it},m^*_{it})$-space
+
+$$
+\Phi:(y_{it},m^*_{it})\;\mapsto\;(\mathcal V_{it},\tilde{\mathcal W}_{it})
+$$
+
+$$
+\begin{pmatrix}\mathcal V\\ \tilde{\mathcal W}\end{pmatrix}
+=\underbrace{\begin{pmatrix}-1 & 1\\ 1-\beta & 0\end{pmatrix}}_{A}
+\begin{pmatrix}y\\ m^*\end{pmatrix}
++\begin{pmatrix}c_1\\ \beta c_1-\alpha_Kk-\alpha_Ll\end{pmatrix}.
+$$
+
+Since $\det A = -(1-\beta)\ne0$ ($0<\beta<1$) $\implies$ $\Phi$ is an affine bijection
+
+- $\implies$ ($\mathcal{V}_{it},\tilde{\mathcal{W}}_{it}$) contain the same information as ($Y_{it},M^*_{it}$)
+
+- Therefore, the correct target density $f_{\mathcal V,\tilde{\mathcal W}\mid K,L}$
+- **No need** to include $M^*$ in the joint density or condition on [($\mathcal{V}$ contains all information of $M^*$)]{.sm}
+
+## Conditioning on $\omega_{it-1}$ instead of $(K_{it},L_{it})$ 
+
+Due to the Markov process of productivity, $\omega_{it}=g(\omega_{it-1})+\eta_{it}$, $\eta_{it}\ind(\omega_{it-1},k_{it},l_{it})$,
+
+$$
+f_{\omega_{it}\mid \omega_{it-1},K_{it},L_{it}}(\omega_{it})=f_{\omega_{it}\mid \omega_{it-1}}(\omega_{it})=f_\eta\big(\omega_{it}-g(\omega_{it-1})\big)
+$$
+
+Conditional on $\omega_{it-1}$, the only randomness left in $\omega_{it}$ is $\eta_{it}$, which doesn't depend on $(K_{it},L_{it})$
+
+- $\omega_{it-1}$ is a **sufficient statistic**: once it's known, $(K_{it},L_{it})$ adds nothing.
+
+
+## Setting $\Phi$ in the $(\psi_{it},\omega_{it},\varepsilon_{it})$-space
+
+<!--
+Primitives $X=(\psi,\omega,\varepsilon)$, independent, density $f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)=f_\psi(\psi)f_\omega(\omega)f_\varepsilon(\varepsilon)$.
+
+- Invert the FOC $\psi=h(e)-\delta_0+\delta_1\omega-\delta_2\omega^2$ for $e$ holding $\omega$ fixed. Since $h'(e)<0$ throughout the domain, this defines a $C^1$ inverse $e^*(\psi,\omega)$ (implicit function theorem)
+- Convert to the log-ratio using $u(e)=\ln\!\big((M_{it}+e)/M_{it}\big)$, with $M_{it}$ held fixed as $e$ varies ($M\perp e\mid\omega$)
+ - $M^*_{it}=M_{it}+e$ is *not* the right thing to hold fixed here, since it moves whenever $e$ does
+-->
+
+$\Phi:(\psi_{it},\omega_{it},\varepsilon_{it})\mapsto(\mathcal V_{it},\tilde{\mathcal W}_{it},a)$, padding with the auxiliary $a\equiv\varepsilon_{it}$ so $\Phi:\mathbb R^3\to\mathbb R^3$ matches the theorem's dimension requirement:
+
+Define $G(\psi_{it},\omega_{it})\equiv u\big(e^*(\psi_{it},\omega_{it})\big)$,
+
+- where $u(e)=\ln\!\big((M_{it}+e)/M_{it}\big)$, holding $M_{it}$ fixed as $e$ varies ($M\perp e\mid\omega$), and 
+- $e^*(\psi_{it},\omega_{it})=h^{-1}(\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it})$ inverts the FOC for $e_{it}$,
+$$
+\mathcal V=G(\psi,\omega)-\varepsilon,\qquad \tilde{\mathcal W}=\omega+(1-\beta)\varepsilon,\qquad a=\varepsilon
+$$
+
+- Like $(K_{it},L_{it})$ before, $\omega_{it-1}$ does not enter the map
+
+## Conditional density
+
+Let $J_i(\varepsilon_{it})=|\det J\Phi^{-1}|$, then,
+
+$$
+\begin{aligned}
+    f&_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \omega_{it-1}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\\
+&\int f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g(\omega_{it-1})\Big)\,f_\varepsilon(\varepsilon_{it})\,d\varepsilon_{it}.
+\end{aligned}
+$$ {#eq-Lunc-cond-lag}
+
+Assuming $\psi_{it},\varepsilon_{it}\perp(K_{it},L_{it})\mid\omega_{it-1}$
+
+<!-- **** -->
+
+## Since $\omega_{it-1}$ isn't observed, use $\tilde{\mathcal W}_{it-1}$
+
+$\tilde{\mathcal W}_{it-1}$ is firm-$i$ *data*
+
+- $\varepsilon_{it-1}$ unobserved, but known density $f_\varepsilon$ (stationarity) and 
+- already assumed independent $\varepsilon_{it-1}\perp\varepsilon_{it},\eta_{it}$ in productivity's AR(1) estimation 
+- extending $\varepsilon_{it-1}\perp\psi_{it}$ (additional assumption)
+- therefore, we can marginalize $\varepsilon_{it-1}$ with an ordinary integral,
+
+## Likelihood contribution of a firm
+
+$$
+\begin{aligned}
+    f_{\mathcal V_{it},\tilde{\mathcal W}_{it}\mid \tilde{\mathcal W}_{it-1}}&(\mathcal V_{it},\tilde{\mathcal W}_{it}|\tilde{\mathcal W}_{it-1})=\\
+    \iint &f_\psi\big(\psi(\varepsilon_{it})\big)\,J_i(\varepsilon_{it})\,f_\eta\Big(\omega(\varepsilon_{it})-g\big(\tilde{\mathcal W}_{it-1}-(1-\beta)\varepsilon_{it-1}\big)\Big)\\
+    &\times f_\varepsilon(\varepsilon_{it})\,f_\varepsilon(\varepsilon_{it-1})\,d\varepsilon_{it}\,d\varepsilon_{it-1}.
+\end{aligned}
+$$ {#eq-Lunc-dynamic}
+
+
+## Recovering $f_\eta$
+
+Define the residual used in the AR(1) productivity process,
+$$
+\zeta_{it}\equiv \mathcal W_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(\mathcal W_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big)=(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it},
+$$
+
+a sum of three mutually independent variables, two with known densities, $f_\varepsilon$. Fourier deconvolution recovers the third:
+$$
+\phi_\eta(t)=\frac{\phi_\zeta(t)}{\phi_\varepsilon\big((1-\beta)t\big)\,\phi_\varepsilon\big(-\gamma_1(1-\beta)t\big)}\ \longrightarrow\ f_\eta,
+$$
+
+
+## The Jacobian matrix
+
+$$
+J\Phi=\frac{\partial(\mathcal V,\tilde{\mathcal W},a)}{\partial(\psi,\omega,\varepsilon)}=
+\begin{pmatrix} G_\psi & G_\omega & -1\\ 0 & 1 & 1-\beta\\ 0 & 0 & 1\end{pmatrix}
+$$
+
+where $G_\psi\equiv\partial G/\partial\psi$ and $G_\omega\equiv\partial G/\partial\omega$
+
+## Determinant
+
+Expand along column 1 (only $G_\psi$ is nonzero there):
+$$
+\det J\Phi = G_\psi\cdot\det\begin{pmatrix}1 & 1-\beta\\ 0&1\end{pmatrix}=G_\psi\cdot1=G_\psi
+$$
+
+- $G_\omega$ never enters because every cofactor multiplying it comes from a zero in column 1. 
+- Mechanically: $\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon$ has **unit coefficient on $\omega$**, a flat translation, so it contributes no curvature. 
+- A Jacobian only appears where the map is genuinely curved: the $\psi\to\mathcal V$ link through $G$, not $\omega\to\tilde{\mathcal W}$.
+
+## Unpacking $G_\psi$
+
+$G=u\circ e^*$, so by the chain rule $G_\psi=u'(e^*)\cdot e^*_\psi$.
+
+- $u'(e)$: from $u(e)=\ln(M_{it}+e)-\ln M_{it}$, with $M_{it}$ fixed,
+$$
+u'(e)=\frac{1}{M_{it}+e}
+$$
+evaluated at $e=e^*$, $M_{it}+e^*=M^*_{it}$, $\implies u'(e)=1/M^*_{it}$ 
+- $e^*_\psi$: differentiate the FOC identity $\psi=h(e^*(\psi,\omega))-\delta_0+\delta_1\omega-\delta_2\omega^2$ w.r.t. $\psi$ (implicit function theorem, valid since $h'\neq0$):
+$$
+1=h'(e^*)\cdot e^*_\psi \quad\Longrightarrow\quad e^*_\psi=\frac{1}{h'(e^*)}
+$$
+
+Combine:
+$$
+G_\psi=\frac{1}{M^*_{it}\,h'(e)}
+$$
+
+## Assembling $J_i(\varepsilon)$
+
+From @eq-dens-trans, the multiplying factor is $1/|\det J\Phi|=1/|G_\psi|$:
+$$
+J_i(\varepsilon)\equiv\frac{1}{|G_\psi|}=\big|h'(e)\big|\,M^*_{it}
+$$
+
+Every piece is traceable: 
+- $|h'(e)|$ from inverting the FOC ($\psi\to e$), 
+- $M^*_{it}$ from the log-ratio definition ($e\to\mathcal V$, holding the *true* $M_{it}$ fixed) 
+- they multiply because $G=u\circ e^*$ is a **composition**, so the chain rule stacks them.
+
+## Marginalizing out the auxiliary
+
+Applying the density formula gives the joint density of $(\mathcal V,\tilde{\mathcal W},a)$, but only $(\mathcal V,\tilde{\mathcal W})$ are observed; 
+
+- Integrating $a$ out (an ordinary single integral, not part of the theorem) gives the likelihood contribution of firm $i$:
+
+$$
+f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V_{it},\tilde{\mathcal W}_{it})=\int f_\psi\big(\psi(\varepsilon)\big)\,J_i(\varepsilon)\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)\,d\varepsilon
+$$ {#eq-Lunc}
+
+A 3-for-3 change of variables that ends in a 1-D integral:
+
+- the theorem handles the square transformation and hands back a Jacobian; 
+- marginalizing the unobserved auxiliary coordinate is the separate, ordinary step left over once the theorem's job is done.
+
+## Simulated log-likelihood
+
+$$
+\begin{aligned}
+\mathcal L(\theta,f_\psi)=\sum_{i\in\text{Unincorp}}\ln\!\left(\int f_\psi(\psi(\varepsilon))\,J_i(\varepsilon)\,f_\omega(\omega(\varepsilon))\,f_\varepsilon(\varepsilon)\,d\varepsilon\right)
+\end{aligned}
+$$ {#eq-loglik}
+
+
+## Simulating the likelihood
+
+Approximate @eq-Lunc by **Monte Carlo**
+
+$$
+\widehat{\mathcal L}_i(\theta)=\frac1S\sum_{s=1}^S f_\psi\big(\psi(\varepsilon^{(s)})\big)\,J_i(\varepsilon^{(s)})\,f_\omega\big(\omega(\varepsilon^{(s)})\big),\qquad \varepsilon^{(s)}\overset{iid}\sim \hat f_\varepsilon
+$$ {#eq-msl-sim}
+
+- Draws $\varepsilon^{(s)}$ come from *exactly* the density $\hat f_\varepsilon(\varepsilon)\,d\varepsilon$ multiplying the integrand — this is plain Monte Carlo integration, unbiased for **any** $S\ge1$
+- Alternatively, use **deterministic quadrature** to integrate @eq-Lunc
+
+## Why this works despite $\varepsilon$ entering $e$ nonlinearly
+
+- $e(\varepsilon)=M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})$ is nonlinear in $\varepsilon$
+- But @eq-msl-sim averages the **density value** $f_\psi(\psi(\varepsilon^{(s)}))\,J_i(\varepsilon^{(s)})\,f_\omega(\omega(\varepsilon^{(s)}))$ at each draw
+  - never averages $\psi(\varepsilon^{(s)})$ *by itself*
+- Monte Carlo integration of a (possibly wild) function against its own sampling density is unbiased regardless of the function's shape 
+  - nonlinearity only breaks things if the reweighting is skipped
+- Every simulated $\varepsilon^{(s)}\ne$ the firm's true $\varepsilon_{it}$, almost surely 
+  - but draws implying an implausible $(\psi,\omega)$ pair get down-weighted by $f_\psi\cdot J_i\cdot f_\omega$; only draws near the truth carry weight, 
+  - so the weighted average reconstructs the correct posterior-weighted integral even though no single draw is the truth
+
+## Convergence — a known theorem
+
+**@Lee1992**: if the simulator of a likelihood contribution is (i) unbiased and continuous in $\theta$, and (ii) built from draws i.i.d. across firms and replicates, then under standard M-estimation regularity (compactness, identification, dominance) the simulated-MLE is consistent and $\sqrt N$-equivalent to the infeasible exact MLE, **provided $\sqrt N/S\to0$** as $N,S\to\infty$ (fixed $S$ leaves an $O(1/S)$ bias, since $\ln(\text{average})\ne$ average of $\ln$)
+
+- Unbiasedness (i): shown above, holds by construction
+- Continuity (ii): $h$, $q$, and $J_i(\varepsilon)$ are smooth throughout the interior domain $e\in(0,\tfrac1{2\lambda})$
+- Draws i.i.d. across $i,t,s$, independent of $\theta$: by construction
+
+## An even cleaner argument: quadrature
+
+- The preferred implementation is **deterministic quadrature**, not Monte Carlo simulation, for this 1-D integral
+- Quadrature avoids simulation noise because it is deterministic and can be driven arbitrarily small by adding nodes
+- The $\sqrt N/S\to0$ condition above is then moot: with negligible quadrature error, ordinary MLE consistency applies directly
+
+## Caveat: this is a two-step estimator
+
+- $\beta$ and $f_\varepsilon$ are **first-stage estimates**, not the truth
+- Still consistent under standard conditions, but naive stage-2 standard errors ignore stage-1 estimation uncertainty
+- Use the @MurphyTopel1985 two-step correction, or bootstrap both stages jointly
+
+
+<!-- ## Estimation
+
+Maximum Simulated Likelihood (MSL): For each candidate $(\theta,f_\psi)$,
+
+- Uninc: Approximate by simulation [@Train2009; @GourierouxMonfort1996],
+$$
+\widehat{\mathcal L}_i^{\text{unc}}=\frac1S\sum_{s=1}^{S}
+f_\psi\!\big(\psi(\varepsilon^{(s)})\big)\,J_i(\varepsilon^{(s)})\,f_\omega\!\big(\omega(\varepsilon^{(s)})\big),
+\qquad \varepsilon^{(s)}\sim \hat f_\varepsilon,
+$$
+ 
+  - or numerical integration
+- Corp: Evaluate $\mathcal L_i^{\text{corp}}=1-F_\psi(c_i)$ at the observed $\omega_i$
+- Maximize $\sum_i \mathcal L_i^{\text{unc}}+\sum_i \mathcal L_i^{\text{corp}}$ over $(\theta,f_\psi)$
+- Normalization needed to identify location of $f_\psi$ ($\mathbb E[\psi]=0$) from $\delta_0$. -->
+
+<!-- ## Log-Likelihood Function
+
+For Unincorporated firms, the likelihood contribution of firm $i$ is given by,
+
+$$
+f_{\psi}(\psi)= f_{\psi}(\ln(\tau\rho_t )-\lambda e_{it} +\ln (1-\lambda e_{it}) - \delta_0+\delta_1\omega_{it})
+$$
+
+Thus, the log-likelihood function is given by,
+
+$$
+\begin{aligned}
+    \mathcal{L}(\theta) =& \sum_{i\in \text{Corp}} \ln\left(1-\int_{-\infty}^{\ln(\tau\rho_t )-\delta_0-\delta_C+\delta_1\omega_{it}} f_{\psi}(t)dt\right) \\
+    &+ \sum_{i\in \text{Unincorp}} \ln\left(f_{\psi}(\ln(\tau\rho_t )-\lambda e_{it} +\ln (1-\lambda e_{it}) - \delta_0+\delta_1\omega_{it})\right)
+\end{aligned}
+$$
+
+## Suppose I know $\omega_{it}$
+
+Now, suppose I know $\omega_{it}$ but only the distribution of $e_{it}$, $f_e(e)$. Then, by definition,
+
+$$
+f_{\psi}(\psi)= \int f_{\psi,e}(\psi,e)de =\int f_{\psi|e}(\psi|e)f_e(e)de
+$$
+
+Therefore, I can re-write the full log-likelihood function as follows,
+
+$$
+\begin{aligned}
+    \mathcal{L}(\theta) =& \sum_{i\in \text{Corp}} \ln\left(1-\int_{-\infty}^{\ln(\tau\rho_t )-\delta_0-\delta_C+\delta_1\omega_{it}} f_{\psi}(t)dt\right) \\
+    &+ \sum_{i\in \text{Unincorp}} \ln\left(\int f_{\psi|e}(\ln(\tau\rho_t )-\lambda e_{it} +\ln (1-\lambda e_{it}) - \delta_0+\delta_1\omega_{it})f_e(e)de\right) 
+\end{aligned}
+$$
+
+## I don't know $\omega_{it}$, but
+
+- I know its distribution, $f_{\omega}(\omega)$, but more importantly, since I have the estimated parameters of the production function, I can form,
+
+$$
+\tilde{\mathcal{W}}_{it}\equiv y_{it}-\beta(m^*_{it}-\mathcal{V}_{it})-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}
+$$
+
+which depends on data, parameters, and two independent unobservables, $\omega_{it}$ and $\varepsilon_{it}$ (both of which I know their distributions).
+
+## Rewriting FOCs
+
+I can use $\tilde{\mathcal{W}}_{it}$ to re-write the FOCs wrt tax evasion as follows,
+
+$$
+\begin{aligned}
+    \ln(\tau\rho_t )\le& \delta_0+\delta_C-\delta_1\tilde{\mathcal{W}}_{it}+\delta_1(1-\beta)\varepsilon_{it}+\psi_{it} \\
+    \ln(\tau\rho_t )-\lambda e_{it} +\ln (1-\lambda e_{it}) =& \delta_0-\delta_1\tilde{\mathcal{W}}_{it}+\delta_1(1-\beta)\varepsilon_{it}+\psi_{it}
+\end{aligned}
+$$
+
+##
+
+- If I knew $e_{it}$, I could use $\tilde{\mathcal{W}}_{it}$ and recover the parameters by looking for instruments $Z$ such that,
+
+$$
+E[\psi_{it}+\delta_1(1-\beta)\varepsilon_{it}|Z]=0
+$$
+
+## Continuing with the MLE strategy
+
+By definition,
+
+$$
+\begin{aligned}
+    f_{\psi}(\psi)=& \int\int f_{\psi,e,\varepsilon}(\psi,e,\varepsilon)d\varepsilon de\\
+    =&\int\int f_{\psi|e,\varepsilon}(\psi|e,\varepsilon)f_{e,\varepsilon}(e,\varepsilon)d\varepsilon de\\
+    =& \int\int f_{\psi|e}(\psi|e)f_{e}(e)f_{\varepsilon}(\varepsilon)d\varepsilon de
+\end{aligned}
+$$
+
+last line follows from the independence of $e$ and $\varepsilon$, and between $\psi$ and $\varepsilon$ conditional on $e$. 
+
+## Full log-likelihood function
+
+Thus, I can re-write the log-likelihood function as follows,
+
+$$
+\begin{aligned}
+    \mathcal{L}(\theta) =& \sum_{i\in \text{Corp}} \ln\left(1-\int\int_{-\infty}^{\ln(\tau\rho_t )-\delta_0-\delta_C+\delta_1\tilde{\mathcal{W}}_{it}-\delta_1(1-\beta)\varepsilon_{it}} f_{\psi}(t)f_{\varepsilon}(\varepsilon)d\varepsilon dt\right) \\
+    +& \sum_{i\in \text{Unincorp}} \ln\bigg(\int\int f_{\psi|e}\Big(\ln(\tau\rho_t )-\lambda e_{it} +\ln (1-\lambda e_{it})\\
+    & - \delta_0+\delta_1\tilde{\mathcal{W}}_{it}-\delta_1(1-\beta)\varepsilon_{it}\Big)f_e(e)f_{\varepsilon}(\varepsilon)d\varepsilon de\bigg) 
+\end{aligned}
+$$ 
+-->
+
+
+
+
+<!-- 
+## Why $e$ is not deconvolvable, but $u$ is
+
+Deconvolution recovers whatever is additively paired with $-\varepsilon_{it}$ in $\mathcal V_{it}$ — provided that object's **marginal** distribution is **firm-invariant** (the same for every $i,t$, independent of $\varepsilon$).
+
+- $u_{it}=\ln(M^*_{it}/M_{it})$ is a candidate: a proportional overreport has no built-in reason to depend on firm size, so treating $f_{u}$ as firm-invariant is a plausible (testable) assumption
+- $e_{it}=M^*_{it}\big(1-\textbf{e}^{-u_{it}}\big)$ is not: it's $u_{it}$ rescaled by that firm's own $M^*_{it}$, so its marginal distribution shifts with firm size even when $u$'s doesn't
+
+**Example.** Two firms draw the *same* $u=\ln(1.1)\approx0.095$ (10% overreport):
+
+| Firm | $M$ | $M^*$ | $e=M^*-M$ | e/M |
+|---|---|---|---|---|
+| A | 100 | 110 | 10 | 0.1 |
+| B | 1,000 | 1,100 | 100 | 0.1 |
+| C | 1,000 | 1,010 | 10  | 0.01 |
+
+Same draw of the firm-invariant object, $e$ differs 10$\times$. Pooling $e_{it}$ across firms of different sizes mixes draws from distributions with different scales — there is no firm-invariant $f_e$ for deconvolution to target.
+
+## Is $f_{e|M^*}$ any better?
+
+No — conditioning on $M^*$ doesn't change what's additively paired with $\varepsilon$; it's still $u_{it}$, not $e_{it}$, at any fixed $M^*$. $f_{e|M^*}$ is never itself the output of a deconvolution:
+
+- Deconvolution gives $f_{u}$ (marginal, under firm-invariance) or $f_{u|M^*}$ (conditional, if firm-invariance fails — needs nonparametric deconvolution with a continuous covariate, e.g. @FanTruong1993; much harder, slower rates)
+- $f_{e|M^*}$ then follows by an *exact, deterministic* change of variables at fixed $M^*$:
+$$
+f_{e|M^*}(x)=\frac{f_{u|M^*}\big(\ln(M^*/(M^*-x))\big)}{M^*-x}
+$$
+- Under firm-invariance this is free from the one planned marginal deconvolution — no extra estimation step 
+
+-->
+
+<!-- 
+## Estimating Probability of Detection and Cost of Evasion Functions
+
+- Using the estimated parameters of the production function, we can rewrite the FOC wrt tax evasion, @eq-eva-emp-2, of Unicorps in terms of data, parameters , and two independent unobservables, as follows, 
+
+- $\mathcal{V}_{it}=\ln\left(\frac{M^*_{it}}{M^*_{it}-e_{it}}\right)-\varepsilon_{it}$ 
+$\implies e_{it}=M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}})$ and 
+- $\tilde{\mathcal{W}}_{it}\equiv y_{it}-\beta(m^*_{it}-\mathcal{V}_{it})-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$
+
+$$
+\begin{aligned}
+    \Psi_{it}(\theta) \equiv& \ln(\tau\rho_t )-\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}}) +\ln (1+\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}}))\\
+    &\quad - \delta_0+\delta_1\tilde{\mathcal{W}}_{it}\\
+    =& \ln(\tau\rho_t )-\lambda M^*_{it}(1-\textbf{e}^{-\ln\left(\frac{M_{it}+e_{it}}{M_{it}}\right)-\varepsilon_{it}}) +\ln (1+\lambda M^*_{it}(1-\textbf{e}^{-\ln\left(\frac{M_{it}+e_{it}}{M_{it}}\right)-\varepsilon_{it}}))\\
+    &\quad - \delta_0+\delta_1(\omega_{it}+(1-\beta)\varepsilon_{it})\\
+    =&
+\end{aligned}
+$$
+
+where $\theta = (\lambda, \delta_0, \delta_1)$ and $X_{it}=(M^*_{it}, \tilde{\mathcal{W}}_{it},\mathcal{V}_{it},\tau, \rho_t)$ is data.
+
+Assuming, $\psi_{it}$ is independent of $\varepsilon_{it}$ and $X_{it}$, we can estimate the parameters of the probability of detection and cost of evasion functions, $\theta$, and the distribution of $\psi_{it}$ by deconvolving $\mathbb{V}(\varepsilon_{it}, X_{it}; \theta)$ from the distribution of $\Psi_{it}$,
+
+$$
+f_{\Psi}(\Psi) = \int f_{\psi}(\Psi-\mathbb{V}(\varepsilon_{it}, X_{it}; \theta))f_{\varepsilon}(\varepsilon)d\varepsilon
+$$
+
+
+
+
+## Am I missing an error term here?
+
+- Measurement error when reporting data on sales tax paid on purchases
+- Idyosyncratic shocks to the cost of evasion across firms and over time. 
+- Since I know $f_e(e)$, I could deconvolve the distribution of this error term, this error term should be:
+    1. Independent of true materials $M_{it}$ and
+    2. Independent of the tax evasion level $e_{it}$, 
+    3. If not independent of $e$, Can I use the fact that $f_{e,\xi}(e,\xi)=f_{e|\xi}(e|\xi)f_{\xi}(\xi)=f_{\xi|e}(\xi|e)f_e(e)$, so I can get away deconvolving the distribution of the error term conditional on $e$ instead of the unconditional distribution of the error term?
+         
+-->

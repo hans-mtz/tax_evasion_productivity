@@ -1,0 +1,33 @@
+---
+author: Hans Martinez
+format: pdf
+date: last-modified
+---
+
+## Why this note exists
+
+The $(\Delta,R)$ counterfactual test-inversion (see `9999-elvis.qmd`'s Counterfactual section) came back with a real problem: the auxiliary revenue moment's own standard error was enormous ($\approx559$ COP), making every confidence set uselessly wide — adjacent $\Delta$'s were statistically indistinguishable from each other. This note explains the fix that was adopted: a **control-variate correction** to the auxiliary moment, a classical Monte Carlo/simulation variance-reduction technique (@Hendry1984, §on efficiency-improving simulation designs; the same device is called CUPED in the modern causal-inference literature and the "regression estimator" in survey sampling). The point of this note is to make the case, precisely, that this is a pure efficiency gain — same estimand, smaller variance — not a re-specification of what the auxiliary moment identifies.
+
+## Where the noise was coming from
+
+The auxiliary moment tests candidate mean revenue $R$ via
+$$g_{R,i}(\Delta) = \frac{R_i(\Delta)}{pgdp_i} - R, \qquad E[g_{R,i}]=0 \iff E[R_i(\Delta)]=R.$$
+
+Diagnosed directly (a new `dvecdiag` C++ mode dumping the full moment vector and its sampling SEs at a fixed $(\theta,\gamma)$, no optimization): `se`$(g_{R,i})\approx559$ **at every tested cell**, unaffected by MCMC chain length (`n_keep` 300 to 30,000, SE unchanged to 4 significant figures) — confirming this is a **between-firm** quantity, sample variance of $R_i$ across the $n=32{,}232$ firms, not a simulation-noise artifact. It's driven by raw firm-size heterogeneity: the firm's own observed $t1_i$ (sales tax paid on sales — fully exogenous, no model dependence) predicts the model-implied $R_i(\Delta)$ almost perfectly, $R^2\approx0.999$ pooled across the whole tested $\Delta$ range, slope $\hat\beta\approx0.999$. That makes economic sense: $R_i=t1_i-\tilde\tau_P[M_i+(1-q)e_i']$, and the evasion-credit term is a comparatively small, weakly-size-correlated correction on top of $t1_i$'s own scale.
+
+## The correction
+
+Since $c_i\equiv t1_i/pgdp_i$ is fully observed (no latent variable, no estimation uncertainty) and highly correlated with the target, replace the moment with
+$$g_{R,i}^{\text{adj}}(\Delta) = \Big[\frac{R_i(\Delta)}{pgdp_i}-\hat\beta\, c_i\Big] - \big[R-\hat\beta\,\mu_c\big],\qquad \hat\beta=0.998838,\ \ \mu_c=E[c_i]=2507.602596$$
+
+both **fixed, precomputed constants** — $\hat\beta$ from a preliminary OLS fit of a forward-simulated $R_i(\Delta)$ on $c_i$ (pooled across all tested $\Delta$'s for robustness, not re-derived from a single $\Delta$), $\mu_c$ the plain sample mean of a fully-observed covariate. Neither is a new ELVIS decision variable — the dimension of $(\theta,\gamma)$ is unchanged.
+
+**The target is provably untouched.** For *any* constant $\hat\beta$, $E[\hat\beta c_i]=\hat\beta\mu_c$ cancels on both sides, so $E[g_{R,i}^{\text{adj}}]=E[g_{R,i}]$ exactly. Verified numerically too: the adjusted and raw sample means agree to 6+ significant figures at every tested cell. **Only the variance changes** — by construction, $\text{Var}(g_{R,i}^{\text{adj}}) = \text{Var}(R_i) - 2\hat\beta\,\text{Cov}(R_i,c_i)+\hat\beta^2\text{Var}(c_i)$, minimized at the OLS $\hat\beta$. Empirically: `se`$(g_R^{\text{adj}})\approx14$–$15$ at every tested cell, a $38$–$41\times$ reduction, with the resulting hard-test confidence sets now closed and non-overlapping across adjacent $\Delta$'s on the tax-increase side — the actual problem this was built to solve.
+
+## Why not just add industry$\times$year fixed effects?
+
+TWFE is the same idea with a saturated-categorical control instead of a continuous one — subtracting each firm's own industry$\times$year cell mean is algebraically identical to regressing on a full set of dummies. Checked directly rather than assumed: additive industry+year FE barely helps (SE $559\to508$); the full interaction (318 cells) gets real traction (SE $\to223$, $R^2=0.84$) but needs 318 new nuisance parameters and has genuine small-cell risk (100 of 318 cells have $<30$ observations). The continuous control variate does far better ($38$–$41\times$) with zero added dimensionality, because firm size — which $t1_i$ tracks almost exactly — is the dominant driver of revenue dispersion, far more than which industry-year cell a firm happens to sit in; once $t1_i$ is controlled for, industry$\times$year adds almost nothing further ($R^2$ $0.9993\to0.9994$).
+
+## Bottom line
+
+This is an efficiency improvement in the ordinary econometric sense of the word: the same population object — $E[R_i(\Delta)]$, exactly what the auxiliary ELVIS moment was already built to recover — estimated with a lower-variance moment. No new identifying assumption, no change to $(\theta,\gamma)$'s dimension, no distortion of the other nine moments' own fit (checked: $\text{dvec}[0..8]$ is identical whether the raw or adjusted row 9 is used, at a fixed $\gamma$). It's the same logic as adding a covariate in a randomized-experiment estimator (ANCOVA/CUPED) or a poststratified survey mean — the target doesn't move, only how much of the outcome's variance gets treated as irreducible noise before the test statistic is formed.
