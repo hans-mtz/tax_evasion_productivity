@@ -1,8 +1,8 @@
 # Stage-2 ELVIS: Preliminary Results
 
-## Implementation
+## Implementation {#sec-elvis-res}
 
-Moment set A (row list authoritative in `Code/Rcpp/1200-stage2-elvis.cpp`'s header comment): $\theta_{\text{smooth}}=(\lambda,\delta_0,\delta_1,\delta_2)$, 9 moments ($d_g=9$), no nuisance parameters beyond $\gamma$:
+I use 9 moments: $\theta_{\text{smooth}}=(\lambda,\delta_0,\delta_1,\delta_2)$, 9 moments ($d_g=9$), nuisance parameters $(\gamma,\delta_0)$:
 
 $$
 g(M,Z,\theta_{\text{smooth}})=\begin{pmatrix}
@@ -18,53 +18,154 @@ h'(e,\lambda)\,\varepsilon(M,Z)
 \end{pmatrix}
 $$
 
+## Strategy
+
+- First, grid search over $\lambda$, profiling over ($\delta_0,\delta_1,\delta_2$), to find the optimal $\lambda$ and a rough $(\delta_1,\delta_2)$ region
+- Then, a 2D grid search over $(\delta_1,\delta_2)$ around the best $(\lambda, \delta_1,\delta_2)$ from the $\lambda$ search, profiling over $(\lambda,\delta_0)$
+- Finally, a joint 3D search over $(\lambda,\delta_1,\delta_2)$, starting at the best point from the $\delta$'s grid with only $\delta_0$ free, to refine the best point
+- $\gamma$'s are always free in all searches
+
+
 ## Implementation Details
 
-- **Objective**: CUE quadratic, $\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g$, $\hat\Omega^-$ an eigenvalue-truncated generalized inverse — same construction AK2020 use
+- **Objective**: continuous updating estimator (CUE) quadratic, $\hat L_n(\theta,\gamma)=\tfrac12\hat g'\hat\Omega^-\hat g$, $\hat\Omega^-$ an eigenvalue-truncated generalized inverse [following @AK2020]
 - **Sampler**: per-firm Metropolis chain, `n_burn=1000, n_keep=3000`, deterministic per-firm RNG reseed
-- **Solver**: Nelder-Mead (beats BOBYQA decisively on this problem), unbounded $\gamma$ (a large/degenerate $\gamma$ is an expected solution, Schennach 2014 — not a numerical failure), two-pass refinement
-- **Seeding**: every $\lambda$ grid point seeded independently from the same validated starting point — no chaining across grid points
+- **Solver**: Nelder-Mead (BOBYQA got stucked in local minima), unbounded $\gamma$ (a large/degenerate $\gamma$ might be an expected solution, [@Schennach2014]), two-pass refinement
+- **Seeding**: every grid point seeded independently from the same validated starting point
+
+## $(\lambda,\delta_1,\delta_2)$-Search, $m^*_{it-1}$
+
+
+![](../Paper/images/1289-cube-lag_m-3d.png){height="85%" fig-align="center"}
+
+
+## Headline Estimates
+
+:::{#tbl-elvis-estimates}
+![](../Paper/tbls/1304-headline-estimates-table.png){fig-align="center" height="80%"}
+:::
+
+## Interpreting the Estimates
+
+- Probabilities of detection are low, average audit-triggering threshold $1/(2\hat\lambda)\approx$\$920,000, while median reported materials $\text{Med}[M^*]\approx$\$8,414, the 95th percentile firms \$128,154, the 99th \$360,676, and the largest (trimmed) firm \$701,130
+- The cost function displays the expected U-shape, both $(\hat\delta_1,\hat\delta_2)$ display correct signs.
+  - $\hat\delta_1<0$ and $\hat\delta_2>0$ the evasion cost function is decreasing in productivity up to $\hat\omega^*$, then increasing again
+  - $\hat\omega^*=3.98$ ($m^*_{it-1}$) and $3.84$ ($\tilde{\mathcal W}_{it-2}$), the 86th ($m^*_{it-1}$) and 75th percentile ($\tilde{\mathcal W}_{it-2}$) (forward simulation)
+
+
+## How the Test Works
+
+Test statistic at a candidate $\theta$: $TS(\theta)=2n\hat L_n(\theta)$, profiled over $\gamma$ (and any nuisance parameters).
+
+- Reported test: reject $\theta$ if $TS(\theta)>\chi^2_{d_g,.95}$ ($d_g$ = number of moments) [**Theorem F.1**, Appendix F. @Schennach2014]
+
+## What Detection Probability Does This Imply?
+
+
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+- Mean $\gg$ Median for both instruments; a right-skewed evasion distribution 
+- P99 $\to$ Max: detection probability jumps from  1-2% at the 99th percentile, to ~37% for the most aggressive evader in the (0.5%-trimmed) sample. 
+- A handful of extreme evaders pull $E[e]$ **up** *and* the fitted $\hat\lambda$ **down**
+
+:::
+
+::: {.column width="70%"}
+
+:::: {#tbl-prob-detection}
+![](../Paper/tbls/1303-detection-prob-table.png){fig-align="center" height="70%"}
+::::
+
+:::
+
+::::
+
+
+
+
+
+
+
+## Trimming Sample
+
+Since few aggressive evaders were pushing the estimates of $\lambda$ down, I trimmed the sample at different percentiles of $M^*$ to test sensitivity of the estimates. 
+
+- At 0.5% trim, $\lambda$ seems to stabilize before jumping or start waving too much
+- $\delta$'s looked stable across the trim range, confirming that they were fitting the curvature of evasion, and lambda the level accross firms
+
+## 
+
+![](../Paper/images/1222-stage2-trim-all-gridpoints-refixed.png){fig-align="center" height="90%"}
+
+## Notes for Discussion
+
+- **$\hat\lambda$ is very small**: few aggresive evaders dominate the estimate because I'm imposing the assumption that all unicorporated firms with non-zero $\tau_P$ are evading. The model is trying to fit a line over a highly right-skewed distribution. Altenati:
+
+
 
 ## $\lambda$ Search
 
 - $\lambda$ bounds derived directly from the data: the smallest $\lambda$ for which not even the largest firm's evasion is ever constrained, up to the largest $\lambda$ for which even the smallest firm is constrained
+    - FOC: $\lambda<\tfrac1{2e}$ aproximated with $M^*=M+e$, assuming all is evasion, then the relevant range for $\lambda$ is $[1/(2\max(M^*),1/(2\min(M^*))]$
+    - During estimation, $\lambda$ never hits the bounds
 - 16-point log-spaced grid (coarse pass, then a finer pass bracketing the region of interest)
 - **Sample**: 32,232 unincorporated firm-periods (3,340 at the $\tau_P=0$ corner), top 0.5% trimmed by $M^*$; two productivity-instrument choices for $(\alpha_K,\alpha_L,\beta)$
 
-## $\hat L_n(\lambda)$ — Both Instruments
-
-![](../Paper/images/1285-lambdagrid-slide.png){height="75%" fig-align="center"}
-
 ##
 
-**Reading the picture**:
 
-- $m^*_{it-1}$: a clean V-shape, genuine minimum, real rejection on both sides — a proper confidence interval
-- $\tilde{\mathcal W}_{it-2}$: also rejects everywhere except two points — its own interior minimum, and separately the smallest $\lambda$ we tested. That second pass just means: for this instrument, we can't rule out arbitrarily weak detection either — we only get an upper bound on $\lambda$ from it, not a full interval. Consistent with it being the weaker of the two instruments overall.
 
-## Headline Estimates
+## $\delta$ Search
 
-| Instrument | $\hat\lambda$ | 95% region | $\hat L_n$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\omega^*=\hat\delta_1/2\hat\delta_2$ | $\max\vert\gamma\vert$ |
-|:--|--:|--:|--:|--:|--:|--:|--:|--:|
-| $m^*_{it-1}$ | $3.50\times10^{-7}$ | $[2.26,5.43]\times10^{-7}$ | 0.000387 | 3.459 | 4.315 | **0.541** | 3.99 | 0.64 |
-| $\tilde{\mathcal W}_{it-2}$ | $5.43\times10^{-7}$ | $5.43\times10^{-7}$ (point) | 0.000401 | 10.206 | 7.460 | **0.972** | 3.84 | 1.86 |
 
-$\hat\delta_2>0$ for both — the cost function opens the correct (U-shaped) way. $\hat\omega^*$ lands in a similar plausible range for both, even though the individual $\hat\delta_1,\hat\delta_2$ differ — expected: the two instruments come from different first-stage residuals, so they carry somewhat different implied productivity distributions.
 
-## A Data-Side Check on $\hat\lambda$: What Detection Probability Does This Imply?
 
-Does $\hat\lambda$ imply a sane detection probability at a typical evading firm? Quick check by forward-simulating each firm's own evasion at the fitted $(\hat\theta,\hat\gamma)$ and reading off the population mean/median — **a ballpark reading, not the formal way to pin this down** (that would need its own auxiliary moment, jointly re-estimated with everything else, not a post-hoc average):
 
-| Instrument | $E[e]$ | Med$[e]$ | $q(E[e])=\hat\lambda\cdot E[e]$ | $q(\text{Med}[e])$ |
-|:--|--:|--:|--:|--:|
-| $m^*_{it-1}$ | 2,545 | 625 | 0.089% | 0.022% |
-| $\tilde{\mathcal W}_{it-2}$ | 3,189 | 685 | 0.173% | 0.037% |
+# Laffer Curve (Counterfactual Question)
 
-- $E[e]\gg\text{Med}[e]$ for both — a right-skewed evasion distribution: most firms evade modestly, a long right tail of aggressive evaders pulls the mean well above the median
-- Both implied detection probabilities are small, well under the 50% FOC ceiling — no sign of $\hat\lambda$ pushing anyone near the boundary
+## Increasing Efficiency in the Counterfactual Exercise
 
-## Notes for Discussion
+Motivation and theoretical derivation: `630-counterfactual-question.qmd`. Implementation: `620-ELVIS.qmd`.
 
-- **$m^*_{it-1}$ is the instrument to lead with**: a genuine, contiguous confidence interval, stable $\hat\delta_1,\hat\delta_2$ across the whole search
-- **$\tilde{\mathcal W}_{it-2}$ confirms the same qualitative story but is the weaker instrument**: real rejection pattern, a real interior optimum, but can only bound $\lambda$ from above, not below
-- **No formal joint confidence region for $(\lambda,\delta_1,\delta_2)$ yet** — next step, to get a stronger justification for one fixed $\hat\theta$ to carry into the counterfactual
+`\footnotesize`{=latex}
+
+**Goal:** use a control variate so the counterfactual test of candidate revenue levels is more *efficient* — same target, less noise.
+
+**Why:** testing candidate revenue $R$ against the data was almost powerless. Revenue is dominated by *firm size* — large firms pay vastly more sales tax than small ones — and that size variation has nothing to do with evasion. It's noise swamping the signal we actually care about.
+
+**How:** each firm's own sales tax paid, $t1_i$, is fully observed and predicts revenue almost perfectly ($R^2\approx0.999$). Subtract off the size-driven, predictable part of revenue before testing — the classic control-variate variance-reduction technique [@Hendry1984], the same logic behind ANCOVA / CUPED adjustment in modern experiments.
+
+**Interpretation:** the estimator stays **consistent and unbiased for the same expected revenue** $E[R_i(\Delta)]$ — nothing about what a candidate $R$ means, or how to read a confidence interval, changes. The correction only strips out noise the estimator didn't need; the same population quantity is estimated **more efficiently** — a tighter interval around the same target, not a different one.
+
+## Control-Variate Moment — Details
+
+$$g_{R,i}^{\text{adj}} = \Big[\frac{R_i(\Delta)}{pgdp_i}-\hat\beta\,\frac{t1_i}{pgdp_i}\Big] - \big[R-\hat\beta\,\mu_c\big]$$
+
+- $\hat\beta=0.9988$ (OLS, pooled across tested $\Delta$'s), $\mu_c=E[t1_i/pgdp_i]$ — both fixed, precomputed constants, never new $(\theta,\gamma)$ decision variables
+- $E[g^{\text{adj}}_{R,i}]=E[g_{R,i}]$ exactly for *any* $\hat\beta$ — verified to 6+ sig figs numerically, not just algebraically
+- Beats industry$\times$year TWFE decisively (38-41x vs. 2.5x), zero added dimensions, no small-cell risk (100/318 TWFE cells have $<30$ obs)
+
+## Testing the Laffer Curve
+
+![](../Paper/images/1300-cv-15delta-hard.png){fig-align="center" height="78%"}
+
+Every point is a real candidate revenue level, tested against the data (95% confidence, gray band = current policy's own interval)
+
+## Headline Result
+
+- A tax **increase** is bad news almost immediately: even a **0.5% increase** is already statistically distinguishable from current policy
+- A tax **cut** helps too, but the gain only becomes statistically distinguishable once the cut reaches about **8%** — much larger than intuition suggests
+- Both results come from a formal statistical test, not a point estimate
+
+![](../Paper/tbls/1301-headline-pct-table.png){fig-align="center" height="30%"}
+
+## Why
+
+Linear $q$ + linear $\kappa$ $\Rightarrow$ new evasion is exactly linear in the firm's own baseline evasion, with an intercept identical across every firm:
+$$\tilde e(\Delta)=\frac{e_i+\Delta/(2\lambda)}{1+\Delta}$$
+
+Whether this looks like *everyone moves together* or *heterogeneous, firm-by-firm* is a horse race between $e_i$ and $\Delta/(2\lambda)$. Enforcement is estimated to be weak ($\hat\lambda$ tiny), so $\Delta/(2\lambda)$ wins: a tax increase shifts every firm by roughly the same large amount, while a cut removes evasion firm-by-firm — small evaders reach zero first, so the aggregate response is gradual instead of a jump.
+

@@ -318,14 +318,14 @@ if (run_lag2W) {
     cat(sprintf("  elapsed: %s\n", format(t_lag2W)))
 }
 
-lnM_tag <- if (opt$include_lnM) "" else "-exactID"   # exactly-identified 4-moment
+lnM_tag <- if (opt$include_lnM) "-overID" else "-exactID"   # exactly-identified 4-moment
                                                        # variant, run under the
                                                        # fixed objective for
                                                        # comparison (2026-09-14)
 if (opt$ins_only == "") {
-    save(warmstart_lag_m, warmstart_lag2W, file = sprintf("Code/Products/1201-stage2-MSM%s.RData", lnM_tag))
+    save(warmstart_lag_m, warmstart_lag2W, file = sprintf("Code/Products/1201-MSM%s.RData", lnM_tag))
 } else {
-    out_file <- sprintf("Code/Products/1201-stage2-MSM-%s-maxeval%d%s.RData", opt$ins_only, opt$maxeval_nm, lnM_tag)
+    out_file <- sprintf("Code/Products/1201-MSM-%s-S%d%s.RData", opt$ins_only, opt$S, lnM_tag)
     save(list = ls(pattern = "^warmstart_"), file = out_file)
     cat(sprintf("Saved: %s\n", out_file))
 }

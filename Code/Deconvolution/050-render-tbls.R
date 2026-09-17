@@ -17,19 +17,30 @@ render_png_tt_tbl <- function(tt_tbl_in, file_name, out_dir = "Paper/tbls"){
         )
 
     tex_lines <- readLines(tmp_tex)
+    ## tinytable wraps the talltblr in \begin{table}...\end{table} whenever
+    ## notes= or caption= is used. The standalone class captures document
+    ## content in a restricted-horizontal box to compute its tight bounding
+    ## box, and floats (table/table*) are not allowed inside that box --
+    ## this throws "Not allowed in LR mode" and silently yields a 0pt-page
+    ## PDF (caught 2026-09-17 on a machine with a newer tabularray where
+    ## note{}/caption's internal implementation started hitting this; older
+    ## tabularray versions may not trigger it, which is why this went
+    ## unnoticed on some machines). There's nothing else on a standalone
+    ## page to float around, so the wrapper is safe to drop outright --
+    ## \centering and the table content itself are unaffected.
+    tex_lines <- tex_lines[!grepl("^\\\\(begin|end)\\{table\\*?\\}\\s*$", tex_lines)]
 
     preamble <- "
 \\documentclass{standalone}
 \\usepackage{xcolor}
 \\usepackage{tabularray}
 \\UseTblrLibrary{booktabs}
-\\UseTblrLibrary{rotating}
+\\IfFileExists{tblrlibrotating.sty}{\\UseTblrLibrary{rotating}}{}
 \\UseTblrLibrary{siunitx}
 \\usepackage{float}
 \\usepackage{graphicx}
 \\usepackage{rotating}
 \\usepackage[normalem]{ulem}
-\\UseTblrLibrary{siunitx}
 \\newcommand{\\tinytableTabularrayUnderline}[1]{\\underline{#1}}
 \\newcommand{\\tinytableTabularrayStrikeout}[1]{\\sout{#1}}
 \\NewTableCommand{\\tinytableDefineColor}[3]{\\definecolor{#1}{#2}{#3}}
@@ -47,11 +58,12 @@ render_png_tt_tbl <- function(tt_tbl_in, file_name, out_dir = "Paper/tbls"){
     cat(
         "#!/bin/zsh",
         "export PATH=\"/Library/TeX/texbin:$PATH\"",
+        "export PATH=\"/opt/homebrew/bin:$PATH\"",
         "export PATH=\"/usr/local/bin:$PATH\"",
         "echo $PATH",
-        paste0("'/Library/TeX/texbin/pdflatex' -synctex=1 -interaction=nonstopmode -file-line-error -recorder -output-directory=", out_dir, " '", tmp_tex,"'"),
+        paste0("pdflatex -synctex=1 -interaction=nonstopmode -file-line-error -recorder -output-directory=", out_dir, " '", tmp_tex,"'"),
         paste("mv", gsub("\\.tex", ".pdf", tmp_tex), paste0(out_dir,"/", file_name, ".pdf")),
-        paste("'/usr/local/bin/magick' -density 300", paste0(out_dir,"/", file_name, ".pdf"),paste0(out_dir,"/", file_name, ".png")),
+        paste("magick -density 300", paste0(out_dir,"/", file_name, ".pdf"),paste0(out_dir,"/", file_name, ".png")),
         paste0("rm -f ", out_dir, "/*.aux ", out_dir, "/*.fls ", out_dir, "/*.synctex.gz"),
         sep = "\n",
         file = tmp_sh
@@ -78,13 +90,12 @@ render_png_etbl <- function(tbl_in, dict=dict, file_name, out_dir = "Paper/tbls"
 \\usepackage{xcolor}
 \\usepackage{tabularray}
 \\UseTblrLibrary{booktabs}
-\\UseTblrLibrary{rotating}
+\\IfFileExists{tblrlibrotating.sty}{\\UseTblrLibrary{rotating}}{}
 \\UseTblrLibrary{siunitx}
 \\usepackage{float}
 \\usepackage{graphicx}
 \\usepackage{rotating}
 \\usepackage[normalem]{ulem}
-\\UseTblrLibrary{siunitx}
 \\newcommand{\\tinytableTabularrayUnderline}[1]{\\underline{#1}}
 \\newcommand{\\tinytableTabularrayStrikeout}[1]{\\sout{#1}}
 \\NewTableCommand{\\tinytableDefineColor}[3]{\\definecolor{#1}{#2}{#3}}
@@ -102,11 +113,12 @@ render_png_etbl <- function(tbl_in, dict=dict, file_name, out_dir = "Paper/tbls"
     cat(
         "#!/bin/zsh",
         "export PATH=\"/Library/TeX/texbin:$PATH\"",
+        "export PATH=\"/opt/homebrew/bin:$PATH\"",
         "export PATH=\"/usr/local/bin:$PATH\"",
         "echo $PATH",
-        paste0("'/Library/TeX/texbin/pdflatex' -synctex=1 -interaction=nonstopmode -file-line-error -recorder -output-directory=", out_dir, " '", tmp_tex,"'"),
+        paste0("pdflatex -synctex=1 -interaction=nonstopmode -file-line-error -recorder -output-directory=", out_dir, " '", tmp_tex,"'"),
         paste("mv", gsub("\\.tex", ".pdf", tmp_tex), paste0(out_dir,"/", file_name, ".pdf")),
-        paste("'/usr/local/bin/magick' -density 300", paste0(out_dir,"/", file_name, ".pdf"),paste0(out_dir,"/", file_name, ".png")),
+        paste("magick -density 300", paste0(out_dir,"/", file_name, ".pdf"),paste0(out_dir,"/", file_name, ".png")),
         paste0("rm -f ", out_dir, "/*.aux ", out_dir, "/*.fls ", out_dir, "/*.synctex.gz"),
         sep = "\n",
         file = tmp_sh

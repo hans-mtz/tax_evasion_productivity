@@ -154,7 +154,7 @@ $$
 f_{\tilde{\mathcal{W}}}=\int f_\varepsilon\left(\frac{1}{1-\beta}\big(\tilde{\mathcal{W}}-\omega\big)\right)f_\omega(\omega)d\omega
 $$
 
-
+<!-- 
 ## Would GMM work ?
 
 Substituting and simplifying
@@ -190,10 +190,14 @@ $$
 so the moment reads
 $$
 0=\ln(\tau\rho_t)+E[\ell_{it}(\varepsilon;\lambda)\mid Z]-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2+\delta_1\tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
-$$
+$$ 
+
+-->
+
 
 <!-- If $E[\ell_{it}(\varepsilon;\lambda)\mid Z]$ were computable, this is a linear-in-parameters moment — interact with $Z$, run GMM, done. **Everything rides on that one conditional expectation.** -->
 
+<!-- 
 ## Simulating the nonlinear term
 
 If we hold firm $it$'s own $(M^*_{it},\mathcal V_{it})$ fixed and simulate $\varepsilon$,
@@ -212,8 +216,8 @@ A specific, computable number given $(M^*_{it},\mathcal V_{it},\lambda)$. Looks 
 
 The moment needs $\ell_{it}(\varepsilon_{it};\lambda)$
 
-— firm $it$'s value at its **own realized** $\varepsilon_{it}$ 
-— not the average over every value $\varepsilon$ could have taken. 
+— firm $it$'s value at its **own realized** $\varepsilon_{it}$
+— not the average over every value $\varepsilon$ could have taken.
 
 $\ell_{it}(\cdot;\lambda)$ is nonlinear in $\varepsilon$, so generically
 $$
@@ -276,9 +280,9 @@ Current fit: $\hat\lambda=5.427\times10^{-7}$, $\hat\delta_1=4.3$, $\hat\delta_2
 - Partial equilibrium, Inelastic demand, (No GE effects)
     - Tax increases do not change optimal input choices and output. FOC of materials does not depend on tax rate
     - Firms are already assumed to be price takers
+-->
 
-
-# Couterfactual Question
+# Counterfactual Question
 
 ## What Would Be The Optimal Tax Rate?
 
@@ -363,44 +367,6 @@ where $A=f_\psi\big(\psi(\varepsilon)\big)J_i(\varepsilon)f_\omega\big(\omega(\v
 
 <!-- (plot the objective first to confirm it's single-peaked before reporting a point estimate) -->
 
-## Increasing Efficiency in the Counterfactual Exercise
-
-**Goal:** use a control variate so the counterfactual test of candidate revenue levels is more *efficient* — same target, less noise.
-
-**Why:** testing candidate revenue $R$ against the data was almost powerless. Revenue is dominated by *firm size* — large firms pay vastly more sales tax than small ones — and that size variation has nothing to do with evasion. It's noise swamping the signal we actually care about.
-
-**How:** each firm's own sales tax paid, $t1_i$, is fully observed and predicts revenue almost perfectly ($R^2\approx0.999$). Subtract off the size-driven, predictable part of revenue before testing — the classic control-variate variance-reduction technique [@Hendry1984], the same logic behind ANCOVA / CUPED adjustment in modern experiments.
-
-**Interpretation:** the estimator stays **consistent and unbiased for the same expected revenue** $E[R_i(\Delta)]$ — nothing about what a candidate $R$ means, or how to read a confidence interval, changes. The correction only strips out noise the estimator didn't need; the same population quantity is estimated **more efficiently** — a tighter interval around the same target, not a different one.
-
-## Control-Variate Moment — Details
-
-$$g_{R,i}^{\text{adj}} = \Big[\frac{R_i(\Delta)}{pgdp_i}-\hat\beta\,\frac{t1_i}{pgdp_i}\Big] - \big[R-\hat\beta\,\mu_c\big]$$
-
-- $\hat\beta=0.9988$ (OLS, pooled across tested $\Delta$'s), $\mu_c=E[t1_i/pgdp_i]$ — both fixed, precomputed constants, never new $(\theta,\gamma)$ decision variables
-- $E[g^{\text{adj}}_{R,i}]=E[g_{R,i}]$ exactly for *any* $\hat\beta$ — verified to 6+ sig figs numerically, not just algebraically
-- Beats industry$\times$year TWFE decisively (38-41x vs. 2.5x), zero added dimensions, no small-cell risk (100/318 TWFE cells have $<30$ obs)
-
-## Testing the Laffer Curve
-
-![](../Paper/images/1300-cv-15delta-hard.png){fig-align="center" height="85%"}
-
-Every point is a real candidate revenue level, tested against the data (95% confidence, gray band = current policy's own interval)
-
-## Headline Result
-
-- A tax **increase** is bad news almost immediately: even a **0.5% increase** is already statistically distinguishable from current policy
-- A tax **cut** helps too, but the gain only becomes statistically distinguishable once the cut reaches about **8%** — much larger than intuition suggests
-- Both results come from a formal statistical test, not a point estimate
-
-![](../Paper/tbls/1301-headline-pct-table.png){fig-align="center" height="30%"}
-
-## Why
-
-Linear $q$ + linear $\kappa$ $\Rightarrow$ new evasion is exactly linear in the firm's own baseline evasion, with an intercept identical across every firm:
-$$\tilde e(\Delta)=\frac{e_i+\Delta/(2\lambda)}{1+\Delta}$$
-
-Whether this looks like *everyone moves together* or *heterogeneous, firm-by-firm* is a horse race between $e_i$ and $\Delta/(2\lambda)$. Enforcement is estimated to be weak ($\hat\lambda$ tiny), so $\Delta/(2\lambda)$ wins: a tax increase shifts every firm by roughly the same large amount, while a cut removes evasion firm-by-firm — small evaders reach zero first, so the aggregate response is gradual instead of a jump.
 
 <!-- ## Alternative: Simulated Draws (MSM route)
 

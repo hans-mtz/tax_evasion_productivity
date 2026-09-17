@@ -221,9 +221,10 @@ Same trick, done separately for each value of $Z$:
 - Un-blur *that* local distribution the same way as before
 
 $$
-\hat\phi_{V\mid Z=z}(t)=\frac{\sum_i K\!\left(\frac{Z_i-z}{h}\right)e^{itV_i}}{\sum_i K\!\left(\frac{Z_i-z}{h}\right)}
-\;\;\Longrightarrow\;\;
-\hat f_{u\mid Z=z}(u)=\frac{1}{2\pi}\int e^{-itu}\,\frac{\hat\phi_{V\mid Z=z}(t)}{\phi_\varepsilon(t)}\,\omega(t)\,dt
+\begin{aligned}
+\hat\phi_{V\mid Z=z}(t)&=\frac{\sum_i K\!\left(\frac{Z_i-z}{h}\right)e^{itV_i}}{\sum_i K\!\left(\frac{Z_i-z}{h}\right)}\\[4pt]
+\;\;\Longrightarrow\;\;\hat f_{u\mid Z=z}(u)&=\frac{1}{2\pi}\int e^{-itu}\,\frac{\hat\phi_{V\mid Z=z}(t)}{\phi_\varepsilon(t)}\,\omega(t)\,dt
+\end{aligned}
 $$
 
 - $\omega(t)$: a damping weight, standard in any deconvolution, to keep the division numerically stable

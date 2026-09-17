@@ -104,3 +104,61 @@ So `e_of_M`, `eps_of_M`, `omega_of_M`, `h_of_e` in `Code/Rcpp/1200-stage2-elvis.
 **Maintained, not tested:** $\tau_S,\tau_P$ are treated as exogenous to the firm's $M$/$e$ choices (set by tax policy/product classification, not chosen by the firm). If firms could manipulate which goods they report selling to shift tax brackets, this would reintroduce endogeneity — no different in kind from the maintained exogeneity of $\rho_t,P_t$ already relied on elsewhere, but worth flagging as an assumption rather than a proven fact.
 
 > This paper focuses on overreporting inputs, not underreporting sales. First, it is documented underreporting sales is more concentrated in retailers, B2C firms, than in B2B, most manufacturing firms, which is the focus of this paper. Second, firms selling to other firms face counter-incentives; the firms selling wants to underreport its sales, but the firm buying from selling firm wants to overreport the purchase, therefore they are not likely to cooperate, so we assume sales from manufacturing firms that sell to other firms do not underreport sales. In contrast, firms can buy fake invoices to claim additional deductions from sales taxes. The key difference is that there is one real transaction in the sales of products in which partipants need to coordinate when firms underreport sales, in the case of firms selling to consumers, since consumers pay the final price and do not have incentives to deduct their purchases, firms might offer consumers a lower price if the consumer accepts not requesting an invoice. In the overreporting of inputs, there is no real transaction, no exchange of goods, only the price of paying someone (with a ghost firm, usually) a fee for fabricating fake invoices.
+
+## Government revenue and the corner solution, revisited
+
+Building on the materials FOC above (@eq-two-tax-materials-foc): the counterfactual's revenue-maximizing purchases-credit multiplier $\Delta$ (`600-opt-tax.qmd`'s Counterfactual section) is found empirically to be pushed to the corner $\Delta=-1$, with no interior optimum appearing under simulation. This section shows *why*, for any admissible $q,\kappa$ — not just the linear-linear headline specification — and then checks whether letting the true materials level respond to the tax rate (via @eq-two-tax-materials-foc, held fixed in the counterfactual as implemented) can rescue an interior optimum.
+
+### Fixed $M$: no interior optimum, for any $q,\kappa$
+
+Let $x\equiv1+\Delta$, $B(x)\equiv x\tau_P\rho_t$ the benefit shifter, and write the government's per-firm revenue (the Counterfactual section's own formula) as
+$$
+R(x) = t1 - B(x)\big[M+L(e^*(x))\big], \qquad L(e)\equiv(1-q(e))e
+$$
+where $e^*(x)$ solves the firm's evasion FOC @eq-two-tax-evasion-foc, written generally as $B(x)h(e)=\kappa'(e)$ with $h(e)\equiv1-q(e)-q'(e)e=L'(e)$.
+
+Differentiating and substituting the firm's own FOC ($B(x)h(e^*)=\kappa'(e^*)$) to eliminate $h(e^*)$:
+$$
+\frac{dR}{dx} = -\tau_P\rho_t\big[M+L(e^*(x))\big] - \kappa'(e^*(x))\frac{de^*}{dx}
+$$ {#eq-drdx-fixed-M}
+
+Both terms are negative under mild regularity: $M>0$, $L(e)\ge0$ for $q\in[0,1]$, $\kappa'(e)>0$ (evasion costly at the margin), and $de^*/dx>0$ — forced by the firm's own SOC together with $h(e^*)>0$, which is itself forced by the FOC given $\kappa'>0$ and $B(x)>0$. **So $dR/dx<0$ everywhere, for any $q,\kappa$ satisfying these — a structural property of this revenue formula, not an artifact of the linear-$q$/linear-$\kappa$ specification.** The mechanism: this revenue formula is a pure transfer between the government and evading firms; nothing in it attaches a real resource cost to $x$, so a revenue-maximizing planner is always pushed to the corner — a Diamond–Mirrlees-flavored result, and the formal counterpart of `CLAUDE.md`'s empirical "$\Delta=-1$ is the unconstrained mathematical revenue-maximizer" finding.
+
+### Letting $M$ respond: does it help?
+
+The materials FOC (@eq-two-tax-materials-foc, with $\tau_P\to x\tau_P$ under the counterfactual) implies
+$$
+M(x) \propto (1-x\tau_P)^{-1/(1-\beta)}, \qquad M'(x) = \frac{\tau_P}{1-\beta}\cdot\frac{M(x)}{1-x\tau_P} > 0
+$$
+— true materials usage *rises* with the credit rate: standard downward-sloping factor demand. A bigger credit lowers the net price $(1-\tau_P)\rho_t$, so the firm, efficiently given its own concave production function, uses more of the now-cheaper input. (Matches this file's own line above, §Materials FOC: "a ratio less than one decreases relative prices leading firms to consume more inputs.")
+
+Since $Y=K^{\alpha_K}L^{\alpha_L}M^\beta e^{\omega+\varepsilon}$, this response propagates directly to $t1(x)=\tau_SP_tY(x)$ — **not fixed once $M$ moves, even though $\tau_S$ itself never changes** (an inconsistency in treating $t1$ as literally constant while letting $M$ respond, caught and corrected in the derivation of this section):
+$$
+\frac{dt1}{dx} = \tau_SP_t\beta\frac{Y}{M}M'(x) = \frac{\tau_S\rho_t(1-x\tau_P)}{1-\tau_S}M'(x) > 0
+$$
+More real materials $\Rightarrow$ more output $\Rightarrow$ more sales-tax revenue. Adding this to @eq-drdx-fixed-M, the $(1-x\tau_P)$ factors cancel cleanly between the two $M'(x)$ terms:
+$$
+\frac{dR}{dx} = \rho_tM'(x)\cdot\frac{\tau_S-x\tau_P}{1-\tau_S} \;-\; \tau_P\rho_t\big[M(x)+L(e^*(x))\big] \;-\; \kappa'(e^*(x))\frac{de^*}{dx}
+$$ {#eq-drdx-full}
+
+The new first term is **positive whenever $x\tau_P<\tau_S$** — below a threshold $x_c\equiv\tau_S/\tau_P$, extra credit-subsidized materials raises more sales-tax revenue than it costs in credit — and negative above it. This is a genuine candidate for an interior root, unlike the fixed-$M$ case: the sign of $dR/dx$ is no longer settled a priori. (At $x=x_c$ exactly the first term is zero and the other two are still negative, so any interior root sits strictly below $x_c$, where the positive term must be *large*, not merely positive, to flip the sum.)
+
+### Numeric check: real, but four to five orders of magnitude too small to matter
+
+Evaluated at the headline operating point ($\hat\lambda=5.427\times10^{-7}$, moment set A, lag_m — `CLAUDE.md`) and sample medians from `Code/Products/1200-stage2-data.RData` (interior unincorporated firm-periods, $\tau_P>0$): $\hat\beta=0.387$, $\hat\tau_P=0.0876$, $\hat\tau_S=0.0888$, median $M^*\approx8{,}508$, median $e\approx841$. ($x_c=\tau_S/\tau_P\approx1.014$ at the median firm — but only 34% of firm-periods have $\tau_S>\tau_P$ at all, so most firms have the wrong sign for this channel even before magnitude is considered.)
+
+At $\Delta=0$ ($x=1$), median firm, the three terms of @eq-drdx-full ($\rho_t=1$, nominal COP throughout):
+
+| term | value |
+|---|---:|
+| output-growth channel (new) | $\approx+1.8$ |
+| mechanical legit-credit channel | $\approx-819$ |
+| evasion-response channel | $\approx-80{,}655$ |
+
+The evasion channel dominates the new channel by $\sim$45,000$\times$, the mechanical channel by $\sim$450$\times$ — both driven by $1/(2\hat\lambda)\approx921{,}000$, vastly larger than any $M$ or $e$ scale in the data (the same mechanism already flagged in `CLAUDE.md` as "$\lambda$ is the dominant axis" on the estimation side). Checked also in the deep-cut, fully-clipped region ($x=0.9$, $e^*=0$ so the evasion term vanishes entirely): output-growth $\approx+14$ vs. mechanical $\approx-734$ — still $\sim$50$\times$ apart.
+
+**Conclusion: the output-growth channel is real — correctly signed, correctly derived — but numerically negligible at the currently estimated $\hat\lambda$. It does not rescue an interior $\Delta^*$, and the corner result stands.** It would only start to matter if enforcement were estimated to be dramatically stronger (a much larger $\hat\lambda$, shrinking $1/(2\lambda)$ toward the same order as typical $M$) — worth a sensitivity re-check if $\hat\lambda$'s estimate ever moves substantially, but not a priority now.
+
+### Scope: this is still a local result
+
+Both @eq-drdx-fixed-M and @eq-drdx-full describe how revenue responds to $\Delta$ **around the observed equilibrium**, holding $K,L,\omega,\varepsilon$ fixed throughout — a comparative-statics Laffer curve, not a general-equilibrium optimal-tax result. Letting true $M$ (and hence $Y$) respond via its own FOC is one step toward real economic effects of the tax change, but capital, labor, entry/exit, and cross-firm reallocation all remain frozen. The corner conclusion is robust to *this particular* extension at current estimates; it says nothing about whether a fuller general-equilibrium treatment (K/L margins, firm entry/exit) would change the answer. Not pursued further now — flagged as a future extension if the local result is ever challenged on these grounds, or if $\hat\lambda$'s estimate moves enough to make the output-growth channel numerically relevant.

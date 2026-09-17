@@ -733,7 +733,7 @@ static inline double resolve_e_prime_revenue(double e_baseline, double lambda, d
     return std::max(0.0, num / den);
 }
 
-struct RevenueResult { double R_nominal, R_real; double e_mean; double Loss_nominal, Loss_real; };
+struct RevenueResult { double R_nominal, R_real; double e_mean; double om_mean; double Loss_nominal, Loss_real; };
 
 // Loss_nominal = tau_tilde*(1-q(e'))*e' -- the UNCAUGHT-evasion leakage only
 // (excludes the M*tau_tilde "legitimate credit" term that dominates R's own
@@ -754,7 +754,8 @@ static inline RevenueResult firm_revenue_baseline_A(
     if (f.corner == 1) {
         double tau_tilde = (1.0 + Delta) * f.tau_rho;
         double R = f.t1 - tau_tilde * f.Mstar;
-        return {R, R / f.pgdp, 0.0, 0.0, 0.0};
+        double om_pt = omega_of_M(f.Mstar, f.Mstar, f.V, f.Wt, f.beta);
+        return {R, R / f.pgdp, 0.0, om_pt, 0.0, 0.0};
     }
 
     std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
@@ -764,7 +765,7 @@ static inline RevenueResult firm_revenue_baseline_A(
     double M_current = draw_from_rho_checked(rng, f.Mstar, lambda);
     moment_g_A_one(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, lambda, delta0, delta1, delta2, g_current);
 
-    double R_sum = 0.0, e_sum = 0.0, Loss_sum = 0.0;
+    double R_sum = 0.0, e_sum = 0.0, om_sum = 0.0, Loss_sum = 0.0;
     for (int r = -n_burn + 1; r <= n_keep; r++) {
         double M_try = draw_from_rho_checked(rng, f.Mstar, lambda);
         moment_g_A_one(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, lambda, delta0, delta1, delta2, g_try);
@@ -775,6 +776,7 @@ static inline RevenueResult firm_revenue_baseline_A(
 
         if (r > 0) {
             double e_i = e_of_M(M_current, f.Mstar);
+            double om_i = omega_of_M(M_current, f.Mstar, f.V, f.Wt, f.beta);
             double e_prime = resolve_e_prime_revenue(e_i, lambda, Delta);
             double q_eprime = std::min(lambda * e_prime, 1.0);
             double tau_tilde = (1.0 + Delta) * f.tau_rho;
@@ -782,10 +784,11 @@ static inline RevenueResult firm_revenue_baseline_A(
             double Loss = tau_tilde * (1.0 - q_eprime) * e_prime;
             R_sum += R / n_keep;
             e_sum += e_i / n_keep;   // baseline e_i (Delta=0's own draw), not e_prime -- meaningful at any Delta
+            om_sum += om_i / n_keep;
             Loss_sum += Loss / n_keep;
         }
     }
-    return {R_sum, R_sum / f.pgdp, e_sum, Loss_sum, Loss_sum / f.pgdp};
+    return {R_sum, R_sum / f.pgdp, e_sum, om_sum, Loss_sum, Loss_sum / f.pgdp};
 }
 
 static void run_revenue_baseline_mode(
@@ -794,7 +797,7 @@ static void run_revenue_baseline_mode(
     double Delta, const std::string &output_csv
 ) {
     int n = static_cast<int>(firms.size());
-    std::vector<double> Rnom(n), Rreal(n), Emean(n), LossNom(n), LossReal(n);
+    std::vector<double> Rnom(n), Rreal(n), Emean(n), Ommean(n), LossNom(n), LossReal(n);
 
     std::atomic<int> next_idx{0};
     auto worker = [&]() {
@@ -802,7 +805,7 @@ static void run_revenue_baseline_mode(
         while ((i = next_idx.fetch_add(1, std::memory_order_relaxed)) < n) {
             RevenueResult r = firm_revenue_baseline_A(firms[i], lambda, delta0, delta1, delta2, gamma,
                                                        n_burn, n_keep, base_seed, Delta);
-            Rnom[i] = r.R_nominal; Rreal[i] = r.R_real; Emean[i] = r.e_mean;
+            Rnom[i] = r.R_nominal; Rreal[i] = r.R_real; Emean[i] = r.e_mean; Ommean[i] = r.om_mean;
             LossNom[i] = r.Loss_nominal; LossReal[i] = r.Loss_real;
         }
     };
@@ -839,10 +842,10 @@ static void run_revenue_baseline_mode(
 
     if (!output_csv.empty()) {
         std::ofstream out(output_csv);
-        out << std::setprecision(12) << "row_id,corner,R_nominal,R_real,e_mean,Loss_nominal,Loss_real\n";
+        out << std::setprecision(12) << "row_id,corner,R_nominal,R_real,e_mean,om_mean,Loss_nominal,Loss_real\n";
         for (int i = 0; i < n; i++)
             out << firms[i].row_id << "," << firms[i].corner << "," << Rnom[i] << "," << Rreal[i] << "," << Emean[i]
-                << "," << LossNom[i] << "," << LossReal[i] << "\n";
+                << "," << Ommean[i] << "," << LossNom[i] << "," << LossReal[i] << "\n";
         out.close();
         std::cout << "Saved per-firm: " << output_csv << "\n";
     }
@@ -1056,6 +1059,7 @@ struct InnerParamsRevGrid {
     double Delta_cf, R_candidate;
     int n_burn, n_keep, n_threads;
     uint64_t base_seed;
+    int row9_mode; double cv_beta, cv_mu_c;
 };
 
 static double inner_obj_revgrid(unsigned n, const double *x, double *grad, void *data) {
@@ -1068,7 +1072,7 @@ static double inner_obj_revgrid(unsigned n, const double *x, double *grad, void 
     double dvec[D_G_R], Omega[D_G_R * D_G_R];
     compute_dvec_omega_R(*(p->firms), lambda, delta0, delta1, delta2, gamma,
                           p->Delta_cf, p->R_candidate, p->n_burn, p->n_keep, p->base_seed, p->n_threads,
-                          dvec, Omega);
+                          dvec, Omega, p->row9_mode, p->cv_beta, p->cv_mu_c);
     return cue_objective_R_std(dvec, Omega);
 }
 
@@ -1092,10 +1096,12 @@ constexpr double REVGRID_LAMBDA_HI = 0.0161290323;
 static FitResultRevGrid fit_one_revgrid_point(
     const std::vector<FirmData> &firms, double Delta_cf, double R_candidate,
     int n_burn, int n_keep, uint64_t base_seed, int n_threads, double maxtime,
-    const double *x0_in, nlopt_algorithm algo
+    const double *x0_in, nlopt_algorithm algo,
+    int row9_mode = 0, double cv_beta = 0.0, double cv_mu_c = 0.0
 ) {
     const int n_par = 4 + D_G_R;   // delta0, lambda, delta1, delta2, gamma[1..10] -- eta DROPPED 2026-09-10
-    InnerParamsRevGrid params{&firms, Delta_cf, R_candidate, n_burn, n_keep, n_threads, base_seed};
+    InnerParamsRevGrid params{&firms, Delta_cf, R_candidate, n_burn, n_keep, n_threads, base_seed,
+                               row9_mode, cv_beta, cv_mu_c};
 
     double lower[14], upper[14], x[14];
     lower[0] = -DELTA_BOUND; upper[0] = DELTA_BOUND;   // delta0
@@ -1281,7 +1287,8 @@ static void run_revenue_grid_indep_mode(
     const std::vector<FirmData> &firms, const std::vector<double> &Delta_values, const std::vector<double> &R_values,
     const double *x0,
     int n_burn, int n_keep, uint64_t base_seed, int n_threads_total, double maxtime,
-    const std::string &output_csv, nlopt_algorithm algo = NLOPT_LN_NELDERMEAD
+    const std::string &output_csv, nlopt_algorithm algo = NLOPT_LN_NELDERMEAD,
+    int row9_mode = 0, double cv_beta = 0.0, double cv_mu_c = 0.0
 ) {
     struct Cell { double Delta_cf, R_candidate; };
     std::vector<Cell> cells;
@@ -1309,7 +1316,8 @@ static void run_revenue_grid_indep_mode(
         while ((idx = next_point_idx.fetch_add(1, std::memory_order_relaxed)) < n_points) {
             const Cell &c = cells[idx];
             FitResultRevGrid fit = fit_one_revgrid_point(firms, c.Delta_cf, c.R_candidate, n_burn, n_keep,
-                                                          base_seed, tpg, maxtime, x0, algo);
+                                                          base_seed, tpg, maxtime, x0, algo,
+                                                          row9_mode, cv_beta, cv_mu_c);
             results[idx] = {c.Delta_cf, c.R_candidate, fit};   // each idx written by exactly one group
             int done = ++done_count;
             auto elapsed = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
@@ -2860,10 +2868,25 @@ int main(int argc, char **argv) {
         nlopt_algorithm algo_rgi = NLOPT_LN_NELDERMEAD;
         if (algo_str_rgi == "bobyqa") algo_rgi = NLOPT_LN_BOBYQA;
         else if (algo_str_rgi != "neldermead") { std::cerr << "algo must be bobyqa or neldermead\n"; return 1; }
+        // row9_mode (2026-09-14, added to let revgrid_indep use the same
+        // control-variate-adjusted R moment as revgrid_fixedtheta -- this
+        // mode previously only ever used the raw R moment): raw (default),
+        // cv (needs cv_beta=/cv_mu_c=), loss (cv_beta/cv_mu_c unused).
+        std::string row9_str_rgi = get_opt(opt, "row9_mode", "raw");
+        int row9_mode_rgi = 0;
+        if (row9_str_rgi == "cv") row9_mode_rgi = 1;
+        else if (row9_str_rgi == "loss") row9_mode_rgi = 2;
+        else if (row9_str_rgi != "raw") { std::cerr << "row9_mode must be raw, cv, or loss\n"; return 1; }
+        double cv_beta_rgi = std::strtod(get_opt(opt, "cv_beta", "0").c_str(), nullptr);
+        double cv_mu_c_rgi = std::strtod(get_opt(opt, "cv_mu_c", "0").c_str(), nullptr);
+        if (row9_mode_rgi == 1 && (get_opt(opt, "cv_beta", "").empty() || get_opt(opt, "cv_mu_c", "").empty())) {
+            std::cerr << "row9_mode=cv requires cv_beta= and cv_mu_c=\n"; return 1;
+        }
         std::cout << "Mode: revgrid_indep, " << Delta_values.size() << " Deltas x " << R_values.size()
-                  << " Rs, algo=" << algo_str_rgi << "\n";
+                  << " Rs, algo=" << algo_str_rgi << ", row9_mode=" << row9_str_rgi
+                  << " (cv_beta=" << cv_beta_rgi << " cv_mu_c=" << cv_mu_c_rgi << ")\n";
         run_revenue_grid_indep_mode(firms, Delta_values, R_values, x0_rev, n_burn, n_keep, base_seed, n_threads, maxtime,
-                                     output_csv, algo_rgi);
+                                     output_csv, algo_rgi, row9_mode_rgi, cv_beta_rgi, cv_mu_c_rgi);
         return 0;
     }
     if (mode == "revgrid_fixedtheta") {

@@ -1,5 +1,14 @@
+# Naive MSM and MSL
 
-# Maximum Simulated Likelihood (MSL)
+## Recall: Two Identities From the Model
+
+$$
+\mathcal{V}_{it} \equiv \ln\left(\frac{\rho_t M^*_{it}}{P_tY_{it}}\right)-\ln(\beta) = \ln\left(\frac{M^*_{it}}{M_{it}}\right)-\varepsilon_{it}
+$$ {#eq-eva-emp}
+
+$$
+\tilde{\mathcal{W}}_{it}\equiv \mathcal{W}_{it}-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}
+$$ {#eq-tilde-big-w}
 
 ## Solving for $M$ and $e$
 
@@ -26,14 +35,220 @@ I can do the same and solve for $\omega_{it}$ from @eq-tilde-big-w
 
 For each value of $\varepsilon$ everything else is pinned down:
 
-```{=latex}
-\begin{align}
-e_{it}(\varepsilon)&=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)\label{eq-e-eps} \\
-\omega_{it}(\varepsilon)&=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon\label{eq-w-eps}\\
-\psi_{it}(\varepsilon)&=h\big(e_{it}(\varepsilon)\big)-\delta_0+\delta_1\,\omega_{it}(\varepsilon)-\delta_2\omega_{it}(\varepsilon)^2.\label{eq-psi-eps}
-\end{align}
-```
+$$
+e_{it}(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)
+$$ {#eq-e-eps}
 
+$$
+\omega_{it}(\varepsilon)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon
+$$ {#eq-w-eps}
+
+$$
+\psi_{it}(\varepsilon)=h\big(e_{it}(\varepsilon)\big)-\delta_0+\delta_1\,\omega_{it}(\varepsilon)-\delta_2\omega_{it}(\varepsilon)^2
+$$ {#eq-psi-eps}
+
+
+## Drawing from $f_\varepsilon$
+
+Substituting @eq-e-eps and @eq-w-eps into @eq-psi-eps, and simplifying
+
+$$
+\begin{aligned}
+    \psi_{it}+&\delta_1(1-\beta)\varepsilon=\\
+    &\ln(\tau\rho_t)+\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))\\
+    &-\delta_0+2\delta_2(1-\beta)\tilde{\mathcal{W}}_{it}\varepsilon-\delta_2(1-\beta)^2\varepsilon^2\\
+    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
+\end{aligned}
+$$ {#eq-psi-mom}
+
+## Taking conditional expectation
+
+Assuming $\psi\perp Z$, $\varepsilon\perp Z$, and $\omega\perp\varepsilon$. $\varepsilon\perp Z\Rightarrow E[\delta_1(1-\beta)\varepsilon\mid Z]=\delta_1(1-\beta)E[\varepsilon\mid Z]=0$
+
+$$
+\begin{aligned}
+    0=&\ln(\tau\rho_t)+E[\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))|Z]\\
+    &\underbrace{-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2}_{\textit{Constant (known from stage 1)}}\\
+    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
+\end{aligned}
+$$ {#eq-psi-mom-exp}
+
+## Why not simulated GMM with instruments?
+
+Everything in @eq-psi-mom-exp is data and parameters, **except**:
+$$
+\begin{aligned}
+    \ell_{it}(\varepsilon;\lambda)\equiv&\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)\\
+    &=\ln\!\big(1-2\lambda M^*_{it}\big(1-\textbf{e}^{-\ln\left(\frac{M^*_{it}}{M_{it}}\right)+\varepsilon_{it}-\varepsilon^{(s)}}\big)\big)\\
+    &=\ln\!\big(1-2\lambda \underbrace{\left(M^*_{it}-M_{it}\textbf{e}^{\varepsilon_{it}-\varepsilon^{(s)}}\right)}_{\ne e_{it}}\big)\\
+\end{aligned}
+$$
+
+The moment to holds under $\varepsilon_{it}$, the realized measurement error for firm $it$, $\ell_{it}(\varepsilon_{it};\lambda)$
+
+<!-- If $E[\ell_{it}(\varepsilon;\lambda)\mid Z]$ were computable, this is a linear-in-parameters moment — interact with $Z$, run GMM, done. **Everything rides on that one conditional expectation.** -->
+
+## Simulating the nonlinear term
+
+If we hold firm $it$'s own $(M^*_{it},\mathcal V_{it})$ fixed and simulate $\varepsilon$,
+$$
+\hat\ell_{it}^S(\lambda)=\frac1S\sum_{s=1}^S\ell_{it}(\varepsilon^{(s)};\lambda),\qquad \varepsilon^{(s)}\stackrel{iid}{\sim}\hat f_\varepsilon
+$$
+
+By the LLN, as $S\to\infty$: $\hat\ell_{it}^S(\lambda)\xrightarrow{a.s.}\bar\ell_{it}(\lambda)\equiv\int\ell_{it}(\varepsilon;\lambda)\,f_\varepsilon(\varepsilon)\,d\varepsilon$
+
+In general, however,
+
+$$
+\bar\ell_{it}(\lambda)\ne\ell_{it}(\varepsilon_{it};\lambda)
+$$
+
+## Why $\mathcal V_{it}$ already contains $\tilde{\mathcal W}_{it}$
+
+At the truth ($\varepsilon=\varepsilon_{it}$), $e_{it}$ solves the firm's FOC: $e_{it}=e^*(\psi_{it},\omega_{it})$ (inverting @eq-psi-eps for $e$). 
+
+Substitute this and @eq-w-eps into @eq-e-eps's own inverse, $\mathcal V_{it}=\ln\big(M_{it}+e_{it}/(M_{it})\big)-\varepsilon_{it}$:
+
+$$
+\mathcal V_{it}=\ln\!\left(\frac{M_{it}+e^*\big(\psi_{it},\,\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon_{it}\big)}{M_{it}}\right)-\varepsilon_{it}
+$$
+
+<!-- - $\mathcal V_{it}$ is not "$u_{it}$ plus independent noise $-\varepsilon_{it}$" — it is built from $\tilde{\mathcal W}_{it}$ and $\psi_{it}$ too, through the firm's own optimal choice -->
+- $\varepsilon_{it}$ must be consistent with $\mathcal V_{it}$ and $\tilde{\mathcal W}_{it}$ jointly
+- $\ell_{it}$ must be conditioned on $(\mathcal V_{it},\tilde{\mathcal W}_{it})$
+
+## The conditional expectation
+
+Since $\mathcal V_{it}$ depends on $\tilde{\mathcal W}_{it}$ too (shown above), condition on both, then apply the law of iterated expectations:
+
+$$
+E[\ell_{it}(\varepsilon_{it};\lambda)\mid Z]=E\Big[E[\ell_{it}(\varepsilon_{it};\lambda)\mid Z,\mathcal V_{it},\tilde{\mathcal W}_{it}]\ \Big|\ Z\Big]
+$$
+
+$$
+E[\ell_{it}(\varepsilon_{it};\lambda)\mid Z,\mathcal V_{it},\tilde{\mathcal W}_{it}]=\int \ell_{it}(\varepsilon;\lambda)\,f_{\varepsilon\mid \mathcal V_{it},\tilde{\mathcal W}_{it},Z}(\varepsilon)\,d\varepsilon
+$$
+
+- LIE reveals the inner integral needs $f_{\varepsilon\mid\mathcal V_{it},\tilde{\mathcal W}_{it},Z}$, the density of $\varepsilon$ **conditional on this firm's own $\mathcal V_{it}$**
+- $\hat\ell_{it}^S(\lambda)$ instead integrates against the **unconditional** $f_\varepsilon$
+- Since $\mathcal V_{it}=u_{it}-\varepsilon_{it}$ by construction $\varepsilon_{it}\not\ind\mathcal V_{it}$
+<!-- - Let $\eta_{it}(\lambda)\equiv\ell_{it}(\varepsilon_{it};\lambda)-\bar\ell_{it}(\lambda)$: not "nonlinearity noise," but a **wrong conditioning set** substituted into an otherwise-valid LIE step -->
+
+<!-- ## Can we get $f_{\varepsilon\mid\mathcal V}$ more cheaply?
+
+We already have $f_\varepsilon$ (corp firms) and, by deconvolving unincorporated firms' $\mathcal V$, $f_u$. Bayes, using $\mathcal V=u-\varepsilon$ and the maintained $u\perp\varepsilon$:
+
+$$
+f_{\varepsilon\mid\mathcal V}(\varepsilon\mid v)=\frac{f_u(v+\varepsilon)\,f_\varepsilon(\varepsilon)}{\int f_u(v+w)\,f_\varepsilon(w)\,dw}
+$$
+
+- Well-posed, non-degenerate — the standard measurement-error posterior
+- But $f_u$ is **population-pooled**, averaged over every firm's $\omega$
+- $u_{it}$ solves the evasion FOC, $u_{it}=u^*(\psi_{it},\omega_{it})$ — a **choice**, not independent of $\omega$ under the U-shaped $\kappa$ — so pooling silently imposes $u\perp\omega$
+- Conditions on $\mathcal V_{it}$ alone; still missing $\tilde{\mathcal W}_{it}$'s information about this firm's own $\omega_{it}$ -->
+
+<!-- ## Every shortcut bottoms out at MSL
+
+- Fixing the remaining gap needs $f_{u\mid\omega}$, not $f_u$ — which needs $f_\psi$ and the FOC map $e^*(\psi,\omega)$
+- No sequence of deconvolve-then-Bayes steps gets there without $(\theta,f_\psi)$
+- The correct joint conditional is exactly MSL's: $f_{\varepsilon\mid\mathcal V,\tilde{\mathcal W}}\propto f_\psi(\psi(\varepsilon))\,J_i(\varepsilon)\,f_\omega(\omega(\varepsilon))\,f_\varepsilon(\varepsilon)$
+- $f_\varepsilon$ is the "prior"; $f_\psi\cdot J_i\cdot f_\omega$ is the "likelihood" of the firm's own data given $\varepsilon$ — MSM drops the likelihood term entirely
+
+## Conclusion: this doesn't work
+
+- MSM substitutes the unconditional $f_\varepsilon$ where the model calls for $f_{\varepsilon\mid\mathcal V_{it},\tilde{\mathcal W}_{it}}$
+- $E[Z\cdot\eta_{it}(\lambda_0)]=-E[Z\,\bar\ell_{it}(\lambda_0)]$ (since $E[Z\,\ell_{it}(\varepsilon_{it};\lambda_0)]=0$ is the valid moment) — a real covariance between $Z$ and a nonlinear function of the firm's own evasion data, not simulation noise, and it does not vanish as $N,S\to\infty$
+- $Z$ must correlate with the firm's evasion behavior to be *relevant* for $\lambda$ — exactly what makes this substitution error correlate with $Z$ too
+- Getting the correct conditional density **is** solving the MSL integral; there's no cheaper route -->
+
+## Testing with data
+
+I simulate $\varepsilon^{(s)}$, S=250, from $\hat{f_{\varepsilon}}$, efficient GMM objective weigthed by $\hat\Omega^{-1}$, and test the J-statistic against its $\chi^2$ distribution [@Hansen1982]
+
+$\varepsilon^{(s)}$ drawn from CORP firms' empirical distribution, feasibility-filtered ($e>0,M>0$); 
+
+Two set of moment conditions tested:
+
+- Exactly identified ($d_g=d_{\theta}=4$): $g(\theta)=(\psi,\psi\omega,\psi\omega^2,\varepsilon h')$ (last moment is a score term for $\lambda$). I report the value of the objective function.
+- Overidentified ($d_g=5>d_{\theta}=4$): 5th moment added, $\psi\ln M$. I report value of obj. fun and J-statistical test
+
+## Results of the test
+
+| | $\hat L_n$ ($d_g=4$) | $\hat L_n$ ($d_g=5$) | $J$ | $\chi^2_{1,.95}$ |
+|---|---|---|---|---|
+| $m^*_{it-1}$ | 1.022 | 1.020 | 29,258 | 3.84 |
+| $\tilde{\mathcal{W}}_{it-2}$ | 1.011 | 1.009 | 28,961 | 3.84 |
+
+- Exactly identified: $\hat L_n$ not close to zero, parameter estimates hit generous bounds
+- Overidentified: Under the null, $H_0: g(\theta)=0$. Rejects null at 95% by a large factor. $\hat L_n$ still not below 1.
+
+## Fitted Parameters
+
+`\scriptsize`{=latex}
+
+**Exactly identified (4 moments)**
+
+| Instrument | $\hat\lambda$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\sigma^2_\psi$ |
+|:--|--:|--:|--:|--:|--:|
+| $m^*_{it-1}$ | $1.30\times10^{-4}$ | $32.98$ | $50.0$ (box bound) | $10.47$ | $6{,}416$ |
+| $\tilde{\mathcal W}_{it-2}$ | $1.63\times10^{-8}$ | $50.0$ (box bound) | $32.46$ | $4.63$ | $101.5$ |
+
+##
+
+`\scriptsize`{=latex}
+
+**Over-identified (5 moments, adding $\psi\ln M$):**
+
+| Instrument | $\hat\lambda$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\sigma^2_\psi$ |
+|:--|--:|--:|--:|--:|--:|
+| $m^*_{it-1}$ | $4.58\times10^{-3}$ | $-8.41$ | $10.90$ | $2.39$ | $321.6$ |
+| $\tilde{\mathcal W}_{it-2}$ | $1.62\times10^{-5}$ | $-50.0$ (box bound) | $-25.93$ | $-3.43$ | $81.8$ |
+
+
+- All except one specification hit a box bound on $\delta_0$ or $\delta_1$
+- $\tilde{\mathcal W}_{it-2}$'s overidentified fit gets the cost function's curvature backwards ($\hat\delta_1,\hat\delta_2<0$)
+- $\hat\sigma^2_\psi$ swings 82 to 6,416 across specifications
+- Compare to ELVIS: $\hat\lambda\approx5.4\times10^{-7}$ for both instruments, $\hat\delta_1,\hat\delta_2>0$ stable across different grid specifications
+
+<!-- ## Same mechanism as before, now measured
+
+$\varepsilon^{(s)}$ is one population distribution for every firm, not firm $it$'s own $\varepsilon_{it}$ conditional on its data
+
+Averaging $\psi$ over these draws targets $\int\psi(\varepsilon;\theta)f_\varepsilon(\varepsilon)\,d\varepsilon$, not $\psi_{it}$ — exactly $\eta_{it}(\lambda)\ne0$ from before [@GourierouxMonfort1996]
+
+The theoretical argument two slides ago said this couldn't work; this is what "couldn't work" looks like as a number -->
+
+<!-- ## Recasting in $M$
+
+The same trap reappears if we instead simulate $M^{(s)}_{it}=\beta P_tY_{it}/\rho_t\cdot\textbf{e}^{-\varepsilon^{(s)}}$ and form $e^{(s)}_{it}=M^*_{it}-M^{(s)}_{it}$ — this looks like it avoids $\mathcal V_{it}$, but
+
+$$
+e(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big)=M^*_{it}-\underbrace{\frac{\beta P_tY_{it}}{\rho_t}\textbf{e}^{-\varepsilon}}_{=\,M(\varepsilon)}=M^*_{it}-M(\varepsilon)
+$$
+
+using $\textbf{e}^{-\mathcal V_{it}}=\beta P_tY_{it}/(\rho_tM^*_{it})$. **It's the identical map** — $\mathcal V_{it}$'s information is just $M^*_{it}$ and $P_tY_{it}/\rho_t$, so the $M$-version reconstructs it implicitly. Same nonlinearity, same missing reweighting, same problem.
+
+## What a valid simulated-moments design would need
+
+- Match a **data-computable, $\psi$-free** population object against a forward-simulated analog — e.g. $E[\mathcal V_{it}|Z]=E[u_{it}|Z]$ is directly computable from data (since $\varepsilon\perp Z$), while $u^{(s)}=u\big(e^*(\psi^{(s)},\omega^{(s)};\theta)\big)$ can be simulated forward from trial $(\psi^{(s)},\omega^{(s)})$ draws
+- This ties back to the deconvolved $f_{u}$ from stage 1 as the natural target
+- Delivers $\theta$ but not $f_\psi$ -->
+
+## Two alternative solutions
+
+MSL: deriving the density of observables and mapping to unobservables using a density transformation. 
+
+- Feasible but resulting density needs additional density of the AR(1) process of productivity and of the lag of $\varepsilon$, and integrating out two variables, $\varepsilon_{it}$ and $\varepsilon_{it-1}$. MSL delivers estiamtes of $\theta$ and $f_\psi$
+
+ELVIS: doesn't need $f_\varepsilon$ or $f_\psi$ or the other densities. Grid search over $\theta$ and solves for an exponential tilt of the sampler [@Schennach2014]
+
+- Implemented in my summer paper. Strategy validated by Nail. Convoluted to explain, but practical. Preliminary estimates and counterfactual results already done.
+
+Current fit: $\hat\lambda=5.427\times10^{-7}$, $\hat\delta_1=4.3$, $\hat\delta_2=0.54$, $\hat L_n\approx0.0002$ [[ELVIS preliminary results](#sec-elvis-res)]{.sm}
+
+
+
+# Maximum Simulated Likelihood (MSL)
 
 ## MSL
 
@@ -189,7 +404,10 @@ $$ {#eq-Lunc-dynamic}
 
 Define the residual used in the AR(1) productivity process,
 $$
-\zeta_{it}\equiv \mathcal W_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(\mathcal W_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big)=(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it},
+\begin{aligned}
+\zeta_{it}\equiv{}&\mathcal W_{it}-\alpha_Kk_{it}-\alpha_Ll_{it}-\gamma_0-\gamma_1\big(\mathcal W_{it-1}-\alpha_Kk_{it-1}-\alpha_Ll_{it-1}\big)\\
+={}&(1-\beta)\varepsilon_{it}-\gamma_1(1-\beta)\varepsilon_{it-1}+\eta_{it},
+\end{aligned}
 $$
 
 a sum of three mutually independent variables, two with known densities, $f_\varepsilon$. Fourier deconvolution recovers the third:
@@ -496,3 +714,5 @@ $$
     3. If not independent of $e$, Can I use the fact that $f_{e,\xi}(e,\xi)=f_{e|\xi}(e|\xi)f_{\xi}(\xi)=f_{\xi|e}(\xi|e)f_e(e)$, so I can get away deconvolving the distribution of the error term conditional on $e$ instead of the unconditional distribution of the error term?
          
 -->
+
+

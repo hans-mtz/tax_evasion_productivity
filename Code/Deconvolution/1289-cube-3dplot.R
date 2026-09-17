@@ -10,14 +10,18 @@
 ## soft/hard/min three-way split. Ball size ~ p-value = 1-pchisq(TS_hard,9),
 ## bigger=more significant, so the global min naturally renders as the
 ## biggest pink ball without needing its own separate color.
+## FIXED 2026-09-15: pass_hard now uses the standard .95 level, matching the
+## chi2_{9,.95}=16.92 threshold used everywhere else in the write-up -- was
+## erroneously using .99 (21.67), which passed 4/27 cells instead of the
+## correct 1/27 (the global minimum itself).
 
 df <- read.csv("Code/Products/1288-cube-lag_m-combined.csv")
 
 n <- 32232; dg <- 9
-qc99 <- qchisq(0.99, dg)
+qc95 <- qchisq(0.95, dg)
 df$TS_hard <- 2 * n * df$Lhat
 df$pval <- 1 - pchisq(df$TS_hard, dg)
-df$pass_hard <- df$TS_hard <= qc99
+df$pass_hard <- df$TS_hard <= qc95
 df$logl <- log10(df$lambda)
 
 wong_blue <- "#0072B2"; pink <- "#E6399B"

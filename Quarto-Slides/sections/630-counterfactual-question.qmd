@@ -1,0 +1,60 @@
+# The Counterfactual Question, Reframed
+
+## From "What's Optimal?" to "What's the Derivative?"
+
+The natural first framing — "what purchases-tax credit rate $\Delta$ maximizes government revenue?" — presupposes an interior optimum exists. It doesn't, in general, under this revenue formula (next slides).
+
+**What this section actually answers:** holding sales-tax revenue and firms' optimal materials/output decisions fixed at their observed values, and letting only evasion respond — what is the *derivative* of government tax revenue with respect to a change in the purchases-side tax credit rate, at the current state?
+
+A well-defined, always-computable local quantity — not a claim that some $\Delta^*$ exists.
+
+## The Government's Problem (Two-Tax Model)
+
+Only $\tau_P$ enters the firm's evasion FOC — $\tau_S$ never does. Shock $\tau_P\to(1+\Delta)\tau_P\equiv\tilde\tau_{P,it}$:
+
+$$
+R_i(\Delta;M_i) = \underbrace{\tau_{S,it}P_tY_{it}}_{\text{sales-tax revenue, fixed}} - \tilde\tau_{P,it}\big[M_i+(1-q(\tilde e_i(\Delta)))\tilde e_i(\Delta)\big]
+$$
+
+$M_i$ (true materials) held fixed for now — checked explicitly two slides from now. Corner firms ($\tau_P=0$): $R_i=\tau_{S,it}P_tY_{it}-\tilde\tau_{P,it}M^*_{it}$, no detection term.
+
+## Closed Form: Evasion Under the Shock
+
+Linear $q$, linear $\kappa$: new evasion is an exact linear function of the firm's own baseline evasion, with a firm-invariant intercept:
+$$
+\tilde e_i(\Delta) = \frac{e_i}{1+\Delta} + \frac{\Delta}{2\lambda(1+\Delta)},\qquad \text{clipped at }0
+$$
+Mechanical consequence of $\kappa$ linear in $e$: marginal cost is a firm-type constant, not a function of $e$ — the FOC is linear, every firm's optimum shifts by the same absolute amount.
+
+## The Derivative, Holding $M$ Fixed
+
+Let $x\equiv1+\Delta$. For ANY $q,\kappa$ (not just this linear spec) satisfying mild regularity — firm's own SOC holds, $\kappa'>0$, detection not certain at the interior optimum — an envelope-theorem argument on the firm's own FOC gives:
+$$
+\frac{dR}{dx} = -\tau_P\rho_t\big[M+L(e^*(x))\big] - \kappa'(e^*(x))\frac{de^*}{dx} \;<\;0\quad\text{always},\qquad L(e)\equiv(1-q(e))e
+$$
+
+**A structural result, not a functional-form artifact**: this revenue formula is a pure transfer between government and evading firms; nothing attaches a real resource cost to $x$. At the observed state ($\Delta=0$), and everywhere else with $M$ held fixed, raising the purchases credit always costs revenue on the margin — equivalently, cutting it always helps, on the margin, with materials/output held at their observed levels.
+
+## Robustness: Does the True Materials Level Actually Respond?
+
+$M$ was held fixed above — check it. The materials FOC (two-tax model) implies $M(x)\propto(1-x\tau_P)^{-1/(1-\beta)}$, $M'(x)>0$: a more generous credit lowers the net materials price, firms use more real materials. This makes $\tau_SP_tY(x)$ respond too:
+$$
+\frac{dR}{dx} = \rho_tM'(x)\cdot\frac{\tau_S-x\tau_P}{1-\tau_S} - \tau_P\rho_t[M(x)+L(e^*(x))] - \kappa'(e^*(x))\frac{de^*}{dx}
+$$
+New term positive whenever $x\tau_P<\tau_S$ — in principle a real channel the fixed-$M$ derivative misses.
+
+## Numeric Check: Real, but Negligible
+
+$\Delta=0$, median firm, sample medians ($\hat\beta=0.387,\hat\tau_P=0.088,\hat\tau_S=0.089$), headline $\hat\lambda=5.427\times10^{-7}$:
+
+| term | value |
+|---|--:|
+| output-growth (new) | $\approx+1.8$ |
+| mechanical legit-credit | $\approx-819$ |
+| evasion-response | $\approx-80{,}655$ |
+
+Evasion channel dominates $\sim$45,000$\times$ — driven by $1/(2\hat\lambda)\approx921{,}000$, far larger than any $M$ or $e$ in the data. **Holding $M$ fixed is not distorting the answer at current estimates** — the derivative's sign and rough magnitude are robust to this check. Full derivation: `Paper/sections/9999-tax-wedge.qmd`.
+
+## Scope
+
+Both derivatives above describe the *local* response of revenue to $\Delta$, around the observed equilibrium, holding $K,L,\omega,\varepsilon$ fixed throughout — a comparative-statics exercise, not a general-equilibrium optimal-tax result. What's estimated next (`620-ELVIS.qmd`, results in `650-stage2-prelim-results.qmd`) is exactly this: the revenue effect of small changes in $\Delta$ around the current state, with evasion the only margin that moves.

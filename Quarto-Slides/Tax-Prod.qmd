@@ -9,11 +9,13 @@ format:
     aspectratio: 169
     # navigation: horizontal
     include-in-header: header-includes.tex
-    template-partials: 
+    template-partials:
         - before-body.tex
     keep-tex: true
     mainfont: Arial #Times New Roman
-  revealjs: 
+    slide-level: 2
+  revealjs:
+    slide-level: 2
     slide-number: true
     preview-links: true
     incremental: false
@@ -75,6 +77,9 @@ Today:
 <!-- Model -->
 {{< include sections/200-model.qmd >}}
 
+<!-- Counterfactual Question: motivation and theoretical frame -->
+{{< include sections/630-counterfactual-question.qmd >}}
+
 ## Empirical Strategies
 
 - Testing for the presence of tax evasion by industry
@@ -105,9 +110,9 @@ Today:
 <!-- Counterfactual Question -->
 <!-- {{< include sections/500-opt-tax-claude.qmd >}} -->
 
-<!-- Counterfactual Question -->
-{{< include sections/600-opt-tax.qmd >}}
-
+<!-- Superseded by 630-counterfactual-question.qmd (theory), 620-ELVIS.qmd
+     (implementation) and 650-stage2-prelim-results.qmd (results) -->
+<!-- {{< include sections/600-opt-tax.qmd >}} -->
 
 
 <!-- Deconvolving Tax Evasion -->
@@ -117,7 +122,14 @@ Today:
 <!-- {{< include sections/500-geo.qmd >}} -->
 
 <!-- Appendix -->
-{{< include sections/900-appendix.qmd >}}
+# Appendix {.plain .noframenumbering}
+
+
+## 
+
+\appendix
+
+<!-- {{< include sections/900-appendix.qmd >}} -->
 
 <!-- MSL -->
 {{< include sections/610-MSL.qmd >}}
