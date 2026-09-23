@@ -93,7 +93,10 @@ $$ {#eq-two-tax-eps-net}
 So `e_of_M`, `eps_of_M`, `omega_of_M`, `h_of_e` in `Code/Rcpp/1200-stage2-elvis.cpp` need **no changes**. Only two upstream data-construction pieces do:
 
 1. **First-stage regression LHS** (`021-deconv-funs.R`, `first_stage_panel`/`first_stage_panel_me`): replace `var="log_mats_share"` with a new column
-   $$\texttt{log\_mats\_share\_net} = \texttt{log\_mats\_share} + \ln(1-\tau_P) - \ln(1-\tau_S)$$
+   $$
+   \texttt{log_mats_share_net} = \texttt{log_mats_share} + \ln(1-\tau_P) - \ln(1-\tau_S)
+   $$
+
    so the corp-only regression recovers $\ln\beta$ cleanly instead of $\ln\beta+\ln\frac{1-\tau_S}{1-\tau_P}$ (both $\tau_S,\tau_P$ already exist as raw data columns — nothing new to construct beyond this one line). This is the piece that reopens stage 1, currently supervisor-approved/read-only per `CLAUDE.md`.
 2. **$h(e)$'s tax input** (`1200-stage2-data.R` / the driver): use `sales_tax_rate_purchases` ($\tau_P$) directly, replacing `tau_rho_proxy`/`eff_tax_rate_c`.
 
@@ -115,6 +118,7 @@ Let $x\equiv1+\Delta$, $B(x)\equiv x\tau_P\rho_t$ the benefit shifter, and write
 $$
 R(x) = t1 - B(x)\big[M+L(e^*(x))\big], \qquad L(e)\equiv(1-q(e))e
 $$
+
 where $e^*(x)$ solves the firm's evasion FOC @eq-two-tax-evasion-foc, written generally as $B(x)h(e)=\kappa'(e)$ with $h(e)\equiv1-q(e)-q'(e)e=L'(e)$.
 
 Differentiating and substituting the firm's own FOC ($B(x)h(e^*)=\kappa'(e^*)$) to eliminate $h(e^*)$:

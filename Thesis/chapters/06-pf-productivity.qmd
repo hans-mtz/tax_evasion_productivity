@@ -1,0 +1,37 @@
+# Production Function Parameters and Productivity {#sec-pf}
+
+<!-- STUB. Sources: Paper/sections/56-id-evasion.qmd (PF, productivity, translog), 250-pf.qmd -->
+
+## Production function estimates
+
+<!-- TODO prose: joint efficient-GMM (both instruments), vs. uncorrected GNR and OLS. Point estimate uses the
+sharp (chi2_3) grid minimum; both test-inversion regions (sharp/conservative) are reported for every industry.
+Note industry 313's chi2_3 region is empty; see Research-log 2026-09-21 for the diagnosis (not weak instruments). -->
+
+::: {#tbl-pf-comparison}
+![](/tables/ch06-pf-comparison.png)
+
+Production function parameters: joint efficient GMM ($m^*_{it-1}+\tilde{\mathcal W}_{it-2}$, $\beta$ fixed) vs. uncorrected GNR and OLS. $\hat\alpha_K,\hat\alpha_L$ report both 95% test-inversion regions (sharp/conservative).
+:::
+
+::: {#fig-pf-testinv-regions}
+![](/figures/ch06-pf-testinv-regions.png)
+
+Test-inversion regions for $(\alpha_K,\alpha_L)$, sharp and conservative tests.
+:::
+
+## Robustness: single-tax vs. net-of-tax first stage
+
+<!-- TODO prose: 2-3 sentences. This table exists specifically to support the limitation disclosed in ch. 8
+(Scope and limits) -- the headline ELVIS/counterfactual results use beta from THIS (gross/single-tax) first
+stage, not a net-of-tax one. Point: the evasion FOC itself is already correctly two-tax (only tau_P enters,
+see ch. 2's closing note); only the materials-FOC/production-identity side that feeds beta is exposed to the
+tau_S/tau_P wedge, and it moves beta by at most 0.012 across the 5 headline industries (table below) -- small
+relative to beta's own scale (0.24-0.39). Frame as reassurance evidence, not as "already resolved": ELVIS
+itself has not been re-run on the net-of-tax first stage (future work, explicitly not this week). -->
+
+::: {#tbl-beta-net-tax}
+![](/tables/ch06-beta-net-tax.png)
+
+$\hat\beta$ under the gross (approved, headline) vs. net-of-tax first stage, 5 headline industries.
+:::

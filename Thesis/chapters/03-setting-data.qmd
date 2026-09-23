@@ -1,0 +1,83 @@
+# Setting and Data {#sec-setting}
+
+<!--
+OUTLINE FILE. Bullets = what each section must say + key values.
+Prose is yours.
+
+Sources
+  Paper/sections/80-colombia.qmd (institutional background, unchanged facts, safe to copy)
+  Paper/sections/90-colombia-data.qmd (data description; its tables ported to Code/Thesis/ch03-*.R)
+  Code: Code/Thesis/ch03-summary-stats-table.R (writes BOTH ch03-summary-stats.png and
+        ch03-jo-summary.png -- split from one modelsummary table into two tinytable
+        tables, see script header), ch03-top-industries-table.R, ch03-corps-by-industry-table.R
+-->
+
+## Role of this chapter
+
+- Institutional background (Colombian corporate tax system, 1980s) and data description that every later chapter leans on, so it isn't repeated in ch. 4-8.
+- Two things downstream chapters cite directly: the juridical-organization split (corps = truth-reporters, used from @sec-testing onward) and the ST-liable/exempt industry split (used in @sec-fiscal).
+
+## Data source {#sec-setting-data}
+
+- Colombian Annual Survey of Manufacturing (EAM), 1981-1991, manufacturing firms with more than 10 employees.
+- Firm-level panel: output, intermediates, capital, labour, juridical organization, sales taxes.
+- UPDATE: state sample size and coverage (industries, years) with the actual filtered N; @tbl-sum-stats gives the working sample after the `is.finite(y,k,l,m)` filter.
+
+![Summary statistics, manufacturing firms in Colombia (1981--1991).](/tables/ch03-summary-stats.png){#tbl-sum-stats}
+
+- Two groups of shares (of revenue): direct cost shares (sales tax, skilled/unskilled labour wages, capital) and the materials/intermediates decomposition (materials, electricity, fuels, repair & maintenance, services, deductible vs. non-deductible intermediates). The materials/deductible split matters later (@sec-testing): only deductible intermediates carry an overreporting incentive.
+- Note for the write-up, not a rendering issue: skilled-labour-share SD (1.62) is far above its own mean/Q3 — a small number of extreme outliers in that one column. Decide whether to mention/trim; not addressed in the table itself.
+
+## Juridical organization {#sec-setting-jo}
+
+![Juridical organization, manufacturing firms in Colombia (1981--1991).](/tables/ch03-jo-summary.png){#tbl-jo-summary}
+
+- Five types in the data; four kept in the analysis (Corporation, Limited Liability Company, Partnership, Proprietorship). Others (cooperatives, community/state enterprises) excluded — not profit-driven, no evasion incentive of the kind modeled.
+- Definitions (safe to copy from `80-colombia.qmd`, institutional facts, not model output):
+  - **Corporation** (*sociedad anónima*): capital association, $N\ge5$ shareholders, tradable shares, liability limited to capital, supervised by the Superintendent of Corporations with a mandatory auditor.
+  - **Limited liability company** (*sociedad de responsabilidad limitada*): $2\le N\le20$ (25 in the 1992 EAM documentation), non-tradable shares, liability limited to capital.
+  - **Partnership** (*sociedad colectiva* and variants): $N\ge2$, full/joint liability, not a capital association.
+  - **Proprietorship**: single individual, full liability.
+- Corporate Income Tax (CIT) by type: Corporations 40% on distributed dividends; Partnerships and LLCs 20% on profits (whether distributed or not); Proprietorships on the graduated individual schedule (56 brackets, 0.5%-51%).
+- Since 1974, a minimum presumptive income (8% of net wealth) applied to individuals and juridical organizations except LLCs. Some industries/regions had CIT exempted or reduced (airlines, publishing, reforestation; "frontier" regions).
+
+:::{.callout-note}
+Institutional summary table (rates/liability/capital/owners by type) — kept as a plain markdown table, not a generated PNG, since it states fixed institutional facts rather than computed statistics:
+
+| Organization | Corporate Income Tax | Liability | Capital | Owners |
+|:--:|:----:|:--:|:--:|:--:|
+| Corporation | 40% (on distributed dividends) | Limited to capital participation | Tradable capital shares | $N\ge5$ |
+| Limited Co. | 20% (on profits) | Limited to capital participation | Non-tradable capital shares | $2\le N \le 20\ (25)$ |
+| Partnership | 20% (on profits) | Full | Not a capital association | $N\ge2$ |
+| Proprietorship | Individual Income Tax | Full | Owner | $N=1$ |
+:::
+
+## Sales tax {#sec-setting-st}
+
+- Targeted manufacturing (finished goods, imports). Since 1974, credit for tax paid on purchases (except capital goods) — a VAT in substance.
+- Basic rate 15%; preferential 6% for clothing, footwear, popular-housing inputs; 35% on luxury goods. Exports, foodstuffs, drugs, textbooks excluded from the start, along with capital/agricultural inputs and transport/agricultural equipment.
+- This is the rate the 1983 reform changed (@sec-fiscal): most ST-liable industries moved from 6% to 10%; ST-exempt industries stayed exempt. State this here as background; the reform and its effect on evasion belong to @sec-fiscal, not here.
+
+## Why corporations are the least likely evaders {#sec-setting-corp-evasion}
+
+- Three institutional reasons (from `80-colombia.qmd`'s discussion), each mapped to a modeling choice:
+  1. Mandatory auditor and Superintendent oversight $\to$ higher detection probability $q$ for corps in the model.
+  2. Tradable shares create a market-value cost to underreporting profits $\to$ an implicit cost channel outside $\kappa(e,\omega)$, not separately modeled.
+  3. CIT on distributed (not accrued) dividends gives corporations a timing margin ordinary profit-shifting doesn't have.
+- This is the institutional justification for treating corps as $e=0$ in stage 1 (@sec-testing, @sec-deconvolution) — state it here once, reference it there.
+- Proprietorships, partnerships and LLCs face both CIT and ST incentives to overreport; incentives vary by industry (ST rate) and by juridical organization within industry (CIT rate) — sets up @sec-fiscal's identification strategy.
+
+## Top industries {#sec-setting-industries}
+
+![Top 10 industries in Colombia by revenue.](/tables/ch03-top-industries.png){#tbl-top-inds-rev}
+
+![Corporations by industry. Top 20 industries in Colombia by number of firms.](/tables/ch03-corps-by-industry.png){#tbl-corps-by-inds}
+
+- UPDATE: one or two sentences on what these show (revenue concentration; corporate share varies a lot by industry) — sets up why industry fixed effects matter in @sec-fiscal and why some industries carry more weight in @sec-pf, @sec-counterfactual.
+
+## Open items
+
+- [ ] Fill sample-size/coverage sentence in @sec-setting-data with the actual filtered N (currently only in the table).
+- [ ] Decide whether to note/trim the skilled-labour-share outliers flagged under @tbl-sum-stats.
+- [ ] One or two sentences for @tbl-top-inds-rev / @tbl-corps-by-inds (marked UPDATE above).
+- [ ] Confirm the institutional JO/CIT/ST facts here still match how they're used in `80-colombia.qmd`; this chapter is a close copy of that file's content, reorganized around what later chapters need.

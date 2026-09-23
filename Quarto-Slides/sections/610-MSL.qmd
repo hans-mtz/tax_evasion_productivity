@@ -10,9 +10,13 @@ $$
 \tilde{\mathcal{W}}_{it}\equiv \mathcal{W}_{it}-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}
 $$ {#eq-tilde-big-w}
 
+Even though $\varepsilon_{it}$ is independent of primitives {$M^*, M, Y, K, L, \omega, \psi$}, it is *not independent* of observables built from $\mathcal{V},\tilde{\mathcal{W}}$ by construction
+
+I need the density $f_{\varepsilon|\mathcal{V},\tilde{\mathcal{W}}}(\varepsilon|\mathcal{V},\tilde{\mathcal{W}})$ which is different from the unconditional $f_{\varepsilon}(\varepsilon)$
+
 ## Solving for $M$ and $e$
 
-**NEW** From @eq-eva-emp, I can *algebraically solve* for true inputs as function of observed variables and an the error term,
+From @eq-eva-emp, I can *algebraically solve* for true inputs as function of observed variables and an the error term,
 
 - $M_{it}=M^*_{it}\textbf{e}^{-\mathcal{V}_{it}-\varepsilon_{it}}$.
 
@@ -47,7 +51,7 @@ $$
 \psi_{it}(\varepsilon)=h\big(e_{it}(\varepsilon)\big)-\delta_0+\delta_1\,\omega_{it}(\varepsilon)-\delta_2\omega_{it}(\varepsilon)^2
 $$ {#eq-psi-eps}
 
-
+<!-- 
 ## Drawing from $f_\varepsilon$
 
 Substituting @eq-e-eps and @eq-w-eps into @eq-psi-eps, and simplifying
@@ -71,23 +75,29 @@ $$
     &\underbrace{-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2}_{\textit{Constant (known from stage 1)}}\\
     &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
 \end{aligned}
-$$ {#eq-psi-mom-exp}
+$$ {#eq-psi-mom-exp} 
+-->
 
 ## Why not simulated GMM with instruments?
 
-Everything in @eq-psi-mom-exp is data and parameters, **except**:
+The problem is the non-linear term,
+
 $$
 \begin{aligned}
-    \ell_{it}(\varepsilon;\lambda)\equiv&\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)\\
+    h(e(\varepsilon^{(s)},\mathcal{V}))=&\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)\\
     &=\ln\!\big(1-2\lambda M^*_{it}\big(1-\textbf{e}^{-\ln\left(\frac{M^*_{it}}{M_{it}}\right)+\varepsilon_{it}-\varepsilon^{(s)}}\big)\big)\\
     &=\ln\!\big(1-2\lambda \underbrace{\left(M^*_{it}-M_{it}\textbf{e}^{\varepsilon_{it}-\varepsilon^{(s)}}\right)}_{\ne e_{it}}\big)\\
 \end{aligned}
 $$
 
-The moment to holds under $\varepsilon_{it}$, the realized measurement error for firm $it$, $\ell_{it}(\varepsilon_{it};\lambda)$
+The moment to holds under $\varepsilon_{it}$, the realized measurement error for firm $it$
+
+I cannot use instruments to make it *go away* with an independence assumption
+
+To integrate it out I would need $E[h(e(\varepsilon,\mathcal{V}))|\mathcal{V}]=\int h(e(\varepsilon,\mathcal{V}))f(\varepsilon|\mathcal{V})d\varepsilon$ [@GourierouxMonfort1996]
 
 <!-- If $E[\ell_{it}(\varepsilon;\lambda)\mid Z]$ were computable, this is a linear-in-parameters moment — interact with $Z$, run GMM, done. **Everything rides on that one conditional expectation.** -->
-
+<!-- 
 ## Simulating the nonlinear term
 
 If we hold firm $it$'s own $(M^*_{it},\mathcal V_{it})$ fixed and simulate $\varepsilon$,
@@ -113,7 +123,7 @@ $$
 \mathcal V_{it}=\ln\!\left(\frac{M_{it}+e^*\big(\psi_{it},\,\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon_{it}\big)}{M_{it}}\right)-\varepsilon_{it}
 $$
 
-<!-- - $\mathcal V_{it}$ is not "$u_{it}$ plus independent noise $-\varepsilon_{it}$" — it is built from $\tilde{\mathcal W}_{it}$ and $\psi_{it}$ too, through the firm's own optimal choice -->
+- $\mathcal V_{it}$ is not "$u_{it}$ plus independent noise $-\varepsilon_{it}$" — it is built from $\tilde{\mathcal W}_{it}$ and $\psi_{it}$ too, through the firm's own optimal choice 
 - $\varepsilon_{it}$ must be consistent with $\mathcal V_{it}$ and $\tilde{\mathcal W}_{it}$ jointly
 - $\ell_{it}$ must be conditioned on $(\mathcal V_{it},\tilde{\mathcal W}_{it})$
 
@@ -132,7 +142,7 @@ $$
 - LIE reveals the inner integral needs $f_{\varepsilon\mid\mathcal V_{it},\tilde{\mathcal W}_{it},Z}$, the density of $\varepsilon$ **conditional on this firm's own $\mathcal V_{it}$**
 - $\hat\ell_{it}^S(\lambda)$ instead integrates against the **unconditional** $f_\varepsilon$
 - Since $\mathcal V_{it}=u_{it}-\varepsilon_{it}$ by construction $\varepsilon_{it}\not\ind\mathcal V_{it}$
-<!-- - Let $\eta_{it}(\lambda)\equiv\ell_{it}(\varepsilon_{it};\lambda)-\bar\ell_{it}(\lambda)$: not "nonlinearity noise," but a **wrong conditioning set** substituted into an otherwise-valid LIE step -->
+- Let $\eta_{it}(\lambda)\equiv\ell_{it}(\varepsilon_{it};\lambda)-\bar\ell_{it}(\lambda)$: not "nonlinearity noise," but a **wrong conditioning set** substituted into an otherwise-valid LIE step -->
 
 <!-- ## Can we get $f_{\varepsilon\mid\mathcal V}$ more cheaply?
 
@@ -163,52 +173,38 @@ $$
 
 ## Testing with data
 
-I simulate $\varepsilon^{(s)}$, S=250, from $\hat{f_{\varepsilon}}$, efficient GMM objective weigthed by $\hat\Omega^{-1}$, and test the J-statistic against its $\chi^2$ distribution [@Hansen1982]
+I simulate $\varepsilon^{(s)}$, S=250, from $\hat{f_{\varepsilon}}$, efficient GMM objective weigthed by $\hat\Omega^{-1}$, and test the J-statistic against its $\chi^2_{d_g}$ distribution
 
 $\varepsilon^{(s)}$ drawn from CORP firms' empirical distribution, feasibility-filtered ($e>0,M>0$); 
 
-Two set of moment conditions tested:
+I tested the overidentified case ($d_g=5>d_{\theta}=4$): $g(\theta)=(\psi,\psi\omega,\psi\omega^2,\psi\ln M,\varepsilon h')$ (last moment is a score term for $\lambda$; $\psi\ln M$ is the overidentifying moment). I report the J-statistic, $J=n\hat L_n$, against $\chi^2_{5,.95}=11.07$.
 
-- Exactly identified ($d_g=d_{\theta}=4$): $g(\theta)=(\psi,\psi\omega,\psi\omega^2,\varepsilon h')$ (last moment is a score term for $\lambda$). I report the value of the objective function.
-- Overidentified ($d_g=5>d_{\theta}=4$): 5th moment added, $\psi\ln M$. I report value of obj. fun and J-statistical test
 
 ## Results of the test
 
-| | $\hat L_n$ ($d_g=4$) | $\hat L_n$ ($d_g=5$) | $J$ | $\chi^2_{1,.95}$ |
-|---|---|---|---|---|
-| $m^*_{it-1}$ | 1.022 | 1.020 | 29,258 | 3.84 |
-| $\tilde{\mathcal{W}}_{it-2}$ | 1.011 | 1.009 | 28,961 | 3.84 |
+:::: {#tbl-msm-cube}
+![](../Paper/tbls/1447-msm-cube-table.png){fig-align="center" height="80%"}
+::::
 
-- Exactly identified: $\hat L_n$ not close to zero, parameter estimates hit generous bounds
-- Overidentified: Under the null, $H_0: g(\theta)=0$. Rejects null at 95% by a large factor. $\hat L_n$ still not below 1.
+## The two grid searches
 
-## Fitted Parameters
+:::: {layout-ncol=2}
+![Around the MSM optimizer solution](../Paper/images/1446-msm-cube-lag_m-3d.png){height=30%}
 
-`\scriptsize`{=latex}
+![Around the ELVIS point](../Paper/images/1446-msm-cube-elvis-lag_m-3d.png){height=30%}
+::::
 
-**Exactly identified (4 moments)**
+Center and six adjacent points ($\lambda\times/\div2$, $\delta_1\pm1$, $\delta_2\pm0.2$), $\delta_0$ profiled. Blue = rejects at 95%.
 
-| Instrument | $\hat\lambda$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\sigma^2_\psi$ |
-|:--|--:|--:|--:|--:|--:|
-| $m^*_{it-1}$ | $1.30\times10^{-4}$ | $32.98$ | $50.0$ (box bound) | $10.47$ | $6{,}416$ |
-| $\tilde{\mathcal W}_{it-2}$ | $1.63\times10^{-8}$ | $50.0$ (box bound) | $32.46$ | $4.63$ | $101.5$ |
+- Naive MSM rejects at **all 14 points**: $J\approx29{,}000$–$36{,}000$ against $\chi^2_{5,.95}=11.07$
+- Around its own optimizer $J$ barely moves (under 1%): a flat ridge, not a sharp minimum
+- Around the ELVIS point it rejects just as hard: the test favors neither
 
-##
-
-`\scriptsize`{=latex}
-
-**Over-identified (5 moments, adding $\psi\ln M$):**
-
-| Instrument | $\hat\lambda$ | $\hat\delta_0$ | $\hat\delta_1$ | $\hat\delta_2$ | $\hat\sigma^2_\psi$ |
-|:--|--:|--:|--:|--:|--:|
-| $m^*_{it-1}$ | $4.58\times10^{-3}$ | $-8.41$ | $10.90$ | $2.39$ | $321.6$ |
-| $\tilde{\mathcal W}_{it-2}$ | $1.62\times10^{-5}$ | $-50.0$ (box bound) | $-25.93$ | $-3.43$ | $81.8$ |
+## vs. ELVIS
 
 
-- All except one specification hit a box bound on $\delta_0$ or $\delta_1$
-- $\tilde{\mathcal W}_{it-2}$'s overidentified fit gets the cost function's curvature backwards ($\hat\delta_1,\hat\delta_2<0$)
-- $\hat\sigma^2_\psi$ swings 82 to 6,416 across specifications
-- Compare to ELVIS: $\hat\lambda\approx5.4\times10^{-7}$ for both instruments, $\hat\delta_1,\hat\delta_2>0$ stable across different grid specifications
+
+
 
 <!-- ## Same mechanism as before, now measured
 
@@ -234,11 +230,64 @@ using $\textbf{e}^{-\mathcal V_{it}}=\beta P_tY_{it}/(\rho_tM^*_{it})$. **It's t
 - This ties back to the deconvolved $f_{u}$ from stage 1 as the natural target
 - Delivers $\theta$ but not $f_\psi$ -->
 
+## What would a *correct* MSM need?
+
+The moment is $E[\psi\mid\text{firm's own data}]$, not $E[\psi]$.
+
+- Unconditionally, $E[\psi]=\int\psi f_\psi\,d\psi=0$ by normalization — nothing to simulate
+- The problem: $(e_{it},\omega_{it})$ are not observed firm-by-firm
+- Firm $i$ only reveals $o_{it}=(\mathcal V_{it},\tilde{\mathcal W}_{it},M^*_{it})$
+- A valid simulated moment must average over the firm's **posterior** for $\varepsilon$ given $o_{it}$
+
+## Step 1 — the joint law of the latents
+
+Primitives are independent, so the joint is the product:
+$$
+f(\psi,\omega,\varepsilon)=f_\psi(\psi)\,f_\omega(\omega)\,f_\varepsilon(\varepsilon)
+$$
+
+- Equivalently in $(e,\omega)$: $f(e,\omega)=f(e\mid\omega)\,f(\omega)$
+- The FOC makes $e$ a monotone function of $\psi$ at fixed $\omega$, so
+$$
+f(e\mid\omega)=f_\psi\big(\psi(e,\omega)\big)\,\big|h'(e)\big|
+$$
+- Knowing $f_\varepsilon$ is not enough: **$f_\psi$ sits inside $f(e\mid\omega)$**
+
+## Step 2 — condition on the firm's data
+
+Given $o_{it}$, the latents are pinned to a curve indexed by $\varepsilon$:
+$$
+e(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big),\qquad
+\omega(\varepsilon)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon
+$$
+
+- The double integral over $(e,\omega)$ collapses to a **single** integral over $\varepsilon$
+- $\omega$ is not free: it is tied to the observables through $\tilde{\mathcal W}_{it}$ (and its AR(1) link to the lag), so $f_\omega f_\varepsilon$ is the *prior*, not the conditional
+- The change of variables adds the Jacobian $J_i(\varepsilon)=|h'(e)|\,M^*_{it}$
+
+## Step 3 — the posterior weights
+
+$$
+w_i(\varepsilon)=f_\psi\big(\psi(\varepsilon)\big)\,J_i(\varepsilon)\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)
+$$
+
+$$
+E[\psi\mid o_{it}]=\frac{\int\psi(\varepsilon)\,w_i(\varepsilon)\,d\varepsilon}{\int w_i(\varepsilon)\,d\varepsilon}
+$$
+
+- Naive MSM sets $w_i=f_\varepsilon$ — it drops $f_\psi\cdot J_i\cdot f_\omega$
+- The **denominator is exactly firm $i$'s MSL likelihood** (@eq-Lunc)
+
+## Conclusion: correct MSM $\Rightarrow$ MSL
+
+- Correct MSM needs $f_\psi$ in the weights, and $f_\psi$ is the unknown
+- The only way to get $f_\psi$ is to maximize $\prod_i\int w_i\,d\varepsilon$ — that is MSL
+- Once MSL is run, the weighted moment adds nothing: same ingredients, less efficient
+- So: skip MSM and do MSL. ELVIS remains the $f_\psi$-free robustness check
+
 ## Two alternative solutions
 
-MSL: deriving the density of observables and mapping to unobservables using a density transformation. 
 
-- Feasible but resulting density needs additional density of the AR(1) process of productivity and of the lag of $\varepsilon$, and integrating out two variables, $\varepsilon_{it}$ and $\varepsilon_{it-1}$. MSL delivers estiamtes of $\theta$ and $f_\psi$
 
 ELVIS: doesn't need $f_\varepsilon$ or $f_\psi$ or the other densities. Grid search over $\theta$ and solves for an exponential tilt of the sampler [@Schennach2014]
 
@@ -246,6 +295,28 @@ ELVIS: doesn't need $f_\varepsilon$ or $f_\psi$ or the other densities. Grid sea
 
 Current fit: $\hat\lambda=5.427\times10^{-7}$, $\hat\delta_1=4.3$, $\hat\delta_2=0.54$, $\hat L_n\approx0.0002$ [[ELVIS preliminary results](#sec-elvis-res)]{.sm}
 
+MSL: deriving the density of observables and mapping to unobservables using a density transformation. 
+
+- Feasible but resulting density needs additional density of the AR(1) process of productivity and of the lag of $\varepsilon$, and integrating out two variables, $\varepsilon_{it}$ and $\varepsilon_{it-1}$. MSL delivers estiamtes of $\theta$ and $f_\psi$
+
+
+
+## Testing each estimator at each other's best point {#sec-crosstest}
+
+:::: {#tbl-crosstest}
+![](../Paper/tbls/1444-crosstest-table.png){fig-align="center" height="45%"}
+::::
+
+- **ELVIS** does not reject its own point and rejects the other two by a large factor
+- **Naive MSM** rejects every point, including its own minimum, and, in simulations, the true $\theta$: the test cannot discriminate
+- **MSL** rejects ELVIS's point, but it is parametric: it imposes normal $f_\psi,f_\varepsilon,f_\omega$, so this is the best point *under that specification*. Its tests have no goodness-of-fit component
+
+## Why ELVIS
+
+- ELVIS leaves the distribution of the unobservables free: it needs only $\hat\beta$ from stage 1, never $f_\psi$ or $f_\varepsilon$
+- MSL's fit depends on shapes we do not know to be true, and its unconditional $f_\omega$ is biased in simulations
+- Choice by practicality: reasonable estimates and robustness to parametric assumptions
+- Next: refine MSL (conditional $f_\omega$, skewed $f_\varepsilon$, logspline $f_\psi$) as a robustness check
 
 
 # Maximum Simulated Likelihood (MSL)
@@ -254,7 +325,7 @@ Current fit: $\hat\lambda=5.427\times10^{-7}$, $\hat\delta_1=4.3$, $\hat\delta_2
 
 - We could estimate $f_\psi$ and $\theta=\{\lambda,\delta_0,\delta_1,\delta_2\}$ by Maximum Simulated Likelihood (MSL)
 - After the recast, one unobservable remains: $\varepsilon_{it}$, with known distribution $f_\varepsilon$ (from stage 1),
-- we also know the distribution of $\omega$
+- $f_\omega$ is recovered by deconvolving $\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$ (same logspline machinery as $f_u$), and the AR(1) innovation density $f_\eta$ from the fitted AR(1); only $f_\psi$ is unknown
 - I would need a *density transformation* to get from the primitives' density $f_{\psi,\omega,\varepsilon}(\psi,\omega,\varepsilon)$ to the density of the observables $f_{\mathcal V,\tilde{\mathcal W}}(\mathcal V,\tilde{\mathcal W})$
   - accounting for the nonlinear map from $\psi$ to $\mathcal V$ (Theorem 7.5.3, next slide) *and* 
   - integrating out $\varepsilon$ 
@@ -532,6 +603,20 @@ $$ {#eq-msl-sim}
 - $\beta$ and $f_\varepsilon$ are **first-stage estimates**, not the truth
 - Still consistent under standard conditions, but naive stage-2 standard errors ignore stage-1 estimation uncertainty
 - Use the @MurphyTopel1985 two-step correction, or bootstrap both stages jointly
+
+## MSL plan: parametric first, then semi-parametric
+
+1. **Parametric $f_\psi=N(0,\sigma^2_\psi)$**
+   - Location normalization $E[\psi]=0$, as in ELVIS; $\delta_0$ carries the level
+   - Debug, sanity-check $\hat\theta$, compare with ELVIS
+2. **Semi-parametric $f_\psi$: logspline with a roughness penalty** (same estimator as for $f_u$ and $f_\omega$; @Kang2021, @EilersMarx1996)
+$$
+f_\psi(\psi)=\exp\{s(\psi;a)-C(a)\},\quad s(\psi;a)=\sum_j a_jB_j(\psi),\quad C(a)=\ln\!\int_L^R e^{s(\psi;a)}d\psi
+$$
+   - Penalized objective: $\sum_i\ln\!\int w_i(\varepsilon;\theta,a)\,d\varepsilon-\lambda\|D^{(d)}a\|^2$
+   - Penalty order $d$ sets which moments are preserved as $\lambda\to\infty$ ($d=2$: mean; $d=3$: mean and variance, Gaussian limit)
+   - Knots, support $[L,R]$ and $d$ guided by the forward-simulated $\psi$ from the ELVIS fit; $\lambda$ by BIC/CV
+3. Standard errors are two-step: Murphy–Topel or a joint bootstrap
 
 
 <!-- ## Estimation

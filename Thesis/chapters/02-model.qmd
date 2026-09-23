@@ -1,0 +1,95 @@
+# A Model of Tax Evasion through Input Overreporting {#sec-model}
+
+<!--
+OUTLINE FILE. Bullets = what each section must say + key equations. Prose is yours.
+
+Sources
+  Quarto-Slides/sections/200-model.qmd (setup, assumptions, FOC, SOC, detection-function comparison)
+  Quarto-Slides/sections/600-opt-tax.qmd (Functional Forms, FOC slides -- headline kappa/q substituted in)
+  Paper/sections/9999-tax-wedge.qmd (closing note only, see SS2.6)
+
+Scope decision (2026-09-22, confirmed in chat): SINGLE-TAX RATE model throughout this chapter and
+ch. 4-7 (testing, deconvolution, PF/productivity, fiscal policy). The two-tax-rate (tau_S != tau_P)
+generalization is introduced ONLY in ch. 8 (Counterfactual), the one place tax rates are actually
+shocked. Reasons, state explicitly: (1) the evasion FOC only needs tau_P even in the general model
+below -- a single tau is the special case tau_S=tau_P, not a wrong model; (2) keeps ch. 6's PF table
+(joint efficient GMM vs. GNR vs. OLS) apples-to-apples with no re-estimation; (3) the evasion-FOC-side
+residual V_it is tax-netting-insulated by construction (SS "Nominal log-share" note in ch. 4/5's source
+material) -- only the production-identity side is exposed, and that exposure is measured small
+(@tbl-beta-net-tax, ch. 6). This chapter's own closing section (SS2.6) states the generalization and
+points forward; do not derive the two-tax FOC in full here, that derivation belongs to ch. 8.
+-->
+
+## Setup
+
+- Firm chooses $K_{it},L_{it},M_{it}$ (true materials) and $e_{it}\ge0$ (overreported materials, $M^*_{it}=M_{it}+e_{it}$ is what's reported to the tax authority) to maximize expected profit.
+- Detection: à la @Allingham1972 -- tax authority audits with probability $q(e_{it})$, always catches evasion if audited (no partial detection). $q(e_{it})\in[0,1]$, increasing, $q(0)=0$.
+- If caught, the firm repays the excess credit claimed on $e_{it}$, plus a penalty multiplier $(1+\phi)$ (usually $\phi=0$).
+- Cost of evasion $\kappa_{it}(e_{it},\omega_{it})$: resources (e.g. manager's time) diverted from production to concealment. Increasing in $e_{it}$; assumed independent of $M_{it}$ (choosing how much to overreport doesn't enter the materials choice or vice versa -- $M\perp e\mid\omega$).
+- Production: $Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})$, $\omega$ = productivity (state variable, AR(1) later), $\varepsilon$ = ex-post shock, $E[\exp\varepsilon]=1$.
+
+$$
+\begin{aligned}
+  \max_{K,L,M,e} \; \mathbb{E}[\pi_{it}] = &(1-\tau)\big(P_t\mathbb{E}[Y_{it}]-\rho_tM_{it}\big)-r_tK_{it}-w_tL_{it}\\
+  &+\big[1-q(e_{it})\big]\rho_t\tau e_{it}-q(e_{it})\phi\rho_t\tau e_{it}-\kappa_{it}(e_{it},\omega_{it})
+\end{aligned}
+$$ {#eq-profit}
+
+subject to the production function above. ($\rho_t$ = materials price, $\tau$ = tax rate -- single rate in this chapter, see SS2.6.)
+
+## First-order conditions
+
+- **Materials FOC** (standard, static, doesn't involve $e$):
+$$
+\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{-(1-\beta)}\exp(\omega_{it})=\rho_t/P_t
+$$ {#eq-foc-m}
+- **Evasion FOC** (interior solution):
+$$
+\tau\rho_t\big(1-(1+\phi)(q(e_{it})+q'(e_{it})e_{it})\big)=\partial\kappa_{it}(e_{it},\omega_{it})/\partial e_{it}
+$$ {#eq-foc-e}
+- **Corner solution:** some firms optimally choose $e_{it}=0$ -- marginal cost exceeds marginal benefit at every $e>0$. For these firms @eq-foc-e becomes an inequality, $\tau\rho_t\le\partial\kappa_{it}(0,\omega_{it})/\partial e_{it}$.
+  - **Corporations are constrained non-evaders**: audited statements / third-party reporting make $e=0$ a hard institutional constraint for them, not a corner outcome of @eq-foc-e -- used only in the first stage (ch. 4-5), outside the evasion FOC entirely. No exogenous cost shifter $\delta_C$ for corporations (considered, rejected: can't classify corner firms exogenously; the U-shaped $\kappa$ below handles both tails through the interior channel alone).
+
+## Second-order condition
+
+- Profit's Hessian is block-diagonal ($e$ separate from $K,L,M$ since $M\perp e$) and the production function is strictly concave, so the SOC reduces to one condition: $\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0$.
+- Simplifies (with $\phi=0$) to a restriction on the curvature of $q$ alone:
+$$
+-\frac{q''(e_{it})}{q'(e_{it})}e_{it}<2
+$$ {#eq-soc}
+- **Linear $q$ always satisfies this** ($q''=0$). Convex always satisfies it too. Concave needs "not too concave."
+
+## Detection function: three candidates, one headline
+
+- Define the **log marginal benefit** $h(e)\equiv\ln(\tau\rho_t)+\ln(1-q(e)-q'(e)e)$ (with $\phi=0$); the FOC is $h(e)=\ln(\partial\kappa/\partial e)$. Keep the symbol $h$ generic here -- it's reused with each functional form substituted in.
+
+| | $q(e)$ | SOC | $h(e)-\ln(\tau\rho_t)$ | FOC ceiling |
+|:--|:--:|:--:|:--:|:--:|
+| **Linear (headline)** | $\min\{\lambda e,1\}$ | always holds | $\ln(1-2\lambda e)$ | $\lambda e<\tfrac12$ |
+| Concave | $1-e^{-\lambda e}$ | $\lambda e<2$ | $-\lambda e+\ln(1-\lambda e)$ | $\lambda e<1$ |
+| Convex | $\min\{(\lambda e)^k,1\}$, $k>1$ | always holds | $\ln(1-(1{+}k)(\lambda e)^k)$ | $\lambda e<(1{+}k)^{-1/k}$ |
+
+- **Linear $q=\min\{\lambda e,1\}$ is the headline specification.** Audit-threshold interpretation: tax authority draws $T\sim U[0,1/\lambda]$, audits if $e\ge T$; $1/\lambda$ = largest overreporting any audit tolerates, mean threshold $1/2\lambda$. At the FOC ceiling the most aggressive evader is caught with probability exactly 50% -- a coin flip.
+- Concave (exponential) was tested as a robustness check for a specific estimation problem (extreme-evader leverage in $\hat\lambda$, ch. 6/8) and rejected: only delays the ceiling by a fixed ~2x factor, not enough to matter. Convex was not estimated (would only tighten the ceiling further, the wrong direction for that problem).
+- **Report detection probability in relative terms, not absolute.** Without independent audit-rate data, $q$'s absolute level isn't calibratable -- a skeptic can dispute $\hat\lambda$. But under linear $q$, $q(e_A)/q(e_B)=e_A/e_B$ is exactly $\hat\lambda$-invariant, so relative detection risk against a benchmark (e.g. the median evader) is a robust, assumption-light readout of the evasion distribution alone. (Table with real numbers: ch. 8.)
+
+## Cost of evasion
+
+- $\kappa_{it}(e_{it},\omega_{it})=e_{it}\exp\{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}\}$ -- linear in $e$ (tractable: gives $e^*$ in closed form under linear $q$), **U-shaped in $\omega$** (minimum at $\omega^*=\delta_1/2\delta_2$).
+- Economic rationale for the U-shape: more productive firms have more resources to hide evasion in, but the most productive firms also have the best access to *legal* avoidance, so illegal evasion costs them more at the margin -- both tails of the productivity distribution evade less than the middle.
+- $\psi_{it}$: idiosyncratic cost shock, the source of evasion heterogeneity beyond what $\omega$ explains.
+- Substituting linear $q$ and this $\kappa$ into @eq-foc-e and taking logs:
+$$
+\psi_{it}=h(e_{it})-\delta_0+\delta_1\omega_{it}-\delta_2\omega_{it}^2,\qquad h(e_{it})=\ln(\tau\rho_t)+\ln(1-2\lambda e_{it})
+$$ {#eq-foc-psi}
+  This is the equation every stage-2 estimator (ch. 6, 8) is built from.
+- $q$ and $\kappa$ are not separately identified without independent audit data; functional-form assumptions here are what let estimation reproduce the observed evasion-by-productivity pattern (ch. 7's motivating fact, @Carrillo2022).
+
+## Closing note: the two-tax-rate generalization
+
+<!-- TODO prose, 1 paragraph, NOT a rederivation -- full derivation lives in ch. 8 and
+Paper/sections/9999-tax-wedge.qmd. Say: -->
+
+- Everything above assumes a single tax rate $\tau$. The data separately report a sales-side rate $\tau_S$ and a purchases-side rate $\tau_P$; the model generalizes to $\tau_S\ne\tau_P$ with the firm claiming a purchases-tax credit on $M^*=M+e$ while owing sales tax on revenue at $\tau_S$.
+- **Only $\tau_P$ ever enters the evasion FOC** -- re-deriving @eq-foc-e under two rates, the $\tau_S$-revenue term doesn't involve $e$ and drops out of $\partial\pi/\partial e$ entirely. The single-$\tau$ model used above is exactly the special case $\tau_S=\tau_P$, not a different or wrong model.
+- This generalization is used only in ch. 8, where $\tau_P$ is the rate actually shocked in the counterfactual. It is *not* applied to the first stage in ch. 4-6: the evasion-FOC-side residual used there never needed tax-splitting to begin with, and the one channel that is exposed (materials-FOC/production identity, feeding $\hat\beta$) is measured to move $\hat\beta$ by at most 0.012 across the headline industries (@tbl-beta-net-tax) -- small, though not yet re-confirmed downstream in the ELVIS estimates themselves (stated explicitly as a limitation in ch. 8).

@@ -29,7 +29,7 @@ stats_for <- function(ins) {
         Stat = c("Mean", "Median", "P95", "P99", "Max"),
         e = c(mean(e), median(e), quantile(e, 0.95, names = FALSE),
               quantile(e, 0.99, names = FALSE), max(e))
-    ) %>% mutate(q = LAMBDA * e)
+    ) %>% mutate(q = LAMBDA * e, rel = e / e[Stat == "Median"])
 }
 
 lm <- stats_for("lag_m")
@@ -40,8 +40,10 @@ tbl <- tibble(
     Stat = lm$Stat,
     e1 = format(round(lm$e), big.mark = ","),
     q1 = sprintf("%.2f%%", 100 * lm$q),
+    rel1 = sprintf("%.0f$\\times$", lm$rel),
     e2 = format(round(w$e), big.mark = ","),
-    q2 = sprintf("%.2f%%", 100 * w$q)
+    q2 = sprintf("%.2f%%", 100 * w$q),
+    rel2 = sprintf("%.0f$\\times$", w$rel)
 )
 write.csv(tbl, "Code/Products/1303-detection-prob-table.csv", row.names = FALSE)
 print(tbl)
@@ -50,13 +52,14 @@ print(tbl)
 ## comment marker and silently merges rows -- escape only the LaTeX-bound copy.
 tbl_tex <- tbl %>% mutate(across(everything(), ~ gsub("%", "\\\\%", .x)))
 
-tt_obj <- tt(tbl_tex, notes = "Implied detection probability $q(e)=\\hat\\lambda\\cdot e$ across the evasion distribution, using forward-simulation estimates.")
-colnames(tt_obj) <- c("Stat", "$e$", "$q(e)$", "$e$", "$q(e)$")
+tt_obj <- tt(tbl_tex, align = "lcccccc", notes = "Implied detection probability $q(e)=\\hat\\lambda\\cdot e$ across the evasion distribution, using forward-simulation estimates. Because $q$ is linear in $e$, the $q(e)/q(\\text{median})=e/\\text{median}$.")
+colnames(tt_obj) <- c(" ", "$e$", "$q(e)$", "$q(e)/q(\\text{Med})$", "$e$", "$q(e)$", "$q(e)/q(\\text{Med})$")
 tt_obj <- tt_obj |> group_tt(j = list(
-    "$m^*_{t-1}$"  = 2:3,
-    "$\\tilde{\\mathcal{W}}_{t-2}$"   = 4:5
+    "$m^*_{t-1}$"  = 2:4,
+    "$\\tilde{\\mathcal{W}}_{t-2}$"   = 5:7
     )) |>
-    style_tt(i = "notes", fontsize = 0.8)
+    style_tt(i = "notes", fontsize = 0.8) |>
+    format_tt(replace = list(" "= "1$\\times$"))
 
 render_png_tt_tbl(tt_obj, "1303-detection-prob-table")
 cat("Saved: Paper/tbls/1303-detection-prob-table.png\n")

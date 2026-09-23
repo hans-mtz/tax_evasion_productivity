@@ -47,17 +47,13 @@ $$
 
 ## Interpreting the Estimates
 
-- Probabilities of detection are low, average audit-triggering threshold $1/(2\hat\lambda)\approx$\$920,000, while median reported materials $\text{Med}[M^*]\approx$\$8,414, the 95th percentile firms \$128,154, the 99th \$360,676, and the largest (trimmed) firm \$701,130
+- Probabilities of detection are tiny, average audit-triggering threshold $1/(2\hat\lambda)\approx$\$920,000, while median reported materials $\text{Med}[M^*]\approx$\$8,414, the 95th percentile firms \$128,154, the 99th \$360,676, and the largest (trimmed) firm \$701,130
 - The cost function displays the expected U-shape, both $(\hat\delta_1,\hat\delta_2)$ display correct signs.
   - $\hat\delta_1<0$ and $\hat\delta_2>0$ the evasion cost function is decreasing in productivity up to $\hat\omega^*$, then increasing again
   - $\hat\omega^*=3.98$ ($m^*_{it-1}$) and $3.84$ ($\tilde{\mathcal W}_{it-2}$), the 86th ($m^*_{it-1}$) and 75th percentile ($\tilde{\mathcal W}_{it-2}$) (forward simulation)
 
 
-## How the Test Works
 
-Test statistic at a candidate $\theta$: $TS(\theta)=2n\hat L_n(\theta)$, profiled over $\gamma$ (and any nuisance parameters).
-
-- Reported test: reject $\theta$ if $TS(\theta)>\chi^2_{d_g,.95}$ ($d_g$ = number of moments) [**Theorem F.1**, Appendix F. @Schennach2014]
 
 ## What Detection Probability Does This Imply?
 
@@ -65,15 +61,15 @@ Test statistic at a candidate $\theta$: $TS(\theta)=2n\hat L_n(\theta)$, profile
 
 :::: {.columns}
 
-::: {.column width="30%"}
+::: {.column width="40%"}
 
 - Mean $\gg$ Median for both instruments; a right-skewed evasion distribution 
-- P99 $\to$ Max: detection probability jumps from  1-2% at the 99th percentile, to ~37% for the most aggressive evader in the (0.5%-trimmed) sample. 
+- P99 $\to$ Max: detection probability jumps from  1-2% at the 99th percentile, to ~37% for the most aggressive evader (0.5%-trimmed sample) 
 - A handful of extreme evaders pull $E[e]$ **up** *and* the fitted $\hat\lambda$ **down**
 
 :::
 
-::: {.column width="70%"}
+::: {.column width="60%"}
 
 :::: {#tbl-prob-detection}
 ![](../Paper/tbls/1303-detection-prob-table.png){fig-align="center" height="70%"}
@@ -85,9 +81,33 @@ Test statistic at a candidate $\theta$: $TS(\theta)=2n\hat L_n(\theta)$, profile
 
 
 
+## Notes for Discussion
 
+- **$\hat\lambda$ is very small**: few aggresive evaders dominate the estimate, the model is trying to fit a straight line over a highly right-skewed distribution.
+  - Mechanically, selecting a functional form for the probability of detection imposes a ceiling probability
+  - Assuming all unincoporated firms with non-zero sales tax rate on purchases, $\tau_P$, evade implies all firms evade below the ceiling (normalization)
+  - We could 
+    - trim sample more (currently 0.5%)
+    - impose a normalization (e.g. prob for 99th evaders=50%, prob)
+    - use a non-linear prob of detection
+  - At first, I tought $\delta_0$ and $\lambda$ we're competing to set the level of evasion, but the estimates suggest $\lambda$ is truly different from zero even though $\delta_0$ has been profiled in all grid searches
+- **($\hat\delta_1, \hat\delta_2$)**: it seems they are truly being identified by the curvature of the evasion distribution and productivity $\omega$. The $\omega^*$ is steady among grid searches and under the correct moments they come up with correct signs always
 
+## $\lambda$ Search
 
+- $\lambda$ bounds derived directly from the data: the smallest $\lambda$ for which not even the largest firm's evasion is ever constrained, up to the largest $\lambda$ for which even the smallest firm is constrained
+    - FOC: $\lambda<\tfrac1{2e}$ aproximated with $M^*=M+e$, assuming all is evasion, then the relevant range for $\lambda$ is $[1/(2\max(M^*),1/(2\min(M^*))]$
+    - During estimation, $\lambda$ never hits the bounds
+- 16-point log-spaced grid (coarse pass, then a finer pass bracketing the region of interest)
+- **Sample**: 32,232 unincorporated firm-periods (3,340 at the $\tau_P=0$ corner), top 0.5% trimmed by $M^*$; two productivity-instrument choices for $(\alpha_K,\alpha_L,\beta)$
+
+##
+
+![](../Paper/images/1305-lambdagrid-minonly.png){fig-align="center" height="85%"}
+
+## 2D $\delta$ Search
+
+![](../Paper/images/1306-deltagrid-lag_m-3d-minonly.png){fig-align="center" height="85%"}
 
 ## Trimming Sample
 
@@ -100,53 +120,38 @@ Since few aggressive evaders were pushing the estimates of $\lambda$ down, I tri
 
 ![](../Paper/images/1222-stage2-trim-all-gridpoints-refixed.png){fig-align="center" height="90%"}
 
-## Notes for Discussion
+## How the Test Works
 
-- **$\hat\lambda$ is very small**: few aggresive evaders dominate the estimate because I'm imposing the assumption that all unicorporated firms with non-zero $\tau_P$ are evading. The model is trying to fit a line over a highly right-skewed distribution. Altenati:
+Test statistic at a candidate $\theta$: $TS(\theta)=2n\hat L_n(\theta)$, profiled over $\gamma$ (and any nuisance parameters).
 
-
-
-## $\lambda$ Search
-
-- $\lambda$ bounds derived directly from the data: the smallest $\lambda$ for which not even the largest firm's evasion is ever constrained, up to the largest $\lambda$ for which even the smallest firm is constrained
-    - FOC: $\lambda<\tfrac1{2e}$ aproximated with $M^*=M+e$, assuming all is evasion, then the relevant range for $\lambda$ is $[1/(2\max(M^*),1/(2\min(M^*))]$
-    - During estimation, $\lambda$ never hits the bounds
-- 16-point log-spaced grid (coarse pass, then a finer pass bracketing the region of interest)
-- **Sample**: 32,232 unincorporated firm-periods (3,340 at the $\tau_P=0$ corner), top 0.5% trimmed by $M^*$; two productivity-instrument choices for $(\alpha_K,\alpha_L,\beta)$
-
-##
-
-
-
-## $\delta$ Search
-
-
+- Reported test: reject $\theta$ if $TS(\theta)>\chi^2_{d_g,.95}$ ($d_g$ = number of moments) [**Theorem F.1**, Appendix F. @Schennach2014]
 
 
 
 # Laffer Curve (Counterfactual Question)
 
-## Increasing Efficiency in the Counterfactual Exercise
+## Increasing Efficiency in the Counterfactual Exercise {#sec-counterfactual-results}
 
-Motivation and theoretical derivation: `630-counterfactual-question.qmd`. Implementation: `620-ELVIS.qmd`.
+Motivation and theoretical derivation: @sec-counterfactual-question ; Implementation: @sec-implementing-elvis
 
 `\footnotesize`{=latex}
 
-**Goal:** use a control variate so the counterfactual test of candidate revenue levels is more *efficient* — same target, less noise.
+**Goal:** use a control variate [@Hendry1984;@Davidson1992] to improve *efficiency* (reduce variance) of the counterfactual test of candidate revenue levels
 
-**Why:** testing candidate revenue $R$ against the data was almost powerless. Revenue is dominated by *firm size* — large firms pay vastly more sales tax than small ones — and that size variation has nothing to do with evasion. It's noise swamping the signal we actually care about.
+**Why:** Government tax revenue displays large heterogeneity in *firm size* (large firms pay signifcantly more sales tax than small ones). We want to *control* for cross firm heterogeneity and focus on changes in tax revenue due to changes in the tax rate.
 
-**How:** each firm's own sales tax paid, $t1_i$, is fully observed and predicts revenue almost perfectly ($R^2\approx0.999$). Subtract off the size-driven, predictable part of revenue before testing — the classic control-variate variance-reduction technique [@Hendry1984], the same logic behind ANCOVA / CUPED adjustment in modern experiments.
+**How:** I observe firms sales tax paid on sales, $\tau_{S,it}P_tY_{it}$. By construction, $\tau_{S,it}P_tY_{it}$ correlates with government tax revenue almost perfectly. Subtract off the size-driven, predictable part of revenue before testing, a classic control-variate variance-reduction technique employed in MC simulations [@Hendry1984;@Davidson1992]
 
-**Interpretation:** the estimator stays **consistent and unbiased for the same expected revenue** $E[R_i(\Delta)]$ — nothing about what a candidate $R$ means, or how to read a confidence interval, changes. The correction only strips out noise the estimator didn't need; the same population quantity is estimated **more efficiently** — a tighter interval around the same target, not a different one.
+**Interpretation:** the estimator remains **unbiased** for expected revenue $E[R_i(\Delta)]$. CV removes part of the sampling variance irrelevant for changes in $\tau_P$ but leaving cross-firm identifying variation that do depend on $\theta,\gamma$ and idiosyncratic noise.
 
 ## Control-Variate Moment — Details
 
 $$g_{R,i}^{\text{adj}} = \Big[\frac{R_i(\Delta)}{pgdp_i}-\hat\beta\,\frac{t1_i}{pgdp_i}\Big] - \big[R-\hat\beta\,\mu_c\big]$$
 
-- $\hat\beta=0.9988$ (OLS, pooled across tested $\Delta$'s), $\mu_c=E[t1_i/pgdp_i]$ — both fixed, precomputed constants, never new $(\theta,\gamma)$ decision variables
-- $E[g^{\text{adj}}_{R,i}]=E[g_{R,i}]$ exactly for *any* $\hat\beta$ — verified to 6+ sig figs numerically, not just algebraically
+- $\hat\beta=0.9988$ (OLS, pooled across tested $\Delta$'s), $\mu_c=E[t1_i/pgdp_i]$, both fixed and precomputed
+- $E[g^{\text{adj}}_{R,i}]=E[g_{R,i}]$ exactly for *any* $\hat\beta$
 - Beats industry$\times$year TWFE decisively (38-41x vs. 2.5x), zero added dimensions, no small-cell risk (100/318 TWFE cells have $<30$ obs)
+- Valid because the only open channel is undetected evasion through changes in $\tau_P$. Tax reveneu from sales taxes on sales is kept fixed
 
 ## Testing the Laffer Curve
 
@@ -156,8 +161,8 @@ Every point is a real candidate revenue level, tested against the data (95% conf
 
 ## Headline Result
 
-- A tax **increase** is bad news almost immediately: even a **0.5% increase** is already statistically distinguishable from current policy
-- A tax **cut** helps too, but the gain only becomes statistically distinguishable once the cut reaches about **8%** — much larger than intuition suggests
+- A tax **increase** of **0.5%** is already statistically distinguishable from current policy
+- A tax **cut** increases tax revenue, but the gain only becomes statistically distinguishable at the **8%** cut—
 - Both results come from a formal statistical test, not a point estimate
 
 ![](../Paper/tbls/1301-headline-pct-table.png){fig-align="center" height="30%"}

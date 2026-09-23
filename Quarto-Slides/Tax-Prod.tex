@@ -279,7 +279,7 @@
 \title{\texorpdfstring{Tax Evasion and
 Productivity}{Tax Evasion and Productivity}}
 \author{Hans Martinez}
-\date{September 17, 2026}
+\date{September 21, 2026}
 \institute{Western University}
 
 \begin{document}
@@ -823,7 +823,7 @@ Do \textbf{linear} and \textbf{power},
 Reframed}\label{the-counterfactual-question-reframed}
 
 \begin{frame}{From ``What's Optimal?'' to ``What's the Derivative?''}
-\protect\phantomsection\label{from-whats-optimal-to-whats-the-derivative}
+\protect\phantomsection\label{sec-counterfactual-question}
 The natural first framing --- ``what purchases-tax credit rate
 \(\Delta\) maximizes government revenue?'' --- presupposes an interior
 optimum exists. It doesn't, in general, under this revenue formula (next
@@ -977,8 +977,8 @@ evasion the only margin that moves.
 \section{Entropic Latent Variable Integration via Simulation
 (ELVIS)}\label{entropic-latent-variable-integration-via-simulation-elvis}
 
-\begin{frame}{An Alternative: ELVIS (Schennach (2014))}
-\protect\phantomsection\label{an-alternative-elvis-schennach2014}
+\begin{frame}{ELVIS (Schennach (2014))}
+\protect\phantomsection\label{sec-elvis}
 \begin{itemize}
 \tightlist
 \item
@@ -1377,85 +1377,146 @@ MSL's revenue integral weights by
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Implementing it: the two-tax counterfactual FOC}
+\protect\phantomsection\label{sec-implementing-elvis}
+\footnotesize
+
+Two-tax-rate model: only \(\tau_P\) (purchases-side) enters the evasion
+FOC's benefit shifter --- \(\tau_S\) (sales-side) is untouched by this
+exercise. Shock: \(\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}\).
+
+Reuse the closed-form counterfactual evasion FOC, clipped at the corner:
+\[
+e_i'(\Delta)=\max\left(0,\ \frac{\tilde\tau_{P,it}\rho_t-C(\omega_i,\psi_i)}{2\lambda\,\tilde\tau_{P,it}\rho_t}\right),\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(\max(0,\cdot)\) isn't optional --- some currently-evading firms' new
+  optimum genuinely becomes a corner (\(e'=0\)) as \(\Delta\) moves the
+  benefit shifter, distinct from the institutionally-corner
+  (\(\tau_P=0\)) firms already handled separately in estimation
+\end{itemize}
+
+(true \(M_i\) unchanged under the counterfactual --- the materials FOC
+doesn't depend on \(\tau\)) Revenue is sales-side tax collected minus
+the purchases-side credit claimed --- only the credit side is exposed to
+evasion or to \(\Delta\):
+
+\[
+R_i(\Delta;M_i)=\underbrace{t1_{it}}_{\tau_{S,it}P_tY_{it},\ \text{fixed}}-\ \tilde\tau_{P,it}\Big[M_i+\big(1-q(e_i'(\Delta))\big)e_i'(\Delta)\Big]
+\]
+\end{frame}
+
 \begin{frame}{Implementing it: an auxiliary moment}
 \protect\phantomsection\label{implementing-it-an-auxiliary-moment}
 \footnotesize
 
-Hold \(\hat\theta\) fixed (already estimated --- the counterfactual is a
-forward simulation, not new estimation). Reuse the closed-form
-counterfactual evasion FOC already established: \[
-\tilde e_i(\tilde\tau)=\tilde e\big(\tilde\tau;\omega_i(M_i),\psi_i(M_i)\big)=\frac{\tilde\tau\rho_t-C(\omega_i,\psi_i)}{2\lambda\tilde\tau\rho_t},\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
-\]
-
-(true \(M_i\) unchanged under the counterfactual --- materials FOC
-doesn't depend on \(\tau\), per the model's own maintained assumptions)
-and form firm \(i\)'s counterfactual revenue as a function of the
-\emph{same} latent \(M_i\):
-
-\[
-R_i(\tilde\tau;M_i)=\tilde\tau\Big[P_tY_{it}-\rho_tM_i-\big(1-q(\tilde e_i(\tilde\tau))\big)\rho_t\tilde e_i(\tilde\tau)\Big]
-\]
-
-For a candidate \(\tilde\tau\), introduce an auxiliary parameter
-\(\tilde\theta(\tilde\tau)\equiv\frac1N\sum_iE[R_i(\tilde\tau)\mid Z_i]\)
-and \textbf{append its own moment} to the system: \[
-E\big[R_i(\tilde\tau;M_i)-\tilde\theta\big]=0
-\] with \(\theta\) fixed at \(\hat\theta\) --- only \(\tilde\theta\) and
-an \emph{extended} \(\gamma\) (one more component, for the new moment)
-are free. Same simulated-draw, ratio-of-averages machinery as before
+For a candidate \(\Delta\), introduce an auxiliary parameter
+\(R(\Delta)\equiv\frac1N\sum_iE[R_i(\Delta)\mid Z_i]\) and
+\textbf{append its own moment} to the system: \[
+E\big[R_i(\Delta;M_i)-R\big]=0
+\] with \(\theta=(\lambda,\delta_0,\delta_1,\delta_2)\) fixed --- only
+\(R\) and an \emph{extended} \(\gamma\) (one more component, for the new
+moment) are free (rationale: Section~\ref{sec-counterfactual-design}).
+Same simulated-draw, ratio-of-averages machinery as before
 (Equation~\ref{eq-elvis-sim}), just evaluated on the extended moment
 vector.
+
+In practice \(R\) is control-variate-adjusted, not raw --- construction
+in Section~\ref{sec-elvis-res}.
 \end{frame}
 
-\begin{frame}[fragile]{Two Practical Corrections}
-\protect\phantomsection\label{two-practical-corrections}
+\begin{frame}[fragile]{Design choices for the counterfactual test}
+\protect\phantomsection\label{sec-counterfactual-design}
 \footnotesize
 
-\textbf{\(\theta\) is held fixed, not reprofiled, at every candidate
-cell --- only \(\gamma\) is free.} Letting \(\theta\) move too lets a
-weakly-identified \(\lambda\) silently rationalize almost any candidate
-\(R\) (confirmed empirically: \(\hat\lambda\) swung \(56\times\) across
-cells when left free) --- answering ``does \emph{some} enforcement
-regime make this \(R\) possible,'' not the intended question. AK2020's
-own counterfactual (\texttt{Appendix\_F/}) does the same: their
-structural parameter is a hardcoded constant throughout, only \(\gamma\)
-is passed to the optimizer.
+\textbf{1. \(\theta=(\lambda,\delta_0,\delta_1,\delta_2)\) is fixed at
+its best ELVIS estimate --- only \(\gamma\) is free at each
+\((\Delta,R)\) cell.}
 
-\textbf{The revenue moment itself is control-variate adjusted}, not raw:
-\(R_i\) regressed against the firm's own already-observed
-\(t1_i/pgdp_i\) (\(R^2=0.999\)) removes size-driven between-firm
-heterogeneity from the moment's sampling variance (SE cut
-\$\sim\(40\)\times\$) while leaving its mean unchanged by construction
---- what actually turned a vacuous test into a real, closed confidence
-set.
+\begin{itemize}
+\tightlist
+\item
+  Answers: \emph{``given our best model estimates, is the distribution
+  of unobservables consistent with the data at this revenue level
+  \(R\)?''} --- not the weaker \emph{``does \textbf{some} set of model
+  estimates make \(R\) possible?''}
+\item
+  Matches AK2020's own counterfactual (Aguiar and Kashaev 2020)
+  (\texttt{Appendix\_F/}): their structural/support parameter
+  (\texttt{theta0=0.975}, the direct analog of \(\lambda\)) is a
+  hardcoded constant for the entire exercise; only \(\gamma\) (their
+  Lagrange multiplier) is ever passed to the optimizer
+\end{itemize}
+
+\textbf{2. The revenue moment is control-variate-adjusted, not raw
+\(R\).}
+
+\begin{itemize}
+\tightlist
+\item
+  Goal: isolate the object actually of interest --- how revenue moves
+  with the tax rate --- from cross-firm size heterogeneity that has
+  nothing to do with that question
+\item
+  Large firms pay far more sales tax than small ones; left unadjusted,
+  this heterogeneity inflates the width of our confidence intervals for
+  no economically meaningful reason
+\item
+  Fix: subtract off the size-predictable part of revenue using the
+  firm's own observed sales tax paid, \(t1_i\), before testing
+  (construction: Section~\ref{sec-elvis-res})
+\end{itemize}
+
+\hyperlink{sec-counterfactual-results}{Preliminary results}
+\end{frame}
+
+\begin{frame}{Checked: does fixing \(\theta\) manufacture the tight
+bounds?}
+\protect\phantomsection\label{sec-counterfactual-robustness}
+\footnotesize
+
+\begin{itemize}
+\tightlist
+\item
+  Reran a candidate \(\Delta\)'s tested \(R\) values with \(\theta\)
+  genuinely free (not fixed), seeded at the fixed-\(\theta\) operating
+  point
+\item
+  \(\hat\theta\) moved only marginally from the seed at every candidate
+  --- pass/fail replicated at nearly every point
+\item
+  Confirms: the tight bounds reflect genuine cross-firm heterogeneity in
+  the data, not an artifact of holding \(\theta\) fixed
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Point or set --- decided by the procedure, not assumed}
-\protect\phantomsection\label{point-or-set-decided-by-the-procedure-not-assumed}
+\protect\phantomsection\label{sec-counterfactual-inference}
 \scriptsize
 
-For a fixed \(\tilde\tau\), grid over \textbf{candidate revenue values}
-\(\tilde\theta\) (not over \(\theta\) this time):
+For a fixed \(\Delta\), grid over \textbf{candidate revenue values}
+\(R\) (not over \(\theta\) this time):
 
 \begin{enumerate}
 \tightlist
 \item
-  For each candidate \(\tilde\theta\), solve the inner problem ---
-  maximize the objective (EL, or the CUE-type quadratic
+  For each candidate \(R\), solve the inner problem --- maximize the
+  objective (EL, or the CUE-type quadratic
   \(-\tfrac12\hat g'\hat V^{-1}\hat g\)) over the extended \(\gamma\),
-  with the \(R_i(\tilde\tau;M_i)-\tilde\theta\) moment included
+  with the \(R_i(\Delta;M_i)-R\) moment included
 \item
-  That maximum is a criterion function
-  \(\hat L_n(\tilde\theta;\tilde\tau)\) --- exactly the same
-  construction used for \(\theta\) itself
+  That maximum is a criterion function \(\hat L_n(R;\Delta)\) ---
+  exactly the same construction used for \(\theta\) itself
 \item
   \textbf{Profile against the unrestricted model:}
-  \(\hat Q_n(\tilde\theta;\tilde\tau)=-\big(\hat L_n(\tilde\theta;\tilde\tau)-\sup_{\theta',\gamma}\hat L_n(\theta',\gamma)\big)\)
+  \(\hat Q_n(R;\Delta)=-\big(\hat L_n(R;\Delta)-\sup_{\theta',\gamma}\hat L_n(\theta',\gamma)\big)\)
   --- subtracting the global max, not using \(\hat L_n\) raw, is what
   gives the efficiency gain this construction is built for
 \item
-  Region:
-  \(\{\tilde\theta:n\hat Q_n(\tilde\theta;\tilde\tau)\le c_\alpha\}\),
+  Region: \(\{R:n\hat Q_n(R;\Delta)\le c_\alpha\}\),
   \(c_\alpha=\chi^2_{d_g,\alpha}\) --- Theorem F.1's closed-form
   conservative critical value (Schennach 2014, online supplement,
   Appendix F). This is the test we report; a min-subtracted CHT-style
@@ -1466,19 +1527,19 @@ For a fixed \(\tilde\tau\), grid over \textbf{candidate revenue values}
 \begin{itemize}
 \tightlist
 \item
-  Repeat across a grid of \(\tilde\tau\): \textbf{the shape decides.} A
-  sharp trough at every \(\tilde\tau\) → the Laffer curve comes out as a
-  single curve, point-identified. A flat plateau at some \(\tilde\tau\)
-  → a genuine band there --- the model just doesn't pin expected revenue
+  Repeat across a grid of \(\Delta\): \textbf{the shape decides.} A
+  sharp trough at every \(\Delta\) → the Laffer curve comes out as a
+  single curve, point-identified. A flat plateau at some \(\Delta\) → a
+  genuine band there --- the model just doesn't pin expected revenue
   down more tightly at that rate
 \item
   We do \textbf{not} commit to point vs.~set beforehand --- both come
   out of the identical grid-and-criterion-function procedure; the width
   of the trough is the answer, not a modeling choice
 \item
-  \(\tilde\tau^*\) (or a \emph{range} of \(\tilde\tau^*\), if the argmax
-  band is itself wide) follows directly by reading off where the revenue
-  band peaks
+  \(\Delta^*\) (or a \emph{range} of \(\Delta^*\), if the argmax band is
+  itself wide) follows directly by reading off where the revenue band
+  peaks
 \item
   Convergence rate itself depends on the regime: root-\(n\) if the
   objective is exactly flat over the identified set (``degeneracy,'' her
@@ -1582,9 +1643,9 @@ h'(e,\lambda)\,\varepsilon(M,Z)
 \begin{itemize}
 \tightlist
 \item
-  Probabilities of detection are low, average audit-triggering threshold
-  \(1/(2\hat\lambda)\approx\)\$920,000, while median reported materials
-  \(\text{Med}[M^*]\approx\)\$8,414, the 95th percentile firms
+  Probabilities of detection are tiny, average audit-triggering
+  threshold \(1/(2\hat\lambda)\approx\)\$920,000, while median reported
+  materials \(\text{Med}[M^*]\approx\)\$8,414, the 95th percentile firms
   \$128,154, the 99th \$360,676, and the largest (trimmed) firm
   \$701,130
 \item
@@ -1605,25 +1666,10 @@ h'(e,\lambda)\,\varepsilon(M,Z)
 \end{itemize}
 \end{frame}
 
-\begin{frame}{How the Test Works}
-\protect\phantomsection\label{how-the-test-works}
-Test statistic at a candidate \(\theta\):
-\(TS(\theta)=2n\hat L_n(\theta)\), profiled over \(\gamma\) (and any
-nuisance parameters).
-
-\begin{itemize}
-\tightlist
-\item
-  Reported test: reject \(\theta\) if \(TS(\theta)>\chi^2_{d_g,.95}\)
-  (\(d_g\) = number of moments) (\textbf{Theorem F.1}, Appendix F.
-  Schennach 2014)
-\end{itemize}
-\end{frame}
-
 \begin{frame}{What Detection Probability Does This Imply?}
 \protect\phantomsection\label{what-detection-probability-does-this-imply}
 \begin{columns}[T]
-\begin{column}{0.3\linewidth}
+\begin{column}{0.4\linewidth}
 \begin{itemize}
 \tightlist
 \item
@@ -1631,15 +1677,15 @@ nuisance parameters).
   distribution
 \item
   P99 \(\to\) Max: detection probability jumps from 1-2\% at the 99th
-  percentile, to \textasciitilde37\% for the most aggressive evader in
-  the (0.5\%-trimmed) sample.
+  percentile, to \textasciitilde37\% for the most aggressive evader
+  (0.5\%-trimmed sample)
 \item
   A handful of extreme evaders pull \(E[e]\) \textbf{up} \emph{and} the
   fitted \(\hat\lambda\) \textbf{down}
 \end{itemize}
 \end{column}
 
-\begin{column}{0.7\linewidth}
+\begin{column}{0.6\linewidth}
 \begin{table}
 
 \caption{\label{tbl-prob-detection}}
@@ -1655,52 +1701,48 @@ nuisance parameters).
 \end{columns}
 \end{frame}
 
-\begin{frame}{Trimming Sample}
-\protect\phantomsection\label{trimming-sample}
-Since few aggressive evaders were pushing the estimates of \(\lambda\)
-down, I trimmed the sample at different percentiles of \(M^*\) to test
-sensitivity of the estimates.
-
-\begin{itemize}
-\tightlist
-\item
-  At 0.5\% trim, \(\lambda\) seems to stabilize before jumping or start
-  waving too much
-\item
-  \(\delta\)'s looked stable across the trim range, confirming that they
-  were fitting the curvature of evasion, and lambda the level accross
-  firms
-\end{itemize}
-\end{frame}
-
-\begin{frame}{}
-\protect\phantomsection\label{section}
-\begin{center}
-\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/images/1222-stage2-trim-all-gridpoints-refixed.png}
-\end{center}
-\end{frame}
-
 \begin{frame}{Notes for Discussion}
 \protect\phantomsection\label{notes-for-discussion}
 \begin{itemize}
 \tightlist
 \item
+  \textbf{\(\hat\lambda\) is very small}: few aggresive evaders dominate
+  the estimate, the model is trying to fit a straight line over a highly
+  right-skewed distribution.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Mechanically, selecting a functional form for the probability of
+    detection imposes a ceiling probability
+  \item
+    Assuming all unincoporated firms with non-zero sales tax rate on
+    purchases, \(\tau_P\), evade implies all firms evade below the
+    ceiling (normalization)
+  \item
+    We could
+
+    \begin{itemize}
+    \tightlist
+    \item
+      trim sample more (currently 0.5\%)
+    \item
+      impose a normalization (e.g.~prob for 99th evaders=50\%, prob)
+    \item
+      use a non-linear prob of detection
+    \end{itemize}
+  \item
+    At first, I tought \(\delta_0\) and \(\lambda\) we're competing to
+    set the level of evasion, but the estimates suggest \(\lambda\) is
+    truly different from zero even though \(\delta_0\) has been profiled
+    in all grid searches
+  \end{itemize}
 \item
-  \textbf{\(m^*_{it-1}\) is the instrument to lead with}: stable
-  \(\hat\delta_1,\hat\delta_2\) across every search run so far, and the
-  only instrument/grid combination to ever clear the conservative hard
-  test
-\item
-  \textbf{\(\tilde{\mathcal W}_{it-2}\) confirms the same qualitative
-  story but is the weaker instrument}: same U-shaped sign on
-  \(\hat\delta_1,\hat\delta_2\), similar \(\hat\omega^*\), but doesn't
-  clear the hard test at its own best point, and hasn't been run through
-  the joint grid yet
-\item
-  \textbf{A first joint 3D grid is in (27 cells, coarse spacing)} ---
-  not yet a full confidence region (only 1 tested cell clears the hard
-  test), but real evidence for the fixed \(\hat\theta\) used in the
-  counterfactual
+  \textbf{(\(\hat\delta_1, \hat\delta_2\))}: it seems they are truly
+  being identified by the curvature of the evasion distribution and
+  productivity \(\omega\). The \(\omega^*\) is steady among grid
+  searches and under the correct moments they come up with correct signs
+  always
 \end{itemize}
 \end{frame}
 
@@ -1734,49 +1776,91 @@ sensitivity of the estimates.
 \end{frame}
 
 \begin{frame}{}
-\protect\phantomsection\label{section-1}
+\protect\phantomsection\label{section}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{../Paper/images/1305-lambdagrid-minonly.png}
+\end{center}
 \end{frame}
 
-\begin{frame}{\(\delta\) Search}
-\protect\phantomsection\label{delta-search}
+\begin{frame}{2D \(\delta\) Search}
+\protect\phantomsection\label{d-delta-search}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{../Paper/images/1306-deltagrid-lag_m-3d-minonly.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Trimming Sample}
+\protect\phantomsection\label{trimming-sample}
+Since few aggressive evaders were pushing the estimates of \(\lambda\)
+down, I trimmed the sample at different percentiles of \(M^*\) to test
+sensitivity of the estimates.
+
+\begin{itemize}
+\tightlist
+\item
+  At 0.5\% trim, \(\lambda\) seems to stabilize before jumping or start
+  waving too much
+\item
+  \(\delta\)'s looked stable across the trim range, confirming that they
+  were fitting the curvature of evasion, and lambda the level accross
+  firms
+\end{itemize}
+\end{frame}
+
+\begin{frame}{}
+\protect\phantomsection\label{section-1}
+\begin{center}
+\includegraphics[width=\linewidth,height=0.9\textheight,keepaspectratio]{../Paper/images/1222-stage2-trim-all-gridpoints-refixed.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{How the Test Works}
+\protect\phantomsection\label{how-the-test-works}
+Test statistic at a candidate \(\theta\):
+\(TS(\theta)=2n\hat L_n(\theta)\), profiled over \(\gamma\) (and any
+nuisance parameters).
+
+\begin{itemize}
+\tightlist
+\item
+  Reported test: reject \(\theta\) if \(TS(\theta)>\chi^2_{d_g,.95}\)
+  (\(d_g\) = number of moments) (\textbf{Theorem F.1}, Appendix F.
+  Schennach 2014)
+\end{itemize}
 \end{frame}
 
 \section{Laffer Curve (Counterfactual
 Question)}\label{laffer-curve-counterfactual-question}
 
-\begin{frame}[fragile]{Increasing Efficiency in the Counterfactual
-Exercise}
-\protect\phantomsection\label{increasing-efficiency-in-the-counterfactual-exercise}
+\begin{frame}{Increasing Efficiency in the Counterfactual Exercise}
+\protect\phantomsection\label{sec-counterfactual-results}
 Motivation and theoretical derivation:
-\texttt{630-counterfactual-question.qmd}. Implementation:
-\texttt{620-ELVIS.qmd}.
+Section~\ref{sec-counterfactual-question} ; Implementation:
+Section~\ref{sec-implementing-elvis}
 
 \footnotesize
 
-\textbf{Goal:} use a control variate so the counterfactual test of
-candidate revenue levels is more \emph{efficient} --- same target, less
-noise.
+\textbf{Goal:} use a control variate (Hendry 1984; Davidson and
+MacKinnon 1992) to improve \emph{efficiency} (reduce variance) of the
+counterfactual test of candidate revenue levels
 
-\textbf{Why:} testing candidate revenue \(R\) against the data was
-almost powerless. Revenue is dominated by \emph{firm size} --- large
-firms pay vastly more sales tax than small ones --- and that size
-variation has nothing to do with evasion. It's noise swamping the signal
-we actually care about.
+\textbf{Why:} Government tax revenue displays large heterogeneity in
+\emph{firm size} (large firms pay signifcantly more sales tax than small
+ones). We want to \emph{control} for cross firm heterogeneity and focus
+on changes in tax revenue due to changes in the tax rate.
 
-\textbf{How:} each firm's own sales tax paid, \(t1_i\), is fully
-observed and predicts revenue almost perfectly (\(R^2\approx0.999\)).
-Subtract off the size-driven, predictable part of revenue before testing
---- the classic control-variate variance-reduction technique (Hendry
-1984), the same logic behind ANCOVA / CUPED adjustment in modern
-experiments.
+\textbf{How:} I observe firms sales tax paid on sales,
+\(\tau_{S,it}P_tY_{it}\). By construction, \(\tau_{S,it}P_tY_{it}\)
+correlates with government tax revenue almost perfectly. Subtract off
+the size-driven, predictable part of revenue before testing, a classic
+control-variate variance-reduction technique employed in MC simulations
+(Hendry 1984; Davidson and MacKinnon 1992)
 
-\textbf{Interpretation:} the estimator stays \textbf{consistent and
-unbiased for the same expected revenue} \(E[R_i(\Delta)]\) --- nothing
-about what a candidate \(R\) means, or how to read a confidence
-interval, changes. The correction only strips out noise the estimator
-didn't need; the same population quantity is estimated \textbf{more
-efficiently} --- a tighter interval around the same target, not a
-different one.
+\textbf{Interpretation:} the estimator remains \textbf{unbiased} for
+expected revenue \(E[R_i(\Delta)]\). CV removes part of the sampling
+variance irrelevant for changes in \(\tau_P\) but leaving cross-firm
+identifying variation that do depend on \(\theta,\gamma\) and
+idiosyncratic noise.
 \end{frame}
 
 \begin{frame}{Control-Variate Moment --- Details}
@@ -1787,16 +1871,18 @@ different one.
 \tightlist
 \item
   \(\hat\beta=0.9988\) (OLS, pooled across tested \(\Delta\)'s),
-  \(\mu_c=E[t1_i/pgdp_i]\) --- both fixed, precomputed constants, never
-  new \((\theta,\gamma)\) decision variables
+  \(\mu_c=E[t1_i/pgdp_i]\), both fixed and precomputed
 \item
   \(E[g^{\text{adj}}_{R,i}]=E[g_{R,i}]\) exactly for \emph{any}
-  \(\hat\beta\) --- verified to 6+ sig figs numerically, not just
-  algebraically
+  \(\hat\beta\)
 \item
   Beats industry\(\times\)year TWFE decisively (38-41x vs.~2.5x), zero
   added dimensions, no small-cell risk (100/318 TWFE cells have \(<30\)
   obs)
+\item
+  Valid because the only open channel is undetected evasion through
+  changes in \(\tau_P\). Tax reveneu from sales taxes on sales is kept
+  fixed
 \end{itemize}
 \end{frame}
 
@@ -1815,13 +1901,11 @@ Every point is a real candidate revenue level, tested against the data
 \begin{itemize}
 \tightlist
 \item
-  A tax \textbf{increase} is bad news almost immediately: even a
-  \textbf{0.5\% increase} is already statistically distinguishable from
-  current policy
+  A tax \textbf{increase} of \textbf{0.5\%} is already statistically
+  distinguishable from current policy
 \item
-  A tax \textbf{cut} helps too, but the gain only becomes statistically
-  distinguishable once the cut reaches about \textbf{8\%} --- much
-  larger than intuition suggests
+  A tax \textbf{cut} increases tax revenue, but the gain only becomes
+  statistically distinguishable at the \textbf{8\%} cut---
 \item
   Both results come from a formal statistical test, not a point estimate
 \end{itemize}
@@ -2206,13 +2290,22 @@ Same trick, done separately for each value of \(Z\):
 \begin{equation}\protect\phantomsection\label{eq-tilde-big-w}{
 \tilde{\mathcal{W}}_{it}\equiv \mathcal{W}_{it}-\alpha_K k_{it}-\alpha_L l_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}
 }\end{equation}
+
+Even though \(\varepsilon_{it}\) is independent of primitives
+\{\(M^*, M, Y, K, L, \omega, \psi\)\}, it is \emph{not independent} of
+observables built from \(\mathcal{V},\tilde{\mathcal{W}}\) by
+construction
+
+I need the density
+\(f_{\varepsilon|\mathcal{V},\tilde{\mathcal{W}}}(\varepsilon|\mathcal{V},\tilde{\mathcal{W}})\)
+which is different from the unconditional
+\(f_{\varepsilon}(\varepsilon)\)
 \end{frame}
 
 \begin{frame}{Solving for \(M\) and \(e\)}
 \protect\phantomsection\label{solving-for-m-and-e}
-\textbf{NEW} From Equation~\ref{eq-eva-emp}, I can \emph{algebraically
-solve} for true inputs as function of observed variables and an the
-error term,
+From Equation~\ref{eq-eva-emp}, I can \emph{algebraically solve} for
+true inputs as function of observed variables and an the error term,
 
 \begin{itemize}
 \tightlist
@@ -2260,296 +2353,209 @@ e_{it}(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big
 }\end{equation}
 \end{frame}
 
-\begin{frame}{Drawing from \(f_\varepsilon\)}
-\protect\phantomsection\label{drawing-from-f_varepsilon}
-Substituting Equation~\ref{eq-e-eps} and Equation~\ref{eq-w-eps} into
-Equation~\ref{eq-psi-eps}, and simplifying
-
-\begin{equation}\protect\phantomsection\label{eq-psi-mom}{
-\begin{aligned}
-    \psi_{it}+&\delta_1(1-\beta)\varepsilon=\\
-    &\ln(\tau\rho_t)+\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))\\
-    &-\delta_0+2\delta_2(1-\beta)\tilde{\mathcal{W}}_{it}\varepsilon-\delta_2(1-\beta)^2\varepsilon^2\\
-    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
-\end{aligned}
-}\end{equation}
-\end{frame}
-
-\begin{frame}{Taking conditional expectation}
-\protect\phantomsection\label{taking-conditional-expectation}
-Assuming \(\psi\perp Z\), \(\varepsilon\perp Z\), and
-\(\omega\perp\varepsilon\).
-\(\varepsilon\perp Z\Rightarrow E[\delta_1(1-\beta)\varepsilon\mid Z]=\delta_1(1-\beta)E[\varepsilon\mid Z]=0\)
-
-\begin{equation}\protect\phantomsection\label{eq-psi-mom-exp}{
-\begin{aligned}
-    0=&\ln(\tau\rho_t)+E[\ln(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal{V}_{it}-\varepsilon}))|Z]\\
-    &\underbrace{-\delta_0-\delta_2(1-\beta)^2\sigma_\varepsilon^2}_{\textit{Constant (known from stage 1)}}\\
-    &+\delta_1 \tilde{\mathcal{W}}_{it}-\delta_2\tilde{\mathcal{W}}_{it}^2
-\end{aligned}
-}\end{equation}
-\end{frame}
-
 \begin{frame}{Why not simulated GMM with instruments?}
 \protect\phantomsection\label{why-not-simulated-gmm-with-instruments}
-Everything in Equation~\ref{eq-psi-mom-exp} is data and parameters,
-\textbf{except}: \[
+The problem is the non-linear term,
+
+\[
 \begin{aligned}
-    \ell_{it}(\varepsilon;\lambda)\equiv&\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)\\
+    h(e(\varepsilon^{(s)},\mathcal{V}))=&\ln\!\big(1-2\lambda M^*_{it}(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon})\big)\\
     &=\ln\!\big(1-2\lambda M^*_{it}\big(1-\textbf{e}^{-\ln\left(\frac{M^*_{it}}{M_{it}}\right)+\varepsilon_{it}-\varepsilon^{(s)}}\big)\big)\\
     &=\ln\!\big(1-2\lambda \underbrace{\left(M^*_{it}-M_{it}\textbf{e}^{\varepsilon_{it}-\varepsilon^{(s)}}\right)}_{\ne e_{it}}\big)\\
 \end{aligned}
 \]
 
 The moment to holds under \(\varepsilon_{it}\), the realized measurement
-error for firm \(it\), \(\ell_{it}(\varepsilon_{it};\lambda)\)
-\end{frame}
+error for firm \(it\)
 
-\begin{frame}{Simulating the nonlinear term}
-\protect\phantomsection\label{simulating-the-nonlinear-term}
-If we hold firm \(it\)'s own \((M^*_{it},\mathcal V_{it})\) fixed and
-simulate \(\varepsilon\), \[
-\hat\ell_{it}^S(\lambda)=\frac1S\sum_{s=1}^S\ell_{it}(\varepsilon^{(s)};\lambda),\qquad \varepsilon^{(s)}\stackrel{iid}{\sim}\hat f_\varepsilon
-\]
+I cannot use instruments to make it \emph{go away} with an independence
+assumption
 
-By the LLN, as \(S\to\infty\):
-\(\hat\ell_{it}^S(\lambda)\xrightarrow{a.s.}\bar\ell_{it}(\lambda)\equiv\int\ell_{it}(\varepsilon;\lambda)\,f_\varepsilon(\varepsilon)\,d\varepsilon\)
-
-In general, however,
-
-\[
-\bar\ell_{it}(\lambda)\ne\ell_{it}(\varepsilon_{it};\lambda)
-\]
-\end{frame}
-
-\begin{frame}{Why \(\mathcal V_{it}\) already contains
-\(\tilde{\mathcal W}_{it}\)}
-\protect\phantomsection\label{why-mathcal-v_it-already-contains-tildemathcal-w_it}
-At the truth (\(\varepsilon=\varepsilon_{it}\)), \(e_{it}\) solves the
-firm's FOC: \(e_{it}=e^*(\psi_{it},\omega_{it})\) (inverting
-Equation~\ref{eq-psi-eps} for \(e\)).
-
-Substitute this and Equation~\ref{eq-w-eps} into
-Equation~\ref{eq-e-eps}'s own inverse,
-\(\mathcal V_{it}=\ln\big(M_{it}+e_{it}/(M_{it})\big)-\varepsilon_{it}\):
-
-\[
-\mathcal V_{it}=\ln\!\left(\frac{M_{it}+e^*\big(\psi_{it},\,\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon_{it}\big)}{M_{it}}\right)-\varepsilon_{it}
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  \(\varepsilon_{it}\) must be consistent with \(\mathcal V_{it}\) and
-  \(\tilde{\mathcal W}_{it}\) jointly
-\item
-  \(\ell_{it}\) must be conditioned on
-  \((\mathcal V_{it},\tilde{\mathcal W}_{it})\)
-\end{itemize}
-\end{frame}
-
-\begin{frame}{The conditional expectation}
-\protect\phantomsection\label{the-conditional-expectation}
-Since \(\mathcal V_{it}\) depends on \(\tilde{\mathcal W}_{it}\) too
-(shown above), condition on both, then apply the law of iterated
-expectations:
-
-\[
-E[\ell_{it}(\varepsilon_{it};\lambda)\mid Z]=E\Big[E[\ell_{it}(\varepsilon_{it};\lambda)\mid Z,\mathcal V_{it},\tilde{\mathcal W}_{it}]\ \Big|\ Z\Big]
-\]
-
-\[
-E[\ell_{it}(\varepsilon_{it};\lambda)\mid Z,\mathcal V_{it},\tilde{\mathcal W}_{it}]=\int \ell_{it}(\varepsilon;\lambda)\,f_{\varepsilon\mid \mathcal V_{it},\tilde{\mathcal W}_{it},Z}(\varepsilon)\,d\varepsilon
-\]
-
-\begin{itemize}
-\tightlist
-\item
-  LIE reveals the inner integral needs
-  \(f_{\varepsilon\mid\mathcal V_{it},\tilde{\mathcal W}_{it},Z}\), the
-  density of \(\varepsilon\) \textbf{conditional on this firm's own
-  \(\mathcal V_{it}\)}
-\item
-  \(\hat\ell_{it}^S(\lambda)\) instead integrates against the
-  \textbf{unconditional} \(f_\varepsilon\)
-\item
-  Since \(\mathcal V_{it}=u_{it}-\varepsilon_{it}\) by construction
-  \(\varepsilon_{it}\not\ind\mathcal V_{it}\)
-\end{itemize}
+To integrate it out I would need
+\(E[h(e(\varepsilon,\mathcal{V}))|\mathcal{V}]=\int h(e(\varepsilon,\mathcal{V}))f(\varepsilon|\mathcal{V})d\varepsilon\)
+(Gouriéroux and Monfort 1996)
 \end{frame}
 
 \begin{frame}{Testing with data}
 \protect\phantomsection\label{testing-with-data}
 I simulate \(\varepsilon^{(s)}\), S=250, from \(\hat{f_{\varepsilon}}\),
 efficient GMM objective weigthed by \(\hat\Omega^{-1}\), and test the
-J-statistic against its \(\chi^2\) distribution (Hansen 1982)
+J-statistic against its \(\chi^2_{d_g}\) distribution
 
 \(\varepsilon^{(s)}\) drawn from CORP firms' empirical distribution,
 feasibility-filtered (\(e>0,M>0\));
 
-Two set of moment conditions tested:
-
-\begin{itemize}
-\tightlist
-\item
-  Exactly identified (\(d_g=d_{\theta}=4\)):
-  \(g(\theta)=(\psi,\psi\omega,\psi\omega^2,\varepsilon h')\) (last
-  moment is a score term for \(\lambda\)). I report the value of the
-  objective function.
-\item
-  Overidentified (\(d_g=5>d_{\theta}=4\)): 5th moment added,
-  \(\psi\ln M\). I report value of obj. fun and J-statistical test
-\end{itemize}
+I tested the overidentified case (\(d_g=5>d_{\theta}=4\)):
+\(g(\theta)=(\psi,\psi\omega,\psi\omega^2,\psi\ln M,\varepsilon h')\)
+(last moment is a score term for \(\lambda\); \(\psi\ln M\) is the
+overidentifying moment). I report the J-statistic, \(J=n\hat L_n\),
+against \(\chi^2_{5,.95}=11.07\).
 \end{frame}
 
 \begin{frame}{Results of the test}
 \protect\phantomsection\label{results-of-the-test}
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\(\hat L_n\) (\(d_g=4\))
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\(\hat L_n\) (\(d_g=5\))
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\(J\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\(\chi^2_{1,.95}\)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\(m^*_{it-1}\) & 1.022 & 1.020 & 29,258 & 3.84 \\
-\(\tilde{\mathcal{W}}_{it-2}\) & 1.011 & 1.009 & 28,961 & 3.84 \\
-\bottomrule\noalign{}
-\end{longtable}
+\begin{table}
+
+\caption{\label{tbl-msm-cube}}
+
+\centering{
+
+\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{../Paper/tbls/1447-msm-cube-table.png}
+
 }
+
+\end{table}%
+\end{frame}
+
+\begin{frame}{The two grid searches}
+\protect\phantomsection\label{the-two-grid-searches}
+\begin{columns}[T]
+\begin{column}{0.5\linewidth}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth,height=0.3\textheight,keepaspectratio,alt={Around the MSM optimizer solution}]{../Paper/images/1446-msm-cube-lag_m-3d.png}
+\caption{Around the MSM optimizer solution}
+\end{figure}
+\end{column}
+
+\begin{column}{0.5\linewidth}
+\begin{figure}
+\centering
+\includegraphics[width=\linewidth,height=0.3\textheight,keepaspectratio,alt={Around the ELVIS point}]{../Paper/images/1446-msm-cube-elvis-lag_m-3d.png}
+\caption{Around the ELVIS point}
+\end{figure}
+\end{column}
+\end{columns}
+
+Center and six adjacent points (\(\lambda\times/\div2\),
+\(\delta_1\pm1\), \(\delta_2\pm0.2\)), \(\delta_0\) profiled. Blue =
+rejects at 95\%.
 
 \begin{itemize}
 \tightlist
 \item
-  Exactly identified: \(\hat L_n\) not close to zero, parameter
-  estimates hit generous bounds
+  Naive MSM rejects at \textbf{all 14 points}:
+  \(J\approx29{,}000\)--\(36{,}000\) against \(\chi^2_{5,.95}=11.07\)
 \item
-  Overidentified: Under the null, \(H_0: g(\theta)=0\). Rejects null at
-  95\% by a large factor. \(\hat L_n\) still not below 1.
+  Around its own optimizer \(J\) barely moves (under 1\%): a flat ridge,
+  not a sharp minimum
+\item
+  Around the ELVIS point it rejects just as hard: the test favors
+  neither
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Fitted Parameters}
-\protect\phantomsection\label{fitted-parameters}
-\scriptsize
-
-\textbf{Exactly identified (4 moments)}
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Instrument
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_0\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_1\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_2\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\sigma^2_\psi\)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\(m^*_{it-1}\) & \(1.30\times10^{-4}\) & \(32.98\) & \(50.0\) (box
-bound) & \(10.47\) & \(6{,}416\) \\
-\(\tilde{\mathcal W}_{it-2}\) & \(1.63\times10^{-8}\) & \(50.0\) (box
-bound) & \(32.46\) & \(4.63\) & \(101.5\) \\
-\bottomrule\noalign{}
-\end{longtable}
-}
+\begin{frame}{vs.~ELVIS}
+\protect\phantomsection\label{vs.-elvis}
 \end{frame}
 
-\begin{frame}{}
-\protect\phantomsection\label{section-3}
-\scriptsize
-
-\textbf{Over-identified (5 moments, adding \(\psi\ln M\)):}
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Instrument
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\lambda\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_0\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_1\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\delta_2\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\(\hat\sigma^2_\psi\)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\(m^*_{it-1}\) & \(4.58\times10^{-3}\) & \(-8.41\) & \(10.90\) &
-\(2.39\) & \(321.6\) \\
-\(\tilde{\mathcal W}_{it-2}\) & \(1.62\times10^{-5}\) & \(-50.0\) (box
-bound) & \(-25.93\) & \(-3.43\) & \(81.8\) \\
-\bottomrule\noalign{}
-\end{longtable}
-}
+\begin{frame}{What would a \emph{correct} MSM need?}
+\protect\phantomsection\label{what-would-a-correct-msm-need}
+The moment is \(E[\psi\mid\text{firm's own data}]\), not \(E[\psi]\).
 
 \begin{itemize}
 \tightlist
 \item
-  All except one specification hit a box bound on \(\delta_0\) or
-  \(\delta_1\)
+  Unconditionally, \(E[\psi]=\int\psi f_\psi\,d\psi=0\) by normalization
+  --- nothing to simulate
 \item
-  \(\tilde{\mathcal W}_{it-2}\)'s overidentified fit gets the cost
-  function's curvature backwards (\(\hat\delta_1,\hat\delta_2<0\))
+  The problem: \((e_{it},\omega_{it})\) are not observed firm-by-firm
 \item
-  \(\hat\sigma^2_\psi\) swings 82 to 6,416 across specifications
+  Firm \(i\) only reveals
+  \(o_{it}=(\mathcal V_{it},\tilde{\mathcal W}_{it},M^*_{it})\)
 \item
-  Compare to ELVIS: \(\hat\lambda\approx5.4\times10^{-7}\) for both
-  instruments, \(\hat\delta_1,\hat\delta_2>0\) stable across different
-  grid specifications
+  A valid simulated moment must average over the firm's
+  \textbf{posterior} for \(\varepsilon\) given \(o_{it}\)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 1 --- the joint law of the latents}
+\protect\phantomsection\label{step-1-the-joint-law-of-the-latents}
+Primitives are independent, so the joint is the product: \[
+f(\psi,\omega,\varepsilon)=f_\psi(\psi)\,f_\omega(\omega)\,f_\varepsilon(\varepsilon)
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  Equivalently in \((e,\omega)\):
+  \(f(e,\omega)=f(e\mid\omega)\,f(\omega)\)
+\item
+  The FOC makes \(e\) a monotone function of \(\psi\) at fixed
+  \(\omega\), so \[
+  f(e\mid\omega)=f_\psi\big(\psi(e,\omega)\big)\,\big|h'(e)\big|
+  \]
+\item
+  Knowing \(f_\varepsilon\) is not enough: \textbf{\(f_\psi\) sits
+  inside \(f(e\mid\omega)\)}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2 --- condition on the firm's data}
+\protect\phantomsection\label{step-2-condition-on-the-firms-data}
+Given \(o_{it}\), the latents are pinned to a curve indexed by
+\(\varepsilon\): \[
+e(\varepsilon)=M^*_{it}\big(1-\textbf{e}^{-\mathcal V_{it}-\varepsilon}\big),\qquad
+\omega(\varepsilon)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  The double integral over \((e,\omega)\) collapses to a \textbf{single}
+  integral over \(\varepsilon\)
+\item
+  \(\omega\) is not free: it is tied to the observables through
+  \(\tilde{\mathcal W}_{it}\) (and its AR(1) link to the lag), so
+  \(f_\omega f_\varepsilon\) is the \emph{prior}, not the conditional
+\item
+  The change of variables adds the Jacobian
+  \(J_i(\varepsilon)=|h'(e)|\,M^*_{it}\)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 3 --- the posterior weights}
+\protect\phantomsection\label{step-3-the-posterior-weights}
+\[
+w_i(\varepsilon)=f_\psi\big(\psi(\varepsilon)\big)\,J_i(\varepsilon)\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)
+\]
+
+\[
+E[\psi\mid o_{it}]=\frac{\int\psi(\varepsilon)\,w_i(\varepsilon)\,d\varepsilon}{\int w_i(\varepsilon)\,d\varepsilon}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  Naive MSM sets \(w_i=f_\varepsilon\) --- it drops
+  \(f_\psi\cdot J_i\cdot f_\omega\)
+\item
+  The \textbf{denominator is exactly firm \(i\)'s MSL likelihood}
+  (Equation~\ref{eq-Lunc})
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion: correct MSM \(\Rightarrow\) MSL}
+\protect\phantomsection\label{conclusion-correct-msm-rightarrow-msl}
+\begin{itemize}
+\tightlist
+\item
+  Correct MSM needs \(f_\psi\) in the weights, and \(f_\psi\) is the
+  unknown
+\item
+  The only way to get \(f_\psi\) is to maximize
+  \(\prod_i\int w_i\,d\varepsilon\) --- that is MSL
+\item
+  Once MSL is run, the weighted moment adds nothing: same ingredients,
+  less efficient
+\item
+  So: skip MSM and do MSL. ELVIS remains the \(f_\psi\)-free robustness
+  check
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Two alternative solutions}
 \protect\phantomsection\label{two-alternative-solutions}
-MSL: deriving the density of observables and mapping to unobservables
-using a density transformation.
-
-\begin{itemize}
-\tightlist
-\item
-  Feasible but resulting density needs additional density of the AR(1)
-  process of productivity and of the lag of \(\varepsilon\), and
-  integrating out two variables, \(\varepsilon_{it}\) and
-  \(\varepsilon_{it-1}\). MSL delivers estiamtes of \(\theta\) and
-  \(f_\psi\)
-\end{itemize}
-
 ELVIS: doesn't need \(f_\varepsilon\) or \(f_\psi\) or the other
 densities. Grid search over \(\theta\) and solves for an exponential
 tilt of the sampler (Schennach 2014)
@@ -2565,6 +2571,68 @@ tilt of the sampler (Schennach 2014)
 Current fit: \(\hat\lambda=5.427\times10^{-7}\), \(\hat\delta_1=4.3\),
 \(\hat\delta_2=0.54\), \(\hat L_n\approx0.0002\)
 \sm{\hyperlink{sec-elvis-res}{ELVIS preliminary results}}
+
+MSL: deriving the density of observables and mapping to unobservables
+using a density transformation.
+
+\begin{itemize}
+\tightlist
+\item
+  Feasible but resulting density needs additional density of the AR(1)
+  process of productivity and of the lag of \(\varepsilon\), and
+  integrating out two variables, \(\varepsilon_{it}\) and
+  \(\varepsilon_{it-1}\). MSL delivers estiamtes of \(\theta\) and
+  \(f_\psi\)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Testing each estimator at each other's best point}
+\protect\phantomsection\label{sec-crosstest}
+\begin{table}
+
+\caption{\label{tbl-crosstest}}
+
+\centering{
+
+\includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{../Paper/tbls/1444-crosstest-table.png}
+
+}
+
+\end{table}%
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{ELVIS} does not reject its own point and rejects the other two
+  by a large factor
+\item
+  \textbf{Naive MSM} rejects every point, including its own minimum,
+  and, in simulations, the true \(\theta\): the test cannot discriminate
+\item
+  \textbf{MSL} rejects ELVIS's point, but it is parametric: it imposes
+  normal \(f_\psi,f_\varepsilon,f_\omega\), so this is the best point
+  \emph{under that specification}. Its tests have no goodness-of-fit
+  component
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Why ELVIS}
+\protect\phantomsection\label{why-elvis}
+\begin{itemize}
+\tightlist
+\item
+  ELVIS leaves the distribution of the unobservables free: it needs only
+  \(\hat\beta\) from stage 1, never \(f_\psi\) or \(f_\varepsilon\)
+\item
+  MSL's fit depends on shapes we do not know to be true, and its
+  unconditional \(f_\omega\) is biased in simulations
+\item
+  Choice by practicality: reasonable estimates and robustness to
+  parametric assumptions
+\item
+  Next: refine MSL (conditional \(f_\omega\), skewed \(f_\varepsilon\),
+  logspline \(f_\psi\)) as a robustness check
+\end{itemize}
 \end{frame}
 
 \section{Maximum Simulated Likelihood
@@ -2582,7 +2650,10 @@ Current fit: \(\hat\lambda=5.427\times10^{-7}\), \(\hat\delta_1=4.3\),
   After the recast, one unobservable remains: \(\varepsilon_{it}\), with
   known distribution \(f_\varepsilon\) (from stage 1),
 \item
-  we also know the distribution of \(\omega\)
+  \(f_\omega\) is recovered by deconvolving
+  \(\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}\)
+  (same logspline machinery as \(f_u\)), and the AR(1) innovation
+  density \(f_\eta\) from the fitted AR(1); only \(f_\psi\) is unknown
 \item
   I would need a \emph{density transformation} to get from the
   primitives' density
@@ -3040,6 +3111,272 @@ leaves an \(O(1/S)\) bias, since \(\ln(\text{average})\ne\) average of
 \end{itemize}
 \end{frame}
 
+\begin{frame}{MSL plan: parametric first, then semi-parametric}
+\protect\phantomsection\label{msl-plan-parametric-first-then-semi-parametric}
+\begin{enumerate}
+\tightlist
+\item
+  \textbf{Parametric \(f_\psi=N(0,\sigma^2_\psi)\)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Location normalization \(E[\psi]=0\), as in ELVIS; \(\delta_0\)
+    carries the level
+  \item
+    Debug, sanity-check \(\hat\theta\), compare with ELVIS
+  \end{itemize}
+\item
+  \textbf{Semi-parametric \(f_\psi\): logspline with a roughness
+  penalty} (same estimator as for \(f_u\) and \(f_\omega\); Kang and Qiu
+  (2021), Eilers and Marx (1996)) \[
+  f_\psi(\psi)=\exp\{s(\psi;a)-C(a)\},\quad s(\psi;a)=\sum_j a_jB_j(\psi),\quad C(a)=\ln\!\int_L^R e^{s(\psi;a)}d\psi
+  \]
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Penalized objective:
+    \(\sum_i\ln\!\int w_i(\varepsilon;\theta,a)\,d\varepsilon-\lambda\|D^{(d)}a\|^2\)
+  \item
+    Penalty order \(d\) sets which moments are preserved as
+    \(\lambda\to\infty\) (\(d=2\): mean; \(d=3\): mean and variance,
+    Gaussian limit)
+  \item
+    Knots, support \([L,R]\) and \(d\) guided by the forward-simulated
+    \(\psi\) from the ELVIS fit; \(\lambda\) by BIC/CV
+  \end{itemize}
+\item
+  Standard errors are two-step: Murphy--Topel or a joint bootstrap
+\end{enumerate}
+\end{frame}
+
+\section{\texorpdfstring{Appendix: Is CV-\(R\)'s Precision
+Real?}{Appendix: Is CV-R's Precision Real?}}\label{appendix-is-cv-rs-precision-real}
+
+\begin{frame}{Is CV-\(R\)'s Precision Real?}
+\protect\phantomsection\label{sec-cv-diagnostic}
+Robustness checks requested by Nail Kashaev on the counterfactual's
+control-variate correction
+\end{frame}
+
+\begin{frame}{The Question}
+\protect\phantomsection\label{the-question}
+\footnotesize
+
+Under a correctly-estimated, efficient weighting matrix
+\(\hat\Omega^{-1}\), a moment's own variability shouldn't matter for a
+GMM/CUE test's conclusions --- so why did switching from raw \(R\) to
+CV-adjusted \(R\) turn a vacuous test into a tight, closed confidence
+set?
+
+\begin{itemize}
+\tightlist
+\item
+  Numerical-artifact hypothesis: is this eigenvalue truncation in
+  \(\hat\Omega^-\), not genuine information?
+\item
+  Picked one concrete point to check directly: \(\Delta=-4\%\),
+  \(R=\$1850\), \(\theta\) fixed at the standard operating point
+\item
+  Raw \(R\) (fit fresh at this point): \(TS\approx0.05\), passes
+  overwhelmingly
+\item
+  CV-\(R\) (already fitted): \(TS_{\text{hard}}=45.3\), rejects
+  decisively
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Is It Eigenvalue Truncation?}
+\protect\phantomsection\label{is-it-eigenvalue-truncation}
+\footnotesize
+
+New read-only diagnostic (\texttt{omegadiag},
+\texttt{Code/C-estimator/grid\_estimator.cpp}): dumps the full
+eigen-spectrum, truncation status (\(w_k>10^{-8}\max_k w_k\), the same
+relative threshold behind the 2026-09-07 \(h'\) score-moment bug), and
+per-row loadings at a fixed \((\theta,\gamma,\Delta,R)\).
+
+\textbf{Result: truncation is essentially identical between raw \(R\)
+and CV-\(R\)} --- same 4 of 10 eigen-directions kept, same 6 discarded
+(\texttt{psi}, \texttt{eps}, \texttt{eps·om}, \texttt{eps·lnM},
+\texttt{psi·om}, and the \(\lambda\)-score moment), in both fits, with
+similar condition numbers (\(\sim10^7\)).
+
+\(R\) loads \(\approx1.000\) on its own dedicated eigen-direction,
+essentially nothing else --- and that direction is \textbf{never}
+truncated, in either fit. It only differs in \emph{rank}: raw \(R\)'s
+huge variance makes it the single largest eigenvalue in the whole
+system; CV-\(R\)'s smaller variance puts it lower --- but still
+comfortably above the truncation floor.
+\end{frame}
+
+\begin{frame}{The Mechanism: Same Deviation, Different Yardstick}
+\protect\phantomsection\label{the-mechanism-same-deviation-different-yardstick}
+\footnotesize
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrr@{}}
+\toprule\noalign{}
+& raw \(R\) & CV-\(R\) \\
+\midrule\noalign{}
+\endhead
+SE & \$559.4 & \$13.5 \\
+deviation from candidate & \$82.5 & \$81.6 \\
+in SE units & 0.15 SEs & 6.03 SEs \\
+TS from this row alone & 0.02 & 36.6 \\
+\bottomrule\noalign{}
+\end{longtable}
+}
+
+Back-solving ``how far would raw \(R\) need to be to reject from this
+row alone'' gives \(\approx\$2{,}695\) --- matches raw's own actual
+rejecting grid candidates (\(\approx\$2{,}670\)--\(2{,}701\) from
+center) almost exactly.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Efficient weighting is working correctly --- a lower-noise
+  moment earns more weight for the same deviation. Not a truncation
+  artifact.}
+\item
+  \(\hat\gamma\) itself barely differs between the two fits
+  (\(\gamma_{10}\), the multiplier directly on \(R\): only \(+15\%\))
+  --- the whole gap lives in the variance denominator, not in how hard
+  \(\gamma\) has to pull
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{An Independent Check: Is \(\hat\beta\)
+Data-Mined?}
+\protect\phantomsection\label{an-independent-check-is-hatbeta-data-mined}
+\footnotesize
+
+CV-\(R\)'s correction uses \(\hat\beta=0.998838\), fitted by regressing
+\(R_i\) on \(t1_i\). Could this be inflating precision by construction?
+
+\textbf{Test: fix \(\beta=1\) exactly} --- straight from the revenue
+identity itself, no fitting at all: \[
+R_i(\Delta)-t1_i = -\tau_P\big[M_i+(1-q(e'(\Delta)))e'(\Delta)\big]
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  New \texttt{row9\_mode=theory} in \texttt{grid\_estimator.cpp}: same
+  control-variate operation, coefficient fixed rather than
+  regression-estimated
+\item
+  Smoke test at the anchor (\(\Delta=0\)): SE\(=13.59\) vs.~CV's own
+  SE\(=13.53\) --- a 0.4\% difference --- and \(\hat L_n\) matching CV's
+  own to 5 significant figures
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Result: Nested Inside CV-\(R\)'s Own Bounds, Everywhere}
+\protect\phantomsection\label{result-nested-inside-cv-rs-own-bounds-everywhere}
+\footnotesize
+
+Tested at all 9 of CV-\(R\)'s own headline \(\Delta\)'s. Every single
+implied CI nests inside CV-\(R\)'s own fine-resolved hard-CI, several
+upper bounds matching almost exactly:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}rrr@{}}
+\toprule\noalign{}
+\(\Delta\) & theory-implied CI (coarse) & CV-\(R\)'s own CI \\
+\midrule\noalign{}
+\endhead
+\(-8\%\) & {[}1788, 1827{]} & {[}1751, 1839{]} \\
+\(-4\%\) & {[}1728, 1768{]} & {[}1719, 1794{]} \\
+\(0\%\) & {[}1701, 1745{]} & {[}1666, 1745{]} \\
+\(+1\%\) & {[}1356, 1403{]} & {[}1318, 1404{]} \\
+\(+2\%\) & {[}1015, 1064{]} & {[}973, 1065{]} \\
+\bottomrule\noalign{}
+\end{longtable}
+}
+
+\textbf{\(\hat\beta=0.998838\) isn't data-mined --- it's landing almost
+exactly on the value the accounting identity hands you directly.}
+\end{frame}
+
+\begin{frame}{A Caveat Worth Being Explicit About}
+\protect\phantomsection\label{a-caveat-worth-being-explicit-about}
+\footnotesize
+
+Converting the theory target back to real-revenue terms adds
+\(\mu_c=E[t1_i/pgdp_i]\), treated here as a fixed known constant ---
+exactly the same simplification CV-\(R\)'s own \(\hat\beta,\mu_c\)
+already make.
+
+\begin{itemize}
+\tightlist
+\item
+  A fully rigorous treatment would give \(\mu_c\) its own sampling
+  distribution rather than a plugged-in point estimate
+\item
+  Doesn't change the conclusion --- it's a simple, precisely-measured
+  empirical mean, not a model-based quantity
+\item
+  But it's a direct illustration of \emph{why} raw \(R\) was so
+  imprecise in the first place: \(t1_i\)'s own firm-to-firm variation
+  was never being controlled for at all
+\end{itemize}
+\end{frame}
+
+\begin{frame}[plain]{}
+\protect\phantomsection\label{section-3}
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{../Paper/images/1307-theory-vs-cv.png}
+
+}
+
+\caption{Individual tested candidates, both systems, same real-revenue
+axis --- theory-coefficient's passing points (red) sit in essentially
+the same range as CV-\(R\)'s (blue) at every \(\Delta\).}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[plain]{}
+\protect\phantomsection\label{section-4}
+\begin{figure}[H]
+
+{\centering \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{../Paper/images/1308-theory-raw.png}
+
+}
+
+\caption{The theory-coefficient moment in its own native units
+(\(R_i-t1_i\), no shift back) --- flat near zero (the \(\Delta\to-1\)
+``no credit paid'' limit) across \(-8\%\) to \(-2\%\), a sharp kink at
+\(\Delta=0\), steep collapse through \(+2\%\) --- the same shape as the
+headline revenue curve, as it must be (a pure vertical translation).}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}{Robustness: Done vs.~Planned}
+\protect\phantomsection\label{robustness-done-vs.-planned}
+\footnotesize
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Done:} \(\theta\)-free check (2026-09-14) --- confirms the
+  tight CV bounds aren't an artifact of holding \(\theta\) fixed
+\item
+  \textbf{Done:} theory-coefficient validation (above) --- confirms
+  \(\hat\beta\) isn't data-mined
+\item
+  \textbf{Planned:} instrument comparison, lag\_m vs.~lag\_2\_cal\_W ---
+  the whole counterfactual pipeline has only ever been run for lag\_m;
+  rerunning under lag\_2\_cal\_W's own operating point would test
+  whether the headline result is instrument-robust
+\end{itemize}
+\end{frame}
+
 \begin{frame}{References}
 \protect\phantomsection\label{references}
 \protect\phantomsection\label{refs}
@@ -3060,15 +3397,24 @@ Convergence for Deconvolving a Density.''} \emph{Journal of the American
 Statistical Association} 83 (404): 1184--86.
 \url{https://doi.org/10.1080/01621459.1988.10478718}.
 
+\bibitem[\citeproctext]{ref-Davidson1992}
+Davidson, Russell, and James G. MacKinnon. 1992. {``Regression-Based
+Methods for Using Control Variates in Monte Carlo Experiments.''}
+\emph{Journal of Econometrics} 54 (1-3): 203--22.
+
+\bibitem[\citeproctext]{ref-EilersMarx1996}
+Eilers, Paul H. C., and Brian D. Marx. 1996. {``Flexible Smoothing with
+b-Splines and Penalties.''} \emph{Statistical Science} 11 (2): 89--121.
+\url{https://doi.org/10.1214/ss/1038425655}.
+
 \bibitem[\citeproctext]{ref-FanTruong1993}
 Fan, Jianqing, and Young K. Truong. 1993. {``Nonparametric Regression
 with Errors in Variables.''} \emph{The Annals of Statistics} 21 (4):
 1900--1925. \url{https://doi.org/10.1214/aos/1176349402}.
 
-\bibitem[\citeproctext]{ref-Hansen1982}
-Hansen, Lars Peter. 1982. {``Large Sample Properties of Generalized
-Method of Moments Estimators.''} \emph{Econometrica} 50 (4): 1029--54.
-\url{https://doi.org/10.2307/1912775}.
+\bibitem[\citeproctext]{ref-GourierouxMonfort1996}
+Gouriéroux, Christian, and Alain Monfort. 1996. \emph{Simulation-Based
+Econometric Methods}. Oxford University Press.
 
 \bibitem[\citeproctext]{ref-Hendry1984}
 Hendry, David F. 1984. {``Monte Carlo Experimentation in
@@ -3087,6 +3433,12 @@ of Statistics} 14 (1): 970--1023.
 
 \bibitem[\citeproctext]{ref-Judd1998}
 Judd, Kenneth L. 1998. \emph{Numerical Methods in Economics}. MIT Press.
+
+\bibitem[\citeproctext]{ref-Kang2021}
+Kang, Yicheng, and Peihua Qiu. 2021. {``Nonparametric Deconvolution by
+Fourier Transformation and Other Related Approaches.''} \emph{Handbook
+of Measurement Error Models}, October, 221--44.
+\url{https://doi.org/10.1201/9781315101279-11}.
 
 \bibitem[\citeproctext]{ref-Lee1992}
 Lee, Lung-Fei. 1992. {``On Efficiency of Methods of Simulated Moments

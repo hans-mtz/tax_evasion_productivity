@@ -1,0 +1,23 @@
+\frametitle{An Independent Check: Is \(\hat \beta \) Data-Mined?}
+\protect\phantomsection\label{an-independent-check-is-hatbeta-data-mined}
+\footnotesize
+
+CV-\(R\)'s correction uses \(\hat\beta=0.998838\), fitted by regressing
+\(R_i\) on \(t1_i\). Could this be inflating precision by construction?
+
+\textbf{Test: fix \(\beta=1\) exactly} --- straight from the revenue
+identity itself, no fitting at all: \[
+R_i(\Delta)-t1_i = -\tau_P\big[M_i+(1-q(e'(\Delta)))e'(\Delta)\big]
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  New \texttt{row9\_mode=theory} in \texttt{grid\_estimator.cpp}: same
+  control-variate operation, coefficient fixed rather than
+  regression-estimated
+\item
+  Smoke test at the anchor (\(\Delta=0\)): SE\(=13.59\) vs.~CV's own
+  SE\(=13.53\) --- a 0.4\% difference --- and \(\hat L_n\) matching CV's
+  own to 5 significant figures
+\end{itemize}

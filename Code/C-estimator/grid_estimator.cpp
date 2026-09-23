@@ -889,6 +889,15 @@ static inline double compute_row9(
     double R_nominal = t1 - tau_tilde * (M + (1.0 - q_eprime) * e_prime);
     double R_real = R_nominal / pgdp;
     if (row9_mode == 1) return (R_real - cv_beta * (t1 / pgdp)) - (target - cv_beta * cv_mu_c);
+    // row9_mode==3 (2026-09-18): the THEORY-coefficient control variate --
+    // R_real - t1/pgdp, i.e. beta FIXED AT EXACTLY 1 (from the accounting
+    // identity R=t1-tau_tilde*[...], not regression-estimated like row9_mode
+    // ==1's beta_hat=0.998838). Algebraically identical to
+    // -tau_tilde*(M+(1-q)*e')/pgdp - target, the user's proposed "Loss"
+    // (the FULL purchases credit, unlike row9_mode==2 which deliberately
+    // drops M). Unlike row9_mode==1, no cv_beta/cv_mu_c needed -- the
+    // coefficient is exact, not fitted.
+    if (row9_mode == 3) return (R_real - t1 / pgdp) - target;
     return R_real - target;
 }
 
@@ -1558,6 +1567,86 @@ static void run_dvecdiag_mode(
             std::cout << "  Delta=" << d << " R=" << r << " Lhat=" << Lhat
                       << " dvec[R-moment]=" << dvec[9] << " se[R-moment]=" << std::sqrt(Omega[9 + 9 * D_G_R] / (double)firms.size())
                       << "\n" << std::flush;
+        }
+    }
+    out.close();
+    std::cout << "Saved: " << output_csv << "\n";
+}
+
+// Read-only diagnostic (2026-09-18, for the Nail Kashaev raw-R-vs-CV-R
+// numerical-stability question): dump the FULL eigen-spectrum of Omega,
+// which eigenvalue-direction each row/column loads onto, and how many
+// directions the CUE objective's relative truncation (w[k] > 1e-8*max_eig,
+// see cue_objective_R_std above) actually keeps vs. discards, at a GIVEN
+// fixed (theta,gamma,Delta,R) -- no optimization, reuses compute_dvec_omega_R
+// then duplicates cue_objective_R_std's own eigendecomposition instead of
+// throwing it away. dsyevr returns eigenvalues ASCENDING.
+static void run_omegadiag_mode(
+    const std::vector<FirmData> &firms, const std::vector<double> &Delta_values, const std::vector<double> &R_values,
+    double delta0, double lambda, double delta1, double delta2, const double *gamma,
+    int n_burn, int n_keep, uint64_t base_seed, int n_threads,
+    const std::string &output_csv,
+    int row9_mode = 0, double cv_beta = 0.0, double cv_mu_c = 0.0
+) {
+    std::ofstream out(output_csv);
+    if (!out.is_open()) { std::cerr << "ERROR: could not open output_csv: " << output_csv << "\n"; std::exit(1); }
+    out << std::setprecision(15);
+    out << "Delta,R,eig_rank,eigenvalue,kept,d2,d2_sq_over_eig,Lhat,condition_number_kept,n_kept,n";
+    for (int i = 0; i < D_G_R; i++) out << ",load_row" << (i + 1);
+    out << "\n";
+    for (double d : Delta_values) {
+        for (double r : R_values) {
+            double dvec[D_G_R], Omega[D_G_R * D_G_R];
+            compute_dvec_omega_R(firms, lambda, delta0, delta1, delta2, gamma, d, r,
+                                  n_burn, n_keep, base_seed, n_threads, dvec, Omega,
+                                  row9_mode, cv_beta, cv_mu_c);
+
+            double A[D_G_R * D_G_R];
+            std::copy(Omega, Omega + D_G_R * D_G_R, A);
+            double w[D_G_R];
+            __CLPK_integer n_lp = D_G_R, lda = D_G_R, il = 1, iu = D_G_R, m, ldz = D_G_R, info;
+            double vl = 0, vu = 0, abstol = 1e-10;
+            __CLPK_integer lwork = -1, liwork = -1, iwork_query;
+            double work_query;
+            double Z[D_G_R * D_G_R];
+            __CLPK_integer isuppz[2 * D_G_R];
+            dsyevr_((char *)"V", (char *)"A", (char *)"U", &n_lp, A, &lda, &vl, &vu, &il, &iu,
+                    &abstol, &m, w, Z, &ldz, isuppz, &work_query, &lwork, &iwork_query, &liwork, &info);
+            lwork = (__CLPK_integer)work_query;
+            liwork = iwork_query;
+            std::vector<double> work(lwork);
+            std::vector<__CLPK_integer> iworkv(liwork);
+            dsyevr_((char *)"V", (char *)"A", (char *)"U", &n_lp, A, &lda, &vl, &vu, &il, &iu,
+                    &abstol, &m, w, Z, &ldz, isuppz, work.data(), &lwork, iworkv.data(), &liwork, &info);
+
+            double max_eig = w[m - 1];
+            double obj = 0.0;
+            int n_kept = 0;
+            double min_kept_eig = std::numeric_limits<double>::infinity();
+            for (int k = 0; k < m; k++) {
+                if (w[k] > 1e-8 * max_eig) {
+                    double d2 = 0.0;
+                    for (int i = 0; i < D_G_R; i++) d2 += Z[i + k * D_G_R] * dvec[i];
+                    obj += 0.5 * d2 * d2 / w[k];
+                    n_kept++;
+                    if (w[k] < min_kept_eig) min_kept_eig = w[k];
+                }
+            }
+            double cond_kept = n_kept > 0 ? max_eig / min_kept_eig : std::numeric_limits<double>::infinity();
+            std::cout << "Delta=" << d << " R=" << r << " Lhat=" << obj
+                      << " n_kept=" << n_kept << "/" << m << " cond_kept=" << cond_kept
+                      << " max_eig=" << max_eig << " min_eig=" << w[0] << "\n" << std::flush;
+            for (int k = 0; k < m; k++) {
+                bool kept = w[k] > 1e-8 * max_eig;
+                double d2 = 0.0;
+                for (int i = 0; i < D_G_R; i++) d2 += Z[i + k * D_G_R] * dvec[i];
+                double contrib = kept ? 0.5 * d2 * d2 / w[k] : 0.0;
+                out << d << "," << r << "," << k << "," << w[k] << "," << (kept ? 1 : 0) << ","
+                    << d2 << "," << contrib << ","
+                    << obj << "," << cond_kept << "," << n_kept << "," << firms.size();
+                for (int i = 0; i < D_G_R; i++) out << "," << Z[i + k * D_G_R];
+                out << "\n";
+            }
         }
     }
     out.close();
@@ -2876,7 +2965,8 @@ int main(int argc, char **argv) {
         int row9_mode_rgi = 0;
         if (row9_str_rgi == "cv") row9_mode_rgi = 1;
         else if (row9_str_rgi == "loss") row9_mode_rgi = 2;
-        else if (row9_str_rgi != "raw") { std::cerr << "row9_mode must be raw, cv, or loss\n"; return 1; }
+        else if (row9_str_rgi == "theory") row9_mode_rgi = 3;
+        else if (row9_str_rgi != "raw") { std::cerr << "row9_mode must be raw, cv, loss, or theory\n"; return 1; }
         double cv_beta_rgi = std::strtod(get_opt(opt, "cv_beta", "0").c_str(), nullptr);
         double cv_mu_c_rgi = std::strtod(get_opt(opt, "cv_mu_c", "0").c_str(), nullptr);
         if (row9_mode_rgi == 1 && (get_opt(opt, "cv_beta", "").empty() || get_opt(opt, "cv_mu_c", "").empty())) {
@@ -2929,7 +3019,8 @@ int main(int argc, char **argv) {
         int row9_mode = 0;
         if (row9_str == "cv") row9_mode = 1;
         else if (row9_str == "loss") row9_mode = 2;
-        else if (row9_str != "raw") { std::cerr << "row9_mode must be raw, cv, or loss\n"; return 1; }
+        else if (row9_str == "theory") row9_mode = 3;
+        else if (row9_str != "raw") { std::cerr << "row9_mode must be raw, cv, loss, or theory\n"; return 1; }
         double cv_beta = std::strtod(get_opt(opt, "cv_beta", "0").c_str(), nullptr);
         double cv_mu_c = std::strtod(get_opt(opt, "cv_mu_c", "0").c_str(), nullptr);
         if (row9_mode == 1 && (get_opt(opt, "cv_beta", "").empty() || get_opt(opt, "cv_mu_c", "").empty())) {
@@ -2975,7 +3066,8 @@ int main(int argc, char **argv) {
         int row9_mode_dd = 0;
         if (row9_str_dd == "cv") row9_mode_dd = 1;
         else if (row9_str_dd == "loss") row9_mode_dd = 2;
-        else if (row9_str_dd != "raw") { std::cerr << "row9_mode must be raw, cv, or loss\n"; return 1; }
+        else if (row9_str_dd == "theory") row9_mode_dd = 3;
+        else if (row9_str_dd != "raw") { std::cerr << "row9_mode must be raw, cv, loss, or theory\n"; return 1; }
         double cv_beta_dd = std::strtod(get_opt(opt, "cv_beta", "0").c_str(), nullptr);
         double cv_mu_c_dd = std::strtod(get_opt(opt, "cv_mu_c", "0").c_str(), nullptr);
         std::cout << "Mode: dvecdiag, " << Delta_values_dd.size() << " Deltas x " << R_values_dd.size()
@@ -2984,6 +3076,49 @@ int main(int argc, char **argv) {
                            theta_d[0], theta_d[1], theta_d[2], theta_d[3], gamma_d,
                            n_burn, n_keep, base_seed, n_threads, output_csv,
                            row9_mode_dd, cv_beta_dd, cv_mu_c_dd);
+        return 0;
+    }
+    if (mode == "omegadiag") {
+        // Read-only (2026-09-18): full eigen-spectrum of Omega + truncation
+        // accounting at a GIVEN fixed (theta,gamma,Delta,R) -- same CLI
+        // contract as dvecdiag (theta=, gamma=, deltas=, rvals=, row9_mode=).
+        std::string theta_str = get_opt(opt, "theta", "");
+        std::string gamma_str = get_opt(opt, "gamma", "");
+        std::string delta_str = get_opt(opt, "deltas", "");
+        std::string rvals_str = get_opt(opt, "rvals", "");
+        if (theta_str.empty() || gamma_str.empty() || delta_str.empty() || rvals_str.empty()) {
+            std::cerr << "omegadiag mode requires theta=<4 values: delta0,lambda,delta1,delta2>, gamma=<10 values>, deltas=<comma Delta values>, rvals=<comma R values>\n";
+            return 1;
+        }
+        double theta_o[4];
+        { std::stringstream ss(theta_str); std::string tok; int i = 0;
+          while (std::getline(ss, tok, ',') && i < 4) theta_o[i++] = std::strtod(tok.c_str(), nullptr);
+          if (i != 4) { std::cerr << "theta must have exactly 4 values, got " << i << "\n"; return 1; } }
+        double gamma_o[D_G_R];
+        { std::stringstream ss(gamma_str); std::string tok; int i = 0;
+          while (std::getline(ss, tok, ',') && i < D_G_R) gamma_o[i++] = std::strtod(tok.c_str(), nullptr);
+          if (i != D_G_R) { std::cerr << "gamma must have exactly " << D_G_R << " values, got " << i << "\n"; return 1; } }
+        std::vector<double> Delta_values_o, R_values_o;
+        { std::stringstream ss(delta_str); std::string tok; while (std::getline(ss, tok, ',')) Delta_values_o.push_back(std::strtod(tok.c_str(), nullptr)); }
+        { std::stringstream ss(rvals_str); std::string tok; while (std::getline(ss, tok, ',')) R_values_o.push_back(std::strtod(tok.c_str(), nullptr)); }
+        if (!std::isfinite(firms[0].t1) || !std::isfinite(firms[0].pgdp)) {
+            std::cerr << "omegadiag mode requires input_csv to carry t1,pgdp columns\n";
+            return 1;
+        }
+        std::string row9_str_o = get_opt(opt, "row9_mode", "raw");
+        int row9_mode_o = 0;
+        if (row9_str_o == "cv") row9_mode_o = 1;
+        else if (row9_str_o == "loss") row9_mode_o = 2;
+        else if (row9_str_o == "theory") row9_mode_o = 3;
+        else if (row9_str_o != "raw") { std::cerr << "row9_mode must be raw, cv, loss, or theory\n"; return 1; }
+        double cv_beta_o = std::strtod(get_opt(opt, "cv_beta", "0").c_str(), nullptr);
+        double cv_mu_c_o = std::strtod(get_opt(opt, "cv_mu_c", "0").c_str(), nullptr);
+        std::cout << "Mode: omegadiag, " << Delta_values_o.size() << " Deltas x " << R_values_o.size()
+                  << " Rs, row9_mode=" << row9_str_o << "\n";
+        run_omegadiag_mode(firms, Delta_values_o, R_values_o,
+                            theta_o[0], theta_o[1], theta_o[2], theta_o[3], gamma_o,
+                            n_burn, n_keep, base_seed, n_threads, output_csv,
+                            row9_mode_o, cv_beta_o, cv_mu_c_o);
         return 0;
     }
     if (mode == "grid3d") {

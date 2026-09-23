@@ -1,0 +1,124 @@
+---
+author: Hans Martinez
+format: pdf
+date: last-modified
+---
+
+## Why this note exists
+
+`9999-density-trans.qmd` derives the MSL likelihood (@eq-Lunc, and the dynamic version @eq-Lunc-dynamic). This note turns it into a concrete, code-ready specification: every map, the integration domain, what is data vs. estimated, the first implementation target (**Version A**, unconditional $f_\omega$), and the checks to run before touching real data.
+
+**The MSL code is standalone and must not reuse the ELVIS header (`Code/Rcpp/1200-stage2-elvis-common.h`).** ELVIS carries the true materials level $M$ as its single unobservable ($e(M),\varepsilon(M),\omega(M)$, a sampler on $M$ with support $(M^*-1/2\lambda,M^*)$); MSL carries $\varepsilon$ ($M(\varepsilon),e(\varepsilon),\omega(\varepsilon)$, a quadrature over $\varepsilon$). The two parametrize the same latent curve differently, with different domains and different edge behavior, so sharing helpers would blur which convention is in force. Everything below is derived independently.
+
+## Data, and what is estimated
+
+Per firm-period $it$ (interior, unincorporated, lagged observation available, same 0.5%-trimmed sample as the ELVIS moment-set-A fit, `lag_m` instrument first):
+
+- **Observed:** $\mathcal V_{it}$, $\tilde{\mathcal W}_{it}$, $M^*_{it}$, and the benefit shifter $\tau_{P,it}\rho_t$ (purchases-side rate, sector-time price).
+- **Fixed from stage 1:** $\hat\beta$ (industry-specific) and the $\varepsilon$ density $f_\varepsilon$.
+- **Fixed from a separate deconvolution:** $f_\omega$, recovered from $\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$ by `estimate_theta_W` (`Code/Deconvolution/030-np-deconv-funs.R`). Its input `fs_list$data` is **all firms in the industry** (the corporate condition only restricts the $\beta$/$\varepsilon$ regression, not the data table), which is the intended object: nothing says $E[\eta\mid\text{Corp}]$ and $E[\eta\mid\text{Unincorp}]$ coincide, but $E[\eta_{it}\mid\omega_{it-1}]=0$ holds for both, so the same $f_\omega$ applies. Thin industries ($<30$ CORP observations, the `pooled_fallback` flag already used for $\varepsilon$ in `1201-MSM.R` and `1205-stage2-warmstart.R`) use the instrument-level pooled $f_\omega$ and pooled $f_\varepsilon$.
+- **Estimated (parametric first):** $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$ and $\sigma_\psi$, with $f_\psi=N(0,\sigma_\psi^2)$. Location: $E[\psi]=0$, as in ELVIS; $\delta_0$ carries the level.
+
+## The $\varepsilon$-space maps (interior firm)
+
+From $\mathcal V=\ln(M^*/M)-\varepsilon$, the true materials level is a function of $\varepsilon$:
+$$
+M(\varepsilon)=M^*\textbf{e}^{-\mathcal V-\varepsilon},\qquad
+e(\varepsilon)=M^*-M(\varepsilon)=M^*\big(1-\textbf{e}^{-\mathcal V-\varepsilon}\big).
+$$
+From $\tilde{\mathcal W}=\omega+(1-\beta)\varepsilon$:
+$$
+\omega(\varepsilon)=\tilde{\mathcal W}-(1-\beta)\varepsilon .
+$$
+The evasion FOC under linear $q$, $\tau_P\rho(1-2\lambda e)=\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$, gives
+$$
+\psi(\varepsilon;\theta)=\ln(\tau_P\rho)+\ln\big(1-2\lambda e(\varepsilon)\big)-\delta_0+\delta_1\omega(\varepsilon)-\delta_2\omega(\varepsilon)^2 .
+$$
+With $h(e)\equiv\ln(\tau_P\rho)+\ln(1-2\lambda e)$: $h'(e)=-2\lambda/(1-2\lambda e)$, so $|h'(e)|=2\lambda/(1-2\lambda e)$.
+
+## Integration domain
+
+$e(\varepsilon)>0\iff\varepsilon>-\mathcal V$ (interior firms evade a strictly positive amount). Physical $M>0$ holds for every finite $\varepsilon$ (it is $M^*\times$ an exponential). The FOC ceiling $e<1/(2\lambda)$ binds only if $2\lambda M^*>1$, in which case it gives $\varepsilon<-\mathcal V-\ln\!\big(1-1/(2\lambda M^*)\big)$. So, for firm $i$:
+$$
+\mathcal D_i(\lambda)=\Big(-\mathcal V_i,\ \varepsilon_i^{\max}(\lambda)\Big),\qquad
+\varepsilon_i^{\max}(\lambda)=\begin{cases}+\infty & 2\lambda M^*_i\le1\\ -\mathcal V_i-\ln\!\big(1-\tfrac1{2\lambda M^*_i}\big)&2\lambda M^*_i>1.\end{cases}
+$$
+At the ELVIS operating $\hat\lambda\approx5\times10^{-7}$ and the largest trimmed $M^*\approx7\times10^{5}$, $2\lambda M^*\approx0.7<1$, so the ceiling binds for no firm and the upper limit is $+\infty$ (truncated in practice by $f_\varepsilon$'s tail). **The domain's $\lambda$-dependence is therefore inactive near the operating point**; $\lambda$ enters the likelihood through $|h'|$ and $\psi(\varepsilon;\theta)$ only. This is the ELVIS finding that $\lambda$ was structurally hard to identify, showing up again in a different parametrization; MSL should be checked for the same weakness before it is trusted on $\lambda$.
+
+Quadrature nodes are placed on $\big[\max(-\mathcal V_i,\ \mu_\varepsilon-k\sigma_\varepsilon),\ \min(\varepsilon_i^{\max},\ \mu_\varepsilon+k\sigma_\varepsilon)\big]$ with $k\approx6$; if the interval is empty, the firm's contribution underflows and must be floored, not silently dropped.
+
+## Quadrature: integrate over $s=\ln(1-2\lambda e)$, not $\varepsilon$
+
+Integrating the interior term over $\varepsilon$ on a fixed window mis-integrates a spike of relative width $\sim10^{-5}$ where $1-2\lambda e\to0$ (tight ceiling / large $\lambda$); the optimizer then finds degenerate parameter regions where the numerical "density" integrates to $>1$ (2.52 at $\lambda=1,\delta_0=-12$) and has spuriously higher likelihood than the truth. Change variables to $s=\ln(1-2\lambda e)$: $|d\varepsilon|=\text{den}\,ds/(2\lambda(M^*-e))$, $J=2\lambda M^*/\text{den}$, so
+$$
+\text{interior}=\int f_\psi\big(\psi(s)\big)\,\frac{M^*}{M^*-e}\,f_\omega\big(\omega(\varepsilon)\big)f_\varepsilon(\varepsilon)\,ds,\quad \psi=\ln\tau_P+s-C(\omega),\ e=\frac{1-e^{s}}{2\lambda},\ \varepsilon=-\mathcal V-\ln(1-e/M^*).
+$$
+$f_\psi$ is Gaussian in $s$, so the integrand is smooth; the window is $[\max(s_{\text{bot}},\min C-\ln\tau_P-10\sigma_\psi-1),\ \min(s_{\text{top}},\max C-\ln\tau_P+10\sigma_\psi+1)]$. Check to run for ANY implementation: the density must integrate to 1 over $(\mathcal V,\tilde{\mathcal W})$ (with $M^*$ determined by $\ln M^*=\mathcal V+(c+\tilde{\mathcal W})/(1-\beta)$ in the M-only DGP) at the truth AND at extreme parameter points.
+
+## Likelihood, Version A (interior branch)
+
+The interior branch is below; the full contribution adds the $e^*=0$ branch defined in the next-but-one section.
+
+Using $J_i(\varepsilon)=|h'(e)|\,M^*$ from `9999-density-trans.qmd` (re-checked there: $G_\psi=1/(M^*h'(e))$, so $1/|G_\psi|=|h'|M^*$), and the unconditional $f_\omega$:
+$$
+\ell_i(\theta,\sigma_\psi)=\ln\int_{\mathcal D_i(\lambda)}f_\psi\big(\psi(\varepsilon;\theta)\big)\,\frac{2\lambda M^*_i}{1-2\lambda e(\varepsilon)}\,f_\omega\big(\omega(\varepsilon)\big)\,f_\varepsilon(\varepsilon)\,d\varepsilon,
+\qquad
+\mathcal L=\sum_{i}\ell_i .
+$$
+Behavior at the domain's upper edge (only relevant if the ceiling binds): $|h'|\to\infty$ but $\psi\to-\infty$, so $f_\psi(\psi)\to0$ faster than $|h'|$ grows for the normal (and is exactly zero outside a compact logspline support): the integrand vanishes there, not diverges.
+
+**Version A is deliberately misspecified.** The unconditional $f_\omega$ corresponds to the rejected assumption $\omega\perp(K,L)$ (`9999-density-trans.qmd`, "Correction"). It is the debugging target only. Version B replaces $f_\omega(\omega(\varepsilon))$ with $\int f_\eta\big(\omega(\varepsilon)-g(\tilde{\mathcal W}_{it-1}-(1-\beta)\varepsilon_{it-1})\big)f_\varepsilon(\varepsilon_{it-1})d\varepsilon_{it-1}$ (@eq-Lunc-dynamic, a 2-D integral). Comparing A and B at the same sample measures how much AR(1) persistence matters.
+
+**Correction to the expression just above (and to `9999-density-trans.qmd` Step 3):** $\varepsilon_{t-1}$ cannot be integrated against its prior $f_\varepsilon$, because $\tilde{\mathcal W}_{t-1}=\omega_{t-1}+(1-\beta)\varepsilon_{t-1}$ is observed. The correct object uses the posterior of $\omega_{t-1}$ given $\tilde{\mathcal W}_{t-1}$ (equivalently the joint density of $(\mathcal V_t,\tilde{\mathcal W}_t,\tilde{\mathcal W}_{t-1})$, which needs the extra factor $f_\omega(\omega_{t-1})$; it differs from the conditional by the $\theta$-free constant $f_{\tilde{\mathcal W}}(\tilde{\mathcal W}_{t-1})$). With normal $f_\varepsilon,f_\omega,f_\eta$: $\omega_t\mid\tilde{\mathcal W}_{t-1}\sim N\big(\gamma_0+\gamma_1m_1,\ \sigma_\eta^2+\gamma_1^2v_1\big)$ with $m_1=\mu_\omega+\frac{\sigma_\omega^2}{\sigma_\omega^2+b^2\sigma_\varepsilon^2}(\tilde{\mathcal W}_{t-1}-\mu_\omega-b\mu_\varepsilon)$, $v_1=\sigma_\omega^2-\frac{\sigma_\omega^4}{\sigma_\omega^2+b^2\sigma_\varepsilon^2}$, $b=1-\beta$. This is Version B under normality: it needs only firm-specific $(\mu_\omega,\sigma_\omega)$ in the input, no change to the estimator.
+
+**General (non-normal) Version B.** Nothing above needs normality. For arbitrary $f_\varepsilon,f_\omega,f_\eta,g$:
+$$
+h_i(\omega)\equiv f_{\omega_{it}\mid\tilde{\mathcal W}_{it-1}}(\omega)=\int f_\eta\big(\omega-g(\omega')\big)\,\frac{f_\omega(\omega')\,f_\varepsilon\big((\tilde{\mathcal W}_{it-1}-\omega')/b\big)}{\int f_\omega(u)f_\varepsilon\big((\tilde{\mathcal W}_{it-1}-u)/b\big)du}\,d\omega'.
+$$
+$h_i$ does not depend on $\theta$: it is computed once per firm on a fixed grid $\omega\in[\tilde{\mathcal W}_{it}-b\,\varepsilon_{\max},\ \tilde{\mathcal W}_{it}-b\,\varepsilon_{\min}]$ (the range of $\omega(\varepsilon)$ over $f_\varepsilon$'s support, independent of $\theta$) and interpolated inside the likelihood (both the interior integrand and the $e^*=0$ branch use $h_i$ in place of $f_\omega$). Cost: about $n\times G_\omega\times G_{\text{inner}}\approx10^9$ simple evaluations once (seconds in C++). Verified numerically against the Gaussian closed form to $3\times10^{-15}$. The densities are stage-1 objects, so standard errors are two-step (Murphy-Topel or joint bootstrap). Not yet implemented in C++: it needs the per-industry $f_\varepsilon,f_\omega,f_\eta$ as tabulated grids plus $(\gamma_0,\gamma_1)$ and an industry index per firm. Simulation (10 seeds, M+K DGP): Version A biases $\delta_{0,1,2}$ by $+38/+39/+62\%$; Version B by $+13/+11/+16\%$; $\lambda$ within 2% in B.
+
+**Support of $f_\omega$.** $f_\omega$ is a logspline on a fixed $[a,b]=[\min\tilde{\mathcal W}-0.1,\ \max\tilde{\mathcal W}+0.1]$. $\omega(\varepsilon)$ can fall outside it: set $f_\omega=0$ there, don't let `splines::bs` extrapolate.
+
+## Corner firms ($\tau_P=0$)
+
+For a firm with no purchases-side benefit, $e=0$ and $\mathcal V=-\varepsilon$, so its density is $f_\varepsilon(-\mathcal V)f_\omega\big(\tilde{\mathcal W}+(1-\beta)\mathcal V\big)$: **no $\theta$ dependence**. In the MSL objective such firms are additive constants and drop out of the argmax. (In ELVIS they carried zero $\psi$ information but real $\varepsilon/\omega$-only moment rows; they are still part of the *sample*, just not of $\mathcal L$'s $\theta$-dependence.)
+
+## The $e^*=0$ mass (corner by choice), included
+
+Write $C(\omega)\equiv\delta_0-\delta_1\omega+\delta_2\omega^2$ (log marginal cost of the firm's type), so the FOC is $\tau_P\rho(1-2\lambda e)=\exp\{C(\omega)+\psi\}$. At $e=0$ the marginal benefit is $\tau_P\rho$, so the firm evades iff $C(\omega)+\psi<\ln(\tau_P\rho)$, i.e. iff $\psi<\psi_0(\omega)\equiv h(0)-C(\omega)$, with $h(0)=\ln(\tau_P\rho)$. Any $f_\psi$ with unbounded support therefore puts positive probability on the corner:
+$$
+\Pr(e^*=0\mid\omega)=\Pr\big(\psi\ge h(0)-C(\omega)\big)=1-F_\psi\big(h(0)-C(\omega)\big).
+$$
+Such a firm has $e=0$, hence $M=M^*$ and $\varepsilon=-\mathcal V$, $\omega=\omega_0\equiv\tilde{\mathcal W}+(1-\beta)\mathcal V$. The map $(\omega,\varepsilon)\mapsto(\mathcal V,\tilde{\mathcal W})=(-\varepsilon,\ \omega+(1-\beta)\varepsilon)$ has Jacobian determinant $1$, so this branch contributes
+$$
+f_\varepsilon(-\mathcal V)\,f_\omega(\omega_0)\,\Big[1-F_\psi\big(h(0)-C(\omega_0)\big)\Big].
+$$
+An unincorporated firm's observed $(\mathcal V,\tilde{\mathcal W})$ cannot reveal which branch generated it, so the **full likelihood contribution is the sum**
+$$
+L_i=\underbrace{\int_{\mathcal D_i(\lambda)}f_\psi\big(\psi(\varepsilon;\theta)\big)\,|h'(e)|M^*_i\,f_\omega\big(\omega(\varepsilon)\big)f_\varepsilon(\varepsilon)\,d\varepsilon}_{\text{interior}}\;+\;\underbrace{f_\varepsilon(-\mathcal V_i)\,f_\omega(\omega_{0,i})\Big[1-F_\psi\big(h(0)-C(\omega_{0,i})\big)\Big]}_{e^*=0},
+\qquad \ell_i=\ln L_i .
+$$
+Consequences:
+
+- This **reverses** the earlier project decision to drop the corner term from estimation (made for ELVIS, where it could not be classified exogenously). In a likelihood the classification is not needed: the sum handles it. The institutional corner firms ($\tau_P=0$) remain separate and $\theta$-free.
+- For $f_\psi=N(0,\sigma_\psi^2)$: $F_\psi(x)=\Phi(x/\sigma_\psi)$. For the logspline, $F_\psi$ is one numerical integral of the same normalized density on $[L,R]$ (cumulative Gauss–Legendre on the fixed grid).
+- The mass at zero anchors where $f_\psi$'s upper tail sits relative to the threshold, but a shift of $\psi$ by $c$ together with $\delta_0$ by $c$ leaves both branches unchanged, so the location normalization $E[\psi]=0$ is still required.
+- The two branches share the same $\varepsilon$-density and $f_\omega$; only the second needs $F_\psi$.
+
+## Implementation notes
+
+- **Quadrature:** deterministic Gauss–Legendre, composite panels (as in the existing `adaptive_integrate`, finer toward the low-$\varepsilon$ end where $e$ is small and the density of $\varepsilon$ is not yet in its tail), a few hundred nodes/firm. $\sim29{,}000$ firms $\times$ a few hundred nodes is a few million integrand evaluations per $\theta$: cheap in C++.
+- **Per-firm precomputation:** the $\varepsilon$-nodes and weights, $e(\varepsilon)$, $\omega(\varepsilon)$, $f_\varepsilon(\varepsilon)$ and $f_\omega(\omega(\varepsilon))$ do not depend on $\theta$ (except through the $\lambda$-dependent domain edge); compute once. Only $\psi(\varepsilon;\theta)$, $|h'|$ and $f_\psi$ change per $\theta$.
+- **Optimizer over $\theta$:** NLopt Nelder–Mead or BOBYQA, per the ELVIS experience; $\lambda$ profiled/gridded first since it is the weakest.
+- **Data columns:** $\tau_P\rho_t$ from the same pipeline the ELVIS driver uses (`sales_tax_rate_purchases`), read from R, not from the ELVIS C++.
+
+## Maintained assumption: no independent noise in materials
+
+The likelihood has three latents $(\psi,\omega,\varepsilon)$ and two observables, so it implicitly assumes true materials $M$ is a deterministic function of $(\omega,K,L,\text{prices})$ (materials FOC), with no idiosyncratic component of its own. If real materials had extra independent variation (e.g. optimization error), the likelihood would be misspecified in exactly the way an independent-$M$ DGP is in simulation. This is part of the model's $M\perp e\mid\omega$ assumption, stated here because the simulation showed it matters.
+
+## Checks before real data
+
+1. **Simulation recovery.** Draw $(\psi,\omega,\varepsilon)$ and set true materials $M$ as a **deterministic function of $\omega$** (materials FOC; `mdgp=fn_omega` in the harness) — an independent random draw of $M$ adds a fourth latent the likelihood does not model and makes the likelihood-value diagnostic fail (LR against $\chi^2_5$ inflates from $\approx4$ to $\approx150$ as the interior share grows) while parameter estimates still look roughly right. Then set $e^*=\max\!\big(0,\ [1-\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}/(\tau\rho)]/(2\lambda)\big)$ (interior firms $e^*>0$ only), build $(\mathcal V,\tilde{\mathcal W},M^*)$, and confirm the MLE recovers $\theta,\sigma_\psi$. The DGP keeps the $e^*=0$ mass; also fit the interior-only likelihood to the same data to size the bias from omitting the second branch.
+2. **R reference vs. C++.** An R implementation of $\ell_i$ on a handful of firms is the ground truth for the C++ to numerical tolerance.
+3. **Quadrature convergence.** $\mathcal L$ stable to more nodes and wider $k$.
+4. **$\lambda$ profile.** Shape of $\mathcal L(\lambda)$ on the same grid ELVIS used.

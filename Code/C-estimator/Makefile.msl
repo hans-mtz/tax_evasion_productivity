@@ -1,0 +1,27 @@
+# Standalone MSL estimator (2026-09-18). Deliberately separate from the ELVIS
+# Makefile: msl_estimator.cpp is cast in eps-space and shares no header with
+# the M-space ELVIS code. Needs only the C++ standard library and NLopt.
+#
+# Portable across Apple Silicon and Intel Macs: the Homebrew prefix is picked
+# by architecture (arm64 -> /opt/homebrew, x86_64 -> /usr/local). Override with
+#   make -f Makefile.msl BREW=/some/prefix
+# No -march=native, no Accelerate: the same source and flags build on both.
+ARCH := $(shell uname -m)
+ifeq ($(ARCH),arm64)
+BREW ?= /opt/homebrew
+else
+BREW ?= /usr/local
+endif
+
+CXX      := clang++
+CXXFLAGS := -O3 -std=c++17 -Wall -Wno-deprecated-declarations
+INCLUDES := -I$(BREW)/include
+LDFLAGS  := -L$(BREW)/lib -lnlopt -lpthread -Wl,-rpath,$(BREW)/lib
+
+msl_estimator: msl_estimator.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) msl_estimator.cpp -o msl_estimator $(LDFLAGS)
+
+clean:
+	rm -f msl_estimator
+
+.PHONY: clean

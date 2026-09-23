@@ -1,0 +1,100 @@
+---
+title: "Tax Evasion and Productivity: Identifying and Correcting for Cost Overreporting"
+jmp: true
+draft: false
+author:
+  - name: Hans Martinez
+    email: hmarti33@uwo.ca
+    affiliations:
+      - name: University of Western Ontario
+        department: Department of Economics
+date: today
+abstract: |
+  I propose a novel strategy to estimate corporate cost-overreporting tax evasion. Employing a structural production function and a subset of truth-reporting firms, I first investigate potential tax evasion by testing the presence of cost overreporting, where the statistically significant differences on the output elasticities of the overreported input in the correct direction are interpreted as evidence of tax evasion. Using a well-known dataset, I find evidence suggesting that cost overreporting in most manufacturing industries. Second, I recover the distribution of the overreporting share of true materials. Cost overreporting ranges in average from to percent. The density estimates sugget that most firms evade modestly with few aggresive evaders. Third, leveraging a fiscal policy change where the sales tax rate increased for a subset of industries while the tax rate remained the same for others, I find that, in industries with tax increases, firms raised their overreported share significantly. Fourth, I show how to recover the production function parameters and productivity in the presence of tax evasion. My results indicate that ignoring cost overreporting leads to consistently larger output elasticities of overreported inputs. In addition, I find non-trivial differences in the productivity distributions with respect to the naive estimation. Finally, using a simple model, I estimate how changes in the tax rate affect government revenue around the current equilibrium. I find that a tax increase of 0.5% on all purchases will significantly reduce tax revenues while a cut of 8% would be needed to increase revenue significantly from the observed state.
+thanks: |
+  I thank [committee/seminar participants -- fill in] for helpful comments. All errors are my own.
+keywords:
+  - Tax Evasion
+  - Cost Overreporting
+  - Production Function Estimation
+  - Productivity
+jel: "H26, D22, L60, O47"
+bibliography: biblio/references.bib
+format:
+  pdf:
+    documentclass: article
+    classoption: [12pt]
+    geometry:
+      - margin=1in
+    linestretch: 1.15
+    fontfamily: mathptmx
+    toc: false
+    number-sections: true
+    colorlinks: true
+    linkcolor: black
+    citecolor: black
+    urlcolor: blue
+    keep-tex: true
+    include-before-body:
+      text: |
+        \begin{center}
+        \textbf{JEL Classification:} H26, D22, L60, O47 \\
+        \textbf{Keywords:} Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity
+        \end{center}
+        \bigskip
+---
+
+<!--
+JMP FORMAT NOTE (not rendered as content):
+This document pulls most sections directly from Thesis/chapters/ and Thesis/appendices/
+via {{< include >}} -- one copy of the prose for those. Edit the source files in Thesis/,
+never here. Figures/tables/bib are symlinked (JMP/figures, JMP/tables, JMP/biblio ->
+../Thesis/*), so anything Code/Thesis/*.R regenerates shows up in both documents with no
+extra step.
+
+TWO deliberate exceptions, NOT shared with the thesis: the abstract (YAML field here vs.
+Thesis/index.qmd's chapter -- structurally different Quarto mechanisms, can't share one
+source) and the Introduction (sections/01-intro.qmd, local to this folder -- a JMP intro
+and a thesis intro are different animals; edit each separately).
+
+To trim a thesis-only passage (e.g. an extended robustness aside) out of the JMP body only,
+wrap it in the source chapter file with:
+  ::: {.content-hidden when-meta="jmp"}
+  ...thesis-only text...
+  :::
+This paper.qmd sets `jmp: true` below; Thesis/_quarto.yml does not set `jmp`, so the same
+passage still renders in the thesis book. Reverse logic (JMP-only text, e.g. a tighter
+restatement) uses `.content-visible when-meta="jmp"`.
+-->
+
+{{< include sections/01-intro.qmd >}}
+
+{{< include ../Thesis/chapters/02-model.qmd >}}
+
+{{< include ../Thesis/chapters/03-setting-data.qmd >}}
+
+{{< include ../Thesis/chapters/04-testing.qmd >}}
+
+{{< include ../Thesis/chapters/05-deconvolution.qmd >}}
+
+{{< include ../Thesis/chapters/06-pf-productivity.qmd >}}
+
+{{< include ../Thesis/chapters/07-fiscal-policy.qmd >}}
+
+{{< include ../Thesis/chapters/08-counterfactual.qmd >}}
+
+{{< include ../Thesis/chapters/09-literature.qmd >}}
+
+{{< include ../Thesis/chapters/10-conclusion.qmd >}}
+
+\appendix
+
+# Online Appendix {#sec-online-appendix .unnumbered}
+
+{{< include ../Thesis/appendices/A-elvis.qmd >}}
+
+{{< include ../Thesis/appendices/B-control-variate.qmd >}}
+
+{{< include ../Thesis/appendices/C-msl.qmd >}}
+
+{{< include ../Thesis/appendices/D-soc-model.qmd >}}

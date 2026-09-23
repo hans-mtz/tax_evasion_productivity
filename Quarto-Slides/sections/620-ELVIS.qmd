@@ -1,7 +1,7 @@
 
 # Entropic Latent Variable Integration via Simulation (ELVIS)
 
-## An Alternative: ELVIS (@Schennach2014)
+## ELVIS (@Schennach2014) {#sec-elvis}
 
 - The "Why not GMM" failure wasn't fundamental — it was a *naive-averaging* bug: swapping in $\bar\ell_{it}(\lambda)$ silently drops the firm-specific reweighting
 - Schennach (2014, *Econometrica*, "Entropic Latent Variable Integration via Simulation") targets exactly this class: $E[g(U,Z,\theta)]=0$ with $U$ unobserved, $g$ arbitrary — nonlinear, nonmonotone, nonseparable
@@ -173,47 +173,75 @@ MSL's revenue integral weights by $f_\psi(\psi(\varepsilon))J_i(\varepsilon)f_\o
 - ELVIS's own machinery for exactly this situation: Schennach's device for bounding a functional of the unobservable that isn't already one of the estimating moments — her worked example is literally recovering $E[U]$ this way (@Schennach2014, p.1250)
 - Reusing the tilted density from the *main* estimation as if it were "the" posterior would give *a* number, but understate uncertainty — that tilted distribution is only the entropy-*maximizing* member of the set of distributions consistent with the moments, not necessarily the true one (she is explicit about this). The honest version re-solves for the functional's own identified set
 
+## Implementing it: the two-tax counterfactual FOC {#sec-implementing-elvis}
+
+`\footnotesize`{=latex}
+
+Two-tax-rate model: only $\tau_P$ (purchases-side) enters the evasion FOC's benefit shifter — $\tau_S$ (sales-side) is untouched by this exercise. Shock: $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$.
+
+Reuse the closed-form counterfactual evasion FOC, clipped at the corner:
+$$
+e_i'(\Delta)=\max\left(0,\ \frac{\tilde\tau_{P,it}\rho_t-C(\omega_i,\psi_i)}{2\lambda\,\tilde\tau_{P,it}\rho_t}\right),\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
+$$
+
+- $\max(0,\cdot)$ isn't optional — some currently-evading firms' new optimum genuinely becomes a corner ($e'=0$) as $\Delta$ moves the benefit shifter, distinct from the institutionally-corner ($\tau_P=0$) firms already handled separately in estimation
+
+(true $M_i$ unchanged under the counterfactual — the materials FOC doesn't depend on $\tau$) Revenue is sales-side tax collected minus the purchases-side credit claimed — only the credit side is exposed to evasion or to $\Delta$:
+
+$$
+R_i(\Delta;M_i)=\underbrace{t1_{it}}_{\tau_{S,it}P_tY_{it},\ \text{fixed}}-\ \tilde\tau_{P,it}\Big[M_i+\big(1-q(e_i'(\Delta))\big)e_i'(\Delta)\Big]
+$$
+
 ## Implementing it: an auxiliary moment
 
 `\footnotesize`{=latex}
 
-Hold $\hat\theta$ fixed (already estimated — the counterfactual is a forward simulation, not new estimation). Reuse the closed-form counterfactual evasion FOC already established:
+For a candidate $\Delta$, introduce an auxiliary parameter $R(\Delta)\equiv\frac1N\sum_iE[R_i(\Delta)\mid Z_i]$ and **append its own moment** to the system:
 $$
-\tilde e_i(\tilde\tau)=\tilde e\big(\tilde\tau;\omega_i(M_i),\psi_i(M_i)\big)=\frac{\tilde\tau\rho_t-C(\omega_i,\psi_i)}{2\lambda\tilde\tau\rho_t},\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
-$$
-
-(true $M_i$ unchanged under the counterfactual — materials FOC doesn't depend on $\tau$, per the model's own maintained assumptions) and form firm $i$'s counterfactual revenue as a function of the *same* latent $M_i$:
-
-$$
-R_i(\tilde\tau;M_i)=\tilde\tau\Big[P_tY_{it}-\rho_tM_i-\big(1-q(\tilde e_i(\tilde\tau))\big)\rho_t\tilde e_i(\tilde\tau)\Big]
+E\big[R_i(\Delta;M_i)-R\big]=0
 $$
 
-For a candidate $\tilde\tau$, introduce an auxiliary parameter $\tilde\theta(\tilde\tau)\equiv\frac1N\sum_iE[R_i(\tilde\tau)\mid Z_i]$ and **append its own moment** to the system:
-$$
-E\big[R_i(\tilde\tau;M_i)-\tilde\theta\big]=0
-$$
-with $\theta$ fixed at $\hat\theta$ — only $\tilde\theta$ and an *extended* $\gamma$ (one more component, for the new moment) are free. Same simulated-draw, ratio-of-averages machinery as before (@eq-elvis-sim), just evaluated on the extended moment vector.
+with $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$ fixed — only $R$ and an *extended* $\gamma$ (one more component, for the new moment) are free (rationale: @sec-counterfactual-design). Same simulated-draw, ratio-of-averages machinery as before (@eq-elvis-sim), just evaluated on the extended moment vector.
 
-## Two Practical Corrections
+In practice $R$ is control-variate-adjusted, not raw — construction in @sec-elvis-res.
+
+## Design choices for the counterfactual test {#sec-counterfactual-design}
 
 `\footnotesize`{=latex}
 
-**$\theta$ is held fixed, not reprofiled, at every candidate cell — only $\gamma$ is free.** Letting $\theta$ move too lets a weakly-identified $\lambda$ silently rationalize almost any candidate $R$ (confirmed empirically: $\hat\lambda$ swung $56\times$ across cells when left free) — answering "does *some* enforcement regime make this $R$ possible," not the intended question. AK2020's own counterfactual (`Appendix_F/`) does the same: their structural parameter is a hardcoded constant throughout, only $\gamma$ is passed to the optimizer.
+**1. $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$ is fixed at its best ELVIS estimate — only $\gamma$ is free at each $(\Delta,R)$ cell.**
 
-**The revenue moment itself is control-variate adjusted**, not raw: $R_i$ regressed against the firm's own already-observed $t1_i/pgdp_i$ ($R^2=0.999$) removes size-driven between-firm heterogeneity from the moment's sampling variance (SE cut $\sim$40$\times$) while leaving its mean unchanged by construction — what actually turned a vacuous test into a real, closed confidence set.
+- Answers: *"given our best model estimates, is the distribution of unobservables consistent with the data at this revenue level $R$?"* — not the weaker *"does **some** set of model estimates make $R$ possible?"*
+- Matches AK2020's own counterfactual [@AK2020] (`Appendix_F/`): their structural/support parameter (`theta0=0.975`, the direct analog of $\lambda$) is a hardcoded constant for the entire exercise; only $\gamma$ (their Lagrange multiplier) is ever passed to the optimizer
 
-## Point or set — decided by the procedure, not assumed
+**2. The revenue moment is control-variate-adjusted, not raw $R$.**
+
+- Goal: isolate the object actually of interest — how revenue moves with the tax rate — from cross-firm size heterogeneity that has nothing to do with that question
+- Large firms pay far more sales tax than small ones; left unadjusted, this heterogeneity inflates the width of our confidence intervals for no economically meaningful reason
+- Fix: subtract off the size-predictable part of revenue using the firm's own observed sales tax paid, $t1_i$, before testing (construction: @sec-elvis-res)
+
+[Preliminary results](#sec-counterfactual-results)
+
+## Checked: does fixing $\theta$ manufacture the tight bounds? {#sec-counterfactual-robustness}
+
+`\footnotesize`{=latex}
+
+- Reran a candidate $\Delta$'s tested $R$ values with $\theta$ genuinely free (not fixed), seeded at the fixed-$\theta$ operating point
+- $\hat\theta$ moved only marginally from the seed at every candidate — pass/fail replicated at nearly every point
+- Confirms: the tight bounds reflect genuine cross-firm heterogeneity in the data, not an artifact of holding $\theta$ fixed
+
+## Point or set — decided by the procedure, not assumed {#sec-counterfactual-inference}
 
 `\scriptsize`{=latex}
 
-For a fixed $\tilde\tau$, grid over **candidate revenue values** $\tilde\theta$ (not over $\theta$ this time):
+For a fixed $\Delta$, grid over **candidate revenue values** $R$ (not over $\theta$ this time):
 
-1. For each candidate $\tilde\theta$, solve the inner problem — maximize the objective (EL, or the CUE-type quadratic $-\tfrac12\hat g'\hat V^{-1}\hat g$) over the extended $\gamma$, with the $R_i(\tilde\tau;M_i)-\tilde\theta$ moment included
-2. That maximum is a criterion function $\hat L_n(\tilde\theta;\tilde\tau)$ — exactly the same construction used for $\theta$ itself
-3. **Profile against the unrestricted model:** $\hat Q_n(\tilde\theta;\tilde\tau)=-\big(\hat L_n(\tilde\theta;\tilde\tau)-\sup_{\theta',\gamma}\hat L_n(\theta',\gamma)\big)$ — subtracting the global max, not using $\hat L_n$ raw, is what gives the efficiency gain this construction is built for
-4. Region: $\{\tilde\theta:n\hat Q_n(\tilde\theta;\tilde\tau)\le c_\alpha\}$, $c_\alpha=\chi^2_{d_g,\alpha}$ — Theorem F.1's closed-form conservative critical value (Schennach 2014, online supplement, Appendix F). This is the test we report; a min-subtracted CHT-style alternative was useful for guiding earlier searches but isn't the textbook construction, so it isn't reported here.
+1. For each candidate $R$, solve the inner problem — maximize the objective (EL, or the CUE-type quadratic $-\tfrac12\hat g'\hat V^{-1}\hat g$) over the extended $\gamma$, with the $R_i(\Delta;M_i)-R$ moment included
+2. That maximum is a criterion function $\hat L_n(R;\Delta)$ — exactly the same construction used for $\theta$ itself
+3. **Profile against the unrestricted model:** $\hat Q_n(R;\Delta)=-\big(\hat L_n(R;\Delta)-\sup_{\theta',\gamma}\hat L_n(\theta',\gamma)\big)$ — subtracting the global max, not using $\hat L_n$ raw, is what gives the efficiency gain this construction is built for
+4. Region: $\{R:n\hat Q_n(R;\Delta)\le c_\alpha\}$, $c_\alpha=\chi^2_{d_g,\alpha}$ — Theorem F.1's closed-form conservative critical value (Schennach 2014, online supplement, Appendix F). This is the test we report; a min-subtracted CHT-style alternative was useful for guiding earlier searches but isn't the textbook construction, so it isn't reported here.
 
-- Repeat across a grid of $\tilde\tau$: **the shape decides.** A sharp trough at every $\tilde\tau$ → the Laffer curve comes out as a single curve, point-identified. A flat plateau at some $\tilde\tau$ → a genuine band there — the model just doesn't pin expected revenue down more tightly at that rate
+- Repeat across a grid of $\Delta$: **the shape decides.** A sharp trough at every $\Delta$ → the Laffer curve comes out as a single curve, point-identified. A flat plateau at some $\Delta$ → a genuine band there — the model just doesn't pin expected revenue down more tightly at that rate
 - We do **not** commit to point vs. set beforehand — both come out of the identical grid-and-criterion-function procedure; the width of the trough is the answer, not a modeling choice
-- $\tilde\tau^*$ (or a *range* of $\tilde\tau^*$, if the argmax band is itself wide) follows directly by reading off where the revenue band peaks
+- $\Delta^*$ (or a *range* of $\Delta^*$, if the argmax band is itself wide) follows directly by reading off where the revenue band peaks
 - Convergence rate itself depends on the regime: root-$n$ if the objective is exactly flat over the identified set ("degeneracy," her interval/censored examples), only $\sqrt{\ln n/n}$ otherwise — a property of the fitted objective to check, not to assume

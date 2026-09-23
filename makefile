@@ -31,7 +31,8 @@ RDEPOUT := $(RIND:.R=.Rout)
 main: $(RDIR)/main.Rout #$(filter-out $(RDIR)/main.Rout, $(OUT_FILES))
 
 ## Make all
-all: main paper slides
+# all: main paper slides
+docs: jmp thesis
 
 ## Run R files
 R: $(OUT_FILES) $(OUT_FILES_DEC)
@@ -39,20 +40,25 @@ R: $(OUT_FILES) $(OUT_FILES_DEC)
 R-code: $(OUT_FILES)
 
 ## Make paper
-paper: #$(QPAPDIR)/$(QPAPFILE).pdf
-	quarto render $(QPAPDIR)/$(QPAPFILE).qmd 
-#	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:packages.tex
-#	open -a Preview $(QPAPDIR)/$(QPAPFILE).pdf
-pdf:
-	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:_extensions/quarto-journals/jasa/packages.tex
+# paper: #$(QPAPDIR)/$(QPAPFILE).pdf
+# 	quarto render $(QPAPDIR)/$(QPAPFILE).qmd 
+# #	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:packages.tex
+# #	open -a Preview $(QPAPDIR)/$(QPAPFILE).pdf
+# pdf:
+# 	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to pdf -M include-in-header:_extensions/quarto-journals/jasa/packages.tex
 
-html:
-	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to html
+# html:
+# 	quarto render $(QPAPDIR)/$(QPAPFILE).qmd --to html
 ## Make slides
 slides: #$(QSlIFILE).html
 	quarto render $(QSLIDIR)/$(QSLIFILE).qmd
 #	open -a Safari $(QSLIDIR)/$(QSLIFILE).html
 
+jmp:
+	quarto render JMP/paper.qmd
+
+thesis:
+	quarto render Thesis/index.qmd
 
 # Rules
 $(RDIR)/%.Rout: $(RDIR)/%.R 
@@ -96,4 +102,4 @@ clean-tex:
 	rm -fv Quarto-Slides/*.aux Quarto-Slides/*.log Quarto-Slides/*.toc Quarto-Slides/*.blg Quarto-Slides/*.bbl Quarto-Slides/*.synctex.gz
 	rm -fv Quarto-Slides/*.fdb_latexmk Quarto-Slides/*.fls Quarto-Slides/*.nav Quarto-Slides/*.snm Quarto-Slides/*.vrb
 	rm -fv Paper/tbls/*.aux Paper/tbls/*.fls Paper/tbls/*.log Paper/tbls/*.synctex.gz Paper/tbls/*.fdb_latexmk 
-.PHONY: all clean paper slides clean-tex clean-out
+.PHONY: all docs clean paper slides clean-tex clean-out jmp thesis 

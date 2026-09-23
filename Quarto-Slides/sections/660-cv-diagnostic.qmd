@@ -1,0 +1,99 @@
+
+# Appendix: Is CV-$R$'s Precision Real?
+
+## Is CV-$R$'s Precision Real? {#sec-cv-diagnostic}
+
+Robustness checks requested by Nail Kashaev on the counterfactual's control-variate correction
+
+## The Question
+
+`\footnotesize`{=latex}
+
+Under a correctly-estimated, efficient weighting matrix $\hat\Omega^{-1}$, a moment's own variability shouldn't matter for a GMM/CUE test's conclusions — so why did switching from raw $R$ to CV-adjusted $R$ turn a vacuous test into a tight, closed confidence set?
+
+- Numerical-artifact hypothesis: is this eigenvalue truncation in $\hat\Omega^-$, not genuine information?
+- Picked one concrete point to check directly: $\Delta=-4\%$, $R=\$1850$, $\theta$ fixed at the standard operating point
+- Raw $R$ (fit fresh at this point): $TS\approx0.05$, passes overwhelmingly
+- CV-$R$ (already fitted): $TS_{\text{hard}}=45.3$, rejects decisively
+
+## Is It Eigenvalue Truncation?
+
+`\footnotesize`{=latex}
+
+New read-only diagnostic (`omegadiag`, `Code/C-estimator/grid_estimator.cpp`): dumps the full eigen-spectrum, truncation status ($w_k>10^{-8}\max_k w_k$, the same relative threshold behind the 2026-09-07 $h'$ score-moment bug), and per-row loadings at a fixed $(\theta,\gamma,\Delta,R)$.
+
+**Result: truncation is essentially identical between raw $R$ and CV-$R$** — same 4 of 10 eigen-directions kept, same 6 discarded (`psi`, `eps`, `eps·om`, `eps·lnM`, `psi·om`, and the $\lambda$-score moment), in both fits, with similar condition numbers ($\sim10^7$).
+
+$R$ loads $\approx1.000$ on its own dedicated eigen-direction, essentially nothing else — and that direction is **never** truncated, in either fit. It only differs in *rank*: raw $R$'s huge variance makes it the single largest eigenvalue in the whole system; CV-$R$'s smaller variance puts it lower — but still comfortably above the truncation floor.
+
+## The Mechanism: Same Deviation, Different Yardstick
+
+`\footnotesize`{=latex}
+
+| | raw $R$ | CV-$R$ |
+|---|---:|---:|
+| SE | \$559.4 | \$13.5 |
+| deviation from candidate | \$82.5 | \$81.6 |
+| in SE units | 0.15 SEs | 6.03 SEs |
+| TS from this row alone | 0.02 | 36.6 |
+
+Back-solving "how far would raw $R$ need to be to reject from this row alone" gives $\approx\$2{,}695$ — matches raw's own actual rejecting grid candidates ($\approx\$2{,}670$–$2{,}701$ from center) almost exactly.
+
+- **Efficient weighting is working correctly — a lower-noise moment earns more weight for the same deviation. Not a truncation artifact.**
+- $\hat\gamma$ itself barely differs between the two fits ($\gamma_{10}$, the multiplier directly on $R$: only $+15\%$) — the whole gap lives in the variance denominator, not in how hard $\gamma$ has to pull
+
+## An Independent Check: Is $\hat\beta$ Data-Mined?
+
+`\footnotesize`{=latex}
+
+CV-$R$'s correction uses $\hat\beta=0.998838$, fitted by regressing $R_i$ on $t1_i$. Could this be inflating precision by construction?
+
+**Test: fix $\beta=1$ exactly** — straight from the revenue identity itself, no fitting at all:
+$$
+R_i(\Delta)-t1_i = -\tau_P\big[M_i+(1-q(e'(\Delta)))e'(\Delta)\big]
+$$
+
+- New `row9_mode=theory` in `grid_estimator.cpp`: same control-variate operation, coefficient fixed rather than regression-estimated
+- Smoke test at the anchor ($\Delta=0$): SE$=13.59$ vs. CV's own SE$=13.53$ — a 0.4% difference — and $\hat L_n$ matching CV's own to 5 significant figures
+
+## Result: Nested Inside CV-$R$'s Own Bounds, Everywhere
+
+`\footnotesize`{=latex}
+
+Tested at all 9 of CV-$R$'s own headline $\Delta$'s. Every single implied CI nests inside CV-$R$'s own fine-resolved hard-CI, several upper bounds matching almost exactly:
+
+| $\Delta$ | theory-implied CI (coarse) | CV-$R$'s own CI |
+|---:|---:|---:|
+| $-8\%$ | [1788, 1827] | [1751, 1839] |
+| $-4\%$ | [1728, 1768] | [1719, 1794] |
+| $0\%$ | [1701, 1745] | [1666, 1745] |
+| $+1\%$ | [1356, 1403] | [1318, 1404] |
+| $+2\%$ | [1015, 1064] | [973, 1065] |
+
+**$\hat\beta=0.998838$ isn't data-mined — it's landing almost exactly on the value the accounting identity hands you directly.**
+
+## A Caveat Worth Being Explicit About
+
+`\footnotesize`{=latex}
+
+Converting the theory target back to real-revenue terms adds $\mu_c=E[t1_i/pgdp_i]$, treated here as a fixed known constant — exactly the same simplification CV-$R$'s own $\hat\beta,\mu_c$ already make.
+
+- A fully rigorous treatment would give $\mu_c$ its own sampling distribution rather than a plugged-in point estimate
+- Doesn't change the conclusion — it's a simple, precisely-measured empirical mean, not a model-based quantity
+- But it's a direct illustration of *why* raw $R$ was so imprecise in the first place: $t1_i$'s own firm-to-firm variation was never being controlled for at all
+
+## {.plain}
+
+![Individual tested candidates, both systems, same real-revenue axis — theory-coefficient's passing points (red) sit in essentially the same range as CV-$R$'s (blue) at every $\Delta$.](../Paper/images/1307-theory-vs-cv.png){fig-align="center" height="85%"}
+
+## {.plain}
+
+![The theory-coefficient moment in its own native units ($R_i-t1_i$, no shift back) — flat near zero (the $\Delta\to-1$ "no credit paid" limit) across $-8\%$ to $-2\%$, a sharp kink at $\Delta=0$, steep collapse through $+2\%$ — the same shape as the headline revenue curve, as it must be (a pure vertical translation).](../Paper/images/1308-theory-raw.png){fig-align="center" height="85%"}
+
+## Robustness: Done vs. Planned
+
+`\footnotesize`{=latex}
+
+- **Done:** $\theta$-free check (2026-09-14) — confirms the tight CV bounds aren't an artifact of holding $\theta$ fixed
+- **Done:** theory-coefficient validation (above) — confirms $\hat\beta$ isn't data-mined
+- **Planned:** instrument comparison, lag_m vs. lag_2_cal_W — the whole counterfactual pipeline has only ever been run for lag_m; rerunning under lag_2_cal_W's own operating point would test whether the headline result is instrument-robust

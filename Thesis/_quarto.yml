@@ -1,0 +1,43 @@
+project:
+  type: book
+  output-dir: _book
+
+draft: false
+
+book:
+  title: "Tax Evasion and Productivity"
+  author: "Hans Martinez"
+  date: today
+  chapters:
+    - index.qmd
+    - chapters/01-intro.qmd
+    - chapters/02-model.qmd
+    - chapters/03-setting-data.qmd
+    - chapters/04-testing.qmd
+    - chapters/05-deconvolution.qmd
+    - chapters/06-pf-productivity.qmd
+    - chapters/07-fiscal-policy.qmd
+    - chapters/08-counterfactual.qmd
+    - chapters/09-literature.qmd
+    - chapters/10-conclusion.qmd
+  appendices:
+    - appendices/A-elvis.qmd
+    - appendices/B-control-variate.qmd
+    - appendices/C-msl.qmd
+    - appendices/D-soc-model.qmd
+
+bibliography: biblio/references.bib
+
+execute:
+  echo: false
+  warning: false
+
+number-sections: true
+
+format:
+  pdf:
+    documentclass: scrreport
+    keep-tex: true
+    toc: true
+  html:
+    theme: cosmo

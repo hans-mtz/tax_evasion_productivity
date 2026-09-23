@@ -1,0 +1,83 @@
+# Fiscal Policy Evaluation: The 1983 Reform {#sec-fiscal}
+
+<!--
+OUTLINE FILE. Bullets = what each section must say + key values.
+Prose is yours. Update targets marked UPDATE. Anything marked FILL needs a number from the R output; not invented here.
+
+Sources
+  Slides (most up to date): Quarto-Slides/sections/300-fiscal-reform.qmd
+  Paper (older, more detail): Paper/sections/965-DiD.qmd, 966-DiD-txrt.qmd, 98-fiscal-ref-col.qmd, 961-over-time.qmd
+  Code: Code/Deconvolution/921-DD2.R, 921.1-DD.R, 921.2-het-slides.R (slide figures = 921-2-*)
+-->
+
+## Role of this chapter
+
+- Reduced-form evidence that overreporting responds to a change in tax incentives; this is the empirical anchor for the model's key comparative static, $\partial e^*/\partial\tau_P>0$ (@sec-model).
+- The sign cannot be checked by regressing $\mathcal V_{it}$ on $\tau_{P,it}$ (both are built from the same $M^*_{it}$, so the link is mechanical). The 1983 reform is the clean way to test it.
+- Feeds the identification argument for $\lambda$ in @sec-counterfactual: variation in $\tau_P\rho_t$ is what moves evasion.
+- UPDATE: decide framing for the thesis: motivation for the structural model ("reduced form showed X, the model's Y rationalizes X").
+
+## The reform and the incentives {#sec-reform}
+
+- 1983 reform raised the Sales Tax (ST) rate from 6% to 10% for most industries; ST-exempt industries stayed exempt.
+- Across juridical organizations (JO) within industries, Corporate Income Tax (CIT) moved differently:
+  - Proprietorships (PRT): CIT up about 8% on average (via individual income tax).
+  - Limited liability companies (LLC): CIT down 2 points, 20% to 18%.
+- Both taxes create incentives to overreport inputs (a higher reported cost lowers the base). ST-liable industries face ST and CIT incentives; ST-exempt industries face CIT only.
+- Expected sign: ST-liable firms should increase overreporting (ST up). CIT effect ambiguous (PRT up, LLC slightly down).
+- UPDATE: Paper (`965-DiD`) also covers the 1986 reform; the slides only mention it in a commented line. Decide whether 1986 stays.
+- Institutional details (6% to 10%, CIT rates) come from @sec-setting; do not repeat them at length here.
+
+## Empirical approach {#sec-fiscal-approach}
+
+- Corporations are truth-reporters: $s^C_{ijt}=\gamma_j-\varepsilon_{ijt}$ ($s$ = materials share of sales, $\gamma_j$ = industry output elasticity of materials in the Cobb-Douglas case).
+- Unincorporated firms evade: $s^N_{ijt}=\gamma_j+e_{ijt}-\varepsilon_{ijt}$ (here $e$ is the overreporting share in the same units as $s$; footnote the notation link to the model's $u$).
+- Stacking with $D^N_{ijt}$: $s_{ijt}=\gamma_j+D^N_{ijt}e_{ijt}-\varepsilon_{ijt}$.
+- Identifies the average overreporting $\mu=E[s\mid D^N=1]-E[s\mid D^N=0]$.
+- Levels regression: $s_{ijt}=\gamma_j+\sum_{t=1981}^{1991}\mu_tD^N_{ijt}+\eta_{ijt}$, $\gamma_j$ = industry fixed effects.
+- Differences relative to 1983: $s_{ijt}=\mu D^N_{ijt}+\sum_{t\ne1983}\Delta_tD^N_{ijt}+\gamma_j+\eta_{ijt}$, where $\Delta_t=\mu_t-\mu_{1983}$.
+- Splitting by industry liability, with $D^E$ (exempt) and $D^L$ (liable), $D^E+D^L=1$:
+  - Exempt: $\mu^{CIT}_E$; liable: $\mu^{ST+CIT}_L$.
+  - If $\mu^{CIT}_E=\mu^{CIT}_L$, the ST-only response $\mu^{ST}_L$ is identified. State this as an assumption and discuss plausibility.
+- Splitting further by JO (LLC vs proprietorship) gives four groups, each with its own $\Delta_t$ path.
+
+## Results: all unincorporated firms {#sec-fiscal-all}
+
+![Overreporting of unincorporated firms relative to 1983.](/figures/ch07-fiscal-all-unincorp.png){#fig-fiscal-all}
+
+- Overreporting rises gradually after the reform and reaches an average of about 8% in 1987, stable until 1990.
+- Levels have wide standard errors (heterogeneity across firms in tax rate, perceived detection probability and evasion cost); differences relative to 1983 are tight, so the heterogeneity looks constant over time.
+- FILL: point estimates and standard errors for 1984-1991 from `921-DD2.R` output.
+
+## Results: ST-liable vs. ST-exempt industries {#sec-fiscal-liable}
+
+![Firms facing larger incentives evade more.](/figures/ch07-fiscal-liable-vs-exempt.png){#fig-fiscal-liable}
+
+- ST-liable: overreporting rises gradually until 1987, then stabilizes through 1990.
+- ST-exempt: smaller but significant increase after 1983, and another increase between 1987 and 1990.
+- The increase is larger for ST-liable firms, the group most affected by the reform.
+
+## Results: LLCs vs. proprietorships {#sec-fiscal-jo}
+
+![LLCs.](/figures/ch07-fiscal-llc.png){#fig-fiscal-llc}
+
+![Proprietorships.](/figures/ch07-fiscal-prt.png){#fig-fiscal-prt}
+
+- LLCs in ST-liable industries: significant increase (consistent with the ST increase).
+- LLCs in ST-exempt industries: no significant change, so the small CIT cut did not reduce overreporting.
+- Proprietorships in ST-exempt industries: moderate significant increase (consistent with the CIT increase).
+- Proprietorships in ST-liable industries: no change in 1984-1985, an increase in 1986-1989. Larger standard errors, more heterogeneous response (workshops vs. young entrepreneurs).
+- UPDATE: the 1986-1989 rise may reflect the 1986 reform; keep or drop depending on the 1986 decision above.
+
+## Takeaways and link to the structural model {#sec-fiscal-takeaways}
+
+- Firms overreport inputs more after increases in ST and CIT; larger increases give larger responses.
+- No significant decrease when incentives fall (LLCs in ST-exempt industries): suggests an asymmetric response. Connects to the counterfactual asymmetry (increases detectable at +0.5%, cuts only at -8%, @sec-cf-results), but that asymmetry is a model implication, not this chapter's reduced-form finding; say so explicitly.
+- Bridge to @sec-counterfactual: the model needs $\tau_P\rho_t$ variation to identify $\lambda$; this chapter shows that variation moves overreporting in the predicted direction.
+
+## Open items
+
+- [ ] Choose which Paper DiD sections survive (`965-DiD`, `966-DiD-txrt`, `98-fiscal-ref-col`, `961-over-time`); slides only cover the 921-2 specification.
+- [ ] Decide whether the 1986 reform and the 1990 reform stay.
+- [ ] Move the 921-2 figures to `Code/Thesis/ch07-*.R` scripts (currently copied PNGs).
+- [ ] Rewrite the abstract and intro claims about this chapter (`Paper/Tax-Prod.qmd` abstract still says "raised their overreported share significantly").
