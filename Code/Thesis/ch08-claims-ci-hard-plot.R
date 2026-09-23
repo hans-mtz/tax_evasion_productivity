@@ -76,7 +76,7 @@ p <- ggplot() +
          y = "Real mean deduction claims per firm-period (COP)",
          title = "Claims (raw, no control variate), conservative test (Theorem F.1) — 9 tested Δ points",
          subtitle = paste0("Red = passes at 95% (χ²₁₀=", round(qc, 1),
-                            "); gray × = rejected. Gray band = Δ=0's own passing interval, for visual reference."),
+                            "); grey × = rejected. Grey band = Δ=0's own passing interval, for visual reference."),
          caption = "Claims_i(Δ) = τ̃_i[M_i + (1 − q(e'_i))e'_i]: deduction claims, legitimate plus undetected overreporting.\nExcludes sales-tax revenue on sales, which has no evasion response.") +
     theme_minimal(base_size = 16) +
     theme(panel.grid.minor = element_blank(), axis.line = element_line(color = "black"),

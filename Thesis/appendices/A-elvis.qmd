@@ -29,6 +29,7 @@ below that needs more than the one-line summary already moved from ch. 8.
 <!-- Moved from ch. 8's "Estimation" subsection. -->
 
 - CUE quadratic objective with eigenvalue-truncated weighting matrix.
+- **Sales-tax revenue on sales is observed.** The data record the sales tax each firm pays on its sales in each period, which is the observed counterpart of $\tau_{it}P_tY_{it}$ in @eq-govt-rev; total revenue in the counterfactual is computed from it directly, held at its baseline value.
 - **The $\lambda$-score moment enters in bounded form.** The score $h_\lambda(e)\equiv\partial h(e;\lambda)/\partial\lambda=-2e/(1-2\lambda e)$ diverges near the FOC ceiling $e\to1/(2\lambda)$, where a single extreme draw can dominate the weighting matrix's eigenvalues and silently collapse the effective moment count. The implementation therefore replaces $h_\lambda$ with $h_\lambda/(1-h_\lambda)\in(-1,0]$ in the ninth moment ($1-2\lambda e$ floored at $10^{-6}$). Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$ under the same argument that licenses the raw score. The transform decays polynomially, not exponentially, so firms stay numerically distinguishable across the whole range of $e$; $\exp(h_\lambda)$ and $\tanh(h_\lambda)$ were rejected because both saturate to a constant for most of the sample.
 - Per-firm Metropolis chain: $n_{burn}=1000$, $n_{keep}=3000$ (settled convention -- see CLAUDE.md's "MCMC chain-length convention" entry for why this length, not a longer one, and why acceptance-rate SD is the more reliable diagnostic than $\gamma'g$ variance).
 - Nelder-Mead optimizer (beats BOBYQA decisively on this problem -- see CLAUDE.md).
@@ -60,7 +61,7 @@ table) stays in ch. 8's body -- only the search-process visualizations move here
 
 ![$(\delta_1,\delta_2)$-grid.](/figures/ch08-delta-grid.png){#fig-cf-delta}
 
-## Test inversion: the conservative and soft tests, and why
+## Test inversion: the conservative test, and why
 
 <!-- OUTLINE, not yet prose -- pulled from CLAUDE.md so the numbers/formulas are ready to
 write from directly; still your own argument to make. Ch. 8's body keeps its one-line
@@ -69,21 +70,29 @@ means) since results there are unreadable without it -- don't duplicate that her
 section is the justification for the design, not a restatement of it. -->
 
 - **Source definition (Schennach 2014, Definition F.1 and Theorem F.1):** with $\hat g(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ (the sample average of the tilted moment from @eq-elvis-tilt) and $\hat V(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)\tilde g(Z_i,\theta,\gamma)'$, her continuous updating objective is $\hat L_n^S(\theta)=\sup_{\gamma\in\mathbb R^{d_g}}-\tfrac12\,\hat g(\theta,\gamma)'\hat V(\theta,\gamma)^{-}\hat g(\theta,\gamma)$, with $\hat V^-$ a generalized inverse. Theorem F.1: at any $\theta$ satisfying the moment condition, $-2n\hat L_n^S(\theta)$ is asymptotically bounded above by $\chi^2_{d_g}$. Maximizing $\hat L_n^S$ over $\gamma$ is the same as minimizing the nonnegative quadratic form $\tfrac12\hat g'\hat V^-\hat g$; we report this positive quantity as $\hat L_n(\theta)$, so $TS(\theta)=2n\hat L_n(\theta)=-2n\hat L_n^S(\theta)$ — same statistic, sign flipped purely so the optimizer minimizes a nonnegative objective instead of maximizing a nonpositive one. $\hat V^-$ in our implementation discards eigen-directions with eigenvalues below $10^{-8}$ times the largest, for numerical stability.
+- **Conservative test** (Theorem F.1, absolute): $TS_{\text{cons}}=2n\hat L_n$ against $\chi^2_{d_g,.95}$ directly -- no credit for profiling out nuisance parameters or $\gamma$.
+- **Why the conservative test:** the counterfactual's purpose is to support a policy claim, so the confidence sets use the test whose size is guaranteed not to exceed its nominal level.
+<!-- DROPPED 2026-09-23 (Hans): the soft (min-subtracted) test is not used in the thesis.
 - **Two test statistics, same $\hat L_n$, different critical value:**
   - **Conservative test** (Theorem F.1, absolute): $TS_{\text{cons}}=2n\hat L_n$ against $\chi^2_{d_g,.95}$ directly -- no credit for profiling out nuisance parameters or $\gamma$.
   - **Soft test** (min-subtracted, CHT-style): $TS_{\text{soft}}=2n[\hat L_n-\min\hat L_n]$ against the same $\chi^2_{d_g,.95}$ -- profiling gives back some degrees of freedom informally, so this is strictly more powerful (rejects more), and $TS_{\text{cons}}=TS_{\text{soft}}+2n\hat L_{n,\min}$ exactly, a fixed additive shift. The conservative-passing region is therefore always nested inside the soft-passing region.
 - **Why the conservative test is reported as headline here** (a real, considered choice, not the only one used in this project -- the stage-2 $(\lambda,\delta_1,\delta_2)$ estimates elsewhere use the soft test as operative): once genuine conservative-test-passing points existed for the first time in this project's history (the 3D cube result, @sec-cf-estimates), the more conservative test became the defensible one to lead with for a counterfactual whose whole purpose is to make a policy claim -- the soft test remains reported alongside it, not discarded.
+-->
 - **Why test inversion over a bootstrap CI:** an earlier attempt (plant-block bootstrap on the PF-step elasticities, a different part of this project) gave bias-corrected percentile intervals that crossed outside the parameter's own natural domain ($[0,1]$ for an elasticity) -- an artifact of the CI formula, not of the estimator. Test inversion only ever evaluates points on the bounded grid actually tested, so this can't happen; the "cost" is a set-valued answer instead of a point $\pm$ SE, treated in this project as an honest feature, not a fallback (Schennach herself: adding moments shrinks the identified set, "not a fallback to avoid").
-- **AK2020 precedent, followed directly, not just cited:** Aguiar and Kashaev (2020)'s own counterfactual appendix (`Appendix_F/F_figure1.R`) uses exactly this design -- grid a candidate outcome, profile the nuisance parameters (their $\gamma$) at each cell, plot pass/fail by candidate, connect the passing region's own upper/lower bounds across the grid. The bound-plot convention used for every $(\Delta,R)$ figure in this chapter (gray $\times$ = rejected, coloured $\bullet$ = passes, dashed/dotted bound lines) is a direct visual analog of their own figure, not an independent design.
+- **AK2020 precedent, followed directly, not just cited:** Aguiar and Kashaev (2020)'s own counterfactual appendix (`Appendix_F/F_figure1.R`) uses exactly this design -- grid a candidate outcome, profile the nuisance parameters (their $\gamma$) at each cell, plot pass/fail by candidate, connect the passing region's own upper/lower bounds across the grid. The bound-plot convention used for every $(\Delta,R)$ figure in this chapter (grey $\times$ = rejected, coloured $\bullet$ = passes, dashed/dotted bound lines) is a direct visual analogue of their own figure, not an independent design.
 - Full derivations: Schennach (2014), Theorem F.1 and its proof; `Paper/sections/9999-elvis.qmd`.
 
 ## Back-of-envelope: revenue loss and its tax-rate elasticity {#sec-app-backofenvelope}
+
+::: {.content-visible when-meta="draft"}
+**Draft note:** these are ballpark figures for the Friday JMP draft. To do afterwards: estimate them inside ELVIS as auxiliary parameters with their own moments (listed in ch. 8's Robustness to-do).
+:::
 
 <!-- OUTLINE. Computed 2026-09-22, Code/Deconvolution/1480-revenue-elasticity-backofenvelope.R
 (reproducible; re-runs the fixed-theta/gamma forward simulation, ~2 seconds total, no fitting).
 Point estimates only -- CIs deferred, see the new Open item below. -->
 
-- **What this is:** one forward-simulation run at the already-fixed headline $(\hat\theta,\hat\gamma)$, $\Delta=0$ (current policy), across all 32,232 trimmed lag_m firm-periods -- no fitting, just evaluating each firm's posterior-mean evasion and revenue at the point already estimated in @sec-cf-estimates. Confirms internal consistency on its own: mean $R_{\text{real}}=\$1702.24$, sitting exactly inside the baseline $[1666,1745]$ CI from @tbl-cf-ci.
+- **What this is:** one forward-simulation run at the already-fixed headline $(\hat\theta,\hat\gamma)$, $\Delta=0$ (current policy), across all 32,232 trimmed lag_m firm-periods -- no fitting, just evaluating each firm's posterior-mean evasion and revenue at the point already estimated in @sec-cf-estimates. Confirms internal consistency on its own: mean $R_{\text{real}}=\$1702.24$, sitting exactly inside the baseline $[1666,1745]$ CI of the (dropped) CV-adjusted revenue results.
 
 **Revenue lost to undetected evasion:**
 

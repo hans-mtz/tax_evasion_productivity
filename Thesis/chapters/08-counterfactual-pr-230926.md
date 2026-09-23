@@ -1,100 +1,49 @@
-# Proof-read: `08-counterfactual.qmd` — 2026-09-23 (revision 2)
+# Proof-read: `08-counterfactual.qmd` — 2026-09-23 (revision 3)
 
-This replaces this morning's report. Every typo, misspelling, and grammar or form fix is already applied in the chapter. **This report lists only what needs your call**, because fixing it would change the concept, the argument, or a convention. Line numbers are for the file as of this revision.
+Replaces revision 2. Everything you approved is applied (list below). **Only the open items need your call.** Items are referenced by section, since line numbers keep moving.
 
-Conventions in force (settled today):
-- **Single-tax story** in all visible text. Two-tax material is draft-only (`when-meta="draft"`), and the switch comes after Friday (PLAN.md §7b).
-- $e_i$ = baseline evasion; $e'_i(\Delta)$ = counterfactual evasion. $\tilde\tau_{it}=(1+\Delta)\tau_{it}$.
-- Moment 9 is shown as the conceptual score $\partial h/\partial\lambda\cdot\varepsilon$. The bounded transform is an implementation detail for the appendix.
-- **Canadian spelling:** applied *labour*, *endeavour*, *coloured* across `Thesis/` and `JMP/sections/`.
+## Applied in this round
 
----
+| Item | What changed |
+|---|---|
+| Your edits | Kept. Form fixes only: space before `{#sec-counterfactual}`; "Claim-Deductions" → "Claimed-Deductions" (to match the title); "changes the sales tax side?" → "…sales tax rate?"; "in the tax-cuts side / tax-increasing side" → "on the tax-cut side / tax-increase side"; "as tax rate changes" → "as the tax rate changes"; "The convex in productivity cost rationalizes" → "The cost of evasion, convex in productivity, rationalizes". Your new draft-only block now uses the same `content-visible when-meta="draft"` form and label as the others. |
+| A6 | No $t1$ in visible text. Results now say "sales-tax revenue on sales held at its baseline value, $\tau_{it}P_tY_{it}$". Appendix A (Estimation mechanics) notes that the data record the sales tax each firm pays on its sales. |
+| A7 | Deflation note added after the $\theta_C$ moment: claims are nominal COP, deflated by the GDP deflator of each year before averaging. |
+| B1 | "U-shape" is gone: ch. 8 says "convex in productivity" (ch. 2 and the conclusion stub too). Saved to memory, and CLAUDE.md is updated. |
+| B5 | Assumptions line added before the moment vector: $\varepsilon\perp(M,e,\omega)$, $\psi\perp(\omega,M)$, $E[\varepsilon]=E[\psi]=0$. |
+| B6 | $\pi$ → $F_Z$; "product measure" → "joint distribution of $(M_{it},Z_{it})$ implied by $\mu$ and $F_Z$". |
+| B7 | One warning only. The identification paragraph no longer repeats it; the next paragraph opens with it and ties it to the counterfactual. |
+| B8 | Cites `@Schennach2022` (JEL 60(4):1223–1263, doi 10.1257/jel.20211355), added to `references.bib`. I checked that p. 1250 contains the warning ("One should be careful not to interpret the entropy maximizing distribution as…"). |
+| B9 | Conservative test defined after Theorem F.1 (the statistic is bounded above by $\chi^2_{d_g}$, so the test's size is at most its nominal level). The soft test is dropped from ch. 8 and appendix A (old text kept in a comment). The CV revenue robustness material is commented out of ch. 8 (bullets, @fig-cf-laffer, @tbl-cf-ci, @tbl-cf-headline, @fig-cf-theory-cv). Appendix B (control variate) is commented out of `_quarto.yml` and `JMP/paper.qmd`. |
+| C | Captions for @fig-cf-claims (full description), @tbl-cf-estimates, @tbl-cf-detection, @tbl-cf-claims-headline. In-text references added for @fig-cf-claims, @tbl-cf-estimates, @tbl-cf-detection. Detection table headers → $m^*_{it-1}$, $\tilde{\mathcal W}_{it-2}$. Claims-headline table: "Statistically guaranteed change" → "Bounds on the change", column widths rebalanced, note shortened (it was clipped). |
+| D1 | "I" throughout ch. 8, including the draft blocks ("one cannot interact with an instrument…" where "I" read oddly). |
+| D3 | COP instead of \$ in visible text. |
 
-### Resolved since revision 2 (applied)
-- **A1 → option (a):** l. 327 now says sales-tax revenue $\tilde\tau_{it}P_tY_{it}$ moves only mechanically (output fixed, no evasion response), and that $R$ holds it at baseline $t1_i=\tau_{it}P_tY_{it}$. "Policy-invariant" is replaced with "no evasion response". The Robustness bullet (l. 352) says sales-tax revenue is held at baseline $t1$.
-- **"Conservative test" replaces "hard test"** everywhere: ch. 8, appendix A ($TS_{\text{cons}}$), and the labels on the 8 regenerated ch. 8 figures and tables. File names and internal R variables are unchanged. Recorded in PLAN.md §1.
-- **Moment-9 transform** is now documented in @sec-app-elvis → Estimation mechanics. The chapter keeps the conceptual score.
-- **Two-tax draft block:** the penalty is now $\phi\tau_P\rho_te$ (l. 94), so the "Simplifying" line follows. Remaining typo fixed ("vesion").
-
-### New, from the regenerated assets — RESOLVED (applied)
-- N1 and N2 are fixed. Both CI figures now say "Tax-rate shifter Δ". The Laffer footnote no longer cites the log. The Claims caption no longer says $t1$ is "fixed and unaffected" and is wrapped so it isn't cut off. Figure text is about 35% bigger (base 12 → 16pt). Table headers now read $m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$.
-- Original notes, for reference:
-- **N1. Laffer figure** (`ch08-laffer-ci-hard.png`): the x-axis says "Purchases-tax shifter Δ", which is two-tax wording in the single-tax story. The footnote cites "see Research-log/log.md", an internal reference readers can't see. Both come from `Code/Deconvolution/1300-*`, which also feeds the slides. I can override them in the thesis wrapper, as I did for the title.
-- **N2. Headline estimates table:** column headers read $m^*_{t-1}$ and $\tilde{\mathcal W}_{t-2}$, without the $it$ subscript the text uses ($m^*_{it-1}$).
-
-## A. Consistency of the counterfactual experiment (most important)
-
-**A1. ~~Is sales-side revenue fixed or not?~~** Resolved (see above).
-
-**A2. Two-tax language still in visible text:**
-- l. 54: "…when there are two different sales taxes on sales and purchases, the government can affect the relative prices…" is a two-tax argument inside the single-tax story. Drop it, or move it to the draft block.
-- l. 21: "the sales tax *on the purchases* side". Under a single τ, does the government change "the sales tax" or specifically the credit side? This ties to A1.
-
-**A3. The question vs. the optimization claim.** l. 21 asks for the *marginal change* in revenue. l. 46 says "the government chooses the tax rate to *maximize* expected tax revenue". Your own outline note (l. 61) says it's not a maximization. Pick one framing.
-
-**A4. Which object is the headline?** The chapter title says "Revenue", the first section says "Laffer Curve" (l. 27: "downward-sloping Laffer curve"), and the headline result is Claims (l. 327), which slopes *upward* in $\Delta$. A reader will be confused about which curve slopes which way. Make the title, l. 27, and §Results name the same object.
-
-**A5. "with a kink at the current state" (l. 27).** No later section shows or names a kink. The pure-simulation figures that showed it were dropped. Either point to the evidence (the jump from $\Delta=0$ to $+0.5\%$ in @tbl-cf-claims) or reword to "asymmetry".
-
-**A6. $t1$ in visible text (l. 327, 352, 368).** It is now defined at first use ($t1_i=\tau_{it}P_tY_{it}$). It is still the data column's name used as a math symbol, though; a conventional symbol (e.g. $S_i$) would read better. Your call.
-
-**A7. Real vs. nominal (l. 306 vs. l. 332).** The $\theta_C$ moment is written in nominal terms, but results are "real mean claims". One clause on deflation (by $P_t$ at aggregation) would close the gap.
-
-**A8. The intercept, two ways (l. 304 vs. l. 347).** l. 304 calls $\Delta/[2\lambda(1+\Delta)]$ the intercept. l. 347 calls $\Delta/(2\lambda)$ "the common intercept". Both are correct (inside vs. outside the $1/(1+\Delta)$ scaling), but use one.
+The full book and the JMP both render with no warnings, and all cross-references resolve.
 
 ---
 
-## B. Model and estimation content
+## Round 4 (applied)
 
-**B1. "Convex in productivity" (l. 123, 131) vs. "U-shape" (l. 264).** Both are technically true. Consistent wording helps the reader connect the Carrillo argument to the estimates.
+- **O1, O2 → to-do list.** Three items were added to ch. 8's Robustness draft note: fine-tune the Claims confidence sets (only the coarse grid has run); run the θ-free check on Claims; estimate the back-of-envelope numbers inside ELVIS. A draft note in @sec-app-backofenvelope marks its numbers as JMP-draft ballparks. No runs were launched.
+- **O4:** your "inflated claims" works. It is also accurate in magnitude: at +0.5% the legitimate credit rises only 0.5%, a few COP on a baseline of roughly 785, while claims rise by about 170. So nearly all of the increase is inflation.
+- **O5:** agreed. Revenue is the motivating question, and the second paragraph ("claims-only Laffer curve") is the bridge to claims.
+- **O6:** left as is.
+- **D2:** full Canadian spelling: *modelling/modelled* (ch. 3, appendix D, JMP intro), *grey* (ch. 8 captions, appendix A, Claims figure label, regenerated), *analogue* (appendix A). Recorded in PLAN.md §1 and memory. Legacy `Code/Deconvolution/` scripts that also feed the slides are unchanged.
 
-**B2. Carrillo paragraph (l. 131).**
-- The main idea is buried. Consider opening with it: *the U-shaped cost rationalizes the hump-shaped evasion-by-size pattern.*
-- Carrillo is about **size** and your cost function is about **productivity**. One linking clause is missing.
-- The last two sentences (detection cannot explain the decline at the top) are the key argument but read as an afterthought. Say it directly: the decline must come from cost, since detection would have to fall with evasion.
+## Open — need your call
 
-**B3. l. 123: "Since we do not observe enforcement, it is treated as constant".** What does "it" refer to: enforcement intensity $\lambda$, or $q(\cdot)$ itself? Also check that "consistent with a tax authority that audits a firm whenever its overreporting exceeds a random threshold" (my fix this morning) says what you mean.
+**O3.** You'll handle ch. 2's symmetric rationale when you get to ch. 2.
 
-**B4. Normalizations are not stated (after l. 171).** Moment 1 needs $E[\psi]=0$, with $\delta_0$ absorbing the level. Also, ch. 2 normalizes $E[\exp\varepsilon]=1$, while moment 2 imposes $E[\varepsilon]=0$. If stage 1 re-centres $\varepsilon$, say so here or in ch. 5.
+**B2. Carrillo paragraph: connecting the "two sources" argument.** The point is that the model has only two primitives that can produce the drop at the top, and only one of them can do it plausibly. Right now that argument sits in the last two sentences, after the manager-time story. Suggested structure, for you to write:
+1. Pattern (Carrillo): evasion rises with size, then drops at the very top.
+2. **Two candidate sources in the model:** the drop must come from either the detection probability or the evasion cost.
+3. **Detection can't do it:** $q(e)$ depends only on evasion, so to produce a drop at the top it would have to fall as evasion grows, or be lower for the largest firms. Neither is plausible: if anything, the largest firms face more scrutiny.
+4. **So the cost must:** evasion cost convex in productivity.
+5. Why that is economically sensible: the manager-time and coordination story.
 
-**B5. Which assumptions license the moments (l. 226).** "I leverage independence assumptions". Naming them in one line would let the reader check each row: $\varepsilon\perp(M,e,\omega)$; $\psi\perp(\omega,M)$.
+A possible bridge sentence between steps 1 and 3 (your call on wording): *"In the model, only two primitives can generate this pattern: the probability of detection and the cost of evasion."*
 
-**B6. Notation clash and measure wording (l. 206).**
-- $\pi$ is the data distribution here and profit elsewhere (ch. 2, and the draft block).
-- "$\mu\times\pi$, the product measure" is imprecise, since $\mu$ is conditional on $Z$. "Joint distribution implied by $\mu$ and $\pi$" is more accurate.
-
-**B7. The warning appears twice (l. 222 and l. 224).** Both say "don't treat the entropy-maximizing distribution as the truth". Keep l. 222's identification argument as its main point, and move the warning to open l. 224, where it motivates the auxiliary parameter.
-
-**B8. Citation (l. 222).** `@Schennach2021, p.1250`: the bib entry is the 2021 report, but p. 1250 is a page in the 2022 *JEL* version. Update the entry or drop the page number.
-
-**B9. Terms used but not defined in this chapter:**
-- "Conservative test" is now the single name, but it is still **not defined** in the chapter. One sentence near l. 242 would do: "$TS=2n\hat L_n$ compared directly against $\chi^2_{d_g,.95}$, with no credit for profiling; details in @sec-app-elvis." "Soft test" appears only in l. 256 (the cube count); either define it too or drop that half-sentence from the main text.
-- The 0.5% trim (l. 273, 282, 385) is not mentioned in §Estimation. One clause at l. 244 (32,232 is *after* the trim) would do.
-- $\hat\Omega^-$ (l. 367) and the control variate (l. 327, 367–372). The CV is introduced only in a comment (l. 316). Add a short intro before Robustness uses it, or cut the references.
-
-**B10. Fixing θ (l. 311).** I added one sentence this morning: θ fixed at the best point, only γ re-optimized. The AK2020 precedent is still only in the comment (l. 308–310). Do you want it cited in the text? Supervisors will ask.
-
----
-
-## C. Figures and tables (the self-explanatory standard)
-
-| Asset | Referenced in text? | Caption |
-|---|---|---|
-| @fig-cf-claims (l. 325) | **No** | Short: add axes, what the dots and ✕ marks mean, θ fixed, $\chi^2_{10}$ |
-| @tbl-cf-estimates (l. 259) | **No** | **None** |
-| @tbl-cf-detection (l. 268) | **No** | **None** |
-| @tbl-cf-claims (l. 329) | Yes | OK |
-| @tbl-cf-claims-headline (l. 339) | Yes | **None** |
-| @fig-cf-laffer (l. 354) | **No** | Short (same as fig-cf-claims) |
-| @tbl-cf-ci (l. 356) | **No** | OK |
-| @tbl-cf-headline (l. 362) | **No** | **None** |
-| @fig-cf-theory-cv (l. 370) | **No** | "Theory-coefficient vs. CV passing points." needs CV defined (see B9) |
-
----
-
-## D. Style conventions (your call, whole book)
-
-- **"I" vs. "we":** mixed in this chapter (l. 24, 123, 226, 311 use "I"; l. 56, 133, 185, 220 use "we"). "I" is standard for a sole-authored JMP.
-- **More Canadian spelling?** I standardized only the *-our/-oured* words. Canadian usage also prefers *modelling* (l. 131; ch. 3, appendix D, JMP intro have *modeling/modeled*) and *grey* (captions l. 325, 354: "gray band"). Say yes and I'll sweep both.
-- **Currency:** l. 263 and l. 367 use "\$", while the tables say COP. Pick one.
-- **Headers still in outline form:** §Estimates, §Discussion, §Results, §Robustness, §Scope are bullets. Prose is yours. When you write them, lead each paragraph with its main claim. For §Discussion that is "$\hat\lambda$ is small because a thin tail of aggressive evaders identifies it."
+**O7 (carried over):**
+- A8: "constant term" (Results) vs. "intercept, $\Delta/[2\lambda(1+\Delta)]$" (Design). Pick one term.
+- Estimates, Discussion, Results and Scope are still in bullet form.

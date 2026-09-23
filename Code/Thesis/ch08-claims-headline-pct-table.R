@@ -37,7 +37,7 @@ mk_row <- function(delta, label) {
         Scenario = label,
         `Tax change` = sprintf("%s%.1f%%", ifelse(delta > 0, "+", ""), delta * 100),
         `Claims CI (real COP)` = sprintf("[%.0f, %.0f]", b$lower, b$upper),
-        `Statistically guaranteed change` = sprintf("%+.2f%% to %+.2f%%", lo, hi),
+        `Bounds on the change` = sprintf("%+.2f%% to %+.2f%%", lo, hi),
         `Point-estimate change` = sprintf("%+.2f%%", (p - p0) / p0 * 100)
     )
 }
@@ -45,15 +45,15 @@ mk_row <- function(delta, label) {
 tbl <- bind_rows(
     tibble(Scenario = "Baseline (current policy)", `Tax change` = "0.0%",
            `Claims CI (real COP)` = sprintf("[%.0f, %.0f]", base$lower, base$upper),
-           `Statistically guaranteed change` = "--", `Point-estimate change` = "--"),
-    mk_row(-0.08, "Tax cut (smallest tested that separates)"),
+           `Bounds on the change` = "--", `Point-estimate change` = "--"),
+    mk_row(-0.08, "Tax cut (smallest that separates)"),
     mk_row(0.005, "Tax increase (smallest tested)")
 )
 print(tbl)
 
 tbl_tex <- tbl %>% mutate(across(everything(), ~ gsub("%", "\\\\%", .x)))
 
-tt_obj <- tbl_tex |> tt(width = 1, notes = "Statistically distinguishable change in real mean purchases-side deduction claims: an 8\\% cut vs. a 0.5\\% increase (conservative test, 95\\%, raw Claims moment).")
+tt_obj <- tbl_tex |> tt(width = c(2.5, 1.0, 1.5, 2.1, 1.8), notes = "Bounds compare the two 95\\% conservative-test confidence sets.")
 
 render_thesis_table(tt_obj, "ch08-claims-headline-pct")
 cat("Saved: Thesis/tables/ch08-claims-headline-pct.{png,pdf}\n")

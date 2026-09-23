@@ -32,7 +32,7 @@ Sources
 
 ![Juridical organization, manufacturing firms in Colombia (1981--1991).](/tables/ch03-jo-summary.png){#tbl-jo-summary}
 
-- Five types in the data; four kept in the analysis (Corporation, Limited Liability Company, Partnership, Proprietorship). Others (cooperatives, community/state enterprises) excluded — not profit-driven, no evasion incentive of the kind modeled.
+- Five types in the data; four kept in the analysis (Corporation, Limited Liability Company, Partnership, Proprietorship). Others (cooperatives, community/state enterprises) excluded — not profit-driven, no evasion incentive of the kind modelled.
 - Definitions (safe to copy from `80-colombia.qmd`, institutional facts, not model output):
   - **Corporation** (*sociedad anónima*): capital association, $N\ge5$ shareholders, tradable shares, liability limited to capital, supervised by the Superintendent of Corporations with a mandatory auditor.
   - **Limited liability company** (*sociedad de responsabilidad limitada*): $2\le N\le20$ (25 in the 1992 EAM documentation), non-tradable shares, liability limited to capital.
@@ -60,9 +60,9 @@ Institutional summary table (rates/liability/capital/owners by type) — kept as
 
 ## Why corporations are the least likely evaders {#sec-setting-corp-evasion}
 
-- Three institutional reasons (from `80-colombia.qmd`'s discussion), each mapped to a modeling choice:
+- Three institutional reasons (from `80-colombia.qmd`'s discussion), each mapped to a modelling choice:
   1. Mandatory auditor and Superintendent oversight $\to$ higher detection probability $q$ for corps in the model.
-  2. Tradable shares create a market-value cost to underreporting profits $\to$ an implicit cost channel outside $\kappa(e,\omega)$, not separately modeled.
+  2. Tradable shares create a market-value cost to underreporting profits $\to$ an implicit cost channel outside $\kappa(e,\omega)$, not separately modelled.
   3. CIT on distributed (not accrued) dividends gives corporations a timing margin ordinary profit-shifting doesn't have.
 - This is the institutional justification for treating corps as $e=0$ in stage 1 (@sec-testing, @sec-deconvolution) — state it here once, reference it there.
 - Proprietorships, partnerships and LLCs face both CIT and ST incentives to overreport; incentives vary by industry (ST rate) and by juridical organization within industry (CIT rate) — sets up @sec-fiscal's identification strategy.
