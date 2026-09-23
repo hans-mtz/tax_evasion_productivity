@@ -34,12 +34,12 @@ RESULT_ROW <- which(STAT_ROWS == "Result")
 
 tbl <- tibble(
     ` ` = STAT_ROWS,
-    `$m^*_{t-1}$` = c(
+    `$m^*_{it-1}$` = c(
         fmt_sci(lm$lambda), fmt3(lm$delta0_hat), fmt3(lm$delta1), fmt3(lm$delta2),
         fmt3(lm$delta1 / (2 * lm$delta2)), fmt3(max(abs(lm_gamma))),
         fmt3(lm$TS_hard), fmt3(CHI2_95), ifelse(pass_lm, "Passes", "Fails")
     ),
-    `$\\tilde{\\mathcal{W}}_{t-2}$` = c(
+    `$\\tilde{\\mathcal{W}}_{it-2}$` = c(
         fmt_sci(w$lambda), fmt3(w$delta0_hat), fmt3(w$delta1_hat), fmt3(w$delta2_hat),
         fmt3(w$delta1_hat / (2 * w$delta2_hat)), fmt3(max(abs(w_gamma))),
         fmt3(w_TS_hard), fmt3(CHI2_95), ifelse(pass_w, "Passes", "Fails")

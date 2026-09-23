@@ -16,7 +16,9 @@ Conventions in force (settled today):
 - **Moment-9 transform** is now documented in @sec-app-elvis → Estimation mechanics. The chapter keeps the conceptual score.
 - **Two-tax draft block:** the penalty is now $\phi\tau_P\rho_te$ (l. 94), so the "Simplifying" line follows. Remaining typo fixed ("vesion").
 
-### New, from the regenerated assets (your call)
+### New, from the regenerated assets — RESOLVED (applied)
+- N1 and N2 are fixed. Both CI figures now say "Tax-rate shifter Δ". The Laffer footnote no longer cites the log. The Claims caption no longer says $t1$ is "fixed and unaffected" and is wrapped so it isn't cut off. Figure text is about 35% bigger (base 12 → 16pt). Table headers now read $m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$.
+- Original notes, for reference:
 - **N1. Laffer figure** (`ch08-laffer-ci-hard.png`): the x-axis says "Purchases-tax shifter Δ", which is two-tax wording in the single-tax story. The footnote cites "see Research-log/log.md", an internal reference readers can't see. Both come from `Code/Deconvolution/1300-*`, which also feeds the slides. I can override them in the thesis wrapper, as I did for the title.
 - **N2. Headline estimates table:** column headers read $m^*_{t-1}$ and $\tilde{\mathcal W}_{t-2}$, without the $it$ subscript the text uses ($m^*_{it-1}$).
 
