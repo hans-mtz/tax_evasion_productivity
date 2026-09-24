@@ -127,7 +127,12 @@ Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among
 **Draft note (outline for the test design and results; replaces the old results paragraphs of `200-deconv.qmd`, whose industry counts come from an earlier table):**
 
 - Design: difference in means, two samples. Each bootstrap replication resamples plants separately within corporations and within unincorporated firms; $\ln\hat\beta$ comes from the corporations, the mean of $\mathcal V$ from the unincorporated firms. This carries the first-stage sampling error of $\ln\hat\beta$ into the test.
-- Results (@tbl-evasion-test): the null is rejected at 5% (one-sided) in 8 of 20 industries: 313 Beverages, 321 Textiles, 322 Wearing apparel, 331 Wood products, 369 Non-metallic minerals (all at 1%), and 324 Footwear, 342 Printing and publishing, 352 Other chemicals (5%).
+- Results (@tbl-evasion-test), one level throughout, 10% one-sided (Hans, 2026-09-24): the null is rejected in 9 of 20 industries: 313 Beverages, 321 Textiles, 322 Wearing apparel, 331 Wood products, 369 Non-metallic minerals (1%); 324 Footwear, 342 Printing and publishing, 352 Other chemicals (5%); 311 Food products (10%).
+- Why this is not cherry-picking (three devices, all using every industry tested):
+  - Ranking fixed before the test: four of the five largest industries by revenue (311, 313, 352, 321; not 351), from the size ranking in @sec-setting-industries.
+  - Size-weighted: the 20 industries tested produce 84.6% of manufacturing output; the 9 with evidence produce 59.7% of the tested output, 50.5% of all manufacturing output. At 5% (8 industries, without 311): 37.7% and 31.9%. 311 alone contributes about 22 points and has the weakest evidence; keep the 5% figures at hand.
+  - Multiple testing: with 20 tests at 10%, about two rejections are expected by chance if no industry overreports; nine or more has probability $6\times10^{-5}$ (binomial; industry samples are separate).
+- The deconvolution uses a rule fixed before seeing magnitudes: the five industries rejecting at 1%.
 - Consistent with incentives: little or no evidence in industries whose products are exempt from the sales tax (311, 312, 382, 384).
 - Industries where the null is not rejected (including 323 Leather and 356 Plastics, whose means are negative): state only that a failure to reject is inconclusive, and that anyone interested in a particular industry should investigate whether the identifying assumptions hold there before drawing conclusions. Do not speculate about which assumption fails (Hans, 2026-09-24).
 
