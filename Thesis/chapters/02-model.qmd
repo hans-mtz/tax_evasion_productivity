@@ -52,7 +52,11 @@ $$ {#eq-foc-e}
 
 ## Second-order condition
 
-- Profit's Hessian is block-diagonal ($e$ separate from $K,L,M$ since $M\perp e$) and the production function is strictly concave, so the second-order condition reduces to $\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0$, a restriction on the curvature of $q$ alone, derived in @sec-app-soc-model.
+- Profit's Hessian is block-diagonal ($e$ separate from $K,L,M$ since $M\perp e$) and the production function is strictly concave, so the second-order condition reduces to $\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0$. With a cost of evasion linear in $e_{it}$ and $\phi=0$, it becomes a restriction on the curvature of the detection probability alone (derivation in @sec-app-soc-model):
+$$
+-\frac{q''(e_{it})}{q'(e_{it})}\,e_{it}<2
+$$ {#eq-soc}
+- The detection probability may be concave, but not too concave: its elasticity of $q'$ with respect to $e$ must stay above $-2$. A linear $q$ satisfies the condition everywhere ($q''=0$), as does any convex $q$; a concave $q$ such as $1-e^{-\lambda e}$ satisfies it only for $\lambda e<2$.
 
 <!-- MOVED 2026-09-24 (Hans: ch. 2 = general model only; functional forms live in ch. 8, identification
 conditions in the empirical chapters). Kept verbatim below for reference. What ch. 8 did not already
