@@ -31,8 +31,8 @@ below that needs more than the one-line summary already moved from ch. 8.
 - CUE quadratic objective with eigenvalue-truncated weighting matrix.
 - **Sales-tax revenue on sales is observed.** The data record the sales tax each firm pays on its sales in each period, which is the observed counterpart of $\tau_{it}P_tY_{it}$ in @eq-govt-rev; total revenue in the counterfactual is computed from it directly, held at its baseline value.
 - **The $\lambda$-score moment enters in bounded form.** The score $h_\lambda(e)\equiv\partial h(e;\lambda)/\partial\lambda=-2e/(1-2\lambda e)$ diverges near the FOC ceiling $e\to1/(2\lambda)$, where a single extreme draw can dominate the weighting matrix's eigenvalues and silently collapse the effective moment count. The implementation therefore replaces $h_\lambda$ with $h_\lambda/(1-h_\lambda)\in(-1,0]$ in the ninth moment ($1-2\lambda e$ floored at $10^{-6}$). Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$ under the same argument that licenses the raw score. The transform decays polynomially, not exponentially, so firms stay numerically distinguishable across the whole range of $e$; $\exp(h_\lambda)$ and $\tanh(h_\lambda)$ were rejected because both saturate to a constant for most of the sample.
-- Per-firm Metropolis chain: $n_{burn}=1000$, $n_{keep}=3000$ (settled convention -- see CLAUDE.md's "MCMC chain-length convention" entry for why this length, not a longer one, and why acceptance-rate SD is the more reliable diagnostic than $\gamma'g$ variance).
-- Nelder-Mead optimizer (beats BOBYQA decisively on this problem -- see CLAUDE.md).
+- Per-firm Metropolis chain: $n_{burn}=1000$, $n_{keep}=3000$ [(settled convention -- see CLAUDE.md's "MCMC chain-length convention" entry for why this length, not a longer one, and why acceptance-rate SD is the more reliable diagnostic than $\gamma'g$ variance)]{.content-visible when-meta="draft"}.
+- Nelder-Mead optimizer [(beats BOBYQA decisively on this problem -- see CLAUDE.md)]{.content-visible when-meta="draft"}.
 - $\gamma$ is unbounded in the optimizer (Schennach and AK2020 both treat $\gamma\to\pm\infty$ as an expected solution, not a numerical failure).
 
 ## Trim cutoff
@@ -41,7 +41,10 @@ below that needs more than the one-line summary already moved from ch. 8.
 
 - Top 0.5% of interior (non-corner) firms by $M^*$ dropped before fitting.
 - Why: a handful of extreme evaders near the FOC ceiling drive $\hat\lambda$ toward zero without it; 0.5% is the first cutoff where the 95% CI's upper bound stabilizes.
+
+::: {.content-visible when-meta="draft"}
 - Revised down from an earlier 1% decision (see CLAUDE.md's "Trim-cutoff decision" entries for the fuller investigation, including the industry/firm-composition checks that aren't repeated here).
+:::
 
 ![Trim-cutoff test inversion.](/figures/ch08-trim-cutoff.png){#fig-cf-trim}
 
@@ -52,8 +55,14 @@ diagnostic figures. The WHAT-we-found (the two instruments' point estimates, the
 table) stays in ch. 8's body -- only the search-process visualizations move here. -->
 
 - Search order: $\lambda$-grid (profiling $\delta_1,\delta_2$), then a $(\delta_1,\delta_2)$-grid (profiling $\lambda$), then a joint 27-cell $(\lambda,\delta_1,\delta_2)$ cube.
+
+::: {.content-visible when-meta="draft"}
 - The cube deliberately reuses coarse $\pm1$ (in $\delta_1$) / $\pm0.2$ (in $\delta_2$) spacing rather than a finer grid: its purpose is narrowly evidentiary (justify one specific $\hat\theta$ to fix for the counterfactual), not to trace the confidence region's exact boundary. Two of the three tested $\lambda$'s reuse already-validated boundary points from the earlier $\lambda$-only grid rather than guessing blind.
+:::
+
+::: {.content-visible when-meta="draft"}
 - Warm-starting convention: every grid point seeded independently from the SAME already-validated point, not chained sequentially across points. Found the hard way -- sequential chaining lets the seed only affect the grid's first point, silently reproducing a known-bad chain's results; same-point seeding resolved genuine local-optimum traps a naive chain had fallen into (see CLAUDE.md's "Warm-starting convention, revised" entry for the full story, including why a properly-scoped global optimizer was tried and rejected here).
+:::
 
 ![Joint $(\lambda,\delta_1,\delta_2)$ cube.](/figures/ch08-elvis-cube.png){#fig-cf-cube}
 
@@ -78,9 +87,16 @@ section is the justification for the design, not a restatement of it. -->
   - **Soft test** (min-subtracted, CHT-style): $TS_{\text{soft}}=2n[\hat L_n-\min\hat L_n]$ against the same $\chi^2_{d_g,.95}$ -- profiling gives back some degrees of freedom informally, so this is strictly more powerful (rejects more), and $TS_{\text{cons}}=TS_{\text{soft}}+2n\hat L_{n,\min}$ exactly, a fixed additive shift. The conservative-passing region is therefore always nested inside the soft-passing region.
 - **Why the conservative test is reported as headline here** (a real, considered choice, not the only one used in this project -- the stage-2 $(\lambda,\delta_1,\delta_2)$ estimates elsewhere use the soft test as operative): once genuine conservative-test-passing points existed for the first time in this project's history (the 3D cube result, @sec-cf-estimates), the more conservative test became the defensible one to lead with for a counterfactual whose whole purpose is to make a policy claim -- the soft test remains reported alongside it, not discarded.
 -->
+
+::: {.content-visible when-meta="draft"}
 - **Why test inversion over a bootstrap CI:** an earlier attempt (plant-block bootstrap on the PF-step elasticities, a different part of this project) gave bias-corrected percentile intervals that crossed outside the parameter's own natural domain ($[0,1]$ for an elasticity) -- an artifact of the CI formula, not of the estimator. Test inversion only ever evaluates points on the bounded grid actually tested, so this can't happen; the "cost" is a set-valued answer instead of a point $\pm$ SE, treated in this project as an honest feature, not a fallback (Schennach herself: adding moments shrinks the identified set, "not a fallback to avoid").
+:::
+
+::: {.content-visible when-meta="draft"}
 - **AK2020 precedent, followed directly, not just cited:** Aguiar and Kashaev (2020)'s own counterfactual appendix (`Appendix_F/F_figure1.R`) uses exactly this design -- grid a candidate outcome, profile the nuisance parameters (their $\gamma$) at each cell, plot pass/fail by candidate, connect the passing region's own upper/lower bounds across the grid. The bound-plot convention used for every $(\Delta,R)$ figure in this chapter (grey $\times$ = rejected, coloured $\bullet$ = passes, dashed/dotted bound lines) is a direct visual analogue of their own figure, not an independent design.
-- Full derivations: Schennach (2014), Theorem F.1 and its proof; `Paper/sections/9999-elvis.qmd`.
+:::
+
+- Full derivations: Schennach (2014), Theorem F.1 and its proof; [`Paper/sections/9999-elvis.qmd`]{.content-visible when-meta="draft"}.
 
 ## Back-of-envelope: revenue loss and its tax-rate elasticity {#sec-app-backofenvelope}
 
@@ -92,19 +108,25 @@ section is the justification for the design, not a restatement of it. -->
 (reproducible; re-runs the fixed-theta/gamma forward simulation, ~2 seconds total, no fitting).
 Point estimates only -- CIs deferred, see the new Open item below. -->
 
+::: {.content-visible when-meta="draft"}
 - **What this is:** one forward-simulation run at the already-fixed headline $(\hat\theta,\hat\gamma)$, $\Delta=0$ (current policy), across all 32,232 trimmed lag_m firm-periods -- no fitting, just evaluating each firm's posterior-mean evasion and revenue at the point already estimated in @sec-cf-estimates. Confirms internal consistency on its own: mean $R_{\text{real}}=\$1702.24$, sitting exactly inside the baseline $[1666,1745]$ CI of the (dropped) CV-adjusted revenue results.
+:::
 
 **Revenue lost to undetected evasion:**
 
 - Mean $\text{Loss}_i=\tau_{P,i}(1-q(e_i))e_i$ (the extra credit paid out that perfect detection would have caught) across all firms: **\$53.32 real COP per firm-period**; **\$1{,}718{,}598** total across the sample.
-- **Reported as a share of *potential* revenue, the standard VAT-gap convention** -- not of actual collections. Potential $=$ actual $+$ loss $=1702.24+53.32=\$1755.56$; gap $=1-\text{actual/potential}=\textbf{3.04\%}$. Verified this is the right denominator directly against the methodology already read for @sec-cf-question's country comparisons: the EU VAT Gap Report's own VTTL/"percent of VTTL" construction and CIAT's Efficiency$=$actual/potential decomposition both divide by potential, never by actual.
-- **A narrow-channel number, say so explicitly:** one mechanism (materials-credit overreporting), one country, one structural sample -- smaller than the official comparators' *non-compliance-only* gap shares (14.1% Colombia, 30.7% Chile, 54.4% Mexico, all CIAT, as % of potential), which capture every form of non-compliance, not just this channel. Smaller than that broader base is the expected, reassuring result: not implausibly large (like the disqualified Poland claim), not zero either.
+- **Reported as a share of *potential* revenue, the standard VAT-gap convention** -- not of actual collections. Potential $=$ actual $+$ loss $=1702.24+53.32=\$1755.56$; gap $=1-\text{actual/potential}=\textbf{3.04\%}$. [Verified this is the right denominator directly against the methodology already read for @sec-cf-question's country comparisons: the EU VAT Gap Report's own VTTL/"percent of VTTL" construction and CIAT's Efficiency$=$actual/potential decomposition both divide by potential, never by actual.]{.content-visible when-meta="draft"}
+- **A narrow-channel number[, say so explicitly]{.content-visible when-meta="draft"}:** one mechanism (materials-credit overreporting), one country, one structural sample -- smaller than the official comparators' *non-compliance-only* gap shares (14.1% Colombia, 30.7% Chile, 54.4% Mexico, all CIAT, as % of potential), which capture every form of non-compliance, not just this channel. [Smaller than that broader base is the expected, reassuring result: not implausibly large (like the disqualified Poland claim), not zero either.]{.content-visible when-meta="draft"}
 
 **Revenue elasticity of the tax rate:**
 
-- Closed form, derived by hand from the same $\tilde e(\Delta)$ used throughout this chapter: $\dfrac{\partial R_i}{\partial x}\Big|_{x=1}=-\tau_{P,i}\left[M_i-e_i+\lambda e_i^2+\dfrac{1}{2\lambda}\right]$, $x\equiv1+\Delta$.
+- Closed form[, derived by hand]{.content-visible when-meta="draft"} from the same $\tilde e(\Delta)$ used throughout this chapter: $\dfrac{\partial R_i}{\partial x}\Big|_{x=1}=-\tau_{P,i}\left[M_i-e_i+\lambda e_i^2+\dfrac{1}{2\lambda}\right]$, $x\equiv1+\Delta$.
 - **Two one-sided elasticities, not one** -- the same kink at $\Delta=0$ documented in @sec-cf-results makes the two-sided derivative ill-defined: $\varepsilon_{\text{right}}=-20.30$, $\varepsilon_{\text{left}}=-9.68$ (both aggregate, ratio of means, $x=1$). Both large; the asymmetry is the same mechanism as the Results section's own asymmetric-response finding, not a new one.
+
+::: {.content-visible when-meta="draft"}
 - Cross-validated: the closed form's aggregate mean ($-34{,}575.96$ real COP) agrees with the numerical right-derivative ($-34{,}559.47$, from tiny $\Delta=\pm0.001$ runs) to **0.048%**.
-- **Elasticity "with respect to the tax rate" is the same number, not a third one, and this is exact, not approximate.** The model only ever moves $\tau_P$ through the proportional shifter $x$ ($\tilde\tau_{P,i}=x\tau_{P,i}$, $\tau_{P,i}$ fixed), so $d\ln\tilde\tau_{P,i}=d\ln x$ identically at every firm, every $x$ -- not just at $\Delta=0$. Confirmed a second, independent way: $\tau_{P,i}$ cancels out of $\tilde e_i(\Delta)$ entirely in the FOC derivation, so a firm's own rate level doesn't even affect how its evasion responds to a proportional shock. A genuinely different "elasticity to an absolute percentage-point change" would need its own derivation (a non-proportional shock design) -- not computed here, flagged only.
-- Median interior-firm elasticity, as a distinct "typical firm" measure: $-195.99$ -- far larger in magnitude because the median evading firm's own $R_i$ is much smaller than the sample mean (a real heterogeneity finding, not a discrepancy with the aggregate number above).
+:::
+
+- **Elasticity "with respect to the tax rate" is the same number, not a third one, and this is exact, not approximate.** The model only ever moves $\tau_P$ through the proportional shifter $x$ ($\tilde\tau_{P,i}=x\tau_{P,i}$, $\tau_{P,i}$ fixed), so $d\ln\tilde\tau_{P,i}=d\ln x$ identically at every firm, every $x$ -- not just at $\Delta=0$. [Confirmed a second, independent way: $\tau_{P,i}$ cancels out of $\tilde e_i(\Delta)$ entirely in the FOC derivation, so a firm's own rate level doesn't even affect how its evasion responds to a proportional shock. A genuinely different "elasticity to an absolute percentage-point change" would need its own derivation (a non-proportional shock design) -- not computed here, flagged only.]{.content-visible when-meta="draft"}
+- Median interior-firm elasticity, as a distinct "typical firm" measure: $-195.99$ -- far larger in magnitude because the median evading firm's own $R_i$ is much smaller than the sample mean [(a real heterogeneity finding, not a discrepancy with the aggregate number above)]{.content-visible when-meta="draft"}.
 

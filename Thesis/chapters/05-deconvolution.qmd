@@ -1,3 +1,115 @@
+::: {.content-hidden when-meta="jmp"}
 # Deconvolving Tax Evasion {#sec-deconvolution}
+:::
 
-<!-- STUB. Sources: Paper/sections/56-id-evasion.qmd, 120-implementation.qmd, 200-deconv.qmd (moments, parametric MLE), 930-eps-density.qmd, Quarto-Slides/sections/700-deconvolving-evasion.qmd -->
+::: {.content-visible when-meta="jmp"}
+## Deconvolving tax evasion {#sec-deconvolution}
+:::
+
+<!-- Ported 2026-09-24 (see Thesis/REUSE-LOG.md). Visible prose is copied from
+Paper/sections/56-id-evasion.qmd (supervisor-approved; source untouched), 120-implementation.qmd,
+and the density-transformation slides in Quarto-Slides/sections/700-deconvolving-evasion.qmd, with
+e (the approved paper's multiplicative log-ratio) translated to u. In the JMP this chapter is a
+subsection of "Identifying Tax Evasion" (@sec-testing); in the thesis it stays its own chapter. -->
+
+We can do better however. By Assumption 2, the measurement error $\varepsilon_{it}$ is independent of overreporting $u_{it}$. Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$, the distribution of $\varepsilon$. By using deconvolution methods, I can recover the tax evasion apart from the output shock.
+
+In particular, from probability theory, the density of the sum of two **independent** random variables is equal to the **convolution** of the densities of both addends [@Meister2009]. Hence, from @eq-ob-ev,
+
+$$
+f_{\mathcal{V}}(\mathcal{V})=\int f_u(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\text{d}\varepsilon
+$$ {#eq-conv}
+
+where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$.
+
+::: {.content-visible when-meta="draft"}
+
+**Draft note (outline): what deconvolution needs beyond the test** (PLAN.md §10).
+
+- $\varepsilon\perp u$ (Assumption 2) and $f_\varepsilon$ known from corporations.
+- Evasion separable from true materials, $\partial q/\partial M=\partial\kappa/\partial M=0$: then evaders' materials FOC is undistorted and $\mathcal V=u-\varepsilon$ holds exactly for them too, not only for non-evaders. Counterexample: evasion chosen as a share of true materials (slides `200-model.qmd`, "Robustness: Multiplicative Evasion").
+- A constant output elasticity of materials (Cobb-Douglas in $M$). With general technology the residual carries $\ln D(M^*)-\ln D(M)$, which depends on the unknown $M$; a second flexible, non-deductible input (labour) restores identification (`56-id-evasion.qmd`, "Identification with two Flexible Inputs"; one sentence here, details in an appendix).
+- The recovered $f_u$ is the population marginal among unincorporated firms; whether it is the same for every firm is a separate claim, not needed here.
+
+:::
+
+## Estimation {#sec-deconvolution-estimation}
+
+Following @Kang2021, consider the following logspline model:
+
+$$
+f_{u|\Theta}(u)=\exp(s(u;\theta)-C(\theta)), \quad L < u < R
+$$
+
+where $[L,R]$ define the support of $f_u$,
+
+$$
+s(u;\theta)=\sum_{j=1}^{K-1}\theta_j B_j(u),
+$$
+
+$\{B_j(u), j=1,2,\dots, K\}$ is a sequence of cubic B-spline basis functions, and
+
+$$
+C(\theta) = \log\left(\int^R_L \exp(s(u;\theta)) \text{d}u \right) < \infty .
+$$
+
+Then $f_{u|\Theta}(u)$ is a positive density function on $(L,R)$. The logspline model assumes that $f_u$ is a twice continuously differentiable function. The last basis function is not used for identifiability purposes, given that by the property of B-splines, $\sum_{j=1}^{K}B_j(u)=1$ for all $u \in (L,R)$.
+
+The log likelihood of the observed variable $\mathcal{V}$ is
+
+$$
+\begin{aligned}
+    l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})f_{u|\theta}(u)\text{d}u\right)\\
+    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})\exp(s(u;\theta))\text{d}u\right)-nC(\theta)
+\end{aligned}
+$$
+
+The usual maximum likelihood estimate $\hat{\theta}$ is the maximizer of $l_{\mathcal{V}}(\theta)$.
+
+To avoid overfitting, I add a penalty term to the log-likelihood function. The penalty term is a linear combination of the squared second derivatives of the B-spline basis functions. The second derivative of the B-splines is approximated by finite differences [@Eilers1996]. The penalty term is given by
+
+$$
+\text{Penalty}(\theta) = \lambda \cdot \|\mathbf{D}\theta \|^2
+$$
+
+Intuitively, we want to penalize excessive curvature in the log-density $\log f_u(u) \approx s(u; \theta) = \sum_j \theta_j B_j(u)$, where $B_j$ are B-spline basis functions.
+
+::: {.content-visible when-meta="draft"}
+
+**Draft note (implementation facts to state, from `290-bs-mle-data.R`, `030-np-deconv-funs.R`, `292-np-deconv-unincorp.R`):**
+
+- Sample: unincorporated firms only, the same firms as the test in @sec-testing-test.
+- $f_\varepsilon$: kernel density (bandwidth `SJ-dpi`) of the corporations' residuals, industry by industry, with exponential decay outside the observed range.
+- 10 knots at equally spaced percentiles of the non-negative $\mathcal V$; support $[0,\max\mathcal V+0.1]$, so $u\ge0$ is imposed; $\lambda=10$ (the simulation in `120-implementation.qmd` used 0.1); Gauss-Legendre quadrature (15 nodes, adaptive).
+- Five industries: the ones used in @sec-pf and @sec-counterfactual (331, 322, 369, 313, 321).
+
+:::
+
+## The overreporting ratio {#sec-deconvolution-ratio}
+
+The deconvolved object is the log ratio $u_{it}=\ln(1+e_{it}/M_{it})$. The overreporting ratio itself, $x_{it}\equiv e_{it}/M_{it}=\exp(u_{it})-1$, is a monotonic, differentiable transformation of $u_{it}$, so its density follows from a density transformation [@Hogg2019, Theorem 1.7.1],
+
+$$
+f_{x}(y)= f_u\big(\ln (1+y)\big)\Bigg|\frac{1}{1+y}\Bigg|,\qquad y\ge0.
+$$ {#eq-ratio-dens}
+
+@tbl-overreporting-ratio and @fig-overreporting-ratio display the estimated distribution of the overreporting ratio by industry.
+
+::: {#tbl-overreporting-ratio}
+![](/tables/ch05-overreporting-ratio.png)
+
+Distribution of the overreporting ratio $e/M$ by industry, unincorporated firms.
+:::
+
+![Deconvolved density of the overreporting ratio $e/M$ by industry, unincorporated firms.](/figures/ch05-overreporting-ratio.png){#fig-overreporting-ratio}
+
+::: {.content-visible when-meta="draft"}
+
+**Draft note (outline for the results):**
+
+- Unincorporated firms overreport between 11% (369 Non-metallic minerals) and 25% (313 Beverages) of their true materials on average; medians 11%–21%.
+- Heterogeneity within industries: tight in 321 Textiles and 322 Wearing apparel (SD 3–4 points), long right tails in 313 and 331 (P90 of 46% and 38%). Most firms overreport moderately; a few overreport a lot. This heterogeneity is what the structural model's cost shock $\psi$ rationalizes (@sec-counterfactual).
+- Link to @tbl-evasion-test: mean $u$ is close to the mean of $\mathcal V$ for four industries (331: 0.21 vs. 0.24; 322: 0.19 vs. 0.20; 321: 0.16 vs. 0.14; 313: 0.22 vs. 0.18), as it should be, since $E[\mathcal V]=E[u]$.
+- **369 does not line up: mean $u$ is 0.11 against a mean $\mathcal V$ of 0.20** (0.19 after dropping the 10 observations with a materials share above 75%, the trim used for 369 in @sec-pf). Best explanation so far: deconvolution imposes $u\ge0$ and smooths the density, so it can down-weight the extreme right tail that drives the mean of $\mathcal V$ in 369 (skewness 6.2 in $u$ even after the fit); the corporate $f_\varepsilon$ in 369 may also differ from the unincorporated one. Not verified. State it as open, and that tests to identify the source will follow.
+
+:::

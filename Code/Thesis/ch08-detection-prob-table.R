@@ -1,5 +1,6 @@
 ## PRODUCT: Thesis/tables/ch08-detection-prob.png := Mean/Median/P95/P99/Max of e and the
-## implied q(e), by instrument.
+## implied q(e), production-function instrument m*_{it-1} only (lag_2_cal_W = untilded W_{it-2}
+## dropped 2026-09-24).
 ## Ported from Code/Deconvolution/1303-detection-prob-table.R (that script still feeds the
 ## old Paper/tbls/ pipeline for slides -- left untouched). Same fix as
 ## ch08-headline-pct-table.R: the old Thesis/tables/ copy predates the DPI-tagging fix.
@@ -19,31 +20,22 @@ stats_for <- function(ins) {
 }
 
 lm <- stats_for("lag_m")
-w  <- stats_for("lag_2_cal_W")
-stopifnot(identical(lm$Stat, w$Stat))
 
 tbl <- tibble(
     Stat = lm$Stat,
     e1 = format(round(lm$e), big.mark = ","),
     q1 = sprintf("%.2f%%", 100 * lm$q),
-    rel1 = sprintf("%.0f$\\times$", lm$rel),
-    e2 = format(round(w$e), big.mark = ","),
-    q2 = sprintf("%.2f%%", 100 * w$q),
-    rel2 = sprintf("%.0f$\\times$", w$rel)
+    rel1 = sprintf("%.0f$\\times$", lm$rel)
 )
 print(tbl)
 
 tbl_tex <- tbl %>% mutate(across(everything(), ~ gsub("%", "\\\\%", .x)))
 
-tt_obj <- tt(tbl_tex, align = "lcccccc", width = 1,
+tt_obj <- tt(tbl_tex, align = "lccc", width = 0.6,
              notes = "Implied detection probability $q(e)=\\hat\\lambda\\cdot e$ across the evasion distribution, using forward-simulation estimates. Because $q$ is linear in $e$, $q(e)/q(\\text{median})=e/\\text{median}$, which does not depend on $\\hat\\lambda$.")
-colnames(tt_obj) <- c(" ", "$e$", "$q(e)$", "$q(e)/q(\\text{Med})$", "$e$", "$q(e)$", "$q(e)/q(\\text{Med})$")
-tt_obj <- tt_obj |> group_tt(j = list(
-    "$m^*_{it-1}$"  = 2:4,
-    "$\\tilde{\\mathcal{W}}_{it-2}$"   = 5:7
-    )) |>
-    style_tt(i = "notes", fontsize = 0.8) |>
-    format_tt(replace = list(" "= "1$\\times$"))
+colnames(tt_obj) <- c(" ", "$e$", "$q(e)$", "$q(e)/q(\\text{Med})$")
+tt_obj <- tt_obj |>
+    style_tt(i = "notes", fontsize = 0.8)
 
 render_thesis_table(tt_obj, "ch08-detection-prob")
 cat("Saved: Thesis/tables/ch08-detection-prob.{png,pdf}\n")

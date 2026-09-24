@@ -50,3 +50,44 @@ Built 2026-09-23 while filling `Thesis/chapters/07-fiscal-policy.qmd` from exist
 - **Misreading in the older write-ups:** `Paper/sections/965-DiD.qmd`, `95-colombia-empiric2.qmd`, `98-fiscal-ref-col.qmd` (table) and the slides say individuals' income-tax rate *increased* 8% in 1983 (citing `Ocampo1983`). Both sources say the opposite: a rate **cut**, leaving real incidence ~8% above the 1974 level. Ocampo and Perry (1983), *Coyuntura Económica* 13(1), "B. Rebaja de tarifas", say the 1982–83 cuts reversed nearly all of the increase since 1974 (bib `Ocampo1983`, PDF `Lit-Papers/OcampoPerry1983-ReformaFiscal1982-1983.pdf`). That article also puts the LLC rate at 20% (pre-change).
 - **Presumptive income:** the base in ch. 7 ("2 percent of their capital stock") conflicts with the McLure notes (2% of gross receipts, on top of 8% of net wealth). Perry and Cárdenas vol. 1 has the detailed treatment (around PDF pp. 57–60) if needed.
 - **Cuadro III.1 transcribed (2026-09-23; checked against the page by Hans):** average individual income-tax rates by taxable income (thousand 1982 pesos: 200, 300, 400, 500, 600, 800, 1,000, 1,500, 2,000), 1982 A (Decreto 2809) vs. 1983 (Decreto 397). Change: −4.63 pp on average across brackets; −22.0% relative, excluding the 200k bracket (−95.3%); range −9.6% to −35.2%. The data live in `Code/Thesis/ch03-income-tax-1983-table.R` (tracked); a local CSV is written to `Code/Products/PerryCardenas1986-CuadroIII1.csv` (CSVs are git-ignored). Table `@tbl-inc-tax-1983` in ch. 3, cited from ch. 7. Note: the OCR had misread the 1983 rate at 1,000 as 24.55; the page says 24.85.
+
+## Ch. 4–5: Testing and deconvolution (`chapters/04-testing.qmd`, `chapters/05-deconvolution.qmd`)
+
+Built 2026-09-24. In the JMP the two chapters read as one section, "Identifying Tax Evasion": ch. 4's H1 and ch. 5's heading switch on `when-meta="jmp"` (ch. 5 becomes an H2). Pandoc warns "Duplicate identifier" for `sec-testing`/`sec-deconvolution` because both conditional headings carry the same id; harmless, the hidden copy is dropped before cross-referencing (checked: one `\label` each in `JMP/paper.tex`, references resolve).
+
+**Where the text came from (visible prose copied, notation translated: the approved paper's multiplicative $e$ is $u=\ln(M^*/M)$ here):**
+
+| Section | Source |
+|---|---|
+| 4 Non-evaders, identifying $\beta$, observed residual | `Paper/sections/56-id-evasion.qmd` (supervisor-approved; source untouched): Identification Strategy, Assumptions I–II, Identifying the PF parameters, Identifying Tax Evasion (eq-ob-ev) |
+| 4 Testing for overreporting | `Paper/sections/200-deconv.qmd`, sec-tax-ev-test (visible paragraphs only). Its results paragraphs (industry counts) come from an older table and were replaced by a draft outline |
+| 5 Deconvolution | `56-id-evasion.qmd` ("We can do better however…", convolution definition); `Paper/sections/120-implementation.qmd` (logspline estimator, penalty) |
+| 5 Overreporting ratio | `Quarto-Slides/sections/700-deconvolving-evasion.qmd`, "Getting density of the ratio" (eq-ratio-dens, Hogg et al. 2019 Thm 1.7.1) |
+| Draft outlines | Robustness of the test and deconvolution conditions (PLAN.md §10); why $u$ and not $e$ (slides 700); implementation facts (from the code) |
+
+**Not reused:** deconvolution by moments and parametric MLE (`200-deconv.qmd`), moments by year, conditional deconvolution (slides 700 backup), translog / two-flexible-inputs derivation (one sentence planned, appendix).
+
+**Code facts (checked against the scripts):**
+- Test: `206-boot-test.R` → `boot_test_comp_tbl.RData`. Four variants. Preferred = `pref_tax_ev_test_tbl` ("Fix corps, others"): `resample_by_group` resamples plants separately within corporations and within unincorporated firms; `test_ev_2t_2smpl` takes $\ln D$ from corporations and the mean of $\mathcal V$ over unincorporated firms only. "One-sample" (`test_ev_2t`) averages $\mathcal V$ over all firms, corporations included (313: 0.07 vs. 0.18). Asset `Code/Thesis/ch04-evasion-test.R`.
+- Deconvolution: `291-bs-deconv.R` (`full_np_deconv_list` in `bs_mle_data.RData`) deconvolves `fs_list[[.]]$data$cal_V`, which pools ALL firms (the `first_stage_panel` output has no JO filter). Its $f_u$ is therefore diluted by corporations ($u=0$), matching the one-sample test. New `Code/Deconvolution/292-np-deconv-unincorp.R` reruns the same estimator on unincorporated firms only → `np_deconv_unincorp.RData`, used by `Code/Thesis/ch05-overreporting-ratio.R`.
+- 369's upper trim (share < 0.75, 10 unincorporated obs, no corporations) exists only in `first_stage_panel_me` (feeds ch. 6/8), not in the test or the deconvolution.
+- Sourcing `030-np-deconv-funs.R` from another script re-saves `Code/Products/np-deconv-funs.RData` (it ends with `save(list=ls())`). Load that `.RData` instead, and reset the loaded functions' environment so their helpers resolve (done in `ch05-overreporting-ratio.R`).
+- Normalization: $\varepsilon$ is measurement error in output, $E[\varepsilon]=0$ (supervisors' choice, not GNR's output shock), so there is no $\mathcal E$ and $\hat\beta=\exp(E[s\mid\text{corp}])$. The approved paper's $\mathcal E$ equations were dropped when porting; ch. 2's "$E[\exp\varepsilon]=1$" was a misstatement, corrected 2026-09-24.
+
+## Ch. 6: PF parameters and productivity (`chapters/06-pf-productivity.qmd`)
+
+Built 2026-09-24.
+
+| Section | Source |
+|---|---|
+| Productivity and its Markov process ($\mathcal W$, moments, orthogonality table, $\widetilde{\mathcal W}$) | `Paper/sections/56-id-evasion.qmd`, "Identifying Productivity" (approved; source untouched). Translated: $e\to u$; Markov $h,\delta\to g,\gamma$ (h, δ are taken by $q$/$\kappa$ in @sec-model); "output shock" → measurement error. The approved paper's single-instrument sentence ("labour and capital as instruments for themselves… lag of observed overreported intermediates") replaced by a draft outline of the joint efficient GMM |
+| Estimates discussion | `Paper/sections/250-pf.qmd` l. 186 (first sentence kept; the "except one (321)" claim updated: corrected $\hat\beta$ is now below GNR and OLS in all five industries) and l. 190 (verbatim, Canadian spelling) |
+| Estimation outline (draft) | CLAUDE.md "PF-step instrument, headline method revised 2026-09-21/22" |
+
+**Not reused:** `250-pf.qmd`'s productivity results (`tbl-omega`, `tbl-prod-comparison`, `tbl-np-prod`): built from the superseded single-instrument estimates. Left as a decision in a draft note (three options). Its l. 184 ("$m^*_{t-1}$ is better than $\mathcal W_{t-2}$…") and the zeros paragraph (l. 188) refer to the old table.
+
+**Ch. 6 update, 2026-09-24 (later):** PF table rebuilt (`ch06-pf-comparison.R`): single-instrument $m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$ columns (points from `1472-pf-instrument-comparison.csv`, regions projected from `1473-pf-testinv-grid.csv`), joint efficient GMM (`1478`), GNR and OLS; estimates with the sharp/conservative intervals below. Productivity: `293-omega-deconv-current-pf.R` → `ch06-productivity-comparison.R` (GNR side from `Code/Products/stata-gnr-me-omg-<sic>.csv`, `Code/Stata/020-loop-me.do` + `GNR_code_CD_me.do`, $\omega$ only). `ch06-omega.R` is superseded by the comparison table and not referenced.
+
+## Ch. 8: second instrument dropped (2026-09-24)
+
+`ch08-headline-estimates-table.R` and `ch08-detection-prob-table.R` now report $m^*_{it-1}$ only; the dropped column was `lag_2_cal_W`, the untilded $\mathcal W_{it-2}$ mislabelled with a tilde. Text in ch. 8 edited accordingly (five sentences/bullets), with a draft note. The detection table's blank Median ratio cell (a `format_tt(replace=)` side effect) is fixed.

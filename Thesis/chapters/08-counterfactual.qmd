@@ -170,6 +170,17 @@ $$ {#eq-foc-psi}
 
 The parameters of interest are $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$.
 
+::: {.content-visible when-meta="draft"}
+
+**Draft note (moved from ch. 2, 2026-09-24): points ch. 8 does not yet make.**
+
+- Audit-threshold reading of linear $q$: the tax authority draws $T\sim U[0,1/\lambda]$ and audits if $e\ge T$; $1/\lambda$ is the largest overreporting any audit tolerates, the mean threshold is $1/(2\lambda)$, and at the FOC ceiling $e=1/(2\lambda)$ the most aggressive evader is caught with probability 50%.
+- $\psi_{it}$ is the idiosyncratic cost shock: evasion heterogeneity beyond what $\omega$ explains.
+- $q$ and $\kappa$ are not separately identified without audit data; the functional forms are what let the estimation reproduce the evasion-by-size pattern of @Carrillo2022.
+- Linear $q$ is one of three candidates ($1-e^{-\lambda e}$ concave, $(\lambda e)^k$ convex); their second-order conditions are in @sec-app-soc-model. Concave was tried and only delays the FOC ceiling by a factor of about 2.
+
+:::
+
 <!-- 
 - Stage 1 (@sec-deconvolution, @sec-pf): corporations ($e=0$) give $\hat\beta$ and the residuals $\mathcal V_{it}=u_{it}-\varepsilon_{it}$, $\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$.
 - Stage 2 estimates $\theta=(\lambda,\delta_0,\delta_1,\delta_2)$ from unincorporated firms. Detection $q(e)=\min\{\lambda e,1\}$ (linear); cost $\kappa=e\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$, U-shaped in $\omega$ with minimum at $\omega^*=\delta_1/2\delta_2$.
@@ -253,12 +264,18 @@ decision + @fig-cf-trim, and the justification for the conservative test design 
 
 ### Estimates {#sec-cf-estimates}
 
-@tbl-cf-estimates displays the estimates of the parameters of interest. Its two columns use the production-function estimates from the two instruments in @sec-pf, $m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$. The headline results use $m^*_{it-1}$; the $\tilde{\mathcal W}_{it-2}$ estimates fail the conservative test.
+@tbl-cf-estimates displays the estimates of the parameters of interest, using the production-function estimates with instrument $m^*_{it-1}$ from @sec-pf.
+
+::: {.content-visible when-meta="draft"}
+
+**Draft note (2026-09-24):** the second column, previously labelled $\tilde{\mathcal W}_{it-2}$, was dropped. That ELVIS run used `lag_2_cal_W`, the *untilded* $\mathcal W_{it-2}$, not the $\tilde{\mathcal W}_{it-2}$ of @sec-pf, and it failed the conservative test. The headline always used $m^*_{it-1}$.
+
+:::
 
 :::{#tbl-cf-estimates}
 ![](/tables/ch08-headline-estimates.png)
 
-Stage-2 estimates of the detection and evasion-cost parameters at the best point for each production-function instrument. $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{9,.95}$.
+Stage-2 estimates of the detection and evasion-cost parameters at the best point, with production-function instrument $m^*_{it-1}$. $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{9,.95}$.
 :::
 
 Summary of findings:
@@ -266,7 +283,7 @@ Summary of findings:
 - Probabilities of detection are tiny: the average audit-triggering threshold $1/(2\hat\lambda)\approx$ COP 920,000, while median reported materials $\text{Med}[M^*]\approx$ COP 8,414, the 95th-percentile firm COP 128,154, the 99th COP 360,676, and the largest (trimmed) firm COP 701,130.
 - The cost function is convex in productivity; both $(\hat\delta_1,\hat\delta_2)$ display the expected signs.
   - $\hat\delta_1>0$ and $\hat\delta_2>0$: the evasion cost function is decreasing in productivity up to $\hat\omega^*$, then increasing again
-  - $\hat\omega^*=3.98$ ($m^*_{it-1}$) and $3.84$ ($\tilde{\mathcal W}_{it-2}$), the 86th ($m^*_{it-1}$) and 75th percentile ($\tilde{\mathcal W}_{it-2}$) (forward simulation)
+  - $\hat\omega^*=3.98$, the 86th percentile of productivity (forward simulation)
 
 #### What would the estimated detection probabilities imply?
 
@@ -275,13 +292,13 @@ To get a ballpark of what $\hat\lambda$ would imply in terms of detection probab
 :::{#tbl-cf-detection}
 ![](/tables/ch08-detection-prob.png)
 
-Implied detection probability $q(e)=\hat\lambda e$ across the distribution of baseline evasion, by production-function instrument. The ratio to the median evader does not depend on $\hat\lambda$.
+Implied detection probability $q(e)=\hat\lambda e$ across the distribution of baseline evasion. The ratio to the median evader does not depend on $\hat\lambda$.
 :::
 
 Key observations:
 
-- Mean $\gg$ Median for both instruments; a right-skewed evasion distribution 
-- P99 $\to$ Max: detection probability jumps from 1-2% at the 99th percentile to ~37% for the most aggressive evader (0.5%-trimmed sample) 
+- Mean $\gg$ Median; a right-skewed evasion distribution 
+- P99 $\to$ Max: detection probability jumps from about 1% at the 99th percentile to ~37% for the most aggressive evader (0.5%-trimmed sample) 
 - A handful of extreme evaders pull $E[e]$ **up** *and* the fitted $\hat\lambda$ **down**
 
 ### Discussion
@@ -289,14 +306,19 @@ Key observations:
 - **$\hat\lambda$ is very small**: a few aggressive evaders dominate the estimate; the model is trying to fit a straight line over a highly right-skewed distribution.
   - Mechanically, selecting a functional form for the probability of detection imposes a ceiling probability
   - Assuming all unincorporated firms with a non-zero sales tax rate on purchases evade taxes implies that all firms evade below the ceiling (normalization)
-  - Alternatively, I could 
-    - trim the sample more (currently 0.5%, see @sec-app-elvis for details) to reduce the influence of aggressive evaders
-    - impose a normalization (e.g. prob for 99th evaders=50%)
-    - use a non-linear prob of detection to smooth the skewness of the evasion distribution
-  - Could $\delta_0$ and $\lambda$ be competing to identify the level of evasion? 
-    - the estimates suggest $\lambda$ is truly different from zero even though $\delta_0$ has been profiled in all grid searches
-    - $\lambda$ is identified with the score moment, $E[\partial h/\partial \lambda \cdot \varepsilon]=0$ and $\delta_0$ from $E[\psi]=0$.
 - **($\hat\delta_1, \hat\delta_2$)**: seem to be consistently identified by the curvature of the evasion distribution and productivity $\omega$. The $\omega^*$ is steady among grid searches and under the correct moments they always come up with correct signs
+
+::: {.content-visible when-meta="draft"}
+**Draft note:**
+
+- Alternatively, I could 
+  - trim the sample more (currently 0.5%, see @sec-app-elvis for details) to reduce the influence of aggressive evaders
+  - impose a normalization (e.g. prob for 99th evaders=50%)
+  - use a non-linear prob of detection to smooth the skewness of the evasion distribution
+- Could $\delta_0$ and $\lambda$ be competing to identify the level of evasion? 
+  - the estimates suggest $\lambda$ is truly different from zero even though $\delta_0$ has been profiled in all grid searches
+  - $\lambda$ is identified with the score moment, $E[\partial h/\partial \lambda \cdot \varepsilon]=0$ and $\delta_0$ from $E[\psi]=0$.
+:::
 
 ## Counterfactual design {#sec-cf-design}
 
@@ -369,7 +391,7 @@ Change in real mean deduction claims relative to current policy, for the smalles
 :::
 
 - Mechanism for the asymmetry: $e'_i(\Delta)=[e_i+\Delta/(2\lambda)]/(1+\Delta)$ is a horse race between $e_i$ and the constant term $\Delta/(2\lambda)$. With $\hat\lambda$ tiny, the constant wins: an increase shifts every firm by about the same large amount; a cut removes evasion firm by firm (small evaders hit zero first), so the aggregate response is gradual.
-- This is a property of linear $q$ and linear $\kappa$ combined with small $\hat\lambda$, not of linearity alone. Convex $q=(\lambda e)^k$ and concave $q=1-e^{-\lambda e}$ break the uniform-shift result (closed forms derived, not estimated).
+- This is a property of linear $q$ and linear $\kappa$ combined with small $\hat\lambda$, not of linearity alone. Convex $q=(\lambda e)^k$ and concave $q=1-e^{-\lambda e}$ break the uniform-shift result [(closed forms derived, not estimated)]{.content-visible when-meta="draft"}.
 
 ## Robustness {#sec-cf-robust}
 
@@ -418,7 +440,7 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 ## Scope and limits {#sec-cf-limits}
 
 - Partial equilibrium: $K$, $L$, $\omega$, $\varepsilon$ and $M$ held fixed; only evasion responds. Large $\Delta$ is outside what the exercise can speak to.
-- $\theta$ fixed at one operating point that is not rejected (conservative test) for $m^*_{it-1}$ only; the second instrument does not pass.
+- $\theta$ fixed at one operating point that is not rejected (conservative test), with production-function instrument $m^*_{it-1}$.
 - $\hat\lambda$ is identified mostly from a thin tail of aggressive evaders; the estimate depends on the 0.5% trim.
 
 ::: {.content-visible when-meta="draft"}

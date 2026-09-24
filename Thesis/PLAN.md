@@ -168,6 +168,34 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
 - **Still placeholder in `JMP/paper.qmd`'s YAML, fill in before submitting anywhere:** `thanks:` (seminar/committee acknowledgements), JEL codes (guessed at H26/D22/L60/O47, confirm), and the abstract itself.
 - Build: `cd JMP && quarto render paper.qmd --to pdf` -> `JMP/paper.pdf` (gitignored, like `Thesis/_book/`, along with `paper.tex`/`.quarto/` -- `keep-tex: true` is on for inspecting the compiled LaTeX when debugging layout, not for tracking).
 
+## 10. JMP outline — argument-first (agreed 2026-09-24)
+
+**Main message:** firms overreport input costs to evade taxes; this can be measured from production data alone; it responds to tax rates; and that response makes the revenue effect of rate changes asymmetric. PF parameters and productivity are secondary (a by-product of the method, and an input to the counterfactual).
+
+| § | Section (source chapters) | What the reader must take away |
+|---|---|---|
+| 1 | Introduction (JMP intro; ch. 9 literature folded in) | Question, approach, findings with numbers, positioning (evasion / rates vs. enforcement / PF) |
+| 2 | Setting and data (ch. 3) | Why corporations are truth-reporters; sales-tax credit = VAT in substance; 1983 reform facts |
+| 3 | Model (ch. 2) | Materials FOC → log share; evasion FOC; linear $q$, convex $\kappa$. State the conditions below. |
+| 4 | Identifying evasion (ch. 4 + 5, **merged in the JMP**) | Test + deconvolution without audit data; which industries, how much |
+| 5 | PF parameters and productivity (ch. 6) | Corrected vs. naive elasticities and productivity; these feed §7 |
+| 6 | Evasion responds to taxes (ch. 7) | Overreporting rose where net incentives rose (ST-liable; LLCs vs. proprietorships) |
+| 7 | Structural estimation and counterfactual (ch. 8) | Increases raise claims immediately; cuts distinguishable only at about 8% |
+| 8 | Conclusion (ch. 10) | — |
+| App. | A (ELVIS), D (SOC), institutional tables | Drop C (MSL) from the JMP |
+
+**Robustness of identification to the model's functional forms (state in §3/§4):**
+- **Testing** needs only $q(0,Z)=0$ and $\kappa(0,Z)=0$: the evasion terms of expected profit then vanish identically in $(K,L,M)$ at $e=0$, so non-evaders' materials FOC is the standard one under the null, for any $q,\kappa$. Technology need not be Cobb-Douglas, only common within industry: the share residual is $\ln(\rho M^*/PY)-\ln D(K,L,M^*)=[u-(\ln D(M^*)-\ln D(M))]-\varepsilon$, which is $-\varepsilon$ under the null. Direction is always overreporting: the bracket is $>0$ because $d\ln D/d\ln M=1-D+MY_{MM}/Y_M<1$ when $D>0$, $Y_{MM}\le0$; there is no incentive to underreport deductible costs (maintained: corporations $e=0$, common technology within industry, $\varepsilon$ independent of JO).
+- **Deconvolution** additionally needs $\partial q/\partial M=\partial\kappa/\partial M=0$ (evasion separable from true materials), so evaders' materials FOC is also undistorted, and a constant materials elasticity (CD in $M$) so the $\ln D$ difference drops out and $\mathcal V=u-\varepsilon$ exactly. With general technology, deconvolution needs a second flexible, non-deductible input (labour share), as in `56-id-evasion.qmd` ("Identification with two Flexible Inputs", translog). Counterexample: multiplicative evasion ($q(u),\kappa(u)$ with $e=M(\textbf{e}^u-1)$) distorts evaders' materials FOC — it agrees with the additive model at $u=0$ (so testing is unaffected) but not for evaders (slides `200-model.qmd`, "Robustness: Multiplicative Evasion").
+
+**§4.4 overreporting ratio — DONE 2026-09-24 (moved up from post-deadline):** results are reported for the overreporting ratio $x=e/M$, not $u=\ln(1+e/M)$. $f_x(y)=f_u(\ln(1+y))/(1+y)$ from the fitted $f_u$ (slides `700`, Hogg et al. 2019 Thm 1.7.1), no re-estimation. **Sample fixed the same day:** `291-bs-deconv.R` deconvolved $\mathcal V$ pooled over ALL firms (corporations included, $u=0$ by assumption), so its $f_u$ was diluted toward zero and matched the one-sample test, not the preferred two-sample test. New `Code/Deconvolution/292-np-deconv-unincorp.R` reruns the same estimator (same corporate $f_\varepsilon$, knots rule, $\lambda$) on unincorporated firms only → `Code/Products/np_deconv_unincorp.RData`; 291's output left untouched. Asset: `Code/Thesis/ch05-overreporting-ratio.R` (reads 292) → `tables/`+`figures/ch05-overreporting-ratio.png`. Mean $x$ (unincorporated): 331 24.1%, 313 25.2%, 322 20.9%, 321 17.2%, 369 11.3%. Mean $u$ vs. mean $\mathcal V$ (test): 331 0.213/0.244, 322 0.190/0.201, 321 0.158/0.135, 313 0.215/0.176, 369 0.106/0.196 (0.186 after the 10-obs share≥0.75 trim) — 369's gap unexplained, see ch. 5 draft note. Intro/abstract numbers should use $x$.
+
+**§4.3 to-do, AFTER the deadline:** test-inversion CI for mean overreporting, same convention as ch. 6/8. Take $\ln\hat D$ (i.e. $\hat\beta$) from corporations as the truth. Grid a candidate mean $\mu$ of $\mathcal V$ among unincorporated firms ($\mu=E[u]$ since $E[\varepsilon]=0$): 0, 0.01, ..., 1. Moments $g=\big(s-\ln\hat D\;\text{(corporations)},\;s-\ln\hat D-\mu\;\text{(unincorporated)}\big)$, efficient-GMM weighting with plant-clustered covariance, conservative test $2n\hat L_n$ against $\chi^2_{2,.95}$ (nothing profiled). The passing set is a CI for mean overreporting; evasion is detected when it excludes 0. For Friday: report the existing preferred bootstrap test (`pref_tax_ev_test_tbl` in `boot_test_comp_tbl.RData`: plants resampled separately within corporations and within unincorporated firms, $\beta$ from corporations, test on unincorporated only).
+
+**§5 to-do, AFTER the deadline:** (1) conditional deconvolution of $\omega$ by group (exporters, importers, advertisers, wages above the industry median) to report GNR (2020) Table 3's productivity premia; the deconvolution gives only the distribution of $\omega$, not firm-level $\omega$, and firm-level $\widetilde{\mathcal W}$ still contains $(1-\beta)\varepsilon$. (2) Redo $\omega$ and the productivity comparison with the joint efficient-GMM estimates (the final-version specification). Done for Friday: percentile ratios 75/25, 80/20, 90/10, 95/5, skewness, and persistence $\hat\gamma_1$ (`294-omega-persistence.R`: IV at the PF point estimates vs. OLS on GNR's firm-level $\omega$, same row-based lags).
+
+**Mechanics:** JMP-only merge of ch. 4/5 via `when-meta="jmp"` headings (thesis keeps two chapters); include order in `JMP/paper.qmd` already matches (PF before fiscal and counterfactual), no reorder needed; hide ch. 9 in the JMP.
+
 ## 8. Log
 
 - 2026-09-21: plan agreed; decisions above; tracker created.

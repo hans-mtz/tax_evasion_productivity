@@ -11,6 +11,9 @@ EU-VATGap-2018, CIAT2022, IMF2021-TaxPolicyInclusiveGrowthLAC, Carrillo2022-Ghos
 
 Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added (VAT) and corporate income taxes (CIT). According to the OECD's document @OECD2017, cost overreporting — also known as "fake invoicing", "ghost firms", "invoice mills", or "missing traders" — permeates internationally.
 
+
+::: {.content-visible when-meta="draft"}
+
 ## 2a. Revenue losses
 
 - **Structure: "size of the cake," then the "slice."** For each country, the total VAT gap (all causes — fraud, errors, insolvencies, legal exemptions), from an externally-vetted source, then false-invoicing/cost-overreporting specifically as a fraction of that total — answers the "how does overreporting compare to other forms of evasion" question you'd flagged for yourself in `Paper/sections/10-intro.rmd`. Units: USD leading, (% of tax revenue) in parenthesis — the World Bank's own tax-revenue ratio (`GC.TAX.TOTL.GD.ZS`), not an assumed benchmark.
@@ -83,9 +86,18 @@ Cost overreporting arises when firms acquire false invoices to claim additional 
   - Efficiency-cost literature (Kleven et al. 2016 and related): resources spent hiding/enforcing evasion, and incentives toward informality to avoid scrutiny, are real costs beyond the direct revenue transfer.
   - @Carrillo2022: ghost-firm-enabled evasion disproportionately benefits high-income owners — additional tax as a share of owners' income is 56× higher for the top 5% and ~170× higher for the top 1%, relative to the bottom 80% — a distributional/equity angle, distinct from both the revenue and reactivity points above.
 
-Furthermore, ignoring tax evasion leads to biased estimates of productivity. In the proxy variable literature, productivity is measured as the residual of the production function, where the output of a firm is a function of the inputs, capital, labour, and intermediates. A key assumption is that intermediate input demand is strictly monotonic in the productivity of the firm [@Gandhi2020; @Ackerberg2015; @Levinsohn2003]. In other words, we expect that highly productive firms will use fewer inputs to produce a given level of output. Intermediate inputs, however, are also the most likely input to be misreported. When firms overreport their inputs, increasing their costs to claim additional tax deductions, their reported inputs are higher than their actual utilization, resulting in lower productivity estimates.
+:::
+
+
+Furthermore, ignoring tax evasion leads to biased estimates of productivity. In the proxy variable literature, productivity is measured as the residual of the production function, where the output of a firm is a function of the inputs, capital, labour, and intermediates. A key assumption is that intermediate input demand is strictly monotonic in the productivity of the firm [@Gandhi2020; @Ackerberg2015; @Levinsohn2003]. In other words, we expect that highly productive firms will use fewer inputs to produce a given level of output. Intermediate inputs, however, are also the most likely input to be misreported. When firms overreport their inputs, increasing their costs to claim additional tax deductions, their reported inputs are higher than their actual utilization, which biases the estimated output elasticities and, with them, measured productivity. In the Colombian data, ignoring overreporting overstates how dispersed productivity is across firms.
+
+
+::: {.content-visible when-meta="draft"}
 
 - **This bias is a candidate confound for the misallocation literature, not just something this method happens to fix:** the productivity gaps the misallocation literature documents between compliant and non-compliant firms (25–50%, Dabla-Norris et al. 2019; misallocation arguments in Farrell 2004, Bobbio 2016) could be partly a measurement artifact of overreporting rather than a real productivity difference. State as a real possibility this paper's results speak to, not as fully settled.
+
+:::
+
 
 Despite its relevance, the literature on corporate tax evasion has mostly overlooked cost overreporting. The few studies focusing on this tax evasion strategy rely on exploiting detailed administrative data [@Zumaya2021; @Carrillo2022]. Due to firms' confidentiality concerns, government tax authorities restrict access to this kind of data. My approach complements these methods. It is not restricted to confidential tax records and can be applied using more commonly available data such as firm-level surveys.
 
@@ -95,7 +107,10 @@ stays a comment rather than an outline point. -->
 
 To the best of my knowledge, no other study has attempted to structurally identify cost overreporting. A fundamental problem is that when it comes to corporate tax evasion, researchers have to account for an additional source of unobserved heterogeneity, productivity. Why? Because cost overreporting might be naively quantified as low productivity. Intuitively, for a given output level, high input utilization by a firm could be explained by either the amount of input the firm overreports to evade taxes or by a negative productivity shock.
 
-To address this gap in the literature, first I formally show that ignoring tax evasion leads to downward-biased productivity estimates. I then provide a new estimation strategy using production functions to jointly recover the densities of tax evasion and productivity. The intuition works as follows. In the absence of tax evasion, the first-order conditions of the firms' cost-minimization problem let us recover the common technology, the production function. Consequently, in the presence of cost overreporting, deviations from this common technology identify tax evasion up to measurement error. Then, from a subset of non-overreporting firms, the strategy identifies the production function parameters and the density of the output shock. Finally, using non-parametric deconvolution techniques, I jointly recover the distributions of tax evasion and productivity.
+To address this gap in the literature, first I formally show that ignoring tax evasion biases production function and productivity estimates. I then provide a new estimation strategy using production functions to jointly recover the densities of tax evasion and productivity. The intuition works as follows. In the absence of tax evasion, the first-order conditions of the firms' cost-minimization problem let us recover the common technology, the production function. Consequently, in the presence of cost overreporting, deviations from this common technology identify tax evasion up to measurement error. Then, from a subset of non-overreporting firms, the strategy identifies the production function parameters and the density of the measurement error in output. Finally, using non-parametric deconvolution techniques, I jointly recover the distributions of tax evasion and productivity.
+
+
+::: {.content-visible when-meta="draft"}
 
 - **The paper now goes two steps further than the paragraph above** (validated, ready to write — no prior prose since this is new relative to last year's version):
   - Test whether evasion responds to a real policy change (the 1983 sales-tax reform) — an external check that the FOC-based identification isn't just a modelling artifact.
@@ -103,9 +118,12 @@ To address this gap in the literature, first I formally show that ignoring tax e
 
 ## What I find — reordered, evasion-first; your original sentences restored where they still apply
 
-Applying the method using firm-level data from Colombia between 1981 and 1991 — a commonly used dataset in the production function literature — I find evidence suggesting that firms in four of the top five industries (8 of the top 20) engage in cost overreporting. These firms overreport up to 25% of their costs.
+:::
 
-<!-- TODO, not validated this pass: "up to 25%" -- same "give a range, not up to" principle
+
+Applying the method using firm-level data from Colombia between 1981 and 1991 — a commonly used dataset in the production function literature — I find evidence suggesting that firms in four of the top five industries (8 of the top 20) engage in cost overreporting. In five industries selected for further analysis, firms overreport between 11% and 25% of their true materials on average. Where the test cannot reject the absence of overreporting, the result is inconclusive; for a particular industry, whether the identifying assumptions hold should be investigated before drawing conclusions.
+
+<!-- RESOLVED 2026-09-24 (range from ch. 5, unincorporated-only deconvolution). Old TODO: "up to 25%" -- same "give a range, not up to" principle
 from 2a may apply here. Would need pulling the deconvolved evasion range across the 4/5 top
 industries from this project's own R outputs (a different kind of check than the literature
 validation done above) -- flagging, not done. -->
@@ -115,9 +133,17 @@ firms in the top 20 revenue industries caused the government of Colombia approxi
 tax revenue losses. -- place right after the paragraph above once ch. 8's SS8.x run exists;
 directly comparable to the Colombia $701M/1.46% figure and Mexico's SAT figure in SS2a. -->
 
+
+::: {.content-visible when-meta="draft"}
+
 - **The fiscal reform** (validated, ready): in industries facing the 1983 sales-tax increase, firms raised their overreported share significantly relative to unaffected industries — the empirical anchor for §2b's reactivity claim.
 - **The counterfactual** (validated, ready — state as a set/range per ch. 8's own test-inversion result, not a single point estimate): a 0.5% purchases-tax increase produces a statistically significant revenue loss; only an 8% cut produces a significant revenue gain.
+
+**Draft note (2026-09-24), numbers for this finding** (ch. 6): corrected materials elasticities are below GNR's and OLS's in all five industries; corrected productivity is far less dispersed than GNR's (90/10 ratio 1.7–2.8 vs. 3.1–6.7) and more persistent ($\hat\gamma_1$ 0.92–0.98 vs. 0.86–0.90); levels move in both directions, so no level bias is claimed.
 
 I also find that ignoring cost overreporting leads to consistently larger elasticities of intermediate inputs by [what factor]. The bias on the intermediate inputs spreads to the elasticities of labour and capital, whose bias direction varies by industry [what range?]. Lastly, I find significant differences in the productivity distributions. In particular, true productivity distributions are [how]. The differences between [exporters/corporations] and [importers/limited liability companies] are [what?].
 
 [exporters/importers/proprietorships/limited liability companies] are [less/more] likely to engage in cost overreporting.
+
+:::
+
