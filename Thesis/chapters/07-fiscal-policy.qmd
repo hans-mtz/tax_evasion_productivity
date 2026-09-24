@@ -8,76 +8,250 @@ Sources
   Slides (most up to date): Quarto-Slides/sections/300-fiscal-reform.qmd
   Paper (older, more detail): Paper/sections/965-DiD.qmd, 966-DiD-txrt.qmd, 98-fiscal-ref-col.qmd, 961-over-time.qmd
   Code: Code/Deconvolution/921-DD2.R, 921.1-DD.R, 921.2-het-slides.R (slide figures = 921-2-*)
+
+2026-09-23: prose pasted from 965-DiD (reform, results, pre-reform discussion), the slides
+300-fiscal-reform (empirical approach, all-firms results) and the slides appendix 900-appendix
+("Empirical Exercises using V"). Notation: outcome s = log materials share with ln beta_j industry
+fixed effects (V is used only in the size analysis); u, mu, Delta mu, nu, zeta (was e, mu, Delta, eta; gamma_j -> ln beta_j). The original outline bullets are kept in
+draft-only blocks under each heading to check coverage.
 -->
 
-## Role of this chapter
+<!-- 
 
-- Reduced-form evidence that overreporting responds to a change in tax incentives; this is the empirical anchor for the model's key comparative static, $\partial e^*/\partial\tau_P>0$ (@sec-model).
-- The sign cannot be checked by regressing $\mathcal V_{it}$ on $\tau_{P,it}$ (both are built from the same $M^*_{it}$, so the link is mechanical). The 1983 reform is the clean way to test it.
-- Feeds the identification argument for $\lambda$ in @sec-counterfactual: variation in $\tau_P\rho_t$ is what moves evasion.
-- UPDATE: decide framing for the thesis: motivation for the structural model ("reduced form showed X, the model's Y rationalizes X").
+OUTLINE
 
-## The reform and the incentives {#sec-reform}
+P1: what is the question of this section
 
-- 1983 reform raised the Sales Tax (ST) rate from 6% to 10% for most industries; ST-exempt industries stayed exempt.
-- Across juridical organizations (JO) within industries, Corporate Income Tax (CIT) moved differently:
-  - Proprietorships (PRT): CIT up about 8% on average (via individual income tax).
-  - Limited liability companies (LLC): CIT down 2 points, 20% to 18%.
-- Both taxes create incentives to overreport inputs (a higher reported cost lowers the base). ST-liable industries face ST and CIT incentives; ST-exempt industries face CIT only.
-- Expected sign: ST-liable firms should increase overreporting (ST up). CIT effect ambiguous (PRT up, LLC slightly down).
-- UPDATE: Paper (`965-DiD`) also covers the 1986 reform; the slides only mention it in a commented line. Decide whether 1986 stays.
-- Institutional details (6% to 10%, CIT rates) come from @sec-setting; do not repeat them at length here.
+P2: why does this matter?
+
+P3: what does the reform do to firms
+
+P4: how does this tie to the model
+
+-->
+
+<!-- P1: what is the question of this section -->
+In 1983, Colombia increased the sales tax (ST) rate on most manufacturing industries, while reducing income-tax (IT) rates differently for proprietorships and LLCs. I investigate whether firms responded by overreporting more inputs. Evidence suggest unincorporated raised overreporting after the reform reaching about 8% of true materials by 1987. Overreporting rose most where the net incentive to evade rose the most.
+
+<!-- P2: why does this matter? -->
+
+Firms' response to tax changes matters for policy design. If evasion rises with the tax rate, a tax increase raises less revenue than its mechanical effect suggests as firms capture a share of this income through evasion. The concern is especially relevant for sales and value-added taxes, whose credit on purchases, the channel studied here, is a natural target of fictitious deductions [@Carrillo2022]. Yet whether firms evade more when tax rates rise is not a settled question. In the canonical model of tax evasion [@Allingham1972], even the sign of the effect depends on how penalties are levied: when the fine is proportional to the evaded tax, a higher rate raises the benefit and the expected cost of evading together, and evasion falls as long as relative risk aversion is decreasing [@Slemrod2019]. The empirical evidence points both ways [@Slemrod2019].
+
+<!-- ## The reform and the incentives {#sec-reform} -->
+
+<!-- In 1983, the Colombian government tried to homogenize the sales tax rates across industries, which led to some industries facing higher sales tax rates while others faced lower rates or were exempted. The 1983 reform relatively unified the sales tax rates by combining previously taxed goods at 6% and 15% into 10%. The number of the products and services that were levied expanded. The sales tax was extended to the retail level, with a *simplified system* being made available to small retailers to ease compliance costs and the administrative burden. -->
+
+::: {.content-visible when-meta="draft"}
+**Draft note (1986 reform, pending the 1986 decision in Open items):** In 1986, there were further changes to the income tax rates for individuals, limited liability companies, and corporations. For individuals, the highest income tax rate was reduced from 49% to 30%. The entity-level income tax for LLCs and corporations was homogenized at 30%. Before the reform, corporations faced a 40% rate, while LLCs faced an 18% rate.
+:::
+
+<!-- P3: what does the reform do to firms -->
+
+The 1983 fiscal policy changed incentives *across* industries and *within* industries. Across industries, the sales tax rate increased from 6% to 10% for most ST-liable industries, while ST-exempt industries remained exempt. Within industries, the income tax changed by juridical organization (JO), and in the opposite direction. *Ley 9 de 1983* cut individual income-tax rates by 4.6 percentage points on average across income brackets relative to the 1982 schedule, and thus proprietorships faced lower rates [@PerryCardenas1986]. LLCs received a smaller cut, from 20% to 18% [@PerryCardenas1986]. In ST-liable industries, the net incentive is therefore ambiguous for both: proprietorships were compensated for much of the sales-tax increase through the income tax, while LLCs were insufficiently compensated. In ST-exempt industries, the income-tax cut alone lowered the incentive for proprietorships and changed it little for LLCs, whose cut was small.
+
+<!-- P4: how does this tie to the model -->
+
+In the model, the sales tax rate shifts the marginal benefit of overreporting materials: a higher $\tau$ raises the credit claimed on each peso of fictitious inputs (@sec-model). The model has no income tax, but the same logic extends to it: overreported inputs also lower reported profits, and with them the income-tax base. An increase in either rate therefore raises the incentive to overreport inputs, and a decrease lowers it. Since the 1983 reform raised the sales tax for most industries while cutting income-tax rates, its net effect on evasion is ambiguous a priori.
 
 ## Empirical approach {#sec-fiscal-approach}
 
-- Corporations are truth-reporters: $s^C_{ijt}=\gamma_j-\varepsilon_{ijt}$ ($s$ = materials share of sales, $\gamma_j$ = industry output elasticity of materials in the Cobb-Douglas case).
-- Unincorporated firms evade: $s^N_{ijt}=\gamma_j+e_{ijt}-\varepsilon_{ijt}$ (here $e$ is the overreporting share in the same units as $s$; footnote the notation link to the model's $u$).
-- Stacking with $D^N_{ijt}$: $s_{ijt}=\gamma_j+D^N_{ijt}e_{ijt}-\varepsilon_{ijt}$.
-- Identifies the average overreporting $\mu=E[s\mid D^N=1]-E[s\mid D^N=0]$.
-- Levels regression: $s_{ijt}=\gamma_j+\sum_{t=1981}^{1991}\mu_tD^N_{ijt}+\eta_{ijt}$, $\gamma_j$ = industry fixed effects.
-- Differences relative to 1983: $s_{ijt}=\mu D^N_{ijt}+\sum_{t\ne1983}\Delta_tD^N_{ijt}+\gamma_j+\eta_{ijt}$, where $\Delta_t=\mu_t-\mu_{1983}$.
-- Splitting by industry liability, with $D^E$ (exempt) and $D^L$ (liable), $D^E+D^L=1$:
-  - Exempt: $\mu^{CIT}_E$; liable: $\mu^{ST+CIT}_L$.
-  - If $\mu^{CIT}_E=\mu^{CIT}_L$, the ST-only response $\mu^{ST}_L$ is identified. State this as an assumption and discuss plausibility.
-- Splitting further by JO (LLC vs proprietorship) gives four groups, each with its own $\Delta_t$ path.
+From the materials FOC, for corporations, the truth-reporters, $i$ in industry $j$ at year $t$, the log share of materials' cost over sales is
+
+$$
+s_{ijt}^{C} = \ln\beta_j-\varepsilon_{ijt}
+$$ {#eq-fiscal-corp}
+
+where $s_{ijt}\equiv\ln(\rho_tM^*_{ijt}/P_tY_{ijt})$ is the log share of materials' cost over sales, $\beta_j$ is the output elasticity of materials of industry $j$, and $\varepsilon_{ijt}$ is the error term. For unincorporated firms, the evaders,
+
+$$
+s_{ijt}^{N} = \ln\beta_j + u_{ijt} - \varepsilon_{ijt}
+$$ {#eq-fiscal-unincorp}
+
+where $u_{ijt}=\ln(1+e_{ijt}/M_{ijt})$ is the overreporting of materials' cost due to tax evasion.
+
+Let $D_{ijt}^N$ be a dummy indicating whether the firm is an unincorporated firm. Then,
+
+$$
+\begin{aligned}
+  (1-D_{ijt}^N)s_{ijt} + D_{ijt}^N s_{ijt} =& (1-D_{ijt}^N)(\ln\beta_j-\varepsilon_{ijt}) + D_{ijt}^N \big(\ln\beta_j+u_{ijt}  - \varepsilon_{ijt}\big) \\
+    s_{ijt} =& \ln\beta_j + D_{ijt}^N  u_{ijt} - \varepsilon_{ijt}
+\end{aligned}
+$$ {#eq-fiscal-stack}
+
+Taking expectations,
+
+$$
+E[s_{ijt}|D^{N}=0,j]=\ln\beta_j, \qquad E[s_{ijt}|D^{N}=1,j]-E[s_{ijt}|D^{N}=0,j]= \mu
+$$ {#eq-fiscal-mean}
+
+identifies the average overreporting level, $\mu\equiv E[u_{ijt}\mid D^N_{ijt}=1]$, a population expectation; its estimate is $\hat\mu$.
+
+
+In the case of the fiscal policy changes, I am interested in the changes in average tax evasion after the 1983 fiscal reform. Taking the difference of the expectations between year $t'$ and $t=1983$,
+
+$$
+\begin{aligned}
+    s_{ijt'} - s_{ij,1983}
+     &= D_{ijt}^N  (u_{ijt'} - u_{ij,1983}) - (\varepsilon_{ijt'} - \varepsilon_{ij,1983}) \\
+    E[s_{ijt'}-s_{ij,1983}|D^{N}=1] &= \mu_{t'} - \mu_{1983} \equiv \Delta\mu_{t'}
+\end{aligned}
+$$ {#eq-fiscal-diff}
+
+where $\mu_t$ is the annual average tax evasion of year $t$, and $\Delta\mu_{t}$ is the change in average tax evasion between year $t$ and 1983, the last full year before the reform took effect (@sec-setting-st).
+
+
+The identifying assumptions are explicit in @eq-fiscal-stack and @eq-fiscal-diff: (i) corporations do not overreport (@eq-fiscal-corp); (ii) firms within an industry share a common Cobb-Douglas technology, with a constant output elasticity of materials $\beta_j$ (@eq-fiscal-corp and @eq-fiscal-unincorp); and (iii) the ex-post shock $\varepsilon_{ijt}$ is independent of evasion, true materials and juridical organization, with $E[\varepsilon_{ijt}\mid D^N_{ijt},t]=0$. 
+
+<!-- Under (i)–(iii), in every year $t$,
+
+$$
+E[s_{ijt}\mid D^N_{ijt}=0,j,t]=\ln\beta_j,\qquad E[s_{ijt}\mid D^N_{ijt}=1,j,t]=\ln\beta_j+\mu_t .
+$$ {#eq-fiscal-ident}
+
+ -->
+
+
+Even though @eq-fiscal-diff resembles a traditional difference-in-differences design, the result does not require parallel trends for identification. Under (i)-(iii), @eq-fiscal-stack and @eq-fiscal-diff show that the difference between unincorporated firms and corporations in year $t$ is the average overreporting itself, $\mu_t$, and changes in $\mu_t$ over time, including before 1983, are changes in evasion.
+
+<!-- Compare this with a difference-in-differences design. There, each group's outcome carries its own time effect, $E[s_{ijt}\mid D^N_{ijt}=d,j,t]=\ln\beta_j+\lambda^d_t+d\,\mu_t$ for $d\in\{0,1\}$, and $\Delta\mu_t$ is identified only if the two time effects move together, $\lambda^1_t-\lambda^1_{1983}=\lambda^0_t-\lambda^0_{1983}$: parallel trends. The model has no such time effect. The materials FOC pins down a truth-reporting firm's log share at $\ln\beta_j-\varepsilon_{ijt}$, whatever happens to prices, demand or productivity, so $\lambda^0_t=\lambda^1_t=0$ follows from (ii) rather than being assumed. The difference between unincorporated firms and corporations in year $t$ is therefore not a comparison with a control group; it is average overreporting itself, $\mu_t$, and parallel trends is never invoked. Movements in $\mu_t$ before 1983 are changes in evasion, not violations of an identifying assumption. -->
+
+
+To estimate @eq-fiscal-stack, I use the following regression specification,
+
+$$
+    s_{ijt} = \ln\beta_j + \sum_{t=1981}^{1991} \mu_t\, D_{ijt}^N\,\mathbb 1[\text{year}=t] + \zeta_{ijt}
+$$ {#eq-fiscal-lvl-reg}
+
+where $\mu_{t}$ is the average tax evasion of unincorporated firms in year $t$; $\ln\beta_j$ enter as industry fixed effects, estimated jointly with the $\mu_t$, so no first-stage estimate enters the regression and its standard errors need no bootstrap or generated-regressor correction; and $\zeta_{ijt}=\nu_{ijt}-\varepsilon_{ijt}$, where $u_{ijt} = \mu_t + \nu_{ijt}$ and $\nu_{ijt}$ is the idiosyncratic component of tax evasion that is not captured by the year dummies. Likewise, I estimate @eq-fiscal-diff with the following regression,
+
+$$
+    s_{ijt} = \ln\beta_j + \mu\, D_{ijt}^N+\sum_{t=1981}^{1991} \mathbb{1}[t\neq1983]\,\Delta\mu_t\, D_{ijt}^N\,\mathbb 1[\text{year}=t] + \zeta_{ijt}
+$$ {#eq-fiscal-diff-reg}
+
+where $\Delta\mu_{t}$ is the difference in tax evasion of unincorporated firms between year $t$ and 1983, the last full year before the reform took effect, and $\mu$ is the average tax evasion of unincorporated firms in 1983.
+
+::: {.content-visible when-meta="draft"}
+**Draft note:** your "not a DiD" framing is now written up after @eq-fiscal-diff (identifying assumptions (i)–(iii)).
+
+**Draft note (implementation):** the text now matches the code: log materials share as the outcome, with industry fixed effects ($\ln\beta_j$), two-way clustered by plant and year (`921.1-DD.R`, `921.2-het-slides.R`). $\mathcal V$ is used as the outcome only in the size-heterogeneity analysis.
+:::
+
+The 1983 fiscal reform changed incentives to evade taxes over time *differently* for firms in ST-liable and ST-exempt industries. Most ST-liable industries faced an ST rate *increase* from 6% to 10%, while ST-exempt industries *remained exempt* before and after the reform. Note that firms in *all* industries are subject to the income tax, which also generates incentives to evade taxes by overreporting input costs: lower reported profits due to higher input costs reduce the tax base, and thus the tax liability. Therefore, the income tax and the ST generate tax evasion incentives for firms in ST-liable industries, while only the income tax does for firms in ST-exempt industries. For unincorporated firms,
+
+$$
+\begin{aligned}
+s_{ijt}^{N} &= \ln\beta_j + u^{ST}_{ijt} + u^{IT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Liable} \\
+s_{ijt}^{N} &= \ln\beta_j + u^{IT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Exempt}
+\end{aligned}
+$$ {#eq-fiscal-noncorp}
+
+where $u^{ST}_{ijt}$ and $u^{IT}_{ijt}$ stand for the overreporting due to the ST and the income tax (IT), respectively. Let $D^E_{ijt}$ be a dummy indicating whether the industry is ST-exempt and $D^{L}_{ijt}$ a dummy indicating whether the industry is ST-liable, such that $D^E_{ijt} + D^{L}_{ijt} = 1$. Combining @eq-fiscal-corp with @eq-fiscal-noncorp,
+
+$$
+    s_{ijt} = \ln\beta_j + D_{ijt}^N D^E_{ijt}\, u^{IT}_{ijt} + D_{ijt}^N D^{L}_{ijt} (u^{ST}_{ijt} + u^{IT}_{ijt}) - \varepsilon_{ijt}
+$$ {#eq-fiscal-lvl-split}
+
+Taking expectations,
+
+$$
+\begin{aligned}
+E[s_{ijt}|D^{N}=1,D^E=1,j]-\ln\beta_j &= \mu^{IT}_E \\
+E[s_{ijt}|D^{N}=1,D^{L}=1,j]-\ln\beta_j &= \mu^{ST}_{L}+\mu^{IT}_{L}\equiv\mu^{ST+IT}_{L}
+\end{aligned}
+$$
+
+identifies the average overreporting by firms in ST-exempt industries, $\mu^{IT}_E$, and in ST-liable industries, $\mu^{ST+IT}_{L}$. If I assume $\mu^{IT}_E = \mu^{IT}_{L}$, I can also identify the overreporting due to ST, $\mu^{ST}_{L}$. Since income-tax rates depend on the juridical organization and not on the industry, I assume that the income tax generates the same incentives to evade taxes across industries, whether they are exempt of ST or not. Because I aggregate different juridical organizations in exempt and liable industries into unincorporated firms, this assumption might break if the composition of juridical organizations is non-trivially different between exempt and liable industries. The regression versions of @eq-fiscal-lvl-reg and @eq-fiscal-diff-reg interact the year dummies with $D^N_{ijt}D^E_{ijt}$ and $D^N_{ijt}D^L_{ijt}$, giving one path per industry type, $\mu_{E,t}$ and $\mu_{L,t}$ (and $\Delta\mu_{E,t}$, $\Delta\mu_{L,t}$ relative to 1983). Splitting unincorporated firms further by JO, into LLCs and proprietorships, gives four such paths.
+
+### Changes in true materials cannot explain the pattern {#sec-fiscal-m}
+
+Since $u_{ijt}=\ln(1+e_{ijt}/M_{ijt})$, the empirical exercise remains valid as long as changes in $s$ are not explained by changes in $M$ (or $\varepsilon$), but only by $e$ or $e/M$: changes in the proxy should be explained by changes to the incentives to adjust overreporting, not by firms adjusting their optimal choice of true inputs.
+
+The alternative argument is that changes in true inputs explain the increase in the overreporting share. Suppose $e$ is unchanged. Then, after the reform, unincorporated firms would have to lower their true inputs, by either an increase in relative prices or productivity shocks. Productivity shocks are unrelated to tax rates, so this is unlikely. According to the FOC, taxes do not show in the optimal choice of firms. Besides, the increase after the reform is gradual, while the reform made only a one-time change. So this alternative argument does not hold. The evasion channel is more direct: an increase in the sales tax rate leads to an increase in the overreporting share because a higher tax rate increases the marginal benefit of overreporting.
+
+::: {.content-visible when-meta="draft"}
+**Draft note:** `Paper/sections/98-fiscal-ref-col.qmd` ("The Fiscal Reforms and the Data") has a falsification check that fits here: sales started to grow during 1983, while the cost share started to grow the year after, and sales fell in 1986. It would need its figure (`Results/Figures/Colombia/log_sales_byy.png`) regenerated as a thesis asset.
+:::
 
 ## Results: all unincorporated firms {#sec-fiscal-all}
 
-![Overreporting of unincorporated firms relative to 1983.](/figures/ch07-fiscal-all-unincorp.png){#fig-fiscal-all}
+![Overreporting of unincorporated firms relative to corporations by year, 1981–1991, all industries. Points are coefficient estimates with 95% confidence intervals; standard errors two-way clustered by plant and year; industry fixed effects. Left panel: levels, $\hat\mu_t$; right panel: differences with respect to 1983, $\Delta\hat\mu_t$. The dashed line marks 1983, the last full year before the reform took effect.](/figures/ch07-fiscal-all-unincorp.png){#fig-fiscal-all}
 
-- Overreporting rises gradually after the reform and reaches an average of about 8% in 1987, stable until 1990.
-- Levels have wide standard errors (heterogeneity across firms in tax rate, perceived detection probability and evasion cost); differences relative to 1983 are tight, so the heterogeneity looks constant over time.
-- FILL: point estimates and standard errors for 1984-1991 from `921-DD2.R` output.
+:::{#tbl-fiscal-all}
+![](/tables/ch07-fiscal-all.png)
+
+Overreporting of unincorporated firms relative to corporations, all industries. Coefficients behind the figure, by year: levels ($\hat\mu_t$) and differences with respect to 1983 ($\Delta\hat\mu_t$).
+:::
+
+After the fiscal reform of 1983 increased the sales tax rate, tax evasion through input overreporting increased gradually (@fig-fiscal-all, @tbl-fiscal-all). Input overreporting reached an average of 8% in 1987, where it stabilized until 1990.
+
+The standard errors of the levels and of the differences over time look very different. In levels, the large standard errors suggest that tax evasion is widely heterogeneous across firms. This heterogeneity may come from differences in the tax rate due to firm characteristics (industry, JO, and exports), in the (perceived) probability of detection (the model assumes risk neutrality, but firms might have different perceived probabilities), and in the cost of evasion across firms. The differences over time, however, are tight for a mechanical reason: they are differences, not levels. Every year's level $\hat\mu_t$ is estimated against the same baseline (corporations pooled over all years, and the same industry fixed effects), so estimation error in that baseline enters every year with the same sign, and the level estimates are strongly positively correlated. Since $\operatorname{Var}(\hat\mu_t-\hat\mu_{1983})=\operatorname{Var}(\hat\mu_t)+\operatorname{Var}(\hat\mu_{1983})-2\operatorname{Cov}(\hat\mu_t,\hat\mu_{1983})$, this shared error cancels in the differences. The correlation affects inference only, not the consistency of the estimates: the regressors are group-by-year dummies, and $E[\zeta_{ijt}\mid D^N_{ijt},\text{year}]=0$ because $\varepsilon$ is independent of $(e,M)$ and $\nu_{ijt}$ is, by construction, the deviation from the group-year mean. Standard errors are two-way clustered by plant and year.
+
+::: {.content-visible when-meta="draft"}
+**Draft note (inference, to check):**
+
+- Salvador reframed this in a meeting; the mechanical (covariance) explanation above replaces the old "heterogeneity is constant over time" reading from the slides.
+- Only 11 year clusters: two-way cluster-robust SEs are unreliable with so few clusters. Robustness: wild cluster bootstrap by year, or cluster by plant only.
+- Composition: $\mu_t$ is a cross-sectional mean, so entry, exit, and switches in juridical organization (e.g. LLCs incorporating after the 1986 unification of the entity-level income tax) can move it. Robustness: add plant fixed effects (within-firm changes).
+:::
+
+### Overreporting before the reform {#sec-fiscal-pre}
+
+Corporations are a clean comparison group that will not react to the policy changes, because the assumption is that these firms do not evade taxes by overreporting. Thus, I can interpret the estimates as the change in overreporting relative to 1983, the last full year before the reform took effect.
+
+The policy changes of the time were the result of a public debate following the 1981 report of the Bird–Wiesner Mission, a technical mission on Colombia's intergovernmental finances led by Richard Bird (international tax expert) and Eduardo Wiesner (Colombian economist) that recommended better tax administration to reduce evasion [@JunguitoRincon2004; @Bolanos2019]. The reform was enacted at the end of December 1983 and took effect on 1 April 1984 (@sec-setting-st). These changes aimed to reduce the fiscal deficit without resorting to money financing and to reactivate investment through tax incentives, while broadening the tax base and simplifying collection [@Sanchez1994].
+
+A plausible scenario is that firms could have reduced their overreporting during the public debate as a way to signal compliance and avoid further tax increases, and then reverted their behaviour after the reform was enacted. If this is the case, then part of the increase in overreporting after 1983 is a return to previous levels of tax evasion. More data points before 1981 would help to clarify this issue.
 
 ## Results: ST-liable vs. ST-exempt industries {#sec-fiscal-liable}
 
-![Firms facing larger incentives evade more.](/figures/ch07-fiscal-liable-vs-exempt.png){#fig-fiscal-liable}
+![Overreporting of unincorporated firms relative to corporations by year, 1981–1991, in ST-exempt and ST-liable industries. Points are coefficient estimates with 95% confidence intervals; standard errors two-way clustered by plant and year; industry fixed effects. Left panel: levels, $\hat\mu_t$; right panel: differences with respect to 1983, $\Delta\hat\mu_t$. The dashed line marks 1983, the last full year before the reform took effect.](/figures/ch07-fiscal-liable-vs-exempt.png){#fig-fiscal-liable}
 
-- ST-liable: overreporting rises gradually until 1987, then stabilizes through 1990.
-- ST-exempt: smaller but significant increase after 1983, and another increase between 1987 and 1990.
-- The increase is larger for ST-liable firms, the group most affected by the reform.
+:::{#tbl-fiscal-liable}
+![](/tables/ch07-fiscal-liable.png)
+
+Overreporting of unincorporated firms in ST-exempt and ST-liable industries. Coefficients behind the figure, by year: levels ($\hat\mu_t$) and differences with respect to 1983 ($\Delta\hat\mu_t$).
+:::
+
+After the fiscal reform of 1983, unincorporated firms in ST-liable industries increased tax evasion significantly, while those in ST-exempt industries increased it only slightly (@fig-fiscal-liable, @tbl-fiscal-liable). In ST-liable industries, overreporting rose gradually until 1987 and stabilized until 1990. In ST-exempt industries, the increase was moderate, with a second rise between 1987 and 1990. The increase is *larger* for ST-liable firms, the most affected by the reform.
+
+The comparison lines up with the incentives described at the start of this chapter. Firms in ST-liable industries faced a higher sales tax, only partly offset by lower income-tax rates, while firms in ST-exempt industries faced the income-tax cut alone. The larger response in ST-liable industries is consistent with the sales-tax increase dominating. The slight increase in ST-exempt industries, driven by proprietorships, is unexpected; @sec-fiscal-jo discusses two possible explanations.
 
 ## Results: LLCs vs. proprietorships {#sec-fiscal-jo}
 
-![LLCs.](/figures/ch07-fiscal-llc.png){#fig-fiscal-llc}
+![Overreporting of LLCs relative to corporations by year, 1981–1991, in ST-exempt and ST-liable industries. Points are coefficient estimates with 95% confidence intervals; standard errors two-way clustered by plant and year; industry fixed effects. Left panel: levels, $\hat\mu_t$; right panel: differences with respect to 1983, $\Delta\hat\mu_t$. The dashed line marks 1983, the last full year before the reform took effect.](/figures/ch07-fiscal-llc.png){#fig-fiscal-llc}
 
-![Proprietorships.](/figures/ch07-fiscal-prt.png){#fig-fiscal-prt}
+:::{#tbl-fiscal-llc}
+![](/tables/ch07-fiscal-llc.png)
 
-- LLCs in ST-liable industries: significant increase (consistent with the ST increase).
-- LLCs in ST-exempt industries: no significant change, so the small CIT cut did not reduce overreporting.
-- Proprietorships in ST-exempt industries: moderate significant increase (consistent with the CIT increase).
-- Proprietorships in ST-liable industries: no change in 1984-1985, an increase in 1986-1989. Larger standard errors, more heterogeneous response (workshops vs. young entrepreneurs).
-- UPDATE: the 1986-1989 rise may reflect the 1986 reform; keep or drop depending on the 1986 decision above.
+Overreporting of LLCs in ST-exempt and ST-liable industries. Coefficients behind the figure, by year: levels ($\hat\mu_t$) and differences with respect to 1983 ($\Delta\hat\mu_t$).
+:::
+
+![Overreporting of proprietorships relative to corporations by year, 1981–1991, in ST-exempt and ST-liable industries. Points are coefficient estimates with 95% confidence intervals; standard errors two-way clustered by plant and year; industry fixed effects. Left panel: levels, $\hat\mu_t$; right panel: differences with respect to 1983, $\Delta\hat\mu_t$. The dashed line marks 1983, the last full year before the reform took effect.](/figures/ch07-fiscal-prt.png){#fig-fiscal-prt}
+
+:::{#tbl-fiscal-prt}
+![](/tables/ch07-fiscal-prt.png)
+
+Overreporting of proprietorships in ST-exempt and ST-liable industries. Coefficients behind the figure, by year: levels ($\hat\mu_t$) and differences with respect to 1983 ($\Delta\hat\mu_t$).
+:::
+
+LLCs in ST-liable industries show a significant increase in tax evasion, while LLCs in exempt industries show no significant change (@fig-fiscal-llc, @tbl-fiscal-llc). LLCs in exempt industries mainly faced a decrease in their entity-level income tax. This decrease would lead to lower incentives to evade taxes. However, since the reduction is small, it is not unreasonable to find no evidence of significant changes in tax evasion for these industries. In ST-liable industries, LLCs faced two opposing effects: the increase in sales tax rates, which would increase incentives to evade taxes, and the income-tax cut, which would decrease incentives to evade taxes. The evidence suggests that the increase in sales tax rates dominates the effect of the income-tax cut, leading to a significant increase in tax evasion for LLCs in ST-liable industries.
+
+Proprietorships show a more heterogeneous response (@fig-fiscal-prt, @tbl-fiscal-prt). In ST-liable industries, their overreporting barely changed in 1984–1985, consistent with the income-tax cut compensating them for much of the sales-tax increase; it rose from 1986 onward, peaking in 1987–1988. In ST-exempt industries, their overreporting rose after 1983, even though they faced only the income-tax cut. This result is unexpected, and I offer two possible explanations. First, the incentive to overreport depends on the marginal tax rate, not the average one, and the 1983 cut in marginal rates was much smaller than the cut in average rates at both ends of the income distribution: close to zero at low incomes and about 2 percentage points at high incomes (@tbl-marg-tax-1983). Second, the 1982–1983 changes stopped individuals from fully deducting their financial expenses [@Ocampo1983], which gave proprietorships, but not LLCs, a reason to replace a lost deduction with overreported inputs.
+
+Proprietorships' standard errors are also several times those of LLCs, which suggests that they responded less uniformly. This is plausible: proprietorships range from family workshops to young entrepreneurial firms, with varying degrees of process standardization, record-keeping and attitudes towards risk, while LLCs tend to be larger firms with more established processes, and their responses look more homogeneous.
 
 ## Takeaways and link to the structural model {#sec-fiscal-takeaways}
 
-- Firms overreport inputs more after increases in ST and CIT; larger increases give larger responses.
-- No significant decrease when incentives fall (LLCs in ST-exempt industries): suggests an asymmetric response. Connects to the counterfactual asymmetry (increases detectable at +0.5%, cuts only at -8%, @sec-cf-results), but that asymmetry is a model implication, not this chapter's reduced-form finding; say so explicitly.
-- Bridge to @sec-counterfactual: the model needs $\tau_P\rho_t$ variation to identify $\lambda$; this chapter shows that variation moves overreporting in the predicted direction.
+The 1983 reform offers empirical evidence that firms overreport inputs in response to tax incentives. Overreporting by unincorporated firms rose after the reform took effect, and it rose most where the net incentive rose most: in ST-liable industries, where the sales tax went up, and among LLCs, whose small income-tax cut did little to offset it. Proprietorships, compensated for much of the sales-tax increase by a larger income-tax cut, barely responded at first. The one result that does not fit, the rise among proprietorships in ST-exempt industries, has two possible explanations in the reform's other provisions (@sec-fiscal-jo).
 
-## Open items
+This evidence supports the model's key comparative static, $\partial e^*/\partial\tau>0$ (@sec-model), which the structural estimation cannot test by regression: overreporting and the tax rate are both built from the same reported materials, so a regression of one on the other is mechanically biased. It also supports the identification of the detection probability in @sec-counterfactual, which rests on the same source of variation: changes in the sales-tax benefit of overreporting move evasion.
 
+::: {.content-visible when-meta="draft"}
+## Open items (draft only) {.unnumbered}
+
+- [ ] Parked (Hans, 2026-09-23): focus on the 1983 reform only; 1986 stays in its draft note. Also parked: whether to cut 1986 onward from the tables and figures.
 - [ ] Choose which Paper DiD sections survive (`965-DiD`, `966-DiD-txrt`, `98-fiscal-ref-col`, `961-over-time`); slides only cover the 921-2 specification.
 - [ ] Decide whether the 1986 reform and the 1990 reform stay.
 - [ ] Move the 921-2 figures to `Code/Thesis/ch07-*.R` scripts (currently copied PNGs).
 - [ ] Rewrite the abstract and intro claims about this chapter (`Paper/Tax-Prod.qmd` abstract still says "raised their overreported share significantly").
+:::

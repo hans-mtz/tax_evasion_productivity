@@ -201,23 +201,25 @@ In addition to depending on a single unobservable, $M_{it}$, the setup presents 
 
 The method *Entropic Latent Variable Integration via Simulation* (ELVIS) [@Schennach2014] is built for exactly this combination of features.
 
-Let $F_Z$ denote the distribution of the observed data $Z_{it}$, and let $\mu$ denote a candidate distribution of $M_{it}$ conditional on $Z_{it}$. Let $\mu\times F_Z$ denote the joint distribution of $(M_{it},Z_{it})$ implied by $\mu$ and $F_Z$. The question is whether some choice of $\mu$ makes $E_{\mu\times F_Z}[g(M,Z,\theta)]=0$.
+Let $f_Z$ denote the density of the observed data $Z_{it}$, and let $f_{M|Z}$ denote a candidate conditional density of $M_{it}$ given $Z_{it}$, so that $f_{M|Z}f_Z$ is the implied joint density of $(M_{it},Z_{it})$.[^elvis-densities] The question is whether some choice of $f_{M|Z}$ makes $E_{f_{M|Z}f_Z}[g(M,Z,\theta)]=0$.
 
-@Schennach2014 shows the abstract *existence* problem of $\mu$ is equivalent to a more concrete optimization problem (her Theorem 2.1):
+[^elvis-densities]: @Schennach2014 states the result for general probability measures. I write it with densities because, in this application, $M_{it}$ is continuous on the known support $\big(\max\{0,M^*_{it}-\tfrac{1}{2\lambda}\},M^*_{it}\big)$; every candidate conditional distribution therefore has a density there. The reference density $f^0_{M|Z}$ used in estimation is the uniform density on that support: the estimator draws $M_{it}$ uniformly on the support and accepts each draw with probability $\min\{1,\exp[\gamma'(g_{\text{new}}-g_{\text{old}})]\}$; the chain's average therefore computes $\tilde g$ in @eq-elvis-tilt.
+
+@Schennach2014 shows the abstract *existence* problem of $f_{M|Z}$ is equivalent to a more concrete optimization problem (her Theorem 2.1):
 
 $$
-\inf_{\mu}\big\|E_{\mu\times F_Z}[g(M,Z,\theta)]\big\|=0 \quad\Longleftrightarrow\quad \inf_{\gamma\in\mathbb R^{d_g}}\big\|E_{F_Z}[\tilde g(Z,\theta,\gamma)]\big\|=0
+\inf_{f_{M|Z}}\big\|E_{f_{M|Z}f_Z}[g(M,Z,\theta)]\big\|=0 \quad\Longleftrightarrow\quad \inf_{\gamma\in\mathbb R^{d_g}}\big\|E_{f_Z}[\tilde g(Z,\theta,\gamma)]\big\|=0
 $$ {#eq-elvis-equiv}
 
 where
 
 $$
-\tilde g(Z,\theta,\gamma)\equiv\frac{\int g(M,Z,\theta)\exp\big(\gamma'g(M,Z,\theta)\big)\,d\rho(M|Z)}{\int \exp\big(\gamma'g(M,Z,\theta)\big)\,d\rho(M|Z)}
+\tilde g(Z,\theta,\gamma)\equiv\frac{\int g(M,Z,\theta)\exp\big(\gamma'g(M,Z,\theta)\big)\,f^0_{M|Z}(M|Z)\,dM}{\int \exp\big(\gamma'g(M,Z,\theta)\big)\,f^0_{M|Z}(M|Z)\,dM}
 $$ {#eq-elvis-tilt}
 
-Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to an arbitrary reference measure $\rho(M|Z)$. In the optimization problem, $\gamma\in\mathbb{R}^{d_g}$ is the Lagrange multiplier vector on the moment constraints. $\rho(M|Z)$ only needs to dominate the true conditional distribution of $M$; any choice with the right support gives the same $\hat\theta$ [Remark 2.3, @Schennach2014]. In this setting, this allows me to avoid specifying $f_\psi$ or $f_\varepsilon$ or searching over the space of all conditional distributions of $M$. Instead, I solve a finite optimization problem.
+Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to an arbitrary reference density $f^0_{M|Z}$. In the optimization problem, $\gamma\in\mathbb{R}^{d_g}$ is the Lagrange multiplier vector on the moment constraints. $f^0_{M|Z}$ only needs to be positive wherever the true conditional density of $M$ is; any choice with the right support gives the same $\hat\theta$ [Remark 2.3, @Schennach2014]. In this setting, this allows me to avoid specifying $f_\psi$ or $f_\varepsilon$ or searching over the space of all conditional distributions of $M$. Instead, I solve a finite optimization problem.
 
-The true (unobserved) conditional distribution of $M$ satisfies the moment condition at the true $\theta_0$, so Theorem 2.1 guarantees some $\gamma$ also solves the right-hand side of @eq-elvis-equiv at $\theta_0$. Searching over $\theta$ for the value where this finite-dimensional problem has a solution therefore recovers $\theta_0$, regardless of the chosen $\rho$, without requiring knowledge of the true conditional distribution of $M$.
+The true (unobserved) conditional distribution of $M$ satisfies the moment condition at the true $\theta_0$, so Theorem 2.1 guarantees some $\gamma$ also solves the right-hand side of @eq-elvis-equiv at $\theta_0$. Searching over $\theta$ for the value where this finite-dimensional problem has a solution therefore recovers $\theta_0$, regardless of the chosen $f^0_{M|Z}$, without requiring knowledge of the true conditional distribution of $M$.
 
 The entropy-maximizing distribution satisfies $E[g(M,Z,\theta_0)]=0$, but it should not be treated as the actual distribution of $M$, since many conditional distributions of $M$ given $Z$ satisfy the moment condition [@Schennach2022, p. 1250]. This matters for the counterfactual question. Since expected counterfactual revenue depends on the latent $M_{it}$, it would be tempting to average it over draws from such a distribution. Instead, I include the counterfactual object as an auxiliary parameter with its own moment condition and estimate it jointly with $\theta$ and $\gamma$.
 
