@@ -196,6 +196,26 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
 
 **Mechanics:** JMP-only merge of ch. 4/5 via `when-meta="jmp"` headings (thesis keeps two chapters); include order in `JMP/paper.qmd` already matches (PF before fiscal and counterfactual), no reorder needed; hide ch. 9 in the JMP.
 
+### 10a. JMP intro — RAP 2 tracker (started 2026-09-24)
+
+RAP 2 (tax rates) chosen; options and reasoning in `Thesis/feedback/jmp-intro-rap-options.md`; proof-read reports in `JMP/sections/01-intro-pr-240926.md`; literature map in the draft-only table of `chapters/09-literature.qmd` and the draft-only outline at the end of `JMP/sections/01-intro.qmd`.
+
+- [x] 1 Hook: fake invoices, losses as % of tax revenue, gains at the top
+- [x] 2 P: reported-income responses documented, firms' input overreporting not; not observed (proof-read)
+- [x] 3 R + A: 1983 reform (~9% by 1987, ST-liable), claims +16–28% for +0.5%, 3% loss, −20 revenue elasticity holding sales tax fixed (proof-read)
+- [x] 4 How: PF + corporations + deconvolution + reform + structural model (proof-read)
+- [x] 5 Supporting findings: test introduced with rejection wording, PF + dispersion/persistence (OLS and capital/labour dropped; dispersion caveat stays in ch. 6 discussion)
+- [x] Test robustness sentence inserted in intro para. 5 (2026-09-25); backed by ch. 4 draft note
+- [x] Contribution 1: tax rates and revenue (signpost "three strands… and one of productivity measurement"; knowledge-first style)
+- [x] Contribution 2: measuring firm evasion (absorbed old "Despite its relevance…", superseded)
+- [x] Contribution 3: validation samples (PF as the indirect measure; corporations as reference group; groups need not be alike in size or productivity)
+- [x] Production functions (secondary) paragraph -- final after Hans edit + second proof-read
+- [x] Roadmap (follows the actual include order: model before setting, kept by Hans 2026-09-25; §10's table lists setting first)
+- [x] Abstract (`JMP/paper.qmd`) rewritten to RAP 2 (176 words; old testing-first version saved in `JMP/sections/01-intro-pr-240926.md`); Hans editing
+- [ ] Clean up stale draft blocks in the intro file (2a, 2b, "What I find" notes, placeholder productivity paragraph)
+- [ ] Leak check on the rendered JMP (non-draft `quarto render paper.qmd --to pdf`, then scan the PDF text): personal details (names of supervisors/committee in internal notes, emails other than the author block, private remarks), internal Hans↔Claude notes ("Draft note", "TODO", "FILL", "UPDATE", "SUPERSEDED", "(Hans, …)", "Claude", "(?)", file paths like `Code/…` or `.R`, bracketed placeholders `[...]`), and draft-only blocks that failed to hide. Same scan for the thesis book before it goes anywhere.
+- [ ] Conclusion (ch. 10) outline is RAP 3; realign to RAP 2 so intro and conclusion tell the same story
+
 ## 8. Log
 
 - 2026-09-21: plan agreed; decisions above; tracker created.
@@ -211,3 +231,4 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
   - **Ch. 3:** EAM timing (activity year, DANE 1995 p. 40); reform dates (Decreto 3541, 1 Apr 1984; Ley 49/1990); `tbl-st-by-year`, `tbl-inc-tax-1983`, `tbl-marg-tax-1983`.
   - **Conventions added to §1:** conservative test, Canadian spelling, notation. **Parked:** 1986 reform, cutting tables at 1985, JMP font (renders in Latin Modern, not Times; `mathptmx` is pdflatex-only). **Next:** Hans re-reads, then the intro/abstract consistency pass for ch. 7.
 - 2026-09-24: internal notes hidden (draft-only) across chapters, appendix A, JMP intro. Ch. 4–6 ported from the approved paper and older write-ups; new assets `ch04-evasion-test`, `ch05-overreporting-ratio`, `ch06-pf-comparison` (rebuilt), `ch06-productivity-comparison`; `292`–`294` scripts (unincorporated-only deconvolution, ω with current PF, persistence). Ch. 8 drops the untilded-𝒲 ELVIS column. Ch. 2 model-only; ch. 10 outline (RAP 3). Ch. 7 figures rebuilt. Abstract/intro: 10% coverage wording, 11–25% range, inconclusive negatives, net-incentive reform result. **Next:** Hans's prose in draft notes (ch. 2, 4–6, 10); ch. 8 consistency pass (29-industry scope, ε as measurement error); intro vs. conclusion argument; `thanks:` placeholder; abstract typos.
+- 2026-09-25: JMP intro + abstract rebuilt on RAP 2 (tax rates); all visible intro paragraphs drafted and proof-read (§10a); Appendix E (all-industry PF estimates) added; ch. 4 test-robustness note, ch. 6 half-lives + third caveat, ch. 8 all-industries scope; literature table in ch. 9 (draft-only); 12 bib entries added. Deadline may slip to Mon 2026-09-28. **Next:** intro draft-block cleanup, leak check on non-draft render, ch. 10 → RAP 2, intro para. 1 fake-invoice framing.
