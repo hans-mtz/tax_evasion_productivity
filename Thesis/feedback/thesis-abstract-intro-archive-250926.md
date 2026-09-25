@@ -1,0 +1,23 @@
+# Thesis abstract and ch. 1 stub: archived (2026-09-25)
+
+Replaced when the thesis abstract was realigned to RAP 2 (chapter order) and ch. 1 switched to including the JMP intro.
+
+## Old `Thesis/index.qmd`
+
+# Abstract {.unnumbered}
+
+<!-- TODO: rewrite. The old abstract (Paper/Tax-Prod.qmd) predates the stage-2 / counterfactual results.
+Must cover: (1) testing for overreporting, (2) deconvolved distribution of overreporting,
+(3) production function + productivity with evasion, (4) 1983 reform evidence,
+(5) counterfactual: +0.5% purchases-tax increase significantly lowers revenue; an 8% cut is needed to significantly raise it. -->
+
+I propose a novel strategy to estimate corporate cost-overreporting tax evasion. Employing a structural production function and a subset of truth-reporting firms, I first investigate potential tax evasion by testing the presence of cost overreporting, where the statistically significant differences on the output elasticities of the overreported input in the correct direction are interpreted as evidence of tax evasion. Using a well-known dataset of Colombian manufacturing firms, I detect overreporting in 9 of the 20 manufacturing industries tested, including four of the five largest, which together produce about half of manufacturing output; with 20 tests at the 10 percent level, chance alone would produce about two rejections. Where the test cannot reject the absence of overreporting, the result is inconclusive. Second, I recover the distribution of the overreporting share of true materials. In the five industries with the strongest evidence, firms overreport between 11 and 25 percent of their true materials on average. The density estimates suggest that most firms evade modestly with few aggressive evaders. Third, leveraging a 1983 fiscal reform that raised the sales tax rate for a subset of industries while cutting income-tax rates, I find that overreporting rose after the reform where the net incentive rose most: in industries whose sales tax increased, and among limited liability companies, whose smaller income-tax cut did little to offset it. Fourth, I show how to recover the production function parameters and productivity in the presence of tax evasion. My results indicate that ignoring cost overreporting leads to consistently larger output elasticities of overreported inputs. In addition, I find non-trivial differences in the productivity distributions with respect to the naive estimation. Finally, using a simple model, I estimate how changes in tax rate affect government revenue around the current equilibrium. I find that a tax increase of 0.5% on all purchases will significantly reduce tax revenues while a cut of 8% would be needed to increase revenue significantly from observed state.
+
+## Old `Thesis/chapters/01-intro.qmd`
+
+# Introduction {#sec-intro}
+
+<!-- STUB. Sources: Paper/sections/010-intro.qmd, abstract in Paper/Tax-Prod.qmd, 001-TODO.qmd -->
+
+[Title:What is cost overreporting?]{.content-hidden unless-meta="draft"}
+Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added (VAT) and income taxes. According to the OECD's document @OECD2017, cost overreporting — also known as "fake invoicing", "ghost firms", "invoice mills", or "missing traders"— permeates internationally.
