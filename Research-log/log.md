@@ -1000,3 +1000,15 @@ Best points: ELVIS (cube, moment set A) $\lambda=5.427\times10^{-7},(\delta_0,\d
 - **Order:** start with (3), the external evidence.
 - **Since ELVIS will be re-run anyway:** do it on the final specification — two-tax model with the net-of-tax first stage, and the joint efficient-GMM PF coefficients ($m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$) — i.e. the post-deadline plan in `Thesis/PLAN.md` §7b is now the next run, not a later one.
 - **Deadline revised:** supervisors need one week to write reference letters; letters are due to the department **Oct 20**, so the JMP is due to them by **Oct 13, 2026**.
+
+## 2026-09-25 (later) — External evidence on detection probabilities, first pass (supervisor alternative 3)
+
+- **Carrillo et al. (2022), Ecuador** (`Lit-Papers/Carrillo2022-GhostingTaxAuthority-NBER.pdf`):
+  - SRI notified 1,589 incorporated ghost clients, **10.8% of incorporated firms with a detected ghost deduction** (2010–15), selected "primarily on the basis of having made large deductions based on ghost receipts".
+  - **Caveat (Hans): this is not the detection probability.** The denominator contains only firms whose ghost supplier made SRI's list of 811 identified ghosts; evaders using ghosts SRI never identified were neither detected nor notified. The true probability of detection among all evaders is smaller. Treat 10.8% as an upper-bound ballpark.
+  - Among ghost clients, ghost purchases average 10% of total purchases (Table 1); among notified firms the median is 26%, mean 38%, median amount $181k (Table A5); notified firms have 2.4× the median tax liability of typical ghost clients. Targeting runs on the amount and share of ghost deductions.
+  - Only 25.4% of notifications led to an amended return within 90 days ("caught and paid" ≈ 2.7% of the notified-denominator firms).
+  - Use of ghosts rises monotonically with firm size; the ghost share of purchases rises except at the very top (consistent with the convex κ).
+- **Slemrod (2019, JEL):** qualitative only — detection rises with the amount evaded; firms may believe audit probability depends on size and profits. No usable numbers.
+- **Ballpark implications for q (not estimates):** current linear-in-levels q gives mean detection ≈ 0.11% among evaders, about 100× below the Ecuador upper bound. Matching ~10% at our mean e would need λ ≈ 5.6×10⁻⁵, whose ceiling 1/(2λ) ≈ 8,900 is below our P99 evasion (≈ 20,100): linear-in-levels q cannot reach that range. A share-based q = λ·e/M̄ fits naturally: 10% at a 10% mean share gives λ ≈ 1, q ≈ 28% at a 26% share, ceiling share ≈ 46% (above the deconvolved means of 11–25%). With the caveat above, the matching λ would be lower.
+- **Next:** Mexico paper (Hans has it, to be saved to `Lit-Papers/`); US audit coverage by corporate asset class (IRS Data Book); Spain's large-taxpayers unit threshold (Almunia and Lopez-Rodriguez 2018).
