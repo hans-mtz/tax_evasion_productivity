@@ -1,0 +1,100 @@
+---
+title: "Detection probability with a fixed reference scale and an estimated shape"
+author: Hans Martinez
+format: pdf
+date: last-modified
+---
+
+## Why this note exists
+
+Supervisor meeting, 2026-09-25: ELVIS is approved for the counterfactual, but $\hat\lambda$ under linear detection, $q(e)=\lambda e$, is not credible (audit-triggering threshold $1/(2\hat\lambda)\approx$ COP 920,000 against median reported materials of about 8,414). The diagnosis is a **scale problem**: a single $\lambda$ has to set both the *level* of detection (the slope of $q$) and the *curvature/ceiling* (the FOC domain $e<1/(2\lambda)$). One parameter cannot make detection plausible and also leave room for the tail of evaders. Heterogeneity across firms is not the issue; productivity $\omega$ and the cost shock $\psi$ already carry it.
+
+The fix: fix the scale outside the estimation, and let the data choose the level and the shape. The scale is not identified from the data alone (it only enters through curvature, which is weakly informative), so fixing it is a normalization, and the counterfactual's sensitivity to it has to be reported. Supervisors' alternatives this note implements: a concave detection probability (Salvador suggested a log form) and a reference scale $\bar M$. External evidence (Ecuador, Mexico, IRS, Spain; `Research-log/log.md`, 2026-09-25) says detection rises with the amount evaded and with size relative to peers.
+
+## The reference scale
+
+Let $x\equiv\lambda_0 e$ with $\lambda_0\equiv 1/\bar M_{j,t-1}$, where $\bar M_{j,t-1}$ is the mean (or median) **reported** materials $M^*$ among all firms in industry $j$ in year $t-1$.
+
+- **Lagged:** the firm can know it (last year's reports, industry statistics), and it does not contain the firm's own current $M_{it}$, so $\partial q/\partial M=0$ still holds (needed by the deconvolution) and the latent $M_{it}$ in ELVIS stays out of $q$. The lagged-observation sample already drops each firm's first year.
+- **Industry peers:** materials intensity differs across industries, and authorities benchmark within sector; a firm judges its exposure by its standing among competitors.
+- **Reported, not true, materials:** the authority sees reports. As a predetermined constant, it creates no endogeneity.
+- **Materials, not sales or capital:** $e$ is in units of materials; sales (value) or capital (different units) would need a conversion, reintroducing an arbitrary constant.
+- Common to all firms in an industry-year, so it is not a firm-specific scale.
+
+Sensitivity: mean vs. median; industry vs. all manufacturing.
+
+## The detection family
+
+$$
+q(e)=\lambda_1\,\frac{(1+x)^k-1}{k},\qquad x=\lambda_0 e,\quad \lambda_1>0,\ k\in[-1,1],
+$$ {#eq-q-boxcox}
+
+with the $k\to0$ limit $q=\lambda_1\ln(1+x)$.
+
+| $k$ | $q(e)$ | Shape |
+|---|---|---|
+| $1$ | $\lambda_1 x$ | linear: today's model with $\lambda=\lambda_1\lambda_0$ (nested) |
+| $0$ | $\lambda_1\ln(1+x)$ | concave, unbounded (Salvador's log form) |
+| $-1$ | $\lambda_1\,x/(1+x)$ | concave, bounded above by $\lambda_1$ |
+
+$q(0)=0$ for every $k$, so the test's robustness condition $q(0,Z)=0$ and the $e^*=0$ corner are unchanged. Derivatives with respect to $e$:
+$$
+q'=\lambda_1\lambda_0(1+x)^{k-1},\qquad q'e=\lambda_1x(1+x)^{k-1},\qquad q''=\lambda_1\lambda_0^2(k-1)(1+x)^{k-2}.
+$$
+For $k<1$, $q$ is concave; $\lambda_1\lambda_0$ is the slope at zero, so near zero every member behaves like linear $q$ with $\lambda=\lambda_1\lambda_0$.
+
+**Probability bound.** For $k\ge0$, $q$ is unbounded and needs the cap $\min\{q,1\}$ (as linear $q$ does). For $k<0$, $q\uparrow\lambda_1/|k|$ as $x\to\infty$, so $q\le1$ everywhere if and only if $\lambda_1\le|k|$.
+
+## Evasion FOC and SOC
+
+The evasion FOC (with $\phi=0$) is $\tau\rho_t\,(1-q-q'e)=\partial\kappa/\partial e=C(\omega,\psi)$. Define the marginal-benefit factor
+$$
+B(x)\equiv1-q-q'e=1-\lambda_1G_k(x),\qquad G_k(x)\equiv\frac{(1+x)^k-1}{k}+x(1+x)^{k-1},
+$$
+($G_0(x)=\ln(1+x)+x/(1+x)$), so that
+$$
+h(e)\equiv\ln(\tau\rho_t)+\ln B(\lambda_0e),\qquad \psi=h(e)-\delta_0+\delta_1\omega-\delta_2\omega^2 .
+$$
+
+**SOC holds everywhere for $k\in[-1,1]$.** With $\kappa$ linear in $e$, the SOC is $dB/de<0$:
+$$
+G_k'(x)=(1+x)^{k-2}\big[2+(k+1)x\big]>0\quad\text{for }k\ge-1,
+$$
+so $B$ is strictly decreasing in $e$ and the interior optimum is unique. (Equivalently, $-q''e/q'=(1-k)\,x/(1+x)<2$ for $k\ge-1$.)
+
+**The only restriction is a positive marginal benefit, $B>0\iff G_k(x)<1/\lambda_1$.** $G_k$ is increasing from $G_k(0)=0$ with
+$$
+\lim_{x\to\infty}G_k(x)=\begin{cases}\infty,&k\ge0,\\ 1/|k|,&k<0.\end{cases}
+$$
+- $k\ge0$: a ceiling $\bar x(\lambda_1,k)$ solving $G_k(\bar x)=1/\lambda_1$; evasion is restricted to $e<\bar x/\lambda_0$. For $k=1$, $\bar x=1/(2\lambda_1)$, today's ceiling.
+- $k<0$ and $\lambda_1<|k|$: **no ceiling.** $B\in(1-\lambda_1/|k|,\,1]$ for all $e$. This is the same condition that keeps $q\le1$.
+
+## What changes in ELVIS
+
+- **Sampler support.** For $k<0$, $\lambda_1<|k|$: $M\in(0,M^*_{it})$, independent of the parameters. The support-changing mechanism behind the thin-tail identification of $\lambda$ (and the $\eta$ episode) disappears, and $\lambda_1$ can be profiled smoothly like the $\delta$'s. For $k\ge0$: $M\in(\max\{0,M^*_{it}-\bar x/\lambda_0\},M^*_{it})$, with $\bar x$ depending on $(\lambda_1,k)$, as today but in units of $\bar M_{j,t-1}$.
+- **Parameters.** $\theta=(\lambda_1,\delta_0,\delta_1,\delta_2)$, same dimension as now. Grid over $k\in\{1,0.5,0,-0.5,-1\}$ and profile $\theta$ and $\gamma$ at each $k$; the conservative test at each $k$ says which shapes the data do not reject. $k=1$ is the test of the current linear specification.
+- **Moments.** The nine rows are unchanged except row 9, the score moment for the detection parameter:
+$$
+\frac{\partial h}{\partial\lambda_1}\,\varepsilon=-\frac{G_k(x)}{1-\lambda_1G_k(x)}\,\varepsilon .
+$$
+For $k<0$, $\lambda_1<|k|$ it is bounded ($G_k\le1/|k|$, denominator $\ge1-\lambda_1/|k|>0$) and needs no transform. For $k\ge0$ it diverges at the ceiling and keeps the bounded transform $h'/(1-h')$.
+- **Identification of $\lambda_1$** comes from how $B$ declines with $x$ across all firms' evasion, measured relative to their industry's reference scale, rather than from a few firms near a common ceiling.
+
+## What changes in the counterfactual
+
+With $\tilde\tau=(1+\Delta)\tau$ and the firm's baseline FOC $C=\tau\rho_tB(x_i)$, the counterfactual FOC is $B(\lambda_0e')=B(x_i)/(1+\Delta)$. Since $B$ is strictly decreasing,
+$$
+e'_i(\Delta)=\begin{cases}0,& B(x_i)/(1+\Delta)\ge1,\\[2pt] \lambda_0^{-1}B^{-1}\!\big(B(x_i)/(1+\Delta)\big),&\text{otherwise,}\end{cases}
+$$
+solved by bisection (no closed form except $k=1$).
+
+- **The uniform-shift property is gone.** Under linear $q$ and $\kappa$, $e'=[e_i+\Delta/(2\lambda)]/(1+\Delta)$ shifts every firm by the same amount. With $k<1$ the response depends on the firm's own position $x_i$ through $B$'s curvature, so the cut/increase asymmetry has to be re-derived, not assumed.
+- **Open issue: unbounded evasion under a large increase when $k<0$.** $B$ is bounded below by $1-\lambda_1/|k|>0$. If $B(x_i)/(1+\Delta)<1-\lambda_1/|k|$, the firm has no interior optimum: with detection capped below one and a cost linear in $e$, marginal benefit stays above marginal cost for every $e$. This binds only for firms already close to the bound and for large $\Delta$. Options: restrict the counterfactual to $\Delta$ where no firm hits it (report that range), cap $e$ at a physical bound (e.g. a share of $M^*$), or revisit linearity of $\kappa$ in $e$ (a model change, to discuss with supervisors).
+
+## Checks before code
+
+1. Numerically verify $G_k'$, the limits of $G_k$, and the bound conditions for each $k$ on the grid (including the $k\to0$ limit).
+2. Nesting: at $k=1$, $\lambda_1\lambda_0=\lambda$, the new $h$ and score reproduce the current ones exactly on a test firm.
+3. Build $\bar M_{j,t-1}$ from `stage2_data` (`M_star`, i.e. the `materials` column, by `sic_3`, lagged one year), and report its distribution by industry.
+4. Count firms whose baseline $x_i$ is near the $k<0$ bound, to size the open issue above.
+5. Only then: sampler support and moment row 9 in `Code/Rcpp/1200-stage2-elvis-common.h` / `Code/C-estimator/grid_estimator.cpp`, on the two-tax specification with the joint efficient-GMM PF estimates.
