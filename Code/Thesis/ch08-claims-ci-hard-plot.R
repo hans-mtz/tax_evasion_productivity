@@ -26,7 +26,7 @@ source("Code/Thesis/001-setup.R")
 
 n <- 32232; dg <- 10
 qc <- qchisq(0.95, dg)
-wong_red <- "#c0392b"; gray_fail <- "grey75"
+wong_red <- THESIS_COLS[1]; gray_fail <- THESIS_REJECT
 delta_pct <- function(x) paste0(ifelse(x > 0, "+", ""), round(x * 100, 2), "%")
 
 theory_files <- c(
@@ -54,7 +54,7 @@ band <- bounds %>% filter(is.finite(lower)) %>% select(Delta, lower, upper) %>%
     mutate(bound = recode(bound, lower = "Lower bound", upper = "Upper bound"))
 
 delta_levels <- sort(unique(df$Delta))
-df <- df %>% mutate(pass_lab = ifelse(pass, "Passes (95% test)", "Rejected"),
+df <- df %>% mutate(pass_lab = ifelse(pass, "Not rejected", "Rejected"),
                      Delta_f = factor(Delta, levels = delta_levels, labels = delta_pct(delta_levels)))
 band <- band %>% mutate(Delta_f = factor(Delta, levels = delta_levels, labels = delta_pct(delta_levels)))
 
@@ -62,29 +62,20 @@ zero_bounds <- bounds %>% filter(Delta == 0)
 
 p <- ggplot() +
     annotate("rect", xmin = -Inf, xmax = Inf, ymin = zero_bounds$lower, ymax = zero_bounds$upper,
-              fill = "grey85", alpha = 0.5) +
+              fill = THESIS_BAND) +
     geom_line(data = band, aes(x = Delta_f, y = Claims, group = bound, linetype = bound),
-              color = wong_red, linewidth = 0.8) +
+              color = wong_red, linewidth = 0.5) +
     geom_point(data = df, aes(x = Delta_f, y = Claims, color = pass_lab, shape = pass_lab),
-               size = 3.4, alpha = 0.9) +
-    scale_color_manual(values = c("Passes (95% test)" = wong_red, "Rejected" = gray_fail), name = NULL) +
-    scale_shape_manual(values = c("Passes (95% test)" = 16, "Rejected" = 4), name = NULL) +
+               size = 2.2) +
+    scale_color_manual(values = c("Not rejected" = wong_red, "Rejected" = gray_fail), name = NULL) +
+    scale_shape_manual(values = c("Not rejected" = 16, "Rejected" = 4), name = NULL) +
     scale_linetype_manual(values = c("Upper bound" = "twodash", "Lower bound" = "dotted"), name = NULL) +
     guides(color = guide_legend(order = 1), shape = guide_legend(order = 1),
            linetype = guide_legend(order = 2, override.aes = list(color = wong_red))) +
-    labs(x = expression(paste("Tax-rate shifter ", Delta)),
-         y = "Real mean deduction claims per firm-period (COP)",
-         title = "Claims (raw, no control variate), conservative test (Theorem F.1) — 9 tested Δ points",
-         subtitle = paste0("Red = passes at 95% (χ²₁₀=", round(qc, 1),
-                            "); grey × = rejected. Grey band = Δ=0's own passing interval, for visual reference."),
-         caption = "Claims_i(Δ) = τ̃_i[M_i + (1 − q(e'_i))e'_i]: deduction claims, legitimate plus undetected overreporting.\nExcludes sales-tax revenue on sales, which has no evasion response.") +
-    theme_minimal(base_size = 16) +
-    theme(panel.grid.minor = element_blank(), axis.line = element_line(color = "black"),
-          plot.title = element_text(family = "Times", size = 17, face = "bold", hjust = 0.5),
-          plot.subtitle = element_text(family = "Times", size = 12.5, hjust = 0.5, color = "grey30"),
-          plot.caption = element_text(family = "Times", size = 11, color = "grey40", hjust = 0),
-          legend.position = "bottom", legend.box = "vertical", text = element_text(family = "Times"))
-
-save_thesis_plot(p, "ch08-claims-ci-hard", width = 11, height = 7.5)
+    labs(x = expression(paste("Change in the tax rate, ", Delta)),
+         y = "Claimed deductions per firm-period (real COP)") +
+    theme_thesis() +
+    theme(legend.box = "horizontal")
+save_thesis_plot(p, "ch08-claims-ci-hard", width = THESIS_WIDTH, height = 4.6)
 cat("Saved: Thesis/figures/ch08-claims-ci-hard.{png,pdf}\n")
 print(bounds %>% select(Delta, lower, upper, open_low, open_high))

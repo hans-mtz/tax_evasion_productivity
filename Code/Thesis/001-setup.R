@@ -17,6 +17,9 @@ dir.create(TABLES_DIR,  showWarnings = FALSE, recursive = TRUE)
 ## Code/Deconvolution/050-render-tbls.R, extended there (not here) with a
 ## `linewidth_pt` argument and a DPI-tagging fix.
 source("Code/Deconvolution/050-render-tbls.R")
+## Thesis tables in Times (newtx: a Times text and maths font for pdflatex), matching the
+## TeX Gyre Termes body text and figures.
+options(tbl_preamble_extra = "\\usepackage{newtxtext,newtxmath}")
 
 ## The book's real \textwidth for the scrreport/DIV=11/letter setup in
 ## Thesis/_quarto.yml, computed once via a throwaway
@@ -56,22 +59,52 @@ THESIS_DPI    <- 300
 THESIS_WIDTH  <- 6.5   # in, matches a standard book page text width
 THESIS_HEIGHT <- 4.5
 
+## House style (2026-09-25). One font, one palette, no titles inside images
+## (the Quarto caption carries them). Palette: the data-viz skill's validated
+## categorical set (Hans picked option C), assigned in this fixed order and never
+## cycled: slot 1 = main series / "not rejected", slot 2 = comparison group.
+## Rejected candidates are always grey crosses; regions use shades of slot 1.
+## Font: TeX Gyre Termes, the same Times clone the JMP and thesis body use,
+## loaded from TeX Live's own OTF files so figures and text match exactly.
+THESIS_FONT <- "TeX Gyre Termes"
+local({
+    otf <- function(f) system2("kpsewhich", f, stdout = TRUE)
+    systemfonts::register_font(
+        name = THESIS_FONT,
+        plain = otf("texgyretermes-regular.otf"), bold = otf("texgyretermes-bold.otf"),
+        italic = otf("texgyretermes-italic.otf"), bolditalic = otf("texgyretermes-bolditalic.otf")
+    )
+})
+THESIS_COLS <- c("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4")
+THESIS_REJECT <- "grey65"   # rejected test points (crosses)
+THESIS_BAND   <- "grey90"   # reference bands (e.g. current policy's interval)
+THESIS_LIGHT  <- colorspace::lighten(THESIS_COLS[1], 0.6)  # lighter shade of slot 1
+
+scale_colour_thesis <- function(...) scale_colour_manual(values = THESIS_COLS, ...)
+scale_fill_thesis   <- function(...) scale_fill_manual(values = THESIS_COLS, ...)
+
 theme_thesis <- function(base_size = 11) {
-    theme_minimal(base_size = base_size) +
+    theme_minimal(base_size = base_size, base_family = THESIS_FONT) +
         theme(
+            text = element_text(colour = "grey15"),
+            axis.text = element_text(colour = "grey30"),
             panel.grid.minor = element_blank(),
-            plot.title = element_text(face = "bold"),
-            legend.position = "bottom"
+            panel.grid.major = element_line(colour = "grey92", linewidth = 0.3),
+            strip.text = element_text(size = rel(1), colour = "grey15"),
+            plot.title = element_blank(), plot.subtitle = element_blank(), plot.caption = element_blank(),
+            legend.position = "bottom",
+            legend.title = element_blank()
         )
 }
 
+## PNG through ragg (it sees the registered font); PDF through cairo_pdf, which
+## falls back to the system Times if it cannot find TeX Gyre Termes. The
+## documents embed the PNGs, so the PDFs are a convenience copy.
 save_thesis_plot <- function(plot, slug, width = THESIS_WIDTH, height = THESIS_HEIGHT) {
-    for (ext in c("png", "pdf")) {
-        ggsave(
-            file.path(FIGURES_DIR, paste0(slug, ".", ext)),
-            plot = plot, width = width, height = height, dpi = THESIS_DPI
-        )
-    }
+    ggsave(file.path(FIGURES_DIR, paste0(slug, ".png")), plot = plot,
+           width = width, height = height, dpi = THESIS_DPI, device = ragg::agg_png, bg = "white")
+    ggsave(file.path(FIGURES_DIR, paste0(slug, ".pdf")), plot = plot,
+           width = width, height = height, device = cairo_pdf, bg = "white")
     invisible(file.path(FIGURES_DIR, paste0(slug, ".png")))
 }
 
@@ -82,11 +115,12 @@ save_thesis_plot <- function(plot, slug, width = THESIS_WIDTH, height = THESIS_H
 ## plot via base graphics calls (persp(), points(), text(), ...); it is run
 ## once per device so both formats exist, matching every ggplot2 figure.
 save_thesis_base_plot <- function(plot_fn, slug, width = THESIS_WIDTH, height = THESIS_HEIGHT) {
-    pdf(file.path(FIGURES_DIR, paste0(slug, ".pdf")), width = width, height = height)
+    cairo_pdf(file.path(FIGURES_DIR, paste0(slug, ".pdf")), width = width, height = height, family = "Times")
     plot_fn()
     dev.off()
     png_path <- file.path(FIGURES_DIR, paste0(slug, ".png"))
-    png(png_path, width = width, height = height, units = "in", res = THESIS_DPI)
+    ragg::agg_png(png_path, width = width, height = height, units = "in", res = THESIS_DPI, background = "white")
+    par(family = THESIS_FONT)
     plot_fn()
     dev.off()
     ## Found 2026-09-22 (first real use of this function, building ch08's base-graphics

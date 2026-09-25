@@ -20,26 +20,23 @@ for (i in seq_along(d1s)) for (j in seq_along(d2s)) {
 imin <- which(df$Lhat == min(df$Lhat))
 d1_min <- df$delta1[imin]; d2_min <- df$delta2[imin]; L_min <- df$Lhat[imin]
 
-wong_orange <- "#E69F00"
+wong_orange <- THESIS_COLS[1]
 
 zrange <- range(Z, na.rm = TRUE)
 zfloor <- zrange[1] - 0.25 * diff(zrange)
 zlim <- c(zfloor, zrange[2])
 
 plot_fn <- function() {
-    par(family = "Times")
-    res <- persp(d1s, d2s, Z, zlim = zlim, theta = -35, phi = 22, expand = 0.6, col = "lightgrey",
-                 border = "grey30", ticktype = "detailed", shade = 0.4,
-                 xlab = "delta1", ylab = "delta2", zlab = "L_n_hat",
-                 main = "Grid Search over (delta1, delta2)",
-                 sub = sprintf("Minimum at (delta1,delta2)=(%.2g,%.2g), L_n_hat=%.4g", d1_min, d2_min, L_min))
+    res <- persp(d1s, d2s, Z, zlim = zlim, theta = -35, phi = 22, expand = 0.6, col = "grey88",
+                 border = "grey45", ticktype = "detailed", shade = 0.4,
+                 xlab = "\u03b4\u2081", ylab = "\u03b4\u2082", zlab = "L\u0302\u2099", cex.lab = 1.1, cex.axis = 0.8)
     line_pts <- trans3d(rep(d1_min, 2), rep(d2_min, 2), c(zfloor, L_min), res)
     lines(line_pts, col = wong_orange, lwd = 2, lty = "dashed")
     pt <- trans3d(d1_min, d2_min, L_min, res)
-    points(pt, pch = 19, cex = 2, col = wong_orange)
-    legend("topright", legend = "Grid minimum", col = wong_orange, pch = 19, bty = "n", cex = 1)
+    points(pt, pch = 19, cex = 1.6, col = wong_orange)
+    legend("topright", legend = "Grid minimum", col = wong_orange, pch = 19, bty = "n", cex = 0.9)
 }
 
-save_thesis_base_plot(plot_fn, "ch08-delta-grid", width = 2400/220, height = 1800/220)
+save_thesis_base_plot(plot_fn, "ch08-delta-grid", width = THESIS_WIDTH, height = 5)
 cat("Saved: Thesis/figures/ch08-delta-grid.{png,pdf}\n")
 cat(sprintf("Minimum: delta1=%.4g, delta2=%.4g, Lhat=%.6g\n", d1_min, d2_min, L_min))

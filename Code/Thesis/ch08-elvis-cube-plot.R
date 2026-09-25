@@ -15,24 +15,19 @@ df$pval <- 1 - pchisq(df$TS_hard, dg)
 df$pass_hard <- df$TS_hard <= qc95
 df$logl <- log10(df$lambda)
 
-wong_blue <- "#0072B2"; pink <- "#E6399B"
+wong_blue <- "grey70"; pink <- THESIS_COLS[1]
 
 d1r <- range(df$delta1); d2r <- range(df$delta2); lr <- range(df$logl)
 dummy_z <- matrix(mean(lr), 2, 2)
 
 plot_fn <- function() {
-    par(family = "Times")
     res <- persp(d1r, d2r, dummy_z, zlim = lr, theta = -50, phi = 20, expand = 0.75,
                  col = NA, border = NA, box = TRUE, ticktype = "detailed",
-                 xlab = "delta1", ylab = "delta2", zlab = "log10(lambda)",
-                 main = "Stage-2 ELVIS: 27-pt cube (lag_m, moment set A, no-eta)",
-                 sub = sprintf("Ball size ~ p-value of the conservative test (bigger=more significant). Pink=passes, blue=fails. Min at d1=%.2g d2=%.2g lambda=%.3g.",
-                               df$delta1[which.min(df$Lhat)], df$delta2[which.min(df$Lhat)], df$lambda[which.min(df$Lhat)]))
-
+                 xlab = "\u03b4\u2081", ylab = "\u03b4\u2082", zlab = "log\u2081\u2080 \u03bb", cex.lab = 1.1, cex.axis = 0.8)
     ord <- order(df$pval)
     dfo <- df[ord, ]
     pts <- trans3d(dfo$delta1, dfo$delta2, dfo$logl, res)
-    cex_v <- 1.0 + 5.0 * dfo$pval
+    cex_v <- 0.9 + 3.5 * dfo$pval
     fill_col <- ifelse(dfo$pass_hard, pink, wong_blue)
     points(pts, pch = 21, cex = cex_v,
            bg = adjustcolor(fill_col, alpha.f = 0.8),
@@ -45,10 +40,10 @@ plot_fn <- function() {
     }
 
     legend("topright",
-           legend = c("Passes conservative test", "Fails conservative test"),
+           legend = c("Not rejected", "Rejected"),
            pt.bg = c(pink, wong_blue),
            col = "grey20", pch = 21, pt.cex = 1.6, bty = "n", cex = 0.9)
 }
 
-save_thesis_base_plot(plot_fn, "ch08-elvis-cube", width = 2600/220, height = 2000/220)
+save_thesis_base_plot(plot_fn, "ch08-elvis-cube", width = THESIS_WIDTH, height = 5)
 cat("Saved: Thesis/figures/ch08-elvis-cube.{png,pdf}\n")

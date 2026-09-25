@@ -36,5 +36,5 @@ print(tbl, n = Inf)
 
 tt_obj <- tt(tbl, align = "lcc", width = c(4, 1.2, 1.6),
              notes = "Mean of $\\mathcal V_{it}=\\ln(\\rho_tM^*_{it}/P_tY_{it})-\\ln\\hat\\beta$ among unincorporated firms, where $\\ln\\hat\\beta$ is the mean log materials share of corporations. Under the null of no overreporting the mean is zero; the alternative is a positive mean. Basic (pivotal) bootstrap confidence intervals (250 replications; plants resampled separately within corporations and within unincorporated firms). *, **, *** denote significance at the 10\\%, 5\\%, and 1\\% levels (one-sided). The intervals are two-sided, so a one-sided rejection at 5\\% can coexist with an interval that includes zero.") %>%
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch04-evasion-test")

@@ -75,7 +75,7 @@ tt_obj <- tt(tbl, align = "lccccccccccccc",
     group_tt(j = list(" " = 1:2, "$m^*_{it-1}$" = 3:4, "$\\tilde{\\mathcal W}_{it-2}$" = 5:6,
                       "Joint efficient GMM" = 7:8, "GNR" = 9:11, "OLS" = 12:14)) %>%
     style_tt(fontsize = 0.8) %>%
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 colnames(tt_obj) <- c("Industry", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",
                       "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "m", "k", "l", "m", "k", "l")
 

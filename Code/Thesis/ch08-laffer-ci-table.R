@@ -49,7 +49,7 @@ print(tbl)
 tt_obj <- tt(tbl, align = paste0("l", strrep("c", 15)), width = c(0.8, rep(1, 15)),
              notes = "Real mean revenue per firm-period (COP), 95\\% conservative-test (Theorem F.1) confidence sets -- tested-grid min/max of passing points at each $\\Delta$.") |>
     style_tt(fontsize = 0.8) |>
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 
 render_thesis_table(tt_obj, "ch08-laffer-ci")
 cat("Saved: Thesis/tables/ch08-laffer-ci.{png,pdf}\n")

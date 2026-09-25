@@ -33,8 +33,8 @@ fiscal_plot <- function(series, slug, colours = NULL) {
         labs(x = "Year", y = "Coefficient and 95% CI", colour = NULL) +
         theme_thesis() +
         theme(panel.grid.major.x = element_blank())
-    if (!is.null(colours)) p <- p + scale_colour_manual(values = colours)
+    p <- p + if (is.null(colours)) scale_colour_thesis() else scale_colour_manual(values = colours)
     if (length(series) == 1) p <- p + theme(legend.position = "none")
-    save_thesis_plot(p, slug, width = 8, height = 4)
+    save_thesis_plot(p, slug, width = THESIS_WIDTH, height = 3.6)
     cat("Saved: Thesis/figures/", slug, ".{png,pdf}\n", sep = "")
 }

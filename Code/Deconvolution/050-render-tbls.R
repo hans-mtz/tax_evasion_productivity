@@ -45,6 +45,9 @@ render_png_tt_tbl <- function(tt_tbl_in, file_name, out_dir = "Paper/tbls", line
 \\newcommand{\\tinytableTabularrayStrikeout}[1]{\\sout{#1}}
 \\NewTableCommand{\\tinytableDefineColor}[3]{\\definecolor{#1}{#2}{#3}}
 "
+    ## Extra preamble lines set by the caller through an option (thesis: Times via newtx);
+    ## empty by default, so the slide tables are unchanged.
+    preamble <- paste0(preamble, getOption("tbl_preamble_extra", ""), "\n")
     ## Optional: pin \linewidth/\textwidth to a caller-given value (in pt)
     ## BEFORE the table is typeset, so tt(..., width=<fraction>) maps onto a
     ## real, known physical size instead of the standalone/article default
@@ -125,6 +128,9 @@ render_png_etbl <- function(tbl_in, dict=dict, file_name, out_dir = "Paper/tbls"
 \\newcommand{\\tinytableTabularrayStrikeout}[1]{\\sout{#1}}
 \\NewTableCommand{\\tinytableDefineColor}[3]{\\definecolor{#1}{#2}{#3}}
 "
+    ## Extra preamble lines set by the caller through an option (thesis: Times via newtx);
+    ## empty by default, so the slide tables are unchanged.
+    preamble <- paste0(preamble, getOption("tbl_preamble_extra", ""), "\n")
     ## Same rationale as render_png_tt_tbl() above.
     linewidth_cmd <- if (!is.null(linewidth_pt)) {
         sprintf("\\setlength{\\linewidth}{%gpt}\\setlength{\\textwidth}{%gpt}", linewidth_pt, linewidth_pt)

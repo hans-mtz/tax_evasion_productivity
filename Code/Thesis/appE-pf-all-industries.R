@@ -47,5 +47,5 @@ tbl <- pf |> transmute(
 
 tt_obj <- tt(tbl, align = "lccc", width = c(4, 1, 1, 1),
              notes = "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$), with instrument $m^*_{it-1}$, for every industry used in the stage-2 estimation of the detection and evasion-cost parameters. Point estimates. $^{\\dagger}$ The optimizer stopped with a warning (convergence code 52) for this industry. $^{\\ddagger}$ An estimate is at the bound of the $[0,1]$ parameter space.") |>
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "appE-pf-all-industries")

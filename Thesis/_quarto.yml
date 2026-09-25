@@ -38,6 +38,11 @@ number-sections: true
 format:
   pdf:
     documentclass: scrreport
+    mainfont: TeX Gyre Termes
+    mathfont: texgyretermes-math.otf
+    include-in-header:
+      text: |
+        \addtokomafont{disposition}{\rmfamily}
     keep-tex: true
     toc: true
   html:

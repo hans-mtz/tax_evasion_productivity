@@ -46,7 +46,7 @@ below that needs more than the one-line summary already moved from ch. 8.
 - Revised down from an earlier 1% decision (see CLAUDE.md's "Trim-cutoff decision" entries for the fuller investigation, including the industry/firm-composition checks that aren't repeated here).
 :::
 
-![Trim-cutoff test inversion.](/figures/ch08-trim-cutoff.png){#fig-cf-trim}
+![Trim-cutoff test inversion, instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. At each trim level (share of the largest non-corner firms dropped, by reported materials), every tested $\lambda$ is marked as not rejected (dot) or rejected (cross); the ring marks the grid minimum within that trim level. Pass/fail uses $2n(\hat L_n-\min\hat L_n)$ against $\chi^2_{8,.95}$, from the earlier eight-moment system.](/figures/ch08-trim-cutoff.png){#fig-cf-trim}
 
 ## Search strategy for the joint $(\lambda,\delta_1,\delta_2)$ region
 
@@ -64,11 +64,11 @@ table) stays in ch. 8's body -- only the search-process visualizations move here
 - Warm-starting convention: every grid point seeded independently from the SAME already-validated point, not chained sequentially across points. Found the hard way -- sequential chaining lets the seed only affect the grid's first point, silently reproducing a known-bad chain's results; same-point seeding resolved genuine local-optimum traps a naive chain had fallen into (see CLAUDE.md's "Warm-starting convention, revised" entry for the full story, including why a properly-scoped global optimizer was tried and rejected here).
 :::
 
-![Joint $(\lambda,\delta_1,\delta_2)$ cube.](/figures/ch08-elvis-cube.png){#fig-cf-cube}
+![Joint $(\lambda,\delta_1,\delta_2)$ cube, instrument $m^*_{t-1}$: 27 tested cells, with $\delta_0$ and $\gamma$ profiled out at each. Blue: not rejected by the conservative test ($\chi^2_{9,.95}$); grey: rejected. Ball size grows with the test's p-value.](/figures/ch08-elvis-cube.png){#fig-cf-cube}
 
-![$\lambda$-grid.](/figures/ch08-lambda-grid.png){#fig-cf-lambda}
+![$\lambda$-grid: the CUE objective $\hat L_n$ at each tested $\lambda$, with $\delta_0,\delta_1,\delta_2$ and $\gamma$ profiled out, for instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. The labelled point is each grid's minimum.](/figures/ch08-lambda-grid.png){#fig-cf-lambda}
 
-![$(\delta_1,\delta_2)$-grid.](/figures/ch08-delta-grid.png){#fig-cf-delta}
+![$(\delta_1,\delta_2)$-grid: $\hat L_n$ at each tested pair, with $\lambda$, $\delta_0$ and $\gamma$ profiled out, instrument $m^*_{t-1}$. The marked point is the grid minimum, $(\delta_1,\delta_2)=(4.3,0.54)$.](/figures/ch08-delta-grid.png){#fig-cf-delta}
 
 ## Test inversion: the conservative test, and why
 

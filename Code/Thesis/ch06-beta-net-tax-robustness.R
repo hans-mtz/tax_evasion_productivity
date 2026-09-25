@@ -29,8 +29,8 @@ print(tbl)
 
 ## width=1: project default (full book text width). No caption= (Quarto's ![]{#tbl-x} is the single source).
 tt_obj <- tt(tbl, align = "lcccc", width = 1,
-             notes = "Gross: current, approved first stage, $\\ln(M^*_{it}/(P_tY_{it}))$. Net: same estimator, materials share netted of sales taxes on both sides, $\\ln((M^*_{it}-t_{2,it})/(P_tY_{it}-t_{1,it}))$, $t_1=\\tau_S\\cdot\\text{sales}$, $t_2=\\tau_P\\cdot M^*$ (Paper/sections/9999-tax-wedge.qmd). Both run on the common sample where both shares are defined. $\\Delta\\hat\\beta$ is small relative to $\\hat\\beta$'s own scale across all 5 headline industries -- see full 29-industry diagnostic in Code/Products/1470-net-first-stage-diag.csv.") %>%
-    style_tt(i = "notes", fontsize = 0.65)
+             notes = "Gross: baseline first stage, $\\ln(M^*_{it}/(P_tY_{it}))$. Net: same estimator, materials share netted of sales taxes on both sides, $\\ln((M^*_{it}-t_{2,it})/(P_tY_{it}-t_{1,it}))$, $t_1=\\tau_S\\cdot\\text{sales}$, $t_2=\\tau_P\\cdot M^*$. Both run on the common sample where both shares are defined. $\\Delta\\hat\\beta$ is small relative to $\\hat\\beta$'s own scale in all five industries.") %>%
+    style_tt(i = "notes", fontsize = 0.8)
 colnames(tt_obj) <- c("Industry", "$n$ (corps)", "$\\hat\\beta$, gross", "$\\hat\\beta$, net", "$\\Delta\\hat\\beta$")
 
 render_thesis_table(tt_obj, "ch06-beta-net-tax")

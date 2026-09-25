@@ -39,9 +39,9 @@ tbl <- cbind(` ` = c("Lower", "Upper"), tbl)
 print(tbl)
 
 tt_obj <- tt(tbl, align = paste0("l", strrep("c", 9)), width = c(0.8, rep(1, 9)),
-             notes = "Real mean purchases-side deduction claims per firm-period (COP), 95\\% conservative-test (Theorem F.1) confidence sets -- tested-grid min/max of passing points at each $\\Delta$. Raw moment, no control variate.") |>
+             notes = "Real mean claimed deductions per firm-period (COP): lowest and highest tested values not rejected by the 95\\% conservative test at each $\\Delta$.") |>
     style_tt(fontsize = 0.85) |>
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 
 render_thesis_table(tt_obj, "ch08-claims-ci")
 cat("Saved: Thesis/tables/ch08-claims-ci.{png,pdf}\n")

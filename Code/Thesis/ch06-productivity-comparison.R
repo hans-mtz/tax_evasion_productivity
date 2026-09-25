@@ -65,5 +65,5 @@ print(tbl, n = Inf)
 tt_obj <- tt(tbl, align = "llccccccccc", width = c(0.8, 2.4, 0.9, 0.9, 0.9, 0.8, 0.8, 0.8, 0.8, 1, 0.8),
              notes = "Productivity in levels, $\\exp(\\omega_{it})$; percentile ratios as in Gandhi, Navarro and Rivers (2020, Table 3); skewness of $\\omega_{it}$; $\\hat\\gamma_1$: persistence, the AR(1) coefficient of $\\omega_{it}$ (corrected: IV estimate within the production function step; GNR: OLS on firm-level $\\omega_{it}$). Corrected: moments of the deconvolved density of $\\omega$ (penalized B-spline deconvolution of $\\widetilde{\\mathcal W}_{it}=\\omega_{it}+(1-\\beta)\\varepsilon_{it}$), with the production function estimates of the corresponding single instrument. GNR: firm-level $\\omega_{it}$ from the uncorrected GNR (2020) Cobb-Douglas estimation, with the measurement error removed. Both exclude $\\varepsilon$. Industries: 331 wood products, 322 wearing apparel, 369 non-metallic minerals, 313 beverages, 321 textiles. In 313, the $\\tilde{\\mathcal W}_{it-2}$ estimate of $\\alpha_K$ is 0 (at the bound), so its $\\omega$ absorbs capital and its level is not comparable.") %>%
     style_tt(fontsize = 0.85) %>%
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch06-productivity-comparison")

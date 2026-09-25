@@ -6,4 +6,4 @@ fiscal_plot(list(
                        diff  = list(model = rg_lvl_b83_jo, prefix = "jo_exempt_y83::Ltd. Co.:Exempt:")),
     `ST-liable` = list(level = list(model = rg_lvl_jo, prefix = "jo_exempt_year::Ltd. Co.:Taxed:"),
                        diff  = list(model = rg_lvl_b83_jo, prefix = "jo_exempt_y83::Ltd. Co.:Taxed:"))),
-    "ch07-fiscal-llc", colours = c(`ST-exempt` = "#E69F00", `ST-liable` = "black"))
+    "ch07-fiscal-llc", colours = c(`ST-exempt` = THESIS_COLS[2], `ST-liable` = THESIS_COLS[1]))

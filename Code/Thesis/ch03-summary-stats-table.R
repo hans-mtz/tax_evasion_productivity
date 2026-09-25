@@ -28,8 +28,8 @@ base <- colombia_data_frame %>%
 
 share_labels <- c(
     share_sales_tax                    = "Sales Taxes",
-    skilled_wage_bill_share            = "Skilled Labor (Wages)",
-    unskilled_wage_bill_share          = "Unskilled Labor (Wages)",
+    skilled_wage_bill_share            = "Skilled Labour (Wages)",
+    unskilled_wage_bill_share          = "Unskilled Labour (Wages)",
     capital_share                      = "Capital",
     materials_share                    = "Materials (M)",
     energy_share                       = "Electricity (E)",
@@ -85,12 +85,14 @@ header2_row <- 1 + length(revenue_vars) + 1
 ## "Deductible Inter. (M+E+F+R&M)") than the 6 numeric stat columns, so it's
 ## weighted ~2.5x to avoid the 3-line wrapping an equal 1/7-each split gave.
 skim_tt <- skim_tbl %>%
-    tt(digits = 3, width = c(2.5, 1, 1, 1, 1, 1, 1), notes = "Sample: firm-years with finite output, capital, labor, and materials (n as in the text). Shares are of total revenue.") %>%
+    tt(width = c(2.5, 1, 1, 1, 1, 1, 1), notes = "Sample: firm-years with finite output, capital, labour, and materials (n as in the text). Shares are of total revenue.") %>%
     group_tt(i = list(
         "Share of Revenues" = min(revenue_rows),
         "Intermediates (Share of Revenues)" = min(intermediate_rows)
     )) %>%
-    style_tt(i = c(header1_row, header2_row), bold = TRUE)
+    style_tt(i = c(header1_row, header2_row), bold = TRUE) %>%
+    style_tt(i = "notes", fontsize = 0.8) %>%
+    format_tt(j = 2:7, digits = 3, num_fmt = "decimal", num_zero = TRUE)
 
 render_thesis_table(skim_tt, "ch03-summary-stats")
 cat("Saved: Thesis/tables/ch03-summary-stats.{png,pdf}\n")

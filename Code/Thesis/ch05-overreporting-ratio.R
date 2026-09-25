@@ -61,7 +61,7 @@ tbl <- stats %>% transmute(
 
 tt_obj <- tt(tbl, align = "lccccc", width = c(3, 1, 1, 1, 1, 1),
              notes = "Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, unincorporated firms).") %>%
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch05-overreporting-ratio")
 
 ## Figure: f_x by industry. x-axis cut at 60%: all five densities are ~0 beyond it, except
@@ -76,6 +76,7 @@ plt <- dens %>% filter(x <= x_max) %>%
     geom_line(linewidth = 0.7) +
     scale_x_continuous(labels = scales::percent) +
     labs(x = "Overreporting ratio, e/M (share of true materials)", y = "Density", colour = NULL) +
+    scale_colour_thesis() +
     theme_thesis() +
     guides(colour = guide_legend(nrow = 2))
 save_thesis_plot(plt, "ch05-overreporting-ratio")

@@ -13,5 +13,18 @@ source("Code/Thesis/001-setup.R")
 source("Code/Deconvolution/1222-stage2-trim-all-gridpoints-plot.R")
 
 stopifnot(exists("p"))
-save_thesis_plot(p, "ch08-trim-cutoff", width = 12, height = 6.5)
+# House style: not rejected in slot 1, rejected as grey crosses, grid minimum ringed in dark grey.
+relab <- function(x) factor(ifelse(grepl("^m", x), "Instrument~m[t-1]^'*'", "Instrument~italic(W)[t-2]"),
+                            levels = c("Instrument~m[t-1]^'*'", "Instrument~italic(W)[t-2]"))
+p$data$panel <- relab(p$data$panel); p$layers[[2]]$data$panel <- relab(p$layers[[2]]$data$panel)
+p$layers[[2]]$aes_params$colour <- "grey20"; p$layers[[2]]$aes_params$size <- 3
+p$layers[[1]]$aes_params$size <- 1.6; p$layers[[1]]$aes_params$alpha <- 1
+p <- p + scale_color_manual(values = c("Rejected" = THESIS_REJECT, "Fail to reject (95% CI)" = THESIS_COLS[1]),
+                            labels = c("Rejected" = "Rejected", "Fail to reject (95% CI)" = "Not rejected")) +
+    scale_shape_manual(values = c("Rejected" = 4, "Fail to reject (95% CI)" = 16),
+                       labels = c("Rejected" = "Rejected", "Fail to reject (95% CI)" = "Not rejected")) +
+    labs(title = NULL, subtitle = NULL, x = "Share of largest non-corner firms dropped (by reported materials)") +
+    facet_wrap(~panel, nrow = 1, labeller = label_parsed) +
+    theme_thesis() + theme(panel.grid.major.x = element_blank())
+save_thesis_plot(p, "ch08-trim-cutoff", width = THESIS_WIDTH, height = 3.8)
 cat("Saved: Thesis/figures/ch08-trim-cutoff.{png,pdf}\n")

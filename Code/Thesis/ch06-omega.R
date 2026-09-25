@@ -27,6 +27,6 @@ print(tbl)
 tt_obj <- tt(tbl, align = "lcccccc", width = c(3, 1, 1, 1, 1, 1, 1),
              notes = "Moments of the deconvolved density of productivity $\\omega_{it}$ (all firms), from $\\widetilde{\\mathcal W}_{it}=\\omega_{it}+(1-\\beta)\\varepsilon_{it}$ with $\\beta$ and $(\\alpha_K,\\alpha_L)$ from the corresponding single-instrument estimates in the production function table. Penalized B-spline (logspline) deconvolution; the density of $\\varepsilon$ is a kernel estimate from corporations' residuals. The level of $\\omega$ depends on $(\\alpha_K,\\alpha_L)$, so means are comparable within a column, not across instruments.") %>%
     group_tt(j = list(" " = 1, "$m^*_{it-1}$" = 2:4, "$\\tilde{\\mathcal W}_{it-2}$" = 5:7)) %>%
-    style_tt(i = "notes", fontsize = 0.65)
+    style_tt(i = "notes", fontsize = 0.8)
 colnames(tt_obj) <- c("Industry", "Mean", "SD", "Skewness", "Mean", "SD", "Skewness")
 render_thesis_table(tt_obj, "ch06-omega")
