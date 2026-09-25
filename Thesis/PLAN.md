@@ -214,7 +214,8 @@ RAP 2 (tax rates) chosen; options and reasoning in `Thesis/feedback/jmp-intro-ra
 - [x] Abstract (`JMP/paper.qmd`) rewritten to RAP 2 (176 words; old testing-first version saved in `JMP/sections/01-intro-pr-240926.md`); Hans editing
 - [x] Para. 1 hook reframed around the rate-dependent incentive (fake invoices kept as one example), 2026-09-25; Hans to edit
 - [x] Clean up stale draft blocks in the intro file (2026-09-25): intro is now final prose only (23 lines); superseded drafts and notes moved to `Thesis/feedback/jmp-intro-archive-250926.md`; visible prose verified identical, JMP re-rendered
-- [ ] Leak check on the rendered JMP (non-draft `quarto render paper.qmd --to pdf`, then scan the PDF text): personal details (names of supervisors/committee in internal notes, emails other than the author block, private remarks), internal Hans↔Claude notes ("Draft note", "TODO", "FILL", "UPDATE", "SUPERSEDED", "(Hans, …)", "Claude", "(?)", file paths like `Code/…` or `.R`, bracketed placeholders `[...]`), and draft-only blocks that failed to hide. Same scan for the thesis book before it goes anywhere.
+- [x] Leak check on the rendered JMP (2026-09-25, non-draft render): one leak fixed (appendix A comment attached to a list item rendered as text; needs a blank line before `<!--`), plus a literal `{,}` in A.5 and a capital "Define" in ch. 8. Clean after re-render. Thesis book scan still to do before it goes anywhere.
+- [x] Intro para. 1 framing settled (Hans, 2026-09-25)
 - [x] Conclusion (ch. 10) outline realigned to RAP 2 (2026-09-25); old RAP 3 outline in `Thesis/feedback/conclusion-rap3-outline-archive-250926.md`. Prose is Hans's to write
 
 ## 8. Log
