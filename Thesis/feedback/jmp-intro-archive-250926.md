@@ -1,0 +1,185 @@
+# JMP intro: archived notes and superseded drafts (2026-09-25)
+
+Moved out of `JMP/sections/01-intro.qmd` when it was cleaned down to the final prose. None of this rendered in the JMP (all HTML comments or draft-only blocks). The full pre-cleanup file is also in git (commit 91c5118).
+
+## Superseded hooks (para. 1) (old lines 14-20)
+
+<!-- SUPERSEDED (RAP 2 hook, 2026-09-24):
+Cost overreporting arises when firms acquire false invoices to claim additional tax deductions on value-added (VAT) and corporate income taxes (CIT). According to the OECD's document @OECD2017, cost overreporting — also known as "fake invoicing", "ghost firms", "invoice mills", or "missing traders" — permeates internationally.
+-->
+
+<!-- SUPERSEDED (hook reframed around the incentive, 2026-09-25):
+Cost overreporting arises when firms acquire false invoices to claim additional deductions on value-added and income taxes. Known as "fake invoicing", "ghost firms", "invoice mills" or "missing traders", it is widespread internationally [@OECD2017], and the losses tax authorities have documented are large: between 1.2% and 2.7% of total tax revenue in Chile, Colombia, Ecuador, Poland and Slovakia, and about a ninth of the entire VAT compliance gap in Colombia and Slovakia [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]. Because these figures count only what enforcement detects, true losses are plausibly larger. Furthermore, the gains accrue at the top. In Ecuador, evidence shows the tax evaded through artificially inflating costs, as a share of owners' income, is 56 times higher for owners in the top 5% of the income distribution than for those in the bottom 80% [@Carrillo2022].
+-->
+
+## Draft 2a (revenue-loss fact-check by country) and 2b (reactivity) (old lines 25-99)
+
+::: {.content-visible when-meta="draft"}
+
+## 2a. Revenue losses
+
+- **Structure: "size of the cake," then the "slice."** For each country, the total VAT gap (all causes — fraud, errors, insolvencies, legal exemptions), from an externally-vetted source, then false-invoicing/cost-overreporting specifically as a fraction of that total — answers the "how does overreporting compare to other forms of evasion" question you'd flagged for yourself in `Paper/sections/10-intro.rmd`. Units: USD leading, (% of tax revenue) in parenthesis — the World Bank's own tax-revenue ratio (`GC.TAX.TOTL.GD.ZS`), not an assumed benchmark.
+- **Source note:** almost this entire comparative paragraph traces to one place — @Carrillo2022's own Appendix B ("International Prevalence of Ghost Firms") compiles the Mexico, Chile, Colombia, Poland, and Slovakia figures below. @Carrillo2022 is therefore both the source for Ecuador (the paper's own subject country) and a clean single umbrella citation for every comparator country here.
+
+**Slovak Republic, 2014–15 — the cleanest case (both figures from external, vetted institutions, same country, same years):**
+
+- Cake: total VAT gap **$5.39 billion (15.9% of tax revenue)** — EU VAT Gap Report (CASE/European Commission).
+- Slice: false invoicing specifically **$605 million (1.79% of tax revenue)** — OECD (2017), Box 2.
+- The slice is **~11.2% of the cake**.
+
+**Mexico:**
+
+- Cake: total VAT non-compliance gap **about \$65.8 billion/year (6.43% of GDP)** — CIAT (2022), decomposing Mexico's potential VAT into collection efficiency (33.0%), policy gap (12.6%), and non-compliance gap (54.4%), 2016–18 average, applied to Mexico's own stated VAT burden of 3.9% of GDP over the same years.
+- Slice: SAT's ghost-firm figure (Mexico's own tax authority — self-reported, flag explicitly) **$291 million/year (0.20% of tax revenue)**, 2014–2018 average.
+- The slice is **~0.5% of the cake**.
+- Separately, a different Mexico figure exists — OECD (2017)'s own "forged invoices" number, 2007–2009, **$4.2 billion total (~$1.4 billion/year annualized)** — about 4.9× the SAT figure in nominal terms. Don't merge the two; different source, period, and mechanism.
+- **Why the two differ has a real, dateable explanation:** Mexico's electronic invoicing (CFDI) became **mandatory for all taxpayers on January 1, 2014** (independently confirmed). OECD's figure (2007–09) is entirely pre-mandate; SAT's (2014–18) is entirely post-mandate — a clean split, no straddling year. Documented losses from this channel fell **~4.9×** across the mandate.
+- **Honesty caveat, don't oversell:** "forged invoices" (pre-2014, crude fake paper invoices) and "ghost firms"/EFOS (post-2014, technically-valid e-invoices for transactions that never happened) are not quite the same mechanism — e-invoicing killed the former; the latter is its evolved successor. Correct claim: documented losses from this channel fell ~5× after the mandate, not "e-invoicing solved fake invoicing."
+
+**Ecuador — the paper's own subject country** (@Carrillo2022 study it directly, not as an outside comparator):
+
+- **\$2.1 billion** in ghost-firm transactions, pooled 2010–2015 — annualized **about \$350 million/year (0.40% of GDP, 2.66% of tax revenue)**.
+- The paper's own framing uses a different denominator: **1.7% of corporations' own tax liability, 11.5% of sole proprietors' own tax liability** — a within-firm-type share rather than a national-scale one; both are legitimate ways to state it, just answer different questions.
+
+**Poland, 2010 — kept (decided 2026-09-22), using the earlier, defensible figure, not the disqualified 2016 one:**
+
+- Slice: **$1.23 billion (1.56% of tax revenue)** — @Carrillo2022, citing Poland's Ministry of Finance: 3,711.2 million PLN in fictitious invoices detected in fiscal controls, 2010, 0.26% of GDP. Independently cross-checked against World Bank GDP/exchange-rate data: 0.257% of GDP, 1.557% of tax revenue — matches closely.
+- Cake: Poland's **official total VAT gap** (all causes, EU VAT Gap Report, CASE/European Commission — different year, 2016, the closest one the report covers): **$8.86 billion (11.55% of tax revenue), i.e. 1.87% of GDP**. The slice/cake years don't line up as tightly as Slovakia's do, so don't compute a slice-of-cake ratio here — use the 2010 slice on its own.
+- **Why not the originally-cited 2016 figure (5.6% of GDP):** the same @Carrillo2022 source also reports it, but 2016's false-invoicing-specific claim (5.6% of GDP, 34.3% of tax revenue) exceeds Poland's own OFFICIAL total VAT gap for that year (1.87% of GDP, 11.55% of tax revenue, all causes combined) by 3×. A slice can't exceed the whole — not reconcilable, so 2010 is the number to use, not 2016.
+
+**Chile, 2004:**
+
+- Slice, @Carrillo2022's own reported figures (primary source, lead with these): **114 billion CLP, 0.2% of Chilean GDP, 1.2% of total tax revenue** — citing Jorrat (2001) and CIAT (2008). In USD terms (currency conversion of their own reported amount, at 2004's official exchange rate): **$187 million**. Independently cross-checked against World Bank GDP/tax-revenue data: 0.189% of GDP, 1.15% of tax revenue — matches closely (the small gap is a tax-revenue-definition difference, not an error).
+- Same paper, additional context: false invoices have "historically represented between 15% and 25% of total VAT evasion" in Chile (Gonzalez & Velasquez 2013), and evasion via this channel fell from 328 billion CLP in 1998 to the 114 billion CLP figure above by 2004 — roughly a two-thirds decline over that period.
+- **Cake, resolved:** Chile's actual VAT-to-GDP ratio (8.43% of GDP, 2016–18 avg) found via the OECD's own SDMX API (Revenue Statistics in Latin America and the Caribbean — public, keyless, see below), combined with CIAT's non-compliance-gap share (30.7% of *potential* VAT) gives a total VAT non-compliance gap of **4.06% of GDP, about \$11.1 billion/year (22.81% of tax revenue)**, 2016–18 avg.
+- Slice/cake: the 2004 slice is **~1.7% of the 2016–18 cake** — but the two periods are 12+ years apart, so treat this as a rough order-of-magnitude indicator, not a same-period comparison like Slovakia's or Mexico's.
+
+**Colombia, 2019:**
+
+- **$701 million (1.46% of tax revenue)**, false-invoicing-specific — DIAN-derived (Colombia's tax authority), reported via Portafolio, cited in @Carrillo2022.
+- **Cake, resolved:** Colombia's actual VAT-to-GDP ratio (5.34% of GDP, 2016–18 avg, same OECD source as Chile) combined with CIAT's non-compliance-gap share (14.1% of potential VAT) gives a total VAT non-compliance gap of **1.82% of GDP, about \$5.64 billion/year (12.46% of tax revenue)**, 2016–18 avg.
+- Slice/cake: the 2019 slice is **~12.4% of the 2016–18 cake** — reasonably close in time (unlike Chile's), a more defensible ratio, though still not a single-year match like Slovakia's.
+
+**Colombia — this paper's own estimate** (computed 2026-09-22, `Code/Deconvolution/1480-revenue-elasticity-backofenvelope.R`, at the fixed headline operating point):
+
+- Mean **\$53.32 real COP lost per firm-period** to undetected evasion at current policy. Following the standard VAT-gap convention (verified directly against the EU VAT Gap Report and CIAT methodology already checked in this section: gap = 1 − actual/potential, where potential = actual + loss, NOT loss/actual) — **3.04% of potential revenue** from the same purchases-tax-credit channel ($1702.24 + 53.32 = \$1755.56$ potential; $53.32/1755.56=3.04\%$). Total loss across the 32,232-firm-period sample: **\$1,718,598 real COP**.
+- **This is a narrow-channel number, not a whole-VAT-gap one — say so explicitly.** It's one specific mechanism (materials-credit overreporting), one country, one structural sample — smaller than the official comparators' *non-compliance-only* gap shares (14.1% Colombia, 30.7% Chile, 54.4% Mexico, all as % of potential, CIAT), which capture every form of non-compliance, not just this channel. Smaller than that broader base is the expected, reassuring result, not a coincidence.
+- **Not directly comparable to the country figures above without saying so**: those are shares of *national* GDP/tax revenue; this is a share of the *firm-period-level* revenue this specific channel collects, from this paper's own unincorporated-firm sample, not the whole economy. State the units plainly rather than imply the same base.
+- Companion result, same run: the **elasticity of mean revenue with respect to the purchases-tax rate**, at the current operating point, is large from both directions — **-20.3** approaching from a tax increase, **-9.7** from a cut (the same $\Delta=0$ kink documented in ch. 8's Results section shows up here too: no two-sided derivative exists, only two genuine one-sided ones). A 1% tax-rate increase is associated with a ~20% *decrease* in mean revenue, locally. (Checked directly, not assumed: "elasticity with respect to the tax rate" and "with respect to the shifter $x=1+\Delta$" are the *same* number here, exactly — the model only ever moves $\tau_P$ proportionally through $x$, so they can't come apart.) The median evading firm's own elasticity is far larger in magnitude (-196.0), because the typical evading firm collects far less revenue than the sample mean — a real heterogeneity finding, not a discrepancy to hide. Full explainer: ch. 8, `@sec-cf-backofenvelope`.
+
+**Self-reported caveat** (your own conclusion, grounded in the sourcing chain itself): Poland's (dropped) and Mexico's SAT figures are bare national tax-authority claims with no external vetting — state this explicitly. Chile's and Colombia's (CIAT-compiled) and the OECD/EU-sourced figures (Slovakia's cake+slice, Poland's cake, Mexico's OECD figure) went through at least one layer of external/multilateral vetting — a real, defensible distinction. True evasion is plausibly higher than any of these regardless, since by construction they only measure what enforcement or national-accounts methodology actually detects.
+
+**Data source note:** Chile's and Colombia's VAT-to-GDP ratios above came from the OECD's own SDMX REST API (`Revenue Statistics in Latin America and the Caribbean`, dataflow `DSD_REV_COMP_LAC@DF_RSLAC`) — public, no API key or account needed, same as the World Bank API used for every GDP/exchange-rate figure in this whole section. Reusable call: `oecd_vat_pct_gdp()` in `Code/Fact-Checks/intro-revenue-loss-factcheck.py`.
+
+<!-- STILL OPEN, genuine TODOs, not validated content:
+- "Give a range, not up to" (Tim's instruction) -- apply when presenting the Chile/Colombia/
+  Mexico slices together as a set, rather than singling out one ceiling number.
+-->
+
+## 2b. Firm reactivity to tax-rate changes
+
+- Evasion is not a fixed leakage — it responds to the tax rate on purchases, and the response is large.
+- Evidence base: the 1983 fiscal-reform diff-in-diff (ch. 7) and the structural counterfactual (ch. 8).
+<!-- DROPPED 2026-09-24 (misstated: 45,000x is evasion vs. the tiny output-growth term; vs. the mechanical credit it is ~98x): - Magnitude: the evasion-response channel dominates the mechanical legitimate-credit and output-growth channels by roughly 45,000× (ch. 8's $dR/dx$ decomposition). -->
+- Word choice: "respond sharply" or "respond elastically," not "aggressively" — a magnitude/asymmetry claim, not a claim about firm intent.
+- Policy implication, hedged appropriately: a 0.5% purchases-tax increase already produces a statistically distinguishable revenue loss, while a cut only becomes distinguishable at 8% — that asymmetry is the actionable warning, not "evasion exists."
+- **Grounding this in the wider public-finance literature** (from the lit review, validated and ready — your call which of these stay, per Tim's "exactly two reasons" structure):
+  - @Slemrod2019: evasion changes the marginal efficiency cost of a tax and the optimal choice of tax base — the general version of the specific result your counterfactual quantifies.
+  - Efficiency-cost literature (Kleven et al. 2016 and related): resources spent hiding/enforcing evasion, and incentives toward informality to avoid scrutiny, are real costs beyond the direct revenue transfer.
+  - @Carrillo2022: ghost-firm-enabled evasion disproportionately benefits high-income owners — additional tax as a share of owners' income is 56× higher for the top 5% and ~170× higher for the top 1%, relative to the bottom 80% — a distributional/equity angle, distinct from both the revenue and reactivity points above.
+
+:::
+
+## Superseded: productivity-bias paragraph (old lines 106-108)
+
+<!-- SUPERSEDED (RAP 2 intro, 2026-09-24):
+Furthermore, ignoring tax evasion leads to biased estimates of productivity. In the proxy variable literature, productivity is measured as the residual of the production function, where the output of a firm is a function of the inputs, capital, labour, and intermediates. A key assumption is that intermediate input demand is strictly monotonic in the productivity of the firm [@Gandhi2020; @Ackerberg2015; @Levinsohn2003]. In other words, we expect that highly productive firms will use fewer inputs to produce a given level of output. Intermediate inputs, however, are also the most likely input to be misreported. When firms overreport their inputs, increasing their costs to claim additional tax deductions, their reported inputs are higher than their actual utilization, which biases the estimated output elasticities and, with them, measured productivity. In the Colombian data, ignoring overreporting overstates how dispersed productivity is across firms.
+-->
+
+## Misallocation confound idea (candidate for the conclusion, ch. 10) (old lines 111-115)
+
+::: {.content-visible when-meta="draft"}
+
+- **This bias is a candidate confound for the misallocation literature, not just something this method happens to fix:** the productivity gaps the misallocation literature documents between compliant and non-compliant firms (25–50%, Dabla-Norris et al. 2019; misallocation arguments in Farrell 2004, Bobbio 2016) could be partly a measurement artifact of overreporting rather than a real productivity difference. State as a real possibility this paper's results speak to, not as fully settled.
+
+:::
+
+## Superseded: 'no other study' and estimation-strategy paragraphs (old lines 118-122)
+
+<!-- SUPERSEDED (RAP 2 intro, 2026-09-24):
+To the best of my knowledge, no other study has attempted to structurally identify cost overreporting. A fundamental problem is that when it comes to corporate tax evasion, researchers have to account for an additional source of unobserved heterogeneity, productivity. Why? Because cost overreporting might be naively quantified as low productivity. Intuitively, for a given output level, high input utilization by a firm could be explained by either the amount of input the firm overreports to evade taxes or by a negative productivity shock.
+
+To address this gap in the literature, first I formally show that ignoring tax evasion biases production function and productivity estimates. I then provide a new estimation strategy using production functions to jointly recover the densities of tax evasion and productivity. The intuition works as follows. In the absence of tax evasion, the first-order conditions of the firms' cost-minimization problem let us recover the common technology, the production function. Consequently, in the presence of cost overreporting, deviations from this common technology identify tax evasion up to measurement error. Then, from a subset of non-overreporting firms, the strategy identifies the production function parameters and the density of the measurement error in output. Finally, using non-parametric deconvolution techniques, I jointly recover the distributions of tax evasion and productivity.
+-->
+
+## Superseded: results paragraph (old lines 138-140)
+
+<!-- SUPERSEDED (RAP 2 intro, 2026-09-24):
+Applying the method using firm-level data from Colombia between 1981 and 1991 — a commonly used dataset in the production function literature — I detect overreporting in 9 of the 20 industries tested, including four of the five largest, which together produce about half of manufacturing output; with 20 tests at the 10% level, chance alone would produce about two rejections. In the five industries with the strongest evidence, where the test rejects at the 1% level, firms overreport between 11% and 25% of their true materials on average. Where the test cannot reject the absence of overreporting, the result is inconclusive; for a particular industry, whether the identifying assumptions hold should be investigated before drawing conclusions.
+-->
+
+## Superseded: contribution para. 2 (old lines 148-150)
+
+<!-- SUPERSEDED (contribution para. 2, 2026-09-25):
+Despite its relevance, the literature on corporate tax evasion has mostly overlooked cost overreporting. The few studies focusing on this tax evasion strategy rely on exploiting detailed administrative data [@Zumaya2021; @Carrillo2022]. Due to firms' confidentiality concerns, government tax authorities restrict access to this kind of data. My approach complements these methods. It is not restricted to confidential tax records and can be applied using more commonly available data such as firm-level surveys.
+-->
+
+## Superseded: plain roadmap (old lines 158-160)
+
+<!-- SUPERSEDED (roadmap, 2026-09-25; plain version kept in case the humour does not survive a referee):
+The rest of the paper is organized as follows. @sec-model presents a model of tax evasion through input overreporting, and @sec-setting describes the Colombian setting and data. @sec-testing tests for overreporting and recovers its distribution. @sec-pf estimates the production function and productivity net of overreporting. @sec-fiscal studies how overreporting responded to the 1983 reform, and @sec-counterfactual estimates the structural model and uses it to compute how claimed deductions respond to the tax rate. @sec-conclusion concludes.
+-->
+
+## Fiscal/counterfactual notes and placeholder productivity paragraph (old lines 179-190)
+
+::: {.content-visible when-meta="draft"}
+
+- **The fiscal reform** (validated, ready): in industries facing the 1983 sales-tax increase, firms raised their overreported share significantly relative to unaffected industries — the empirical anchor for §2b's reactivity claim.
+- **The counterfactual** (validated, ready — state as a set/range per ch. 8's own test-inversion result, not a single point estimate): a 0.5% purchases-tax increase produces a statistically significant revenue loss; only an 8% cut produces a significant revenue gain.
+
+**Draft note (2026-09-24), numbers for this finding** (ch. 6): corrected materials elasticities are below GNR's and OLS's in all five industries; corrected productivity is far less dispersed than GNR's (90/10 ratio 1.7–2.8 vs. 3.1–6.7) and more persistent ($\hat\gamma_1$ 0.92–0.98 vs. 0.86–0.90); levels move in both directions, so no level bias is claimed.
+
+I also find that ignoring cost overreporting leads to consistently larger elasticities of intermediate inputs by [what factor]. The bias on the intermediate inputs spreads to the elasticities of labour and capital, whose bias direction varies by industry [what range?]. Lastly, I find significant differences in the productivity distributions. In particular, true productivity distributions are [how]. The differences between [exporters/corporations] and [importers/limited liability companies] are [what?].
+
+[exporters/importers/proprietorships/limited liability companies] are [less/more] likely to engage in cost overreporting.
+
+:::
+
+## Contribution and related-literature outline (old lines 194-229)
+
+::: {.content-visible when-meta="draft"}
+
+## Contribution and related literature — outline (draft only, 2026-09-24)
+
+Positioning, from the summary table in `Thesis/chapters/09-literature.qmd` (draft only; ch. 9 is not in the JMP): the validation-sample idea is old; the novelty is the production function accounting for productivity (size) and juridical organization, with corporations as truth-reporters. The method needs only reported inputs and output, so it works on standard surveys and on administrative records alike. Order: three public-economics strands, then production functions as secondary. Econometrics of unobservables stays out of the JMP intro (thesis ch. 9 only).
+
+**Strand 1 — Measuring firm evasion (primary).**
+
+- What is known: most recent work on firm evasion studies revenue underreporting; cost overreporting has received far less attention [@Slemrod2019; @Carrillo2022].
+- The few cost-overreporting studies use confidential transaction-level tax records: ghost firms in Ecuador, where 10.4% of firms claimed ghost deductions, worth 14.1% of their purchase deductions in 2015, more prevalent among larger firms except at the very top [@Carrillo2022]; invoice networks and machine learning in Mexico's e-invoicing data [@Zumaya2021].
+- Enforcement studies show firms offset revenue enforcement by raising reported costs, 96 cents per dollar in Ecuador and 70–80 cents in Armenia [@Carrillo2017; @Asatryan2017]. VAT paper trails make business-to-business transactions harder to misreport than final sales [@Pomeranz2015], which points to the input side.
+- Survey-based work relies on self-reported shares of sales declared (World Bank Enterprise Surveys), with productivity proxied by sales per worker [@Dabla2019].
+- Limitation → contribution: tax records are confidential and exist for few countries; self-reports depend on firms admitting evasion. This method identifies overreporting from reported inputs and output only, so it applies to standard firm surveys and to administrative records alike.
+
+**Strand 2 — Validation samples / traces of income (primary).**
+
+- Pissarides and Weber infer underreported income by comparing food consumption relative to reported income between employees, whose income is third-party reported, and the self-employed, assuming the groups are otherwise similar [@Pissarides1989].
+- Paulus compares survey and tax-record income in Estonia, with public-sector workers as the group that cannot evade; about 12% of wages and salaries are underreported, most at the bottom and top of the distribution [@Paulus2015].
+- Closest competitor: @Gorodnichenko2009 apply the consumption–income gap to estimate how evasion responded to Russia's 2001 flat-tax reform — a validation-sample method used to measure a response to tax rates. Also cite it in strand 3.
+- Limitation: built for individuals. For firms, the output equation has an additional unobservable, productivity, so a naive comparison between groups confuses overreporting with low productivity (reuse `Paper/sections/30-related_lit.qmd`, "Tax evasion").
+- Contribution: the production function plays the role of the consumption–income relation, corporations are the reference group, and the model accounts for heterogeneity in productivity (size) and juridical organization.
+
+**Strand 3 — Tax rates and evasion (primary).**
+
+- Reuse ch. 7's intro (P2–P3): theory cannot sign the effect of the rate [@Yitzhaki1974; @Slemrod2019, p. 908]; evidence on rates is scarce because governments randomize enforcement, not rates, and comes mostly from misreported imports [@FismanWei2004; @HandleyMoore2017].
+- Revenue and optimal taxation with evasion: the revenue response to rates is measured through the elasticity of taxable income, which bundles evasion, avoidance and real responses, for individuals [@Feldstein1999; @SlemrodKopczuk2002; @Chetty2009; @Saez2012]. Theory lowers optimal commodity-tax rates where evasion responds more to the rate [@Cremer1993] and gives enforcement its own revenue elasticity [@KeenSlemrod2017]. Firm-level evidence comes from bunching at kinks and notches: taxing turnover rather than profits can raise revenue by cutting evasion [@Best2015].
+- Evasion's response to a rate, estimated: @Gorodnichenko2009 (individuals, consumption–income gap); misreported imports [@FismanWei2004].
+- Gap for P: the revenue effect of rates is known for reported individual income; for firms, evidence comes from notches and kinks, not from a structural estimate of how input overreporting responds to the purchases-side rate.
+- Contribution: evidence from a statutory rate change (the 1983 reform) and a structural, firm-level counterfactual for deduction claims over the purchases-tax rate.
+
+**Secondary — Production functions and productivity.**
+
+- Proxy-variable methods identify productivity from the flexible input's first-order condition and assume reported inputs are true [@Gandhi2020; @Ackerberg2015; @Levinsohn2003]; work on input mismeasurement treats it as mean-zero measurement error in capital [@Collard2020].
+- Contribution: overreporting is an optimal choice, not mean zero and possibly correlated with productivity, in exactly the input these methods rely on; correcting for it changes elasticities and productivity (reuse `30-related_lit.qmd`, "Production functions and productivity").
+
+:::
