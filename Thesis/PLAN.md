@@ -215,7 +215,7 @@ RAP 2 (tax rates) chosen; options and reasoning in `Thesis/feedback/jmp-intro-ra
 - [x] Para. 1 hook reframed around the rate-dependent incentive (fake invoices kept as one example), 2026-09-25; Hans to edit
 - [x] Clean up stale draft blocks in the intro file (2026-09-25): intro is now final prose only (23 lines); superseded drafts and notes moved to `Thesis/feedback/jmp-intro-archive-250926.md`; visible prose verified identical, JMP re-rendered
 - [ ] Leak check on the rendered JMP (non-draft `quarto render paper.qmd --to pdf`, then scan the PDF text): personal details (names of supervisors/committee in internal notes, emails other than the author block, private remarks), internal Hans↔Claude notes ("Draft note", "TODO", "FILL", "UPDATE", "SUPERSEDED", "(Hans, …)", "Claude", "(?)", file paths like `Code/…` or `.R`, bracketed placeholders `[...]`), and draft-only blocks that failed to hide. Same scan for the thesis book before it goes anywhere.
-- [ ] Conclusion (ch. 10) outline is RAP 3; realign to RAP 2 so intro and conclusion tell the same story
+- [x] Conclusion (ch. 10) outline realigned to RAP 2 (2026-09-25); old RAP 3 outline in `Thesis/feedback/conclusion-rap3-outline-archive-250926.md`. Prose is Hans's to write
 
 ## 8. Log
 

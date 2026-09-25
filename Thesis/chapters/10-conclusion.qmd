@@ -2,41 +2,45 @@
 
 ::: {.content-visible when-meta="draft"}
 
-**Draft note (outline, 2026-09-24): RAP 3 chosen** (see `10-conclusion-rap-240926.md`). Numbers are from the chapters as they stand; check them against the final versions before writing. Four or five paragraphs.
+**Draft note (outline, 2026-09-25): RAP 2 (tax rates), aligned with the JMP intro** (options: `Thesis/feedback/jmp-intro-rap-options.md`; the earlier RAP 3 outline is archived in `Thesis/feedback/conclusion-rap3-outline-archive-250926.md`). Numbers match the intro and abstract; check them against the final chapters before writing. Five or six paragraphs.
 
-**P1: Positioning and question.**
+**P1: The question.**
 
-- P: most evidence on evasion comes from settings where governments open their records or run field experiments [@Slemrod2019]. These are demanding to arrange: they need a partner tax authority, and letter experiments mean designing and sending the letters, collecting responses, and comparing behaviour before and after, a large enterprise costly above all in time, compared with working from production data researchers already have. They are rarely available for the past, and they vary enforcement, not tax rates [@Slemrod2019, pp. 913, 942].
-- R: can production data, which researchers already routinely use, measure input overreporting and its response to tax rates?
+- Known: how revenue responds to tax rates is well measured for individuals' reported income, whose elasticity bundles evasion, avoidance and real responses [@Saez2012; @Chetty2009]; theory says rates should be lower where evasion responds more [@Cremer1993]; for firms, evidence comes from bunching at kinks and notches [@Best2015] and misreported imports [@FismanWei2004].
+- Missing: how firms' input overreporting responds to the rate had not been estimated, because overreporting is not observed and is confounded with low productivity.
+- R: does input overreporting rise with the tax rate, and by how much does it move claimed deductions?
 
-**P2: Answer.** Yes. With a group of firms that credibly do not evade, production data:
+**P2: The answer: yes, and asymmetrically.**
 
-- detect overreporting: in 9 of the 20 industries tested at the 10% level, including four of the five largest, together about half of manufacturing output (@sec-testing);
-- measure it: in the five industries with the strongest evidence, firms overreport 11–25% of their true materials on average, most moderately and a few heavily (@sec-deconvolution). The deconvolution is done only where the test finds evidence;
-- show that it responds to tax incentives: after the 1983 reform, across all industries, overreporting rose where the net incentive rose most, in industries whose sales tax went up and among LLCs (@sec-fiscal);
-- support a policy counterfactual, estimated on all industries: claimed deductions respond asymmetrically; a 0.5% rate increase raises them by 16–28%, while a cut must reach 8% before they fall detectably, by 6–16% (@sec-counterfactual);
-- and, as a by-product, correct production function and productivity estimates: lower materials elasticities, and productivity that is far less dispersed (90/10 ratio 1.7–2.8 vs. 3.1–6.7) and more persistent (@sec-pf).
+- After the 1983 reform, overreporting by unincorporated firms rose, reaching about 9% of true materials by 1987 in the affected industries, and it rose most where the net incentive rose (@sec-fiscal).
+- In the structural model estimated on all industries, a 0.5% rate increase raises claimed deductions by 16–28%, far above the mechanical 0.5%; cuts work gradually: 8% is the smallest cut distinguishable from current policy, lowering claimed deductions by 6–16% (@sec-counterfactual).
+- Ballpark: undetected overreporting costs about 3% of potential net sales-tax revenue from these firms; near the current rate, a 1% increase lowers it by about 20% (@sec-app-backofenvelope).
+- Mechanism (one sentence, optional): detection is rare, so an increase pushes every evader up by about the same amount, while a cut removes evasion firm by firm.
 
-**P3: Why the approach is useful.**
+**P3: What made the answer possible (supporting findings).**
 
-- Needs only firm-level production data, the standard input of the productivity literature; works with administrative data too when available.
-- No partner government or experiment, so it applies to past periods (here 1981–1991) and to places where authorities do not cooperate.
-- Recovers how much firms overreport relative to their true inputs, and its distribution, not only a response to an intervention.
-- Combined with a statutory reform and a structural model, it speaks to tax rates, the margin experiments cannot vary.
-- Policy message: evasion through fictitious deductions erodes part of any rate increase quickly, while cuts recover little of it.
+- Overreporting is separated from productivity using the production function, with corporations as truth-tellers, from production data alone.
+- Detection: overreporting in 9 of 20 industries, including four of the five largest; the test is valid for any detection probability and evasion cost that vanish without evasion and any common technology, and a rejection can only mean overreporting (@sec-testing).
+- Measurement: 11–25% of true materials where the test rejects at 1% (@sec-deconvolution).
+- By-product: lower materials elasticities; productivity 90–10 ratio about 40% lower; half-life of productivity shocks two to seven times longer (@sec-pf).
 
-**P4: Limits (plainly, no speculation).**
+**P4: Implications.**
 
-- Relies on a group of firms that do not evade (corporations here).
-- Where the test does not reject, the result is inconclusive; for a particular industry, whether the assumptions hold should be investigated.
-- The counterfactual is partial equilibrium: only evasion responds.
+- Policy: fictitious deductions quickly erode part of any rate increase, while cuts recover little; the response of claimed deductions is the input optimal commodity taxation under evasion needs [@Cremer1993].
+- Method: needs only production data, with no partner tax authority or experiment, so it applies to past periods and to places where authorities do not cooperate; and it speaks to tax rates, the margin experiments rarely vary [@Slemrod2019, pp. 913, 942].
+
+**P5: Limits (plainly, no speculation).**
+
+- The counterfactual is partial equilibrium: only evasion responds; parameters are fixed at one point the test does not reject.
 - The detection parameter is identified mostly from a thin tail of aggressive evaders and depends on the 0.5% trim.
 - Functional forms: linear detection probability; cost linear in evasion and convex in productivity. One tax rate on sales and purchases.
+- Relies on a group of firms that do not evade (corporations here).
+- Where the test does not reject, the result is inconclusive; for a particular industry, whether the assumptions hold should be investigated.
 
-**P5: Next steps (one short paragraph).**
+**P6: Next steps (one short paragraph).**
 
+- Separate sales and purchases tax rates, and re-estimate the first stage and the counterfactual with them.
 - Production function and productivity with both instruments jointly (efficient GMM).
-- Separate sales and purchases tax rates.
 - Productivity differences by firm group through conditional deconvolution.
 - Estimating all stages in one system.
 
