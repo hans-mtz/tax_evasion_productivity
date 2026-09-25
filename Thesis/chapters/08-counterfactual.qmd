@@ -252,7 +252,7 @@ $$
 
 The nine moments are combined into a single test statistic through the continuously updated estimator (CUE) objective $\hat L_n(\theta)$ of @Schennach2014's Definition F.1. Her Theorem F.1 shows that, at any $\theta$ satisfying the moment condition, $TS(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. Comparing $TS(\theta)$ with the $\chi^2_{d_g}$ critical value therefore gives a conservative test, whose size is at most its nominal level; I call it the conservative test throughout and report as confidence sets the tested points it does not reject. For the nine moments, the 95% critical value is $\chi^2_{9,.95}=16.92$. The exact objective and my sign convention relative to hers are in @sec-app-elvis.
 
-The estimation sample has 32,232 unincorporated firm-periods (3,340 at the $\tau=0$ corner).
+The estimation sample has 32,232 unincorporated firm-periods (3,340 at the $\tau=0$ corner), after dropping the 0.5% of non-corner firm-periods with the largest reported materials (@sec-app-elvis).
 
 
 
@@ -264,7 +264,7 @@ decision + @fig-cf-trim, and the justification for the conservative test design 
 
 ### Estimates {#sec-cf-estimates}
 
-@tbl-cf-estimates displays the estimates of the parameters of interest, using the production-function estimates with instrument $m^*_{it-1}$ from @sec-pf. The estimation uses all industries, not only the five reported in @sec-pf; the production-function estimates for every industry, with the same instrument, are in @sec-app-pf-all. It also assumes that every unincorporated firm with a positive sales-tax rate on purchases evades. The tests in @sec-testing cannot reject the absence of overreporting in some industries, but a failure to reject is inconclusive rather than evidence of compliance, and overreporting rose across all industries pooled after the 1983 reform (@sec-fiscal-all).
+@tbl-cf-estimates displays the estimates of the parameters of interest, using the production-function estimates with instrument $m^*_{it-1}$ from @sec-pf. The estimation uses all 29 industries, not only the five reported in @sec-pf; the production-function estimates for every industry, with the same instrument, are in @sec-app-pf-all. It also assumes that every unincorporated firm with a positive sales-tax rate on purchases evades. The tests in @sec-testing cannot reject the absence of overreporting in some industries, but a failure to reject is inconclusive rather than evidence of compliance, and overreporting rose across all industries pooled after the 1983 reform (@sec-fiscal-all).
 
 ::: {.content-visible when-meta="draft"}
 
@@ -306,7 +306,7 @@ Key observations:
 - **$\hat\lambda$ is very small**: a few aggressive evaders dominate the estimate; the model is trying to fit a straight line over a highly right-skewed distribution.
   - Mechanically, selecting a functional form for the probability of detection imposes a ceiling probability
   - Assuming all unincorporated firms with a non-zero sales tax rate on purchases evade taxes implies that all firms evade below the ceiling (normalization)
-- **($\hat\delta_1, \hat\delta_2$)**: seem to be consistently identified by the curvature of the evasion distribution and productivity $\omega$. The $\omega^*$ is steady among grid searches and under the correct moments they always come up with correct signs
+- **($\hat\delta_1, \hat\delta_2$)**: seem to be consistently identified by the curvature of the evasion distribution and productivity $\omega$. $\hat\omega^*$ is stable across the grid searches in @sec-app-elvis, and $(\hat\delta_1,\hat\delta_2)$ have the expected signs at every tested point
 
 ::: {.content-visible when-meta="draft"}
 **Draft note:**
@@ -426,7 +426,7 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 - $\theta$ free instead of fixed: at $\Delta=-4\%$ with $\theta$ free (seeded at the fixed point), $\hat\theta$ moved 0.1-2% and pass/fail replicated at 4 of 5 candidates, so the tight sets reflect cross-firm heterogeneity, not fixing $\theta$.
 :::
 
-- Rejected alternative: a revenue-loss moment (more degenerate for $\Delta\lesssim-2\%$; most brackets inconclusive).
+- Rejected alternative target: only the undetected-overreporting part of claimed deductions, $\tilde\tau_{it}(1-q(e'_i))e'_i$, leaving out the credit on true inputs. For cuts beyond about 2%, most firms stop evading ($e'_i=0$), so its distribution piles up at zero, and in a coarse grid most tested brackets were inconclusive. Claimed deductions in full remain the target.
 
 ::: {.content-visible when-meta="draft"}
 **Draft note:**
