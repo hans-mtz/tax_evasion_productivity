@@ -154,6 +154,15 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
 - **Now:** ch. 8's two-tax material (two-tax revenue equation, two-tax profit function, net-of-tax limitation bullets) is kept but gated `::: {.content-visible when-meta="draft"}`. Visible text uses $\tau$, not $\tau_P$.
 - **After Friday (the better version):** two-tax model; first stage re-estimated net-of-tax (`log_mats_share_net`); PF step as joint efficient GMM with both instruments ($m^*_{it-1}$, $\tilde{\mathcal W}_{it-2}$); re-run ELVIS and the counterfactual on it; switch the document's story to two-tax and un-gate the ch. 8 blocks.
 
+## 9a. After the supervisor meeting (2026-09-25) — NEW DEADLINE Oct 13
+
+Supervisors need one week for letters (due to the department Oct 20), so the JMP goes to them by **Tue 2026-10-13**. ELVIS approved for the counterfactual; $\hat\lambda$ not credible (scale problem). Plan, in order:
+- [ ] (3) External evidence: detection/audit probabilities by firm characteristics in the Ecuador/Mexico papers; can $q$ be approximated over observables?
+- [ ] (1) Convex $q$ (shape + scale, maybe one parameter; Salvador: log form) and (2) $q(e/\bar M)$ — choose the detection function.
+- [ ] Re-run ELVIS + counterfactual on the final specification: two-tax, net-of-tax first stage, joint efficient-GMM PF (was §7b, now the next run).
+- [ ] Update ch. 8, intro, abstract, conclusion with the new numbers.
+Details: `Research-log/log.md`, 2026-09-25.
+
 ## 9. JMP (`JMP/`) — the Friday deliverable
 
 **One prose source, two documents.** `JMP/paper.qmd` is a standalone Quarto `default`-type project that `{{< include >}}`s the exact same `Thesis/chapters/*.qmd` and `Thesis/appendices/*.qmd` files this book uses -- no forked/duplicate chapter text. `JMP/figures`, `JMP/tables`, `JMP/biblio` are symlinks to the `Thesis/` versions, so `Code/Thesis/*.R` output shows up in both renders automatically.

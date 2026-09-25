@@ -988,3 +988,15 @@ Best points: ELVIS (cube, moment set A) $\lambda=5.427\times10^{-7},(\delta_0,\d
 - **Test robustness** (ch. 4 draft note, maths checked): valid for any q, κ with κ(0,Z)=0, including Z=M; one-directional (bracket u − Δln D > 0 under concavity); extends to any parametric common technology with D evaluated at each firm's reported inputs (no input overlap needed — Claude's initial overlap claim was wrong, corrected by Hans). Deconvolution needs more (∂q/∂M=∂κ/∂M=0, CD).
 - **Stage 2 uses all 29 industries' PF estimates** (`1100-MSL-opttax.RData`, instrument m*_{it-1}); now reported in new Appendix E (`Code/Thesis/appE-pf-all-industries.R`). Flags: 314, 332 optimizer warnings (code 52); 323 α_K=0, 352 α_K=1, 362 α_L=0 at bounds. Ch. 8 now states the all-industries scope and the all-unincorporated-evade assumption, supported by ch. 7's pooled result.
 - **Size by JO** (`Code/Thesis/ch03-size-by-jo.R`, reference only): proprietorships < LLCs (≈2.5× labour, 3× output at median) ≪ corporations.
+
+## 2026-09-25 — Supervisor meeting (Salvador, David): ELVIS approved for the counterfactual; $\hat\lambda$ not credible; three alternatives; next ELVIS run on the two-tax model
+
+- **Approved:** ELVIS as the estimator for the counterfactual.
+- **Not credible:** $\hat\lambda$ ($5.4\times10^{-7}$; audit-triggering threshold $1/(2\hat\lambda)\approx$ COP 920,000 vs. median $M^*\approx$ 8,414). Diagnosis discussed: a **scale problem**, because $e$ enters $q(e)=\lambda e$ in levels (quantities), so one $\lambda$ has to serve firms whose materials differ by orders of magnitude, and a thin tail of large evaders pins it.
+- **Three alternatives they proposed:**
+  1. **Convex $q$**, possibly with two parameters, one for shape and one for scale (e.g. $q=(\lambda e)^k$); check whether one parameter does the job better. Salvador mentioned a *log* probability of detection in this context (exact form to pin down).
+  2. **Normalize by a fixed firm scale, $e/\bar M$**, so $q$ does not depend on the firm's current $M$ (keeps $\partial q/\partial M=0$, which the deconvolution needs) but adjusts for scale. Which $\bar M$ (firm's time average, industry mean, …) still to settle.
+  3. **External validation:** find any paper (Ecuador, Carrillo et al. 2022; Mexico) that reports detection/audit probabilities by firm characteristics, and approximate $q$ as a function of those characteristics.
+- **Order:** start with (3), the external evidence.
+- **Since ELVIS will be re-run anyway:** do it on the final specification — two-tax model with the net-of-tax first stage, and the joint efficient-GMM PF coefficients ($m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$) — i.e. the post-deadline plan in `Thesis/PLAN.md` §7b is now the next run, not a later one.
+- **Deadline revised:** supervisors need one week to write reference letters; letters are due to the department **Oct 20**, so the JMP is due to them by **Oct 13, 2026**.
