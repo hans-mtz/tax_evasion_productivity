@@ -212,6 +212,7 @@ RAP 2 (tax rates) chosen; options and reasoning in `Thesis/feedback/jmp-intro-ra
 - [x] Production functions (secondary) paragraph -- final after Hans edit + second proof-read
 - [x] Roadmap (follows the actual include order: model before setting, kept by Hans 2026-09-25; §10's table lists setting first)
 - [x] Abstract (`JMP/paper.qmd`) rewritten to RAP 2 (176 words; old testing-first version saved in `JMP/sections/01-intro-pr-240926.md`); Hans editing
+- [x] Para. 1 hook reframed around the rate-dependent incentive (fake invoices kept as one example), 2026-09-25; Hans to edit
 - [ ] Clean up stale draft blocks in the intro file (2a, 2b, "What I find" notes, placeholder productivity paragraph)
 - [ ] Leak check on the rendered JMP (non-draft `quarto render paper.qmd --to pdf`, then scan the PDF text): personal details (names of supervisors/committee in internal notes, emails other than the author block, private remarks), internal Hans↔Claude notes ("Draft note", "TODO", "FILL", "UPDATE", "SUPERSEDED", "(Hans, …)", "Claude", "(?)", file paths like `Code/…` or `.R`, bracketed placeholders `[...]`), and draft-only blocks that failed to hide. Same scan for the thesis book before it goes anywhere.
 - [ ] Conclusion (ch. 10) outline is RAP 3; realign to RAP 2 so intro and conclusion tell the same story
