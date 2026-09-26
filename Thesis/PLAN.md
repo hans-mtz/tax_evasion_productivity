@@ -157,9 +157,9 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
 ## 9a. After the supervisor meeting (2026-09-25) — NEW DEADLINE Oct 13
 
 Supervisors need one week for letters (due to the department Oct 20), so the JMP goes to them by **Tue 2026-10-13**. ELVIS approved for the counterfactual; $\hat\lambda$ not credible (scale problem). Plan, in order:
-- [ ] (3) External evidence: detection/audit probabilities by firm characteristics in the Ecuador/Mexico papers; can $q$ be approximated over observables?
-- [ ] (1) Convex $q$ (shape + scale, maybe one parameter; Salvador: log form) and (2) $q(e/\bar M)$ — choose the detection function.
-- [ ] Re-run ELVIS + counterfactual on the final specification: two-tax, net-of-tax first stage, joint efficient-GMM PF (was §7b, now the next run).
+- [x] (3) External evidence (2026-09-25): Ecuador, Mexico, IRS, Spain, Perry and Cárdenas; anchors only, not a calibration (log).
+- [x] Detection function chosen (2026-09-26): $q=\lambda_1(1-e^{-e/\bar M_{j,t-1}})$, lagged industry mean, level estimated, support $e<\bar M$; power form as alternative (`Paper/sections/9999-detection-q.qmd`).
+- [~] Re-run ELVIS + counterfactual on the final specification. Inputs done: A1 net-of-tax first stage (`1501`), A2 joint efficient-GMM PF for all 29 industries (`1502`), A3 stage-2 data (`1503`). Open: $\bar M$ for 1981. Next: B (C++: new $h$, fixed support, $\lambda_1$ score, year intercepts; validate at one point), C ($\lambda_1$ grid → $\delta$ grid → cube), D (counterfactual). Keep the 0.5% trim.
 - [ ] Update ch. 8, intro, abstract, conclusion with the new numbers.
 Details: `Research-log/log.md`, 2026-09-25.
 
