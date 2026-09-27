@@ -5,10 +5,12 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
+  12pt,
   letterpaper,
-  DIV=11,
-  numbers=noendperiod]{scrreport}
+  oneside,
+  openany]{report}
 \usepackage{xcolor}
+\usepackage[left=1.5in,right=1in,top=1in,bottom=1in,headheight=15pt,headsep=0.2in,footskip=0.4in]{geometry}
 \usepackage{amsmath,amssymb}
 \setcounter{secnumdepth}{5}
 \usepackage{iftex}
@@ -24,6 +26,8 @@
 \usepackage{lmodern}
 \ifPDFTeX\else
   % xetex/luatex font selection
+  \setmainfont[Extension=.otf,UprightFont=*-Regular,BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]{STIXTwoText}
+  \setmathfont[]{STIXTwoMath-Regular.otf}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -140,7 +144,13 @@
  
 
 
-\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{plain}
+\@ifundefined{c@chapter}{\newfloat{plate}{h}{lopl}}{\newfloat{plate}{h}{lopl}[chapter]}
+\floatname{plate}{Plate}
+\newcommand*\listofplates{\listof{plate}{List of Plates}}
+\makeatother
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -207,6 +217,8 @@
 \hypersetup{
   pdftitle={Tax Evasion and Productivity},
   pdfauthor={Hans Martinez},
+  pdfkeywords={Tax Evasion, Cost Overreporting, Production Function
+Estimation, Productivity},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -214,19 +226,180 @@
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
+% ---------------------------------------------------------------------------
+% Western thesis preamble
+% Rules: SGPS "Procedure for Thesis Formats and Content" + SGPS Word template
+% (etd_template2026.docx) for the visual style.
+% ---------------------------------------------------------------------------
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{titlesec}
+\usepackage[titles]{tocloft}
 
-\title{Tax Evasion and Productivity}
-\author{Hans Martinez}
-\date{2026-09-23}
-\begin{document}
-\maketitle
+% Keep all text inside the margins: no character protrusion into the margin.
+\makeatletter
+\@ifpackageloaded{microtype}{\microtypesetup{protrusion=false}}{}
+\makeatother
+\setlength{\emergencystretch}{3em}
 
-\renewcommand*\contentsname{Table of contents}
-{
-\setcounter{tocdepth}{2}
-\tableofcontents
+% Body text (Word "Normal"): 12pt, 1.5 spacing (§6.3), block paragraphs with
+% 12pt before each paragraph and no first-line indent.
+\AtBeginDocument{\onehalfspacing}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{12pt plus 2pt minus 1pt}
+
+% Headings: Times bold (as the body text), sizes from the Word template (16/16/14pt).
+% (\setstretch before \fontsize: setspace's \singlespacing would reset the size.)
+\newcommand{\westernheadingfont}{\normalfont\bfseries}
+\titleformat{\chapter}[display]
+  {\westernheadingfont\setstretch{1}\fontsize{16}{19}\selectfont}
+  {\chaptertitlename\ \thechapter}{6pt}{}
+\titleformat{name=\chapter,numberless}
+  {\westernheadingfont\setstretch{1}\fontsize{16}{19}\selectfont\centering}
+  {}{0pt}{}
+\titlespacing*{\chapter}{0pt}{-26pt}{12pt}
+\titleformat{\section}
+  {\westernheadingfont\setstretch{1}\fontsize{16}{19}\selectfont}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\westernheadingfont\setstretch{1}\fontsize{14}{17}\selectfont}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\westernheadingfont\setstretch{1}\fontsize{12}{15}\selectfont}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{12pt}{6pt}
+
+% "Keywords" sub-heading at the end of the abstract (Word template: 16pt).
+\newcommand{\westernkeywordsheading}{%
+  \par{\westernheadingfont\fontsize{16}{19}\selectfont Keywords\par}}
+
+% Captions (Word "Caption"): bold, "Table 1.1: ..." style.
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\makeatother
+\captionsetup{labelfont=bf,textfont=bf,labelsep=colon}
+
+% Tables (Pandoc longtables):
+%  * Short tables (under half a page) that don't fit in the space left on the page
+%    start on the next page instead of splitting.
+%  * Pandoc only defines a last-page foot (the bottom rule). Using it as the
+%    page-break foot too reserves room for it, so the rule is never pushed alone to
+%    the next page, and each page of a multi-page table ends with a rule.
+% At \LT@start the first chunk of rows (up to \LTchunksize = 20) is in box 0.
+\makeatletter
+\newcommand{\western@longtablestart}{%
+  \ifvoid\LT@foot\ifvoid\LT@lastfoot\else\setbox\LT@foot\copy\LT@lastfoot\fi\fi
+  \dimen@\ht\z@ \advance\dimen@\dp\z@
+  \advance\dimen@\ht\ifvoid\LT@firsthead\LT@head\else\LT@firsthead\fi
+  \advance\dimen@\ht\LT@lastfoot
+  \ifdim\dimen@<.5\textheight
+    \advance\dimen@\pagetotal \advance\dimen@\LTpre
+    \ifdim\dimen@>\pagegoal \penalty-\@M\fi  % (\newpage is redefined in longtable)
+  \fi}
+\AtBeginDocument{\@ifpackageloaded{longtable}{%
+  \pretocmd{\LT@start}{\western@longtablestart}{}{}}{}}
+\makeatother
+
+% Footnotes (Word "Footnote Text"): 10pt (>= 9pt, §6.2); setspace keeps them
+% single-spaced.
+\renewcommand{\footnotesize}{\fontsize{10}{12}\selectfont}
+
+% Bibliography (Word "biblio"): single-spaced (§6.3). The hanging indent comes
+% from the CSL style.
+\AtBeginEnvironment{CSLReferences}{\singlespacing}
+
+% Table of contents and lists: entries single-spaced, as in the Word template.
+\renewcommand{\cftchapfont}{\normalfont}
+\renewcommand{\cftchappagefont}{\normalfont}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforechapskip}{6pt}
+
+% Assumptions (`::: {#asm-name}`, converted by westernthesis.lua): numbered by
+% chapter like Quarto's theorems, upright text like definitions.
+
+% List of Plates (SGPS Word template), for the custom `plt` float.
+\newcommand{\westernlistofplates}{}
+
+% List of Appendices (§1.4), filled by westernthesis.lua; printed by
+% {{< western-lists >}} only when the thesis has lettered appendices.
+\newlistof{appendixlist}{loa}{List of Appendices}
+\newcommand{\westernlistofappendices}{%
+  \clearpage\phantomsection
+  \addcontentsline{toc}{chapter}{List of Appendices}%
+  \listofappendixlist}
+
+% Page styles (§6.6)
+%   front matter: lowercase roman, centred at the bottom
+%   body:         arabic, upper right corner (chapter opening pages included)
+\fancypagestyle{westernfront}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\fancypagestyle{westernbody}{%
+  \fancyhf{}%
+  \fancyhead[L]{\small\nouppercase{\leftmark}}%
+  \fancyhead[R]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+  \renewcommand{\chaptermark}[1]{\markboth{\thechapter\quad ##1}{}}%
+}
+\fancypagestyle{westernbodyplain}{%
+  \fancyhf{}%
+  \fancyhead[R]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
 }
 
+% Front matter: \chapter* pages use `plain`, so point `plain` at the front style.
+\newcommand{\westernfrontmatter}{%
+  \pagenumbering{roman}%
+  \fancypagestyle{plain}[westernfront]{}%
+  \pagestyle{westernfront}%
+}
+% Body: page 1 is the first page of Chapter 1 (inserted by westernthesis.lua).
+\newcommand{\westernmainmatter}{%
+  \clearpage
+  \pagenumbering{arabic}%
+  \fancypagestyle{plain}[westernbodyplain]{}%
+  \pagestyle{westernbody}%
+}
+\title{Tax Evasion and Productivity}
+\author{Hans Martinez}
+\date{September 2026}
+\begin{document}
+\westernfrontmatter
+% Title page, laid out as in the SGPS Word template (etd_template2026.docx).
+% It counts as page i but shows no number; the Abstract starts on page ii.
+\begin{center}
+\thispagestyle{empty}
+\setlength{\parskip}{0pt}
+{\bfseries\MakeUppercase{Tax Evasion and Productivity}\par}
+\vfill
+by\par
+\vfill
+Hans \underline{Martinez}\par
+\vfill
+Supervisors: Salvador Navarro, David Rivers, Timothy Conley\par
+\vfill
+Graduate program in Economics\par
+\vfill
+A thesis submitted in partial fulfilment of the requirements\\
+for the degree of\par
+Doctor of Philosophy\par
+\vfill
+The School of Graduate and Postdoctoral Studies\par
+The University of Western Ontario\par
+London, Ontario, Canada\par
+September 2026\par
+\vfill
+\copyright{} Hans Martinez 2026\par
+\end{center}
+\clearpage
+
+% Intentionally empty: the TOC and lists are placed by the {{< western-lists >}}
+% shortcode so they follow the abstract and other preliminary pages (SGPS §1.4).
 \bookmarksetup{startatroot}
 
 \chapter*{Abstract}\label{abstract}
@@ -234,40 +407,268 @@
 
 \markboth{Abstract}{Abstract}
 
-I propose a novel strategy to estimate corporate cost-overreporting tax
-evasion. Employing a structural production function and a subset of
-truth-reporting firms, I first investigate potential tax evasion by
-testing the presence of cost overreporting, where the statistically
-significant differences on the output elasticities of the overreported
-input in the correct direction are interpreted as evidence of tax
-evasion. Using a well-known dataset, I find evidence suggesting that
-cost overreporting in most manufacturing industries. Second, I recover
-the distribution of the overreporting share of true materials. Cost
-overreporting ranges in average from to percent. The density estimates
-sugget that most firms evade modestly with few aggresive evaders. Third,
-leveraging a fiscal policy change where the sales tax rate increased for
-a subset of industries while the tax rate remained the same for others.
-I find that, in industries with tax increases, firm raised their
-overreported share significantly. Fourth, I show how to recover the
-production function paramaters and productivity in the presence of tax
-evasion. My results indicate that ignoring cost overreporting leads to
-consistently larger output elasticities of ovrrerported inputs. In
-addition, I find non-trivial differences in the productivity
-distributions with respect the naive estimation. Finally, using a simple
-model, I estimate how changes in tax rate affect government revenue
-around the current equilibrium. I find that a tax increase of 0.5\% on
-all purchases will significantly reduce tax revenues while a cut of 8\%
-would be needed to increase revenue significantly from observed state.
+Sales and value-added taxes that credit purchases reward firms for
+overreporting their inputs: every fictitious dollar of deductible inputs
+lowers their tax liability, and the higher the rate, the larger the
+reward. How this evasion responds to the tax rate is largely unknown,
+because true inputs are not observed and firms that overreport may be
+mistaken for low-productivity firms. This thesis separates overreporting
+from productivity using the production function, with corporations,
+which government and market scrutiny keep from evading, as the
+truth-reporting benchmark. The approach needs only reported inputs and
+output, so it applies equally to standard firm-level surveys and
+administrative data; I apply it to Colombian manufacturing firms from
+1981 to 1991. First, a statistical test, valid for any detection
+probability, evasion cost and common technology, and whose rejections
+can only point to overreporting, detects overreporting in 9 of 20
+industries, including four of the five largest. Second, deconvolution
+recovers its distribution: in the seven industries where the test
+rejects at the 1\% level, firms overreport on average 16\% of their true
+materials in the median industry. Third, correcting for overreporting
+yields consistently smaller output elasticities of materials and less
+dispersed, more persistent productivity, with a 90--10 ratio about 40\%
+lower and a half-life of productivity shocks 1.6 to 3.1 times longer.
+Fourth, after a 1983 reform raised the sales-tax rate in most
+industries, overreporting by unincorporated firms in the affected
+industries rose by about 9 percentage points of true materials between
+1983 and 1987. Finally, a structural model of detection and evasion
+costs shows that a 0.5\% increase in the sales-tax rate raises claimed
+deductions by between 16\% and 28\%, far more than its mechanical
+effect, while cuts lower them only gradually: the smallest cut
+statistically distinguishable from current policy is 8\%.
+
+\westernkeywordsheading
+
+Tax Evasion, Cost Overreporting, Production Function Estimation,
+Productivity
+
+\bookmarksetup{startatroot}
+
+\chapter*{Summary for Lay Audience}\label{summary-for-lay-audience}
+\addcontentsline{toc}{chapter}{Summary for Lay Audience}
+
+\markboth{Summary for Lay Audience}{Summary for Lay Audience}
+
+{[}Placeholder: summary for a lay audience, at most 350 words.{]}
+
+\bookmarksetup{startatroot}
+
+\chapter*{Statement on the Use of Generative Artificial
+Intelligence}\label{statement-on-the-use-of-generative-artificial-intelligence}
+\addcontentsline{toc}{chapter}{Statement on the Use of Generative
+Artificial Intelligence}
+
+\markboth{Statement on the Use of Generative Artificial
+Intelligence}{Statement on the Use of Generative Artificial
+Intelligence}
+
+GenAI was used for proof reading text and code debugging.
+
+\clearpage
+\renewcommand{\contentsname}{Table of Contents}
+{\setcounter{tocdepth}{3}\tableofcontents}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\westernlistofplates
+\westernlistofappendices
+
+\westernmainmatter
 
 \bookmarksetup{startatroot}
 
 \chapter{Introduction}\label{sec-intro}
 
-Cost overreporting arises when firms acquire false invoices to claim
-additional tax deductions on value-added (VAT) and corporate income
-taxes (CIT). According to the OECD's document OECD (2017), cost
-overreporting --- also known as ``fake invoicing'', ``ghost firms'',
-``invoice mills'', or ``missing traders''--- permeates internationally.
+Sales and value-added taxes that credit purchases reward firms for
+overreporting their inputs: every fictitious dollar of deductible inputs
+lowers the tax a firm owes, and the reward grows with the tax rate.
+Firms act on this incentive. Tax authorities around the world document
+input overreporting, often through invoices for purchases that never
+took place (OECD 2017), and the losses they have measured are large:
+between 1.2\% and 2.7\% of total tax revenue in Chile, Colombia,
+Ecuador, Poland and Slovakia, and about a ninth of the entire VAT
+compliance gap in Colombia and Slovakia (OECD 2017; Carrillo et al.
+2022; CASE and IHS 2018; Longinotti 2022). Because these figures count
+only what enforcement detects, true losses are plausibly larger. The
+gains also accrue at the top: in Ecuador, the tax evaded by inflating
+costs, as a share of owners' income, is 56 times higher for owners in
+the top 5\% of the income distribution than for those in the bottom 80\%
+(Carrillo et al. 2022).
+
+How individuals' reported income responds to tax rates is well
+documented; how firms' overreporting of inputs responds is not. For
+individuals, a large literature estimates how reported income responds
+to the tax rate and shows that the response includes evasion and
+avoidance as well as changes in real activity (Saez et al. 2012; Chetty
+2009). For firms, evidence on responses to tax rates comes mostly from
+bunching at kinks and notches in the tax schedule (Best et al. 2015) and
+from misreported imports (Fisman and Wei 2004). Moreover, economic
+theory suggests that optimal commodity-tax rates should be lower on
+goods whose evasion is more elastic with respect to the tax rate (Cremer
+and Gahvari 1993). Yet, to my knowledge, no study has estimated how
+firms' overreporting of inputs, a form of tax evasion that the credit on
+purchases in sales and value-added taxes incentivizes, responds to the
+tax rate. One reason is that overreporting is not observed in the data:
+for a given level of output, a firm reporting high input use may be
+overreporting, or it may suffer from low productivity.
+
+I investigate whether input overreporting rises with the tax rate, and
+the extent to which it affects government tax revenue through firms'
+claimed deductions. I find that, after Colombia raised its sales-tax
+rate in 1983 for most manufacturing industries, while exempt industries
+remained exempt, overreporting by unincorporated firms in the industries
+affected by the tax increase rose significantly, by about 9 percentage
+points of true materials between 1983 and 1987. In a structural model
+estimated on all industries, I find that a 0.5\% increase in the
+sales-tax rate raises claimed deductions by 16\% to 28\%, far more than
+the 0.5\% that a naive proportional calculation would suggest, while
+cuts lower claimed deductions only gradually: the smallest cut
+distinguishable from current policy is 8\%. A back-of-the-envelope
+calculation suggests that undetected overreporting costs about 3\% of
+potential net sales-tax revenue from unincorporated firms in the sample.
+Near the current rate, and holding the tax collected on sales fixed, the
+elasticity of this revenue with respect to the tax rate is about −20: a
+1\% increase in the rate lowers it by about 20\%
+(Section~\ref{sec-app-backofenvelope}).
+
+To distinguish between evasion and productivity, I employ a structural
+production-function approach, and then use it to study how evasion
+responds to the tax rate. In the absence of evasion, the first-order
+condition for materials, the flexible deductible input, reveals the
+structural relationship between the firm's materials share of revenue
+and the common technology within the industry. Corporations are closely
+monitored by the government and face the market's reaction to tax
+aggressiveness, which keeps them from overreporting; their reports allow
+me to identify that technology in each industry. Among unincorporated
+firms, deviations from the common technology reveal overreporting up to
+measurement error in output. Deconvolution then separates the
+distribution of overreporting from that of the measurement error, and
+the production-function estimates recover productivity net of
+overreporting. To study how overreporting responds to the tax rate, I
+exploit the 1983 reform, measuring overreporting against the output
+elasticity of materials identified from corporations. Finally, employing
+an entropy-based method that does not require specifying the
+distribution of the unobservables (Schennach 2014), I estimate a
+structural model in which firms weigh the tax saved on overreported
+inputs against the probability of detection and a cost of evasion that
+varies with productivity.
+
+Separating overreporting from productivity also yields three findings of
+its own. First, a simple test compares unincorporated firms' materials
+shares with the corporate benchmark in each industry. It rejects the
+absence of overreporting in 9 of 20 manufacturing industries, including
+four of the five largest, which together produce about two fifths of
+manufacturing output, and it rejects decisively, at the 1\% level, in
+seven of them, where unincorporated firms overreport on average 16\% of
+their true materials in the median industry. The test is robust: it
+remains valid under any detection probability and cost of evasion that
+vanish without evasion, and under any common production technology. A
+rejection is also unambiguous, because no firm gains by underreporting
+deductible inputs, so it can only point to overreporting. Second,
+ignoring overreporting distorts the production function and, with it,
+measured productivity: in those seven industries, correcting for
+overreporting recovers output elasticities of materials consistently
+lower than uncorrected estimates (Gandhi et al. 2020), and less
+dispersed and more persistent productivity distributions, with a ratio
+of the 90th to the 10th percentile about 40\% lower on average and a
+half-life of productivity shocks 1.6 to 3.1 times longer. Third, the
+structural estimates show a cost of evasion that is convex in
+productivity and lowest near the 86th percentile of productivity, which
+rationalizes why evasion rises with firm size but drastically drops at
+the very top (Carrillo et al. 2022).
+
+These results relate to three strands of public economics and to one of
+productivity measurement. First, I estimate how a particular form of
+evasion by firms responds to the tax rate, a response the literature on
+taxes and revenue has mostly seen through individuals' reported income.
+Traditionally, the elasticity of personal taxable income has combined
+all different responses to the rate, evasion included, into a single
+statistic (Feldstein 1999; Slemrod and Kopczuk 2002; Saez et al. 2012).
+However, when part of the cost of evasion is a transfer rather than a
+resource cost, this elasticity alone no longer measures the efficiency
+cost of taxation (Chetty 2009). Measuring that cost requires knowing how
+evasion itself responds to the rate, separately from real activity.
+Direct evidence on this response is scarcer, and comes from the gap
+between households' consumption and reported income (Gorodnichenko et
+al. 2009) and, for firms, from bunching at kinks in the tax schedule
+(Best et al. 2015). I provide such evidence for firms' overreporting of
+inputs under a sales tax that credits purchases, from both a statutory
+rate change and a structural model that separates overreporting from
+productivity. The structural model also provides an element that the
+theory of optimal commodity taxation under evasion requires: how claimed
+deductions respond to the rate (Cremer and Gahvari 1993).
+
+Second, I provide measures of firms' cost overreporting without relying
+on confidential tax records. Most evidence on firm evasion focuses on
+underreported revenue (Slemrod 2019). Yet the cost side matters: firms
+offset enforcement on revenue by raising reported costs (Carrillo et al.
+2017; Asatryan and Peichl 2017), and paper trails make transactions
+between firms harder to misreport than sales to final consumers
+(Pomeranz 2015); therefore, firms that sell to other firms have little
+room on sales and more on costs. Cost overreporting has mostly been
+measured directly with transaction-level tax records in Ecuador and
+Mexico, which reveal the mechanism: firms acquiring fake invoices from
+ghost firms (Carrillo et al. 2022; Zumaya et al. 2021). Tax records,
+however, are confidential, available for few countries, and accessible
+only to selected researchers. Survey-based measures of firm evasion rely
+instead on firms' self-reported share of sales declared to the tax
+authority (Dabla-Norris et al. 2019), whose truthfulness cannot be
+verified. My approach needs only reported inputs and output, and is thus
+equally applicable to standard firm-level surveys and administrative
+records.
+
+Third, I extend the validation-sample approach from individuals to
+firms. This approach infers evasion by comparing an indirect measure of
+true income between a truth-reporting group and a group that may
+misreport. For example, the self-employed report less income relative to
+their food consumption than employees, whose income is reported by their
+employers (Pissarides and Weber 1989). Another application finds that
+about 12\% of wages and salaries in Estonia go unreported (Paulus 2015).
+The same comparison has also been used to measure how evasion responds
+to a tax reform (Gorodnichenko et al. 2009). For firms, however, the
+natural indirect measure, output relative to inputs, also depends on an
+additional unobservable, productivity: a firm reporting high input use
+may be overreporting or may simply have had a negative productivity
+shock. I use the production function to separate the two, with
+corporations as the truth-reporting group. Unlike the comparisons for
+individuals, mine does not require the two groups to be alike in size or
+productivity: corporations are much larger than unincorporated firms,
+and the production function accounts for the differences in productivity
+behind this gap.
+
+Finally, this thesis shows how tax-motivated misreporting of inputs
+distorts production-function estimates. Proxy-variable methods rely on a
+flexible input, typically materials, either inverting its demand
+(Levinsohn and Petrin 2003; Ackerberg et al. 2015) or using its
+first-order condition (Gandhi et al. 2020), and treat reported inputs as
+true. Work on mismeasured inputs has focused on classical, mean-zero
+measurement error, mostly in capital (Collard-Wexler and Loecker 2020).
+Overreporting differs on both counts: it is an optimal choice that
+varies with productivity, so it is neither mean zero nor independent of
+productivity, and it affects exactly the input on which these methods
+rely. Correcting for it reveals that the output elasticity of materials
+is consistently lower than uncorrected estimates and that productivity
+distributions are less dispersed and more persistent, findings that
+matter for any analysis built on measured productivity differences
+across firms.
+
+The rest of the thesis follows the argument. Chapter~\ref{sec-model}
+shows why a firm would overreport materials and what holds it back, and
+Chapter~\ref{sec-setting} explains why Colombian corporations can serve
+as truth-tellers. Chapter~\ref{sec-testing} shows that overreporting can
+be detected from production data alone, Chapter~\ref{sec-deconvolution}
+measures how much firms overreport, and Chapter~\ref{sec-pf} shows what
+correcting for it does to production-function estimates.
+Chapter~\ref{sec-fiscal} uses the 1983 reform to show that overreporting
+responds to the tax rate, and Chapter~\ref{sec-counterfactual} asks how
+much claimed deductions would move under other rates.
+Chapter~\ref{sec-literature} relates these results to the literature,
+and Chapter~\ref{sec-conclusion}, as tradition demands, concludes.
 
 \bookmarksetup{startatroot}
 
@@ -299,7 +700,9 @@ Overreporting}\label{sec-model}
   Production:
   \(Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})\),
   \(\omega\) = productivity (state variable, AR(1) later),
-  \(\varepsilon\) = ex-post shock, \(E[\exp\varepsilon]=1\).
+  \(\varepsilon\) = measurement error in output, \(E[\varepsilon]=0\)
+  (not an ex-post output shock as in GNR 2020); productivity is
+  \(\exp(\omega)\), not \(\exp(\omega+\varepsilon)\).
 \end{itemize}
 
 \begin{equation}\protect\phantomsection\label{eq-profit}{
@@ -310,7 +713,7 @@ Overreporting}\label{sec-model}
 }\end{equation}
 
 subject to the production function above. (\(\rho_t\) = materials price,
-\(\tau\) = tax rate -- single rate in this chapter, see SS2.6.)
+\(\tau\) = tax rate.)
 
 \section{First-order conditions}\label{first-order-conditions}
 
@@ -339,10 +742,7 @@ subject to the production function above. (\(\rho_t\) = materials price,
     statements / third-party reporting make \(e=0\) a hard institutional
     constraint for them, not a corner outcome of Equation~\ref{eq-foc-e}
     -- used only in the first stage (ch.~4-5), outside the evasion FOC
-    entirely. No exogenous cost shifter \(\delta_C\) for corporations
-    (considered, rejected: can't classify corner firms exogenously; the
-    U-shaped \(\kappa\) below handles both tails through the interior
-    channel alone).
+    entirely.
   \end{itemize}
 \end{itemize}
 
@@ -353,196 +753,65 @@ subject to the production function above. (\(\rho_t\) = materials price,
 \item
   Profit's Hessian is block-diagonal (\(e\) separate from \(K,L,M\)
   since \(M\perp e\)) and the production function is strictly concave,
-  so the SOC reduces to one condition:
-  \(\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0\).
-\item
-  Simplifies (with \(\phi=0\)) to a restriction on the curvature of
-  \(q\) alone: \begin{equation}\protect\phantomsection\label{eq-soc}{
-  -\frac{q''(e_{it})}{q'(e_{it})}e_{it}<2
+  so the second-order condition reduces to
+  \(\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0\). With a cost of
+  evasion linear in \(e_{it}\) and \(\phi=0\), it becomes a restriction
+  on the curvature of the detection probability alone (derivation in
+  Appendix~\ref{sec-app-soc-model}):
+  \begin{equation}\protect\phantomsection\label{eq-soc}{
+  -\frac{q''(e_{it})}{q'(e_{it})}\,e_{it}<2
   }\end{equation}
 \item
-  \textbf{Linear \(q\) always satisfies this} (\(q''=0\)). Convex always
-  satisfies it too. Concave needs ``not too concave.''
-\end{itemize}
-
-\section{Detection function: three candidates, one
-headline}\label{detection-function-three-candidates-one-headline}
-
-\begin{itemize}
-\tightlist
-\item
-  Define the \textbf{log marginal benefit}
-  \(h(e)\equiv\ln(\tau\rho_t)+\ln(1-q(e)-q'(e)e)\) (with \(\phi=0\));
-  the FOC is \(h(e)=\ln(\partial\kappa/\partial e)\). Keep the symbol
-  \(h\) generic here -- it's reused with each functional form
-  substituted in.
-\end{itemize}
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1579}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\(q(e)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-SOC
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-\(h(e)-\ln(\tau\rho_t)\)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-FOC ceiling
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\textbf{Linear (headline)} & \(\min\{\lambda e,1\}\) & always holds &
-\(\ln(1-2\lambda e)\) & \(\lambda e<\tfrac12\) \\
-Concave & \(1-e^{-\lambda e}\) & \(\lambda e<2\) &
-\(-\lambda e+\ln(1-\lambda e)\) & \(\lambda e<1\) \\
-Convex & \(\min\{(\lambda e)^k,1\}\), \(k>1\) & always holds &
-\(\ln(1-(1{+}k)(\lambda e)^k)\) & \(\lambda e<(1{+}k)^{-1/k}\) \\
-\end{longtable}
-}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Linear \(q=\min\{\lambda e,1\}\) is the headline
-  specification.} Audit-threshold interpretation: tax authority draws
-  \(T\sim U[0,1/\lambda]\), audits if \(e\ge T\); \(1/\lambda\) =
-  largest overreporting any audit tolerates, mean threshold
-  \(1/2\lambda\). At the FOC ceiling the most aggressive evader is
-  caught with probability exactly 50\% -- a coin flip.
-\item
-  Concave (exponential) was tested as a robustness check for a specific
-  estimation problem (extreme-evader leverage in \(\hat\lambda\),
-  ch.~6/8) and rejected: only delays the ceiling by a fixed
-  \textasciitilde2x factor, not enough to matter. Convex was not
-  estimated (would only tighten the ceiling further, the wrong direction
-  for that problem).
-\item
-  \textbf{Report detection probability in relative terms, not absolute.}
-  Without independent audit-rate data, \(q\)'s absolute level isn't
-  calibratable -- a skeptic can dispute \(\hat\lambda\). But under
-  linear \(q\), \(q(e_A)/q(e_B)=e_A/e_B\) is exactly
-  \(\hat\lambda\)-invariant, so relative detection risk against a
-  benchmark (e.g.~the median evader) is a robust, assumption-light
-  readout of the evasion distribution alone. (Table with real numbers:
-  ch.~8.)
-\end{itemize}
-
-\section{Cost of evasion}\label{cost-of-evasion}
-
-\begin{itemize}
-\tightlist
-\item
-  \(\kappa_{it}(e_{it},\omega_{it})=e_{it}\exp\{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}\}\)
-  -- linear in \(e\) (tractable: gives \(e^*\) in closed form under
-  linear \(q\)), \textbf{convex in \(\omega\)} (minimum at
-  \(\omega^*=\delta_1/2\delta_2\)).
-\item
-  Economic rationale for the convexity: more productive firms have more
-  resources to hide evasion in, but the most productive firms also have
-  the best access to \emph{legal} avoidance, so illegal evasion costs
-  them more at the margin -- both tails of the productivity distribution
-  evade less than the middle.
-\item
-  \(\psi_{it}\): idiosyncratic cost shock, the source of evasion
-  heterogeneity beyond what \(\omega\) explains.
-\item
-  Substituting linear \(q\) and this \(\kappa\) into
-  Equation~\ref{eq-foc-e} and taking logs:
-  \begin{equation}\protect\phantomsection\label{eq-foc-psi}{
-  \psi_{it}=h(e_{it})-\delta_0+\delta_1\omega_{it}-\delta_2\omega_{it}^2,\qquad h(e_{it})=\ln(\tau\rho_t)+\ln(1-2\lambda e_{it})
-  }\end{equation} This is the equation every stage-2 estimator (ch.~6,
-  8) is built from.
-\item
-  \(q\) and \(\kappa\) are not separately identified without independent
-  audit data; functional-form assumptions here are what let estimation
-  reproduce the observed evasion-by-productivity pattern (ch.~7's
-  motivating fact, Carrillo et al. (2022)).
-\end{itemize}
-
-\section{Closing note: the two-tax-rate
-generalization}\label{closing-note-the-two-tax-rate-generalization}
-
-\begin{itemize}
-\tightlist
-\item
-  Everything above assumes a single tax rate \(\tau\). The data
-  separately report a sales-side rate \(\tau_S\) and a purchases-side
-  rate \(\tau_P\); the model generalizes to \(\tau_S\ne\tau_P\) with the
-  firm claiming a purchases-tax credit on \(M^*=M+e\) while owing sales
-  tax on revenue at \(\tau_S\).
-\item
-  \textbf{Only \(\tau_P\) ever enters the evasion FOC} -- re-deriving
-  Equation~\ref{eq-foc-e} under two rates, the \(\tau_S\)-revenue term
-  doesn't involve \(e\) and drops out of \(\partial\pi/\partial e\)
-  entirely. The single-\(\tau\) model used above is exactly the special
-  case \(\tau_S=\tau_P\), not a different or wrong model.
-\item
-  This generalization is used only in ch.~8, where \(\tau_P\) is the
-  rate actually shocked in the counterfactual. It is \emph{not} applied
-  to the first stage in ch.~4-6: the evasion-FOC-side residual used
-  there never needed tax-splitting to begin with, and the one channel
-  that is exposed (materials-FOC/production identity, feeding
-  \(\hat\beta\)) is measured to move \(\hat\beta\) by at most 0.012
-  across the headline industries (Table~\ref{tbl-beta-net-tax}) --
-  small, though not yet re-confirmed downstream in the ELVIS estimates
-  themselves (stated explicitly as a limitation in ch.~8).
+  The detection probability may be concave, but not too concave: its
+  elasticity of \(q'\) with respect to \(e\) must stay above \(-2\). A
+  linear \(q\) satisfies the condition everywhere (\(q''=0\)), as does
+  any convex \(q\); a concave \(q\) such as \(1-e^{-\lambda e}\)
+  satisfies it only for \(\lambda e<2\).
 \end{itemize}
 
 \bookmarksetup{startatroot}
 
 \chapter{Setting and Data}\label{sec-setting}
 
-\section{Role of this chapter}\label{role-of-this-chapter}
+Colombian manufacturing in 1981--1991 offers a unique setting to study
+tax evasion by overreporting deductible inputs. First, a sales tax that
+worked as a value-added tax and rewarded overreporting materials:
+manufacturers could reduce the tax they owed on their sales by claiming
+fictitious deductions (Section~\ref{sec-setting-incentive}). Second, a
+truth-reporting group of firms: corporations, which government and
+market scrutiny kept from evading (Section~\ref{sec-setting-jo}). Third,
+variation in the tax rate: the 1983 reform raised the sales-tax rate for
+most industries but left food products exempt
+(Section~\ref{sec-setting-st}). Finally, firm-level records of output
+and inputs, together with legal form and taxes paid
+(Section~\ref{sec-setting-data}). Because the approach uses the
+production function, it applies to any data with firms' output and
+inputs, such as surveys, administrative data, or tax records.
 
-\begin{itemize}
-\tightlist
-\item
-  Institutional background (Colombian corporate tax system, 1980s) and
-  data description that every later chapter leans on, so it isn't
-  repeated in ch.~4-8.
-\item
-  Two things downstream chapters cite directly: the
-  juridical-organization split (corps = truth-reporters, used from
-  Chapter~\ref{sec-testing} onward) and the ST-liable/exempt industry
-  split (used in Chapter~\ref{sec-fiscal}).
-\end{itemize}
+\section{Data}\label{sec-setting-data}
 
-\section{Data source}\label{sec-setting-data}
-
-\begin{itemize}
-\tightlist
-\item
-  Colombian Annual Survey of Manufacturing (EAM), 1981-1991,
-  manufacturing firms with more than 10 employees.
-\item
-  Firm-level panel: output, intermediates, capital, labour, juridical
-  organization, sales taxes.
-\item
-  \textbf{Timing: the year in the panel is the activity (reference)
-  year.} DANE runs the EAM each year with the economic year immediately
-  preceding collection as the reference period (Departamento
+I use the Colombian Annual Survey of Manufacturing (EAM), a panel of
+manufacturing plants with more than 10 employees from 1981 to
+1991.\footnote{The survey's unit of observation is the plant; I refer to
+  plants and firms interchangeably.} The EAM records, for each plant,
+the output and inputs that a production function needs, the plant's
+juridical organization, and the sales tax it charged on its sales and
+paid on its purchases.\footnote{The year in the panel is the activity
+  (reference) year. DANE runs the EAM each year with the economic year
+  immediately preceding collection as the reference period (Departamento
   Administrativo Nacional de Estadística (DANE) 1995, 40): the survey
   for year \(x\) is collected during \(x+1\) and labelled \(x\)
   (e.g.~the 1992--1994 surveys were collected in 1993--1995, and the
   1992 file values assets at December 1992; Departamento Administrativo
-  Nacional de Estadística (DANE) (2018)). The observed sales-tax rates
-  confirm this for the 1981--1991 panel: each statutory change shows up
-  in the year the law took effect, not one year later
-  (Table~\ref{tbl-st-by-year}, Section~\ref{sec-setting-st}).
-\item
-  UPDATE: state sample size and coverage (industries, years) with the
-  actual filtered N; Table~\ref{tbl-sum-stats} gives the working sample
-  after the \texttt{is.finite(y,k,l,m)} filter.
-\end{itemize}
+  Nacional de Estadística (DANE) (2018)).} The panel is well known: it
+has been used in seminal work on export dynamics, reallocation, and
+productivity, and to estimate production functions (Roberts and Tybout
+1997; Das et al. 2007; Eslava et al. 2004; Gandhi et al. 2020). Similar
+to these studies, I observe inputs as firms reported them; in contrast,
+I ask how the tax incentives of the period, including the 1983 reform,
+shaped those reports. The working sample has 40,508 firm-years from
+5,915 plants in 28 industries, covering the four juridical organizations
+described in Section~\ref{sec-setting-jo} (Table~\ref{tbl-sum-stats}).
 
 \begin{table}
 
@@ -557,24 +826,69 @@ Colombia (1981--1991).}
 
 \end{table}%
 
-\begin{itemize}
-\tightlist
-\item
-  Two groups of shares (of revenue): direct cost shares (sales tax,
-  skilled/unskilled labour wages, capital) and the
-  materials/intermediates decomposition (materials, electricity, fuels,
-  repair \& maintenance, services, deductible vs.~non-deductible
-  intermediates). The materials/deductible split matters later
-  (Chapter~\ref{sec-testing}): only deductible intermediates carry an
-  overreporting incentive.
-\item
-  Note for the write-up, not a rendering issue: skilled-labour-share SD
-  (1.62) is far above its own mean/Q3 --- a small number of extreme
-  outliers in that one column. Decide whether to mention/trim; not
-  addressed in the table itself.
-\end{itemize}
+\section{The sales tax: a credit on
+purchases}\label{sec-setting-incentive}
 
-\section{Juridical organization}\label{sec-setting-jo}
+The Colombian sales tax worked as a value-added tax (VAT): manufacturers
+credited the tax paid on their purchases against the tax charged on
+their sales. The tax originally targeted the manufacturing sector, on
+finished goods and imports. From 1966, manufacturers could claim credit
+on the taxes paid on inputs \emph{incorporated} into the product, and
+from 1974 on any purchase made by the firm, except the acquisition of
+capital goods; the credits worked through a system of refunds (Perry and
+Triana 1990, 180).
+
+The credit rewards overreporting materials. An artificial increase in
+the reported value of materials raises the credit by \(\tau_P\) pesos
+per peso, the rate paid on purchases, and reduces the firm's tax
+liability by as much. Capital goods carry no credit and labour is not a
+taxed purchase, so I treat raw materials consumed, \(M^*_{it}\), as the
+overreported input.
+
+Enforcement was weak. Tax evasion in Colombia was high during the sample
+period (Sánchez Torres and Gutiérrez Sourdis 1994), and the tax
+authority had an inefficient auditing system, was overburdened, and
+faced legal loopholes (Perry and Triana 1990).
+
+\section{Juridical organizations: corporations as
+non-evaders}\label{sec-setting-jo}
+
+Corporations were the firms least likely to overreport, for three
+reasons. First, the Superintendent of Corporations closely monitored
+them by requiring an auditor. Second, freely tradable shares create an
+incentive to be profitable: if a corporation falsely reports lower
+profits, the value of its shares would likely fall, scaring away
+shareholders and potential investors. Consistent with this, stock prices
+of public corporations fall, on average, when news of their involvement
+in tax shelters becomes public (Hanlon and Slemrod 2009; Slemrod 2019,
+909, fn. 7). Third, shareholders pay the individual income tax only on
+distributed dividends, so a corporation has an additional margin:
+through its dividend policy, it decides when its owners pay.
+Partnerships and LLCs have no such margin, since their owners are taxed
+on all profits.
+
+The data distinguish several juridical organizations; I keep four:
+corporations, limited liability companies (LLCs), partnerships, and
+proprietorships (Table~\ref{tbl-jo-summary}). Corporations
+(\emph{sociedades anónimas}) are associations of capital, the
+counterpart of the US corporation: at least five shareholders, tradable
+shares of equal value, and liability limited to the capital contributed
+(Joint Tax Program of the Organization of American States and the
+Inter-American Development Bank 1965). An LLC (\emph{sociedad de
+responsabilidad limitada}) has two or more partners, not exceeding 20
+(Joint Tax Program of the Organization of American States and the
+Inter-American Development Bank 1965) or 25 (Departamento Administrativo
+Nacional de Estadística (DANE) 2018), whose shares cannot be traded and
+whose liability is limited to the capital contributed; it is an
+association of persons, not of capital, and is not subject to the
+Superintendent of Corporations unless more than one-third of it is owned
+by a corporation (Joint Tax Program of the Organization of American
+States and the Inter-American Development Bank 1965). Partnerships are
+associations of two or more persons who are jointly and severally liable
+for the partnership's operations; they are a small group (3.5\% of
+firm-years), pooled with the other unincorporated firms. Proprietorships
+are individuals who allocate part of their assets to conduct commercial
+activities.
 
 \begin{table}
 
@@ -589,64 +903,45 @@ firms in Colombia (1981--1991).}
 
 \end{table}%
 
-\begin{itemize}
-\tightlist
-\item
-  Five types in the data; four kept in the analysis (Corporation,
-  Limited Liability Company, Partnership, Proprietorship). Others
-  (cooperatives, community/state enterprises) excluded --- not
-  profit-driven, no evasion incentive of the kind modelled.
-\item
-  Definitions (safe to copy from \texttt{80-colombia.qmd}, institutional
-  facts, not model output):
+The other organizations in the data are excluded: stock partnerships
+(\emph{sociedades en comandita por acciones}), whose shares are tradable
+and which are taxed as corporations (Joint Tax Program of the
+Organization of American States and the Inter-American Development Bank
+1965), and non-profit or state organizations, such as cooperatives,
+community enterprises, and state industrial enterprises, whose proceeds
+come from taxes, fees, or special contributions.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{Corporation} (\emph{sociedad anónima}): capital association,
-    \(N\ge5\) shareholders, tradable shares, liability limited to
-    capital, supervised by the Superintendent of Corporations with a
-    mandatory auditor.
-  \item
-    \textbf{Limited liability company} (\emph{sociedad de
-    responsabilidad limitada}): \(2\le N\le20\) (25 in the 1992 EAM
-    documentation), non-tradable shares, liability limited to capital.
-  \item
-    \textbf{Partnership} (\emph{sociedad colectiva} and variants):
-    \(N\ge2\), full/joint liability, not a capital association.
-  \item
-    \textbf{Proprietorship}: single individual, full liability.
-  \end{itemize}
-\item
-  Corporate Income Tax (CIT) by type: Corporations 40\% on distributed
-  dividends; Partnerships and LLCs 20\% on profits (whether distributed
-  or not); Proprietorships on the graduated individual schedule (56
-  brackets, 0.5\%-51\%).
-\item
-  Since 1974, a minimum presumptive income (8\% of net wealth) applied
-  to individuals and juridical organizations except LLCs. Some
-  industries/regions had CIT exempted or reduced (airlines, publishing,
-  reforestation; ``frontier'' regions).
-\end{itemize}
+The juridical organizations faced different income-tax rates. Since the
+1974 reform, corporations were taxed at 40\% of their income, and
+partnerships and LLCs at 20\% (Mclure 1989; Perry and Cárdenas 1986,
+vol. 1, p.~23). Proprietors were subject to the graduated individual
+schedule, with a top rate of 56\% (Perry and Cárdenas 1986, vol. 1,
+p.~36). Owners were taxed again at the individual level, but
+differently: shareholders paid tax only on the dividends they received,
+whereas owners of partnerships and LLCs paid tax on their share of the
+profits, whether distributed or not (Mclure 1989). The income of
+proprietorships was taxed only once, at the individual level. Because
+materials are a deductible cost, overreporting them also lowers the
+income tax, so the reward to overreporting varied within industries too,
+with the juridical organization.
 
 \begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-note-color!10!white, colframe=quarto-callout-note-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{Note}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
-Institutional summary table (rates/liability/capital/owners by type) ---
-kept as a plain markdown table, not a generated PNG, since it states
-fixed institutional facts rather than computed statistics:
-
 {\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1818}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2727}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1818}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1818}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1818}}@{}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\centering
 Organization
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Corporate Income Tax
+Income tax (company)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Income tax (owners)
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 Liability
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
@@ -658,80 +953,530 @@ Owners
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Corporation & 40\% (on distributed dividends) & Limited to capital
+Corporation & 40\% & On dividends received & Limited to capital
 participation & Tradable capital shares & \(N\ge5\) \\
-Limited Co. & 20\% (on profits) & Limited to capital participation &
+LLC & 20\% & On all profits & Limited to capital participation &
 Non-tradable capital shares & \(2\le N \le 20\ (25)\) \\
-Partnership & 20\% (on profits) & Full & Not a capital association &
+Partnership & 20\% & On all profits & Full & Not a capital association &
 \(N\ge2\) \\
-Proprietorship & Individual Income Tax & Full & Owner & \(N=1\) \\
+Proprietorship & -- & Individual schedule & Full & Owner & \(N=1\) \\
 \end{longtable}
 }
 
 \end{tcolorbox}
 
-\section{Sales tax}\label{sec-setting-st}
+\section{The 1983 reform}\label{sec-setting-st}
 
-\begin{itemize}
-\tightlist
-\item
-  Targeted manufacturing (finished goods, imports). Since 1974, credit
-  for tax paid on purchases (except capital goods) --- a VAT in
-  substance.
-\item
-  Basic rate 15\%; preferential 6\% for clothing, footwear,
-  popular-housing inputs; 35\% on luxury goods. Exports, foodstuffs,
-  drugs, textbooks excluded from the start, along with
-  capital/agricultural inputs and transport/agricultural equipment.
-\item
-  This is the rate the 1983 reform changed (Chapter~\ref{sec-fiscal}):
-  most ST-liable industries moved from 6\% to 10\%; ST-exempt industries
-  stayed exempt. State this here as background; the reform and its
-  effect on evasion belong to Chapter~\ref{sec-fiscal}, not here.
-\item
-  \textbf{The 1983 reform: debate, enactment, and effective date.}
+The 1983 reform raised the sales-tax rate for most of manufacturing but
+left food products exempt. It combined the items previously taxed at 6
+and 15 percent into a single 10 percent bracket (Perry and Triana 1990,
+182), while food products (industries 311 and 312), exempt since the tax
+was introduced (Perry and Triana 1990, 181), stayed exempt. For most
+firms this was an increase: between 1983 and 1985, the median rate on
+sales rose from 6\% to 10\%, and the median rate on purchases, the rate
+at which each fictitious peso of materials is credited, from 6.6\% to
+9.9\% (Table~\ref{tbl-st-by-year}).
 
-  \begin{itemize}
-  \tightlist
-  \item
-    \emph{Debate (1981--1983).} The Bird--Wiesner Mission (1978--1981),
-    a technical mission on Colombia's intergovernmental finances led by
-    Richard Bird and Eduardo Wiesner, reported in 1981 (Junguito and
-    Rincón 2004). Among its recommendations: better tax administration
-    to reduce evasion, stronger collection tools, wider withholding, and
-    more auditing; the 1983 reforms followed (Bolaños Bolaños 2019).
-  \item
-    \emph{Enactment (end of 1983).} Using the extraordinary powers of
-    art. 53 of Ley 9 de 1983, the government issued Decreto 3541 on 29
-    December 1983 (Diario Oficial No.~36.452, 18 January 1984). It set
-    the general sales-tax rate at 10\% (art. 6) and extended the tax to
-    the retail level as a value-added tax (Presidencia de la República
-    de Colombia 1983; Perry and Triana 1990).
-  \item
-    \emph{Effective date (1 April 1984).} The pre-reform sales tax
-    applied until 31 March 1984; the value-added tax applied from 1
-    April 1984 (art. 92 of Decreto 3541) (Corte Constitucional de
-    Colombia 2016). Perry and Triana (1990) likewise date the new
-    structure to ``the reforms of April 1984''. So \textbf{1983 is the
-    last full pre-reform year and 1984 is a partial year}.
-  \item
-    \emph{1990 reform.} Ley 49 de 1990 (28 December 1990) raised the
-    general rate to 12\% from 1 January 1991 (art. 26) (Congreso de la
-    República de Colombia 1990).
-  \end{itemize}
-\item
-  \textbf{The 1983 reform also cut income-tax rates} (Perry and Cárdenas
-  1986, vol. 1, p.~36; Ocampo and Perry 1983). Ley 9 de 1983 lowered the
-  individual schedule, and thus the rates faced by Proprietorships, to
-  offset the rise in effective rates caused by inflation since 1974
-  (bracket creep); the new schedule still left real incidence about 8\%
-  above 1974 in most brackets. Relative to the 1982 schedule, average
-  rates fell by 4.6 percentage points on average across brackets, or
-  10--35\% of the 1982 rates above the lowest bracket
-  (Table~\ref{tbl-inc-tax-1983}). The top individual rate fell from 56\%
-  to 49\%. LLCs' rate fell from 20\% to 18\%, to compensate them for
-  being brought under the presumptive income regime by the same law.
-\end{itemize}
+The new rate applied from 1 April 1984 (Corte Constitucional de Colombia
+2016; Perry and Triana 1990), so 1983 is the last full pre-reform year
+and 1984 a partial one. The observed rates match this timing
+(Table~\ref{tbl-st-by-year}). The median rate paid on sales is 6\% in
+1981--1983, 10\% from 1985, and 12\% in 1991, after Ley 49 de 1990
+raised the general rate to 12\% (Congreso de la República de Colombia
+1990). In 1984 it is 9\%, exactly what three months at 6\% and nine
+months at 10\% give (\(0.25\times6\%+0.75\times10\%=9\%\)).
+
+\begin{table}
+
+\caption{\label{tbl-st-by-year}Observed sales-tax rates by survey year,
+on sales (\(\tau_S\)) and on purchases (\(\tau_P\)), against the
+statutory general rate in force. Rows in bold are the years a reform
+took effect: 1984 (Decreto 3541 de 1983, from 1 April) and 1991 (Ley 49
+de 1990, from 1 January). Firms with a rate strictly between 0 and
+50\%.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/ch03-st-by-year.png}}
+
+}
+
+\end{table}%
+
+The same law, Ley 9 de 1983, also cut income-tax rates. The individual
+schedule, faced by proprietorships, fell by 4.6 percentage points on
+average, with the top rate falling from 56\% to 49\%, and the LLC rate
+fell from 20\% to 18\% (Perry and Cárdenas 1986, vol. 1, p.~36).
+
+The reform followed a public debate. The Bird--Wiesner Mission
+(1978--1981), a technical mission on Colombia's intergovernmental
+finances led by Richard Bird and Eduardo Wiesner, reported in 1981
+(Junguito and Rincón 2004); among its recommendations were better tax
+administration to reduce evasion, stronger collection tools, wider
+withholding, and more auditing (Bolaños Bolaños 2019). Using the
+extraordinary powers granted by article 53 of Ley 9 de 1983, the
+government issued Decreto 3541 on 29 December 1983. It set the general
+sales-tax rate at 10\% (art. 6), extended the tax to the retail level as
+a value-added tax, and took effect on 1 April 1984 (art. 92)
+(Presidencia de la República de Colombia 1983; Perry and Triana 1990).
+
+\bookmarksetup{startatroot}
+
+\chapter{Testing for Tax Evasion through
+Overreporting}\label{sec-testing}
+
+\section{Non-evaders}\label{sec-testing-nonevaders}
+
+Because the firms' optimization decisions depend on the fiscal
+environment, the identification strategy should be motivated by the
+fiscal environment \(\Gamma\). In particular, the identification
+strategy will be as good as how well we can tell apart a subset of firms
+that have the highest incentive to not evade. For example, in the case
+of Spain, the firms above the revenue LTU threshold. In the case of
+Colombia, the corporations (Section~\ref{sec-setting-jo}).
+
+\textbf{Assumption 1 (Non-evaders).} Based on the fiscal environment
+\(\Gamma\), the researcher can identify a subset of firms
+\(\theta_i\in\Theta^{NE}\subset \Theta\) that does not evade taxes by
+overreporting inputs.
+
+For those firms, then \(\mathbb{E}[u_{it}|\theta_i\in\Theta^{NE}]=0\).
+
+In addition, I impose the following timing assumption.
+
+\textbf{Assumption 2 (Independence).} The measurement error in output,
+\(\varepsilon_{it}\), is independent of overreporting \(u_{it}\) and of
+true materials \(M_{it}\), with \(\mathbb{E}[\varepsilon_{it}]=0\).
+
+\section{Identifying the output elasticity of
+materials}\label{sec-testing-beta}
+
+Assume the production function is Cobb-Douglas,
+\(M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})\).
+The econometrician observes output, capital, labour, and prices of
+intermediate inputs and output \(\{Y_{it},K_{it},L_{it},\rho_t, P_t\}\),
+but she only observes overreported intermediate inputs,
+\(M^*_{it}=M_{it}+e_{it}\). Let
+\(u_{it}\equiv\ln(M^*_{it}/M_{it})=\ln(1+e_{it}/M_{it})\) denote the log
+overreporting ratio.
+
+From the materials first-order condition (Equation~\ref{eq-foc-m}), by
+multiplying both sides by the intermediate inputs and dividing by the
+output, we get
+
+\begin{equation}\protect\phantomsection\label{eq-foc-cd}{
+\begin{aligned}
+    \ln\left(\frac{\rho_t M_{it}}{P_{t}Y_{it}}\right) &=\ln\beta - \varepsilon_{it} \\
+    \ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right) &=\ln\beta - \varepsilon_{it}+u_{it}
+\end{aligned}
+}\end{equation}
+
+where \(Y_{it}\) is output as measured, with measurement error
+\(\varepsilon_{it}\). We can use Equation~\ref{eq-foc-cd} and
+Assumptions 1 and 2 to recover the output elasticity of materials,
+\(\beta\),
+
+\begin{equation}\protect\phantomsection\label{eq-foc-cd-exp}{
+    \ln\beta=\mathbb{E}\left[\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)\Bigg| \Theta^{NE}\right].
+}\end{equation}
+
+\section{The observed residual}\label{sec-testing-residual}
+
+Having recovered the output elasticity of materials, \(\beta\), for all
+firms, I can form the following variable using observed data.
+
+\begin{equation}\protect\phantomsection\label{eq-ob-ev}{
+    \mathcal V_{it}\equiv\ln\left(\frac{\rho_t M^*_{it}}{P_{t}Y_{it}}\right)-\ln\beta=u_{it}-\varepsilon_{it}
+}\end{equation}
+
+Tax evasion therefore can be recovered up to an independent random
+variable.
+
+\section{Testing for overreporting}\label{sec-testing-test}
+
+Equation~\ref{eq-ob-ev} suggests a way to test the presence of tax
+evasion through cost overreporting. Let
+\(\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}\) and define the
+null hypothesis as the absence of cost overreporting and the alternative
+hypothesis as the presence of cost overreporting. Consequently, to
+verify for the presence of tax evasion by overreporting, we can use a
+one-sided test where under the alternative hypothesis
+\(H_1: \mu_{\mathcal{V}}>0\), and under the null,
+\(H_0: \mu_{\mathcal{V}}\le0\).
+
+I invert the test. For each industry, Table~\ref{tbl-evasion-test}
+displays the estimated mean of \(\mathcal V_{it}\) among unincorporated
+firms and the values of \(\mu_{\mathcal V}\) in \([0,1]\) that the test
+does not reject at the 5\% level, taking \(\ln\hat\beta\) from
+corporations as the true value. The test detects overreporting where
+this set excludes zero. Appendix~\ref{sec-app-test-robustness} reports a
+conservative version of the test and a bootstrap test that carries the
+sampling error of \(\ln\hat\beta\).
+
+\begin{table}
+
+\caption{\label{tbl-evasion-test}Test for overreporting of materials by
+industry. Mean of \(\mathcal V_{it}\) among unincorporated firms and
+95\% test-inversion region for its expectation (sharp test), with
+\(\ln\beta\) estimated from corporations.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/ch04-evasion-test.png}}
+
+}
+
+\end{table}%
+
+\bookmarksetup{startatroot}
+
+\chapter{Deconvolving Tax Evasion}\label{sec-deconvolution}
+
+We can do better however. By Assumption 2, the measurement error
+\(\varepsilon_{it}\) is independent of overreporting \(u_{it}\). Note
+that, from Equation~\ref{eq-foc-cd}, we also recovered
+\(f_{\varepsilon}(\varepsilon)\), the distribution of \(\varepsilon\).
+By using deconvolution methods, I can recover the tax evasion apart from
+the output shock.
+
+In particular, from probability theory, the density of the sum of two
+\textbf{independent} random variables is equal to the
+\textbf{convolution} of the densities of both addends (Meister 2009).
+Hence, from Equation~\ref{eq-ob-ev},
+
+\begin{equation}\protect\phantomsection\label{eq-conv}{
+f_{\mathcal{V}}(\mathcal{V})=\int f_u(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\text{d}\varepsilon
+}\end{equation}
+
+where \(f_{\mathcal{V}}\) denotes the density of \(\mathcal{V}\).
+
+\section{Estimation}\label{sec-deconvolution-estimation}
+
+Following Kang and Qiu (2021), consider the following logspline model:
+
+\[
+f_{u|\Theta}(u)=\exp(s(u;\theta)-C(\theta)), \quad L < u < R
+\]
+
+where \([L,R]\) define the support of \(f_u\),
+
+\[
+s(u;\theta)=\sum_{j=1}^{K-1}\theta_j B_j(u),
+\]
+
+\(\{B_j(u), j=1,2,\dots, K\}\) is a sequence of cubic B-spline basis
+functions, and
+
+\[
+C(\theta) = \log\left(\int^R_L \exp(s(u;\theta)) \text{d}u \right) < \infty .
+\]
+
+Then \(f_{u|\Theta}(u)\) is a positive density function on \((L,R)\).
+The logspline model assumes that \(f_u\) is a twice continuously
+differentiable function. The last basis function is not used for
+identifiability purposes, given that by the property of B-splines,
+\(\sum_{j=1}^{K}B_j(u)=1\) for all \(u \in (L,R)\).
+
+The log likelihood of the observed variable \(\mathcal{V}\) is
+
+\[
+\begin{aligned}
+    l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})f_{u|\theta}(u)\text{d}u\right)\\
+    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})\exp(s(u;\theta))\text{d}u\right)-nC(\theta)
+\end{aligned}
+\]
+
+The usual maximum likelihood estimate \(\hat{\theta}\) is the maximizer
+of \(l_{\mathcal{V}}(\theta)\).
+
+To avoid overfitting, I add a penalty term to the log-likelihood
+function. The penalty term is a linear combination of the squared second
+derivatives of the B-spline basis functions. The second derivative of
+the B-splines is approximated by finite differences (Eilers and Marx
+1996). The penalty term is given by
+
+\[
+\text{Penalty}(\theta) = \lambda \cdot \|\mathbf{D}\theta \|^2
+\]
+
+Intuitively, we want to penalize excessive curvature in the log-density
+\(\log f_u(u) \approx s(u; \theta) = \sum_j \theta_j B_j(u)\), where
+\(B_j\) are B-spline basis functions.
+
+\section{The overreporting ratio}\label{sec-deconvolution-ratio}
+
+The deconvolved object is the log ratio \(u_{it}=\ln(1+e_{it}/M_{it})\).
+The overreporting ratio itself,
+\(x_{it}\equiv e_{it}/M_{it}=\exp(u_{it})-1\), is a monotonic,
+differentiable transformation of \(u_{it}\), so its density follows from
+a density transformation (Hogg et al. 2019, Theorem 1.7.1),
+
+\begin{equation}\protect\phantomsection\label{eq-ratio-dens}{
+f_{x}(y)= f_u\big(\ln (1+y)\big)\Bigg|\frac{1}{1+y}\Bigg|,\qquad y\ge0.
+}\end{equation}
+
+Table~\ref{tbl-overreporting-ratio} and
+Figure~\ref{fig-overreporting-ratio} display the estimated distribution
+of the overreporting ratio by industry.
+
+\begin{table}
+
+\caption{\label{tbl-overreporting-ratio}Distribution of the
+overreporting ratio \(e/M\) by industry, unincorporated firms.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/ch05-overreporting-ratio.png}}
+
+}
+
+\end{table}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/ch05-overreporting-ratio.png}}
+
+}
+
+\caption{\label{fig-overreporting-ratio}Deconvolved density of the
+overreporting ratio \(e/M\) by industry, unincorporated firms.}
+
+\end{figure}%
+
+\bookmarksetup{startatroot}
+
+\chapter{Production Function Parameters and Productivity}\label{sec-pf}
+
+Here, I show how to recover the rest of the parameters of the production
+function, including productivity and its Markov process. We can do it in
+several ways, depending on our object of interest.
+
+In the literature, it is not uncommon to assume that productivity
+follows a Markov process. That is,
+
+\begin{equation}\protect\phantomsection\label{eq-prod-markov}{
+    \omega_{it}=g(\omega_{it-1})+\eta_{it}
+}\end{equation}
+
+Let \(\ln X_{it}=x_{it}\). With Equation~\ref{eq-ob-ev}, we can form the
+following observed variable,
+
+\begin{equation}\protect\phantomsection\label{eq-big-w}{
+\begin{aligned}
+    \mathcal W_{it} & \equiv y_{it} - \beta (m^*_{it}-\mathcal{V}_{it})\\
+    & = y_{it} - \beta (m_{it}+u_{it}-u_{it}+\varepsilon_{it})\\
+    & = y_{it} - \beta m_{it}-\beta\varepsilon_{it}\\
+    & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+Here, intuitively, we are trading unobservables, the unobserved tax
+evasion for the measurement error. Also note that it is not necessary to
+learn tax evasion to recover productivity. This is useful if a
+practitioner is only interested in productivity and not in tax evasion.
+
+By replacing \(\omega_{it}\) from Equation~\ref{eq-big-w} in
+Equation~\ref{eq-prod-markov}, we get
+
+\begin{equation}\protect\phantomsection\label{eq-big-w-reg}{
+\begin{aligned}
+    \mathcal W_{it}=(1-\beta)\varepsilon_{it}+\alpha_K k_{it}+\alpha_L l_{it}+g(\mathcal W_{it-1}-(1-\beta)\varepsilon_{it-1}-\alpha_K k_{it-1}-\alpha_L l_{it-1})+\eta_{it}
+\end{aligned}
+}\end{equation}
+
+If \(g(\xi)=\gamma_0 +\gamma_1\xi\), to learn \(\alpha\) and \(g\), we
+need to find instruments \(Z\) such that,
+
+\begin{equation}\protect\phantomsection\label{eq-eta-moments}{
+\mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\gamma_1(1-\beta)\varepsilon_{it-1}|Z]=0.
+}\end{equation}
+
+Table~\ref{tbl-orth} displays candidates for \(Z\).
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2174}}
+  >{\centering\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7826}}@{}}
+\caption{Orthogonality by residuals}\label{tbl-orth}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Orthogonality
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Orthogonality
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\eta_{it}\) & \(k_{it},l_{it},\varepsilon_{it}\),
+\(k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}\) \\
+\(\varepsilon_{it}\) &
+\(k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}\),
+\(k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}\) \\
+\(\varepsilon_{it-1}\) &
+\(k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}\),
+\(k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}\) \\
+\end{longtable}
+
+Once the parameters of the production function are identified, we can
+use the following observed variable to recover \(\omega_{it}\),
+
+\begin{equation}\protect\phantomsection\label{eq-w-squiggle}{
+\begin{aligned}
+    \widetilde{\mathcal W}_{it} & \equiv \mathcal W_{it} - \alpha_K k_{it}-\alpha_L l_{it}\\
+    & = \omega_{it}+(1-\beta)\varepsilon_{it}
+\end{aligned}
+}\end{equation}
+
+\section{Production function estimates}\label{sec-pf-estimates}
+
+\begin{table}
+
+\caption{\label{tbl-pf-comparison}Production function estimates by
+method: evasion-corrected with instrument \(\tilde{\mathcal W}_{it-2}\),
+with \(m^*_{it-1}\), and with both (joint efficient GMM), and
+uncorrected GNR and OLS. Below each corrected estimate, the 95\%
+test-inversion regions (sharp and conservative).}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/ch06-pf-comparison.png}}
+
+}
+
+\end{table}%
+
+First, because tax evasion artificially inflates the intermediates' cost
+share of revenues, lower output elasticities of intermediates than
+traditional methods are expected. Table~\ref{tbl-pf-comparison} shows
+that correcting for tax evasion results in smaller output elasticities
+of intermediates than both OLS and GNR in all seven industries.
+
+The elasticities of capital and labour vary across industries, with some
+being lower, some higher, and others quite similar. This is expected.
+The direction of the bias in the elasticities of capital and labour
+depends on whether these inputs are complements or substitutes of
+intermediate inputs. This relationship will vary by industry. Put
+differently, for different industries, the cross-elasticity between
+intermediates and capital, and intermediates and labour will be
+different in direction and magnitude. Since these cross-elasticities are
+not included in the CD production function, the elasticities of capital
+and labour should reflect different degrees of these variations once
+intermediates are corrected for overreporting.
+
+Productivity estimates in {this chapter} use the
+\(\tilde{\mathcal W}_{it-2}\) estimates of
+Table~\ref{tbl-pf-comparison}.
+
+\begin{table}
+
+\caption{\label{tbl-productivity-comparison}Productivity corrected for
+tax evasion (deconvolved, instrument \(\tilde{\mathcal W}_{it-2}\)) and
+uncorrected (GNR), by industry.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/ch06-productivity-comparison.png}}
+
+}
+
+\end{table}%
+
+Correcting for overreporting also makes productivity more persistent.
+With instrument \(\tilde{\mathcal W}_{it-2}\), the AR(1) coefficient of
+\(\omega_{it}\) is 0.90 to 0.96 across the seven industries, against
+0.81 to 0.89 for GNR, so the half-life of a productivity shock,
+\(\ln 0.5/\ln\hat\gamma_1\), is 7 to 15 years instead of 3 to 6 years:
+between 1.6 and 3.1 times longer, depending on the industry
+(Table~\ref{tbl-productivity-comparison}).
+
+Three caveats apply to Table~\ref{tbl-productivity-comparison}. First,
+the P-spline penalty smooths the deconvolved density, which can
+understate its dispersion, whereas the firm-level GNR estimates of
+\(\omega_{it}\) carry estimation noise, which can overstate it. Second,
+Gandhi et al. (2020) define productivity in levels as
+\(\exp(\omega_{it}+\varepsilon_{it})\), with \(\varepsilon_{it}\) an
+ex-post output shock. Here, \(\varepsilon_{it}\) is measurement error in
+output, so productivity is \(\exp(\omega_{it})\). The GNR estimates in
+Table~\ref{tbl-productivity-comparison} use the same convention, so both
+compare \(\omega_{it}\) with \(\omega_{it}\), and their published
+productivity ratios are not directly comparable with these. Third, the
+two persistence estimates come from different estimators: the corrected
+\(\hat\gamma_1\) is an instrumental-variables estimate within the
+production-function step, whereas the GNR \(\hat\gamma_1\) is a
+least-squares regression of firm-level \(\omega_{it}\) on its lag, which
+estimation noise in \(\omega_{it}\) biases towards zero. Part of the gap
+in persistence, and so in half-lives, may reflect this difference rather
+than overreporting.
+
+\bookmarksetup{startatroot}
+
+\chapter{Fiscal Policy Evaluation: The 1983 Reform}\label{sec-fiscal}
+
+Firms are known to overreport costs when tax enforcement tightens, which
+raises the expected cost of evading, but less is known about the benefit
+side: whether they overreport more when the tax rate, which sets how
+much each peso of fictitious inputs saves, goes up. I investigate this
+question and find evidence that input overreporting rises when the tax
+rate increases. In 1983, Colombia raised the sales-tax rate in most
+manufacturing industries while others remained exempt. Overreporting by
+unincorporated firms rose after the reform, reaching about 8\% of true
+materials by 1987, and the increase was concentrated in the industries
+where the rate went up.
+
+Whether firms evade more when tax rates rise matters for policymakers.
+If evasion rises with the rate, a tax increase raises less revenue than
+its mechanical effect suggests, and evasion affects the marginal
+efficiency cost of raising tax rates (Slemrod 2019, 907). The concern is
+especially relevant for sales and value-added taxes, whose credit on
+purchases is a natural target of fictitious deductions (Carrillo et al.
+2022). Yet recent empirical work says more about enforcement than about
+tax rates.
+
+The 1983 reform changed statutory rates rather than enforcement, which
+makes it a rare setting in which to study this question. Governments
+have agreed to randomize letters, audits and information reporting, but
+not tax rates (Slemrod 2019), and among the studies Slemrod reviews, the
+evidence on tax rates comes mostly from misreported imports (Fisman and
+Wei 2004; Handley and Moore 2017). The same literature shows that firms
+adjust reported costs: when tax authorities pushed firms to report more
+revenue, Ecuadorian firms raised reported costs by 96 and Armenian firms
+70--80 cents per dollar of additional revenue (Carrillo et al. 2017;
+Asatryan and Peichl 2017).
+
+In the model, the sales tax rate shifts the marginal benefit of
+overreporting materials: a higher \(\tau\) raises the credit claimed on
+each peso of fictitious inputs (Chapter~\ref{sec-model}). Although the
+model has no income tax, the same logic extends to it: overreported
+inputs also lower reported profits and, thus, the income-tax base. An
+increase in either rate therefore raises the incentive to overreport
+inputs, and a decrease lowers it.
+
+The 1983 fiscal policy changed incentives \emph{across} industries and
+\emph{within} industries. Across industries, the sales-tax (ST) rate
+increased from 6\% to 10\% for most ST-liable industries, while
+ST-exempt industries, food products, remained exempt
+(Section~\ref{sec-setting-st}). Within industries, the income tax
+changed by juridical organization (JO), and in the opposite direction.
+\emph{Ley 9 de 1983} cut individual income-tax rates by 4.6 percentage
+points on average across income brackets relative to the 1982 schedule,
+and thus proprietorships faced lower rates (Perry and Cárdenas 1986).
+LLCs received a smaller cut, from 20\% to 18\% (Perry and Cárdenas
+1986). Overreporting inputs lowers both taxes, through a larger credit
+on purchases and a smaller income-tax base, so the two changes pull the
+incentive to overreport in opposite directions. In ST-liable industries,
+the net incentive is therefore ambiguous for both: proprietorships were
+compensated for much of the sales-tax increase through the income tax,
+while LLCs were insufficiently compensated. In ST-exempt industries, the
+income-tax cut alone lowered the incentive for proprietorships and
+changed it little for LLCs, whose cut was small.
 
 \begin{table}
 
@@ -747,21 +1492,6 @@ stayed (Decreto 397, Ley 9 de 1983), transcribed from Perry and Cárdenas
 }
 
 \end{table}%
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Marginal rates fell less than average rates at both ends of
-  the distribution} (Table~\ref{tbl-marg-tax-1983}). The incentive to
-  overreport costs depends on the marginal rate, but Ley 9 de 1983
-  presented its schedule in average rates, which Perry and Cárdenas
-  (1986, 36) call ``simple cosmética política''. Implied marginal rates,
-  computed from the average rates in Table~\ref{tbl-inc-tax-1983}, fell
-  by up to 12.7 percentage points in the middle of the distribution, but
-  barely changed at low incomes (+0.5 percentage points between 200,000
-  and 300,000 pesos) and fell only about 2 percentage points above
-  1,000,000 pesos.
-\end{itemize}
 
 \begin{table}
 
@@ -779,229 +1509,26 @@ over the interval.}
 
 \end{table}%
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{The observed rates match the reforms' timing}
-  (Table~\ref{tbl-st-by-year}). The median rate paid on sales is 6\% in
-  1981--1983, 10\% from 1985, and 12\% in 1991. In 1984 it is 9\%,
-  exactly what three months at 6\% and nine months at 10\% give
-  (\(0.25\times6\%+0.75\times10\%=9\%\)).
-\end{itemize}
-
-\begin{table}
-
-\caption{\label{tbl-st-by-year}Observed sales-tax rate on sales by
-survey year, against the statutory general rate in force. Rows in bold
-are the years a reform took effect: 1984 (Decreto 3541 de 1983, from 1
-April) and 1991 (Ley 49 de 1990, from 1 January). Firms with a rate
-strictly between 0 and 50\%.}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{tables/ch03-st-by-year.png}}
-
-}
-
-\end{table}%
-
-\section{Why corporations are the least likely
-evaders}\label{sec-setting-corp-evasion}
-
-\begin{itemize}
-\tightlist
-\item
-  Three institutional reasons (from \texttt{80-colombia.qmd}'s
-  discussion), each mapped to a modelling choice:
-
-  \begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
-  \tightlist
-  \item
-    Mandatory auditor and Superintendent oversight \(\to\) higher
-    detection probability \(q\) for corps in the model.
-  \item
-    Tradable shares create a market-value cost to underreporting profits
-    \(\to\) an implicit cost channel outside \(\kappa(e,\omega)\), not
-    separately modelled.
-  \item
-    CIT on distributed (not accrued) dividends gives corporations a
-    timing margin ordinary profit-shifting doesn't have.
-  \end{enumerate}
-\item
-  This is the institutional justification for treating corps as \(e=0\)
-  in stage 1 (Chapter~\ref{sec-testing},
-  Chapter~\ref{sec-deconvolution}) --- state it here once, reference it
-  there.
-\item
-  Proprietorships, partnerships and LLCs face both CIT and ST incentives
-  to overreport; incentives vary by industry (ST rate) and by juridical
-  organization within industry (CIT rate) --- sets up
-  Chapter~\ref{sec-fiscal}'s identification strategy.
-\end{itemize}
-
-\section{Top industries}\label{sec-setting-industries}
-
-\begin{table}
-
-\caption{\label{tbl-top-inds-rev}Top 10 industries in Colombia by
-revenue.}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{tables/ch03-top-industries.png}}
-
-}
-
-\end{table}%
-
-\begin{table}
-
-\caption{\label{tbl-corps-by-inds}Corporations by industry. Top 20
-industries in Colombia by number of firms.}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{tables/ch03-corps-by-industry.png}}
-
-}
-
-\end{table}%
-
-\begin{itemize}
-\tightlist
-\item
-  UPDATE: one or two sentences on what these show (revenue
-  concentration; corporate share varies a lot by industry) --- sets up
-  why industry fixed effects matter in Chapter~\ref{sec-fiscal} and why
-  some industries carry more weight in Chapter~\ref{sec-pf},
-  Chapter~\ref{sec-counterfactual}.
-\end{itemize}
-
-\section{Open items}\label{open-items}
-
-\begin{itemize}
-\tightlist
-\item[$\square$]
-  Fill sample-size/coverage sentence in Section~\ref{sec-setting-data}
-  with the actual filtered N (currently only in the table).
-\item[$\square$]
-  Decide whether to note/trim the skilled-labour-share outliers flagged
-  under Table~\ref{tbl-sum-stats}.
-\item[$\square$]
-  One or two sentences for Table~\ref{tbl-top-inds-rev} /
-  Table~\ref{tbl-corps-by-inds} (marked UPDATE above).
-\item[$\square$]
-  Confirm the institutional JO/CIT/ST facts here still match how they're
-  used in \texttt{80-colombia.qmd}; this chapter is a close copy of that
-  file's content, reorganized around what later chapters need.
-\end{itemize}
-
-\bookmarksetup{startatroot}
-
-\chapter{Testing for Tax Evasion through
-Overreporting}\label{sec-testing}
-
-\bookmarksetup{startatroot}
-
-\chapter{Deconvolving Tax Evasion}\label{sec-deconvolution}
-
-\bookmarksetup{startatroot}
-
-\chapter{Production Function Parameters and Productivity}\label{sec-pf}
-
-\section{Production function
-estimates}\label{production-function-estimates}
-
-\begin{table}
-
-\caption{\label{tbl-pf-comparison}Production function parameters: joint
-efficient GMM (\(m^*_{it-1}+\tilde{\mathcal W}_{it-2}\), \(\beta\)
-fixed) vs.~uncorrected GNR and OLS. \(\hat\alpha_K,\hat\alpha_L\) report
-both 95\% test-inversion regions (sharp/conservative).}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{tables/ch06-pf-comparison.png}}
-
-}
-
-\end{table}%
-
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{figures/ch06-pf-testinv-regions.png}}
-
-}
-
-\caption{\label{fig-pf-testinv-regions}Test-inversion regions for
-\((\alpha_K,\alpha_L)\), sharp and conservative tests.}
-
-\end{figure}%
-
-\section{Robustness: single-tax vs.~net-of-tax first
-stage}\label{robustness-single-tax-vs.-net-of-tax-first-stage}
-
-\begin{table}
-
-\caption{\label{tbl-beta-net-tax}\(\hat\beta\) under the gross
-(approved, headline) vs.~net-of-tax first stage, 5 headline industries.}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{tables/ch06-beta-net-tax.png}}
-
-}
-
-\end{table}%
-
-\bookmarksetup{startatroot}
-
-\chapter{Fiscal Policy Evaluation: The 1983 Reform}\label{sec-fiscal}
-
-Incentives to evade taxes may change over time due to changes in fiscal
-policy. In Colombia, the reform of 1983 increased, from 6\% to 10\%, the
-Sales Tax (ST) rate of most manufacturing industries. In this section, I
-explore whether firms reacted to the increase in the tax rate by
-increasing evasion.
-
-\section{The reform and the incentives}\label{sec-reform}
-
-In 1983, the government tried to homogenize the sales tax rates across
-industries, which led to some industries facing higher sales tax rates
-while others faced lower rates or were exempted. The 1983 reform
-relatively unified the sales tax rates by combining previously taxed
-goods at 6 and 15\% into 10\%. The number of the products and services
-that were levied expanded. The sales tax was extended to the retail
-level, with a \emph{simplified system} being made available to small
-retailers to ease compliance costs and the administrative burden.
-
-In the model, the sales tax rate shifts the marginal benefit of
-overreporting materials: a higher \(\tau\) raises the credit claimed on
-each peso of fictitious inputs (Chapter~\ref{sec-model}). The model has
-no income tax, but the same logic extends to it: overreported inputs
-also lower reported profits, and with them the income-tax base. An
-increase in either rate therefore raises the incentive to overreport
-inputs, and a decrease lowers it. Since the 1983 reform raised the sales
-tax for most industries while cutting income-tax rates, its net effect
-on evasion is ambiguous a priori.
-
-The 1983 fiscal policy changed incentives \emph{across} industries and
-\emph{within} industries. Across industries, the sales tax rate
-increased for most ST-liable industries, while ST-exempt industries
-remained exempt. Within industries, the income tax changed by juridical
-organization (JO), and in the opposite direction. \emph{Ley 9 de 1983}
-cut individual income-tax rates by 4.6 percentage points on average
-across income brackets relative to the 1982 schedule, and thus
-proprietorships faced lower rates (Perry and Cárdenas 1986). LLCs
-received a smaller cut, from 20\% to 18\% (Perry and Cárdenas 1986). In
-ST-liable industries, the net incentive is therefore ambiguous for both:
-proprietorships were compensated for much of the sales-tax increase
-through the income tax, while LLCs were insufficiently compensated. In
-ST-exempt industries, the income-tax cut alone lowered the incentive for
-proprietorships and changed it little for LLCs, whose cut was small.
+Because the income-tax cut differed between proprietorships and LLCs,
+the reform's incentives also varied along the size distribution.
+Proprietorships have a single owner and are the smallest. Tax
+authorities find sole proprietorships and small businesses hard to
+penetrate, and evasion in them is more sustainable (Slemrod 2019, 940).
+At the median, LLCs have about two and a half times proprietorships'
+labour and three times their gross output. LLCs have several owners and
+non-tradable shares. In Spain, firms bunch just below the revenue
+threshold above which the Large Taxpayers' Unit monitors them more
+closely (Almunia and Lopez-Rodriguez 2018; Slemrod 2019, 925--26). At
+the top, corporations are several times larger than LLCs in capital,
+labour and gross output, and their shares are tradable. In addition, the
+government keeps corporations under close supervision and requires them
+to have an auditor. Lastly, since evidence suggests stock prices of
+public companies fall when news of their involvement in tax shelters
+becomes public (Hanlon and Slemrod 2009; Slemrod 2019, 909),
+corporations might have lower incentives to evade. In this chapter
+corporations serve as the benchmark of non-evaders, on the assumption
+that audited statements, third-party reporting and the market's reaction
+keep them from overreporting.
 
 \section{Empirical approach}\label{sec-fiscal-approach}
 
@@ -1013,10 +1540,12 @@ sales is
 s_{ijt}^{C} = \ln\beta_j-\varepsilon_{ijt}
 }\end{equation}
 
-where \(s_{ijt}\equiv\ln(\rho_tM^*_{ijt}/P_tY_{ijt})\) is the log share
-of materials' cost over sales, \(\beta_j\) is the output elasticity of
-materials of industry \(j\), and \(\varepsilon_{ijt}\) is the error
-term. For unincorporated firms, the evaders,
+where
+\(s_{ijt}\equiv\ln\big((1-\tau_{P,ijt})\rho_tM^*_{ijt}/((1-\tau_{S,ijt})P_tY_{ijt})\big)\)
+is the log share of materials' cost over sales, both net of sales taxes
+(Appendix~\ref{sec-app-fiscal-wedge}), \(\beta_j\) is the output
+elasticity of materials of industry \(j\), and \(\varepsilon_{ijt}\) is
+the error term. For unincorporated firms, the evaders,
 
 \begin{equation}\protect\phantomsection\label{eq-fiscal-unincorp}{
 s_{ijt}^{N} = \ln\beta_j + u_{ijt} - \varepsilon_{ijt}
@@ -1105,62 +1634,66 @@ regression,
 where \(\Delta\mu_{t}\) is the difference in tax evasion of
 unincorporated firms between year \(t\) and 1983, the last full year
 before the reform took effect, and \(\mu\) is the average tax evasion of
-unincorporated firms in 1983.
+unincorporated firms in 1983. The outcome is the share net of sales
+taxes, so the estimates exclude the mechanical effect of the rate change
+on the share; Appendix~\ref{sec-app-fiscal-wedge} estimates that effect.
 
 The 1983 fiscal reform changed incentives to evade taxes over time
 \emph{differently} for firms in ST-liable and ST-exempt industries. Most
 ST-liable industries faced an ST rate \emph{increase} from 6\% to 10\%,
 while ST-exempt industries \emph{remained exempt} before and after the
-reform. Note that firms in \emph{all} industries are subject to the CIT,
-which also generates incentives to evade taxes by overreporting input
-costs: lower reported profits due to higher input costs reduce the tax
-base, and thus the tax liability. Therefore, CIT and ST generate tax
-evasion incentives for firms in ST-liable industries, while only CIT
-does for firms in ST-exempt industries. For unincorporated firms,
+reform. Note that firms in \emph{all} industries are subject to the
+income tax, which also generates incentives to evade taxes by
+overreporting input costs: lower reported profits due to higher input
+costs reduce the tax base, and thus the tax liability. Therefore, the
+income tax and the ST generate tax evasion incentives for firms in
+ST-liable industries, while only the income tax does for firms in
+ST-exempt industries. For unincorporated firms,
 
 \begin{equation}\protect\phantomsection\label{eq-fiscal-noncorp}{
 \begin{aligned}
-s_{ijt}^{N} &= \ln\beta_j + u^{ST}_{ijt} + u^{CIT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Liable} \\
-s_{ijt}^{N} &= \ln\beta_j + u^{CIT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Exempt}
+s_{ijt}^{N} &= \ln\beta_j + u^{ST}_{ijt} + u^{IT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Liable} \\
+s_{ijt}^{N} &= \ln\beta_j + u^{IT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Exempt}
 \end{aligned}
 }\end{equation}
 
-where \(u^{ST}_{ijt}\) and \(u^{CIT}_{ijt}\) stand for the overreporting
-due to ST and CIT, respectively. Let \(D^E_{ijt}\) be a dummy indicating
-whether the industry is ST-exempt and \(D^{L}_{ijt}\) a dummy indicating
-whether the industry is ST-liable, such that
-\(D^E_{ijt} + D^{L}_{ijt} = 1\). Combining Equation~\ref{eq-fiscal-corp}
-with Equation~\ref{eq-fiscal-noncorp},
+where \(u^{ST}_{ijt}\) and \(u^{IT}_{ijt}\) stand for the overreporting
+due to the ST and the income tax (IT), respectively. Let \(D^E_{ijt}\)
+be a dummy indicating whether the industry is ST-exempt and
+\(D^{L}_{ijt}\) a dummy indicating whether the industry is ST-liable,
+such that \(D^E_{ijt} + D^{L}_{ijt} = 1\). Combining
+Equation~\ref{eq-fiscal-corp} with Equation~\ref{eq-fiscal-noncorp},
 
 \begin{equation}\protect\phantomsection\label{eq-fiscal-lvl-split}{
-    s_{ijt} = \ln\beta_j + D_{ijt}^N D^E_{ijt}\, u^{CIT}_{ijt} + D_{ijt}^N D^{L}_{ijt} (u^{ST}_{ijt} + u^{CIT}_{ijt}) - \varepsilon_{ijt}
+    s_{ijt} = \ln\beta_j + D_{ijt}^N D^E_{ijt}\, u^{IT}_{ijt} + D_{ijt}^N D^{L}_{ijt} (u^{ST}_{ijt} + u^{IT}_{ijt}) - \varepsilon_{ijt}
 }\end{equation}
 
 Taking expectations,
 
 \[
 \begin{aligned}
-E[s_{ijt}|D^{N}=1,D^E=1,j]-\ln\beta_j &= \mu^{CIT}_E \\
-E[s_{ijt}|D^{N}=1,D^{L}=1,j]-\ln\beta_j &= \mu^{ST}_{L}+\mu^{CIT}_{L}\equiv\mu^{ST+CIT}_{L}
+E[s_{ijt}|D^{N}=1,D^E=1,j]-\ln\beta_j &= \mu^{IT}_E \\
+E[s_{ijt}|D^{N}=1,D^{L}=1,j]-\ln\beta_j &= \mu^{ST}_{L}+\mu^{IT}_{L}\equiv\mu^{ST+IT}_{L}
 \end{aligned}
 \]
 
 identifies the average overreporting by firms in ST-exempt industries,
-\(\mu^{CIT}_E\), and in ST-liable industries, \(\mu^{ST+CIT}_{L}\). If I
-assume \(\mu^{CIT}_E = \mu^{CIT}_{L}\), I can also identify the
-overreporting due to ST, \(\mu^{ST}_{L}\). Since CIT rates depend on the
-juridical organization and not on the industry, I assume that CIT
-generates the same incentives to evade taxes across industries, whether
-they are exempt of ST or not. Because I aggregate different juridical
-organizations in exempt and liable industries into unincorporated firms,
-this assumption might break if the composition of juridical
-organizations is non-trivially different between exempt and liable
-industries. The regression versions of Equation~\ref{eq-fiscal-lvl-reg}
-and Equation~\ref{eq-fiscal-diff-reg} interact the year dummies with
-\(D^N_{ijt}D^E_{ijt}\) and \(D^N_{ijt}D^L_{ijt}\), giving one path per
-industry type, \(\mu_{E,t}\) and \(\mu_{L,t}\) (and \(\Delta\mu_{E,t}\),
-\(\Delta\mu_{L,t}\) relative to 1983). Splitting unincorporated firms
-further by JO, into LLCs and proprietorships, gives four such paths.
+\(\mu^{IT}_E\), and in ST-liable industries, \(\mu^{ST+IT}_{L}\). If I
+assume \(\mu^{IT}_E = \mu^{IT}_{L}\), I can also identify the
+overreporting due to ST, \(\mu^{ST}_{L}\). Since income-tax rates depend
+on the juridical organization and not on the industry, I assume that the
+income tax generates the same incentives to evade taxes across
+industries, whether they are exempt of ST or not. Because I aggregate
+different juridical organizations in exempt and liable industries into
+unincorporated firms, this assumption might break if the composition of
+juridical organizations is non-trivially different between exempt and
+liable industries. The regression versions of
+Equation~\ref{eq-fiscal-lvl-reg} and Equation~\ref{eq-fiscal-diff-reg}
+interact the year dummies with \(D^N_{ijt}D^E_{ijt}\) and
+\(D^N_{ijt}D^L_{ijt}\), giving one path per industry type, \(\mu_{E,t}\)
+and \(\mu_{L,t}\) (and \(\Delta\mu_{E,t}\), \(\Delta\mu_{L,t}\) relative
+to 1983). Splitting unincorporated firms further by JO, into LLCs and
+proprietorships, gives four such paths.
 
 \subsection{Changes in true materials cannot explain the
 pattern}\label{sec-fiscal-m}
@@ -1219,25 +1752,22 @@ figure, by year: levels (\(\hat\mu_t\)) and differences with respect to
 
 \end{table}%
 
-After the fiscal reform of 1983 increased the sales tax rate, tax
-evasion through input overreporting increased gradually
+Overreporting rose once the reform raised the benefit of overreporting
+in most industries: after the sales-tax increase took effect, input
+overreporting by unincorporated firms increased gradually
 (Figure~\ref{fig-fiscal-all}, Table~\ref{tbl-fiscal-all}). Input
-overreporting reached an average of 8\% in 1987, where it stabilized
-until 1990.
+overreporting reached an average of about 9\% of true materials in 1987,
+where it stabilized until 1990.
 
 The standard errors of the levels and of the differences over time look
 very different. In levels, the large standard errors suggest that tax
 evasion is widely heterogeneous across firms. This heterogeneity may
 come from differences in the tax rate due to firm characteristics
-(industry, JO, and exports), in the (perceived) probability of detection
-(the model assumes risk neutrality, but firms might have different
-perceived probabilities), and in the cost of evasion across firms. The
-differences over time, however, are tight for a mechanical reason: they
-are differences, not levels. Every year's level \(\hat\mu_t\) is
-estimated against the same baseline (corporations pooled over all years,
-and the same industry fixed effects), so estimation error in that
-baseline enters every year with the same sign, and the level estimates
-are strongly positively correlated. Since
+(industry, JO, and exports), and in the cost of evasion across firms.
+The differences over time, however, are tight for a mechanical reason.
+Every year's level \(\hat\mu_t\) is estimated against the same baseline,
+so estimation error in that baseline enters every year with the same
+sign, and the level estimates are strongly positively correlated. Since
 \(\operatorname{Var}(\hat\mu_t-\hat\mu_{1983})=\operatorname{Var}(\hat\mu_t)+\operatorname{Var}(\hat\mu_{1983})-2\operatorname{Cov}(\hat\mu_t,\hat\mu_{1983})\),
 this shared error cancels in the differences. The correlation affects
 inference only, not the consistency of the estimates: the regressors are
@@ -1310,25 +1840,29 @@ by year: levels (\(\hat\mu_t\)) and differences with respect to 1983
 
 \end{table}%
 
-After the fiscal reform of 1983, unincorporated firms in ST-liable
-industries increased tax evasion significantly, while those in ST-exempt
-industries increased it only slightly (Figure~\ref{fig-fiscal-liable},
+The increase is concentrated where the sales tax, and with it the
+benefit of overreporting, went up. After the fiscal reform of 1983,
+unincorporated firms in ST-liable industries increased tax evasion
+significantly, while those in ST-exempt industries increased it only
+slightly (Figure~\ref{fig-fiscal-liable},
 Table~\ref{tbl-fiscal-liable}). In ST-liable industries, overreporting
 rose gradually until 1987 and stabilized until 1990. In ST-exempt
-industries, the increase was moderate, with a second rise between 1987
-and 1990. The increase is \emph{larger} for ST-liable firms, the most
+industries, the increase was small, at most two percentage points (1987
+and 1989). The increase is \emph{larger} for ST-liable firms, the most
 affected by the reform.
 
-The comparison lines up with the incentives in Section~\ref{sec-reform}.
-Firms in ST-liable industries faced a higher sales tax, only partly
-offset by lower income-tax rates, while firms in ST-exempt industries
-faced the income-tax cut alone. The larger response in ST-liable
-industries is consistent with the sales-tax increase dominating. The
-slight increase in ST-exempt industries, driven by proprietorships, is
-unexpected; Section~\ref{sec-fiscal-jo} discusses two possible
-explanations.
+This comparison isolates the sales tax as a shifter of the marginal
+benefit: ST-liable industries faced the rate increase, while ST-exempt
+industries did not. Firms in ST-liable industries faced a higher sales
+tax, only partly offset by lower income-tax rates, while firms in
+ST-exempt industries faced the income-tax cut alone. The larger response
+in ST-liable industries is consistent with the sales-tax increase
+dominating. The slight increase in ST-exempt industries, driven by
+proprietorships, is unexpected; Section~\ref{sec-fiscal-jo} discusses
+two possible explanations.
 
-\section{Results: LLCs vs.~proprietorships}\label{sec-fiscal-jo}
+\section{Results: income-tax incentives, LLCs
+vs.~proprietorships}\label{sec-fiscal-jo}
 
 \begin{figure}
 
@@ -1396,64 +1930,68 @@ year: levels (\(\hat\mu_t\)) and differences with respect to 1983
 
 \end{table}%
 
-LLCs in ST-liable industries show a significant increase in tax evasion,
-while LLCs in exempt industries show no significant change
-(Figure~\ref{fig-fiscal-llc}, Table~\ref{tbl-fiscal-llc}). LLCs in
-exempt industries mainly faced a decrease in their CIT. This decrease
-would lead to lower incentives to evade taxes. However, since the
-reduction in CIT is small, it is not unreasonable to find no evidence of
-significant changes in tax evasion for these industries. In ST-liable
+Within industries, the income-tax cut lowered the benefit of
+overreporting, by more for proprietorships than for LLCs. LLCs in
+ST-liable industries show a significant increase in tax evasion, while
+LLCs in exempt industries show changes of about one percentage point or
+less (Figure~\ref{fig-fiscal-llc}, Table~\ref{tbl-fiscal-llc}). LLCs in
+exempt industries mainly faced a decrease in their entity-level income
+tax. This decrease would lead to lower incentives to evade taxes.
+However, since the reduction is small, it is not unreasonable to find
+only small changes in tax evasion for these industries. In ST-liable
 industries, LLCs faced two opposing effects: the increase in sales tax
-rates, which would increase incentives to evade taxes, and the decrease
-in CIT, which would decrease incentives to evade taxes. The evidence
-suggests that the increase in sales tax rates dominates the effect of
-the decrease in CIT, leading to a significant increase in tax evasion
-for LLCs in ST-liable industries.
+rates, which would increase incentives to evade taxes, and the
+income-tax cut, which would decrease incentives to evade taxes. The
+evidence suggests that the increase in sales tax rates dominates the
+effect of the income-tax cut, leading to a significant increase in tax
+evasion for LLCs in ST-liable industries.
 
 Proprietorships show a more heterogeneous response
 (Figure~\ref{fig-fiscal-prt}, Table~\ref{tbl-fiscal-prt}). In ST-liable
-industries, their overreporting barely changed in 1984--1985, consistent
+industries, their overreporting barely changed in 1984--1986, consistent
 with the income-tax cut compensating them for much of the sales-tax
-increase (Section~\ref{sec-reform}); it rose from 1986 onward, peaking
-in 1987--1988. In ST-exempt industries, their overreporting rose after
-1983, even though they faced only the income-tax cut. This result is
-unexpected, and I offer two possible explanations. First, the incentive
-to overreport depends on the marginal tax rate, not the average one, and
-the 1983 cut in marginal rates was much smaller than the cut in average
-rates at both ends of the income distribution: close to zero at low
-incomes and about 2 percentage points at high incomes
-(Table~\ref{tbl-marg-tax-1983}). Second, the 1982--1983 changes stopped
-individuals from fully deducting their financial expenses (Ocampo and
-Perry 1983), which gave proprietorships, but not LLCs, a reason to
-replace a lost deduction with overreported inputs.
+increase; it rose from 1987, peaking in 1988. In ST-exempt industries,
+their overreporting rose after 1983, even though they faced only the
+income-tax cut. This result is unexpected, and I offer two possible
+explanations. First, the incentive to overreport depends on the marginal
+tax rate, not the average one, and the 1983 cut in marginal rates was
+much smaller than the cut in average rates at both ends of the income
+distribution: close to zero at low incomes and about 2 percentage points
+at high incomes (Table~\ref{tbl-marg-tax-1983}). Second, the 1982--1983
+changes stopped individuals from fully deducting their financial
+expenses (Ocampo and Perry 1983), which gave proprietorships, but not
+LLCs, a reason to replace a lost deduction with overreported inputs.
 
 Proprietorships' standard errors are also several times those of LLCs,
 which suggests that they responded less uniformly. This is plausible:
 proprietorships range from family workshops to young entrepreneurial
-firms, with varying degrees of process standardization, record-keeping
-and attitudes towards risk, while LLCs tend to be larger firms with more
-established processes, and their responses look more homogeneous.
+firms, with varying degrees of process standardization, record-keeping,
+while LLCs tend to be larger firms with more established processes, and
+their responses look more homogeneous.
 
 \section{Takeaways and link to the structural
 model}\label{sec-fiscal-takeaways}
 
-\begin{itemize}
-\tightlist
-\item
-  Firms overreport inputs more after increases in ST and CIT; larger
-  increases give larger responses.
-\item
-  No significant decrease when incentives fall (LLCs in ST-exempt
-  industries): suggests an asymmetric response. Connects to the
-  counterfactual asymmetry (increases detectable at +0.5\%, cuts only at
-  -8\%, Section~\ref{sec-cf-results}), but that asymmetry is a model
-  implication, not this chapter's reduced-form finding; say so
-  explicitly.
-\item
-  Bridge to Chapter~\ref{sec-counterfactual}: the model needs
-  \(\tau\rho_t\) variation to identify \(\lambda\); this chapter shows
-  that variation moves overreporting in the predicted direction.
-\end{itemize}
+Input overreporting rises with the marginal benefit of overreporting.
+After the 1983 reform raised the sales tax, overreporting by
+unincorporated firms increased, reaching about 9\% of true materials by
+1987, and the increase was concentrated in ST-liable industries, where
+the benefit rose. Within those industries it rose most among LLCs, whose
+small income-tax cut left most of the sales-tax increase in place, while
+proprietorships, compensated by a larger income-tax cut, barely
+responded at first. The one result that does not fit, the rise among
+proprietorships in ST-exempt industries, has two possible explanations
+in the reform's other provisions (Section~\ref{sec-fiscal-jo}).
+
+This evidence supports the model's key comparative static,
+\(\partial e^*/\partial\tau>0\) (Chapter~\ref{sec-model}), which the
+structural estimation cannot test by regression: overreporting and the
+tax rate are both built from the same reported materials, so a
+regression of one on the other is mechanically biased. It also supports
+the identification of the detection probability in
+Chapter~\ref{sec-counterfactual}, which rests on the same source of
+variation: changes in the sales-tax benefit of overreporting move
+evasion.
 
 \bookmarksetup{startatroot}
 
@@ -1475,15 +2013,16 @@ marginal change in revenue as the tax rate changes?
 
 I study this question using the estimates of the structural objects from
 the firms' tax evasion model. With the parameters at hand, I construct a
-partial equilibrium claims-only Laffer curve. The counterfactual curve
-allows me to investigate how the government's tax revenue changes as the
-sales tax rate changes.
+partial-equilibrium claimed-deductions curve: expected claimed
+deductions as a function of the tax rate. Claimed deductions are the
+channel through which evasion moves revenue; every extra peso claimed is
+a peso of revenue lost.
 
-The results show a claims curve with a timid slope on the tax-cut side
-that accelerates quickly on the tax-increase side. I find that revenue
-losses due to reductions in claims would not significantly fall from
-baseline unless there is a tax cut of at least 8\%. In contrast, an
-increase of 0.5\% will significantly increase inflated claims.
+The curve rises gently on the tax-cut side and steeply on the
+tax-increase side. A 0.5\% increase in the rate already raises claimed
+deductions significantly, by 16--28\%, lowering revenue, while claimed
+deductions fall significantly below their current level only after a cut
+of at least 8\%.
 
 Given the firm's optimization problem, the government's expected tax
 revenue is,
@@ -1506,10 +2045,10 @@ In general, governments can also choose the level of enforcement effort,
 and therefore they can affect \(q(\cdot)\). In addition, governments
 might collect additional income by penalizing firms caught evading.
 
-Since I lack information on these margins, I restrict my attention to
-marginal changes in tax revenue losses through changes in expected
-claims as the tax rate changes. In other words, I fix output and optimal
-input decisions, and focus only on
+Since I lack information on these margins, I hold output and input
+decisions fixed. The tax on sales then changes only mechanically with
+the rate, and the behavioural response of revenue runs entirely through
+claimed deductions, so I focus on
 
 \[
 -\tilde\tau_{it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
@@ -1735,22 +2274,31 @@ reject. For the nine moments, the 95\% critical value is
 relative to hers are in Appendix~\ref{sec-app-elvis}.
 
 The estimation sample has 32,232 unincorporated firm-periods (3,340 at
-the \(\tau=0\) corner).
+the \(\tau=0\) corner), after dropping the 0.5\% of non-corner
+firm-periods with the largest reported materials
+(Appendix~\ref{sec-app-elvis}).
 
 \subsection{Estimates}\label{sec-cf-estimates}
 
 Table~\ref{tbl-cf-estimates} displays the estimates of the parameters of
-interest. Its two columns use the production-function estimates from the
-two instruments in Chapter~\ref{sec-pf}, \(m^*_{it-1}\) and
-\(\tilde{\mathcal W}_{it-2}\). The headline results use \(m^*_{it-1}\);
-the \(\tilde{\mathcal W}_{it-2}\) estimates fail the conservative test.
+interest, using the production-function estimates with instrument
+\(m^*_{it-1}\) from Chapter~\ref{sec-pf}. The estimation uses all 29
+industries, not only the five reported in Chapter~\ref{sec-pf}; the
+production-function estimates for every industry, with the same
+instrument, are in Appendix~\ref{sec-app-pf-all}. It also assumes that
+every unincorporated firm with a positive sales-tax rate on purchases
+evades. The tests in Chapter~\ref{sec-testing} cannot reject the absence
+of overreporting in some industries, but a failure to reject is
+inconclusive rather than evidence of compliance, and overreporting rose
+across all industries pooled after the 1983 reform
+(Section~\ref{sec-fiscal-all}).
 
 \begin{table}
 
 \caption{\label{tbl-cf-estimates}Stage-2 estimates of the detection and
-evasion-cost parameters at the best point for each production-function
-instrument. \(TS_{\text{cons}}\) is the conservative test statistic,
-compared with \(\chi^2_{9,.95}\).}
+evasion-cost parameters at the best point, with production-function
+instrument \(m^*_{it-1}\). \(TS_{\text{cons}}\) is the conservative test
+statistic, compared with \(\chi^2_{9,.95}\).}
 
 \centering{
 
@@ -1781,9 +2329,8 @@ Summary of findings:
     is decreasing in productivity up to \(\hat\omega^*\), then
     increasing again
   \item
-    \(\hat\omega^*=3.98\) (\(m^*_{it-1}\)) and \(3.84\)
-    (\(\tilde{\mathcal W}_{it-2}\)), the 86th (\(m^*_{it-1}\)) and 75th
-    percentile (\(\tilde{\mathcal W}_{it-2}\)) (forward simulation)
+    \(\hat\omega^*=3.98\), the 86th percentile of productivity (forward
+    simulation)
   \end{itemize}
 \end{itemize}
 
@@ -1801,9 +2348,8 @@ Table~\ref{tbl-cf-detection} displays the results.
 \begin{table}
 
 \caption{\label{tbl-cf-detection}Implied detection probability
-\(q(e)=\hat\lambda e\) across the distribution of baseline evasion, by
-production-function instrument. The ratio to the median evader does not
-depend on \(\hat\lambda\).}
+\(q(e)=\hat\lambda e\) across the distribution of baseline evasion. The
+ratio to the median evader does not depend on \(\hat\lambda\).}
 
 \centering{
 
@@ -1818,11 +2364,10 @@ Key observations:
 \begin{itemize}
 \tightlist
 \item
-  Mean \(\gg\) Median for both instruments; a right-skewed evasion
-  distribution
+  Mean \(\gg\) Median; a right-skewed evasion distribution
 \item
-  P99 \(\to\) Max: detection probability jumps from 1-2\% at the 99th
-  percentile to \textasciitilde37\% for the most aggressive evader
+  P99 \(\to\) Max: detection probability jumps from about 1\% at the
+  99th percentile to \textasciitilde37\% for the most aggressive evader
   (0.5\%-trimmed sample)
 \item
   A handful of extreme evaders pull \(E[e]\) \textbf{up} \emph{and} the
@@ -1847,42 +2392,14 @@ Key observations:
     Assuming all unincorporated firms with a non-zero sales tax rate on
     purchases evade taxes implies that all firms evade below the ceiling
     (normalization)
-  \item
-    Alternatively, I could
-
-    \begin{itemize}
-    \tightlist
-    \item
-      trim the sample more (currently 0.5\%, see
-      Appendix~\ref{sec-app-elvis} for details) to reduce the influence
-      of aggressive evaders
-    \item
-      impose a normalization (e.g.~prob for 99th evaders=50\%)
-    \item
-      use a non-linear prob of detection to smooth the skewness of the
-      evasion distribution
-    \end{itemize}
-  \item
-    Could \(\delta_0\) and \(\lambda\) be competing to identify the
-    level of evasion?
-
-    \begin{itemize}
-    \tightlist
-    \item
-      the estimates suggest \(\lambda\) is truly different from zero
-      even though \(\delta_0\) has been profiled in all grid searches
-    \item
-      \(\lambda\) is identified with the score moment,
-      \(E[\partial h/\partial \lambda \cdot \varepsilon]=0\) and
-      \(\delta_0\) from \(E[\psi]=0\).
-    \end{itemize}
   \end{itemize}
 \item
   \textbf{(\(\hat\delta_1, \hat\delta_2\))}: seem to be consistently
   identified by the curvature of the evasion distribution and
-  productivity \(\omega\). The \(\omega^*\) is steady among grid
-  searches and under the correct moments they always come up with
-  correct signs
+  productivity \(\omega\). \(\hat\omega^*\) is stable across the grid
+  searches in Appendix~\ref{sec-app-elvis}, and
+  \((\hat\delta_1,\hat\delta_2)\) have the expected signs at every
+  tested point
 \end{itemize}
 
 \section{Counterfactual design}\label{sec-cf-design}
@@ -1915,7 +2432,7 @@ evasion with slope \(1/(1+\Delta)\) and an intercept,
 
 The counterfactual evasion is a function of the same latent \(M_i\) as
 the main moments system. As briefly mentioned in
-Section~\ref{sec-counter-estimation}, Define firm \(i\)'s counterfactual
+Section~\ref{sec-counter-estimation}, define firm \(i\)'s counterfactual
 deduction claims as
 \(\text{Claims}_i(\Delta)\equiv\tilde\tau_{it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]\),
 the credit claimed on true inputs plus undetected overreporting. I
@@ -2019,7 +2536,7 @@ The bounds compare the two 95\% conservative-test confidence sets.}
   This is a property of linear \(q\) and linear \(\kappa\) combined with
   small \(\hat\lambda\), not of linearity alone. Convex
   \(q=(\lambda e)^k\) and concave \(q=1-e^{-\lambda e}\) break the
-  uniform-shift result (closed forms derived, not estimated).
+  uniform-shift result .
 \end{itemize}
 
 \section{Robustness}\label{sec-cf-robust}
@@ -2027,8 +2544,12 @@ The bounds compare the two 95\% conservative-test confidence sets.}
 \begin{itemize}
 \tightlist
 \item
-  Rejected alternative: a revenue-loss moment (more degenerate for
-  \(\Delta\lesssim-2\%\); most brackets inconclusive).
+  Rejected alternative target: only the undetected-overreporting part of
+  claimed deductions, \(\tilde\tau_{it}(1-q(e'_i))e'_i\), leaving out
+  the credit on true inputs. For cuts beyond about 2\%, most firms stop
+  evading (\(e'_i=0\)), so its distribution piles up at zero, and in a
+  coarse grid most tested brackets were inconclusive. Claimed deductions
+  in full remain the target.
 \end{itemize}
 
 \section{Scope and limits}\label{sec-cf-limits}
@@ -2041,8 +2562,8 @@ The bounds compare the two 95\% conservative-test confidence sets.}
   what the exercise can speak to.
 \item
   \(\theta\) fixed at one operating point that is not rejected
-  (conservative test) for \(m^*_{it-1}\) only; the second instrument
-  does not pass.
+  (conservative test), with production-function instrument
+  \(m^*_{it-1}\).
 \item
   \(\hat\lambda\) is identified mostly from a thin tail of aggressive
   evaders; the estimate depends on the 0.5\% trim.
@@ -2056,12 +2577,304 @@ The bounds compare the two 95\% conservative-test confidence sets.}
 
 \chapter{Conclusion}\label{sec-conclusion}
 
+\bookmarksetup{startatroot}
+
+\chapter*{Bibliography}\label{bibliography}
+\addcontentsline{toc}{chapter}{Bibliography}
+
+\markboth{Bibliography}{Bibliography}
+
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-Ackerberg2015}
+Ackerberg, Daniel A, Kevin Caves, and Garth Frazer. 2015.
+\emph{IDENTIFICATION PROPERTIES OF RECENT PRODUCTION FUNCTION
+ESTIMATORS}. 83: 2411--51. \url{https://doi.org/10.3982/ECTA}.
+
+\bibitem[\citeproctext]{ref-AK2020}
+Aguiar, Victor H., and Nail Kashaev. 2020. {``Stochastic Revealed
+Preferences with Measurement Error.''} \emph{Review of Economic Studies}
+0: 1--52. \url{https://doi.org/10.1093/restud/rdaa067}.
+
+\bibitem[\citeproctext]{ref-Allingham1972}
+Allingham, Michael G., and Agnar Sandmo. 1972. {``Income Tax Evasion: A
+Theoretical Analysis.''} \emph{Journal of Public Economics} 1
+(November): 323--38. \url{https://doi.org/10.1016/0047-2727(72)90010-2}.
+
+\bibitem[\citeproctext]{ref-Almunia2018}
+Almunia, Miguel, and David Lopez-Rodriguez. 2018. {``Under the Radar:
+The Effects of Monitoring Firms on Tax Compliance †.''} \emph{American
+Economic Journal: Economic Policy} 10: 1--38.
+\url{https://doi.org/10.1257/pol.20160229}.
+
+\bibitem[\citeproctext]{ref-Asatryan2017}
+Asatryan, Zareh, and Andreas Peichl. 2017. \emph{Responses of Firms to
+Tax, Administrative and Accounting Rules: Evidence from {Armenia}}.
+CESifo Working Paper No. 6754. {Center for Economic Studies and ifo
+Institute (CESifo)}.
+
+\bibitem[\citeproctext]{ref-Best2015}
+Best, Michael Carlos, Anne Brockmeyer, Henrik Jacobsen Kleven, Johannes
+Spinnewijn, and Mazhar Waseem. 2015. {``Production Versus Revenue
+Efficiency with Limited Tax Capacity: Theory and Evidence from
+{Pakistan}.''} \emph{Journal of Political Economy} 123 (6): 1311--55.
+\url{https://doi.org/10.1086/683849}.
+
+\bibitem[\citeproctext]{ref-Bolanos2019}
+Bolaños Bolaños, Lucía del Carmen. 2019. {``El Impuesto de Renta En
+{Colombia}: Una Mirada Desde El Gasto Tributario.''} \emph{Bolet{í}n
+Mexicano de Derecho Comparado} 52 (155): 721--56.
+\url{https://doi.org/10.22201/iij.24484873e.2019.155.14946}.
+
+\bibitem[\citeproctext]{ref-Carrillo2022}
+Carrillo, Paul, Dave Donaldson, Dina Pomeranz, and Monica Singhal. 2022.
+\emph{Ghosting the Tax Authority: Fake Firms and Tax Fraud}. NBER.
+\url{http://www.nber.org/papers/w30242}.
+
+\bibitem[\citeproctext]{ref-Carrillo2017}
+Carrillo, Paul, Dina Pomeranz, and Monica Singhal. 2017. {``Dodging the
+Taxman: Firm Misreporting and Limits to Tax Enforcement.''}
+\emph{American Economic Journal: Applied Economics} 9: 144--64.
+\url{https://doi.org/10.1257/app.20140495}.
+
+\bibitem[\citeproctext]{ref-CASE2018}
+CASE, and IHS. 2018. \emph{Study and Reports on the {VAT} Gap in the
+{EU}-28 Member States: 2018 Final Report}. TAXUD/2015/CC/131. {European
+Commission, Directorate General Taxation and Customs Union}.
+
+\bibitem[\citeproctext]{ref-Chetty2009}
+Chetty, Raj. 2009. {``Is the Taxable Income Elasticity Sufficient to
+Calculate Deadweight Loss? The Implications of Evasion and Avoidance.''}
+\emph{American Economic Journal: Economic Policy} 1 (2): 31--52.
+\url{https://doi.org/10.1257/pol.1.2.31}.
+
+\bibitem[\citeproctext]{ref-Collard2020}
+Collard-Wexler, Allan, and Jan De Loecker. 2020. \emph{Production
+Function Estimation and Capital Measurement Error}. NBER.
+\url{http://www.nber.org/papers/w22437}.
+
+\bibitem[\citeproctext]{ref-Ley49_1990}
+Congreso de la República de Colombia. 1990. \emph{Ley 49 de 1990
+(Diciembre 28)}. Diario Oficial No. 36.615, 30 de diciembre de 1990.
+Art. 26: general sales-tax rate of 12\% from 1 January 1991.
+\url{https://normograma.dian.gov.co/dian/compilacion/docs/ley_0049_1990.htm}.
+
+\bibitem[\citeproctext]{ref-CorteConstitucional2016}
+Corte Constitucional de Colombia. 2016. \emph{Sentencia {C-633} de
+2016}.
+\url{https://www.corteconstitucional.gov.co/relatoria/2016/C-633-16.htm}.
+
+\bibitem[\citeproctext]{ref-Cremer1993}
+Cremer, Helmuth, and Firouz Gahvari. 1993. {``Tax Evasion and Optimal
+Commodity Taxation.''} \emph{Journal of Public Economics} 50 (2):
+261--75. \url{https://doi.org/10.1016/0047-2727(93)90052-U}.
+
+\bibitem[\citeproctext]{ref-Dabla2019}
+Dabla-Norris, Era, Mark Gradstein, Fedor Miryugin, and Florian Misch.
+2019. \emph{Productivity and Tax Evasion}. CESifo.
+\href{https://www.RePEc.org}{www.RePEc.org}.
+
+\bibitem[\citeproctext]{ref-Das2007}
+Das, Sanghamitra, Mark J. Roberts, and James R. Tybout. 2007. {``Market
+Entry Costs, Producer Heterogeneity, and Export Dynamics.''}
+\emph{Econometrica} 75 (3): 837--73.
+
+\bibitem[\citeproctext]{ref-DANE1995}
+Departamento Administrativo Nacional de Estadística (DANE). 1995.
+\emph{Metodolog{í}a Encuesta Anual Manufacturera -- {EAM}}. DANE,
+Direcci{ó}n de Metodolog{í}a y Producci{ó}n Estad{í}stica.
+
+\bibitem[\citeproctext]{ref-DANE2018}
+Departamento Administrativo Nacional de Estadística (DANE). 2018.
+\emph{Colombia -- Encuesta Anual Manufacturera -- {EAM} -- 1992 a 1994:
+Documentaci{ó}n {DDI}}. Archivo Nacional de Datos (ANDA), study
+DANE-DIMPE-EAM-1992-A-1994.
+\url{http://microdatos.dane.gov.co/index.php}.
+
+\bibitem[\citeproctext]{ref-Eilers1996}
+Eilers, Paul H. C., and Brian D. Marx. 1996. {``Flexible Smoothing with
+b-Splines and Penalties.''} \emph{Statistical Science} 11 (May):
+89--121. https://doi.org/\url{https://doi.org/10.1214/ss/1038425655}.
+
+\bibitem[\citeproctext]{ref-Eslava2004}
+Eslava, Marcela, John Haltiwanger, Adriana Kugler, and Maurice Kugler.
+2004. {``The Effects of Structural Reforms on Productivity and
+Profitability Enhancing Reallocation: Evidence from Colombia.''}
+\emph{Journal of Development Economics} 75 (December): 333--71.
+\url{https://doi.org/10.1016/J.JDEVECO.2004.06.002}.
+
+\bibitem[\citeproctext]{ref-Feldstein1999}
+Feldstein, Martin. 1999. {``Tax Avoidance and the Deadweight Loss of the
+Income Tax.''} \emph{Review of Economics and Statistics} 81 (4):
+674--80. \url{https://doi.org/10.1162/003465399558391}.
+
+\bibitem[\citeproctext]{ref-FismanWei2004}
+Fisman, Raymond, and Shang-Jin Wei. 2004. {``Tax Rates and Tax Evasion:
+Evidence from {`Missing Imports'} in {China}.''} \emph{Journal of
+Political Economy} 112 (2): 471--96.
+\url{https://doi.org/10.1086/381476}.
+
+\bibitem[\citeproctext]{ref-Gandhi2020}
+Gandhi, Amit, Salvador Navarro, and David A Rivers. 2020. \emph{On the
+Identification of Gross Output Production Functions}.
+
+\bibitem[\citeproctext]{ref-Gorodnichenko2009}
+Gorodnichenko, Yuriy, Jorge Martinez-Vazquez, and Klara Sabirianova
+Peter. 2009. {``Myth and Reality of Flat Tax Reform: Micro Estimates of
+Tax Evasion Response and Welfare Effects in {Russia}.''} \emph{Journal
+of Political Economy} 117 (3): 504--54.
+\url{https://doi.org/10.1086/599760}.
+
+\bibitem[\citeproctext]{ref-HandleyMoore2017}
+Handley, Kyle, and Timothy J. Moore. 2017. {``Tariffs, Transport Costs,
+and Tax Evasion.''} Unpublished manuscript.
+
+\bibitem[\citeproctext]{ref-HanlonSlemrod2009}
+Hanlon, Michelle, and Joel Slemrod. 2009. {``What Does Tax
+Aggressiveness Signal? Evidence from Stock Price Reactions to News about
+Tax Shelter Involvement.''} \emph{Journal of Public Economics} 93 (1-2):
+126--41. \url{https://doi.org/10.1016/j.jpubeco.2008.09.004}.
+
+\bibitem[\citeproctext]{ref-Hogg2019}
+Hogg, Robert V., Joseph W. McKean, and Allen T. Craig. 2019.
+\emph{Introduction to Mathematical Statistics}. Eigth. Pearson.
+
+\bibitem[\citeproctext]{ref-FiscalSurveyColombia1965}
+Joint Tax Program of the Organization of American States and the
+Inter-American Development Bank. 1965. \emph{Fiscal Survey of
+{Colombia}}. Johns Hopkins Press.
+
+\bibitem[\citeproctext]{ref-JunguitoRincon2004}
+Junguito, Roberto, and Hernán Rincón. 2004. {``La Pol{í}tica Fiscal En
+El Siglo {XX} En {Colombia}: Una Visi{ó}n Global.''} \emph{Coyuntura
+Econ{ó}mica}, December.
+\url{https://www.repository.fedesarrollo.org.co/handle/11445/942}.
+
+\bibitem[\citeproctext]{ref-Kang2021}
+Kang, Yicheng, and Peihua Qiu. 2021. {``Nonparametric Deconvolution by
+{Fourier} Transformation and Other Related Approaches.''} In
+\emph{Handbook of Measurement Error Models}, edited by Grace Y. Yi,
+Aurore Delaigle, and Paul Gustafson. {Chapman and Hall/CRC}.
+\url{https://doi.org/10.1201/9781315101279-11}.
+
+\bibitem[\citeproctext]{ref-Levinsohn2003}
+Levinsohn, James, and Amil Petrin. 2003. {``Estimating Production
+Functions Using Inputs to Control for Unobservables.''} \emph{Review of
+Economic Studies} 70 (April): 317--41.
+\url{https://doi.org/10.1111/1467-937X.00246}.
+
+\bibitem[\citeproctext]{ref-Pelaez2022}
+Longinotti, Fernando Peláez. 2022. \emph{Efficiency and Tax Gap in
+{Latin America} and the {Caribbean}: Value Added Tax and Corporate
+Income Tax}. CIAT Working Paper No. 1. Inter-American Center of Tax
+Administrations (CIAT).
+
+\bibitem[\citeproctext]{ref-McLure1989}
+Mclure, Charles E. 1989. {``Analysis and Reform of the Colombian Tax
+System.''} In \emph{Tax Reform in Developing Countries}, edited by
+Malcolm Gillis. Duke University Press.
+\url{https://pdf.usaid.gov/pdf/_docs/pnabp729.pdf}.
+
+\bibitem[\citeproctext]{ref-Meister2009}
+Meister, Alexander. 2009. \emph{Deconvolution Problems in Nonparametric
+Statistics}. Vol. 193. Lecture Notes in Statistics. Springer.
+\url{https://doi.org/10.1007/978-3-540-87557-4}.
+
+\bibitem[\citeproctext]{ref-Ocampo1983}
+Ocampo, José Antonio, and Guillermo Perry. 1983. {``La Reforma Fiscal,
+1982 - 1983.''} \emph{Coyuntura Económica} 13 (1): 215--64.
+\url{https://doi.org/None}.
+
+\bibitem[\citeproctext]{ref-OECD2017}
+OECD. 2017. \emph{Technology Tools to Tackle Tax Evasion and Tax Fraud}.
+OECD. \href{https://www.oecd.org}{www.oecd.org}.
+
+\bibitem[\citeproctext]{ref-Paulus2015}
+Paulus, Alari. 2015. \emph{A Service of Zbw Leibniz-Informationszentrum
+Wirtschaft Leibniz Information Centre for Economics Tax Evasion and
+Measurement Error: An Econometric Analysis of Survey Data Linked with
+Tax Records}. {University of Essex, Institute for Social and Economic
+Research (ISER)}. \url{http://hdl.handle.net/10419/126489}.
+
+\bibitem[\citeproctext]{ref-PerryCardenas1986}
+Perry, Guillermo, and Mauricio Cárdenas. 1986. \emph{Diez a{ñ}os de
+Reformas Tributarias En {Colombia}}. Fedesarrollo.
+
+\bibitem[\citeproctext]{ref-Perry1990}
+Perry, Guillermo, and Alba Lucía Orozco de Triana. 1990. {``The VAT in
+Colombia.''} In \emph{Value Added Taxation in Developing Countries},
+edited by Malcolm Gillis, Carl S. Shoup, and Gerardo P. Sicat. The World
+Bank.
+
+\bibitem[\citeproctext]{ref-Pissarides1989}
+Pissarides, Christopher A., and Guglielmo Weber. 1989. {``An
+Expenditure-Based Estimate of Britain's Black Economy.''} \emph{Journal
+of Public Economics} 39 (June): 17--32.
+\url{https://doi.org/10.1016/0047-2727(89)90052-2}.
+
+\bibitem[\citeproctext]{ref-Pomeranz2015}
+Pomeranz, Dina. 2015. {``No Taxation Without Information: Deterrence and
+Self-Enforcement in the Value Added Tax.''} \emph{American Economic
+Review} 105 (8): 2539--69. \url{https://doi.org/10.1257/aer.20130393}.
+
+\bibitem[\citeproctext]{ref-Decreto3541_1983}
+Presidencia de la República de Colombia. 1983. \emph{Decreto 3541 de
+1983 (Diciembre 29)}. Diario Oficial No. 36.452, 18 de enero de 1984.
+Issued under the extraordinary powers of art. 53 of Ley 9 de 1983.
+\url{https://normograma.dian.gov.co/dian/compilacion/docs/decreto_3541_1983.htm}.
+
+\bibitem[\citeproctext]{ref-RobertsTybout1997}
+Roberts, Mark J., and James R. Tybout. 1997. {``The Decision to Export
+in {Colombia}: An Empirical Model of Entry with Sunk Costs.''}
+\emph{American Economic Review} 87 (4): 545--64.
+
+\bibitem[\citeproctext]{ref-Saez2012}
+Saez, Emmanuel, Joel Slemrod, and Seth H. Giertz. 2012. {``The
+Elasticity of Taxable Income with Respect to Marginal Tax Rates: A
+Critical Review.''} \emph{Journal of Economic Literature} 50 (1): 3--50.
+\url{https://doi.org/10.1257/jel.50.1.3}.
+
+\bibitem[\citeproctext]{ref-Sanchez1994}
+Sánchez Torres, Fabio, and Catalina Gutiérrez Sourdis. 1994. {``Reformas
+Tributarias En Colombia 1980-1992. Aspectos de Equidad, Eficiencia, y
+Simplificación Administrativa.''} \emph{VI Seminario Regional de
+Política Fiscal}.
+
+\bibitem[\citeproctext]{ref-Schennach2014}
+Schennach, Susane M. 2014. {``Entropic Latent Variable Integration via
+Simulation.''} \emph{Econometrica} 82: 345--85.
+\url{https://doi.org/10.3982/ecta9748}.
+
+\bibitem[\citeproctext]{ref-Schennach2022}
+Schennach, Susanne M. 2022. {``Measurement Systems.''} \emph{Journal of
+Economic Literature} 60 (4): 1223--63.
+\url{https://doi.org/10.1257/jel.20211355}.
+
+\bibitem[\citeproctext]{ref-Slemrod2019}
+Slemrod, Joel. 2019. {``Tax Compliance and Enforcement.''} \emph{Journal
+of Economic Literature} 57: 904--54.
+\url{https://doi.org/10.1257/JEL.20181437}.
+
+\bibitem[\citeproctext]{ref-SlemrodKopczuk2002}
+Slemrod, Joel, and Wojciech Kopczuk. 2002. {``The Optimal Elasticity of
+Taxable Income.''} \emph{Journal of Public Economics} 84 (1): 91--112.
+\url{https://doi.org/10.1016/S0047-2727(01)00095-0}.
+
+\bibitem[\citeproctext]{ref-Zumaya2021}
+Zumaya, Martin, Rita Guerrero, Eduardo Islas, et al. 2021.
+\emph{Identifying Tax Evasion in Mexico with Tools from Network Science
+and Machine Learning}. April. \url{http://arxiv.org/abs/2104.13353}.
+
+\end{CSLReferences}
+
 \cleardoublepage
 \phantomsection
 \addcontentsline{toc}{part}{Appendices}
 \appendix
 
 \chapter{ELVIS Derivation and Implementation}\label{sec-app-elvis}
+
+\addcontentsline{loa}{appendixlist}{\appendixname~\thechapter: ELVIS Derivation and Implementation}
 
 \section{Estimation mechanics}\label{estimation-mechanics}
 
@@ -2092,14 +2905,9 @@ The bounds compare the two 95\% conservative-test confidence sets.}
   and \(\tanh(h_\lambda)\) were rejected because both saturate to a
   constant for most of the sample.
 \item
-  Per-firm Metropolis chain: \(n_{burn}=1000\), \(n_{keep}=3000\)
-  (settled convention -- see CLAUDE.md's ``MCMC chain-length
-  convention'' entry for why this length, not a longer one, and why
-  acceptance-rate SD is the more reliable diagnostic than \(\gamma'g\)
-  variance).
+  Per-firm Metropolis chain: \(n_{burn}=1000\), \(n_{keep}=3000\) .
 \item
-  Nelder-Mead optimizer (beats BOBYQA decisively on this problem -- see
-  CLAUDE.md).
+  Nelder-Mead optimizer .
 \item
   \(\gamma\) is unbounded in the optimizer (Schennach and AK2020 both
   treat \(\gamma\to\pm\infty\) as an expected solution, not a numerical
@@ -2117,11 +2925,6 @@ The bounds compare the two 95\% conservative-test confidence sets.}
   Why: a handful of extreme evaders near the FOC ceiling drive
   \(\hat\lambda\) toward zero without it; 0.5\% is the first cutoff
   where the 95\% CI's upper bound stabilizes.
-\item
-  Revised down from an earlier 1\% decision (see CLAUDE.md's
-  ``Trim-cutoff decision'' entries for the fuller investigation,
-  including the industry/firm-composition checks that aren't repeated
-  here).
 \end{itemize}
 
 \begin{figure}
@@ -2132,7 +2935,13 @@ The bounds compare the two 95\% conservative-test confidence sets.}
 
 }
 
-\caption{\label{fig-cf-trim}Trim-cutoff test inversion.}
+\caption{\label{fig-cf-trim}Trim-cutoff test inversion, instruments
+\(m^*_{t-1}\) and \(\mathcal W_{t-2}\). At each trim level (share of the
+largest non-corner firms dropped, by reported materials), every tested
+\(\lambda\) is marked as not rejected (dot) or rejected (cross); the
+ring marks the grid minimum within that trim level. Pass/fail uses
+\(2n(\hat L_n-\min\hat L_n)\) against \(\chi^2_{8,.95}\), from the
+earlier eight-moment system.}
 
 \end{figure}%
 
@@ -2146,23 +2955,6 @@ region}{Search strategy for the joint (\textbackslash lambda,\textbackslash delt
   Search order: \(\lambda\)-grid (profiling \(\delta_1,\delta_2\)), then
   a \((\delta_1,\delta_2)\)-grid (profiling \(\lambda\)), then a joint
   27-cell \((\lambda,\delta_1,\delta_2)\) cube.
-\item
-  The cube deliberately reuses coarse \(\pm1\) (in \(\delta_1\)) /
-  \(\pm0.2\) (in \(\delta_2\)) spacing rather than a finer grid: its
-  purpose is narrowly evidentiary (justify one specific \(\hat\theta\)
-  to fix for the counterfactual), not to trace the confidence region's
-  exact boundary. Two of the three tested \(\lambda\)'s reuse
-  already-validated boundary points from the earlier \(\lambda\)-only
-  grid rather than guessing blind.
-\item
-  Warm-starting convention: every grid point seeded independently from
-  the SAME already-validated point, not chained sequentially across
-  points. Found the hard way -- sequential chaining lets the seed only
-  affect the grid's first point, silently reproducing a known-bad
-  chain's results; same-point seeding resolved genuine local-optimum
-  traps a naive chain had fallen into (see CLAUDE.md's ``Warm-starting
-  convention, revised'' entry for the full story, including why a
-  properly-scoped global optimizer was tried and rejected here).
 \end{itemize}
 
 \begin{figure}
@@ -2173,7 +2965,11 @@ region}{Search strategy for the joint (\textbackslash lambda,\textbackslash delt
 
 }
 
-\caption{\label{fig-cf-cube}Joint \((\lambda,\delta_1,\delta_2)\) cube.}
+\caption{\label{fig-cf-cube}Joint \((\lambda,\delta_1,\delta_2)\) cube,
+instrument \(m^*_{t-1}\): 27 tested cells, with \(\delta_0\) and
+\(\gamma\) profiled out at each. Blue: not rejected by the conservative
+test (\(\chi^2_{9,.95}\)); grey: rejected. Ball size grows with the
+test's p-value.}
 
 \end{figure}%
 
@@ -2185,7 +2981,11 @@ region}{Search strategy for the joint (\textbackslash lambda,\textbackslash delt
 
 }
 
-\caption{\label{fig-cf-lambda}\(\lambda\)-grid.}
+\caption{\label{fig-cf-lambda}\(\lambda\)-grid: the CUE objective
+\(\hat L_n\) at each tested \(\lambda\), with
+\(\delta_0,\delta_1,\delta_2\) and \(\gamma\) profiled out, for
+instruments \(m^*_{t-1}\) and \(\mathcal W_{t-2}\). The labelled point
+is each grid's minimum.}
 
 \end{figure}%
 
@@ -2197,7 +2997,10 @@ region}{Search strategy for the joint (\textbackslash lambda,\textbackslash delt
 
 }
 
-\caption{\label{fig-cf-delta}\((\delta_1,\delta_2)\)-grid.}
+\caption{\label{fig-cf-delta}\((\delta_1,\delta_2)\)-grid: \(\hat L_n\)
+at each tested pair, with \(\lambda\), \(\delta_0\) and \(\gamma\)
+profiled out, instrument \(m^*_{t-1}\). The marked point is the grid
+minimum, \((\delta_1,\delta_2)=(4.3,0.54)\).}
 
 \end{figure}%
 
@@ -2234,81 +3037,17 @@ why}\label{test-inversion-the-conservative-test-and-why}
 \item
   \textbf{Why the conservative test:} the counterfactual's purpose is to
   support a policy claim, so the confidence sets use the test whose size
-  is guaranteed not to exceed its nominal level. \textless!-- DROPPED
-  2026-09-23 (Hans): the soft (min-subtracted) test is not used in the
-  thesis.
-\item
-  \textbf{Two test statistics, same \(\hat L_n\), different critical
-  value:}
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{Conservative test} (Theorem F.1, absolute):
-    \(TS_{\text{cons}}=2n\hat L_n\) against \(\chi^2_{d_g,.95}\)
-    directly -- no credit for profiling out nuisance parameters or
-    \(\gamma\).
-  \item
-    \textbf{Soft test} (min-subtracted, CHT-style):
-    \(TS_{\text{soft}}=2n[\hat L_n-\min\hat L_n]\) against the same
-    \(\chi^2_{d_g,.95}\) -- profiling gives back some degrees of freedom
-    informally, so this is strictly more powerful (rejects more), and
-    \(TS_{\text{cons}}=TS_{\text{soft}}+2n\hat L_{n,\min}\) exactly, a
-    fixed additive shift. The conservative-passing region is therefore
-    always nested inside the soft-passing region.
-  \end{itemize}
-\item
-  \textbf{Why the conservative test is reported as headline here} (a
-  real, considered choice, not the only one used in this project -- the
-  stage-2 \((\lambda,\delta_1,\delta_2)\) estimates elsewhere use the
-  soft test as operative): once genuine conservative-test-passing points
-  existed for the first time in this project's history (the 3D cube
-  result, Section~\ref{sec-cf-estimates}), the more conservative test
-  became the defensible one to lead with for a counterfactual whose
-  whole purpose is to make a policy claim -- the soft test remains
-  reported alongside it, not discarded. --\textgreater{}
-\item
-  \textbf{Why test inversion over a bootstrap CI:} an earlier attempt
-  (plant-block bootstrap on the PF-step elasticities, a different part
-  of this project) gave bias-corrected percentile intervals that crossed
-  outside the parameter's own natural domain (\([0,1]\) for an
-  elasticity) -- an artifact of the CI formula, not of the estimator.
-  Test inversion only ever evaluates points on the bounded grid actually
-  tested, so this can't happen; the ``cost'' is a set-valued answer
-  instead of a point \(\pm\) SE, treated in this project as an honest
-  feature, not a fallback (Schennach herself: adding moments shrinks the
-  identified set, ``not a fallback to avoid'').
-\item
-  \textbf{AK2020 precedent, followed directly, not just cited:} Aguiar
-  and Kashaev (2020)'s own counterfactual appendix
-  (\texttt{Appendix\_F/F\_figure1.R}) uses exactly this design -- grid a
-  candidate outcome, profile the nuisance parameters (their \(\gamma\))
-  at each cell, plot pass/fail by candidate, connect the passing
-  region's own upper/lower bounds across the grid. The bound-plot
-  convention used for every \((\Delta,R)\) figure in this chapter (grey
-  \(\times\) = rejected, coloured \(\bullet\) = passes, dashed/dotted
-  bound lines) is a direct visual analogue of their own figure, not an
-  independent design.
-\item
-  Full derivations: Schennach (2014), Theorem F.1 and its proof;
-  \texttt{Paper/sections/9999-elvis.qmd}.
+  is guaranteed not to exceed its nominal level.
 \end{itemize}
-
-\section{Back-of-envelope: revenue loss and its tax-rate
-elasticity}\label{sec-app-backofenvelope}
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{What this is:} one forward-simulation run at the already-fixed
-  headline \((\hat\theta,\hat\gamma)\), \(\Delta=0\) (current policy),
-  across all 32,232 trimmed lag\_m firm-periods -- no fitting, just
-  evaluating each firm's posterior-mean evasion and revenue at the point
-  already estimated in Section~\ref{sec-cf-estimates}. Confirms internal
-  consistency on its own: mean \(R_{\text{real}}=\$1702.24\), sitting
-  exactly inside the baseline \([1666,1745]\) CI of the (dropped)
-  CV-adjusted revenue results.
+  Full derivations: Schennach (2014), Theorem F.1 and its proof; .
 \end{itemize}
+
+\section{Back-of-envelope: revenue loss and its tax-rate
+elasticity}\label{sec-app-backofenvelope}
 
 \textbf{Revenue lost to undetected evasion:}
 
@@ -2317,27 +3056,19 @@ elasticity}\label{sec-app-backofenvelope}
 \item
   Mean \(\text{Loss}_i=\tau_{P,i}(1-q(e_i))e_i\) (the extra credit paid
   out that perfect detection would have caught) across all firms:
-  \textbf{\$53.32 real COP per firm-period};
-  \textbf{\$1\{,\}718\{,\}598} total across the sample.
+  \textbf{\$53.32 real COP per firm-period}; \textbf{\$1,718,598} total
+  across the sample.
 \item
   \textbf{Reported as a share of \emph{potential} revenue, the standard
   VAT-gap convention} -- not of actual collections. Potential \(=\)
   actual \(+\) loss \(=1702.24+53.32=\$1755.56\); gap
-  \(=1-\text{actual/potential}=\textbf{3.04\%}\). Verified this is the
-  right denominator directly against the methodology already read for
-  Section~\ref{sec-cf-question}'s country comparisons: the EU VAT Gap
-  Report's own VTTL/``percent of VTTL'' construction and CIAT's
-  Efficiency\(=\)actual/potential decomposition both divide by
-  potential, never by actual.
+  \(=1-\text{actual/potential}=\textbf{3.04\%}\).
 \item
-  \textbf{A narrow-channel number, say so explicitly:} one mechanism
-  (materials-credit overreporting), one country, one structural sample
-  -- smaller than the official comparators' \emph{non-compliance-only}
-  gap shares (14.1\% Colombia, 30.7\% Chile, 54.4\% Mexico, all CIAT, as
-  \% of potential), which capture every form of non-compliance, not just
-  this channel. Smaller than that broader base is the expected,
-  reassuring result: not implausibly large (like the disqualified Poland
-  claim), not zero either.
+  \textbf{A narrow-channel number:} one mechanism (materials-credit
+  overreporting), one country, one structural sample -- smaller than the
+  official comparators' \emph{non-compliance-only} gap shares (14.1\%
+  Colombia, 30.7\% Chile, 54.4\% Mexico, all CIAT, as \% of potential),
+  which capture every form of non-compliance, not just this channel.
 \end{itemize}
 
 \textbf{Revenue elasticity of the tax rate:}
@@ -2345,8 +3076,8 @@ elasticity}\label{sec-app-backofenvelope}
 \begin{itemize}
 \tightlist
 \item
-  Closed form, derived by hand from the same \(\tilde e(\Delta)\) used
-  throughout this chapter:
+  Closed form from the same \(\tilde e(\Delta)\) used throughout this
+  chapter:
   \(\dfrac{\partial R_i}{\partial x}\Big|_{x=1}=-\tau_{P,i}\left[M_i-e_i+\lambda e_i^2+\dfrac{1}{2\lambda}\right]\),
   \(x\equiv1+\Delta\).
 \item
@@ -2357,37 +3088,32 @@ elasticity}\label{sec-app-backofenvelope}
   \(\varepsilon_{\text{left}}=-9.68\) (both aggregate, ratio of means,
   \(x=1\)). Both large; the asymmetry is the same mechanism as the
   Results section's own asymmetric-response finding, not a new one.
-\item
-  Cross-validated: the closed form's aggregate mean (\(-34{,}575.96\)
-  real COP) agrees with the numerical right-derivative
-  (\(-34{,}559.47\), from tiny \(\Delta=\pm0.001\) runs) to
-  \textbf{0.048\%}.
+\end{itemize}
+
+\begin{itemize}
+\tightlist
 \item
   \textbf{Elasticity ``with respect to the tax rate'' is the same
   number, not a third one, and this is exact, not approximate.} The
   model only ever moves \(\tau_P\) through the proportional shifter
   \(x\) (\(\tilde\tau_{P,i}=x\tau_{P,i}\), \(\tau_{P,i}\) fixed), so
   \(d\ln\tilde\tau_{P,i}=d\ln x\) identically at every firm, every \(x\)
-  -- not just at \(\Delta=0\). Confirmed a second, independent way:
-  \(\tau_{P,i}\) cancels out of \(\tilde e_i(\Delta)\) entirely in the
-  FOC derivation, so a firm's own rate level doesn't even affect how its
-  evasion responds to a proportional shock. A genuinely different
-  ``elasticity to an absolute percentage-point change'' would need its
-  own derivation (a non-proportional shock design) -- not computed here,
-  flagged only.
+  -- not just at \(\Delta=0\).
 \item
   Median interior-firm elasticity, as a distinct ``typical firm''
   measure: \(-195.99\) -- far larger in magnitude because the median
-  evading firm's own \(R_i\) is much smaller than the sample mean (a
-  real heterogeneity finding, not a discrepancy with the aggregate
-  number above).
+  evading firm's own \(R_i\) is much smaller than the sample mean .
 \end{itemize}
 
 \chapter{MSL Implementation and Density
 Transformation}\label{sec-app-msl}
 
+\addcontentsline{loa}{appendixlist}{\appendixname~\thechapter: MSL Implementation and Density Transformation}
+
 \chapter{Second-Order Condition: Single-Tax
 Model}\label{sec-app-soc-model}
+
+\addcontentsline{loa}{appendixlist}{\appendixname~\thechapter: Second-Order Condition: Single-Tax Model}
 
 This appendix derives the second-order condition (SOC) for the firm's
 problem in Chapter~\ref{sec-model}, and shows how it translates into the
@@ -2566,100 +3292,122 @@ them is therefore not disciplined by the SOC; it is a modelling choice
 about the detection technology, addressed on economic grounds in
 Chapter~\ref{sec-model}.
 
-\protect\phantomsection\label{refs}
-\begin{CSLReferences}{1}{1}
-\bibitem[\citeproctext]{ref-AK2020}
-Aguiar, Victor H., and Nail Kashaev. 2020. {``Stochastic Revealed
-Preferences with Measurement Error.''} \emph{Review of Economic Studies}
-0: 1--52. \url{https://doi.org/10.1093/restud/rdaa067}.
+\chapter{Production-Function Estimates for All
+Industries}\label{sec-app-pf-all}
 
-\bibitem[\citeproctext]{ref-Allingham1972}
-Allingham, Michael G., and Agnar Sandmo. 1972. {``Income Tax Evasion: A
-Theoretical Analysis.''} \emph{Journal of Public Economics} 1
-(November): 323--38. \url{https://doi.org/10.1016/0047-2727(72)90010-2}.
+\addcontentsline{loa}{appendixlist}{\appendixname~\thechapter: Production-Function Estimates for All Industries}
 
-\bibitem[\citeproctext]{ref-Bolanos2019}
-Bolaños Bolaños, Lucía del Carmen. 2019. {``El Impuesto de Renta En
-{Colombia}: Una Mirada Desde El Gasto Tributario.''} \emph{Bolet{í}n
-Mexicano de Derecho Comparado} 52 (155): 721--56.
-\url{https://doi.org/10.22201/iij.24484873e.2019.155.14946}.
+The stage-2 estimation in Chapter~\ref{sec-counterfactual} uses every
+industry, not only the seven reported in Chapter~\ref{sec-pf}.
+Table~\ref{tbl-pf-all-industries} lists the production-function
+estimates it uses, with instrument \(\tilde{\mathcal W}_{it-2}\).
 
-\bibitem[\citeproctext]{ref-Carrillo2022}
-Carrillo, Paul, Dave Donaldson, Dina Pomeranz, and Monica Singhal. 2022.
-\emph{Ghosting the Tax Authority: Fake Firms and Tax Fraud}. NBER.
-\url{http://www.nber.org/papers/w30242}.
+\begin{table}
 
-\bibitem[\citeproctext]{ref-Ley49_1990}
-Congreso de la República de Colombia. 1990. \emph{Ley 49 de 1990
-(Diciembre 28)}. Diario Oficial No. 36.615, 30 de diciembre de 1990.
-Art. 26: general sales-tax rate of 12\% from 1 January 1991.
-\url{https://normograma.dian.gov.co/dian/compilacion/docs/ley_0049_1990.htm}.
+\caption{\label{tbl-pf-all-industries}Production-function estimates by
+industry, instrument \(\tilde{\mathcal W}_{it-2}\), with 95\%
+test-inversion regions (sharp test).}
 
-\bibitem[\citeproctext]{ref-CorteConstitucional2016}
-Corte Constitucional de Colombia. 2016. \emph{Sentencia {C-633} de
-2016}.
-\url{https://www.corteconstitucional.gov.co/relatoria/2016/C-633-16.htm}.
+\centering{
 
-\bibitem[\citeproctext]{ref-DANE1995}
-Departamento Administrativo Nacional de Estadística (DANE). 1995.
-\emph{Metodolog{í}a Encuesta Anual Manufacturera -- {EAM}}. DANE,
-Direcci{ó}n de Metodolog{í}a y Producci{ó}n Estad{í}stica.
+\pandocbounded{\includegraphics[keepaspectratio]{tables/appE-pf-all-industries.png}}
 
-\bibitem[\citeproctext]{ref-DANE2018}
-Departamento Administrativo Nacional de Estadística (DANE). 2018.
-\emph{Colombia -- Encuesta Anual Manufacturera -- {EAM} -- 1992 a 1994:
-Documentaci{ó}n {DDI}}. Archivo Nacional de Datos (ANDA), study
-DANE-DIMPE-EAM-1992-A-1994.
-\url{http://microdatos.dane.gov.co/index.php}.
+}
 
-\bibitem[\citeproctext]{ref-JunguitoRincon2004}
-Junguito, Roberto, and Hernán Rincón. 2004. {``La Pol{í}tica Fiscal En
-El Siglo {XX} En {Colombia}: Una Visi{ó}n Global.''} \emph{Coyuntura
-Econ{ó}mica}, December.
-\url{https://www.repository.fedesarrollo.org.co/handle/11445/942}.
+\end{table}%
 
-\bibitem[\citeproctext]{ref-Ocampo1983}
-Ocampo, José Antonio, and Guillermo Perry. 1983. {``La Reforma Fiscal,
-1982 - 1983.''} \emph{Coyuntura Económica} 13 (1): 215--64.
-\url{https://doi.org/None}.
+\chapter{Robustness of the Test for
+Overreporting}\label{sec-app-test-robustness}
 
-\bibitem[\citeproctext]{ref-OECD2017}
-OECD. 2017. \emph{Technology Tools to Tackle Tax Evasion and Tax Fraud}.
-OECD. \href{https://www.oecd.org}{www.oecd.org}.
+\addcontentsline{loa}{appendixlist}{\appendixname~\thechapter: Robustness of the Test for Overreporting}
 
-\bibitem[\citeproctext]{ref-PerryCardenas1986}
-Perry, Guillermo, and Mauricio Cárdenas. 1986. \emph{Diez a{ñ}os de
-Reformas Tributarias En {Colombia}}. Fedesarrollo.
+Table~\ref{tbl-evasion-test} reports the sharp version of the test,
+which takes \(\ln\hat\beta\) from corporations as the true value. This
+appendix reports two alternatives.
+Table~\ref{tbl-evasion-test-conservative} gives the conservative test,
+which gives no credit for the corporations' moment.
+Table~\ref{tbl-evasion-test-bootstrap} gives a bootstrap test that
+re-estimates \(\ln\hat\beta\) in every replication, so it carries the
+sampling error of the first stage.
 
-\bibitem[\citeproctext]{ref-Perry1990}
-Perry, Guillermo, and Alba Lucía Orozco de Triana. 1990. {``The VAT in
-Colombia.''} In \emph{Value Added Taxation in Developing Countries},
-edited by Malcolm Gillis, Carl S. Shoup, and Gerardo P. Sicat. The World
-Bank.
+\begin{table}
 
-\bibitem[\citeproctext]{ref-Decreto3541_1983}
-Presidencia de la República de Colombia. 1983. \emph{Decreto 3541 de
-1983 (Diciembre 29)}. Diario Oficial No. 36.452, 18 de enero de 1984.
-Issued under the extraordinary powers of art. 53 of Ley 9 de 1983.
-\url{https://normograma.dian.gov.co/dian/compilacion/docs/decreto_3541_1983.htm}.
+\caption{\label{tbl-evasion-test-conservative}Test for overreporting of
+materials by industry, conservative test. Mean of \(\mathcal V_{it}\)
+among unincorporated firms and 95\% test-inversion region for its
+expectation, with \(\ln\beta\) estimated from corporations.}
 
-\bibitem[\citeproctext]{ref-Sanchez1994}
-Sánchez Torres, Fabio, and Catalina Gutiérrez Sourdis. 1994. {``Reformas
-Tributarias En Colombia 1980-1992. Aspectos de Equidad, Eficiencia, y
-Simplificación Administrativa.''} \emph{VI Seminario Regional de
-Política Fiscal}.
+\centering{
 
-\bibitem[\citeproctext]{ref-Schennach2014}
-Schennach, Susane M. 2014. {``Entropic Latent Variable Integration via
-Simulation.''} \emph{Econometrica} 82: 345--85.
-\url{https://doi.org/10.3982/ecta9748}.
+\pandocbounded{\includegraphics[keepaspectratio]{tables/appF-evasion-test-conservative.png}}
 
-\bibitem[\citeproctext]{ref-Schennach2022}
-Schennach, Susanne M. 2022. {``Measurement Systems.''} \emph{Journal of
-Economic Literature} 60 (4): 1223--63.
-\url{https://doi.org/10.1257/jel.20211355}.
+}
 
-\end{CSLReferences}
+\end{table}%
+
+\begin{table}
+
+\caption{\label{tbl-evasion-test-bootstrap}Bootstrap test for
+overreporting of materials by industry. Mean of \(\mathcal V_{it}\)
+among unincorporated firms, with \(\ln\beta\) re-estimated from
+corporations in every replication.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/appF-evasion-test-bootstrap.png}}
+
+}
+
+\end{table}%
+
+\chapter{The Tax Wedge in the Reform
+Estimates}\label{sec-app-fiscal-wedge}
+
+\addcontentsline{loa}{appendixlist}{\appendixname~\thechapter: The Tax Wedge in the Reform Estimates}
+
+A tax change can move reported materials shares mechanically, without
+any change in overreporting: prices and the tax paid on sales and
+purchases adjust to the new rates. The two-tax model isolates the part
+of this adjustment that runs through the sales-tax rates. With different
+rates on sales, \(\tau_S\), and on purchases, \(\tau_P\), the gross
+materials share carries the wedge
+\(\ln\big((1-\tau_S)/(1-\tau_P)\big)\), which depends on the rates
+themselves. The 1983 reform changed those rates in the liable
+industries, so a rise in the gross share after the reform could reflect
+either more overreporting or this wedge. The event study in
+Chapter~\ref{sec-fiscal} uses the share net of sales taxes, which
+removes the wedge.
+
+Table~\ref{tbl-fiscal-wedge} estimates the wedge's contribution
+directly: the same event study, with the gross minus the net share as
+the outcome. Its coefficients equal the gap between the event study on
+the gross share and on the net share. Before the reform the wedge does
+not move. After it, the wedge rises by about 0.006 to 0.008 for
+unincorporated firms in liable industries, roughly a tenth of their
+measured response, and by 0.011 to 0.013 for proprietorships in
+1984--1986, most of their response in those years. An event study on the
+gross share would attribute this mechanical component to overreporting.
+
+\begin{table}
+
+\caption{\label{tbl-fiscal-wedge}The tax wedge in the event study of the
+1983 reform: gross minus net-of-sales-tax log materials share,
+difference relative to 1983.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{tables/appG-fiscal-wedge.png}}
+
+}
+
+\end{table}%
+
+\chapter*{Curriculum Vitae}\label{curriculum-vitae}
+\addcontentsline{toc}{chapter}{Curriculum Vitae}
+
+\markboth{Curriculum Vitae}{Curriculum Vitae}
+
+{[}Placeholder: curriculum vitae.{]}
 
 
 

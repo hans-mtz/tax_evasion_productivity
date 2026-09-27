@@ -6,10 +6,17 @@ draft: false
 
 book:
   title: "Tax Evasion and Productivity"
-  author: "Hans Martinez"
+  author:
+    - name:
+        given: Hans
+        family: Martinez
   date: today
+  date-format: "MMMM YYYY"            # title page shows the month and year
   chapters:
-    - index.qmd
+    - index.qmd                              # Abstract
+    - frontmatter/lay-summary.qmd            # required, max 350 words
+    - frontmatter/genai.qmd                  # required: use / non-use of GenAI
+    - frontmatter/lists.qmd                  # TOC + lists (template shortcode)
     - chapters/01-intro.qmd
     - chapters/02-model.qmd
     - chapters/03-setting-data.qmd
@@ -20,12 +27,16 @@ book:
     - chapters/08-counterfactual.qmd
     - chapters/09-literature.qmd
     - chapters/10-conclusion.qmd
+    - backmatter/references.qmd
   appendices:
     - appendices/A-elvis.qmd
     # - appendices/B-control-variate.qmd   # DROPPED 2026-09-23: CV not used in the thesis
     - appendices/C-msl.qmd
     - appendices/D-soc-model.qmd
     - appendices/E-pf-all-industries.qmd
+    - appendices/F-test-robustness.qmd
+    - appendices/G-fiscal-wedge.qmd
+    - backmatter/cv.qmd                      # Curriculum Vitae, required, always last
 
 bibliography: biblio/references.bib
 
@@ -35,15 +46,17 @@ execute:
 
 number-sections: true
 
+# Title page and abstract (Western thesis template, _extensions/hans-mtz/westernthesis)
+supervisor: ["Salvador Navarro", "David Rivers", "Timothy Conley"]
+program: "Economics"
+degree: "Doctor of Philosophy"
+degree-level: doctoral
+keywords:
+  - Tax Evasion
+  - Cost Overreporting
+  - Production Function Estimation
+  - Productivity
+
 format:
-  pdf:
-    documentclass: scrreport
-    mainfont: TeX Gyre Termes
-    mathfont: texgyretermes-math.otf
-    include-in-header:
-      text: |
-        \addtokomafont{disposition}{\rmfamily}
+  westernthesis-pdf:
     keep-tex: true
-    toc: true
-  html:
-    theme: cosmo

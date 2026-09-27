@@ -6,12 +6,15 @@
 ## (definitions as in 1470-net-tax-first-stage-diag.R). Sample rule applied to the NET share only (share > threshold_cut;
 ## 369 also below upper_threshold_cut), so this is the production sample, not 1470's gross-and-net common sample.
 ## Nothing approved is overwritten: reads 931.1-fs-se-het.RData, writes only 1501-* files.
+## Sample (2026-09-26, PLAN.md §9a option b): juridical organization codes 6-9 dropped (6 stock partnerships, taxed as
+## corporations; 7-9 cooperatives, state enterprises and other entities). Corporations = 3; unincorporated = 0, 1, 2, 4, 5.
 library(tidyverse); library(parallel)
 load("Code/Products/global_vars.RData"); load("Code/Products/deconv_funs.Rdata")
 load("Code/Products/931.1-fs-se-het.RData")   # df (raw panel + gross cal_V/cal_W/epsilon), fs_all_ls (approved gross first stage)
 mc_cores <- max(1, detectCores() - 2)
 
 base <- df %>% select(-any_of(c("cal_V", "cal_W", "epsilon"))) %>%
+    filter(!juridical_organization %in% 6:9) %>%   # sample definition, PLAN.md §9a (2026-09-26)
     mutate(t1 = sales_tax_rate_sales * nom_sales, t2 = sales_tax_rate_purchases * nom_mats,
            log_mats_share_net = log((nom_mats - t2) / (nom_gross_output - t1)))
 lo <- log(threshold_cut)

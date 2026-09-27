@@ -12,7 +12,7 @@
 ## handful of outliers). Built 2026-09-23.
 
 source("Code/Thesis/001-setup.R")
-load(file.path(PRODUCTS_DIR, "colombia_data.RData")) # colombia_data_frame
+source("Code/Thesis/ch03-sample.R") # ch3_base: same sample as every ch. 3 table (codes 6-9 dropped, 2026-09-26)
 
 statutory <- c(
     "81" = "15\\% basic, 6\\% preferential",
@@ -24,31 +24,36 @@ statutory <- c(
     "91" = "12\\% from 1 January"
 )
 
-tbl <- colombia_data_frame %>%
-    ungroup() %>%
-    filter(is.finite(sales_tax_rate_sales),
-           sales_tax_rate_sales > 0, sales_tax_rate_sales < 0.5) %>%
-    group_by(year) %>%
-    summarise(
-        n = n(),
-        median = median(sales_tax_rate_sales),
-        mean = mean(sales_tax_rate_sales),
-        p75 = quantile(sales_tax_rate_sales, 0.75),
-        .groups = "drop"
-    ) %>%
+## tau_P (sales tax paid on purchases / raw materials) added 2026-09-26: the
+## rate at which each fictitious peso of materials is credited, the model's
+## incentive. Its median is taken over firms with 0 < tau_P < 50%, separately
+## from the tau_S sample.
+rate_by_year <- function(v) {
+    ch3_base %>%
+        filter(is.finite(.data[[v]]), .data[[v]] > 0, .data[[v]] < 0.5) %>%
+        group_by(year) %>%
+        summarise(n = n(), median = median(.data[[v]]), mean = mean(.data[[v]]),
+                  p75 = quantile(.data[[v]], 0.75), .groups = "drop")
+}
+s_rt <- rate_by_year("sales_tax_rate_sales")
+p_rt <- rate_by_year("sales_tax_rate_purchases") %>% select(year, median_p = median)
+
+tbl <- s_rt %>%
+    left_join(p_rt, by = "year") %>%
     mutate(
         Year = paste0("19", year),
         `Statutory general rate` = statutory[as.character(year)],
-        across(c(median, mean, p75), ~ sprintf("%.1f\\%%", 100 * .x)),
+        across(c(median, mean, p75, median_p), ~ sprintf("%.1f\\%%", 100 * .x)),
         n = format(n, big.mark = ",")
     ) %>%
-    select(Year, `Statutory general rate`, N = n, Median = median, Mean = mean, P75 = p75)
+    select(Year, `Statutory general rate`, N = n, `Median $\\tau_S$` = median,
+           `Mean $\\tau_S$` = mean, `P75 $\\tau_S$` = p75, `Median $\\tau_P$` = median_p)
 
 print(tbl)
 
 tt_obj <- tbl |>
-    tt(width = c(1, 3, 1, 1, 1, 1),
-       notes = "Rate = sales tax paid on sales over sales. Firms with a rate strictly between 0 and 50\\% (ST-exempt firms excluded).") |>
+    tt(width = c(0.9, 2.6, 0.9, 1, 1, 1, 1),
+       notes = "$\\tau_S$: sales tax charged on sales over sales; N and the $\\tau_S$ columns use firms with $0<\\tau_S<50\\%$ (ST-exempt firms excluded). $\\tau_P$: sales tax paid on purchases over raw materials, median over firms with $0<\\tau_P<50\\%$.") |>
     style_tt(i = c(4, 11), bold = TRUE) |>
     style_tt("notes", fontsize = 0.8)
 

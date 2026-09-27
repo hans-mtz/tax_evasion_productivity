@@ -1,3 +1,6 @@
+## UPDATED 2026-09-26: reads 1521-np-deconv-selected.RData -- two-tax share, codes 6-9 excluded, the test's sample, and the
+## industries selected ex ante (99% sharp test-inversion region excludes 0: 313, 321, 322, 324, 331, 342, 369). Table adds
+## E[u] next to the test's 95% sharp region for E[V] (1510) as a consistency check; figure is small multiples (7 industries).
 ## PRODUCT: Thesis/tables/ch05-overreporting-ratio.png  := Table 5.x, overreporting ratio x = e/M by industry
 ##          Thesis/figures/ch05-overreporting-ratio.png := Figure 5.x, deconvolved density of x by industry
 ## Reads:   Code/Products/np_deconv_unincorp.RData (unincorp_np_deconv_list: penalized B-spline (logspline)
@@ -16,11 +19,14 @@ fenv <- new.env(); load(file.path(PRODUCTS_DIR, "np-deconv-funs.RData"), envir =
 for (fn in ls(fenv)) if (is.function(fenv[[fn]])) environment(fenv[[fn]]) <- fenv   # helpers (s, C_recursive, ...) resolve in fenv
 f_e.np <- fenv$f_e.np
 
-load(file.path(PRODUCTS_DIR, "np_deconv_unincorp.RData"))   # unincorp_np_deconv_list, unincorp_np_stats_df
+load(file.path(PRODUCTS_DIR, "1521-np-deconv-selected.RData"))   # deconv_sel_list, deconv_sel_stats
+unincorp_np_deconv_list <- deconv_sel_list; unincorp_np_stats_df <- deconv_sel_stats
+load(file.path(PRODUCTS_DIR, "1510-test-inversion.RData"))        # out: test mu_hat and sharp regions
+test_reg <- out %>% filter(share == "s_net") %>% transmute(sic_3, sh_lo, sh_hi)
 
-five <- c("331", "322", "369", "313", "321")
-ind_names <- c("331" = "Wood products", "322" = "Wearing apparel", "369" = "Non-metallic minerals",
-               "313" = "Beverages", "321" = "Textiles")
+five <- c("313", "321", "322", "324", "331", "342", "369")
+ind_names <- c("313" = "Beverages", "321" = "Textiles", "322" = "Wearing apparel", "324" = "Footwear",
+               "331" = "Wood products", "342" = "Printing and publishing", "369" = "Non-metallic minerals")
 
 ## f_u on a fine grid of u, normalized to integrate to 1 on the grid
 grid_fu <- function(d, n = 4001) {
@@ -49,6 +55,7 @@ stats <- dens %>% group_by(sic_3) %>%
         p90  = qx(x, fu, du, 0.90),
         .groups = "drop"
     ) %>%
+    left_join(test_reg, by = "sic_3") %>%
     mutate(sic_3 = factor(sic_3, five)) %>% arrange(sic_3)
 print(stats)
 print(unincorp_np_stats_df)   # E[u] check
@@ -56,11 +63,12 @@ print(unincorp_np_stats_df)   # E[u] check
 pct <- \(v) sprintf("%.1f\\%%", 100 * v)
 tbl <- stats %>% transmute(
     Industry = paste0(as.character(sic_3), " ", ind_names[as.character(sic_3)]),
-    Mean = pct(Ex), SD = pct(SDx), P10 = pct(p10), Median = pct(p50), P90 = pct(p90)
+    Mean = pct(Ex), SD = pct(SDx), P10 = pct(p10), Median = pct(p50), P90 = pct(p90),
+    `$E[u]$` = sprintf("%.3f", Eu), `Test, $E[\\mathcal V]$` = sprintf("$[%.3f,\\ %.3f]$", sh_lo, sh_hi)
 )
 
-tt_obj <- tt(tbl, align = "lccccc", width = c(3, 1, 1, 1, 1, 1),
-             notes = "Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, unincorporated firms).") %>%
+tt_obj <- tt(tbl, align = "lccccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 2.2),
+             notes = "Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, unincorporated firms, log materials share net of sales taxes). Industries: those whose 99\\% sharp test-inversion region for $E[\\mathcal V]$ excludes zero, a rule fixed before deconvolving. $E[u]$: mean of the deconvolved $u$; under the model it equals $E[\\mathcal V]$, whose 95\\% sharp test-inversion region is shown for comparison.") %>%
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch05-overreporting-ratio")
 
@@ -72,11 +80,10 @@ x_max <- 0.6
 plt <- dens %>% filter(x <= x_max) %>%
     mutate(Industry = factor(paste0(sic_3, " ", ind_names[sic_3]),
                              paste0(five, " ", ind_names[five]))) %>%
-    ggplot(aes(x = x, y = fx, colour = Industry)) +
-    geom_line(linewidth = 0.7) +
+    ggplot(aes(x = x, y = fx)) +
+    geom_line(linewidth = 0.6, colour = THESIS_COLS[1]) +
+    facet_wrap(~Industry, ncol = 4, scales = "free_y", labeller = label_wrap_gen(width = 16)) +
     scale_x_continuous(labels = scales::percent) +
-    labs(x = "Overreporting ratio, e/M (share of true materials)", y = "Density", colour = NULL) +
-    scale_colour_thesis() +
-    theme_thesis() +
-    guides(colour = guide_legend(nrow = 2))
+    labs(x = "Overreporting ratio, e/M (share of true materials)", y = "Density") +
+    theme_thesis()
 save_thesis_plot(plt, "ch05-overreporting-ratio")

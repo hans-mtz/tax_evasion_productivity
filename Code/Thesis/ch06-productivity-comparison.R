@@ -1,3 +1,7 @@
+## UPDATED 2026-09-26 to the final specification: corrected omega from 1523-omega-deconv-final.RData (two-tax first
+## stage, codes 6-9 excluded, alphas at the minimum of the test-inversion statistic), GNR omega from the R port
+## (1520-gnr-ols.RData, gnr_omega; validated against the Stata code), persistence from 1524; seven industries;
+## W~_{it-2} (headline) listed before m*_{it-1}.
 ## PRODUCT: Thesis/tables/ch06-productivity-comparison.png := Table 6.x, productivity: evasion-corrected vs GNR
 ## Compares omega with omega (never omega + eps):
 ##   - Corrected: deconvolved density of omega from W~ = omega + (1-beta) eps (293-omega-deconv-current-pf.R,
@@ -14,11 +18,11 @@ source("Code/Thesis/001-setup.R")
 fenv <- new.env(); load(file.path(PRODUCTS_DIR, "np-deconv-funs.RData"), envir = fenv)   # never source() 030
 for (fn in ls(fenv)) if (is.function(fenv[[fn]])) environment(fenv[[fn]]) <- fenv
 f_e.np <- fenv$f_e.np
-load(file.path(PRODUCTS_DIR, "omega_deconv_current_pf.RData"))   # omega_cur_np_ls
+load(file.path(PRODUCTS_DIR, "1523-omega-deconv-final.RData"))   # omega_fin_np_ls
+omega_cur_np_ls <- omega_fin_np_ls
+load(file.path(PRODUCTS_DIR, "1520-gnr-ols.RData"))              # gnr_omega
 
-five <- c("331", "322", "369", "313", "321")
-ind_names <- c("331" = "Wood products", "322" = "Wearing apparel", "369" = "Non-metallic minerals",
-               "313" = "Beverages", "321" = "Textiles")
+five <- c("313", "321", "322", "324", "331", "342", "369")
 
 ## weighted-sample metrics: x = omega values, w = probability weights (sum to 1)
 metrics <- function(x, w) {
@@ -40,19 +44,18 @@ corrected <- imap_dfr(omega_cur_np_ls, function(d, nm) {
     metrics(x, w) %>% mutate(sic_3 = key[1], Method = recode(key[2], lag_m = "m", lag_2_w_eps = "w"))
 })
 gnr <- map_dfr(five, function(s) {
-    g <- read.csv(file.path(PRODUCTS_DIR, paste0("stata-gnr-me-omg-", s, ".csv")))
+    g <- gnr_omega %>% filter(sic_3 == s)
     x <- g$logomega[is.finite(g$logomega)]
     metrics(x, rep(1, length(x))) %>% mutate(sic_3 = s, Method = "gnr")
 })
 
-pers <- read.csv(file.path(PRODUCTS_DIR, "294-omega-persistence.csv")) %>%
+pers <- read.csv(file.path(PRODUCTS_DIR, "1524-omega-persistence-final.csv")) %>%
     mutate(sic_3 = as.character(sic_3), Method = recode(method, lag_m = "m", lag_2_w_eps = "w", gnr = "gnr")) %>%
     select(sic_3, Method, gamma1)
 f2 <- \(v) sprintf("%.2f", v); f1 <- \(v) formatC(v, format = "f", digits = 1, big.mark = ",")
-tbl <- bind_rows(corrected, gnr) %>% left_join(pers, by = c("sic_3", "Method")) %>%
+tbl <- bind_rows(corrected %>% filter(Method == "w"), gnr) %>% left_join(pers, by = c("sic_3", "Method")) %>%   # (a) 2026-09-26: W~ vs GNR only; m* weak (324 degenerate)
     mutate(sic_3 = factor(sic_3, five),
-           Method = factor(Method, c("m", "w", "gnr"),
-                           c("Corrected, $m^*_{it-1}$", "Corrected, $\\tilde{\\mathcal W}_{it-2}$", "GNR"))) %>%
+           Method = factor(Method, c("w", "gnr"), c("Corrected", "GNR"))) %>%
     arrange(sic_3, Method) %>%
     group_by(sic_3) %>%
     mutate(Industry = ifelse(row_number() == 1, as.character(sic_3), "")) %>%
@@ -62,8 +65,8 @@ tbl <- bind_rows(corrected, gnr) %>% left_join(pers, by = c("sic_3", "Method")) 
               Skewness = f2(Skew), `$\\hat\\gamma_1$` = f2(gamma1))
 print(tbl, n = Inf)
 
-tt_obj <- tt(tbl, align = "llccccccccc", width = c(0.8, 2.4, 0.9, 0.9, 0.9, 0.8, 0.8, 0.8, 0.8, 1, 0.8),
-             notes = "Productivity in levels, $\\exp(\\omega_{it})$; percentile ratios as in Gandhi, Navarro and Rivers (2020, Table 3); skewness of $\\omega_{it}$; $\\hat\\gamma_1$: persistence, the AR(1) coefficient of $\\omega_{it}$ (corrected: IV estimate within the production function step; GNR: OLS on firm-level $\\omega_{it}$). Corrected: moments of the deconvolved density of $\\omega$ (penalized B-spline deconvolution of $\\widetilde{\\mathcal W}_{it}=\\omega_{it}+(1-\\beta)\\varepsilon_{it}$), with the production function estimates of the corresponding single instrument. GNR: firm-level $\\omega_{it}$ from the uncorrected GNR (2020) Cobb-Douglas estimation, with the measurement error removed. Both exclude $\\varepsilon$. Industries: 331 wood products, 322 wearing apparel, 369 non-metallic minerals, 313 beverages, 321 textiles. In 313, the $\\tilde{\\mathcal W}_{it-2}$ estimate of $\\alpha_K$ is 0 (at the bound), so its $\\omega$ absorbs capital and its level is not comparable.") %>%
+tt_obj <- tt(tbl, align = "llccccccccc", width = c(0.8, 1.4, 0.9, 0.9, 0.9, 0.8, 0.8, 0.8, 0.8, 1, 0.8),
+             notes = "Productivity in levels, $\\exp(\\omega_{it})$; percentile ratios as in Gandhi, Navarro and Rivers (2020, Table 3); skewness of $\\omega_{it}$; $\\hat\\gamma_1$: persistence, the AR(1) coefficient of $\\omega_{it}$ (corrected: IV estimate within the production function step; GNR: OLS on firm-level $\\omega_{it}$). Corrected: moments of the deconvolved density of $\\omega$ (penalized B-spline deconvolution of $\\widetilde{\\mathcal W}_{it}=\\omega_{it}+(1-\\beta)\\varepsilon_{it}$), with the production function estimates of instrument $\\tilde{\\mathcal W}_{it-2}$. GNR: firm-level $\\omega_{it}$ from the uncorrected GNR (2020) Cobb-Douglas estimation, with the measurement error removed. Both exclude $\\varepsilon$. Log materials share net of sales taxes, juridical organization codes 6--9 excluded. Industries: the seven selected in the deconvolution chapter.") %>%
     style_tt(fontsize = 0.85) %>%
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch06-productivity-comparison")

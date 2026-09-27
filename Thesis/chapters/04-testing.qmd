@@ -19,7 +19,7 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
 1. TESTING/ESTIMATION SAMPLE SPLIT. Tim's note: "order testing and estimation data. order by
    magnitude one tail. Switch between quarters. Randomly rotate. Estimate with three quarters
    and test with the others. With replacement." Reading: a train/test split across the panel's
-   quarters (estimate the test statistic in SS4's bootstrap/diff-in-means test on 3 of 4
+   quarters (estimate the test statistic of the test for overreporting on 3 of 4
    quarters, hold out the 4th to test on, rotate which quarter is held out, with replacement)
    -- a robustness check that the tax-evasion test result isn't an artifact of using the same
    data to both fit and test. NOT the current design (current test uses the full sample both
@@ -32,7 +32,7 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
    overreporting." Reading: a figure overlaying kernel-density (pdf, not cdf) estimates of the
    productivity distribution for three groups -- all firms, a validation/non-evading group
    (corporations), and the overreporting group -- as an informal, visual companion to the
-   formal bootstrap/diff-in-means test above (SS4's existing @tbl-ielas-most-least-likely).
+   formal test for overreporting (@tbl-evasion-test).
    Needs Hans's call on: which $\omega$ estimate to plot pre- or post-evasion-correction (this
    chapter's raw test, or ch. 6's corrected productivity), and the exact group definitions
    (does "validation" mean corporations specifically, as elsewhere in this project). -->
@@ -49,7 +49,7 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
 
 ## Non-evaders {#sec-testing-nonevaders}
 
-Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations (@sec-setting-corp-evasion).
+Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations (@sec-setting-jo).
 
 **Assumption 1 (Non-evaders).** Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\theta_i\in\Theta^{NE}\subset \Theta$ that does not evade taxes by overreporting inputs.
 
@@ -114,27 +114,28 @@ Tax evasion therefore can be recovered up to an independent random variable.
 
 @eq-ob-ev suggests a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$ and define the null hypothesis as the absence of cost overreporting and the alternative hypothesis as the presence of cost overreporting. Consequently, to verify for the presence of tax evasion by overreporting, we can use a one-sided test where under the alternative hypothesis $H_1: \mu_{\mathcal{V}}>0$, and under the null, $H_0: \mu_{\mathcal{V}}\le0$.
 
-I use a bootstrap hypothesis test to verify the presence of tax evasion. @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the result of the test for each industry.
+I invert the test. For each industry, @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the values of $\mu_{\mathcal V}$ in $[0,1]$ that the test does not reject at the 5% level, taking $\ln\hat\beta$ from corporations as the true value. The test detects overreporting where this set excludes zero. @sec-app-test-robustness reports a conservative version of the test and a bootstrap test that carries the sampling error of $\ln\hat\beta$.
 
 ::: {#tbl-evasion-test}
 ![](/tables/ch04-evasion-test.png)
 
-Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among unincorporated firms, with $\ln\beta$ estimated from corporations.
+Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among unincorporated firms and 95% test-inversion region for its expectation (sharp test), with $\ln\beta$ estimated from corporations.
 :::
 
 ::: {.content-visible when-meta="draft"}
 
 **Draft note (outline for the test design and results; replaces the old results paragraphs of `200-deconv.qmd`, whose industry counts come from an earlier table):**
 
-- Design: difference in means, two samples. Each bootstrap replication resamples plants separately within corporations and within unincorporated firms; $\ln\hat\beta$ comes from the corporations, the mean of $\mathcal V$ from the unincorporated firms. This carries the first-stage sampling error of $\ln\hat\beta$ into the test.
-- Results (@tbl-evasion-test), one level throughout, 10% one-sided (Hans, 2026-09-24): the null is rejected in 9 of 20 industries: 313 Beverages, 321 Textiles, 322 Wearing apparel, 331 Wood products, 369 Non-metallic minerals (1%); 324 Footwear, 342 Printing and publishing, 352 Other chemicals (5%); 311 Food products (10%).
+- Design (2026-09-26, replaces the bootstrap): test inversion over $\mu_{\mathcal V}\in[0,1]$, with $\ln\hat\beta$ from corporations taken as the true value; moments (corporations: $s-\ln\hat D$; unincorporated firms: $s-\ln\hat D-\mu$), plant-clustered, centred covariance re-estimated at each candidate; sharp $\chi^2_1$ (the corporations' moment holds exactly at $\ln\hat D$), conservative $\chi^2_2$. Sample: log materials share net of sales taxes, juridical organization codes 6--9 excluded. The earlier bootstrap overstated significance: its resampling joined sampled plants back by plant only, so plants that switch legal form brought rows from the other group and the replicates were not centred on the estimate. The corrected bootstrap and the conservative test are in @sec-app-test-robustness.
+- Results (@tbl-evasion-test), sharp test at 5%: the region excludes zero in 9 of 20 industries: 313 Beverages, 321 Textiles, 322 Wearing apparel, 324 Footwear, 331 Wood products, 342 Printing and publishing, 369 Non-metallic minerals, and, at the margin (lower ends 0.001 and 0.002), 351 Industrial chemicals and 352 Other chemicals. At 1%: the first seven. Conservative test at 5%: the same seven (351 and 352 no longer reject).
 - Why this is not cherry-picking (three devices, all using every industry tested):
-  - Ranking fixed before the test: four of the five largest industries by revenue (311, 313, 352, 321; not 351), from the size ranking in @sec-setting-industries.
-  - Size-weighted: the 20 industries tested produce 84.6% of manufacturing output; the 9 with evidence produce 59.7% of the tested output, 50.5% of all manufacturing output. At 5% (8 industries, without 311): 37.7% and 31.9%. 311 alone contributes about 22 points and has the weakest evidence; keep the 5% figures at hand.
-  - Multiple testing: with 20 tests at 10%, about two rejections are expected by chance if no industry overreports; nine or more has probability $6\times10^{-5}$ (binomial; industry samples are separate).
-- The deconvolution uses a rule fixed before seeing magnitudes: the five industries rejecting at 1%.
-- Consistent with incentives: little or no evidence in industries whose products are exempt from the sales tax (311, 312, 382, 384).
-- Industries where the null is not rejected (including 323 Leather and 356 Plastics, whose means are negative): state only that a failure to reject is inconclusive, and that anyone interested in a particular industry should investigate whether the identifying assumptions hold there before drawing conclusions. Do not speculate about which assumption fails (Hans, 2026-09-24).
+  - Ranking fixed before the test: four of the five largest industries by output (313, 321, 351, 352; not 311), from the revenue ranking (`Code/Thesis/ch03-industry-stats.R`; the ch. 3 industry tables were cut 2026-09-26, so cite the ranking here if this argument stays). Two of the four (351, 352) are marginal.
+  - Size-weighted (nominal gross output 1981--91, codes 6--9 excluded; recomputed 2026-09-26, the earlier figures could not be reproduced exactly): the 20 industries tested produce 89.9% of manufacturing output; the 9 with evidence produce 46.0% of the tested output, 41.3% of all manufacturing output. At 1% (7 industries): 29.4% and 26.4%.
+  - Multiple testing: with 20 tests at 5%, about one rejection is expected by chance if no industry overreports; nine or more has probability $2\times10^{-7}$ (binomial; industry samples are separate).
+- The deconvolution uses a rule fixed before seeing magnitudes: the industries whose 99% sharp region excludes zero (seven).
+- Consistent with incentives: little or no evidence in industries whose products are exempt from the sales tax (311, 312, 382, 384); 311 no longer rejects once codes 6--9 are excluded.
+- Empty regions (323 Leather, 356 Plastics, 384 Transport equipment): the mean of $\mathcal V$ is negative, so every $\mu\ge0$ is rejected.
+- Industries where zero is not rejected: 311, 312, 332, 341, 381, 382, 383, 390. For these and for the empty regions, state only that the result is inconclusive, and that anyone interested in a particular industry should investigate whether the identifying assumptions hold there before drawing conclusions. Do not speculate about which assumption fails (Hans, 2026-09-24).
 
 **Draft note (outline): what the test needs, and what it does not.** Stated in PLAN.md §10.
 

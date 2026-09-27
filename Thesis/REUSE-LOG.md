@@ -51,6 +51,49 @@ Built 2026-09-23 while filling `Thesis/chapters/07-fiscal-policy.qmd` from exist
 - **Presumptive income:** the base in ch. 7 ("2 percent of their capital stock") conflicts with the McLure notes (2% of gross receipts, on top of 8% of net wealth). Perry and Cárdenas vol. 1 has the detailed treatment (around PDF pp. 57–60) if needed.
 - **Cuadro III.1 transcribed (2026-09-23; checked against the page by Hans):** average individual income-tax rates by taxable income (thousand 1982 pesos: 200, 300, 400, 500, 600, 800, 1,000, 1,500, 2,000), 1982 A (Decreto 2809) vs. 1983 (Decreto 397). Change: −4.63 pp on average across brackets; −22.0% relative, excluding the 200k bracket (−95.3%); range −9.6% to −35.2%. The data live in `Code/Thesis/ch03-income-tax-1983-table.R` (tracked); a local CSV is written to `Code/Products/PerryCardenas1986-CuadroIII1.csv` (CSVs are git-ignored). Table `@tbl-inc-tax-1983` in ch. 3, cited from ch. 7. Note: the OCR had misread the 1983 rate at 1,000 as 24.55; the page says 24.85.
 
+## Ch. 3: Setting and Data (`chapters/03-setting-data.qmd`)
+
+Rebuilt 2026-09-26 around an outline of what later chapters actually use (outline saved as a draft block at the top of the chapter). Consult this before writing any institutional or data text.
+
+**Where each ch. 3 section's text comes from** (Reuse = keep, language only; Modify = Hans's text with content changes; New = nothing exists):
+
+| Ch. 3 section | Source | Status |
+|---|---|---|
+| Data | `Paper/sections/90-colombia-data.qmd` opening paragraph (EAM, >10 employees, variables) | Modify: add GNR citation, name the variables used |
+| | Timing bullet already in ch. 3 (DANE 1995/2018; see "Survey timing" under Ch. 7 below) | Reuse |
+| | Materials = raw materials; working-sample counts | New (2 sentences) |
+| Tax incentive | `Paper/sections/80-colombia.qmd` intro ¶2 (high evasion; penalties encouraging false returns; overburdened authority; Sánchez 1994, McLure 1989, Perry 1990) | Reuse |
+| | `80-colombia` "Sales taxes" ¶1 (credit since 1974, refunds, "a kind of VAT") | Reuse |
+| | `80-colombia` "Sales taxes" ¶2 (15/6/35% rates, exclusions) | Modify: framed as the pre-1983 structure |
+| | `80-colombia` "Discussion" ¶2 (incentives vary across industries and within them by JO) | Modify: location/sales-composition sentence dropped |
+| | Bridge to $\tau_P$ (credit + lower taxable profit) | New (1–2 sentences) |
+| Juridical organizations | `80-colombia` JO section: corporation ¶ | Reuse |
+| | LLC ¶ | Modify: `@FiscalSurveyColombia1965` citations; "not subject to the Superintendent unless more than one-third owned by a corporation" from `Paper/sections/01-notes.qmd:43` |
+| | Proprietorships sentence | Reuse |
+| | Partnerships ¶, joint-stock ¶, "other organizations" ¶ | Modify: partnerships to a clause; codes 6–9 excluded in one sentence |
+| | Income-tax ¶ + JO summary table | Modify: corrected (below) |
+| Why corporations | `80-colombia` "Discussion" ¶1 (three reasons) + Hanlon–Slemrod bullet already in ch. 3 | Modify: reason 1 no longer "higher $q$" (corps are $e=0$ by constraint, Assumption 1); reason 3 reworded to owner-level deferral |
+| 1983 and 1986 reforms | ch. 3 bullets on debate/enactment/effective date/Ley 49 and `@tbl-st-by-year` (written 2026-09-23) | Reuse |
+| | ch. 3 income-tax 1983 bullets + `@tbl-inc-tax-1983`, `@tbl-marg-tax-1983` | Move to ch. 7 (only used there); one sentence stays |
+| | 1986: `Paper/sections/30-lit-rev.qmd:244–250` (McLure 1989 notes), `98-fiscal-ref-col.qmd` "1986", Junguito and Rincón (2004) reform table (Ley 75: four marginal rates, top 30%, corporations and LLCs 30%, double taxation ended, collection by banks) | Draft-only block (Hans, 2026-09-26: not sure yet whether to open that door) |
+| Industries | `@tbl-top-inds-rev`, `@tbl-corps-by-inds` | New (2–3 sentences) |
+
+**Not reused, and why:** proprietorship bunching at brackets (`80-colombia` Discussion ¶3; not used anywhere); minimum presumptive income and regional/sector exemptions (not used downstream); the 56-bracket 0.5–51% individual schedule (1960s, Fiscal Survey era, not the period); partnership subtypes (`01-notes.qmd:45–51`; 3.5% of the sample, never analysed separately); 1986 as an incorporation shock (`01-notes.qmd:85–89`, `92-col-corp-tech.qmd:198`; research idea, out of scope).
+
+**Facts corrected (from the lit notes, 2026-09-26):**
+- Income tax, 1974 onward (McLure 1989 notes, `30-lit-rev.qmd:220`; Perry and Cárdenas 1986, vol. 1, p. 23): 40% corporations, 20% LLCs and partnerships, on **company income**. The owner-level difference: shareholders taxed only on dividends received; LLC and partnership owners on their share of profits whether distributed or not (Fiscal Survey notes, `30-lit-rev.qmd:262`). "40% on distributed dividends" in `80-colombia` and the old ch. 3 table was wrong.
+- The 56-rate, 0.5–51% individual schedule is the early-1960s schedule (`30-lit-rev.qmd:178`). For the period: top rate 56%, cut to 49% by Ley 9/1983 (Perry and Cárdenas, vol. 1, p. 36). Ley 9/1983 also gave a 10% tax credit on dividends received (`30-lit-rev.qmd:236`).
+- 1986 (Ley 75): corporations 40→30%, LLCs 18→30% at the entity level, but owner-level tax on dividends and LLC profit shares ended, so the **combined** marginal tax on an LLC's profits fell for most owners (up only for owners below a ~15% personal bracket). Hans agrees with this reading. The phase-in (33/32/31% in 1986–88, 30% from 1989; `Paper/sections/900-appendix.qmd:17`) has **no source**; Hans can't recall it. Candidates: the text of Ley 75/1986, McLure et al. (1989).
+- "Increased control over big taxpayers" in 1986 (`900-appendix.qmd:19`): unsourced.
+
+**Code facts (checked 2026-09-26):**
+- $M^*$ = raw materials: `nom_mats = s10` (`Code/Colombia/10_data_wrangling.R:210`); share `log(nom_mats/nom_gross_output)` (`Code/Deconvolution/001-data.R:25`); $\tau_P$ = `t2/s10` (`10_data_wrangling.R:131`), $\tau_S$ = `t1/nom_sales`. Input shares in `10_data_wrangling.R` are over nominal gross output; `sales` is real (deflated by `p_gdp_new`).
+- JO codes (`10_data_wrangling.R`, `jo_class`): 0 proprietorship, 1 LLC, 2/4/5 partnerships, 3 corporation, 6 stock partnership (labelled "Corporation" in `JO_class`), 7–9 other. Every estimation step used corp = code 3 and "unincorporated" = everything else, including 6–9 (2.4% of the sample). Fixed by option (b), PLAN.md §9a.
+- Sample for all ch. 3 tables: `Code/Thesis/ch03-sample.R` (finite y, k, l, m; codes 0–5). Industry tables no longer read `global_vars.RData` (`Code/Colombia/15_global_vars.R`, untouched): new `Code/Thesis/ch03-industry-stats.R`, shares over all manufacturing (the old top-10 table used industries with 100+ plants as the denominator).
+- Recomputed 2026-09-26: 40,508 firm-years, 5,915 plants, 28 industries, 1981–1991 (industry 353, petroleum refineries, 3 firm-years, dropped to match the first-stage sample; Hans). Pre-reform statutory rates (1974: 15% basic, 6% wage goods and capital goods, 35% luxury) and "most inputs at 15%, certain finished goods at 6%": @Perry1990, pp. 181–182; dropped from the text (Hans: only the 1983 change matters to the reader). Median $\tau_P$ in the data is 6.1–6.7% in 1981–83, not 15%, so the "inputs at 15%" claim is not visible in the data. JO: proprietorships 13.2%, LLCs 62.8%, partnerships 3.5%, corporations 20.5% of firm-years. Top five by revenue: 311, 352, 313, 321, 351 (unchanged; ch. 4's "four of the five largest" holds). The single skilled-wage-share outlier (329× revenue) is removed by merging the wage bills and treating shares above 1 as missing.
+
+**Restructure (2026-09-26, Hans):** the chapter mixed the setting with its links to the paper, and the main ideas were buried (corporations as non-evaders last in 3.3; what the 1983 reform changed mid-paragraph after the legislation). Now: one opening paragraph states the links (credit on purchases → incentive; corporations → non-evaders; 1983 → variation; EAM → data without tax records), and each section leads with its fact. Model-talk sentences inside sections dropped ("In the model...", "These reasons are the institutional basis...", "@sec-fiscal discusses..."). Timing paragraph moved to a footnote. Industry tables (`@tbl-top-inds-rev`, `@tbl-corps-by-inds`) and the "Top industries" section cut (not used downstream); scripts `ch03-top-industries-table.R`, `ch03-corps-by-industry-table.R`, `ch03-industry-stats.R` kept. `@sec-setting-corp-evasion` removed; ch. 4 now cites `@sec-setting-jo`. Summary table: logs $y,k,l,m^*$ and $\tau_S,\tau_P$ (materials share dropped: it equals $m-y$ exactly, same GDP deflator). Pre-redraft copy of the chapter: session scratchpad only.
+
 ## Ch. 4–5: Testing and deconvolution (`chapters/04-testing.qmd`, `chapters/05-deconvolution.qmd`)
 
 Built 2026-09-24. In the JMP the two chapters read as one section, "Identifying Tax Evasion": ch. 4's H1 and ch. 5's heading switch on `when-meta="jmp"` (ch. 5 becomes an H2). Pandoc warns "Duplicate identifier" for `sec-testing`/`sec-deconvolution` because both conditional headings carry the same id; harmless, the hidden copy is dropped before cross-referencing (checked: one `\label` each in `JMP/paper.tex`, references resolve).

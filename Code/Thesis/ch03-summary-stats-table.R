@@ -11,36 +11,36 @@
 ## Decided in chat 2026-09-22: split, not reproduce-in-one-table.
 
 source("Code/Thesis/001-setup.R")
-load(file.path(PRODUCTS_DIR, "colombia_data.RData"))
+source("Code/Thesis/ch03-sample.R") # ch3_base: sample rule, codes 6-9 dropped (2026-09-26)
 
-base <- colombia_data_frame %>%
-    filter(
-        is.finite(y),
-        is.finite(k),
-        is.finite(l),
-        is.finite(m)
-    ) %>%
-    mutate(
-        JO_class = factor(JO_class, levels = c("Proprietorship", "Ltd. Co.", "Corporation", "Partnership"))
-    )
+## Rows (2026-09-26, Hans): only what later chapters use or a claim rests on --
+## the log production-function variables and the two sales-tax rates (the
+## materials share dropped: it is m - y exactly, same deflator) of the two-tax model: tau_S = tax on sales / sales, tau_P =
+## tax on purchases / materials. Production-function variables in logs, as
+## they enter the estimation (Hans, 2026-09-26): y = log real gross output,
+## k = log real capital, l = log employee-years, m = log real RAW MATERIALS
+## (`materials`, what first_stage_panel_me rebuilds m from; the `m` column in
+## colombia_data_frame is log intermediates and is only used as a filter). Dropped: energy, fuels, repair & maintenance, services,
+## and the skilled/unskilled wage split (none used downstream). Values above 1 are treated as data errors and set to
+## missing (counted in the Missing column).
+base <- ch3_base %>%
+    mutate(m_raw = ifelse(is.finite(log(materials)), log(materials), NA_real_),
+           across(c(sales_tax_rate_sales, sales_tax_rate_purchases),
+                  ~ ifelse(is.finite(.x) & .x <= 1, .x, NA_real_)))
+cat(sprintf("ch. 3 sample: %d firm-years, %d plants, %d industries, %d-%d\n",
+            nrow(base), n_distinct(base$plant), n_distinct(base$sic_3),
+            1900 + min(base$year), 1900 + max(base$year)))
 
-## --- Table 1: numeric skim, revenue shares + intermediates decomposition --
+## --- Table 1: numeric skim, materials share + sales-tax rates ---------------
 
 share_labels <- c(
-    share_sales_tax                    = "Sales Taxes",
-    skilled_wage_bill_share            = "Skilled Labour (Wages)",
-    unskilled_wage_bill_share          = "Unskilled Labour (Wages)",
-    capital_share                      = "Capital",
-    materials_share                    = "Materials (M)",
-    energy_share                       = "Electricity (E)",
-    fuels_share                        = "Fuels (F)",
-    repair_maint_share                 = "Repair \\& Maintenance (R\\&M)",
-    services_share                     = "Services (S)",
-    deductible_intermediates_share     = "Deductible Inter. (M+E+F+R\\&M)",
-    non_deductible_intermediates_share = "Non-Deductible Inter. (S)"
+    y                        = "Log gross output, $y$",
+    k                        = "Log capital, $k$",
+    l                        = "Log labour, $l$",
+    m_raw                    = "Log raw materials, $m^*$",
+    sales_tax_rate_sales     = "Sales-tax rate on sales, $\\tau_S$",
+    sales_tax_rate_purchases = "Sales-tax rate on purchases, $\\tau_P$"
 )
-revenue_vars <- c("share_sales_tax", "skilled_wage_bill_share", "unskilled_wage_bill_share", "capital_share")
-intermediate_vars <- setdiff(names(share_labels), revenue_vars)
 
 skim_one <- function(x) {
     tibble(
@@ -66,33 +66,24 @@ skim_tbl <- base %>%
     arrange(variable) %>%
     select(Variable, `Missing (\\%)`, Mean, SD, Q1, Median, Q3)
 
-revenue_rows <- which(skim_tbl$Variable %in% share_labels[revenue_vars])
-intermediate_rows <- which(skim_tbl$Variable %in% share_labels[intermediate_vars])
-
-## group_tt() inserts a header row before each named position and shifts
-## every later row down by one per header already inserted -- style_tt()
-## must target the POST-insertion row numbers, not the ones computed above
-## from the ungrouped table (caught 2026-09-22: bolding landed on "Capital",
-## the last row of group 1, instead of the two group-header rows).
-header1_row <- 1
-header2_row <- 1 + length(revenue_vars) + 1
+## Per-row formatting: logs to two decimals, shares and rates to three.
+log_rows <- share_labels[c("y", "k", "l", "m_raw")]
+fmt_row <- function(x, v) if (v %in% log_rows) sprintf("%.2f", x) else sprintf("%.3f", x)
+skim_tbl <- skim_tbl %>%
+    rowwise() %>%
+    mutate(across(c(Mean, SD, Q1, Median, Q3), ~ fmt_row(.x, Variable))) %>%
+    ungroup() %>%
+    mutate(`Missing (\\%)` = sprintf("%.2f", `Missing (\\%)`))
 
 ## No caption= here (nor below): Quarto's own crossref numbering/caption on
 ## the ![...]{#tbl-...} markdown reference is the single source of the
 ## caption now, so the R-generated image doesn't carry a second, redundant
-## one (decided in chat 2026-09-22). width as a per-column vector (see
-## ch03-top-industries-table.R's note): Variable holds longer text (e.g.
-## "Deductible Inter. (M+E+F+R&M)") than the 6 numeric stat columns, so it's
-## weighted ~2.5x to avoid the 3-line wrapping an equal 1/7-each split gave.
+## one (decided in chat 2026-09-22). width as a per-column vector: the
+## Variable labels are longer than the 6 numeric columns, so weighted ~3x.
 skim_tt <- skim_tbl %>%
-    tt(width = c(2.5, 1, 1, 1, 1, 1, 1), notes = "Sample: firm-years with finite output, capital, labour, and materials (n as in the text). Shares are of total revenue.") %>%
-    group_tt(i = list(
-        "Share of Revenues" = min(revenue_rows),
-        "Intermediates (Share of Revenues)" = min(intermediate_rows)
-    )) %>%
-    style_tt(i = c(header1_row, header2_row), bold = TRUE) %>%
+    tt(width = c(3.8, 0.8, 1, 1.1, 0.9, 0.9, 1), notes = "Firm-years with finite output, capital, labour and materials; corporations, LLCs, partnerships and proprietorships. $\\tau_S$: sales tax paid on sales over sales; $\\tau_P$: sales tax paid on purchases over raw materials. Values above 1 are treated as data errors and counted as missing. Gross output, capital and raw materials are deflated to 1981 prices; labour is in employee-years.") %>%
     style_tt(i = "notes", fontsize = 0.8) %>%
-    format_tt(j = 2:7, digits = 3, num_fmt = "decimal", num_zero = TRUE)
+    style_tt(j = 2:7, align = "r")
 
 render_thesis_table(skim_tt, "ch03-summary-stats")
 cat("Saved: Thesis/tables/ch03-summary-stats.{png,pdf}\n")
@@ -100,10 +91,12 @@ cat("Saved: Thesis/tables/ch03-summary-stats.{png,pdf}\n")
 ## --- Table 2: juridical organization composition --------------------------
 
 jo_tt <- base %>%
-    mutate(JO_class = forcats::fct_na_value_to_level(JO_class, "Missing")) %>%
-    count(`J. Org.` = JO_class, name = "N") %>%
-    mutate(`\\%` = round(100 * N / sum(N), 1)) %>%
-    tt(width = 1)
+    group_by(`J. Org.` = jo) %>%
+    summarise(`Firm-years` = n(), Plants = n_distinct(plant), .groups = "drop") %>%
+    mutate(`\\% of firm-years` = sprintf("%.1f", 100 * `Firm-years` / sum(`Firm-years`)),
+           across(c(`Firm-years`, Plants), ~ format(.x, big.mark = ","))) %>%
+    tt(width = 1, notes = "A plant that changes juridical organization is counted once in each.") %>%
+    style_tt(i = "notes", fontsize = 0.8)
 
 render_thesis_table(jo_tt, "ch03-jo-summary")
 cat("Saved: Thesis/tables/ch03-jo-summary.{png,pdf}\n")

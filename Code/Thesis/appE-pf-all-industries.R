@@ -1,11 +1,14 @@
-## Production-function estimates for all industries used in stage 2 (@tbl-pf-all-industries,
-## appendix E). Stage 2 (ELVIS, ch. 8) uses the single-instrument (m*_{it-1}) estimates for
-## every industry in pf_list, not only the five reported in ch. 6's headline table.
-## Source: Code/Deconvolution/1100-MSL-opttax.R -> Code/Products/1100-MSL-opttax.RData.
-## Point estimates only (no standard errors are stored in pf_list).
+## Production-function estimates for all industries used in stage 2 (@tbl-pf-all-industries, appendix E).
+## HEADLINE (2026-09-26): single instrument W~_{it-2} (lag_2_w_eps: the tilded W = omega + (1-beta) eps, lagged twice),
+## on the two-tax (net-of-tax) first stage, juridical organization codes 6-9 excluded (PLAN.md §9a). Point = minimum of
+## the test-inversion statistic (Omega re-estimated at each candidate); 95% sharp regions (chi2_2) projected on each axis.
+## Source: Code/Deconvolution/1517-pf-systems-all-industries.R -> Code/Products/1517-pf-systems-all-industries.RData.
+## 353 has no estimate: 3 observations once codes 6-9 are excluded.
+## (Earlier versions: joint two-step GMM, 1502; before that single instrument m*_{it-1}, single-tax, 1100.)
 
 source("Code/Thesis/001-setup.R")
-load(file.path(PRODUCTS_DIR, "1100-MSL-opttax.RData"))  # pf_list (instrument lag_m)
+load(file.path(PRODUCTS_DIR, "1517-pf-systems-all-industries.RData"))   # res
+pf_raw <- res |> filter(system == "lag_2_w_eps") |> mutate(sic_3 = as.character(sic_3))
 
 ## Short ISIC Rev. 2 industry names (same labels as ch04-evasion-test.R, plus the
 ## industries outside ch. 4's top 20).
@@ -16,36 +19,34 @@ names_df <- tribble(
     "323", "Leather products", "324", "Footwear", "331", "Wood products",
     "332", "Furniture", "341", "Paper products", "342", "Printing and publishing",
     "351", "Industrial chemicals", "352", "Other chemicals", "353", "Petroleum refineries",
-    "354", "Petroleum and coal products", "355", "Rubber products", "356", "Plastic products",
+    "354", "Petroleum and coal", "355", "Rubber products", "356", "Plastic products",
     "361", "Pottery and china", "362", "Glass products", "369", "Non-metallic minerals",
     "371", "Iron and steel", "372", "Non-ferrous metals", "381", "Metal products",
     "382", "Non-electrical machinery", "383", "Electrical machinery",
     "384", "Transport equipment", "385", "Professional equipment", "390", "Other manufacturing"
 )
 
-pf <- lapply(names(pf_list), \(x) tibble(
-    sic_3 = x,
-    beta  = pf_list[[x]]$coeffs[["m"]],
-    alpha_K = pf_list[[x]]$coeffs[["k"]],
-    alpha_L = pf_list[[x]]$coeffs[["l"]],
-    conv  = pf_list[[x]]$convergence
-)) |> bind_rows() |>
-    left_join(names_df, by = "sic_3") |>
-    arrange(sic_3)
-
-stopifnot(!anyNA(pf$name), all(unique(sapply(pf_list, `[[`, "instrument")) == "lag_m"))
-print(pf, n = Inf)
+rg <- \(lo, hi) ifelse(is.na(lo), "empty",
+    paste0("$", ifelse(lo <= 0, "(\\,\\cdot\\,", sprintf("[%.3f", lo)), ",\\,",
+           ifelse(hi >= 1, "\\,\\cdot\\,)", sprintf("%.3f]", hi)), "$"))   # test convention: open end where 0 / 1 is not rejected
+load(file.path(PRODUCTS_DIR, "1522-beta-testinv.RData"))   # beta_ci: sharp region for beta (corporations' share moment)
+pf <- pf_raw |> left_join(names_df, by = "sic_3") |> left_join(beta_ci |> select(sic_3, b_sh_lo, b_sh_hi, corp_plants), by = "sic_3") |> arrange(sic_3)
+stopifnot(!anyNA(pf$name), nrow(pf) == 28, !any(pf$at_bound))
+print(as_tibble(pf), n = Inf)
 
 tbl <- pf |> transmute(
-    Industry = paste0(sic_3, " ", name,
-                      ifelse(conv != 0, "$^{\\dagger}$", ""),
-                      ifelse(pmin(alpha_K, alpha_L) <= 0 | pmax(alpha_K, alpha_L) >= 1, "$^{\\ddagger}$", "")),
+    Industry = paste0(sic_3, " ", name, ifelse(corp_plants < 3, "$^{\\S}$", "")),
     `$\\hat\\beta$` = sprintf("%.3f", beta),
+    `$\\beta$, sharp` = rg(b_sh_lo, b_sh_hi),
     `$\\hat\\alpha_K$` = sprintf("%.3f", alpha_K),
-    `$\\hat\\alpha_L$` = sprintf("%.3f", alpha_L)
+    `$\\alpha_K$, sharp` = rg(K_sh_lo, K_sh_hi),
+    `$\\hat\\alpha_L$` = sprintf("%.3f", alpha_L),
+    `$\\alpha_L$, sharp` = rg(L_sh_lo, L_sh_hi),
+    `$n$` = format(n_obs, big.mark = ",")
 )
 
-tt_obj <- tt(tbl, align = "lccc", width = c(4, 1, 1, 1),
-             notes = "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$), with instrument $m^*_{it-1}$, for every industry used in the stage-2 estimation of the detection and evasion-cost parameters. Point estimates. $^{\\dagger}$ The optimizer stopped with a warning (convergence code 52) for this industry. $^{\\ddagger}$ An estimate is at the bound of the $[0,1]$ parameter space.") |>
+tt_obj <- tt(tbl, align = "lccccccc", width = c(4.1, 0.75, 1.95, 0.75, 1.95, 0.75, 1.95, 0.75),
+             notes = "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations, log materials share net of sales taxes), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$) for every industry used in the stage-2 estimation of the detection and evasion-cost parameters. Instrument $\\tilde{\\mathcal W}_{it-2}$. Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate $(\\alpha_K,\\alpha_L)$; $\\beta$, sharp: 95\\% test-inversion region for $\\beta$ from the corporations' share moment ($\\chi^2_{1,0.95}$; the production-function moments are exactly identified given $\\beta$ and profiled). $\\alpha$, sharp: projections of the 95\\% test-inversion region ($\\chi^2_{2,0.95}$, credit for profiling $\\gamma_0,\\gamma_1$) on a 0.005 grid over $[0,1]^2$. $(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. $n$: observations in the first stage. Juridical organization codes 6--9 excluded; industry 353 (petroleum refineries) has three observations left and is not estimated. $^{\\S}$ Two corporate plants: the plant-clustered variance behind the region for $\\beta$ is unreliable.") |>
+    style_tt(fontsize = 0.88) |>
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "appE-pf-all-industries")

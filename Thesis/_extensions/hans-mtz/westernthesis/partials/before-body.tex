@@ -1,0 +1,32 @@
+\westernfrontmatter
+$if(title-page)$
+% Title page, laid out as in the SGPS Word template (etd_template2026.docx).
+% It counts as page i but shows no number; the Abstract starts on page ii.
+\begin{center}
+\thispagestyle{empty}
+\setlength{\parskip}{0pt}
+{\bfseries\MakeUppercase{$title$}\par}
+\vfill
+by\par
+\vfill
+$for(authors)$$if(it.name.family)$$it.name.given$ \underline{$it.name.family$}$else$$it.name.literal$$endif$$sep$, $endfor$\par
+\vfill
+$if(supervisor)$
+$supervisor-label$: $for(supervisor)$$supervisor$$sep$, $endfor$\par
+\vfill
+$endif$
+Graduate program in $program$\par
+\vfill
+A thesis submitted in partial fulfilment of the requirements\\
+for the degree of\par
+$degree$\par
+\vfill
+The School of Graduate and Postdoctoral Studies\par
+The University of Western Ontario\par
+London, Ontario, Canada\par
+$date$\par
+\vfill
+\copyright{} $for(authors)$$it.name.literal$$sep$, $endfor$ $copyright-year$\par
+\end{center}
+\clearpage
+$endif$

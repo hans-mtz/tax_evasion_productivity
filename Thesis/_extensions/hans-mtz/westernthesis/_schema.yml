@@ -1,0 +1,87 @@
+# Schema for the westernthesis extension (autocomplete and validation in editors).
+# https://m.canouil.dev/quarto-wizard/reference/schema-specification.html
+
+$schema: https://m.canouil.dev/quarto-wizard/assets/schema/v1/extension-schema.json
+
+options:
+  supervisor:
+    type: [string, array]
+    items:
+      type: string
+    description: "Supervisor name(s) for the title page. A list prints 'Supervisors:'."
+  program:
+    type: string
+    description: "Graduate program, printed as 'Graduate program in <program>' on the title page."
+  degree:
+    type: string
+    description: "Degree name for the title page, e.g. 'Doctor of Philosophy' or 'Master of Science'."
+  degree-level:
+    type: string
+    enum: [doctoral, masters]
+    description: "Sets the abstract word limit: 350 (doctoral) or 150 (masters). Inferred from `degree` when omitted."
+  keywords:
+    type: [string, array]
+    items:
+      type: string
+    description: "Keywords printed at the end of the Abstract (SGPS §4.3)."
+  copyright-year:
+    type: [string, integer]
+    description: "Year in the title page copyright line. Defaults to the year of `date`."
+
+formats:
+  pdf:
+    title-page:
+      type: boolean
+      default: true
+      description: "Print the title page from the SGPS Word template (page i, number not shown)."
+    running-headers:
+      type: boolean
+      default: true
+      description: "Show the chapter number and title at the top left of body pages."
+    line-spacing:
+      type: string
+      enum: [onehalf, double]
+      default: onehalf
+      description: "Line spacing of all text (SGPS §6.3 allows 1.5 to 2)."
+    chapter-bibliographies:
+      type: boolean
+      default: false
+      description: "Put a reference list at the end of each chapter that cites (integrated-article theses)."
+    chapter-bibliography-title:
+      type: string
+      default: References
+      description: "Heading of the per-chapter reference lists."
+
+shortcodes:
+  western-lists:
+    description: "Table of Contents, List of Tables, Figures, Plates and Appendices, in SGPS order. Plates and Appendices appear only when the thesis has them."
+    attributes:
+      tables:
+        type: boolean
+        default: true
+        description: "Include the List of Tables."
+      figures:
+        type: boolean
+        default: true
+        description: "Include the List of Figures."
+      title:
+        type: string
+        default: "Table of Contents"
+        description: "Title of the table of contents."
+
+attributes:
+  published:
+    type: string
+    description: "On a chapter heading: adds 'A version of this chapter has been published: <value>.' as a footnote. Use a citation, e.g. published=\"@key\"."
+  accepted:
+    type: string
+    description: "On a chapter heading: footnote 'A version of this chapter has been accepted for publication: <value>.'"
+  submitted:
+    type: string
+    description: "On a chapter heading: footnote 'A version of this chapter has been submitted for publication: <value>.'"
+
+classes:
+  abstract:
+    description: "Marks the Abstract heading (default id `abstract`): keywords are appended and the word limit is checked."
+  lay-summary:
+    description: "Marks the Summary for Lay Audience heading: the 350-word limit is checked."

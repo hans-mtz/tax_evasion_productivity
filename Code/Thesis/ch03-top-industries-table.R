@@ -1,33 +1,31 @@
-## Top-10-industries-by-revenue table for the Setting and Data chapter
-## (@tbl-top-inds-rev). Adapted from Paper/sections/90-colombia-data.qmd's
-## `tbl-top-inds-rev` chunk. That chunk rendered inline via kableExtra::kbl();
-## here it's standardized to the project's tinytable -> pdflatex -> PNG
-## pipeline (Code/Deconvolution/050-render-tbls.R), matching every other
-## thesis table. Source object (top_10_revenue) and its columns are
-## unchanged.
-
+## PRODUCT: Thesis/tables/ch03-top-industries.png := top 10 industries by
+## revenue (@tbl-top-inds-rev, Setting and Data chapter).
+## Rebuilt 2026-09-26 from ch3_ind (ch03-industry-stats.R): ch. 3 sample
+## (codes 6-9 dropped), shares over all of manufacturing. Previous version
+## read top_10_revenue from global_vars.RData (see ch03-industry-stats.R).
+## Conventions: no caption= (Quarto's ![...]{#tbl-...} is the caption);
+## escaped % in column names; width vector weights the long name column.
 source("Code/Thesis/001-setup.R")
-load(file.path(PRODUCTS_DIR, "global_vars.RData")) # provides top_10_revenue
+source("Code/Thesis/ch03-industry-stats.R")
 
-## No caption= (see ch03-summary-stats-table.R's note): Quarto's own
-## ![...]{#tbl-top-inds-rev} caption is the single source now. width=1:
-## project default, full book text width. Raw column names (sic_3, n_sic,
-## n_Corp) are renamed to plain labels here -- a literal `_` in tinytable's
-## LaTeX output is read as a math-mode subscript trigger and garbles into
-## broken typesetting (caught 2026-09-22, same family of bug as the
-## unescaped %/& traps documented in ch03-summary-stats-table.R).
-## width as a per-column vector (proportional, auto-normalized to 1 -- see
-## ?tinytable::tt): Industry names are long free text, the other 7 columns
-## are short numbers, so an equal 1/8-each split (plain width=1) wrapped
-## "Industry" into up to 7 lines per row (caught 2026-09-22). Weighting
-## Industry ~4x a numeric column keeps it to 1-2 lines for all 10 rows.
-tbl_obj <- top_10_revenue[1:10, ] %>%
-    mutate(across(where(is.numeric), ~ round(.x, 1))) %>%
-    setNames(c(
-        "Industry", "SIC", "N", "Corps. (N)",
-        "Market Share", "Cum. Mkt Share", "N Share", "Cum. N Share"
-    )) %>%
-    tt(width = c(4, 1, 1, 1, 1, 1, 1, 1))
+top10 <- ch3_ind %>%
+    arrange(desc(revenue)) %>%
+    mutate(cum_rev = cumsum(rev_share), cum_plants = cumsum(plant_share)) %>%
+    slice_head(n = 10)
+print(top10 %>% select(sic_3, name, plants, rev_share, cum_rev, plant_share, cum_plants), width = Inf)
+
+tbl_obj <- top10 %>%
+    transmute(
+        Industry = paste(sic_3, name),
+        Plants = format(plants, big.mark = ","),
+        `Revenue (\\%)` = sprintf("%.1f", rev_share),
+        `Cum. revenue (\\%)` = sprintf("%.1f", cum_rev),
+        `Plants (\\%)` = sprintf("%.1f", plant_share),
+        `Cum. plants (\\%)` = sprintf("%.1f", cum_plants)
+    ) %>%
+    tt(width = c(3.2, 0.9, 1.1, 1.4, 1.1, 1.4),
+       notes = "Revenue: real sales summed over 1981--1991. Shares are of all manufacturing plants and revenue in the sample.") %>%
+    style_tt(i = "notes", fontsize = 0.8)
 
 render_thesis_table(tbl_obj, "ch03-top-industries")
 cat("Saved: Thesis/tables/ch03-top-industries.{png,pdf}\n")

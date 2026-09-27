@@ -2,9 +2,10 @@
 ## (alpha_K, alpha_L), both instruments (m*_{it-1}, W~_{it-2}), beta fixed. Companion to ch06-pf-comparison.png:
 ## shows BOTH the sharp (chi2_3) and conservative (chi2_5) regions for all 5 paper industries, including 313
 ## (whose sharp region is empty -- see Research-log 2026-09-21).
-## Reads: Code/Products/1477-pf-joint-testinv-grid.csv (already-computed grid; no re-estimation here).
+## Two-tax first stage, codes 6-9 excluded (2026-09-26; 1513 = two-tax copy of 1477).
+## Reads: Code/Products/1513-pf-joint-testinv-grid.csv (already-computed grid; no re-estimation here).
 source("Code/Thesis/001-setup.R")
-res <- read.csv(file.path(PRODUCTS_DIR, "1477-pf-joint-testinv-grid.csv")) %>%
+res <- read.csv(file.path(PRODUCTS_DIR, "1513-pf-joint-testinv-grid.csv")) %>%
     mutate(pass = J <= qchisq(.95, 3), pass_cons = J <= qchisq(.95, 5))
 smry <- res %>% group_by(sic_3) %>% summarise(aK_at_min = aK[which.min(J)], aL_at_min = aL[which.min(J)], .groups = "drop")
 

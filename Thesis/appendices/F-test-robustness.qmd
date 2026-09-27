@@ -1,0 +1,21 @@
+# Robustness of the Test for Overreporting {#sec-app-test-robustness}
+
+@tbl-evasion-test reports the sharp version of the test, which takes $\ln\hat\beta$ from corporations as the true value. This appendix reports two alternatives. @tbl-evasion-test-conservative gives the conservative test, which gives no credit for the corporations' moment. @tbl-evasion-test-bootstrap gives a bootstrap test that re-estimates $\ln\hat\beta$ in every replication, so it carries the sampling error of the first stage.
+
+::: {#tbl-evasion-test-conservative}
+![](/tables/appF-evasion-test-conservative.png)
+
+Test for overreporting of materials by industry, conservative test. Mean of $\mathcal V_{it}$ among unincorporated firms and 95% test-inversion region for its expectation, with $\ln\beta$ estimated from corporations.
+:::
+
+::: {#tbl-evasion-test-bootstrap}
+![](/tables/appF-evasion-test-bootstrap.png)
+
+Bootstrap test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among unincorporated firms, with $\ln\beta$ re-estimated from corporations in every replication.
+:::
+
+::: {.content-visible when-meta="draft"}
+
+**Draft note (2026-09-26):** the bootstrap resamples plants separately within corporations and within unincorporated firms, with (plant, legal form) as the resampling unit. The earlier version joined sampled plants back to the data by plant only, so a plant that switches legal form brought its rows from the other group; its replicates were not centred on the estimate and it overstated significance. Results, two-tax share, codes 6--9 excluded: 313, 321, 322 at 1%; 331, 369 at 5%; 324, 351 at 10% (one-sided).
+
+:::
