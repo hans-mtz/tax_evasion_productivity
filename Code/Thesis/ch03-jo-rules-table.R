@@ -5,7 +5,7 @@
 ## Replaces the plain markdown table in 03-setting-data.qmd (2026-09-27, Hans:
 ## PNG for the house font, a short caption and notes under the table).
 ##
-## SOURCES (checked 2026-09-27): rates, McLure (1989) and Perry and Cardenas
+## SOURCES (checked 2026-09-27): rates, McLure (1989, p. 67) and Perry and Cardenas
 ## (1986), vol. 1, pp. 23 and 36; liability, capital and owners, Fiscal Survey
 ## of Colombia (1965), pp. 27-30, and DANE (2018), EAM 1992-1994 documentation,
 ## PDF p. 12 (Lit-Papers/DANE2018-EAM1992-1994-DDI.pdf).
@@ -23,7 +23,7 @@ tbl <- tibble::tribble(
 tt_obj <- tbl |>
     tt(width = c(1.35, 1, 1.35, 1.6, 1.6, 1.5),
        notes = list(
-           "Rules in force from the 1974 reform until Ley 9 de 1983, which cut the LLC rate to 18\\%. Company: entity-level income-tax rate. Owners: individual income tax; proprietors paid only the graduated individual schedule, with a top rate of 56\\%. The limit on LLC partners is 20 in the 1965 source and 25 in the 1992--1994 survey documentation. Sources: tax rates, McLure (1989) and Perry and C\\'ardenas (1986), vol.~1, pp.~23 and 36; liability, capital and owners, Fiscal Survey of Colombia (1965), pp. 27--30, and DANE (2018), p. 12.",
+           "Rules in force from the 1974 reform until Ley 9 de 1983, which cut the LLC rate to 18\\%. Company: entity-level income-tax rate. Owners: individual income tax; proprietors paid only the graduated individual schedule, with a top rate of 56\\%. The limit on LLC partners is 20 in the 1965 source and 25 in the 1992--1994 survey documentation. Sources: tax rates, McLure (1989), p. 67, and Perry and C\\'ardenas (1986), vol.~1, pp.~23 and 36; liability, capital and owners, Fiscal Survey of Colombia (1965), pp. 27--30, and DANE (2018), p. 12.",
            a = "All partners in general partnerships; the managing partners in ordinary limited partnerships."
        )) |>
     style_tt(j = c(1, 3:6), align = "l") |>
