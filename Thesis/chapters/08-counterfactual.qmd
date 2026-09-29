@@ -82,40 +82,6 @@ $$
 - Derivation goes to the appendix (`9999-tax-wedge.qmd`). -->
 
 
-::: {.content-visible when-meta="draft"}
-
-**Draft note (two-tax version, switch in after the deadline -- PLAN.md 7b):**
-
-## The two-tax profit function
-
-In Colombia, firms usually faced different sales taxes on sales and on purchases. This matters because the tax rate relevant for the overreporting channel of tax evasion is the tax rate on purchases. In addition, the two-tax model introduces a wedge on the price ratio in the FOC of the deductible flexible input, materials. This change in the FOC implies that I should use, instead of the nominal, the net-of-tax share of material purchases of gross output.
-
-As in the single-tax model, firms purchase the true quantity $M$ of materials at price $\rho_t$ (cash cost $\rho_tM$), but *report* $M^*=M+e$ to the tax authority in order to claim a purchases-tax credit at rate $\tau_P$ on the reported amount. They sell $Y$ at price $P_t$ and owe sales tax at rate $\tau_S$ on that revenue. The firm produces output with technology defined by the production function $Y=M^\beta K^{\alpha_K}L^{\alpha_L}\exp(\omega+\varepsilon)$, but only materials can be deducted from sales taxes on sales. In addition, I follow the literature in assuming materials are the flexible input and capital and labour are either dynamic or predetermined. The tax authority audits firms with probability $q(e)$ and, as in the single-tax model, always detects evasion upon audit. The tax authority penalizes firms caught evading with a fixed multiplier $\phi$ on the fraudulently claimed credit, and the excess credit on the $e$ overreported units must be repaid. Expected profit, net of the evasion cost $\kappa(e,\omega)$:
-
-$$
-\begin{aligned}
-   \pi=(1-q(e))&\left[P_tE_{\varepsilon}[Y_{it}]-\rho_tM_{it}-(\tau_SP_tY_{it}-\tau_P\rho_t(M_{it}+e_{it}))\right]\\
-   &+q(e)\left[P_tE_{\varepsilon}[Y_{it}]-\rho_tM_{it}-(\tau_SP_tY_{it}-\tau_P\rho_tM_{it})-\phi\tau_P\rho_te_{it}\right]\\
-   &-\kappa_{it}(e_{it},\omega_{it})
-\end{aligned}
-$$
-
-Simplifying, 
-$$
-\pi = (1-\tau_S)P_tY - \rho_tM + \tau_P\rho_t(M+e) - q(e)(1+\phi)\,\tau_P\rho_te - \kappa(e,\omega)
-$$
-
-where the first term stands for after-tax revenue; the second, for the cost of true material purchases; the third, for the claimed deductions on the reported purchases; the fourth and fifth, the cost of evasion including the expected penalty of being detected and the cost of overreporting. 
-
-Collecting terms:
-
-$$
-\pi = (1-\tau_S)P_tY - (1-\tau_P)\rho_tM + \tau_P\rho_te\big[1-(1+\phi)q(e)\big] - \kappa(e,\omega)
-$$ {#eq-two-tax-profit}
-
-This model nests the single-tax version. Setting $\tau_S=\tau_P=\tau$ collapses @eq-two-tax-profit to $P_tY(1-\tau)-\rho_tM(1-\tau)+\tau\rho_te[1-(1+\phi)q(e)]-\kappa$, the same structure as the previous model in @sec-model. 
-
-:::
 
 
 ## Estimating the model

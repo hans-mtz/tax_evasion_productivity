@@ -4,5 +4,5 @@ $-- website from author.url) and, if `latest-version` is set, a link under the d
 $if(title)$
 \title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
 $endif$
-\author{$for(by-author)$$it.name.literal$\thanks{$for(it.affiliations)$$it.department$, $it.name$.$endfor$$if(it.email)$ Email: \href{mailto:$it.email$}{$it.email$}.$endif$$if(it.url)$ Website: \url{$it.url$}.$endif$}$sep$ \and $endfor$}
+\author{$for(by-author)$$it.name.literal$\thanks{$for(it.affiliations)$$it.department$, $it.name$.$endfor$$if(it.email)$ Email: \href{mailto:$it.email$}{$it.email$}.$endif$$if(it.url)$ Website: \href{$it.url.address$}{$it.url.short$}.$endif$}$sep$ \and $endfor$}
 \date{$date$$if(latest-version)$\\[0.5em]\href{$latest-version$}{\small\textbf{Latest version, click here}}$endif$}

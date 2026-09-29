@@ -136,3 +136,12 @@ Built 2026-09-24.
 ## Ch. 8: second instrument dropped (2026-09-24)
 
 `ch08-headline-estimates-table.R` and `ch08-detection-prob-table.R` now report $m^*_{it-1}$ only; the dropped column was `lag_2_cal_W`, the untilded $\mathcal W_{it-2}$ mislabelled with a tilde. Text in ch. 8 edited accordingly (five sentences/bullets), with a draft note. The detection table's blank Median ratio cell (a `format_tt(replace=)` side effect) is fixed.
+
+## Ch. 2: Model, two-tax version (`chapters/02-model.qmd`, 2026-09-28)
+
+**Reused:** `Paper/sections/9999-tax-wedge.qmd` (two-tax profit collected form, materials FOC with the $(1-\tau_P)/(1-\tau_S)$ wedge, net-of-tax share, $\partial e^*/\partial\tau_P>0$ by the implicit function theorem and the SOC); ch. 8's former draft block "The two-tax profit function" (Hans's setup paragraph and term-by-term reading of profit; block deleted from ch. 8); old ch. 2 bullets (detection à la Allingham–Sandmo, fine $\phi$, cost of evasion, corporations as constrained non-evaders).
+**Moved:** the single-tax model to appendix D (@sec-app-single-tax); appendix D's SOC rewritten with $\tau_P$ (same condition in both models).
+**Changed:** profit written in true output ($\exp\omega$, no $\varepsilon$), since $\varepsilon$ is measurement error; the old $P_t\mathbb{E}[Y]$ would have carried $\mathbb{E}[e^{\varepsilon}]$.
+**Facts computed** (ch. 3 sample, both rates in [0, 0.5), 40,161 firm-years): $|\tau_S-\tau_P|>1$ pp in 56% of firm-years; sd of $\ln((1-\tau_S)/(1-\tau_P))$ = 0.05 vs 0.34 for the log gross share.
+**Open:** whether exempt firms (311, 312) could credit input tax (if not, their creditable $\tau_P$ is 0) — draft note in ch. 2.
+Follow-up (same day): exempt industries got refunds on purchase taxes (Hans), so ch. 2 says the authority refunds excess credit; ch. 4 now defines $s_{it}$ as the net share (eq-foc-cd, eq-foc-cd-exp, eq-ob-ev); ch. 7 uses $\tau_P$ for the comparative static; appendix D's pointer for the choice of $q$ moved to @sec-counterfactual.
