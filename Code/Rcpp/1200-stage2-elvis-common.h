@@ -241,4 +241,65 @@ inline double draw_from_rho_eta_concave(double u01, double Mstar, double lambda,
     return Mstar - u01 * (Mstar - lo);
 }
 
+// ---- Detection with a fixed reference scale (2026-09-28, ladder step S3, Thesis/PLAN.md §9b) --------------
+// q(e) = lambda1*(1-exp(-x)), x = e/Mbar, Mbar = the firm's lagged industry mean of reported M* (fixed, data).
+// Paper/sections/9999-detection-q.qmd. FOC: tau*(1-(q+q'e)) = C exp(psi), with
+//   q + q'e = lambda1*[1 - exp(-x)*(1-x)]   =>   B(x) = 1 - lambda1 + lambda1*exp(-x)*(1-x),
+//   h(e) = ln(tau) + ln B(x).
+// B falls from 1 (x=0) to 1-lambda1 (x=1). Support: x in [0,1) (global optimality with kappa linear in e), so
+// B >= 1-lambda1 > 0 for lambda1 < 1; floored with the same H_DENOM_FLOOR for lambda1 -> 1.
+// Score: dh/dlambda1 = -(1 - exp(-x)*(1-x)) / B(x), in [-1/(1-lambda1), 0], bounded on the support;
+// passed through the same softsign transform as the linear form so S3 changes only q (one change per step).
+inline double B_exp_scale(double e, double lambda1, double Mbar) {
+    double x = e / Mbar;
+    return std::max(1.0 - lambda1 + lambda1 * std::exp(-x) * (1.0 - x), H_DENOM_FLOOR);
+}
+inline double h_of_e_exp_scale(double e, double tau_rho, double lambda1, double Mbar) {
+    return std::log(tau_rho) + std::log(B_exp_scale(e, lambda1, Mbar));
+}
+inline double h_prime_exp_scale(double e, double lambda1, double Mbar) {
+    double x = e / Mbar;
+    return -(1.0 - std::exp(-x) * (1.0 - x)) / B_exp_scale(e, lambda1, Mbar);
+}
+inline double h_prime_bounded_exp_scale(double e, double lambda1, double Mbar) {
+    double hp = h_prime_exp_scale(e, lambda1, Mbar);
+    return hp / (1.0 - hp);
+}
+// Fixed support M in (max(0, Mstar - Mbar), Mstar], independent of lambda1. u01 in [0,1) keeps e < Mbar strictly.
+inline double draw_from_rho_fixed_scale(std::mt19937_64 &rng, double Mstar, double Mbar) {
+    std::uniform_real_distribution<double> unif(0.0, 1.0);
+    double lo = std::max(0.0, Mstar - Mbar);
+    return Mstar - unif(rng) * (Mstar - lo);
+}
+
+// ---- Power detection with a fixed reference scale (2026-09-28, Hans) --------------------------------------------
+// q(e) = x^k, x = e/Mbar, 0 < k < 1 (concave; no level parameter: q = 1 at x = 1). FOC: q + q'e = (1+k) x^k, so
+//   B(x) = 1 - (1+k) x^k,   h = ln(tau) + ln B,   support x < c_k = (1+k)^(-1/k) (B > 0), in (0.37, 0.5].
+// Score in k: dh/dk = -x^k [1 + (1+k) ln x] / B  (-> 0 as x -> 0). It changes sign (negative only for
+// x > exp(-1/(1+k))), so the bounded transform is the symmetric softsign hp/(1+|hp|) in (-1,1).
+inline double power_ceiling(double k) { return std::pow(1.0 + k, -1.0 / k); }
+inline double B_power_scale(double e, double k, double Mbar) {
+    double x = e / Mbar;
+    return std::max(1.0 - (1.0 + k) * std::pow(x, k), H_DENOM_FLOOR);
+}
+inline double h_of_e_power_scale(double e, double tau_rho, double k, double Mbar) {
+    return std::log(tau_rho) + std::log(B_power_scale(e, k, Mbar));
+}
+inline double h_prime_bounded_power_scale(double e, double k, double Mbar) {
+    double x = e / Mbar;
+    if (x <= 0.0) return 0.0;
+    double xk = std::pow(x, k);
+    double hp = -xk * (1.0 + (1.0 + k) * std::log(x)) / B_power_scale(e, k, Mbar);
+    return hp / (1.0 + std::fabs(hp));
+}
+// Support M in (max(0, Mstar - c_k*Mbar), Mstar]; redraw on the (floating-point) edge where B hits the floor, as in
+// draw_from_rho_checked.
+inline double draw_from_rho_power_scale(std::mt19937_64 &rng, double Mstar, double k, double Mbar) {
+    std::uniform_real_distribution<double> unif(0.0, 1.0);
+    double lo = std::max(0.0, Mstar - power_ceiling(k) * Mbar);
+    double M = Mstar - unif(rng) * (Mstar - lo);
+    if (1.0 - (1.0 + k) * std::pow((Mstar - M) / Mbar, k) <= H_DENOM_FLOOR) return draw_from_rho_power_scale(rng, Mstar, k, Mbar);
+    return M;
+}
+
 #endif // STAGE2_ELVIS_COMMON_H

@@ -375,3 +375,36 @@ Repeating this across a grid of $\tilde\tau$ produces a band, not a single curve
 - Beyond the baseline moment table, every independence assumption already maintained in the model (ε⊥ψ, ω⊥ε, ψ⊥ω, ε_it⊥ε_it-1, ε_it-1⊥ψ_it, plus variance-matching versions of ε⊥Z and ψ⊥Z) converts into an additional, essentially-free moment via Propositions B.1–B.2 in the supplement — more identifying power, at the cost of a higher χ² critical-value threshold and more simulation compute per added row.
 - A second, working economics implementation of ELVIS exists — Aguiar & Kashaev (2020, *Review of Economic Studies*), `Lit-Papers/AK2020.pdf`, code in `TopicsDecisionMaking/ReplicationAK/` — confirming in practice (not just theory) that inequality moments can be dropped from the $\gamma$-searched vector entirely and enforced instead as a support restriction on the simulator (their Theorem 4); applied above to drop the unincorp evasion-sign moment in favor of restricting the $M$-sampler. Their code also gives concrete, reusable numerical choices: BOBYQA (not Nelder-Mead) for the $\gamma$-search, an eigenvalue-truncated generalized inverse for $\hat\Omega^-$, direct tilted-density sampling with the constraint-satisfying chain cached once and reused across every $\gamma$ (and $\theta$-grid point), and a convex per-unit QP warm start.
 - **Open, not yet done:** numerically verify the stacked Jacobian's full column rank for $\theta_{\text{full}}$; work out an efficient default $\rho$ (reusing $\hat f_\varepsilon$, translated to a distribution over $M$); confirm the translog case (if ever pursued) needs its own version of @eq-full-omega; check whether the fitted system is degenerate in Chernozhukov-Hong-Tamer's sense, since that governs whether inference converges at $\sqrt n$ or only $\sqrt{\ln n/n}$.
+
+## Current estimation strategy (2026-09-28)
+
+**Latent and maps.** The only unobservable is the firm's true materials $M_{it}$. Given $M$, every other quantity is data plus parameters:
+$$e=M^*-M,\quad u=\ln(M^*/M),\quad \varepsilon=u-\mathcal V,\quad \omega=\tilde{\mathcal W}-(1-\beta)\varepsilon,\quad x=e/\bar M_{j,t-1},$$
+$$B(x)=1-\lambda_1+\lambda_1e^{-x}(1-x),\qquad h=\ln\tau_P+\ln B(x),\qquad \psi=h-(\delta_0+\delta_{0,t})+\delta_1\omega-\delta_2\omega^2.$$
+$B$ comes from the evasion FOC under $q(e)=\lambda_1(1-e^{-e/\bar M_{j,t-1}})$, where $\bar M_{j,t-1}$ is the lagged industry mean of reported materials. $\delta_{0,t}$ are year intercepts, with 1981 as the base year.
+
+**Support of the dominating measure.** $M\in(\max\{0,M^*-\bar M_{j,t-1}\},\,M^*]$, uniform. With the cost linear in $e$, only $x<1$ can be a global optimum. The support is fixed by the data and doesn't depend on $\lambda_1$.
+
+**Sample.** Unincorporated firms in the 9 industries where the test rejects enter as interior firms. All other firms are corner firms: $M=M^*$, with the uncorrected (pooled-$\beta$) first stage, contributing only to the $\varepsilon$ rows 1, 5 and 7.
+
+| Row | $g$ | Licensed by | Role |
+|---|---|---|---|
+| 0 | $\psi$ | normalization $E[\psi]=0$ | level ($\delta_0$) |
+| 1 | $\varepsilon$ | first stage: $E[\varepsilon]=0$ | anchors $u$ on $\mathcal V$ |
+| 2 | $\psi\ln M$ | $\psi\perp M$ (the materials FOC has no $\psi$) | overidentifying |
+| 3 | $\psi\,\omega$ | $\psi\perp\omega$ | score for $\delta_1$ |
+| 4 | $\psi\,\omega^2$ | $\psi\perp\omega$ | score for $\delta_2$ |
+| 5 | $\varepsilon\ln M$ | $\varepsilon\perp M$ | |
+| 6 | $\varepsilon\,\psi$ | $\varepsilon\perp\psi$ | replaced $\varepsilon e$ (see below) |
+| 7 | $\varepsilon\,\omega$ | $\varepsilon\perp\omega$ | |
+| 8 | $\varepsilon\cdot h'_b(e)$ | $\varepsilon\perp e$ | score for $\lambda_1$ (see below) |
+| 9 | $\psi\ln\tau_P$ | $\psi\perp\tau$: cost shock independent of the benefit shifter | forces tax variation onto evasion |
+| 10–19 | $\psi\cdot\mathbf 1\{t=k\}$, $k=1982..1991$ | $E[\psi\mid t]=0$ | year intercepts $\delta_{0,t}$ |
+
+**The score moment for $\lambda_1$ (row 8).** Rows 0, 3 and 4 are the scores for the cost parameters: $\partial\psi/\partial\delta_0=-1$, $\partial\psi/\partial\delta_1=\omega$, $\partial\psi/\partial\delta_2=-\omega^2$, each times the anchor $\psi$. $\psi$ is linear in $(\delta_0,\delta_1,\delta_2)$ for any $\lambda_1$, so those rows can't discriminate between values of $\lambda_1$. $\lambda_1$ enters only through $h$, nonlinearly:
+$$h'(e)\equiv\frac{\partial h}{\partial\lambda_1}=-\frac{1-e^{-x}(1-x)}{B(x)}\in\Big[-\tfrac1{1-\lambda_1},\,0\Big].$$
+The natural score row $\psi\cdot h'$ is invalid: $h'$ is a function of $e$, and $e$ solves the evasion FOC given $\psi$, so $\psi\cdot e$-type rows are tautological. Measurement error doesn't enter that FOC ($\varepsilon\perp(\psi,\omega)\Rightarrow\varepsilon\perp e$), so $\varepsilon$ is paired with it instead, and any function of $e$ is valid. The row enters in bounded form, $h'_b=h'/(1-h')\in(-1,0]$. That transform decays only polynomially, so large-$e$ firms stay distinguishable, and it keeps one extreme draw from dominating $\Omega$.
+
+**Why row 6 changed.** $\varepsilon\cdot e$ has $e$ in pesos, so its variance was about $10^9$ and dominated $\Omega$. The objective's eigen-cut ($w_k>10^{-8}\max_k w_k$) then kept only 2–3 of the 9–10 directions, with the dropped rows at $|t|$ up to 64. $\varepsilon\cdot\psi$ pairs two mean-zero anchors, is unit-free, and restores full rank: 10 of 10 directions kept.
+
+**Estimation.** $\lambda_1$ is fixed at each grid point. The optimizer frees $(\delta_0,\delta_1,\delta_2,\delta_{0,82..91})$ and $\gamma\in\mathbb R^{20}$ (Nelder–Mead, two passes), with the CUE objective $\hat L_n=\tfrac12\hat g'\hat\Omega^-\hat g$. The test statistic is $TS=2n\hat L_n$, compared against $\chi^2_{d_g}$. Formulas are authoritative in `Code/C-estimator/grid_estimator.cpp` (`moment_g_A_one_exp_scale`) and `Code/Rcpp/1200-stage2-elvis-common.h`.

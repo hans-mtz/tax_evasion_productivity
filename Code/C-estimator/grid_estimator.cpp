@@ -80,7 +80,27 @@ struct FirmData {
     // carry them, which every other mode never reads.
     double t1 = std::numeric_limits<double>::quiet_NaN();
     double pgdp = std::numeric_limits<double>::quiet_NaN();
+    // Mbar (2026-09-28, S3): lagged industry mean of reported M* (detection reference scale); only read by
+    // qform=exp_scale. NaN when the CSV has no Mbar column.
+    double Mbar = std::numeric_limits<double>::quiet_NaN();
+    // ltau_bar (2026-09-28, TAU_ROW build): ln of the leave-one-out industry-year mean purchases tax rate.
+    double ltau_bar = std::numeric_limits<double>::quiet_NaN();
+    // yidx (2026-09-28, YEAR_FE build): year - 81 from the input's `year` column (0 = 1981); -1 if absent.
+    int yidx = -1;
 };
+
+// Detection function used by moment set A's chain (firm_chain_A): 0 = linear q=min(lambda*e,1) (default, every
+// result before 2026-09-28); 1 = exp_scale q=lambda1*(1-exp(-e/Mbar)) (ladder step S3). Set once from the CLI
+// (qform=linear|exp_scale) before any thread starts; never changed afterwards.
+static int g_qform = 0;
+// Row [6] of moment set A under qform=exp_scale (2026-09-28): 0 = eps*e (default, every earlier run; e in pesos
+// dominates Omega and collapses the eigen-cut, log 2026-09-28), 1 = eps*psi (both mean-zero anchors, valid under
+// eps _|_ (psi, omega)). CLI row6=eps_e|eps_psi.
+static int g_row6 = 0;
+// Simulated-annealing global stage before the Nelder-Mead passes in the lambdagrid fit (2026-09-28; Nail Kashaev's
+// suggestion; AK2020's code uses the same global-then-local pattern with BlackBoxOptim's adaptive DE, 100 s, then
+// BOBYQA). g_sa_time = seconds of annealing (0 = off, default). CLI sa_time=<s>.
+static double g_sa_time = 0.0;
 
 // ---- moment set C, one firm at one candidate M -----------------------------
 // (byte-for-byte the same structural maps as moment_g_A_one/B_one in
@@ -436,6 +456,9 @@ static std::vector<FirmData> read_firm_csv(const std::string &path) {
         d.row_id  = std::strtol(fields[idx["row_id"]].c_str(), nullptr, 10);
         if (idx.count("t1"))   d.t1   = std::strtod(fields[idx["t1"]].c_str(), nullptr);
         if (idx.count("pgdp")) d.pgdp = std::strtod(fields[idx["pgdp"]].c_str(), nullptr);
+        if (idx.count("Mbar")) d.Mbar = std::strtod(fields[idx["Mbar"]].c_str(), nullptr);
+        if (idx.count("ltau_bar")) d.ltau_bar = std::strtod(fields[idx["ltau_bar"]].c_str(), nullptr);
+        if (idx.count("year")) d.yidx = static_cast<int>(std::strtol(fields[idx["year"]].c_str(), nullptr, 10)) - 81;
         out.push_back(d);
     }
     return out;
@@ -631,7 +654,50 @@ static void run_shell_mode(
 // solved-neighbor chaining (tollgate 1, 2026-09-08: chaining reintroduces
 // path dependence; same-point seeding is what actually found the sensible-
 // sign basin for lag_2_cal_W).
+// TAU_ROW (2026-09-28, compile-time, separate binary grid_estimator_tau): moment set A gains row [9] =
+// psi * ln(tau_bar), tau_bar = leave-one-out industry-year mean purchases tax rate (input column ltau_bar).
+// The cost shock is independent of the exogenous benefit shifter, so the tax rate's variation must be absorbed by
+// evasion through h -- the missing identifying restriction for the detection level (log 2026-09-28). Only for
+// qform=exp_scale; lambdagrid mode only (main() rejects every other mode in this build). Default build: 9 rows,
+// unchanged.
+// YEAR_FE (2026-09-28, S4, separate binary grid_estimator_yfe; implies TAU_ROW): year intercepts in the cost level,
+// psi = h - (delta0 + delta0_t) + delta1*om - delta2*om^2, t = year - 81 (1981 = base, delta0_81 = 0), plus rows
+// [10..19] = psi * 1{t = k}, k = 1..10. Parameter vector: delta0, delta1, delta2, delta0_82..91, gamma[1..20].
+// The intercepts reach the firm chains through the global g_d0yr, set at each objective evaluation -- safe only
+// with ONE grid point per process (main() enforces it); firm threads only read it.
+// KINK (2026-09-28, Hans; separate binary grid_estimator_kink; implies TAU_ROW; not combined with YEAR_FE): power
+// detection q = x^k, x = e/(kappa*Mbar), with a kink at the FOC ceiling c_k = (1+k)^(-1/k): beyond it q is flat and the
+// FOC cannot rationalize the firm. Latent support is the whole physical range M in (0, M*]; a draw with x < c_k gets
+// every row, a draw with x >= c_k only the eps rows (psi, score and tax rows = 0, as for corner firms). Row [10] =
+// 1{x >= c_k} - s fixes the share beyond the kink at s (CLI kink_share), so the tilt cannot push every firm past it.
+// k is ESTIMATED (extra parameter, bounds [0.02, 0.99]); the grid parameter "lambda" is the scale multiplier kappa.
+// k reaches the chains through the global g_kpow (one point per process, as YEAR_FE).
+#if (defined(YEAR_FE) || defined(KINK)) && !defined(TAU_ROW)
+#define TAU_ROW
+#endif
+#if defined(YEAR_FE) && defined(KINK)
+#error "YEAR_FE and KINK are not combined yet"
+#endif
+#ifdef YEAR_FE
+static const int N_XFE = 10;
+static double g_d0yr[11] = {0};
+#elif defined(KINK)
+static const int N_XFE = 1;
+static double g_kpow = 0.5;
+static double g_kshare = 0.3;
+static double g_kmax = 0.99;   // upper bound on k (CLI k_max; 0.99 = concave only, as in 1558/1559; up to 2.9 allowed: SOC 1-k<2)
+#else
+static const int N_XFE = 0;
+#endif
+#if defined(YEAR_FE)
+static const int D_G_A = 20;
+#elif defined(KINK)
+static const int D_G_A = 11;
+#elif defined(TAU_ROW)
+static const int D_G_A = 10;
+#else
 static const int D_G_A = 9;
+#endif
 typedef std::array<double, D_G_A> GVecA;
 
 static inline void moment_g_A_one(
@@ -655,6 +721,94 @@ static inline void moment_g_A_one(
     g_out[6] = eps * e;
     g_out[7] = eps * om;
     g_out[8] = hprime * eps;
+#ifdef TAU_ROW
+    for (int t = 9; t < D_G_A; t++) g_out[t] = 0.0;   // never used: TAU_ROW/YEAR_FE builds require qform=exp_scale
+#endif
+}
+
+// Same 9 rows as moment_g_A_one, with h and its lambda-score from the exp_scale detection function (S3,
+// 2026-09-28; header: h_of_e_exp_scale). Only h and the row-[8] score change; lambda here is lambda1.
+// Dispatch on g_qform for the "new-rows" path (all forms share rows 0-9 [+ year rows]):
+//   1 exp_scale    q = lambda1 (1 - exp(-e/Mbar))        lambda = lambda1
+//   2 power_scale  q = (e/Mbar)^k                         lambda = k
+//   3 linear_new   q = lambda e (levels, old headline q)  lambda = lambda; with the corrected rows
+static inline double q_h(double e, double tau_rho, double lambda, double Mbar) {
+    if (g_qform == 2) return h_of_e_power_scale(e, tau_rho, lambda, Mbar);
+    if (g_qform == 3) return h_of_e(e, tau_rho, lambda);
+    return h_of_e_exp_scale(e, tau_rho, lambda, Mbar);
+}
+static inline double q_score(double e, double lambda, double Mbar) {
+    if (g_qform == 2) return h_prime_bounded_power_scale(e, lambda, Mbar);
+    if (g_qform == 3) return h_prime_bounded(e, lambda);
+    return h_prime_bounded_exp_scale(e, lambda, Mbar);
+}
+static inline double q_lnB(double e, double lambda, double Mbar) {
+#ifdef KINK
+    if (g_qform == 4) return std::log(B_power_scale(e, g_kpow, lambda * Mbar));   // floored beyond the kink
+#endif
+    if (g_qform == 2) return std::log(B_power_scale(e, lambda, Mbar));
+    if (g_qform == 3) return std::log(h_denom(e, lambda));
+    return std::log(B_exp_scale(e, lambda, Mbar));
+}
+static inline double q_draw(std::mt19937_64 &rng, double Mstar, double lambda, double Mbar) {
+    if (g_qform == 4) {   // KINK: whole physical support M in (0, Mstar] (u01 in [0,1) keeps M > 0)
+        std::uniform_real_distribution<double> unif(0.0, 1.0);
+        (void)lambda; (void)Mbar;
+        return Mstar * (1.0 - unif(rng));
+    }
+    if (g_qform == 2) return draw_from_rho_power_scale(rng, Mstar, lambda, Mbar);
+    if (g_qform == 3) return draw_from_rho_checked(rng, Mstar, lambda);
+    return draw_from_rho_fixed_scale(rng, Mstar, Mbar);
+}
+static inline void moment_g_A_one_exp_scale(
+    double M, double Mstar, double V, double Wt, double tau_rho, double beta, double Mbar, double ltau_bar, int yidx,
+    double lambda, double delta0, double delta1, double delta2,
+    GVecA &g_out
+) {
+    double e      = e_of_M(M, Mstar);
+    double eps    = eps_of_M(M, Mstar, V);
+    double om     = omega_of_M(M, Mstar, V, Wt, beta);
+#ifdef KINK
+    if (g_qform == 4) {   // power detection with a kink at the FOC ceiling; lambda = kappa (scale multiplier)
+        double k = g_kpow, sc = lambda * Mbar, x = e / sc, lnM = std::log(M);
+        for (int t = 0; t < D_G_A; t++) g_out[t] = 0.0;
+        g_out[1] = eps; g_out[5] = eps * lnM; g_out[7] = eps * om;   // eps rows: every draw
+        if (x >= power_ceiling(k)) { g_out[10] = 1.0 - g_kshare; (void)yidx; return; }   // beyond the kink
+        double psi = h_of_e_power_scale(e, tau_rho, k, sc) - delta0 + delta1 * om - delta2 * om * om;
+        g_out[0] = psi; g_out[2] = psi * lnM; g_out[3] = psi * om; g_out[4] = psi * om * om;
+        g_out[6] = (g_row6 == 1) ? eps * psi : eps * e;
+        g_out[8] = h_prime_bounded_power_scale(e, k, sc) * eps;
+        g_out[9] = psi * ltau_bar;
+        g_out[10] = -g_kshare;
+        return;
+    }
+#endif
+#ifdef YEAR_FE
+    double d0     = delta0 + g_d0yr[yidx];
+#else
+    double d0     = delta0; (void)yidx;
+#endif
+    double psi    = q_h(e, tau_rho, lambda, Mbar) - d0 + delta1 * om - delta2 * om * om;
+    double lnM    = std::log(M);
+    double hprime = q_score(e, lambda, Mbar);
+
+    g_out[0] = psi;
+    g_out[1] = eps;
+    g_out[2] = psi * lnM;
+    g_out[3] = psi * om;
+    g_out[4] = psi * om * om;
+    g_out[5] = eps * lnM;
+    g_out[6] = (g_row6 == 1) ? eps * psi : eps * e;
+    g_out[7] = eps * om;
+    g_out[8] = hprime * eps;
+#ifdef TAU_ROW
+    g_out[9] = psi * ltau_bar;
+#ifdef YEAR_FE
+    for (int k = 1; k <= N_XFE; k++) g_out[9 + k] = (yidx == k) ? psi : 0.0;
+#endif
+#else
+    (void)ltau_bar;
+#endif
 }
 
 // Corner (tau_P=0) firms: same convention as A's Rcpp worker
@@ -683,9 +837,27 @@ static inline void firm_chain_A(
     std::uniform_real_distribution<double> unif(0.0, 1.0);   // MH accept/reject only -- the M-proposal draw has its own internal distribution inside draw_from_rho_checked
 
     GVecA g_current, g_try, g_run;
+    g_run.fill(0.0);
+
+    if (g_qform >= 1) {   // new-rows path: exp_scale, power_scale, linear_new
+        // S3 (2026-09-28): exp_scale detection, fixed support M in (max(0,Mstar-Mbar), Mstar]. Same MH scheme,
+        // same RNG stream layout (one proposal draw, then one accept draw, per step) as the linear branch below.
+        double M_current = q_draw(rng, f.Mstar, lambda, f.Mbar);
+        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current);
+        for (int r = -n_burn + 1; r <= n_keep; r++) {
+            double M_try = q_draw(rng, f.Mstar, lambda, f.Mbar);
+            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try);
+            double log_ratio = 0.0;
+            for (int t = 0; t < D_G_A; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
+            if (std::log(unif(rng)) < log_ratio) g_current = g_try;
+            if (r > 0) for (int t = 0; t < D_G_A; t++) g_run[t] += g_current[t] / n_keep;
+        }
+        for (int t = 0; t < D_G_A; t++) ghat_row[t] = g_run[t];
+        return;
+    }
+
     double M_current = draw_from_rho_checked(rng, f.Mstar, lambda);
     moment_g_A_one(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, lambda, delta0, delta1, delta2, g_current);
-    g_run.fill(0.0);
 
     for (int r = -n_burn + 1; r <= n_keep; r++) {
         double M_try = draw_from_rho_checked(rng, f.Mstar, lambda);
@@ -1747,6 +1919,97 @@ static double cue_objective_A_std(const double dvec[D_G_A], const double Omega_i
     return obj;
 }
 
+// ---- adiag (2026-09-28): read-only diagnostic for moment set A at a FIXED (lambda,delta0,delta1,delta2,gamma) ----
+// No optimization. Prints (1) each row's mean, SE = sqrt(Omega_jj/n), t; (2) Omega's eigen-spectrum with the
+// objective's own truncation rule (w_k > 1e-8 * max), each direction's contribution 0.5*(z_k'd)^2/w_k to Lhat, and
+// its loading on the last row; (3) for interior firms, per-firm tilted means of u = ln(M*/M), x = e/Mbar and
+// omega(M) (same MH chain and RNG layout as firm_chain_A, exp_scale branch), their cross-firm summaries, and their
+// correlation with the tax rate. Reproduces Lhat exactly when run at a fitted point (self-check).
+static void run_adiag_mode(
+    const std::vector<FirmData> &firms, double lambda, double delta0, double delta1, double delta2,
+    const double gamma[D_G_A], int n_burn, int n_keep, uint64_t base_seed, int n_threads
+) {
+    int n = static_cast<int>(firms.size());
+    double dvec[D_G_A], Omega[D_G_A * D_G_A];
+    compute_dvec_omega_A(firms, lambda, delta0, delta1, delta2, gamma, n_burn, n_keep, base_seed, n_threads, dvec, Omega);
+    double obj = cue_objective_A_std(dvec, Omega);
+    std::cout << std::setprecision(6) << "Lhat (recomputed) = " << obj << "   TS = 2 n Lhat = " << 2.0 * n * obj << "   n = " << n << "\n";
+    std::cout << "row  mean          se            t\n";
+    for (int j = 0; j < D_G_A; j++) {
+        double se = std::sqrt(Omega[j + j * D_G_A] / n);
+        std::cout << "  " << j << "  " << dvec[j] << "  " << se << "  " << (se > 0 ? dvec[j] / se : 0.0) << "\n";
+    }
+    // eigen-decomposition, same call and truncation rule as cue_objective_A_std
+    double A[D_G_A * D_G_A]; std::copy(Omega, Omega + D_G_A * D_G_A, A);
+    double w[D_G_A], Z[D_G_A * D_G_A];
+    __CLPK_integer nn = D_G_A, lda = D_G_A, il = 1, iu = D_G_A, m, ldz = D_G_A, info, isuppz[2 * D_G_A];
+    double vl = 0, vu = 0, abstol = 1e-10;
+    __CLPK_integer lwork = -1, liwork = -1, iwq; double wq;
+    dsyevr_((char *)"V", (char *)"A", (char *)"U", &nn, A, &lda, &vl, &vu, &il, &iu, &abstol, &m, w, Z, &ldz, isuppz, &wq, &lwork, &iwq, &liwork, &info);
+    lwork = (__CLPK_integer)wq; liwork = iwq;
+    std::vector<double> work(lwork); std::vector<__CLPK_integer> iw(liwork);
+    dsyevr_((char *)"V", (char *)"A", (char *)"U", &nn, A, &lda, &vl, &vu, &il, &iu, &abstol, &m, w, Z, &ldz, isuppz, work.data(), &lwork, iw.data(), &liwork, &info);
+    double max_eig = w[m - 1];
+    std::cout << "eigen k  w_k           kept  contrib_to_Lhat  loading_on_last_row  top_row(|loading|)\n";
+    for (int k = m - 1; k >= 0; k--) {
+        double d2 = 0.0; int top = 0; double topv = 0.0;
+        for (int i = 0; i < D_G_A; i++) { d2 += Z[i + k * D_G_A] * dvec[i]; if (std::fabs(Z[i + k * D_G_A]) > topv) { topv = std::fabs(Z[i + k * D_G_A]); top = i; } }
+        bool kept = w[k] > 1e-8 * max_eig;
+        std::cout << "  " << k << "  " << w[k] << "  " << (kept ? "yes " : "NO  ") << "  " << (kept ? 0.5 * d2 * d2 / w[k] : 0.0)
+                  << "  " << Z[(D_G_A - 1) + k * D_G_A] << "  " << top << "(" << topv << ")\n";
+    }
+    // tilted u, x, omega for interior firms (exp_scale branch only)
+    if (g_qform == 0) { std::cout << "(tilted u/x/omega summaries need qform=exp_scale)\n"; return; }
+    std::vector<int> idx; for (int i = 0; i < n; i++) if (firms[i].corner == 0) idx.push_back(i);
+    int ni = static_cast<int>(idx.size());
+    std::vector<double> mu_u(ni), mu_x(ni), mu_om(ni), sd_om(ni), om_pt(ni), lt(ni), mu_lnB(ni);
+    std::atomic<int> next{0};
+    auto worker = [&]() {
+        int k;
+        while ((k = next.fetch_add(1)) < ni) {
+            const FirmData &f = firms[idx[k]];
+            std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+            std::uniform_real_distribution<double> unif(0.0, 1.0);
+            GVecA gc, gt;
+            double Mc = q_draw(rng, f.Mstar, lambda, f.Mbar);
+            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc);
+            double su = 0, sx = 0, so = 0, so2 = 0, sb = 0;
+            for (int r = -n_burn + 1; r <= n_keep; r++) {
+                double Mt = q_draw(rng, f.Mstar, lambda, f.Mbar);
+                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt);
+                double lr = 0.0; for (int t = 0; t < D_G_A; t++) lr += gamma[t] * (gt[t] - gc[t]);
+                if (std::log(unif(rng)) < lr) { gc = gt; Mc = Mt; }
+                if (r > 0) {
+                    double om = omega_of_M(Mc, f.Mstar, f.V, f.Wt, f.beta), e = e_of_M(Mc, f.Mstar);
+                    su += std::log(f.Mstar / Mc); sx += e / f.Mbar; so += om; so2 += om * om;
+                    sb += q_lnB(e, lambda, f.Mbar);
+                }
+            }
+            mu_u[k] = su / n_keep; mu_x[k] = sx / n_keep; mu_om[k] = so / n_keep; mu_lnB[k] = sb / n_keep;
+            sd_om[k] = std::sqrt(std::max(0.0, so2 / n_keep - mu_om[k] * mu_om[k]));
+            om_pt[k] = omega_of_M(f.Mstar, f.Mstar, f.V, f.Wt, f.beta);
+            lt[k] = std::log(f.tau_rho);
+        }
+    };
+    std::vector<std::thread> pool; for (int t = 0; t < std::max(1, n_threads); t++) pool.emplace_back(worker);
+    for (auto &th : pool) th.join();
+    auto mean = [&](const std::vector<double> &v) { double s = 0; for (double a : v) s += a; return s / v.size(); };
+    auto sd = [&](const std::vector<double> &v) { double mu = mean(v), s = 0; for (double a : v) s += (a - mu) * (a - mu); return std::sqrt(s / (v.size() - 1)); };
+    auto cor = [&](const std::vector<double> &a, const std::vector<double> &b) {
+        double ma = mean(a), mb = mean(b), sab = 0, saa = 0, sbb = 0;
+        for (size_t i = 0; i < a.size(); i++) { sab += (a[i] - ma) * (b[i] - mb); saa += (a[i] - ma) * (a[i] - ma); sbb += (b[i] - mb) * (b[i] - mb); }
+        return sab / std::sqrt(saa * sbb); };
+    std::cout << "interior firms: " << ni << "\n"
+              << "  tilted u      : mean of firm means " << mean(mu_u) << ", sd across firms " << sd(mu_u) << "\n"
+              << "  tilted x=e/Mb : mean " << mean(mu_x) << ", sd " << sd(mu_x) << "\n"
+              << "  tilted ln B   : mean " << mean(mu_lnB) << ", sd " << sd(mu_lnB) << "\n"
+              << "  omega at M=M* : mean " << mean(om_pt) << ", sd " << sd(om_pt) << "\n"
+              << "  tilted omega  : mean " << mean(mu_om) << ", sd across firms " << sd(mu_om) << ", mean within-firm sd " << mean(sd_om) << "\n"
+              << "  cor with ln tau_P: omega(M*) " << cor(om_pt, lt) << ", tilted omega " << cor(mu_om, lt)
+              << ", tilted ln B " << cor(mu_lnB, lt) << ", tilted u " << cor(mu_u, lt) << "\n"
+              << "  var(ln tau_P) " << sd(lt) * sd(lt) << "\n";
+}
+
 // ---- inner problem: profile (delta0,eta,LAMBDA,gamma[1:9]) at FIXED (delta1,delta2) --
 // x[] = (delta0, eta, lambda, gamma[1..9]) -- 12 free dims, same count as
 // fit_one_grid_point's own inner problem (2+7=9 there vs 3+9=12 here -- more
@@ -1918,8 +2181,14 @@ static double inner_obj_A_fixedLambda(unsigned n, const double *x, double *grad,
     (void)n; (void)grad;
     InnerParamsAFixedLambda *p = static_cast<InnerParamsAFixedLambda *>(data);
     double delta0 = x[0], delta1 = x[1], delta2 = x[2];
+#ifdef YEAR_FE
+    for (int k = 1; k <= N_XFE; k++) g_d0yr[k] = x[3 + k - 1];   // one point per process: see YEAR_FE note
+#endif
+#ifdef KINK
+    g_kpow = x[3];                                                // one point per process: see KINK note
+#endif
     double gamma[D_G_A];
-    for (int t = 0; t < D_G_A; t++) gamma[t] = x[3 + t];
+    for (int t = 0; t < D_G_A; t++) gamma[t] = x[3 + N_XFE + t];
 
     double dvec[D_G_A], Omega[D_G_A * D_G_A];
     compute_dvec_omega_A(*(p->firms), p->lambda, delta0, delta1, delta2, gamma,
@@ -1929,6 +2198,7 @@ static double inner_obj_A_fixedLambda(unsigned n, const double *x, double *grad,
 
 struct FitResultAFixedLambda {
     double delta0, delta1, delta2, gamma[D_G_A], Lhat;
+    double d0yr[N_XFE > 0 ? N_XFE : 1];   // year intercepts 82..91 (YEAR_FE build only)
     int convergence, iters;
     double Lhat_pass1, wander;
     int iters_pass1, convergence_pass1;
@@ -1940,14 +2210,16 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
     int n_burn, int n_keep, uint64_t base_seed, int n_threads, double maxtime,
     const double *x0_in, nlopt_algorithm algo = NLOPT_LN_NELDERMEAD
 ) {
-    const int n_par = 3 + D_G_A;   // delta0, delta1, delta2, gamma[1:9]
+    const int n_par = 3 + N_XFE + D_G_A;   // delta0, delta1, delta2, [year intercepts], gamma[1:D_G_A]
+    const int OG = 3 + N_XFE;               // offset of gamma in x
     InnerParamsAFixedLambda params{&firms, lambda, n_burn, n_keep, n_threads, base_seed};
 
     double lower[n_par], upper[n_par], x[n_par];
-    lower[0] = -DELTA_BOUND; upper[0] = DELTA_BOUND;
-    lower[1] = -DELTA_BOUND; upper[1] = DELTA_BOUND;
-    lower[2] = -DELTA_BOUND; upper[2] = DELTA_BOUND;
-    for (int t = 0; t < D_G_A; t++) { lower[3 + t] = -HUGE_VAL; upper[3 + t] = HUGE_VAL; }
+    for (int t = 0; t < OG; t++) { lower[t] = -DELTA_BOUND; upper[t] = DELTA_BOUND; }
+#ifdef KINK
+    lower[3] = 0.02; upper[3] = g_kmax;   // the power k
+#endif
+    for (int t = 0; t < D_G_A; t++) { lower[OG + t] = -HUGE_VAL; upper[OG + t] = HUGE_VAL; }
     for (int t = 0; t < n_par; t++) x[t] = x0_in[t];
 
     auto run_opt = [&](double *xstart) -> FitResultAFixedLambda {
@@ -1964,7 +2236,8 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
         nlopt_destroy(opt);
         FitResultAFixedLambda r;
         r.delta0 = xstart[0]; r.delta1 = xstart[1]; r.delta2 = xstart[2];
-        for (int t = 0; t < D_G_A; t++) r.gamma[t] = xstart[3 + t];
+        for (int k = 0; k < N_XFE; k++) r.d0yr[k] = xstart[3 + k];
+        for (int t = 0; t < D_G_A; t++) r.gamma[t] = xstart[OG + t];
         r.Lhat = minf; r.convergence = static_cast<int>(res); r.iters = iters;
         return r;
     };
@@ -1973,7 +2246,50 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
     FitResultAFixedLambda r1 = run_opt(x);
     double x2[n_par];
     x2[0] = r1.delta0; x2[1] = r1.delta1; x2[2] = r1.delta2;
-    for (int t = 0; t < D_G_A; t++) x2[3 + t] = r1.gamma[t];
+    for (int k = 0; k < N_XFE; k++) x2[3 + k] = r1.d0yr[k];
+    for (int t = 0; t < D_G_A; t++) x2[OG + t] = r1.gamma[t];
+    if (g_sa_time > 0) {
+        // Simulated annealing from the Nelder-Mead pass-1 endpoint (Nail: NM first, then a global-style search, then
+        // polish). Objective is deterministic given base_seed (common random numbers). Full-vector Gaussian proposals,
+        // per-coordinate scales s_i = 0.05*max(|x_i|, 0.05), one global multiplier adapted every 50 steps toward ~30%
+        // acceptance; temperature T = T0 * (1e-3)^(elapsed/sa_time), T0 = 0.1 * f(start); delta box respected by
+        // reflection; the best point found feeds Nelder-Mead pass 2.
+        std::mt19937_64 rng(base_seed ^ 0x5A5A5A5AULL);
+        std::normal_distribution<double> nz(0.0, 1.0);
+        std::uniform_real_distribution<double> un(0.0, 1.0);
+        double xc[n_par], xp[n_par], xb[n_par], sc[n_par];
+        for (int t = 0; t < n_par; t++) { xc[t] = xb[t] = x2[t]; sc[t] = 0.05 * std::max(std::fabs(x2[t]), 0.05); }
+        double fc = inner_obj_A_fixedLambda(n_par, xc, nullptr, &params), fb = fc, T0 = 0.1 * fc, mult = 1.0;
+        int steps = 0, acc_win = 0, acc_tot = 0;
+        auto sa0 = std::chrono::steady_clock::now();
+        for (;;) {
+            double el = std::chrono::duration<double>(std::chrono::steady_clock::now() - sa0).count();
+            if (el >= g_sa_time) break;
+            double T = T0 * std::pow(1e-3, el / g_sa_time);
+            for (int t = 0; t < n_par; t++) {
+                double v = xc[t] + mult * sc[t] * nz(rng);
+                if (v < lower[t]) v = 2 * lower[t] - v;
+                if (v > upper[t]) v = 2 * upper[t] - v;
+                xp[t] = std::min(std::max(v, lower[t]), upper[t]);
+            }
+            double fp = inner_obj_A_fixedLambda(n_par, xp, nullptr, &params);
+            steps++;
+            if (std::isfinite(fp) && (fp <= fc || un(rng) < std::exp(-(fp - fc) / T))) {
+                std::copy(xp, xp + n_par, xc); fc = fp; acc_win++; acc_tot++;
+                if (fc < fb) { fb = fc; std::copy(xc, xc + n_par, xb); }
+            }
+            if (steps % 50 == 0) {
+                double rate = acc_win / 50.0; acc_win = 0;
+                mult *= (rate > 0.3) ? 1.3 : 0.77;
+                mult = std::min(std::max(mult, 1e-4), 10.0);
+                std::cout << "    SA step " << steps << " t=" << el << "s T=" << T << " f_cur=" << fc << " f_best=" << fb
+                          << " acc=" << rate << " mult=" << mult << "\n" << std::flush;
+            }
+        }
+        std::cout << "    SA done: " << steps << " steps, acceptance " << (steps ? double(acc_tot) / steps : 0.0)
+                  << ", f: NM pass1 " << r1.Lhat << " -> SA best " << fb << "\n" << std::flush;
+        std::copy(xb, xb + n_par, x2);
+    }
     FitResultAFixedLambda r2 = run_opt(x2);
     r2.point_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - t_start).count();
 
@@ -2062,11 +2378,18 @@ static void run_lambdagrid_mode(
     std::ofstream out(output_csv);
     if (!out.is_open()) { std::cerr << "ERROR: could not open output_csv for writing: " << output_csv << "\n"; std::exit(1); }
     out << std::setprecision(15);
-    out << "lambda,delta0_hat,delta1_hat,delta2_hat,gamma1,gamma2,gamma3,gamma4,gamma5,gamma6,gamma7,gamma8,gamma9,"
-           "Lhat,Lhat_pass1,wander,convergence,convergence_pass1,iters,iters_pass1,point_seconds,n\n";
+    out << "lambda,delta0_hat,delta1_hat,delta2_hat,";
+#ifdef KINK
+    out << "k_hat,";
+#else
+    for (int k = 0; k < N_XFE; k++) out << "d0yr" << (82 + k) << ",";   // YEAR_FE build only
+#endif
+    for (int t = 0; t < D_G_A; t++) out << "gamma" << (t + 1) << ",";   // D_G_A-sized (9, 10 TAU_ROW, 20 YEAR_FE)
+    out << "Lhat,Lhat_pass1,wander,convergence,convergence_pass1,iters,iters_pass1,point_seconds,n\n";
     for (auto &r : results) {
         out << r.first << ","
             << r.second.delta0 << "," << r.second.delta1 << "," << r.second.delta2 << ",";
+        for (int k = 0; k < N_XFE; k++) out << r.second.d0yr[k] << ",";
         for (int t = 0; t < D_G_A; t++) out << r.second.gamma[t] << ",";
         out << r.second.Lhat << "," << r.second.Lhat_pass1 << "," << r.second.wander << ","
             << r.second.convergence << "," << r.second.convergence_pass1 << ","
@@ -2777,6 +3100,94 @@ int main(int argc, char **argv) {
               << " corner) from " << input_csv << "\n";
 
     std::string mode = get_opt(opt, "mode", "flat");
+    {   // detection function for moment set A's chain (S3, 2026-09-28); default linear = every earlier result
+        std::string qform = get_opt(opt, "qform", "linear");
+        if (qform == "exp_scale" || qform == "power_scale") {
+            g_qform = (qform == "exp_scale") ? 1 : 2;
+            for (const FirmData &f : firms)
+                if (f.corner == 0 && !(std::isfinite(f.Mbar) && f.Mbar > 0)) {
+                    std::cerr << "qform=" << qform << " needs a positive Mbar for every interior firm (row_id " << f.row_id << ")\n";
+                    return 1;
+                }
+            if (g_qform == 1) std::cout << "Detection: qform=exp_scale, q = lambda1*(1-exp(-e/Mbar)); 'lambda' below is lambda1\n";
+            else              std::cout << "Detection: qform=power_scale, q = (e/Mbar)^k; 'lambda' below is k\n";
+        } else if (qform == "power_kink") {
+#ifdef KINK
+            g_qform = 4;
+            g_kshare = std::strtod(get_opt(opt, "kink_share", "0.3").c_str(), nullptr);
+            g_kmax = std::min(2.9, std::strtod(get_opt(opt, "k_max", "0.99").c_str(), nullptr));
+            for (const FirmData &f : firms)
+                if (f.corner == 0 && !(std::isfinite(f.Mbar) && f.Mbar > 0)) {
+                    std::cerr << "qform=power_kink needs a positive Mbar for every interior firm (row_id " << f.row_id << ")\n";
+                    return 1;
+                }
+            std::cout << "Detection: qform=power_kink, q = (e/(kappa*Mbar))^k up to the FOC ceiling, flat beyond; 'lambda' below is"
+                         " kappa, k estimated; share beyond the kink fixed at " << g_kshare << "\n";
+#else
+            std::cerr << "qform=power_kink needs the KINK build (grid_estimator_kink)\n"; return 1;
+#endif
+        } else if (qform == "linear_new") {
+            g_qform = 3;
+            std::cout << "Detection: qform=linear_new, q = lambda*e (levels) with the new-rows moment path\n";
+        } else if (qform != "linear") { std::cerr << "qform must be linear, exp_scale, power_scale or linear_new\n"; return 1; }
+        g_sa_time = std::strtod(get_opt(opt, "sa_time", "0").c_str(), nullptr);
+        if (g_sa_time > 0) std::cout << "Simulated annealing between Nelder-Mead passes: " << g_sa_time << " s per point\n";
+        std::string row6 = get_opt(opt, "row6", "eps_e");
+        if (row6 == "eps_psi") {
+            if (g_qform == 0) { std::cerr << "row6=eps_psi needs a new-rows qform (exp_scale, power_scale, linear_new)\n"; return 1; }
+            g_row6 = 1; std::cout << "Moment set A row [6] = eps*psi\n";
+        } else if (row6 != "eps_e") { std::cerr << "row6 must be eps_e or eps_psi\n"; return 1; }
+#ifdef TAU_ROW
+        if (g_qform == 0 || (mode != "lambdagrid" && mode != "adiag")) {
+            std::cerr << "This TAU_ROW build supports only mode=lambdagrid|adiag with qform=exp_scale\n"; return 1;
+        }
+        for (const FirmData &f : firms)
+            if (f.corner == 0 && !std::isfinite(f.ltau_bar)) {
+                std::cerr << "TAU_ROW needs a finite ltau_bar for every interior firm (row_id " << f.row_id << ")\n"; return 1;
+            }
+        std::cout << "Moment set A + row [9] psi*ltau_bar (TAU_ROW build, D_G_A=" << D_G_A << ")\n";
+#endif
+#ifdef YEAR_FE
+        for (const FirmData &f : firms)
+            if (f.corner == 0 && (f.yidx < 0 || f.yidx > N_XFE)) {
+                std::cerr << "YEAR_FE needs year in 81..91 for every interior firm (row_id " << f.row_id << ")\n"; return 1;
+            }
+        if (mode == "lambdagrid") {
+            std::string ls = get_opt(opt, "lambdas", "");
+            if (ls.empty() || ls.find(',') != std::string::npos) {
+                std::cerr << "YEAR_FE build: lambdagrid takes exactly ONE lambda per process (global g_d0yr)\n"; return 1;
+            }
+        }
+        std::cout << "Year intercepts delta0_82..91 + rows psi*1{year} (YEAR_FE build, D_G_A=" << D_G_A << ")\n";
+#endif
+#ifdef KINK
+        if (g_qform != 4) { std::cerr << "KINK build: use qform=power_kink\n"; return 1; }
+        if (mode == "lambdagrid") {
+            std::string ls = get_opt(opt, "lambdas", "");
+            if (ls.empty() || ls.find(',') != std::string::npos) {
+                std::cerr << "KINK build: lambdagrid takes exactly ONE kappa per process (global g_kpow)\n"; return 1;
+            }
+        }
+#endif
+    }
+    if (mode == "adiag") {
+        // par=<lambda,delta0,delta1,delta2,gamma1..D_G_A> (13 values in the default build, 14 with TAU_ROW)
+        std::string par_str = get_opt(opt, "par", "");
+        // YEAR_FE build: par = lambda,delta0,delta1,delta2,d0yr82..91,gamma1..20
+        const int NP = 4 + N_XFE + D_G_A;
+        double par[4 + N_XFE + D_G_A];
+        { std::stringstream ss(par_str); std::string tok; int i = 0;
+          while (std::getline(ss, tok, ',') && i < NP) par[i++] = std::strtod(tok.c_str(), nullptr);
+          if (i != NP) { std::cerr << "adiag: par must have exactly " << NP << " values, got " << i << "\n"; return 1; } }
+#ifdef YEAR_FE
+        for (int k = 1; k <= N_XFE; k++) g_d0yr[k] = par[4 + k - 1];
+#endif
+#ifdef KINK
+        g_kpow = par[4];   // par = kappa,delta0,delta1,delta2,k,gamma1..11
+#endif
+        run_adiag_mode(firms, par[0], par[1], par[2], par[3], par + 4 + N_XFE, n_burn, n_keep, base_seed, n_threads);
+        return 0;
+    }
     if (mode == "gammagdiag") {
         std::string par_str = get_opt(opt, "par", "");
         if (par_str.empty()) {
@@ -3217,10 +3628,11 @@ int main(int argc, char **argv) {
             std::cerr << "lambdagrid mode requires x0=<12 comma-separated values: delta0,delta1,delta2,gamma1..9>\n";
             return 1;
         }
-        double x0[12];
+        const int NX0 = 3 + N_XFE + D_G_A;   // delta0,delta1,delta2,[year intercepts],gamma[1..D_G_A] (12 / 13 / 33)
+        double x0[3 + N_XFE + D_G_A];
         { std::stringstream ss(x0_str); std::string tok; int i = 0;
-          while (std::getline(ss, tok, ',') && i < 12) x0[i++] = std::strtod(tok.c_str(), nullptr);
-          if (i != 12) { std::cerr << "x0 must have exactly 12 values, got " << i << "\n"; return 1; } }
+          while (std::getline(ss, tok, ',') && i < NX0) x0[i++] = std::strtod(tok.c_str(), nullptr);
+          if (i != NX0) { std::cerr << "x0 must have exactly " << NX0 << " values, got " << i << "\n"; return 1; } }
 
         std::string lambdas_str = get_opt(opt, "lambdas", "");
         std::vector<double> lambdas;
