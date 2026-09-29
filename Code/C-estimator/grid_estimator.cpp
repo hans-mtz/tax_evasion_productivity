@@ -678,9 +678,22 @@ static void run_shell_mode(
 #if defined(YEAR_FE) && defined(KINK)
 #error "YEAR_FE and KINK are not combined yet"
 #endif
+// KINK_S (2026-09-29, Hans; with KINK; binary grid_estimator_kinks): k FIXED (CLI k_fixed, equal bounds), the share s
+// beyond the kink ESTIMATED (extra parameter x[4], bounds [0.02, 0.6], start = kink_share), and a score row for the
+// scale: row [11] = eps * softsign(dh/dkappa), dh/dkappa = k(1+k) x^k / (kappa B). h does not depend on s, so s has
+// no score row; it is pinned only through the share row [10]. Runs 1558-1560 used KINK alone (11 rows).
+#if defined(KINK_S) && !defined(KINK)
+#define KINK
+#endif
 #ifdef YEAR_FE
 static const int N_XFE = 10;
 static double g_d0yr[11] = {0};
+#elif defined(KINK_S)
+static const int N_XFE = 2;
+static double g_kpow = 0.5;
+static double g_kshare = 0.3;
+static double g_kmax = 0.99;   // unused with k_fixed; kept so the KINK code paths compile unchanged
+static double g_kfixed = -1.0; // CLI k_fixed (required in this build)
 #elif defined(KINK)
 static const int N_XFE = 1;
 static double g_kpow = 0.5;
@@ -691,6 +704,8 @@ static const int N_XFE = 0;
 #endif
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
+#elif defined(KINK_S)
+static const int D_G_A = 12;
 #elif defined(KINK)
 static const int D_G_A = 11;
 #elif defined(TAU_ROW)
@@ -780,6 +795,12 @@ static inline void moment_g_A_one_exp_scale(
         g_out[8] = h_prime_bounded_power_scale(e, k, sc) * eps;
         g_out[9] = psi * ltau_bar;
         g_out[10] = -g_kshare;
+#ifdef KINK_S
+        {   // score for the scale kappa: dh/dkappa = k(1+k) x^k / (kappa B) >= 0; softsign-bounded, paired with eps
+            double hk = k * (1.0 + k) * std::pow(x, k) / (lambda * B_power_scale(e, k, sc));
+            g_out[11] = eps * hk / (1.0 + std::fabs(hk));
+        }
+#endif
         return;
     }
 #endif
@@ -1939,6 +1960,20 @@ static void run_adiag_mode(
         double se = std::sqrt(Omega[j + j * D_G_A] / n);
         std::cout << "  " << j << "  " << dvec[j] << "  " << se << "  " << (se > 0 ? dvec[j] / se : 0.0) << "\n";
     }
+    std::cout << "gamma:";
+    for (int j = 0; j < D_G_A; j++) std::cout << " " << gamma[j];
+    std::cout << "\nOmega: row sd (per firm)";
+    for (int j = 0; j < D_G_A; j++) std::cout << " " << std::sqrt(Omega[j + j * D_G_A]);
+    std::cout << "\nOmega as correlation matrix (rows/cols 0.." << D_G_A - 1 << "):\n";
+    for (int i = 0; i < D_G_A; i++) {
+        std::cout << "  " << i << ":";
+        for (int j = 0; j < D_G_A; j++) {
+            double den = std::sqrt(Omega[i + i * D_G_A] * Omega[j + j * D_G_A]);
+            char buf[16]; std::snprintf(buf, sizeof buf, " %6.3f", den > 0 ? Omega[i + j * D_G_A] / den : 0.0);
+            std::cout << buf;
+        }
+        std::cout << "\n";
+    }
     // eigen-decomposition, same call and truncation rule as cue_objective_A_std
     double A[D_G_A * D_G_A]; std::copy(Omega, Omega + D_G_A * D_G_A, A);
     double w[D_G_A], Z[D_G_A * D_G_A];
@@ -2187,6 +2222,9 @@ static double inner_obj_A_fixedLambda(unsigned n, const double *x, double *grad,
 #ifdef KINK
     g_kpow = x[3];                                                // one point per process: see KINK note
 #endif
+#ifdef KINK_S
+    g_kshare = x[4];                                              // s estimated (KINK_S)
+#endif
     double gamma[D_G_A];
     for (int t = 0; t < D_G_A; t++) gamma[t] = x[3 + N_XFE + t];
 
@@ -2218,6 +2256,10 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
     for (int t = 0; t < OG; t++) { lower[t] = -DELTA_BOUND; upper[t] = DELTA_BOUND; }
 #ifdef KINK
     lower[3] = 0.02; upper[3] = g_kmax;   // the power k
+#endif
+#ifdef KINK_S
+    lower[3] = upper[3] = g_kfixed;       // k fixed (equal bounds)
+    lower[4] = 0.02; upper[4] = 0.6;      // the share s beyond the kink
 #endif
     for (int t = 0; t < D_G_A; t++) { lower[OG + t] = -HUGE_VAL; upper[OG + t] = HUGE_VAL; }
     for (int t = 0; t < n_par; t++) x[t] = x0_in[t];
@@ -2379,7 +2421,9 @@ static void run_lambdagrid_mode(
     if (!out.is_open()) { std::cerr << "ERROR: could not open output_csv for writing: " << output_csv << "\n"; std::exit(1); }
     out << std::setprecision(15);
     out << "lambda,delta0_hat,delta1_hat,delta2_hat,";
-#ifdef KINK
+#if defined(KINK_S)
+    out << "k_hat,s_hat,";
+#elif defined(KINK)
     out << "k_hat,";
 #else
     for (int k = 0; k < N_XFE; k++) out << "d0yr" << (82 + k) << ",";   // YEAR_FE build only
@@ -3116,6 +3160,11 @@ int main(int argc, char **argv) {
             g_qform = 4;
             g_kshare = std::strtod(get_opt(opt, "kink_share", "0.3").c_str(), nullptr);
             g_kmax = std::min(2.9, std::strtod(get_opt(opt, "k_max", "0.99").c_str(), nullptr));
+#ifdef KINK_S
+            g_kfixed = std::strtod(get_opt(opt, "k_fixed", "-1").c_str(), nullptr);
+            if (!(g_kfixed > 0 && g_kfixed < 2.9)) { std::cerr << "KINK_S build requires k_fixed in (0, 2.9)\n"; return 1; }
+            std::cout << "KINK_S: k fixed at " << g_kfixed << ", share s estimated (start " << g_kshare << "), row [11] = eps * score(kappa)\n";
+#endif
             for (const FirmData &f : firms)
                 if (f.corner == 0 && !(std::isfinite(f.Mbar) && f.Mbar > 0)) {
                     std::cerr << "qform=power_kink needs a positive Mbar for every interior firm (row_id " << f.row_id << ")\n";
@@ -3184,6 +3233,9 @@ int main(int argc, char **argv) {
 #endif
 #ifdef KINK
         g_kpow = par[4];   // par = kappa,delta0,delta1,delta2,k,gamma1..11
+#endif
+#ifdef KINK_S
+        g_kshare = par[5]; // par = kappa,delta0,delta1,delta2,k,s,gamma1..12
 #endif
         run_adiag_mode(firms, par[0], par[1], par[2], par[3], par + 4 + N_XFE, n_burn, n_keep, base_seed, n_threads);
         return 0;
