@@ -87,6 +87,8 @@ struct FirmData {
     double ltau_bar = std::numeric_limits<double>::quiet_NaN();
     // yidx (2026-09-28, YEAR_FE build): year - 81 from the input's `year` column (0 = 1981); -1 if absent.
     int yidx = -1;
+    // sig2eps (2026-09-29, EPSVAR build): corporations' eps variance in the firm's industry.
+    double sig2eps = std::numeric_limits<double>::quiet_NaN();
 };
 
 // Detection function used by moment set A's chain (firm_chain_A): 0 = linear q=min(lambda*e,1) (default, every
@@ -101,6 +103,9 @@ static int g_row6 = 0;
 // suggestion; AK2020's code uses the same global-then-local pattern with BlackBoxOptim's adaptive DE, 100 s, then
 // BOBYQA). g_sa_time = seconds of annealing (0 = off, default). CLI sa_time=<s>.
 static double g_sa_time = 0.0;
+// algo2 (2026-09-30, Hans): algorithm for lambdagrid's SECOND pass (after the optional SA); default = same as pass 1.
+// CLI algo2=bobyqa|neldermead.
+static int g_algo2 = -1;
 
 // ---- moment set C, one firm at one candidate M -----------------------------
 // (byte-for-byte the same structural maps as moment_g_A_one/B_one in
@@ -458,6 +463,7 @@ static std::vector<FirmData> read_firm_csv(const std::string &path) {
         if (idx.count("pgdp")) d.pgdp = std::strtod(fields[idx["pgdp"]].c_str(), nullptr);
         if (idx.count("Mbar")) d.Mbar = std::strtod(fields[idx["Mbar"]].c_str(), nullptr);
         if (idx.count("ltau_bar")) d.ltau_bar = std::strtod(fields[idx["ltau_bar"]].c_str(), nullptr);
+        if (idx.count("sig2eps")) d.sig2eps = std::strtod(fields[idx["sig2eps"]].c_str(), nullptr);
         if (idx.count("year")) d.yidx = static_cast<int>(std::strtol(fields[idx["year"]].c_str(), nullptr, 10)) - 81;
         out.push_back(d);
     }
@@ -689,11 +695,23 @@ static void run_shell_mode(
 static const int N_XFE = 10;
 static double g_d0yr[11] = {0};
 #elif defined(KINK_S)
+// KAPPA_FREE (2026-09-30, Hans; with KINK_S; binary grid_estimator_kf): the scale kappa is ESTIMATED as x[5] (bounds
+// [0.02, 5]); the lambdagrid value is only its start. Output column kappa_hat; adiag par gains kappa at the end of the
+// k,s block (par[6]) and uses it instead of par[0].
+#ifdef KAPPA_FREE
+static const int N_XFE = 3;
+#else
 static const int N_XFE = 2;
+#endif
 static double g_kpow = 0.5;
 static double g_kshare = 0.3;
 static double g_kmax = 0.99;   // unused with k_fixed; kept so the KINK code paths compile unchanged
 static double g_kfixed = -1.0; // CLI k_fixed (required in this build)
+static double g_sfixed = -1.0; // CLI s_fixed (optional): if in (0,1), s is held fixed at it (equal bounds) instead of estimated
+// drop_rows (2026-09-29): bitmask of moment rows set to 0 inside the moment function (interior draws), so a dropped row
+// neither enters the objective (zero variance -> its eigen-direction is cut) nor steers the tilt through gamma.
+// Corner firms only fill rows 1, 5, 7, which are never dropped. CLI drop_rows=11,6,...
+static unsigned g_dropmask = 0;
 #elif defined(KINK)
 static const int N_XFE = 1;
 static double g_kpow = 0.5;
@@ -702,8 +720,13 @@ static double g_kmax = 0.99;   // upper bound on k (CLI k_max; 0.99 = concave on
 #else
 static const int N_XFE = 0;
 #endif
+// EPSVAR (2026-09-29, with KINK_S; binary grid_estimator_eps): row [12] = eps^2 - sig2eps_j, sig2eps_j = corporations'
+// first-stage eps variance in the firm's industry (input column sig2eps); interior firms only, every draw (like the eps
+// rows). Disciplines the tilt's dispersion of measurement error (tilted var(eps) 1.17 vs data bound 0.18, log 2026-09-29).
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
+#elif defined(KINK_S) && defined(EPSVAR)
+static const int D_G_A = 13;
 #elif defined(KINK_S)
 static const int D_G_A = 12;
 #elif defined(KINK)
@@ -714,6 +737,39 @@ static const int D_G_A = 10;
 static const int D_G_A = 9;
 #endif
 typedef std::array<double, D_G_A> GVecA;
+
+// cut=ak (2026-09-29, Hans): moment-set-A objective exactly as AK2020's objMCcu (Appendix_B/cudafunctions/
+// cuda_fastoptim.jl): Omega divided by n (not n-1), eigen-directions kept iff Lambda > 0 (not > 1e-8*max, a porting
+// error), LAPACK default abstol (Julia's eigen). Rows dropped by drop_rows are removed from Omega and dvec before the
+// eigendecomposition (= AK building the system without them). Default (cut=rel) unchanged, bit-for-bit.
+static bool g_cut_ak = false;
+static inline unsigned a_rowmask() {
+#ifdef KINK_S
+    return g_dropmask;
+#else
+    return 0u;
+#endif
+}
+// Eigenpairs of Omega (ascending w[0..m-1]); Z is D_G_A x m col-major, zero on removed rows. Returns m, or -1 on failure.
+static int eig_A_active(const double *Omega, double *w, double *Z) {
+    const unsigned mask = g_cut_ak ? a_rowmask() : 0u;
+    int act[D_G_A]; int p = 0;
+    for (int i = 0; i < D_G_A; i++) if (!(mask & (1u << i))) act[p++] = i;
+    double A[D_G_A * D_G_A], Zc[D_G_A * D_G_A];
+    for (int b = 0; b < p; b++) for (int a = 0; a < p; a++) A[a + b * p] = Omega[act[a] + act[b] * D_G_A];
+    __CLPK_integer n = p, lda = p, il = 1, iu = p, m, ldz = p, info, isuppz[2 * D_G_A];
+    double vl = 0, vu = 0, abstol = g_cut_ak ? -1.0 : 1e-10;
+    __CLPK_integer lwork = -1, liwork = -1, iwq; double wq;
+    dsyevr_((char *)"V", (char *)"A", (char *)"U", &n, A, &lda, &vl, &vu, &il, &iu, &abstol, &m, w, Zc, &ldz, isuppz, &wq, &lwork, &iwq, &liwork, &info);
+    lwork = (__CLPK_integer)wq; liwork = iwq;
+    std::vector<double> work(lwork); std::vector<__CLPK_integer> iw(liwork);
+    dsyevr_((char *)"V", (char *)"A", (char *)"U", &n, A, &lda, &vl, &vu, &il, &iu, &abstol, &m, w, Zc, &ldz, isuppz, work.data(), &lwork, iw.data(), &liwork, &info);
+    if (info != 0 || m < 1) return -1;
+    std::fill(Z, Z + (size_t)D_G_A * m, 0.0);
+    for (int k = 0; k < m; k++) for (int a = 0; a < p; a++) Z[act[a] + k * D_G_A] = Zc[a + k * p];
+    return static_cast<int>(m);
+}
+static inline bool keep_eig_A(double wk, double max_eig) { return g_cut_ak ? wk > 0.0 : wk > 1e-8 * max_eig; }
 
 static inline void moment_g_A_one(
     double M, double Mstar, double V, double Wt, double tau_rho, double beta,
@@ -778,8 +834,9 @@ static inline double q_draw(std::mt19937_64 &rng, double Mstar, double lambda, d
 static inline void moment_g_A_one_exp_scale(
     double M, double Mstar, double V, double Wt, double tau_rho, double beta, double Mbar, double ltau_bar, int yidx,
     double lambda, double delta0, double delta1, double delta2,
-    GVecA &g_out
+    GVecA &g_out, double sig2eps = 0.0
 ) {
+    (void)sig2eps;
     double e      = e_of_M(M, Mstar);
     double eps    = eps_of_M(M, Mstar, V);
     double om     = omega_of_M(M, Mstar, V, Wt, beta);
@@ -788,7 +845,14 @@ static inline void moment_g_A_one_exp_scale(
         double k = g_kpow, sc = lambda * Mbar, x = e / sc, lnM = std::log(M);
         for (int t = 0; t < D_G_A; t++) g_out[t] = 0.0;
         g_out[1] = eps; g_out[5] = eps * lnM; g_out[7] = eps * om;   // eps rows: every draw
-        if (x >= power_ceiling(k)) { g_out[10] = 1.0 - g_kshare; (void)yidx; return; }   // beyond the kink
+#ifdef EPSVAR
+        g_out[12] = eps * eps - sig2eps;   // eps-variance row, every draw
+#endif
+        if (x >= power_ceiling(k)) {   // beyond the kink
+            g_out[10] = 1.0 - g_kshare; (void)yidx;
+            for (int t = 0; t < D_G_A; t++) if (g_dropmask & (1u << t)) g_out[t] = 0.0;
+            return;
+        }
         double psi = h_of_e_power_scale(e, tau_rho, k, sc) - delta0 + delta1 * om - delta2 * om * om;
         g_out[0] = psi; g_out[2] = psi * lnM; g_out[3] = psi * om; g_out[4] = psi * om * om;
         g_out[6] = (g_row6 == 1) ? eps * psi : eps * e;
@@ -801,6 +865,7 @@ static inline void moment_g_A_one_exp_scale(
             g_out[11] = eps * hk / (1.0 + std::fabs(hk));
         }
 #endif
+        for (int t = 0; t < D_G_A; t++) if (g_dropmask & (1u << t)) g_out[t] = 0.0;   // drop_rows
         return;
     }
 #endif
@@ -851,6 +916,12 @@ static inline void firm_chain_A(
         ghat_row[1] = eps_pt;
         ghat_row[5] = eps_pt * lnM_pt;
         ghat_row[7] = eps_pt * om_pt;
+#ifdef EPSVAR
+        ghat_row[12] = eps_pt * eps_pt - f.sig2eps;   // eps-variance row for corner firms too (Hans, 2026-09-29)
+#endif
+#ifdef KINK_S
+        for (int t = 0; t < D_G_A; t++) if (g_dropmask & (1u << t)) ghat_row[t] = 0.0;   // drop_rows, corner firms too
+#endif
         return;
     }
 
@@ -864,10 +935,10 @@ static inline void firm_chain_A(
         // S3 (2026-09-28): exp_scale detection, fixed support M in (max(0,Mstar-Mbar), Mstar]. Same MH scheme,
         // same RNG stream layout (one proposal draw, then one accept draw, per step) as the linear branch below.
         double M_current = q_draw(rng, f.Mstar, lambda, f.Mbar);
-        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current);
+        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current, f.sig2eps);
         for (int r = -n_burn + 1; r <= n_keep; r++) {
             double M_try = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try);
+            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try, f.sig2eps);
             double log_ratio = 0.0;
             for (int t = 0; t < D_G_A; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
             if (std::log(unif(rng)) < log_ratio) g_current = g_try;
@@ -1899,39 +1970,20 @@ static void compute_dvec_omega_A(
     }
 
     cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans,
-                D_G_A, n, 1.0 / (n - 1), Xc.data(), n, 0.0, Omega, D_G_A);
+                D_G_A, n, 1.0 / (g_cut_ak ? n : (n - 1)), Xc.data(), n, 0.0, Omega, D_G_A);
     for (int i = 0; i < D_G_A; i++)
         for (int j = i + 1; j < D_G_A; j++)
             Omega[j + i * D_G_A] = Omega[i + j * D_G_A];
 }
 
 static double cue_objective_A_std(const double dvec[D_G_A], const double Omega_in[D_G_A * D_G_A]) {
-    double A[D_G_A * D_G_A];
-    std::copy(Omega_in, Omega_in + D_G_A * D_G_A, A);
-
-    double w[D_G_A];
-    __CLPK_integer n = D_G_A, lda = D_G_A, il = 1, iu = D_G_A, m, ldz = D_G_A, info;
-    double vl = 0, vu = 0, abstol = 1e-10;
-    __CLPK_integer lwork = -1, liwork = -1, iwork_query;
-    double work_query;
-    double Z[D_G_A * D_G_A];
-    __CLPK_integer isuppz[2 * D_G_A];
-
-    dsyevr_((char *)"V", (char *)"A", (char *)"U", &n, A, &lda, &vl, &vu, &il, &iu,
-            &abstol, &m, w, Z, &ldz, isuppz, &work_query, &lwork, &iwork_query, &liwork, &info);
-    lwork = (__CLPK_integer)work_query;
-    liwork = iwork_query;
-    std::vector<double> work(lwork);
-    std::vector<__CLPK_integer> iworkv(liwork);
-    dsyevr_((char *)"V", (char *)"A", (char *)"U", &n, A, &lda, &vl, &vu, &il, &iu,
-            &abstol, &m, w, Z, &ldz, isuppz, work.data(), &lwork, iworkv.data(), &liwork, &info);
-
-    if (info != 0 || m < 1) return std::numeric_limits<double>::infinity();
-
+    double w[D_G_A], Z[D_G_A * D_G_A];
+    int m = eig_A_active(Omega_in, w, Z);
+    if (m < 1) return std::numeric_limits<double>::infinity();
     double max_eig = w[m - 1];
     double obj = 0.0;
     for (int k = 0; k < m; k++) {
-        if (w[k] > 1e-8 * max_eig) {
+        if (keep_eig_A(w[k], max_eig)) {
             double d2 = 0.0;
             for (int i = 0; i < D_G_A; i++) d2 += Z[i + k * D_G_A] * dvec[i];
             obj += 0.5 * d2 * d2 / w[k];
@@ -1975,21 +2027,15 @@ static void run_adiag_mode(
         std::cout << "\n";
     }
     // eigen-decomposition, same call and truncation rule as cue_objective_A_std
-    double A[D_G_A * D_G_A]; std::copy(Omega, Omega + D_G_A * D_G_A, A);
     double w[D_G_A], Z[D_G_A * D_G_A];
-    __CLPK_integer nn = D_G_A, lda = D_G_A, il = 1, iu = D_G_A, m, ldz = D_G_A, info, isuppz[2 * D_G_A];
-    double vl = 0, vu = 0, abstol = 1e-10;
-    __CLPK_integer lwork = -1, liwork = -1, iwq; double wq;
-    dsyevr_((char *)"V", (char *)"A", (char *)"U", &nn, A, &lda, &vl, &vu, &il, &iu, &abstol, &m, w, Z, &ldz, isuppz, &wq, &lwork, &iwq, &liwork, &info);
-    lwork = (__CLPK_integer)wq; liwork = iwq;
-    std::vector<double> work(lwork); std::vector<__CLPK_integer> iw(liwork);
-    dsyevr_((char *)"V", (char *)"A", (char *)"U", &nn, A, &lda, &vl, &vu, &il, &iu, &abstol, &m, w, Z, &ldz, isuppz, work.data(), &lwork, iw.data(), &liwork, &info);
+    int m = eig_A_active(Omega, w, Z);
+    if (m < 1) { std::cout << "eigendecomposition failed\n"; return; }
     double max_eig = w[m - 1];
     std::cout << "eigen k  w_k           kept  contrib_to_Lhat  loading_on_last_row  top_row(|loading|)\n";
     for (int k = m - 1; k >= 0; k--) {
         double d2 = 0.0; int top = 0; double topv = 0.0;
         for (int i = 0; i < D_G_A; i++) { d2 += Z[i + k * D_G_A] * dvec[i]; if (std::fabs(Z[i + k * D_G_A]) > topv) { topv = std::fabs(Z[i + k * D_G_A]); top = i; } }
-        bool kept = w[k] > 1e-8 * max_eig;
+        bool kept = keep_eig_A(w[k], max_eig);
         std::cout << "  " << k << "  " << w[k] << "  " << (kept ? "yes " : "NO  ") << "  " << (kept ? 0.5 * d2 * d2 / w[k] : 0.0)
                   << "  " << Z[(D_G_A - 1) + k * D_G_A] << "  " << top << "(" << topv << ")\n";
     }
@@ -1997,7 +2043,8 @@ static void run_adiag_mode(
     if (g_qform == 0) { std::cout << "(tilted u/x/omega summaries need qform=exp_scale)\n"; return; }
     std::vector<int> idx; for (int i = 0; i < n; i++) if (firms[i].corner == 0) idx.push_back(i);
     int ni = static_cast<int>(idx.size());
-    std::vector<double> mu_u(ni), mu_x(ni), mu_om(ni), sd_om(ni), om_pt(ni), lt(ni), mu_lnB(ni);
+    std::vector<double> mu_u(ni), mu_x(ni), mu_om(ni), sd_om(ni), om_pt(ni), lt(ni), mu_lnB(ni), mu_eps(ni), mu_eps2(ni), sic(ni);
+    std::vector<double> sh_beyond(ni, 0.0);   // share of kept draws beyond the kink (qform 4)
     std::atomic<int> next{0};
     auto worker = [&]() {
         int k;
@@ -2007,20 +2054,25 @@ static void run_adiag_mode(
             std::uniform_real_distribution<double> unif(0.0, 1.0);
             GVecA gc, gt;
             double Mc = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc);
-            double su = 0, sx = 0, so = 0, so2 = 0, sb = 0;
+            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc, f.sig2eps);
+            double su = 0, sx = 0, so = 0, so2 = 0, sb = 0, se = 0, se2 = 0;
             for (int r = -n_burn + 1; r <= n_keep; r++) {
                 double Mt = q_draw(rng, f.Mstar, lambda, f.Mbar);
-                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt);
+                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps);
                 double lr = 0.0; for (int t = 0; t < D_G_A; t++) lr += gamma[t] * (gt[t] - gc[t]);
                 if (std::log(unif(rng)) < lr) { gc = gt; Mc = Mt; }
                 if (r > 0) {
                     double om = omega_of_M(Mc, f.Mstar, f.V, f.Wt, f.beta), e = e_of_M(Mc, f.Mstar);
                     su += std::log(f.Mstar / Mc); sx += e / f.Mbar; so += om; so2 += om * om;
+                    { double ep = eps_of_M(Mc, f.Mstar, f.V); se += ep; se2 += ep * ep; }
+#ifdef KINK
+                    if (g_qform == 4 && e / (lambda * f.Mbar) >= power_ceiling(g_kpow)) sh_beyond[k] += 1.0 / n_keep;
+#endif
                     sb += q_lnB(e, lambda, f.Mbar);
                 }
             }
             mu_u[k] = su / n_keep; mu_x[k] = sx / n_keep; mu_om[k] = so / n_keep; mu_lnB[k] = sb / n_keep;
+            mu_eps[k] = se / n_keep; mu_eps2[k] = se2 / n_keep;
             sd_om[k] = std::sqrt(std::max(0.0, so2 / n_keep - mu_om[k] * mu_om[k]));
             om_pt[k] = omega_of_M(f.Mstar, f.Mstar, f.V, f.Wt, f.beta);
             lt[k] = std::log(f.tau_rho);
@@ -2035,7 +2087,18 @@ static void run_adiag_mode(
         for (size_t i = 0; i < a.size(); i++) { sab += (a[i] - ma) * (b[i] - mb); saa += (a[i] - ma) * (a[i] - ma); sbb += (b[i] - mb) * (b[i] - mb); }
         return sab / std::sqrt(saa * sbb); };
     std::cout << "interior firms: " << ni << "\n"
+              << "  tilted eps    : mean of firm means " << mean(mu_eps) << "; mean of firm E[eps^2] " << mean(mu_eps2)
+              << " (=> tilted var(eps) " << mean(mu_eps2) - mean(mu_eps) * mean(mu_eps) << ")\n"
               << "  tilted u      : mean of firm means " << mean(mu_u) << ", sd across firms " << sd(mu_u) << "\n"
+              << [&]() { std::vector<double> v = mu_u; std::sort(v.begin(), v.end());
+                         auto q = [&](double p) { return v[std::min(v.size() - 1, (size_t)(p * (v.size() - 1)))]; };
+                         size_t z = 0, z2 = 0; for (double a : v) { if (a < 0.01) z++; if (a < 0.05) z2++; }
+                         std::ostringstream o; o << "  tilted u quantiles (firm means): p10 " << q(0.10) << " p25 " << q(0.25) << " p50 " << q(0.5)
+                           << " p75 " << q(0.75) << " p90 " << q(0.9) << " p99 " << q(0.99) << " max " << v.back()
+                           << " | share of firms with mean u < 0.01: " << double(z) / v.size() << ", < 0.05: " << double(z2) / v.size() << "\n"
+                           << "  share of draws beyond the kink (mean over firms) " << mean(sh_beyond) << "; firms with >50% of draws beyond: "
+                           << [&]() { size_t c = 0; for (double b : sh_beyond) if (b > 0.5) c++; return double(c) / sh_beyond.size(); }() << "\n";
+                         return o.str(); }()
               << "  tilted x=e/Mb : mean " << mean(mu_x) << ", sd " << sd(mu_x) << "\n"
               << "  tilted ln B   : mean " << mean(mu_lnB) << ", sd " << sd(mu_lnB) << "\n"
               << "  omega at M=M* : mean " << mean(om_pt) << ", sd " << sd(om_pt) << "\n"
@@ -2225,11 +2288,16 @@ static double inner_obj_A_fixedLambda(unsigned n, const double *x, double *grad,
 #ifdef KINK_S
     g_kshare = x[4];                                              // s estimated (KINK_S)
 #endif
+#ifdef KAPPA_FREE
+    const double lam_use = x[5];                                  // kappa estimated (KAPPA_FREE)
+#else
+    const double lam_use = p->lambda;
+#endif
     double gamma[D_G_A];
     for (int t = 0; t < D_G_A; t++) gamma[t] = x[3 + N_XFE + t];
 
     double dvec[D_G_A], Omega[D_G_A * D_G_A];
-    compute_dvec_omega_A(*(p->firms), p->lambda, delta0, delta1, delta2, gamma,
+    compute_dvec_omega_A(*(p->firms), lam_use, delta0, delta1, delta2, gamma,
                           p->n_burn, p->n_keep, p->base_seed, p->n_threads, dvec, Omega);
     return cue_objective_A_std(dvec, Omega);
 }
@@ -2260,12 +2328,20 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
 #ifdef KINK_S
     lower[3] = upper[3] = g_kfixed;       // k fixed (equal bounds)
     lower[4] = 0.02; upper[4] = 0.6;      // the share s beyond the kink
+    if (g_sfixed > 0 && g_sfixed < 1) lower[4] = upper[4] = g_sfixed;   // s held fixed (s_fixed)
+#endif
+#ifdef KAPPA_FREE
+    lower[5] = 0.02; upper[5] = 5.0;      // the scale kappa
 #endif
     for (int t = 0; t < D_G_A; t++) { lower[OG + t] = -HUGE_VAL; upper[OG + t] = HUGE_VAL; }
     for (int t = 0; t < n_par; t++) x[t] = x0_in[t];
+#ifdef KAPPA_FREE
+    x[5] = lambda;                        // start kappa at the grid value
+#endif
 
+    nlopt_algorithm cur_algo = algo;
     auto run_opt = [&](double *xstart) -> FitResultAFixedLambda {
-        nlopt_opt opt = nlopt_create(algo, n_par);
+        nlopt_opt opt = nlopt_create(cur_algo, n_par);
         nlopt_set_lower_bounds(opt, lower);
         nlopt_set_upper_bounds(opt, upper);
         nlopt_set_min_objective(opt, inner_obj_A_fixedLambda, &params);
@@ -2332,6 +2408,7 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
                   << ", f: NM pass1 " << r1.Lhat << " -> SA best " << fb << "\n" << std::flush;
         std::copy(xb, xb + n_par, x2);
     }
+    if (g_algo2 >= 0) cur_algo = static_cast<nlopt_algorithm>(g_algo2);
     FitResultAFixedLambda r2 = run_opt(x2);
     r2.point_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - t_start).count();
 
@@ -2421,7 +2498,9 @@ static void run_lambdagrid_mode(
     if (!out.is_open()) { std::cerr << "ERROR: could not open output_csv for writing: " << output_csv << "\n"; std::exit(1); }
     out << std::setprecision(15);
     out << "lambda,delta0_hat,delta1_hat,delta2_hat,";
-#if defined(KINK_S)
+#if defined(KAPPA_FREE)
+    out << "k_hat,s_hat,kappa_hat,";
+#elif defined(KINK_S)
     out << "k_hat,s_hat,";
 #elif defined(KINK)
     out << "k_hat,";
@@ -3144,6 +3223,9 @@ int main(int argc, char **argv) {
               << " corner) from " << input_csv << "\n";
 
     std::string mode = get_opt(opt, "mode", "flat");
+    {   std::string cut = get_opt(opt, "cut", "rel");
+        if (cut == "ak") { g_cut_ak = true; std::cout << "cut=ak: Omega/n, keep eigenvalues > 0, dropped rows removed before eigen (AK2020 objMCcu)\n"; }
+        else if (cut != "rel") { std::cerr << "cut must be rel or ak\n"; return 1; } }
     {   // detection function for moment set A's chain (S3, 2026-09-28); default linear = every earlier result
         std::string qform = get_opt(opt, "qform", "linear");
         if (qform == "exp_scale" || qform == "power_scale") {
@@ -3163,6 +3245,16 @@ int main(int argc, char **argv) {
 #ifdef KINK_S
             g_kfixed = std::strtod(get_opt(opt, "k_fixed", "-1").c_str(), nullptr);
             if (!(g_kfixed > 0 && g_kfixed < 2.9)) { std::cerr << "KINK_S build requires k_fixed in (0, 2.9)\n"; return 1; }
+            g_sfixed = std::strtod(get_opt(opt, "s_fixed", "-1").c_str(), nullptr);
+            {   std::string dr = get_opt(opt, "drop_rows", ""); std::stringstream ss(dr); std::string tok;
+                while (std::getline(ss, tok, ',')) if (!tok.empty()) {
+                    int r = std::atoi(tok.c_str());
+                    if (r < 0 || r >= D_G_A || r == 1 || r == 5 || r == 7 || r == 10) { std::cerr << "drop_rows: row " << r << " not droppable\n"; return 1; }
+                    g_dropmask |= (1u << r);
+                }
+                if (g_dropmask) std::cout << "drop_rows mask = " << g_dropmask << " (" << dr << ")\n";
+            }
+            if (g_sfixed > 0 && g_sfixed < 1) std::cout << "KINK_S: s fixed at " << g_sfixed << " (x0's s entry must equal it)\n";
             std::cout << "KINK_S: k fixed at " << g_kfixed << ", share s estimated (start " << g_kshare << "), row [11] = eps * score(kappa)\n";
 #endif
             for (const FirmData &f : firms)
@@ -3236,6 +3328,9 @@ int main(int argc, char **argv) {
 #endif
 #ifdef KINK_S
         g_kshare = par[5]; // par = kappa,delta0,delta1,delta2,k,s,gamma1..12
+#endif
+#ifdef KAPPA_FREE
+        par[0] = par[6];   // par = kappa0,delta0,delta1,delta2,k,s,kappa_hat,gamma1..; kappa_hat is the one used
 #endif
         run_adiag_mode(firms, par[0], par[1], par[2], par[3], par + 4 + N_XFE, n_burn, n_keep, base_seed, n_threads);
         return 0;
@@ -3698,6 +3793,11 @@ int main(int argc, char **argv) {
         nlopt_algorithm algo4 = NLOPT_LN_NELDERMEAD;
         if (algo_str4 == "bobyqa") algo4 = NLOPT_LN_BOBYQA;
         else if (algo_str4 != "neldermead") { std::cerr << "algo must be bobyqa or neldermead\n"; return 1; }
+        {   std::string a2 = get_opt(opt, "algo2", "");
+            if (a2 == "bobyqa") g_algo2 = NLOPT_LN_BOBYQA;
+            else if (a2 == "neldermead") g_algo2 = NLOPT_LN_NELDERMEAD;
+            else if (!a2.empty()) { std::cerr << "algo2 must be bobyqa or neldermead\n"; return 1; }
+            if (g_algo2 >= 0) std::cout << "pass 2 algorithm: " << a2 << "\n"; }
         std::cout << "Mode: lambdagrid, " << lambdas.size() << " lambda points, algo=" << algo_str4 << "\n";
         // Two-level work-stealing (2026-09-10): single process, no
         // shard_id/n_shards needed -- n_threads is now the TOTAL thread
