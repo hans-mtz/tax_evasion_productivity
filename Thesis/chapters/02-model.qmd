@@ -14,9 +14,7 @@ Facts computed 2026-09-28 on the ch. 3 sample, both rates in [0, 0.5), 40,161 fi
 > 1 pp in 56% of firm-years; sd of ln((1-tau_S)/(1-tau_P)) = 0.05 vs 0.34 for the log gross share.
 -->
 
-This chapter models a firm that overreports its materials to lower the sales tax it owes. The firm credits the tax paid on its purchases against the tax it owes on its sales, so every peso of fictitious materials lowers its tax bill by the rate on purchases. The chance of being caught and the resources that concealment takes hold it back. Colombian manufacturers faced one rate on their sales and another on their purchases (@sec-setting-incentive): in 56 percent of firm-years the two rates differ by more than one percentage point. I therefore let the two rates differ.
-
-The second rate fits the model to the setting; the approach does not need it. When the two rates coincide, the model reduces to a single-tax model, which @sec-app-single-tax presents. In both models only the rate on purchases enters the decision to overreport, and the test and the deconvolution of @sec-testing and @sec-deconvolution apply unchanged. The second rate changes a single object: the materials share that identifies the output elasticity of materials is measured net of sales taxes rather than gross (@eq-share-net).
+This chapter models a firm that overreports its materials to reduce its sales tax liability. The sales tax worked as a VAT. The firm credits the tax paid on its purchases against the tax it owes on its sales, so every peso of fictitious materials lowers its tax bill by the rate on purchases. The probability of being caught and the resources allocated to concealment weigh against this benefit. Colombian manufacturers typically faced different rates on their sales and on their purchases (@sec-setting-incentive). In 56 percent of firm-years the two rates differ by more than one percentage point. I therefore allow firms to have two rates. This is not needed for identification: only the rate on purchases enters the decision to overreport, so a single-tax model would do just as well.
 
 ## Setup
 
@@ -26,7 +24,7 @@ Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsi
 $$ {#eq-pf}
 where $\omega_{it}$ is productivity, known to the firm when it chooses its inputs, and $\varepsilon_{it}$ is measurement error in output, with $\mathbb{E}[\varepsilon_{it}]=0$. Because $\varepsilon_{it}$ is an error in the record of output, not a shock to production, the firm's decisions depend on true output, $K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})$, and productivity is $\exp(\omega_{it})$. In @Gandhi2020, by contrast, $\varepsilon_{it}$ is a shock to output that the firm does not know when it chooses its inputs. I follow the production-function literature in treating materials as the flexible input, and capital and labour as predetermined or dynamic.
 
-The firm sells its output at price $P_t$ and owes sales tax at rate $\tau_S$ on its sales. It buys materials at price $\rho_t$ and credits the tax paid on them, at rate $\tau_P$, against the tax it owes; when the credit exceeds the tax owed, as for firms exempt from the tax on their sales, the tax authority refunds the difference. The two rates vary across firms and years, because firms sell and buy goods taxed at different rates. The firm claims the credit on reported purchases, $M^*_{it}=M_{it}+e_{it}$, where $e_{it}\ge0$ denotes overreported materials. Capital goods and labour carry no credit (@sec-setting-incentive), so the firm overreports only materials.
+The firm sells its output at price $P_t$ and owes sales tax at rate $\tau_S$ on its sales. It buys materials at price $\rho_t$ and credits, at rate $\tau_P$, the tax paid on them against the tax it owes; when the credit exceeds the tax owed, as for firms exempt from the tax on their sales, the tax authority refunds the difference. The two rates vary across firms and years, because firms sell and buy goods taxed at different rates. The firm claims the credit on reported purchases, $M^*_{it}=M_{it}+e_{it}$, where $e_{it}\ge0$ denotes overreported materials. Capital goods and labour carry no credit (@sec-setting-incentive), so the firm overreports only materials.
 
 Overreporting carries two costs. First, following @Allingham1972, the tax authority audits the firm with probability $q(e_{it})$, which increases with overreporting, with $q(0)=0$, and an audit always uncovers the overreported materials. A firm that is caught repays the credit claimed on $e_{it}$ plus a fine, a multiple $\phi$ of that credit. Second, concealment diverts resources, such as the manager's time, from production; $\kappa_{it}(e_{it},\omega_{it})$ denotes this cost of evasion, which increases in $e_{it}$. Neither the detection probability nor the cost of evasion depends on true materials, so the firm decides how much to overreport separately from how much material to use.
 
@@ -39,7 +37,7 @@ $$
 $$ {#eq-profit}
 The first term is revenue net of the tax on sales; the second, the cost of true materials net of the credit on them; the third and fourth, the rental cost of capital and the wage bill. The fifth term is the credit on overreported materials that the firm expects to keep, net of the expected repayment and fine, and the last is the cost of evasion.
 
-@eq-profit nests the single-tax model. With $\tau_S=\tau_P=\tau$, the first two terms become $(1-\tau)\big(P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})-\rho_tM_{it}\big)$ and the credit on overreported materials becomes $\tau\rho_te_{it}\big[1-(1+\phi)q(e_{it})\big]$. This is the single-tax profit of @sec-app-single-tax.
+Setting $\tau_S=\tau_P=\tau$ in @eq-profit recovers the single-tax profit of @sec-app-single-tax.
 
 ## First-order conditions
 
@@ -61,7 +59,7 @@ $$
 $$ {#eq-foc-e}
 Only the rate on purchases enters @eq-foc-e, because the tax on sales does not depend on reported materials. A higher rate on purchases raises the credit on every fictitious peso, whether or not the firm is caught, so the firm overreports more. By the implicit function theorem, $\partial e^*_{it}/\partial\tau_P>0$ for any detection probability and cost of evasion that satisfy the second-order condition below.
 
-Some firms choose not to overreport at all. For them, the marginal cost of evasion at zero already exceeds the marginal credit, $\tau_P\rho_t\le\partial\kappa_{it}(0,\omega_{it})/\partial e_{it}$, and @eq-foc-e holds as this inequality. Firms that pay no tax on their purchases ($\tau_P=0$) are always in this group.
+Some firms choose not to overreport at all. For them, the marginal cost of evasion at zero already exceeds the marginal credit, $\tau_P\rho_t\le\partial\kappa_{it}(0,\omega_{it})/\partial e_{it}$, and @eq-foc-e holds with $\le$ instead of $=$. Firms that pay no tax on their purchases ($\tau_P=0$) are always in this group.
 
 Corporations are different. Audited statements and scrutiny by government and markets keep them from overreporting (@sec-setting-jo), so $e_{it}=0$ is a constraint for them, not an outcome of @eq-foc-e. I use them only as the truth-reporting benchmark in @sec-testing.
 
@@ -71,11 +69,11 @@ Corporations are different. Audited statements and scrutiny by government and ma
 
 ## Second-order condition
 
-- Profit's Hessian is block-diagonal ($e$ separate from $K,L,M$ since $M\perp e$) and the production function is strictly concave, so the second-order condition reduces to $\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0$. With a cost of evasion linear in $e_{it}$ and $\phi=0$, it becomes a restriction on the curvature of the detection probability alone (derivation in @sec-app-soc-model):
+Profit's Hessian is block-diagonal: $M_{it}\perp e_{it}$, so no cross-partial links overreporting to capital, labour, or materials, and the production function is strictly concave in $(K_{it},L_{it},M_{it})$. The second-order condition therefore reduces to a single scalar condition, $\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0$. With a cost of evasion linear in $e_{it}$ and $\phi=0$, this condition depends only on the curvature of the detection probability (derivation in @sec-app-soc-model):
 $$
--\frac{q''(e_{it})}{q'(e_{it})}\,e_{it}<2
+-\frac{q''(e_{it})}{q'(e_{it})}\,e_{it}<2.
 $$ {#eq-soc}
-- The detection probability may be concave, but not too concave: its elasticity of $q'$ with respect to $e$ must stay above $-2$. A linear $q$ satisfies the condition everywhere ($q''=0$), as does any convex $q$; a concave $q$ such as $1-e^{-\lambda e}$ satisfies it only for $\lambda e<2$.
+The detection probability may be concave, but not too concave: the semi-elasticity of its marginal probability $q'$ with respect to $e_{it}$ must stay above $-2$. A linear $q$ satisfies the condition everywhere, since $q''=0$, as does any convex $q$; a concave $q$ such as $1-e^{-\lambda e_{it}}$ satisfies it only when $\lambda e_{it}<2$.
 
 <!-- MOVED 2026-09-24 (Hans: ch. 2 = general model only; functional forms live in ch. 8, identification
 conditions in the empirical chapters). Kept verbatim below for reference. What ch. 8 did not already
