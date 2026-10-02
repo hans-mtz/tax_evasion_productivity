@@ -8,7 +8,7 @@ set -uo pipefail
 export LC_ALL=C
 cd "$(dirname "$0")/../C-estimator"
 P=../Products; IN=$P/1624-stage2-input-designA-interior-plant-k-notrim.csv; DI=$(sed -n 's/rho_D=//p' $P/1599-rhoD-ind.txt)
-NT=$(( 12 / $# )); [ $NT -lt 1 ] && NT=1
+NT=${NT:-$(( 12 / $# ))}; [ $NT -lt 1 ] && NT=1   # NT env overrides (oversubscribe so firm-level work stealing spreads each fit over P and E cores)
 getp() { Rscript -e "r <- read.csv('$1'); cat(sprintf('%.15g', unlist(r[1, c('lambda','delta0_hat','delta1_hat','delta2_hat','k_hat','s_hat','kappa_hat', paste0('gamma',1:22))])), sep=',')" 2>/dev/null; }
 fit() { local K=$1 KA=$2 T=1627-i-notrim-k$1-kappa$2
   local X0=$(Rscript -e "r <- read.csv('$P/1625-i-notrim-k0.75-kappa0.5.csv'); cat(sprintf('%.15g', c(unlist(r[1, c('delta0_hat','delta1_hat','delta2_hat')]), $K, 0.3, $KA, rep(0,22))), sep=',')" 2>/dev/null)
