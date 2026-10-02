@@ -12,12 +12,43 @@ CXXFLAGS := -O3 -std=c++17 -Wall -Wno-deprecated-declarations
 INCLUDES := -I/opt/homebrew/include
 LDFLAGS  := -L/opt/homebrew/lib -lnlopt -framework Accelerate -lpthread
 
-all: grid_estimator
+# Homebrew prefix: /opt/homebrew on Apple Silicon (Mac mini), /usr/local on Intel (MacBook).
+ifeq ($(shell uname -m),x86_64)
+INCLUDES := -I/usr/local/include
+LDFLAGS  := -L/usr/local/lib -lnlopt -framework Accelerate -lpthread
+endif
 
-grid_estimator: grid_estimator.cpp ../Rcpp/1200-stage2-elvis-common.h
-	$(CXX) $(CXXFLAGS) $(INCLUDES) grid_estimator.cpp -o grid_estimator $(LDFLAGS)
+SRC := grid_estimator.cpp ../Rcpp/1200-stage2-elvis-common.h
+
+# One target per binary, so the flags that built each one are on record (2026-09-30, audit finding 8).
+#   grid_estimator_eps_ak2 : kinked power q, 13-row system (EPSVAR); kappa fixed via lambdas=
+#   grid_estimator_kf3     : same, kappa estimated (KAPPA_FREE)
+#   grid_estimator_ind5k   : + eps*lnM by industry (IND5, 22 rows); kappa fixed via lambdas=, k_free=1 available
+#   grid_estimator_ind5b   : IND5 with kappa estimated
+#   grid_estimator_s2      : CURRENT stage-2 binary (2026-09-30): KINK_S + EPSVAR + KAPPA_FREE with all options
+#                            (qform=power_nokink, rho=prop21, sampler=is, cluster=plant, nested=1, seed=hash)
+STAGE2 := grid_estimator_eps_ak2 grid_estimator_kf3 grid_estimator_ind5k grid_estimator_ind5b grid_estimator_s2
+
+all: grid_estimator $(STAGE2)
+
+grid_estimator: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) grid_estimator.cpp -o $@ $(LDFLAGS)
+grid_estimator_eps_ak2: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR grid_estimator.cpp -o $@ $(LDFLAGS)
+grid_estimator_kf3: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE grid_estimator.cpp -o $@ $(LDFLAGS)
+grid_estimator_ind5k: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DIND5 grid_estimator.cpp -o $@ $(LDFLAGS)
+grid_estimator_ind5b: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE -DIND5 grid_estimator.cpp -o $@ $(LDFLAGS)
+
+grid_estimator_ind5p: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE -DIND5 -DIND5P grid_estimator.cpp -o $@ $(LDFLAGS)
+
+grid_estimator_s2: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE grid_estimator.cpp -o $@ $(LDFLAGS)
 
 clean:
-	rm -f grid_estimator
+	rm -f grid_estimator $(STAGE2)
 
 .PHONY: all clean

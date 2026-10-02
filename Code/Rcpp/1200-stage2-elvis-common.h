@@ -65,6 +65,9 @@ inline double omega_of_M(double M, double Mstar, double V, double Wt, double bet
 // actually being evaluated, or it reports a nonzero slope exactly where the
 // floor has made h locally flat in lambda.
 constexpr double H_DENOM_FLOOR = 1e-6;
+// Floor used by the power forms (B_power_scale, draw_from_rho_power_scale); grid_estimator's CLI h_floor overrides it
+// to test whether results depend on the floor (review 3, 2026-09-30). Default = H_DENOM_FLOOR (every earlier run).
+inline double g_h_floor_power = H_DENOM_FLOOR;
 
 inline double h_denom(double e, double lambda) {
     return std::max(1.0 - 2.0 * lambda * e, H_DENOM_FLOOR);
@@ -280,7 +283,7 @@ inline double draw_from_rho_fixed_scale(std::mt19937_64 &rng, double Mstar, doub
 inline double power_ceiling(double k) { return std::pow(1.0 + k, -1.0 / k); }
 inline double B_power_scale(double e, double k, double Mbar) {
     double x = e / Mbar;
-    return std::max(1.0 - (1.0 + k) * std::pow(x, k), H_DENOM_FLOOR);
+    return std::max(1.0 - (1.0 + k) * std::pow(x, k), g_h_floor_power);
 }
 inline double h_of_e_power_scale(double e, double tau_rho, double k, double Mbar) {
     return std::log(tau_rho) + std::log(B_power_scale(e, k, Mbar));
@@ -298,7 +301,7 @@ inline double draw_from_rho_power_scale(std::mt19937_64 &rng, double Mstar, doub
     std::uniform_real_distribution<double> unif(0.0, 1.0);
     double lo = std::max(0.0, Mstar - power_ceiling(k) * Mbar);
     double M = Mstar - unif(rng) * (Mstar - lo);
-    if (1.0 - (1.0 + k) * std::pow((Mstar - M) / Mbar, k) <= H_DENOM_FLOOR) return draw_from_rho_power_scale(rng, Mstar, k, Mbar);
+    if (1.0 - (1.0 + k) * std::pow((Mstar - M) / Mbar, k) <= g_h_floor_power) return draw_from_rho_power_scale(rng, Mstar, k, Mbar);
     return M;
 }
 

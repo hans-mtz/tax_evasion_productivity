@@ -78,11 +78,11 @@ Intuitively, we want to penalize excessive curvature in the log-density $\log f_
 
 **Draft note (implementation facts to state, from `290-bs-mle-data.R`, `030-np-deconv-funs.R`, `292-np-deconv-unincorp.R`):**
 
-- Sample: unincorporated firms only, the same firms as the test in @sec-testing-test.
+- Sample (2026-10-01): the stage-2 sample of @sec-counterfactual, unincorporated firms that pay sales tax on purchases (net share above 5 percent, below 75 percent in 369, top 0.5 percent of $M^*$ trimmed); $\mathcal V$ and $f_\varepsilon$ from the stage-2 first stage.
 - $f_\varepsilon$: kernel density (bandwidth `SJ-dpi`) of the corporations' residuals, industry by industry, with exponential decay outside the observed range.
 - 10 knots at equally spaced percentiles of the non-negative $\mathcal V$; support $[0,\max\mathcal V+0.1]$, so $u\ge0$ is imposed; $\lambda=10$ (the simulation in `120-implementation.qmd` used 0.1); Gauss-Legendre quadrature (15 nodes, adaptive).
-- Industries, by a rule fixed before deconvolving (2026-09-26): those whose 99 percent sharp test-inversion region for $E[\mathcal V]$ (@sec-testing-test) is non-empty and excludes zero. Seven: 313, 321, 322, 324, 331, 342, 369. The next industries, 352 and 351, have test statistics at zero of 4.1 and 3.9 against 6.63, and the conservative test at 1 percent selects the same seven. Results reported whatever they are.
-- Sample: the test's, two-tax (net-of-sales-tax) share, juridical organization codes 6--9 excluded, no top cut for 369.
+- Industries (2026-10-01): we look at the five largest industries where evasion was detected at the 1 percent significance level (313, 321, 322, 342, 369); all nine stage-2 industries in @sec-app-pf-all.
+- Share: two-tax (net-of-sales-tax), juridical organization codes 6--9 excluded.
 
 :::
 
@@ -108,11 +108,11 @@ Distribution of the overreporting ratio $e/M$ by industry, unincorporated firms.
 
 **Draft note (outline for the results):**
 
-- Summary across industries (2026-09-26): the median of the seven industry means is 16 percent of true materials (mean of the means 20 percent). Report the median, not the range: the range runs from 4 percent (342) to 49 percent (313), and 313 is an outlier (next note).
-- Industry means: 342 4.3 percent, 369 10.4 percent, 324 10.5 percent, 321 16.3 percent, 322 23.1 percent, 331 24.7 percent, 313 48.6 percent.
-- Heterogeneity within industries: tight in 322 Wearing apparel and 313 Beverages (SD about 4 points), wider in 331 Wood products (SD 10 points, P90 38 percent). This heterogeneity is what the structural model's cost shock $\psi$ rationalizes (@sec-counterfactual).
-- Link to @tbl-evasion-test: $E[u]=E[\mathcal V]$ under the model, and mean $u$ lies inside the test's 95 percent sharp region in six of the seven industries (313: 0.396 vs. 0.390; 321: 0.150 vs. 0.151; 322: 0.207 vs. 0.224; 324: 0.098 vs. 0.095; 331: 0.218 vs. 0.250; 342: 0.040 vs. 0.074, just inside).
-- **369: mean $u$ is 0.098 against a mean $\mathcal V$ of 0.193, just below the sharp region $[0.109, 0.277]$** (inside the conservative one). The top 75 percent share cut does not explain it (0.059 with the cut). The fitted density is unimodal and tight around 0.10 (98 percent of its mass between 0.05 and 0.17); the fit does not impose the mean restriction, and in 369 the unincorporated firms' variance of $\mathcal V$ barely exceeds the corporations' variance of $\varepsilon$ (ratio 1.02), so there is little room to separate $u$ from $\varepsilon$. Open.
+- Summary across industries (2026-10-01, stage-2 sample): the median of the five industry means is 16.2 percent of true materials (mean of the means 21 percent). Report the median, not the range: the range runs from 4.5 percent (342) to 48.0 percent (313), and 313 is an outlier (next note).
+- Industry means: 342 4.5 percent, 369 12.4 percent, 321 16.2 percent, 322 23.1 percent, 313 48.0 percent.
+- Heterogeneity within industries: tight in 313 Beverages (SD 1.6 points) and 322 Wearing apparel (3.9), wider in 342 Printing and publishing (7.2) and 321 Textiles (5.3). This heterogeneity is what the structural model's cost shock $\psi$ rationalizes (@sec-counterfactual).
+- $E[u]$ vs. $E[\mathcal V]$ on the same sample (equal under the model; @tbl-overreporting-ratio): 313 0.392 vs. 0.388; 321 0.149 vs. 0.149; 322 0.208 vs. 0.225; 342 0.043 vs. 0.074; 369 0.116 vs. 0.361.
+- **369 (2026-10-01, stage-2 sample): mean $u$ is 0.116 against a mean $\mathcal V$ of 0.361.** The unincorporated firms' variance of $\mathcal V$ is below the corporations' variance of $\varepsilon$ (ratio 0.60), which the model rules out ($\mathrm{Var}(\mathcal V)=\mathrm{Var}(u)+\mathrm{Var}(\varepsilon)$); the fit does not impose the mean restriction, so it places $u$ near a point. Reported as an observation in the discussion (same in 313, ratio 0.69, where the means still agree).
 - 342: the variance of $\mathcal V$ is below the corporations' variance of $\varepsilon$ (ratio 0.82), so the deconvolution can only place $u$ near a point; the density is a narrow spike at 4 percent with a thin tail. Its mean is the informative part.
 
 **Draft note: 313 Beverages as an outlier (48.6 percent).** The deconvolved mean matches the test (mean $\mathcal V$ 0.390, region $[0.310, 0.470]$), so the level comes from the data, not from the deconvolution. What is known: excluding juridical organization codes 6--9 removed 148 of 418 non-corporate observations in 313 (35 percent, the largest share of any industry), entities with much lower materials shares (mean log share $-1.42$ vs. $-0.87$), which raised the mean of $\mathcal V$ from 0.23 to 0.39. The remaining unincorporated sample is small (270 observations) next to 699 corporate ones. The variance of $\mathcal V$ is below the corporations' variance of $\varepsilon$ (ratio 0.69), so the deconvolved spread is not informative, only the mean. Whether corporations are a valid benchmark for the remaining unincorporated beverage producers (common technology within the industry) needs more digging before this number is quoted.

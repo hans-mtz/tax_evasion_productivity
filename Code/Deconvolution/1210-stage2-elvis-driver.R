@@ -111,7 +111,7 @@ cue_objective <- function(par, lambda, dat, n_burn, n_keep) {
     dvec  <- colMeans(Ghat)
     Omega <- cov(Ghat)
     eig   <- eigen(Omega, symmetric = TRUE)
-    pos   <- eig$values > 1e-8 * max(eig$values)     # relative eigenvalue truncation (AK2020's objMCcu pattern)
+    pos   <- eig$values > 0     # AK2020 objMCcu: keep eigenvalues > 0 (was 1e-8*max, a porting error; fixed 2026-09-30)
     A     <- eig$vectors[, pos, drop = FALSE]
     d2    <- as.numeric(t(A) %*% dvec)
     V2    <- t(A) %*% Omega %*% A

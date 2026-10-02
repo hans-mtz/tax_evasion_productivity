@@ -1,7 +1,10 @@
-## UPDATED 2026-09-26: reads 1521-np-deconv-selected.RData -- two-tax share, codes 6-9 excluded, the test's sample, and the
-## industries selected ex ante (99% sharp test-inversion region excludes 0: 313, 321, 322, 324, 331, 342, 369). Table adds
-## E[u] next to the test's 95% sharp region for E[V] (1510) as a consistency check; figure is small multiples (7 industries).
-## PRODUCT: Thesis/tables/ch05-overreporting-ratio.png  := Table 5.x, overreporting ratio x = e/M by industry
+## UPDATED 2026-10-01: reads 1603-np-deconv-stage2-macbook.RData -- the deconvolution on EXACTLY the stage-2 (ELVIS)
+## sample, all 9 interior industries (313, 321, 322, 324, 331, 342, 351, 352, 369): unincorporated firms with tau_P > 0,
+## net share in (5%, and for 369 75%), top 0.5% of M* trimmed; V and f_eps from the stage-2 first stage (1501).
+## Table shows E[u] next to E[V] on the same sample (equal under the model); figure is small multiples (9 industries).
+## (2026-09-26 version: 1521, the test's sample, 7 industries selected by the 99% test rule.)
+## PRODUCT: Thesis/{tables,figures}/appE-overreporting-ratio-all.png := same for all nine interior industries (appendix)
+## PRODUCT: Thesis/tables/ch05-overreporting-ratio.png  := Table 5.x (5 industries), overreporting ratio x = e/M by industry
 ##          Thesis/figures/ch05-overreporting-ratio.png := Figure 5.x, deconvolved density of x by industry
 ## Reads:   Code/Products/np_deconv_unincorp.RData (unincorp_np_deconv_list: penalized B-spline (logspline)
 ##          deconvolution of u = ln(M*/M) = ln(1 + e/M) on UNINCORPORATED firms only, i.e. the same firms as the
@@ -19,14 +22,18 @@ fenv <- new.env(); load(file.path(PRODUCTS_DIR, "np-deconv-funs.RData"), envir =
 for (fn in ls(fenv)) if (is.function(fenv[[fn]])) environment(fenv[[fn]]) <- fenv   # helpers (s, C_recursive, ...) resolve in fenv
 f_e.np <- fenv$f_e.np
 
-load(file.path(PRODUCTS_DIR, "1521-np-deconv-selected.RData"))   # deconv_sel_list, deconv_sel_stats
-unincorp_np_deconv_list <- deconv_sel_list; unincorp_np_stats_df <- deconv_sel_stats
-load(file.path(PRODUCTS_DIR, "1510-test-inversion.RData"))        # out: test mu_hat and sharp regions
-test_reg <- out %>% filter(share == "s_net") %>% transmute(sic_3, sh_lo, sh_hi)
+load(file.path(PRODUCTS_DIR, "1603-np-deconv-stage2-macbook.RData"))   # res (per industry: fit, mean_V, ...), summ
+unincorp_np_deconv_list <- setNames(lapply(res, `[[`, "fit"), paste(names(res), "log_mats_share_net"))
+unincorp_np_stats_df <- summ
+ev_tab <- summ %>% transmute(sic_3, EV = mean_V, n)
 
-five <- c("313", "321", "322", "324", "331", "342", "369")
+## 2026-10-01 rule (Hans): chapter text = the 5 largest industries (output share) where overreporting is detected at 1%
+## (313 7.7%, 321 7.2%, 369 3.0%, 342 2.3%, 322 2.1%); the appendix E asset (appE-overreporting-ratio-all) carries all nine interior industries.
+nine <- c("313", "321", "322", "324", "331", "342", "351", "352", "369")
+five <- c("313", "321", "322", "342", "369")
 ind_names <- c("313" = "Beverages", "321" = "Textiles", "322" = "Wearing apparel", "324" = "Footwear",
-               "331" = "Wood products", "342" = "Printing and publishing", "369" = "Non-metallic minerals")
+               "331" = "Wood products", "342" = "Printing and publishing", "351" = "Industrial chemicals",
+               "352" = "Other chemicals", "369" = "Non-metallic minerals")
 
 ## f_u on a fine grid of u, normalized to integrate to 1 on the grid
 grid_fu <- function(d, n = 4001) {
@@ -55,35 +62,40 @@ stats <- dens %>% group_by(sic_3) %>%
         p90  = qx(x, fu, du, 0.90),
         .groups = "drop"
     ) %>%
-    left_join(test_reg, by = "sic_3") %>%
-    mutate(sic_3 = factor(sic_3, five)) %>% arrange(sic_3)
+    left_join(ev_tab, by = "sic_3") %>%
+    mutate(sic_3 = factor(sic_3, nine)) %>% arrange(sic_3)
 print(stats)
 print(unincorp_np_stats_df)   # E[u] check
 
 pct <- \(v) sprintf("%.1f\\%%", 100 * v)
-tbl <- stats %>% transmute(
+make_assets <- function(sel, slug, ncol, height) {
+tbl <- stats %>% filter(sic_3 %in% sel) %>% transmute(
     Industry = paste0(as.character(sic_3), " ", ind_names[as.character(sic_3)]),
     Mean = pct(Ex), SD = pct(SDx), P10 = pct(p10), Median = pct(p50), P90 = pct(p90),
-    `$E[u]$` = sprintf("%.3f", Eu), `Test, $E[\\mathcal V]$` = sprintf("$[%.3f,\\ %.3f]$", sh_lo, sh_hi)
+    `$E[u]$` = sprintf("%.3f", Eu), `$E[\\mathcal V]$` = sprintf("%.3f", EV)
 )
 
-tt_obj <- tt(tbl, align = "lccccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 2.2),
-             notes = "Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, unincorporated firms, log materials share net of sales taxes). Industries: those whose 99\\% sharp test-inversion region for $E[\\mathcal V]$ excludes zero, a rule fixed before deconvolving. $E[u]$: mean of the deconvolved $u$; under the model it equals $E[\\mathcal V]$, whose 95\\% sharp test-inversion region is shown for comparison.") %>%
+tt_obj <- tt(tbl, align = "lccccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8),
+             notes = paste0("Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, log materials share net of sales taxes). Sample: unincorporated firms that pay sales tax on purchases, the sample of the structural estimation in Chapter 8. $E[u]$: mean of the deconvolved $u$; under the model it equals $E[\\mathcal V]$ on the same sample."
+    , if (identical(sel, five)) " Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level (all nine in Appendix E)." else " Industries: the nine where overreporting is detected, whose unincorporated firms enter the structural estimation.")) %>%
     style_tt(i = "notes", fontsize = 0.8)
-render_thesis_table(tt_obj, "ch05-overreporting-ratio")
+render_thesis_table(tt_obj, slug)
 
 ## Figure: f_x by industry. x-axis cut at 60%: all five densities are ~0 beyond it, except
 ## Beverages (313), whose long, very thin right tail (P99 far out, skewness 7.3 in u) would
 ## otherwise stretch the axis and flatten the other four curves.
 x_max <- 0.6
 
-plt <- dens %>% filter(x <= x_max) %>%
+plt <- dens %>% filter(x <= x_max, sic_3 %in% sel) %>%
     mutate(Industry = factor(paste0(sic_3, " ", ind_names[sic_3]),
-                             paste0(five, " ", ind_names[five]))) %>%
+                             paste0(sel, " ", ind_names[sel]))) %>%
     ggplot(aes(x = x, y = fx)) +
     geom_line(linewidth = 0.6, colour = THESIS_COLS[1]) +
-    facet_wrap(~Industry, ncol = 4, scales = "free_y", labeller = label_wrap_gen(width = 16)) +
+    facet_wrap(~Industry, ncol = ncol, scales = "free_y", labeller = label_wrap_gen(width = 16)) +
     scale_x_continuous(labels = scales::percent) +
     labs(x = "Overreporting ratio, e/M (share of true materials)", y = "Density") +
     theme_thesis()
-save_thesis_plot(plt, "ch05-overreporting-ratio")
+save_thesis_plot(plt, slug, height = height)
+}
+make_assets(five, "ch05-overreporting-ratio", ncol = 3, height = THESIS_HEIGHT)
+make_assets(nine, "appE-overreporting-ratio-all", ncol = 3, height = 6)

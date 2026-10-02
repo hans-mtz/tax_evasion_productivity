@@ -1640,3 +1640,96 @@ Suggestions:
 - **1611-i (design i, guard and warm start):** TS 48.6 (was 61.3 without). Industry means within 0.05 in 7 of 9; 321 at 0.25.
 - **Binaries:** MacBook rebuilt from the same source (sha 938782d9); it reproduces 1604-i-k0.7 TS 61.3052. The old binaries are kept as `*_v1611`.
 - **Plan (Hans):** design i is the leading design. iib is run only at design i's best k, to compare fit. 1612 coarse k grid on design i, k ∈ {0.4, 0.5, 0.6, 0.7, 0.8}, on the Mac mini (3 × 4 threads); the fine grid follows.
+
+## 2026-10-02 (night) — state at end of session
+
+**Results:**
+- **(δ1, δ2) grid (1614) failed:** TS 212–3,978, with k at its bounds. The TS valley is a thin ridge in ω* = δ1/2δ2 (±2% in δ1 alone takes TS from 73 to 184–1,005). ω* ≈ 3.38–3.56 in every good fit, independent of k; the δ's and δ0 are stable.
+- **κ is a flat direction:** uncorrelated with k and δ0 across fits (|r| ≤ 0.25).
+- **k = 0.8, design i vs iib:** TS 56.8 / 56.2. δ0 34.8 / 32.4, κ 4.35 / 5.01. Design i fits the industry means better (mean gap 0.043 vs 0.075).
+- **Share of overreporters as a probability** (new adiag line TARGETED-P): iib ≈ 0.5 in most industries (a 50/50 split around the median), design i 0.1–0.7, against 0.72–1.00 in the deconvolution (342: 0.09).
+
+**Decisions (Hans):**
+- **Share rows, tomorrow:** IND5P build `grid_estimator_ind5p`, rows 22–30 = (1{u ≥ c} − pshare_j)·1{j}. Inputs `1618-*`, builder `1618-input-pshare.R`.
+- **Tests passed:** the 48.5794 fit reproduces with the share rows dropped; rhoD writes inf on the share rows; warm start at the design-i θ takes TS 3,046 → 109 (26 rows).
+- **κ by industry.** The detection scale must stay predetermined: no contemporaneous M̄. Options are (a) the current κ·M̄_{j,t−1} with the 1981 leave-one-out, or (c) κ_j alone (constant per industry, no M̄, no first-year exception; ignores the 1.8–4.3× within-industry growth of M̄). Compare tomorrow after the share rows.
+
+**New CLI:** delta{0,1,2}_fixed, kappa_fixed, share_u (IND5P). The swapped-in Mac mini binary `grid_estimator_ind5b` now has kappa_fixed and the TARGETED-P lines. Older binaries are kept as `*_v1611`, `*_v1612` and `*_v1615`.
+
+**Overnight runs:**
+- **MacBook, 1617:** κ ∈ {0.5, 4.5, 9}, k free in [0.4, 1.0].
+- **Mac mini:** 1615 (k = 0.3, 0.9, 1.0), then 1616 (k ∈ {0.65, 0.7, 0.75} × κ ∈ {0.5, 4.5, 9}).
+- **Common settings:** start from the δ's of 1611-i-k0.7, warm start, seed 30.
+
+## 2026-10-02 — k × κ grid (1616), first passing point; fine grid launched; D robustness deferred
+
+**Grid:** k × κ (κ pinned) on design i, 1616.
+
+| k \ κ | 0.5 | 4.5 | 9 |
+|---|---|---|---|
+| 0.65 | 34.3 | 32.5 (369 blows up) | 51.2 |
+| 0.70 | 45.8 (369 blows up) | 41.8 | 29.5 |
+| 0.75 | **23.7** | 41.9 | 43.6 |
+
+- **First passing point:** k = 0.75, κ = 0.5, TS 23.7 < χ²₁₇ = 27.6. TS at 4R 24.7; ESS p10 2.7. Industry means within 0.025 except 369 (+0.19). δ = (43.1, 27.1, 3.80).
+- **k = 0.7, κ = 9 (TS 29.5)** gets 369 right but misses 321 (+0.17, t 3.8).
+- **Detection level:** 3× higher at the low-κ point (mean E[q] 8.5% vs 2.7%).
+- **Relative risk:** industry E[q]/mean correlates 0.87 across the two points, and p90/mean is 3.15 vs 3.22. κ is essentially the level.
+- **The share of overreporters doesn't move with κ.**
+- **k expansion (1615):** k = 0.3 TS 141, 0.9 TS 45.5, 1.0 TS 138.
+
+**Decisions (Hans):**
+- One passing point is enough for the counterfactual. Fine grid only marginally around (0.75, 0.5), then step outward where it improves. The share rows wait unless that fails. Design i leads.
+- 1619 fine grid on the Mac mini (8 new points). 1620 iib at (0.75, 0.5) on the MacBook, queued behind 1617.
+
+**D robustness:** M0 (D = 1) was killed on 2026-10-01 and never finished. For bounded rows D is an exact γ reparametrization. For continuous rows it is held fixed and mechanical, but not yet tested empirically. Refit at the operating point with D × 0.5, × 2 and D = 1, **after the JMP draft** (added to PLAN §9b).
+
+**κ decision (Hans, 2026-10-02):**
+- κ_j by industry is dropped.
+- The level of κ is not identified by this moment set; the policy answer will depend on it.
+- **JMP:** the counterfactual at one passing point with a non-stupid detection level, stated honestly.
+- **After submission:** a sensitivity analysis (a conservative and an aggressive κ along the ridge), presented as sensitivity, not a test. No external audit anchor and no reform moment for now.
+
+## 2026-10-02 — Counterfactual ported (mode=cfprofile) and smoke-tested
+
+**Code** (`grid_estimator.cpp`, binary `grid_estimator_ind5b_cf`; not yet swapped in):
+- **mode=cfprofile:** θ fixed at the operating point, γ free (AK App. F).
+- **Row 10 = credit moment** (1+Δ)τ_P[M + (1−q')e']/scale − T, left out of rho (bounded).
+- **e'(Δ) in closed form** from the FOC: x'^k = [1 − B(x)/(1+Δ)]/(1+k), corner 0. True M, ω and ψ stay fixed.
+- **T = expected claimed purchase credits per firm** (units: mean τ_P M*).
+- **Per Δ:** golden-section T̂ with γ re-solved (warm L-BFGS). Hard bounds 2nL ≤ χ²_{d_g}; soft bounds 2n(L − Lmin) ≤ 3.84.
+- **Units:** real throughout (t1/p_gdp; credits τ_P M*, since t2 = τ_P × nominal materials). This fixes the old double deflation.
+
+**Interior net revenue is negative in the data:** t1/p 1,669 vs τ_P M* 2,239 per firm; 57% of firms claim more credit than they owe.
+
+**Combination script** `1621-cf-economy.R`:
+- (A) evader industries = ELVIS interior + the trimmed top 0.5%, mechanically (61 firm-years, 12.9% of interior credits).
+- (B) whole economy = (A) + corner firms, deterministic (1+Δ)τ_P M*, no PF needed (Hans).
+
+**Smoke test** (R = 200, operating point k = 0.75, κ = 0.5; `Code/Products/1622-cf-smoke-R200.csv`, `1621-cf-economy-smoke-R200.csv`):
+- T̂ monotone in Δ: 0.891, 0.940, 0.994, 1.070, 1.124, 1.257 for Δ = −0.1 … 0.2. TS_min 20.6–23.4 < 28.9 at every Δ.
+- Interior claimed deductions 23.5 M [hard 20.3, 26.5] at Δ = 0.
+- (A) is 45.7% of the economy's claimed deductions.
+- Behavioural share of the change in (A): 21–32% for increases, 3–7% for cuts (asymmetric).
+- Production runs at R = 1000 wait for the fine-grid operating point.
+
+**MacBook:** stopped by Hans (overheating). 1617 killed at about 7.5 h. 1620 (iib at the best point) cancelled; rerun on the Mac mini after the fine grid.
+
+## 2026-10-02 — Trim dropped; untrimmed refit of the operating point (1625)
+
+- **Why:** the top-0.5% M* trim was set when q was linear in levels. Its 61 interior firm-years carry 12.9% of interior claimed credits (5.9% of the economy's). With q scale-normalized, the trim has no remaining justification and would understate the policy answer (Hans).
+- **Input:** `1624-stage2-input-designA-interior-plant-k-notrim.csv` (n = 12,111; builder `1624-input-designi-notrim.R`). The rows shared with 1598 match column by column.
+- **Fine grid (1619, trimmed) killed:**
+  - finished points (0.75, 0.4) TS 32.1 and (0.725, 0.5) TS 35.0;
+  - (0.75, 0.5) at 23.7 remains the trimmed best;
+  - fine tuning resumes once the trim question is settled.
+- **1625:** refit at k = 0.75, κ = 0.5 pinned on the untrimmed sample. Start from the trimmed best δ's, same D (only the sample changes), warm start, 12 threads.
+  - If TS ≤ 27.59, the counterfactual runs automatically (level over 6 Δ, claims elasticity, behavioural difference at −5% / +10%; 1621 with trim = 0).
+  - If it fails, the search restarts.
+- **New counterfactual targets** (`cf_target`): level, diff_beh, diff_total, elast_x, elast_claims (binary `grid_estimator_ind5b_cf2`). Smoke results (R = 200, trimmed):
+  - claims elasticity 1.225 [1.194, 1.259];
+  - behavioural change at −5%: −0.0057 [−0.0065, −0.0052], already significant;
+  - elast_x tail-dominated, hard set empty: e/M is huge where true M is tiny. Use u if an overreporting elasticity is needed; post-JMP it becomes a targeted moment instead.
+- **Plan split (Hans):**
+  - Supervisors: sanity checks (no trim; the other corner κ = 9, lower detection), figures updated everywhere.
+  - Post-JMP: share moments plus an elasticity moment matched to ch. 7; κ sensitivity; D robustness. Focus on the government revenue question.

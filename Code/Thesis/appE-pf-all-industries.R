@@ -8,7 +8,8 @@
 
 source("Code/Thesis/001-setup.R")
 load(file.path(PRODUCTS_DIR, "1517-pf-systems-all-industries.RData"))   # res
-pf_raw <- res |> filter(system == "lag_2_w_eps") |> mutate(sic_3 = as.character(sic_3))
+nine <- c("313", "321", "322", "324", "331", "342", "351", "352", "369")   # 2026-10-01: the 9 industries that need the correction (interior firms in stage 2)
+pf_raw <- res |> filter(system == "lag_2_w_eps") |> mutate(sic_3 = as.character(sic_3)) |> filter(sic_3 %in% nine)
 
 ## Short ISIC Rev. 2 industry names (same labels as ch04-evasion-test.R, plus the
 ## industries outside ch. 4's top 20).
@@ -31,7 +32,7 @@ rg <- \(lo, hi) ifelse(is.na(lo), "empty",
            ifelse(hi >= 1, "\\,\\cdot\\,)", sprintf("%.3f]", hi)), "$"))   # test convention: open end where 0 / 1 is not rejected
 load(file.path(PRODUCTS_DIR, "1522-beta-testinv.RData"))   # beta_ci: sharp region for beta (corporations' share moment)
 pf <- pf_raw |> left_join(names_df, by = "sic_3") |> left_join(beta_ci |> select(sic_3, b_sh_lo, b_sh_hi, corp_plants), by = "sic_3") |> arrange(sic_3)
-stopifnot(!anyNA(pf$name), nrow(pf) == 28, !any(pf$at_bound))
+stopifnot(!anyNA(pf$name), nrow(pf) == 9, !any(pf$at_bound))
 print(as_tibble(pf), n = Inf)
 
 tbl <- pf |> transmute(
@@ -46,7 +47,7 @@ tbl <- pf |> transmute(
 )
 
 tt_obj <- tt(tbl, align = "lccccccc", width = c(4.1, 0.75, 1.95, 0.75, 1.95, 0.75, 1.95, 0.75),
-             notes = "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations, log materials share net of sales taxes), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$) for every industry used in the stage-2 estimation of the detection and evasion-cost parameters. Instrument $\\tilde{\\mathcal W}_{it-2}$. Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate $(\\alpha_K,\\alpha_L)$; $\\beta$, sharp: 95\\% test-inversion region for $\\beta$ from the corporations' share moment ($\\chi^2_{1,0.95}$; the production-function moments are exactly identified given $\\beta$ and profiled). $\\alpha$, sharp: projections of the 95\\% test-inversion region ($\\chi^2_{2,0.95}$, credit for profiling $\\gamma_0,\\gamma_1$) on a 0.005 grid over $[0,1]^2$. $(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. $n$: observations in the first stage. Juridical organization codes 6--9 excluded; industry 353 (petroleum refineries) has three observations left and is not estimated. $^{\\S}$ Two corporate plants: the plant-clustered variance behind the region for $\\beta$ is unreliable.") |>
+             notes = "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations, log materials share net of sales taxes), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$) for the nine industries where overreporting is detected, whose unincorporated firms enter the stage-2 estimation of the detection and evasion-cost parameters as interior firms. Instrument $\\tilde{\\mathcal W}_{it-2}$. Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate $(\\alpha_K,\\alpha_L)$; $\\beta$, sharp: 95\\% test-inversion region for $\\beta$ from the corporations' share moment ($\\chi^2_{1,0.95}$; the production-function moments are exactly identified given $\\beta$ and profiled). $\\alpha$, sharp: projections of the 95\\% test-inversion region ($\\chi^2_{2,0.95}$, credit for profiling $\\gamma_0,\\gamma_1$) on a 0.005 grid over $[0,1]^2$. $(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. $n$: observations in the first stage. Juridical organization codes 6--9 excluded. $^{\\S}$ Two corporate plants: the plant-clustered variance behind the region for $\\beta$ is unreliable.") |>
     style_tt(fontsize = 0.88) |>
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "appE-pf-all-industries")

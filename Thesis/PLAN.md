@@ -206,6 +206,35 @@ Reasoning and numbers: `Research-log/log.md`, 2026-09-28 ("Stage-2 re-estimation
 - [~] **A. Chain length vs noise** (`run-1581-chain-noise.sh`, MacBook, screen `chain1581`, files `*-macbook`): n_keep 1,000 / 10,000, same point and seeds.
 - [ ] Pick optimizer + chain length → rerun $k$ grid if needed → best point → drop fixes one at a time → $\omega$ targets if nothing improves.
 
+**STATUS 2026-10-02 (supersedes the open items above; details in `Research-log/log.md`, 2026-10-01/02).**
+
+Settled estimator:
+- **Sampling and measure:** IS with the mixture proposal; ρ = Proposition 2.1 with a fixed D; bounded indicator rows left out of ρ.
+- **Objective:** plant-clustered Ω; correlation-scaled CUE with a null-direction floor penalty.
+- **Optimizer:** γ warm start (`gamma_init=solve`), then joint NM with 2 passes; seed 30.
+- **Detection:** `qform=power_nokink`.
+- **Lead design:** design i (ε by industry, rows 0, 2–4, 6, 8, 9, 11 + 13–21, interior firms).
+- **Robustness design:** design iib (deconvolution medians).
+
+Results and next steps:
+- [x] **Coarse k grid** (design i): flat over 0.5–0.8, rising at 0.3/0.4 and 1.0. ω* = δ1/2δ2 is tightly identified (3.4–3.55), and the δ's are stable. κ is a flat direction (it mostly sets the detection level; relative risk is nearly κ-free).
+- [x] **k × κ grid** (κ pinned, 1616): best point **k = 0.75, κ = 0.5, TS 23.7 < χ²₁₇ = 27.6** (first pass; 4R 24.7, ESS p10 2.7). Runner-up k = 0.7, κ = 9, TS 29.5.
+- [~] **Fine grid** around (0.75, 0.5) (1619, Mac mini): k ∈ {0.725, 0.75, 0.775} × κ ∈ {0.4, 0.5, 0.6}. Then step outward only in the direction that improves.
+- [~] **iib at design i's best point** (1620, MacBook, queued behind the 1617 κ profile).
+- [ ] **Fix the operating point** (one passing point is enough, Hans). Second seed if it is irregular.
+- [ ] **Counterfactual:** port the counterfactual modes to the new estimator (IS, prop21, guard, power_nokink); fix the revenue units bug (`R_real = t1/pgdp − τ(M + (1−q)e')`); e'(Δ) by bisection.
+- [ ] **Ch. 8 text** with the new numbers; report detection risk in relative terms.
+- [ ] **Only if no point passes:** share-of-overreporters rows (IND5P build `grid_estimator_ind5p`, inputs `1618-*`, ready and tested). κ_j by industry is **dropped** (Hans, 2026-10-02): the level of κ is weakly identified, and nine κ's would multiply the problem.
+- **κ (the detection level) in the JMP (Hans, 2026-10-02):** the counterfactual uses one passing operating point with a non-stupid detection level, stated honestly as one of a range. No test of κ, no external anchor.
+
+**POST-JMP robustness (after the Oct 13 draft; Hans, 2026-10-02):**
+- [ ] **κ sensitivity analysis** (not a test): rerun the counterfactual at a more conservative and a more aggressive detection level along the κ ridge (passing or near-passing fits, e.g. κ = 9 with mean E[q] ≈ 2.7%, and κ = 0.5 with ≈ 8.5%). Report: "this is a non-stupid probability of detection; here are a conservative and an aggressive alternative; anything in between and beyond can happen." Relative detection risk is reported as κ-free.
+- [ ] **D robustness at the operating point:** refit with the continuous rows' D × 0.5, × 2 and D = 1. Show that θ̂, the industry means and TS are stable. This answers "is D biasing the estimator". For the bounded rows D is an exact γ reparametrization (already shown).
+- [ ] Second seed at irregular grid points (k = 0.71, 0.725, 0.73; 0.65 in another basin).
+- [ ] Within-industry D for the ε rows. Auxiliary moment rows for every reported number (industry E[u], E[q], revenue).
+- [ ] First-stage error in Ω, or a statement that TS is conditional on stage 1.
+- [ ] Optional nested-solver re-test; PSIS k̂ diagnostic; `MIX_EDGE_EPS`.
+
 **Remaining estimation sequence (agreed 2026-09-29; SUPERSEDED 2026-09-30 by the restart above — all under the wrong eigen-cut):**
 - [~] **1. Chain length.** Best point ($k$=0.3, κ=0.556, $s$=0.20), $n_{\text{keep}}$ = 3,000 / 10,000 / 30,000, $n_{\text{burn}}$ 1,000, two NM passes, then re-evaluation at two other seeds (`run-1568-chain-length.sh`). **Stopping rule:** shortest length with seed spread < ~10 in $TS$ (below the κ/$k$ gaps we need to resolve). If even 30,000 doesn't get there, the noise isn't mainly simulation → evidence for step 2, not longer chains.
 - [ ] **2. Drop moments one at a time, chain fixed.** Order fixed ex ante: (a) κ-score row 11 (duplicates the $k$-score row, corr 0.95–0.99); (b) one of $\psi\omega$ / $\varepsilon\psi$ (corr −0.99); (c) any row whose eigen-direction contributes ~nothing. Keep $\varepsilon$ and $\varepsilon\ln M$ (Hans). Compare on a fair basis: $TS$ against its own $\chi^2_{d_g}$ (p-value or ratio to critical value) plus stability of $\hat\delta$, $\hat\omega^*$ — never raw $TS$ (falls mechanically with fewer rows). `adiag` rank check after each change.

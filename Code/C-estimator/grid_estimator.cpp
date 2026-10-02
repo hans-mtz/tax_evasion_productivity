@@ -66,7 +66,33 @@
 
 static const int D_G_C = 7;   // 2026-09-07: 6 -> 7, added back raw `eps` (row 6) -- see file header
 typedef std::array<double, D_G_C> GVecC;
-static const double DELTA_BOUND = 60.0;   // same box used throughout this project's stage-2 code
+static double DELTA_BOUND = 60.0;
+// delta0_fixed / delta1_fixed / delta2_fixed (2026-10-01, Hans: grid over the cost parameters with the rest profiled):
+// pin that delta at the given value (equal bounds) in lambdagrid's joint fit; NaN = free (default).
+// kappa_fixed (2026-10-02, Hans: k x kappa grid / kappa profile): pin kappa (KAPPA_FREE builds), NaN = free.
+static double g_kappa_fix = std::numeric_limits<double>::quiet_NaN();
+static double g_dfix[3] = {std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN()};   // box for delta0..2 (CLI delta_max in lambdagrid, 2026-10-01; default 60 = every earlier run)
+
+// Generalized inverse of Omega for EVERY CUE objective in this file (2026-09-30, audit finding 7): cut=ak (default) =
+// AK2020 objMCcu -- Omega/n, keep eigenvalues > 0; cut=rel = the old relative cut w > 1e-8*max with Omega/(n-1), a
+// porting error kept only to reproduce pre-2026-09-30 runs. Set once from the CLI before any thread starts.
+static bool g_cut_ak = true;
+static inline bool keep_eig(double wk, double max_eig) { return g_cut_ak ? wk > 0.0 : wk > 1e-8 * max_eig; }
+static inline double omega_div(int n) { return g_cut_ak ? 1.0 / n : 1.0 / (n - 1); }
+
+// Per-firm RNG seed (2026-09-30, audit finding 6). seed=add (old): base_seed + row_id, so seed s+1 gives firm r the
+// stream firm r+1 had at seed s -- different base seeds are NOT independent replications. seed=hash (default from
+// 2026-09-30): splitmix64 of base_seed combined with splitmix64 of row_id, so streams are unrelated across seeds and
+// firms. Set once from the CLI before any thread starts.
+static bool g_seed_hash = true;
+static inline uint64_t splitmix64(uint64_t x) {
+    x += 0x9E3779B97F4A7C15ULL; x = (x ^ (x >> 30)) * 0xBF58476D1CE4E5B9ULL; x = (x ^ (x >> 27)) * 0x94D049BB133111EBULL;
+    return x ^ (x >> 31);
+}
+static inline uint64_t firm_seed(uint64_t base_seed, long row_id) {
+    if (!g_seed_hash) return base_seed + static_cast<uint64_t>(row_id);
+    return splitmix64(splitmix64(base_seed) ^ splitmix64(0xD1B54A32D192ED03ULL + static_cast<uint64_t>(row_id)));
+}
 
 // ---- data ------------------------------------------------------------------
 
@@ -89,7 +115,24 @@ struct FirmData {
     int yidx = -1;
     // sig2eps (2026-09-29, EPSVAR build): corporations' eps variance in the firm's industry.
     double sig2eps = std::numeric_limits<double>::quiet_NaN();
+    // sic / jidx (2026-09-30, IND5 build): 3-digit industry from column sic_3, and its index 0..N_IND-1 among the
+    // interior firms' industries (sorted); -1 if absent. Used by the per-industry eps*lnM rows.
+    int sic = -1, jidx = -1;
+    // plant_id (2026-09-30, audit finding 4): plant identifier from column plant_id (-1 if absent); cl = dense cluster
+    // index 0..g_ncl-1 set when cluster=plant.
+    long plant = -1; int cl = -1;
+    // design inputs (2026-10-01): audit_g = 1 if in the audit group G (top 10% of capital within industry); umed =
+    // deconvolved median of u for the firm's industry (-1 = none). Read from columns audit_g, umed when present.
+    int audit_g = 0, audit_gv = 0; double umed = -1.0;   // audit_gv: group by V (robustness), used when audit_group=v
+    double pshare = -1.0;   // IND5P (2026-10-02): deconvolved P(u >= share_u) of the firm's industry (column pshare; -1 = none)
 };
+// Which optional design columns the input carried (review 4: a missing column used to leave its rows silently zero).
+static bool g_has_audit_g = false, g_has_audit_gv = false, g_has_umed = false, g_has_pshare = false;
+// cluster=plant (2026-09-30): Omega = n^-1 sum_p (sum_{i in p} (g_i - dbar)) (sum_{i in p} (g_i - dbar))', firm-periods of
+// the same plant summed before the outer product (Theorem F.1's i.i.d. unit is the plant, not the firm-period).
+// Every CUE objective of moment set A and adiag use it. Default cluster=none (i.i.d. firm-periods, every earlier run).
+static bool g_cluster_on = false;
+static int g_ncl = 0;
 
 // Detection function used by moment set A's chain (firm_chain_A): 0 = linear q=min(lambda*e,1) (default, every
 // result before 2026-09-28); 1 = exp_scale q=lambda1*(1-exp(-e/Mbar)) (ladder step S3). Set once from the CLI
@@ -106,6 +149,34 @@ static double g_sa_time = 0.0;
 // algo2 (2026-09-30, Hans): algorithm for lambdagrid's SECOND pass (after the optional SA); default = same as pass 1.
 // CLI algo2=bobyqa|neldermead.
 static int g_algo2 = -1;
+// n_passes (2026-09-30, Hans): total optimizer passes in lambdagrid (default 2); passes 3.. restart the pass-2
+// algorithm from the previous endpoint. Lhat_pass1 still reports pass 1; wander = pass 1 -> final. CLI n_passes=<int>.
+static int g_npasses = 2;
+// Optimizer settings for lambdagrid (2026-09-30, audit 7.5). maxeval per pass (CLI maxeval; default 200 x free dims);
+// initial simplex/step: delta 0.5, k 0.1, s 0.05, kappa 0.1, gamma_t 0.2/D_t (D_t = rho_D when rho=prop21, else 1)
+// (CLI init_step=auto|nlopt; nlopt = NLopt's default, every earlier run). algo2=lbfgs: L-BFGS with central
+// finite-difference gradients (step 1e-5 x max(1,|x|)); meant for sampler=is, where the objective is smooth in gamma.
+static int g_maxeval = -1;
+static double g_kappa_max = 5.0;   // upper bound on kappa when estimated (KAPPA_FREE); CLI kappa_max
+static bool g_init_step_auto = true;
+struct FDWrap { nlopt_func f; void *data; const double *lb; const double *ub; };
+static double fd_objective(unsigned n, const double *x, double *grad, void *d) {
+    FDWrap *w = static_cast<FDWrap *>(d);
+    double f0 = w->f(n, x, nullptr, w->data);
+    if (grad) {
+        std::vector<double> xp(x, x + n);
+        for (unsigned i = 0; i < n; i++) {
+            if (w->lb[i] == w->ub[i]) { grad[i] = 0.0; continue; }
+            double h = 1e-5 * std::max(1.0, std::fabs(x[i]));
+            double hi = std::min(x[i] + h, w->ub[i]), lo = std::max(x[i] - h, w->lb[i]);
+            xp[i] = hi; double fp = w->f(n, xp.data(), nullptr, w->data);
+            xp[i] = lo; double fm = w->f(n, xp.data(), nullptr, w->data);
+            xp[i] = x[i];
+            grad[i] = (fp - fm) / (hi - lo);
+        }
+    }
+    return f0;
+}
 
 // ---- moment set C, one firm at one candidate M -----------------------------
 // (byte-for-byte the same structural maps as moment_g_A_one/B_one in
@@ -164,7 +235,7 @@ static inline void firm_chain_C(
         return;
     }
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);
 
     GVecC g_current, g_try, g_run;
@@ -254,7 +325,7 @@ static void compute_dvec_omega_C(
     // as mh_tilted_moments_B_cpp (half the FLOPs of a general dgemm, the
     // mathematically correct routine for a PSD covariance matrix).
     cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans,
-                D_G_C, n, 1.0 / (n - 1), Xc.data(), n, 0.0, Omega, D_G_C);
+                D_G_C, n, omega_div(n), Xc.data(), n, 0.0, Omega, D_G_C);
     for (int i = 0; i < D_G_C; i++)
         for (int j = i + 1; j < D_G_C; j++)
             Omega[j + i * D_G_C] = Omega[i + j * D_G_C];   // mirror upper -> lower (col-major: Omega[row+col*ld])
@@ -292,7 +363,7 @@ static double cue_objective_C(const double dvec[D_G_C], const double Omega_in[D_
     double max_eig = w[m - 1];
     double obj = 0.0;
     for (int k = 0; k < m; k++) {
-        if (w[k] > 1e-8 * max_eig) {
+        if (keep_eig(w[k], max_eig)) {
             double d2 = 0.0;
             for (int i = 0; i < D_G_C; i++) d2 += Z[i + k * D_G_C] * dvec[i];
             obj += 0.5 * d2 * d2 / w[k];
@@ -383,7 +454,7 @@ static FitResult fit_one_grid_point(
                                           // same reasoning as fit_one_lambda_A/B's own xtol_rel
         nlopt_set_maxeval(opt, 2000);
         nlopt_set_maxtime(opt, maxtime);
-        double minf;
+        double minf = HUGE_VAL;
         nlopt_result res = nlopt_optimize(opt, xstart, &minf);
         int iters = nlopt_get_numevals(opt);
         nlopt_destroy(opt);
@@ -444,6 +515,7 @@ static std::vector<FirmData> read_firm_csv(const std::string &path) {
     for (size_t i = 0; i < cols.size(); i++) idx[cols[i]] = static_cast<int>(i);
     for (const char *req : {"M_star", "cal_V", "tilde_cal_W", "sales_tax_rate_purchases", "beta", "corner", "row_id"})
         if (idx.find(req) == idx.end()) { std::cerr << "Missing column: " << req << "\n"; std::exit(1); }
+    g_has_audit_g = idx.count("audit_g") > 0; g_has_audit_gv = idx.count("audit_gv") > 0; g_has_umed = idx.count("umed") > 0; g_has_pshare = idx.count("pshare") > 0;
 
     std::vector<FirmData> out;
     std::string line;
@@ -465,7 +537,23 @@ static std::vector<FirmData> read_firm_csv(const std::string &path) {
         if (idx.count("ltau_bar")) d.ltau_bar = std::strtod(fields[idx["ltau_bar"]].c_str(), nullptr);
         if (idx.count("sig2eps")) d.sig2eps = std::strtod(fields[idx["sig2eps"]].c_str(), nullptr);
         if (idx.count("year")) d.yidx = static_cast<int>(std::strtol(fields[idx["year"]].c_str(), nullptr, 10)) - 81;
+        if (idx.count("sic_3")) d.sic = static_cast<int>(std::strtol(fields[idx["sic_3"]].c_str(), nullptr, 10));
+        if (idx.count("plant_id")) d.plant = std::strtol(fields[idx["plant_id"]].c_str(), nullptr, 10);
+        if (idx.count("audit_g")) d.audit_g = static_cast<int>(std::strtol(fields[idx["audit_g"]].c_str(), nullptr, 10));
+        if (idx.count("audit_gv")) d.audit_gv = static_cast<int>(std::strtol(fields[idx["audit_gv"]].c_str(), nullptr, 10));
+        if (idx.count("umed")) d.umed = std::strtod(fields[idx["umed"]].c_str(), nullptr);
+        if (idx.count("pshare")) d.pshare = std::strtod(fields[idx["pshare"]].c_str(), nullptr);
         out.push_back(d);
+    }
+    {   // industry index among interior firms (IND5): sorted distinct sic_3 of corner==0 firms
+        std::vector<int> sics;
+        for (const FirmData &d : out) if (d.corner == 0 && d.sic >= 0) sics.push_back(d.sic);
+        std::sort(sics.begin(), sics.end()); sics.erase(std::unique(sics.begin(), sics.end()), sics.end());
+        for (FirmData &d : out) if (d.sic >= 0) {
+            auto it = std::lower_bound(sics.begin(), sics.end(), d.sic);
+            d.jidx = (it != sics.end() && *it == d.sic) ? static_cast<int>(it - sics.begin()) : -1;
+        }
+        if (!sics.empty()) { std::cout << "industries (interior, jidx order):"; for (int v : sics) std::cout << " " << v; std::cout << "\n"; }
     }
     return out;
 }
@@ -691,6 +779,19 @@ static void run_shell_mode(
 #if defined(KINK_S) && !defined(KINK)
 #define KINK
 #endif
+// Build-flag guards (2026-09-30, audit finding 8): combinations that compiled but read/wrote the wrong array slots.
+#if defined(KINK) && !defined(KINK_S)
+#error "KINK without KINK_S no longer builds from this source (g_dropmask, share/score rows); runs 1558-1560 used an older revision"
+#endif
+#if defined(EPSVAR) && !defined(KINK_S)
+#error "EPSVAR requires KINK_S (row 12 sits after the KINK_S rows)"
+#endif
+#if defined(IND5) && !(defined(KINK_S) && defined(EPSVAR))
+#error "IND5 requires KINK_S and EPSVAR (industry rows start at 13)"
+#endif
+#if defined(KAPPA_FREE) && !defined(KINK_S)
+#error "KAPPA_FREE requires KINK_S (kappa is x[5] after k, s)"
+#endif
 #ifdef YEAR_FE
 static const int N_XFE = 10;
 static double g_d0yr[11] = {0};
@@ -708,9 +809,12 @@ static double g_kshare = 0.3;
 static double g_kmax = 0.99;   // unused with k_fixed; kept so the KINK code paths compile unchanged
 static double g_kfixed = -1.0; // CLI k_fixed (required in this build)
 static double g_sfixed = -1.0; // CLI s_fixed (optional): if in (0,1), s is held fixed at it (equal bounds) instead of estimated
+static double g_kmin = 0.05;   // lower bound on k when k_free=1 (CLI k_min)
+static bool g_kfree = false;   // CLI k_free=1 (2026-09-30): k estimated (bounds [0.05, k_max]), start = x0's k; k_fixed then only labels the run
 // drop_rows (2026-09-29): bitmask of moment rows set to 0 inside the moment function (interior draws), so a dropped row
 // neither enters the objective (zero variance -> its eigen-direction is cut) nor steers the tilt through gamma.
-// Corner firms only fill rows 1, 5, 7, which are never dropped. CLI drop_rows=11,6,...
+// Corner firms only fill rows 1, 5, 7 (and 12, 13+ in EPSVAR/IND5); the mask is applied in the corner branch too.
+// CLI drop_rows=11,6,...
 static unsigned g_dropmask = 0;
 #elif defined(KINK)
 static const int N_XFE = 1;
@@ -723,8 +827,48 @@ static const int N_XFE = 0;
 // EPSVAR (2026-09-29, with KINK_S; binary grid_estimator_eps): row [12] = eps^2 - sig2eps_j, sig2eps_j = corporations'
 // first-stage eps variance in the firm's industry (input column sig2eps); interior firms only, every draw (like the eps
 // rows). Disciplines the tilt's dispersion of measurement error (tilted var(eps) 1.17 vs data bound 0.18, log 2026-09-29).
+// IND5 (2026-09-30, Hans; with KINK_S+EPSVAR; binary grid_estimator_ind5): rows [13..13+N_IND-1] = eps*lnM*1{industry j},
+// the pooled row [5] broken by interior industry (drop row 5 when using them: it is their sum, Omega would be singular).
+// Every draw, like row 5; corner firms too.
+// IND5P (2026-10-02, Hans: share of overreporters; build grid_estimator_ind5p): on top of IND5's industry block, rows
+// [13+N_IND .. 13+2N_IND-1] = (1{u >= share_u} - pshare_j) * 1{j}, pshare_j = deconvolved P(u >= share_u) of industry j
+// (input column pshare; CLI share_u, default 0.05). Bounded indicator rows: left out of the rho penalty (D = inf).
+#ifdef IND5
+static const int N_IND = 9;
+#endif
+// IND5 row content (2026-10-01, CLI ind_rows): epslnm = eps*lnM*1{j} (default, 1588), eps = eps*1{j} (design i:
+// E[u] - E[V] = 0 by industry, i.e. E[eps | j] = 0; drop the pooled row 1, their sum), median = (1{u <= umed_j} - 1/2)*1{j}
+// for firms whose industry has a deconvolved median (design i robustness; other firms 0).
+static int g_ind_mode = 0;
+[[maybe_unused]] static double g_share_u = 0.05;   // IND5P threshold (CLI share_u)
+// Audit moment (2026-10-01, design ii, CLI audit_p; power_nokink only): row 10 (unused without the kink) becomes
+// audit_g * (q(e) - audit_p), q = (e/(kappa Mbar))^k: the model's detection probability matched to an external audit
+// probability in the group G (top 10% of capital within industry). audit_p < 0 = off.
+static bool g_audit_on = false;
+static double g_audit_p = -1.0;
+// Counterfactual (2026-10-02, mode=cfprofile; power_nokink only): row 10 (unused without the kink) becomes the credit
+// moment (1+Delta) tau_P [M + (1 - q(e')) e'] / scale - T, where e'(Delta) is the firm's new evasion at the same true M
+// (and hence the same omega and psi): from the FOC, x'^k = [1 - B(x)/(1+Delta)] / (1+k), x = e/(kappa Mbar), corner e' = 0
+// when the bracket is <= 0. T = expected purchases credit per firm (in units of scale), the auxiliary parameter; theta is
+// fixed at the operating point and only gamma is free (AK2020 App. F). Real revenue per firm = t1/pgdp - T * scale.
+static bool g_cf_on = false;
+static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
+// cf_target (2026-10-02, Hans): what row 10 targets; every target is linear in the parameter T, row = a - T b:
+//   0 level      : C(Delta)/scale - T                                  (b = 1; T = expected claimed credits)
+//   1 diff_beh   : [C(Delta) - (1+Delta) C(0)]/scale - T              (behavioural change; paired on the same draw)
+//   2 diff_total : [C(Delta) - C(0)]/scale - T                         (total change, paired)
+//   3 elast_x    : (1+Delta)[xbar(Delta+h) - xbar(Delta-h)]/(2h) - T xbar(Delta)   (T = elasticity of mean overreporting
+//                  e'/M w.r.t. tau_P; ratio moment, T = E[slope]/E[level])
+//   4 elast_claims: (1+Delta)[C(Delta+h) - C(Delta-h)]/(2h)/scale - T C(Delta)/scale (T = elasticity of claimed credits)
+// C(D) = (1+D) tau_P [M + (1 - q') e'(D)], xbar(D) = e'(D)/M; h = cf_h (default 0.01: one percent up and down).
+static int g_cf_target = 0;
+static double g_cf_h = 0.01;
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
+#elif defined(KINK_S) && defined(EPSVAR) && defined(IND5) && defined(IND5P)
+static const int D_G_A = 13 + 2 * N_IND;   // IND5P: + share rows [13+N_IND .. 13+2N_IND-1]
+#elif defined(KINK_S) && defined(EPSVAR) && defined(IND5)
+static const int D_G_A = 13 + N_IND;
 #elif defined(KINK_S) && defined(EPSVAR)
 static const int D_G_A = 13;
 #elif defined(KINK_S)
@@ -737,12 +881,12 @@ static const int D_G_A = 10;
 static const int D_G_A = 9;
 #endif
 typedef std::array<double, D_G_A> GVecA;
+static_assert(D_G_A <= 32, "drop_rows bitmask is 32 bits");
 
 // cut=ak (2026-09-29, Hans): moment-set-A objective exactly as AK2020's objMCcu (Appendix_B/cudafunctions/
 // cuda_fastoptim.jl): Omega divided by n (not n-1), eigen-directions kept iff Lambda > 0 (not > 1e-8*max, a porting
 // error), LAPACK default abstol (Julia's eigen). Rows dropped by drop_rows are removed from Omega and dvec before the
 // eigendecomposition (= AK building the system without them). Default (cut=rel) unchanged, bit-for-bit.
-static bool g_cut_ak = false;
 static inline unsigned a_rowmask() {
 #ifdef KINK_S
     return g_dropmask;
@@ -769,7 +913,70 @@ static int eig_A_active(const double *Omega, double *w, double *Z) {
     for (int k = 0; k < m; k++) for (int a = 0; a < p; a++) Z[act[a] + k * D_G_A] = Zc[a + k * p];
     return static_cast<int>(m);
 }
-static inline bool keep_eig_A(double wk, double max_eig) { return g_cut_ak ? wk > 0.0 : wk > 1e-8 * max_eig; }
+static inline bool keep_eig_A(double wk, double max_eig) { return keep_eig(wk, max_eig); }
+// Null-direction guard (2026-10-01; medians review S2; revised after code review 5, Hans approved): under cut=ak the
+// CUE quadratic is computed on the CORRELATION-scaled Omega, C = S^-1 Omega S^-1 (S = diag sqrt(Omega_tt)), with
+// dt = S^-1 dbar: 0.5 dt' C^+ dt equals 0.5 dbar' Omega^+ dbar whenever Omega has full rank, but the null test
+// (lambda_C < NULL_EIG_REL * max lambda_C) no longer depends on the rows' units (review 5: on the raw Omega, large deltas
+// pushed the eps*score_kappa direction below the relative threshold). A null direction with a non-negligible projection
+// (|z'dt| > NULL_DPROJ_REL * max(1, |dt|)) cannot be matched (Schennach's GAUSS code: singular Omega -> rejection); its
+// eigenvalue is floored at NULL_EIG_REL * max lambda_C, a continuous penalty with a slope (the first version returned a
+// flat 1e10). A null direction with ~zero projection (an exact identity between rows) is skipped. Regular directions keep
+// AK's "> 0" rule. cut=rel keeps the old raw-Omega relative cut.
+static const double NULL_EIG_REL = 1e-12, NULL_DPROJ_REL = 1e-8;
+static inline bool null_violated(double zd, double dnorm) { return std::fabs(zd) > NULL_DPROJ_REL * std::max(1.0, dnorm); }
+struct CueAkInfo { int n_null_floored = 0, n_null_skipped = 0; };
+// 0.5 dt' C^+ dt with the guard; v (optional) = Omega^+ dbar in raw units (= S^-1 C^+ dt), for nested_L's gradient.
+static double cue_core_ak(const double *d, const double *Om, double *v, CueAkInfo *info) {
+    const unsigned mask = a_rowmask();
+    double sc[D_G_A], C[D_G_A * D_G_A], dt[D_G_A];
+    for (int t = 0; t < D_G_A; t++) { const double o = Om[t + t * D_G_A]; sc[t] = (!(mask & (1u << t)) && o > 0.0) ? std::sqrt(o) : 1.0; dt[t] = d[t] / sc[t]; }
+    for (int b = 0; b < D_G_A; b++) for (int a = 0; a < D_G_A; a++) C[a + b * D_G_A] = Om[a + b * D_G_A] / (sc[a] * sc[b]);
+    double w[D_G_A], Z[D_G_A * D_G_A];
+    const int m = eig_A_active(C, w, Z);
+    if (m < 1) return std::numeric_limits<double>::infinity();
+    const double tol = NULL_EIG_REL * w[m - 1];
+    double dn = 0.0; for (int t = 0; t < D_G_A; t++) if (!(mask & (1u << t))) dn += dt[t] * dt[t];
+    dn = std::sqrt(dn);
+    if (v) for (int t = 0; t < D_G_A; t++) v[t] = 0.0;
+    double L = 0.0;
+    for (int k = 0; k < m; k++) {
+        double zd = 0.0; for (int t = 0; t < D_G_A; t++) zd += Z[t + k * D_G_A] * dt[t];
+        double lam = w[k];
+        if (lam < tol) {
+            if (!null_violated(zd, dn)) { if (info) info->n_null_skipped++; continue; }
+            lam = tol; if (info) info->n_null_floored++;
+        }
+        L += 0.5 * zd * zd / lam;
+        if (v) for (int t = 0; t < D_G_A; t++) v[t] += Z[t + k * D_G_A] * zd / lam / sc[t];
+    }
+    return L;
+}
+// Dominating measure (2026-09-30, Phase 1, audit finding 1): Schennach (2014) Proposition 2.1,
+//   drho(M | z; theta) proportional to exp(-|| D^{-1} (g(M; theta) - g(ubar; theta)) ||^2) dlambda(M),
+// lambda = uniform on (0, M*] (the proposal), ubar = M* (e = 0). ||g||^2 grows faster than any gamma'g in the tail
+// (u^4 vs u^2), so the tilted measure is proper for every gamma (Definition 2.2(ii)); by Remark 2.3 the shape does
+// not affect the estimand. Implemented as the rho ratio in the MH acceptance (as in Schennach's GAUSS avg_mom).
+// D: fixed per-row scales (CLI rho_D=..., one value per row; dropped rows ignored), computed once by mode=rhoD and
+// passed unchanged to every run that is compared. Her construction also puts a point mass q at ubar; omitted here
+// (it is not needed for condition (ii)). CLI rho=prop21 (default rho=uniform = every run before 2026-09-30).
+static bool g_rho_on = false;
+// gamma's initial NM step (2026-10-01): 0.2 / D_t under rho=prop21 (1 otherwise); a row left out of the rho penalty
+// (D_t = inf, bounded indicator rows) gets 0.4 = 0.2 / 0.5, 0.5 being the largest sd of a +-1/2 indicator.
+static double g_rhoD_fwd(int t);
+static inline double gamma_step(int t) { const double D = g_rho_on ? g_rhoD_fwd(t) : 1.0; return std::isfinite(D) ? 0.2 / D : 0.4; }
+// sampler=is (2026-09-30, Phase 2, audit 7.2): self-normalized importance sampling on FIXED draws instead of MH --
+// per firm, n_keep iid proposals M_j from the uniform (same stream every evaluation), weights
+// w_j = exp(gamma'g_j - Q_j) (Q_j = rho quadratic form under rho=prop21, else 0), gtilde_i = sum w g / sum w.
+// Smooth in (theta, gamma) (Schennach 2014, p. 360: reweighting fixed draws). n_burn unused. Default sampler=mh.
+static bool g_sampler_is = false;
+static double g_rhoD[D_G_A];
+static double g_rhoD_fwd(int t) { return g_rhoD[t]; }
+static inline double rho_Q(const GVecA &g, const GVecA &g0) {
+    const unsigned msk = a_rowmask(); double q = 0.0;
+    for (int t = 0; t < D_G_A; t++) if (!(msk & (1u << t))) { double z = (g[t] - g0[t]) / g_rhoD[t]; q += z * z; }
+    return q;
+}
 
 static inline void moment_g_A_one(
     double M, double Mstar, double V, double Wt, double tau_rho, double beta,
@@ -815,13 +1022,16 @@ static inline double q_score(double e, double lambda, double Mbar) {
 }
 static inline double q_lnB(double e, double lambda, double Mbar) {
 #ifdef KINK
-    if (g_qform == 4) return std::log(B_power_scale(e, g_kpow, lambda * Mbar));   // floored beyond the kink
+    if (g_qform == 4 || g_qform == 5) return std::log(B_power_scale(e, g_kpow, lambda * Mbar));   // floored beyond the kink (4)
 #endif
     if (g_qform == 2) return std::log(B_power_scale(e, lambda, Mbar));
     if (g_qform == 3) return std::log(h_denom(e, lambda));
     return std::log(B_exp_scale(e, lambda, Mbar));
 }
 static inline double q_draw(std::mt19937_64 &rng, double Mstar, double lambda, double Mbar) {
+#ifdef KINK
+    if (g_qform == 5) return draw_from_rho_power_scale(rng, Mstar, g_kpow, lambda * Mbar);   // no kink: FOC-ceiling support
+#endif
     if (g_qform == 4) {   // KINK: whole physical support M in (0, Mstar] (u01 in [0,1) keeps M > 0)
         std::uniform_real_distribution<double> unif(0.0, 1.0);
         (void)lambda; (void)Mbar;
@@ -831,22 +1041,73 @@ static inline double q_draw(std::mt19937_64 &rng, double Mstar, double lambda, d
     if (g_qform == 3) return draw_from_rho_checked(rng, Mstar, lambda);
     return draw_from_rho_fixed_scale(rng, Mstar, Mbar);
 }
+// proposal=mix (2026-09-30, review point 2; sampler=is only): the importance-sampling proposal is a 50/50 mixture of
+// uniform in M on the support (lo, M*] and log-uniform in M (u = ln(M*/M) uniform on [0, U), U = min(mix_umax,
+// ln(M*/lo))), so half the draws cover the u-range the tilt reaches (the uniform alone puts mass e^-u there). Each draw
+// carries lw = log(uniform density / mixture density), added to its log weight, so the estimand is unchanged.
+// Floor-edge redraw as in draw_from_rho_power_scale. Default proposal=uniform.
+static bool g_prop_mix = false;
+static double g_mix_umax = 25.0;
+// Third component (review 3, 2026-09-30): when lo > 0 (support bounded below by the FOC ceiling), log-uniform in
+// (M - lo) on [lo + eps_e (M* - lo), M*): targets the ceiling edge, where degenerate tilts pile up (B -> floor).
+// Mixture weights then 1/3 each; with lo = 0 the u-component already covers M -> 0 and the weights stay 1/2, 1/2.
+static const double MIX_EDGE_EPS = 1e-10;
+static inline double is_draw(std::mt19937_64 &rng, const FirmData &f, double lambda, double &lw) {
+    if (!g_prop_mix) { lw = 0.0; return q_draw(rng, f.Mstar, lambda, f.Mbar); }
+    double lo = 0.0;
+#ifdef KINK
+    if (g_qform == 5) lo = std::max(0.0, f.Mstar - power_ceiling(g_kpow) * lambda * f.Mbar);
+#endif
+    const double U = (lo > 0.0) ? std::min(g_mix_umax, std::log(f.Mstar / lo)) : g_mix_umax;
+    const double W = f.Mstar - lo, pu = 1.0 / W;
+    const bool edge = lo > 0.0;
+    const double LE = -std::log(MIX_EDGE_EPS);          // edge component: ln(M - lo) uniform on [ln(eps W), ln W)
+    const double wu = edge ? 1.0 / 3.0 : 0.5, wl = wu, we = edge ? 1.0 / 3.0 : 0.0;
+    std::uniform_real_distribution<double> unif(0.0, 1.0);
+    for (;;) {
+        double c = unif(rng), v = unif(rng), M;
+        if (c < wu) M = f.Mstar - v * W;
+        else if (c < wu + wl) M = f.Mstar * std::exp(-v * U);
+        else M = lo + W * std::exp(-v * LE);
+        if (!(M > 0.0) || !(M > lo)) continue;
+#ifdef KINK
+        if (g_qform == 5 && 1.0 - (1.0 + g_kpow) * std::pow((f.Mstar - M) / (lambda * f.Mbar), g_kpow) <= g_h_floor_power) continue;
+#endif
+        const double u = std::log(f.Mstar / M);
+        const double pl = (u < U) ? 1.0 / (U * M) : 0.0;
+        const double d = M - lo;
+        const double pe = (edge && d >= MIX_EDGE_EPS * W) ? 1.0 / (LE * d) : 0.0;
+        lw = std::log(pu / (wu * pu + wl * pl + we * pe));
+        return M;
+    }
+}
 static inline void moment_g_A_one_exp_scale(
     double M, double Mstar, double V, double Wt, double tau_rho, double beta, double Mbar, double ltau_bar, int yidx,
     double lambda, double delta0, double delta1, double delta2,
-    GVecA &g_out, double sig2eps = 0.0
+    GVecA &g_out, double sig2eps = 0.0, int jidx = -1, double umed_in = -1.0, int audit_in = 0, double pshare_in = -1.0
 ) {
-    (void)sig2eps;
+    (void)sig2eps; (void)jidx; (void)umed_in; (void)audit_in; (void)pshare_in;
     double e      = e_of_M(M, Mstar);
     double eps    = eps_of_M(M, Mstar, V);
     double om     = omega_of_M(M, Mstar, V, Wt, beta);
 #ifdef KINK
-    if (g_qform == 4) {   // power detection with a kink at the FOC ceiling; lambda = kappa (scale multiplier)
+    if (g_qform == 4 || g_qform == 5) {   // power detection, lambda = kappa (scale multiplier); 4: kink at the FOC ceiling,
+                                          // 5 (power_nokink): support restricted below the ceiling, so the beyond branch never fires
         double k = g_kpow, sc = lambda * Mbar, x = e / sc, lnM = std::log(M);
         for (int t = 0; t < D_G_A; t++) g_out[t] = 0.0;
         g_out[1] = eps; g_out[5] = eps * lnM; g_out[7] = eps * om;   // eps rows: every draw
 #ifdef EPSVAR
         g_out[12] = eps * eps - sig2eps;   // eps-variance row, every draw
+#endif
+#ifdef IND5
+        if (jidx >= 0 && jidx < N_IND) {   // per-industry rows, every draw (content by ind_rows)
+            if (g_ind_mode == 0) g_out[13 + jidx] = eps * lnM;
+            else if (g_ind_mode == 1) g_out[13 + jidx] = eps;
+            else if (umed_in >= 0.0) g_out[13 + jidx] = (std::log(Mstar / M) <= umed_in ? 1.0 : 0.0) - 0.5;
+#ifdef IND5P
+            if (pshare_in >= 0.0) g_out[13 + N_IND + jidx] = (std::log(Mstar / M) >= g_share_u ? 1.0 : 0.0) - pshare_in;
+#endif
+        }
 #endif
         if (x >= power_ceiling(k)) {   // beyond the kink
             g_out[10] = 1.0 - g_kshare; (void)yidx;
@@ -858,7 +1119,26 @@ static inline void moment_g_A_one_exp_scale(
         g_out[6] = (g_row6 == 1) ? eps * psi : eps * e;
         g_out[8] = h_prime_bounded_power_scale(e, k, sc) * eps;
         g_out[9] = psi * ltau_bar;
-        g_out[10] = -g_kshare;
+        g_out[10] = g_audit_on ? audit_in * (std::pow(x, k) - g_audit_p) : -g_kshare;
+        if (g_cf_on) {   // counterfactual moment in row 10 (see g_cf_on, g_cf_target)
+            const double Bx = B_power_scale(e, k, sc);
+            auto epq = [&](double D, double &ep, double &qp) {
+                const double br = 1.0 - Bx / (1.0 + D);
+                const double xp = br > 0.0 ? std::pow(br / (1.0 + k), 1.0 / k) : 0.0;
+                ep = sc * xp; qp = std::pow(xp, k); };
+            auto Cr = [&](double D) { double ep, qp; epq(D, ep, qp); return (1.0 + D) * tau_rho * (M + (1.0 - qp) * ep); };
+            auto Xb = [&](double D) { double ep, qp; epq(D, ep, qp); return ep / M; };
+            const double D = g_cf_Delta, hh = g_cf_h;
+            double a = 0.0, b = 1.0;
+            switch (g_cf_target) {
+                case 0: a = Cr(D) / g_cf_scale; break;
+                case 1: a = (Cr(D) - (1.0 + D) * Cr(0.0)) / g_cf_scale; break;
+                case 2: a = (Cr(D) - Cr(0.0)) / g_cf_scale; break;
+                case 3: a = (1.0 + D) * (Xb(D + hh) - Xb(D - hh)) / (2.0 * hh); b = Xb(D); break;
+                case 4: a = (1.0 + D) * (Cr(D + hh) - Cr(D - hh)) / (2.0 * hh) / g_cf_scale; b = Cr(D) / g_cf_scale; break;
+            }
+            g_out[10] = a - g_cf_T * b;
+        }
 #ifdef KINK_S
         {   // score for the scale kappa: dh/dkappa = k(1+k) x^k / (kappa B) >= 0; softsign-bounded, paired with eps
             double hk = k * (1.0 + k) * std::pow(x, k) / (lambda * B_power_scale(e, k, sc));
@@ -919,13 +1199,23 @@ static inline void firm_chain_A(
 #ifdef EPSVAR
         ghat_row[12] = eps_pt * eps_pt - f.sig2eps;   // eps-variance row for corner firms too (Hans, 2026-09-29)
 #endif
+#ifdef IND5
+        if (f.jidx >= 0 && f.jidx < N_IND) {   // corner firm: M = M*, u = 0
+            if (g_ind_mode == 0) ghat_row[13 + f.jidx] = eps_pt * lnM_pt;
+            else if (g_ind_mode == 1) ghat_row[13 + f.jidx] = eps_pt;
+            else if (f.umed >= 0.0) ghat_row[13 + f.jidx] = 0.5;
+#ifdef IND5P
+            if (f.pshare >= 0.0) ghat_row[13 + N_IND + f.jidx] = (0.0 >= g_share_u ? 1.0 : 0.0) - f.pshare;   // u = 0
+#endif
+        }
+#endif
 #ifdef KINK_S
         for (int t = 0; t < D_G_A; t++) if (g_dropmask & (1u << t)) ghat_row[t] = 0.0;   // drop_rows, corner firms too
 #endif
         return;
     }
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);   // MH accept/reject only -- the M-proposal draw has its own internal distribution inside draw_from_rho_checked
 
     GVecA g_current, g_try, g_run;
@@ -934,14 +1224,32 @@ static inline void firm_chain_A(
     if (g_qform >= 1) {   // new-rows path: exp_scale, power_scale, linear_new
         // S3 (2026-09-28): exp_scale detection, fixed support M in (max(0,Mstar-Mbar), Mstar]. Same MH scheme,
         // same RNG stream layout (one proposal draw, then one accept draw, per step) as the linear branch below.
+        GVecA g_bar; double q_cur = 0.0;   // rho=prop21: g at ubar = M*, and the current draw's quadratic form
+        if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_bar, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+        if (g_sampler_is) {   // self-normalized IS on n_keep fixed draws
+            std::vector<GVecA> G(n_keep); std::vector<double> lw(n_keep); double lmax = -HUGE_VAL;
+            for (int j = 0; j < n_keep; j++) {
+                double lwp = 0.0; double Mj = is_draw(rng, f, lambda, lwp);
+                moment_g_A_one_exp_scale(Mj, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, G[j], f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                double a = lwp; for (int t = 0; t < D_G_A; t++) a += gamma[t] * G[j][t];
+                if (g_rho_on) a -= rho_Q(G[j], g_bar);
+                lw[j] = a; if (a > lmax) lmax = a;
+            }
+            double sw = 0.0; for (int t = 0; t < D_G_A; t++) g_run[t] = 0.0;
+            for (int j = 0; j < n_keep; j++) { double w = std::exp(lw[j] - lmax); sw += w; for (int t = 0; t < D_G_A; t++) g_run[t] += w * G[j][t]; }
+            for (int t = 0; t < D_G_A; t++) ghat_row[t] = g_run[t] / sw;
+            return;
+        }
         double M_current = q_draw(rng, f.Mstar, lambda, f.Mbar);
-        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current, f.sig2eps);
+        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+        if (g_rho_on) q_cur = rho_Q(g_current, g_bar);
         for (int r = -n_burn + 1; r <= n_keep; r++) {
             double M_try = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try, f.sig2eps);
-            double log_ratio = 0.0;
+            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            double log_ratio = 0.0, q_try = 0.0;
             for (int t = 0; t < D_G_A; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
-            if (std::log(unif(rng)) < log_ratio) g_current = g_try;
+            if (g_rho_on) { q_try = rho_Q(g_try, g_bar); log_ratio -= (q_try - q_cur); }
+            if (std::log(unif(rng)) < log_ratio) { g_current = g_try; q_cur = q_try; }
             if (r > 0) for (int t = 0; t < D_G_A; t++) g_run[t] += g_current[t] / n_keep;
         }
         for (int t = 0; t < D_G_A; t++) ghat_row[t] = g_run[t];
@@ -1022,7 +1330,7 @@ static inline RevenueResult firm_revenue_baseline_A(
         return {R, R / f.pgdp, 0.0, om_pt, 0.0, 0.0};
     }
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);
 
     GVecA g_current, g_try;
@@ -1218,7 +1526,7 @@ static inline void firm_chain_R(
         return;
     }
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);
 
     GVecR g_current, g_try, g_run;
@@ -1284,7 +1592,7 @@ static void compute_dvec_omega_R(
         for (int i = 0; i < n; i++) col[i] -= mu;
     }
     cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans,
-                D_G_R, n, 1.0 / (n - 1), Xc.data(), n, 0.0, Omega, D_G_R);
+                D_G_R, n, omega_div(n), Xc.data(), n, 0.0, Omega, D_G_R);
     for (int i = 0; i < D_G_R; i++)
         for (int j = i + 1; j < D_G_R; j++)
             Omega[j + i * D_G_R] = Omega[i + j * D_G_R];
@@ -1316,7 +1624,7 @@ static double cue_objective_R_std(const double dvec[D_G_R], const double Omega_i
     double max_eig = w[m - 1];
     double obj = 0.0;
     for (int k = 0; k < m; k++) {
-        if (w[k] > 1e-8 * max_eig) {
+        if (keep_eig(w[k], max_eig)) {
             double d2 = 0.0;
             for (int i = 0; i < D_G_R; i++) d2 += Z[i + k * D_G_R] * dvec[i];
             obj += 0.5 * d2 * d2 / w[k];
@@ -1393,7 +1701,7 @@ static FitResultRevGrid fit_one_revgrid_point(
         nlopt_set_xtol_rel(opt, 1e-4);
         nlopt_set_maxeval(opt, 2000);
         nlopt_set_maxtime(opt, maxtime);
-        double minf;
+        double minf = HUGE_VAL;
         nlopt_result res = nlopt_optimize(opt, xstart, &minf);
         int iters = nlopt_get_numevals(opt);
         nlopt_destroy(opt);
@@ -1697,7 +2005,7 @@ static FitResultRevGridFixedTheta fit_one_revgrid_point_fixedtheta(
         nlopt_set_xtol_rel(opt, 1e-4);
         nlopt_set_maxeval(opt, 2000);
         nlopt_set_maxtime(opt, maxtime);
-        double minf;
+        double minf = HUGE_VAL;
         nlopt_result res = nlopt_optimize(opt, xstart, &minf);
         int iters = nlopt_get_numevals(opt);
         nlopt_destroy(opt);
@@ -1888,7 +2196,7 @@ static void run_omegadiag_mode(
             int n_kept = 0;
             double min_kept_eig = std::numeric_limits<double>::infinity();
             for (int k = 0; k < m; k++) {
-                if (w[k] > 1e-8 * max_eig) {
+                if (keep_eig(w[k], max_eig)) {
                     double d2 = 0.0;
                     for (int i = 0; i < D_G_R; i++) d2 += Z[i + k * D_G_R] * dvec[i];
                     obj += 0.5 * d2 * d2 / w[k];
@@ -1901,7 +2209,7 @@ static void run_omegadiag_mode(
                       << " n_kept=" << n_kept << "/" << m << " cond_kept=" << cond_kept
                       << " max_eig=" << max_eig << " min_eig=" << w[0] << "\n" << std::flush;
             for (int k = 0; k < m; k++) {
-                bool kept = w[k] > 1e-8 * max_eig;
+                bool kept = keep_eig(w[k], max_eig);
                 double d2 = 0.0;
                 for (int i = 0; i < D_G_R; i++) d2 += Z[i + k * D_G_R] * dvec[i];
                 double contrib = kept ? 0.5 * d2 * d2 / w[k] : 0.0;
@@ -1969,14 +2277,25 @@ static void compute_dvec_omega_A(
         for (int i = 0; i < n; i++) col[i] -= mu;
     }
 
-    cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans,
-                D_G_A, n, 1.0 / (g_cut_ak ? n : (n - 1)), Xc.data(), n, 0.0, Omega, D_G_A);
+    if (g_cluster_on) {   // sum centred rows within plant, then Omega = n^-1 S'S (S: g_ncl x D_G_A)
+        std::vector<double> Sm((size_t)g_ncl * D_G_A, 0.0);
+        for (int j = 0; j < D_G_A; j++) {
+            const double *col = Xc.data() + (size_t)j * n; double *sc = Sm.data() + (size_t)j * g_ncl;
+            for (int i = 0; i < n; i++) sc[firms[i].cl] += col[i];
+        }
+        cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans,
+                    D_G_A, g_ncl, 1.0 / n, Sm.data(), g_ncl, 0.0, Omega, D_G_A);
+    } else {
+        cblas_dsyrk(CblasColMajor, CblasUpper, CblasTrans,
+                    D_G_A, n, omega_div(n), Xc.data(), n, 0.0, Omega, D_G_A);
+    }
     for (int i = 0; i < D_G_A; i++)
         for (int j = i + 1; j < D_G_A; j++)
             Omega[j + i * D_G_A] = Omega[i + j * D_G_A];
 }
 
 static double cue_objective_A_std(const double dvec[D_G_A], const double Omega_in[D_G_A * D_G_A]) {
+    if (g_cut_ak) return cue_core_ak(dvec, Omega_in, nullptr, nullptr);
     double w[D_G_A], Z[D_G_A * D_G_A];
     int m = eig_A_active(Omega_in, w, Z);
     if (m < 1) return std::numeric_limits<double>::infinity();
@@ -1998,6 +2317,41 @@ static double cue_objective_A_std(const double dvec[D_G_A], const double Omega_i
 // its loading on the last row; (3) for interior firms, per-firm tilted means of u = ln(M*/M), x = e/Mbar and
 // omega(M) (same MH chain and RNG layout as firm_chain_A, exp_scale branch), their cross-firm summaries, and their
 // correlation with the tax rate. Reproduces Lhat exactly when run at a fitted point (self-check).
+// mode=rhoD (2026-09-30): per-row sd of g under the uniform proposal at a given par (interior firms, n_keep draws
+// each, pooled), printed as the rho_D string to pass to every compared run. Dropped rows get 1.
+static void run_rhoD_mode(const std::vector<FirmData> &firms, double lambda, double delta0, double delta1, double delta2,
+                          int n_keep, uint64_t base_seed) {
+    double s1[D_G_A] = {0}, s2[D_G_A] = {0}; double cnt = 0;
+    for (const FirmData &f : firms) {
+        if (f.corner == 1) continue;
+        std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
+        GVecA g;
+        for (int r = 0; r < n_keep; r++) {
+            double M = q_draw(rng, f.Mstar, lambda, f.Mbar);
+            moment_g_A_one_exp_scale(M, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            for (int t = 0; t < D_G_A; t++) { s1[t] += g[t]; s2[t] += g[t] * g[t]; }
+            cnt += 1;
+        }
+    }
+    const unsigned msk = a_rowmask();
+    std::cout << "RHO_D: ";
+    for (int t = 0; t < D_G_A; t++) {
+        double sd = std::sqrt(std::max(0.0, s2[t] / cnt - (s1[t] / cnt) * (s1[t] / cnt)));
+        if (msk & (1u << t)) sd = 0.0;               // dropped here: 0 = "not computed"; a run with this row live refuses it
+        else if (!(sd > 0)) sd = 1.0;
+#ifdef IND5
+        // bounded +-1/2 indicator rows (ind_rows=median) stay out of the rho penalty (2026-10-01, medians review S1): for
+        // them (g - g(M*))^2 / D^2 is linear in g, i.e. only a shift of gamma by 1/D^2, which put the start gamma = 0 on a
+        // saturated plateau. inf = left out (rho_Q adds 0); exact reparametrization, estimand unchanged.
+        if (g_ind_mode == 2 && t >= 13 && t < 13 + N_IND && !(msk & (1u << t))) { std::cout << "inf" << (t + 1 < D_G_A ? "," : "\n"); continue; }
+#ifdef IND5P
+        if (t >= 13 + N_IND && t < 13 + 2 * N_IND && !(msk & (1u << t))) { std::cout << "inf" << (t + 1 < D_G_A ? "," : "\n"); continue; }   // share rows: bounded
+#endif
+#endif
+        std::cout << std::setprecision(10) << sd << (t + 1 < D_G_A ? "," : "\n");
+    }
+}
+
 static void run_adiag_mode(
     const std::vector<FirmData> &firms, double lambda, double delta0, double delta1, double delta2,
     const double gamma[D_G_A], int n_burn, int n_keep, uint64_t base_seed, int n_threads
@@ -2026,7 +2380,28 @@ static void run_adiag_mode(
         }
         std::cout << "\n";
     }
-    // eigen-decomposition, same call and truncation rule as cue_objective_A_std
+    if (g_cut_ak) {   // the objective's own basis: correlation-scaled Omega with the null-direction guard
+        const unsigned mask = a_rowmask(); double sc[D_G_A], C[D_G_A * D_G_A], dt[D_G_A];
+        for (int t = 0; t < D_G_A; t++) { const double o = Omega[t + t * D_G_A]; sc[t] = (!(mask & (1u << t)) && o > 0.0) ? std::sqrt(o) : 1.0; dt[t] = dvec[t] / sc[t]; }
+        for (int b = 0; b < D_G_A; b++) for (int a = 0; a < D_G_A; a++) C[a + b * D_G_A] = Omega[a + b * D_G_A] / (sc[a] * sc[b]);
+        double wc[D_G_A], Zc[D_G_A * D_G_A]; const int mc = eig_A_active(C, wc, Zc);
+        if (mc >= 1) {
+            const double tol = NULL_EIG_REL * wc[mc - 1]; double dn = 0.0; for (int t = 0; t < D_G_A; t++) if (!(mask & (1u << t))) dn += dt[t] * dt[t]; dn = std::sqrt(dn);
+            CueAkInfo inf; cue_core_ak(dvec, Omega, nullptr, &inf);
+            std::cout << "CORRELATION-SCALED Omega (the objective's basis under cut=ak; null tol " << tol << "): " << inf.n_null_floored
+                      << " null direction(s) floored (penalty), " << inf.n_null_skipped << " skipped (exact identity)\n";
+            std::cout << "ceigen k  lambda_C      status   contrib_to_Lhat  top_row(|loading|)\n";
+            for (int k = mc - 1; k >= 0; k--) {
+                double zd = 0.0; int top = 0; double topv = 0.0;
+                for (int t = 0; t < D_G_A; t++) { zd += Zc[t + k * D_G_A] * dt[t]; if (std::fabs(Zc[t + k * D_G_A]) > topv) { topv = std::fabs(Zc[t + k * D_G_A]); top = t; } }
+                const bool nul = wc[k] < tol, vio = nul && null_violated(zd, dn);
+                const double lam = vio ? tol : wc[k];
+                std::cout << "  " << k << "  " << wc[k] << "  " << (nul ? (vio ? "NULL-floor" : "NULL-skip ") : "kept      ") << "  "
+                          << ((nul && !vio) ? 0.0 : 0.5 * zd * zd / lam) << "  " << top << "(" << topv << ")\n";
+            }
+        }
+    }
+    // eigen-decomposition of the raw Omega (diagnostic; under cut=ak the objective uses the correlation-scaled table above)
     double w[D_G_A], Z[D_G_A * D_G_A];
     int m = eig_A_active(Omega, w, Z);
     if (m < 1) { std::cout << "eigendecomposition failed\n"; return; }
@@ -2045,25 +2420,73 @@ static void run_adiag_mode(
     int ni = static_cast<int>(idx.size());
     std::vector<double> mu_u(ni), mu_x(ni), mu_om(ni), sd_om(ni), om_pt(ni), lt(ni), mu_lnB(ni), mu_eps(ni), mu_eps2(ni), sic(ni);
     std::vector<double> sh_beyond(ni, 0.0);   // share of kept draws beyond the kink (qform 4)
+    // tail diagnostic (2026-09-30, audit finding 1): per-firm max kept u, share of kept draws with u > 8, exposure to the
+    // beyond-kink tail (M* > c_k kappa Mbar, so M -> 0 is beyond the kink) and the u^2 coefficient a_i of gamma'g there
+    // (row 5: -1, row 7: -(1-beta), row 12: +1, row 13+j: -1; dropped rows excluded). a_i > 0 & exposed => improper tilt.
+    std::vector<double> umax(ni, 0.0), sh_u8(ni, 0.0), a_tail(ni, 0.0), ess(ni, 0.0), sh_edge(ni, 0.0); std::vector<int> exposed(ni, 0);
+    std::vector<double> mu_q(ni, 0.0);   // tilted E[q] per firm (detection probability; power forms: min(x^k, 1))
+    std::vector<double> p05(ni, 0.0), p10(ni, 0.0);   // tilted P(u >= 0.05), P(u >= 0.10) per firm (2026-10-02: the deconvolution's share is a probability)
+    auto q_of = [&](double e, const FirmData &f) -> double {
+#ifdef KINK
+        if (g_qform == 4 || g_qform == 5) return std::min(1.0, std::pow(std::max(0.0, e) / (lambda * f.Mbar), g_kpow));
+#endif
+        (void)e; (void)f; return std::numeric_limits<double>::quiet_NaN(); };
     std::atomic<int> next{0};
     auto worker = [&]() {
         int k;
         while ((k = next.fetch_add(1)) < ni) {
             const FirmData &f = firms[idx[k]];
-            std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+            std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
             std::uniform_real_distribution<double> unif(0.0, 1.0);
-            GVecA gc, gt;
+            GVecA gc, gt, gb; double qc = 0.0;
+            if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gb, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
             double Mc = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc, f.sig2eps);
+            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            if (g_rho_on) qc = rho_Q(gc, gb);
             double su = 0, sx = 0, so = 0, so2 = 0, sb = 0, se = 0, se2 = 0;
+            if (g_sampler_is) {   // same fixed draws as firm_chain_A's IS branch (first draw Mc is not used there: redo the stream)
+                std::mt19937_64 rng2(firm_seed(base_seed, f.row_id));
+                std::vector<double> Ms(n_keep), lw(n_keep); double lmax = -HUGE_VAL;
+                for (int j = 0; j < n_keep; j++) {
+                    double lwp = 0.0; Ms[j] = is_draw(rng2, f, lambda, lwp);
+                    moment_g_A_one_exp_scale(Ms[j], f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                    double a = lwp; for (int t = 0; t < D_G_A; t++) a += gamma[t] * gt[t];
+                    if (g_rho_on) a -= rho_Q(gt, gb);
+                    lw[j] = a; if (a > lmax) lmax = a;
+                }
+                double sw = 0.0, sw2 = 0.0; std::vector<double> w(n_keep);
+                for (int j = 0; j < n_keep; j++) { w[j] = std::exp(lw[j] - lmax); sw += w[j]; sw2 += w[j] * w[j]; }
+                ess[k] = sw * sw / sw2;
+                for (int j = 0; j < n_keep; j++) {
+                    double pj = w[j] / sw, Mj = Ms[j];
+                    double om = omega_of_M(Mj, f.Mstar, f.V, f.Wt, f.beta), e = e_of_M(Mj, f.Mstar), uu = std::log(f.Mstar / Mj);
+                    su += pj * uu; sx += pj * e / f.Mbar; so += pj * om; so2 += pj * om * om;
+                    if (pj > 1e-6 && uu > umax[k]) umax[k] = uu; if (uu > 8.0) sh_u8[k] += pj;
+                    mu_q[k] += pj * q_of(e, f);
+                    if (uu >= 0.05) p05[k] += pj; if (uu >= 0.10) p10[k] += pj;
+#ifdef KINK
+                    if ((g_qform == 4 || g_qform == 5) && B_power_scale(e, g_kpow, lambda * f.Mbar) < 1e-3) sh_edge[k] += pj;   // FOC-ceiling edge
+#endif
+                    { double ep = eps_of_M(Mj, f.Mstar, f.V); se += pj * ep; se2 += pj * ep * ep; }
+#ifdef KINK
+                    if (g_qform == 4 && e / (lambda * f.Mbar) >= power_ceiling(g_kpow)) sh_beyond[k] += pj;
+#endif
+                    sb += pj * q_lnB(e, lambda, f.Mbar);
+                }
+                su *= n_keep; sx *= n_keep; so *= n_keep; so2 *= n_keep; se *= n_keep; se2 *= n_keep; sb *= n_keep;   // undone by the /n_keep below
+            } else
             for (int r = -n_burn + 1; r <= n_keep; r++) {
                 double Mt = q_draw(rng, f.Mstar, lambda, f.Mbar);
-                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps);
-                double lr = 0.0; for (int t = 0; t < D_G_A; t++) lr += gamma[t] * (gt[t] - gc[t]);
-                if (std::log(unif(rng)) < lr) { gc = gt; Mc = Mt; }
+                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                double lr = 0.0, qt = 0.0; for (int t = 0; t < D_G_A; t++) lr += gamma[t] * (gt[t] - gc[t]);
+                if (g_rho_on) { qt = rho_Q(gt, gb); lr -= (qt - qc); }
+                if (std::log(unif(rng)) < lr) { gc = gt; Mc = Mt; qc = qt; }
                 if (r > 0) {
                     double om = omega_of_M(Mc, f.Mstar, f.V, f.Wt, f.beta), e = e_of_M(Mc, f.Mstar);
                     su += std::log(f.Mstar / Mc); sx += e / f.Mbar; so += om; so2 += om * om;
+                    { double uu = std::log(f.Mstar / Mc); if (uu > umax[k]) umax[k] = uu; if (uu > 8.0) sh_u8[k] += 1.0 / n_keep; }
+                    mu_q[k] += q_of(e, f) / n_keep;
+                    { double uu = std::log(f.Mstar / Mc); if (uu >= 0.05) p05[k] += 1.0 / n_keep; if (uu >= 0.10) p10[k] += 1.0 / n_keep; }
                     { double ep = eps_of_M(Mc, f.Mstar, f.V); se += ep; se2 += ep * ep; }
 #ifdef KINK
                     if (g_qform == 4 && e / (lambda * f.Mbar) >= power_ceiling(g_kpow)) sh_beyond[k] += 1.0 / n_keep;
@@ -2076,6 +2499,22 @@ static void run_adiag_mode(
             sd_om[k] = std::sqrt(std::max(0.0, so2 / n_keep - mu_om[k] * mu_om[k]));
             om_pt[k] = omega_of_M(f.Mstar, f.Mstar, f.V, f.Wt, f.beta);
             lt[k] = std::log(f.tau_rho);
+            {   unsigned msk = a_rowmask(); auto live = [&](int t) { return t < D_G_A && !(msk & (1u << t)); };
+                double a = 0.0;
+                if (live(5)) a += -gamma[5];
+                if (live(7)) a += -(1.0 - f.beta) * gamma[7];
+#ifdef EPSVAR
+                if (live(12)) a += gamma[12];
+#endif
+#ifdef IND5
+                if (g_ind_mode == 0 && f.jidx >= 0 && live(13 + f.jidx)) a += -gamma[13 + f.jidx];   // only eps*lnM grows like u^2
+#endif
+                a_tail[k] = a;
+#ifdef KINK
+                exposed[k] = (g_qform == 4 && f.Mstar >= power_ceiling(g_kpow) * lambda * f.Mbar) ? 1 : 0;
+                if (g_qform == 5) exposed[k] = (f.Mstar <= power_ceiling(g_kpow) * lambda * f.Mbar) ? 1 : 0;   // support reaches M -> 0
+#endif
+            }
         }
     };
     std::vector<std::thread> pool; for (int t = 0; t < std::max(1, n_threads); t++) pool.emplace_back(worker);
@@ -2086,6 +2525,30 @@ static void run_adiag_mode(
         double ma = mean(a), mb = mean(b), sab = 0, saa = 0, sbb = 0;
         for (size_t i = 0; i < a.size(); i++) { sab += (a[i] - ma) * (b[i] - mb); saa += (a[i] - ma) * (a[i] - ma); sbb += (b[i] - mb) * (b[i] - mb); }
         return sab / std::sqrt(saa * sbb); };
+    {   // TARGETED MOMENTS (2026-10-01, lead): evasion by industry vs data, share overreporting, detection probability
+        std::map<int, std::vector<int>> by;
+        for (int k2 = 0; k2 < ni; k2++) by[firms[idx[k2]].sic].push_back(k2);
+        std::cout << "TARGETED: industry | n | E[V] data | tilted E[u] | share of firms with tilted E[u] >= 0.05 | mean tilted E[q]\n";
+        double sh_all = 0;
+        for (auto &kv : by) {
+            double ev = 0, eu = 0, sh = 0, eq = 0; int nn = (int)kv.second.size();
+            for (int k2 : kv.second) { ev += firms[idx[k2]].V; eu += mu_u[k2]; sh += (mu_u[k2] >= 0.05); eq += mu_q[k2]; }
+            sh_all += sh;
+            char buf[200]; std::snprintf(buf, sizeof buf, "  %d | %d | %.3f | %.3f | %.3f | %.4f\n", kv.first, nn, ev / nn, eu / nn, sh / nn, eq / nn);
+            std::cout << buf;
+        }
+        std::cout << "TARGETED-P: industry | mean tilted P(u >= 0.05) | mean tilted P(u >= 0.10)   (comparable to the deconvolution's P)\n";
+        for (auto &kv : by) { double a = 0, b = 0; for (int k2 : kv.second) { a += p05[k2]; b += p10[k2]; }
+            char bp[120]; std::snprintf(bp, sizeof bp, "  %d | %.3f | %.3f\n", kv.first, a / kv.second.size(), b / kv.second.size()); std::cout << bp; }
+        std::vector<double> qs = mu_q; std::sort(qs.begin(), qs.end());
+        double mq = 0; for (double x : mu_q) mq += x; mq /= ni;
+        auto qq = [&](double p) { return qs[std::min(qs.size() - 1, (size_t)(p * (qs.size() - 1)))]; };
+        char buf[300]; std::snprintf(buf, sizeof buf, "TARGETED: all | share overreporting (E[u] >= 0.05) %.3f | detection E[q]: mean %.4f p50 %.4f p90 %.4f p99 %.4f max %.4f\n",
+                                     sh_all / ni, mq, qq(0.5), qq(0.9), qq(0.99), qs.back());
+        std::cout << buf;
+        double qg = 0; int ng = 0; for (int k2 = 0; k2 < ni; k2++) if (firms[idx[k2]].audit_g) { qg += mu_q[k2]; ng++; }
+        if (ng) { std::snprintf(buf, sizeof buf, "TARGETED: mean E[q] in audit group (%d firms) %.4f\n", ng, qg / ng); std::cout << buf; }
+    }
     std::cout << "interior firms: " << ni << "\n"
               << "  tilted eps    : mean of firm means " << mean(mu_eps) << "; mean of firm E[eps^2] " << mean(mu_eps2)
               << " (=> tilted var(eps) " << mean(mu_eps2) - mean(mu_eps) * mean(mu_eps) << ")\n"
@@ -2098,6 +2561,18 @@ static void run_adiag_mode(
                            << " | share of firms with mean u < 0.01: " << double(z) / v.size() << ", < 0.05: " << double(z2) / v.size() << "\n"
                            << "  share of draws beyond the kink (mean over firms) " << mean(sh_beyond) << "; firms with >50% of draws beyond: "
                            << [&]() { size_t c = 0; for (double b : sh_beyond) if (b > 0.5) c++; return double(c) / sh_beyond.size(); }() << "\n";
+                         return o.str(); }()
+              << [&]() { size_t ex = 0, bad = 0, u8 = 0, u12 = 0; double s8 = 0; std::vector<double> v = umax; std::sort(v.begin(), v.end());
+                         for (int k2 = 0; k2 < ni; k2++) { if (exposed[k2]) { ex++; if (a_tail[k2] > 0) bad++; } if (umax[k2] > 8) u8++; if (umax[k2] > 12) u12++; s8 += sh_u8[k2]; }
+                         std::ostringstream o;
+                         {   double me = 0; size_t h = 0; for (double x : sh_edge) { me += x; if (x > 0.5) h++; }
+                             o << "  CEILING EDGE (B < 1e-3, IS only): mean tilted mass " << me / ni << "; firms with > 50% of mass there " << double(h) / ni << "\n"; }
+                         if (g_sampler_is) { std::vector<double> e2 = ess; std::sort(e2.begin(), e2.end());
+                             o << "  IS effective sample size per firm (of " << n_keep << "): p1 " << e2[(size_t)(0.01 * (ni - 1))] << " p10 " << e2[(size_t)(0.1 * (ni - 1))]
+                               << " p50 " << e2[ni / 2] << " mean " << [&]() { double a = 0; for (double x : ess) a += x; return a / ni; }() << "\n"; }
+                         o << (g_qform == 5 ? "  TAIL (power_nokink: exposed = support reaches M -> 0): exposed " : "  TAIL: exposed to beyond-kink tail ") << double(ex) / ni << "; exposed with a_i>0 (" << (g_rho_on ? "proper under rho=prop21; tilt still grows like exp(a u^2) before the rho penalty takes over" : "improper tilt under uniform rho") << ") " << double(bad) / ni
+                           << " | max kept u per firm: p50 " << v[ni / 2] << " p99 " << v[(size_t)(0.99 * (ni - 1))] << " max " << v.back()
+                           << " | firms with a kept u > 8: " << u8 << ", > 12: " << u12 << " | mean share of kept draws with u > 8: " << s8 / ni << "\n";
                          return o.str(); }()
               << "  tilted x=e/Mb : mean " << mean(mu_x) << ", sd " << sd(mu_x) << "\n"
               << "  tilted ln B   : mean " << mean(mu_lnB) << ", sd " << sd(mu_lnB) << "\n"
@@ -2179,7 +2654,7 @@ static FitResultAFixedDelta fit_one_grid_point_A_fixedDelta(
         nlopt_set_xtol_rel(opt, 1e-4);
         nlopt_set_maxeval(opt, 2000);
         nlopt_set_maxtime(opt, maxtime);
-        double minf;
+        double minf = HUGE_VAL;
         nlopt_result res = nlopt_optimize(opt, xstart, &minf);
         int iters = nlopt_get_numevals(opt);
         nlopt_destroy(opt);
@@ -2309,7 +2784,346 @@ struct FitResultAFixedLambda {
     double Lhat_pass1, wander;
     int iters_pass1, convergence_pass1;
     double point_seconds;
+    long inner_cap = -1, inner_fail = -1;   // nested mode: inner solves at the eval cap / failed (-1 = not nested)
+    double ws_L0 = std::numeric_limits<double>::quiet_NaN(), ws_L1 = std::numeric_limits<double>::quiet_NaN();   // gamma_init=solve: L before / after
 };
+
+// ============================================================================
+// Nested solve (2026-09-30, Phase 2, audit 7.5): outer Nelder-Mead over the free theta entries (delta, k, s, kappa),
+// inner L-BFGS over gamma with an ANALYTIC gradient. Requires sampler=is: at fixed theta each firm's R fixed draws
+// g_j(theta) and rho terms -Q_j(theta) are computed once (NestedCache) and the inner problem only reweights them.
+//   gtilde_i(gamma) = sum_j w_ij g_ij / sum_j w_ij,  w_ij = exp(gamma'g_ij - Q_ij)
+//   L(gamma) = 1/2 d' Omega^+ d, d = mean_i gtilde_i, Omega = n^-1 sum_p S_p S_p' (S_p = sum_{i in p} (gtilde_i - d);
+//              p = i when cluster=none)
+//   dgtilde_i/dgamma = H_i = Cov_w,i(g, g);  with v = Omega^+ d and s_p = v'S_p:
+//   grad L = n^-1 sum_i H_i v (1 - s_{p(i)}) + (n^-1 sum_p n_p s_p) Hbar v,   Hbar = n^-1 sum_i H_i
+// (the dOmega term uses d(S_p) = sum_{i in p} H_i - n_p Hbar). Omega^+ keeps eigenvalues > 0 on the live rows
+// (eig_A_active), as the regular objective. Corner firms: one fixed row, weight 1, H = 0. CLI nested=1.
+static bool g_nested = false;
+
+struct NestedCache {
+    int n = 0, R = 0;
+    std::vector<float> G;      // n x R x D_G_A (firm-major); corner firms use slot j = 0 only
+    std::vector<float> lq;     // n x R: -Q_ij (0 when rho=uniform)
+    std::vector<int> Ri;       // draws per firm (R interior, 1 corner)
+};
+
+static void nested_build_cache(NestedCache &C, const std::vector<FirmData> &firms, double lambda, double delta0,
+                               double delta1, double delta2, int R, uint64_t base_seed, int n_threads) {
+    C.n = (int)firms.size(); C.R = R;
+    C.G.assign((size_t)C.n * R * D_G_A, 0.0f); C.lq.assign((size_t)C.n * R, 0.0f); C.Ri.assign(C.n, R);
+    std::atomic<int> next{0};
+    auto work = [&]() {
+        int i;
+        while ((i = next.fetch_add(1)) < C.n) {
+            const FirmData &f = firms[i];
+            float *Gi = C.G.data() + (size_t)i * R * D_G_A; float *lqi = C.lq.data() + (size_t)i * R;
+            if (f.corner == 1) {   // fixed row, exactly as firm_chain_A's corner branch
+                double row[D_G_A];
+                firm_chain_A(f, lambda, delta0, delta1, delta2, nullptr, 0, 0, base_seed, row);
+                for (int t = 0; t < D_G_A; t++) Gi[t] = (float)row[t];
+                C.Ri[i] = 1; continue;
+            }
+            std::mt19937_64 rng(firm_seed(base_seed, f.row_id));   // same stream and order as firm_chain_A's IS branch
+            GVecA g, gbar;
+            if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gbar, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            for (int j = 0; j < R; j++) {
+                double lwp = 0.0; double M = is_draw(rng, f, lambda, lwp);
+                moment_g_A_one_exp_scale(M, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                for (int t = 0; t < D_G_A; t++) Gi[(size_t)j * D_G_A + t] = (float)g[t];
+                lqi[j] = (float)((g_rho_on ? -rho_Q(g, gbar) : 0.0) + lwp);
+            }
+        }
+    };
+    std::vector<std::thread> pool; for (int t = 0; t < std::max(1, n_threads); t++) pool.emplace_back(work);
+    for (auto &th : pool) th.join();
+}
+
+struct NestedInner {
+    const NestedCache *C; const std::vector<FirmData> *firms; int n_threads;
+    std::vector<int> free_idx;   // gamma rows optimized (live rows)
+    long evals = 0;
+};
+
+// L(gamma) and its gradient (w.r.t. the free gamma rows). gam_full: D_G_A vector.
+static double nested_L(const NestedInner &P, const double *gam_full, double *grad_free) {
+    const NestedCache &C = *P.C; const int n = C.n;
+    std::vector<double> gt((size_t)n * D_G_A);
+    std::atomic<int> next{0};
+    auto pass1 = [&]() {
+        int i; std::vector<double> lw;
+        while ((i = next.fetch_add(1)) < n) {
+            const int Ri = C.Ri[i]; const float *Gi = C.G.data() + (size_t)i * C.R * D_G_A; const float *lqi = C.lq.data() + (size_t)i * C.R;
+            double *gi = gt.data() + (size_t)i * D_G_A;
+            if (Ri == 1) { for (int t = 0; t < D_G_A; t++) gi[t] = Gi[t]; continue; }
+            lw.resize(Ri); double lmax = -HUGE_VAL;
+            for (int j = 0; j < Ri; j++) { double a = lqi[j]; const float *g = Gi + (size_t)j * D_G_A; for (int t = 0; t < D_G_A; t++) a += gam_full[t] * g[t]; lw[j] = a; if (a > lmax) lmax = a; }
+            double sw = 0.0; for (int t = 0; t < D_G_A; t++) gi[t] = 0.0;
+            for (int j = 0; j < Ri; j++) { double w = std::exp(lw[j] - lmax); lw[j] = w; sw += w; const float *g = Gi + (size_t)j * D_G_A; for (int t = 0; t < D_G_A; t++) gi[t] += w * g[t]; }
+            for (int t = 0; t < D_G_A; t++) gi[t] /= sw;
+        }
+    };
+    { std::vector<std::thread> pool; for (int t = 0; t < std::max(1, P.n_threads); t++) pool.emplace_back(pass1); for (auto &th : pool) th.join(); }
+    double d[D_G_A] = {0};
+    for (int i = 0; i < n; i++) for (int t = 0; t < D_G_A; t++) d[t] += gt[(size_t)i * D_G_A + t];
+    for (int t = 0; t < D_G_A; t++) d[t] /= n;
+    // S (cluster sums of centred rows) and Omega
+    const int ncl = g_cluster_on ? g_ncl : n;
+    std::vector<double> S((size_t)ncl * D_G_A, 0.0); std::vector<int> ncount(ncl, 0);
+    for (int i = 0; i < n; i++) { int p = g_cluster_on ? (*P.firms)[i].cl : i; ncount[p]++;
+        for (int t = 0; t < D_G_A; t++) S[(size_t)p * D_G_A + t] += gt[(size_t)i * D_G_A + t] - d[t]; }
+    double Omega[D_G_A * D_G_A] = {0};
+    for (int p = 0; p < ncl; p++) { const double *sp = S.data() + (size_t)p * D_G_A;
+        for (int a = 0; a < D_G_A; a++) { if (sp[a] == 0.0) continue; for (int b = 0; b < D_G_A; b++) Omega[a + b * D_G_A] += sp[a] * sp[b]; } }
+    for (int k = 0; k < D_G_A * D_G_A; k++) Omega[k] /= n;
+    double v[D_G_A] = {0};   // v = Omega^+ dbar (guarded, correlation-scaled core; nested=1 requires cut=ak)
+    const double L = cue_core_ak(d, Omega, v, nullptr);
+    if (!std::isfinite(L)) return HUGE_VAL;
+    if (grad_free) {
+        std::vector<double> sp(ncl, 0.0); double nps = 0.0;
+        for (int p = 0; p < ncl; p++) { double a = 0.0; for (int t = 0; t < D_G_A; t++) a += v[t] * S[(size_t)p * D_G_A + t]; sp[p] = a; nps += ncount[p] * a; }
+        nps /= n;
+        // per firm h_i = H_i v = E_w[g (g'v)] - gtilde (gtilde'v), stored per firm and summed in firm order afterwards
+        // (deterministic regardless of thread scheduling; review 2026-09-30 found per-thread buffers made fits irreproducible)
+        std::vector<double> hstore((size_t)n * D_G_A, 0.0);
+        std::atomic<int> nx{0};
+        auto pass2 = [&](int tid) {
+            (void)tid; int i; std::vector<double> ww;
+            while ((i = nx.fetch_add(1)) < n) {
+                const int Ri = C.Ri[i]; if (Ri == 1) continue;
+                const float *Gi = C.G.data() + (size_t)i * C.R * D_G_A; const float *lqi = C.lq.data() + (size_t)i * C.R;
+                const double *gi = gt.data() + (size_t)i * D_G_A;
+                ww.resize(Ri); double lmax = -HUGE_VAL;
+                for (int j = 0; j < Ri; j++) { double a = lqi[j]; const float *g = Gi + (size_t)j * D_G_A; for (int t = 0; t < D_G_A; t++) a += gam_full[t] * g[t]; ww[j] = a; if (a > lmax) lmax = a; }
+                double sw = 0.0; for (int j = 0; j < Ri; j++) { ww[j] = std::exp(ww[j] - lmax); sw += ww[j]; }
+                double h[D_G_A] = {0};
+                for (int j = 0; j < Ri; j++) { const float *g = Gi + (size_t)j * D_G_A; double gv = 0.0; for (int t = 0; t < D_G_A; t++) gv += g[t] * v[t];
+                    double c = ww[j] / sw * gv; for (int t = 0; t < D_G_A; t++) h[t] += c * g[t]; }
+                double gtv = 0.0; for (int t = 0; t < D_G_A; t++) gtv += gi[t] * v[t];
+                for (int t = 0; t < D_G_A; t++) h[t] -= gi[t] * gtv;
+                for (int t = 0; t < D_G_A; t++) hstore[(size_t)i * D_G_A + t] = h[t];
+            }
+        };
+        { std::vector<std::thread> pool; for (int t = 0; t < std::max(1, P.n_threads); t++) pool.emplace_back(pass2, t); for (auto &th : pool) th.join(); }
+        double g1[D_G_A] = {0}, g2[D_G_A] = {0};
+        for (int i = 0; i < n; i++) {
+            const double *h = hstore.data() + (size_t)i * D_G_A;
+            double sPi = g_cluster_on ? sp[(*P.firms)[i].cl] : sp[i];
+            for (int t = 0; t < D_G_A; t++) { g1[t] += h[t] * (1.0 - sPi); g2[t] += h[t]; }
+        }
+        for (size_t q = 0; q < P.free_idx.size(); q++) { int t = P.free_idx[q]; grad_free[q] = g1[t] / n + nps * g2[t] / n; }
+    }
+    return L;
+}
+
+static double nested_inner_obj(unsigned nf, const double *x, double *grad, void *data) {
+    NestedInner *P = static_cast<NestedInner *>(data);
+    double gam[D_G_A] = {0};
+    for (unsigned q = 0; q < nf; q++) gam[P->free_idx[q]] = x[q];
+    P->evals++;
+    return nested_L(*P, gam, grad);
+}
+
+// Convex dual (Schennach 2014 / AK2020): F(gamma) = n^-1 sum_i log sum_j exp(gamma'g_ij - Q_ij + lw_ij), convex in gamma,
+// gradient = dbar(gamma) = n^-1 sum_i gtilde_i(gamma); its minimizer solves dbar = 0 when a finite solution exists
+// (otherwise gamma diverges along the direction the moments cannot be matched). Used as the inner start (inner_start=dual,
+// default): unique for given theta, independent of the path. Sums in firm order.
+static double nested_F(unsigned nf, const double *x, double *grad, void *data) {
+    NestedInner *P = static_cast<NestedInner *>(data);
+    const NestedCache &C = *P->C; const int n = C.n;
+    double gam[D_G_A] = {0}; for (unsigned q = 0; q < nf; q++) gam[P->free_idx[q]] = x[q];
+    std::vector<double> lse(n), gt((size_t)n * D_G_A);
+    std::atomic<int> next{0};
+    auto work = [&]() {
+        int i; std::vector<double> lw;
+        while ((i = next.fetch_add(1)) < n) {
+            const int Ri = C.Ri[i]; const float *Gi = C.G.data() + (size_t)i * C.R * D_G_A; const float *lqi = C.lq.data() + (size_t)i * C.R;
+            double *gi = gt.data() + (size_t)i * D_G_A;
+            if (Ri == 1) { double a = 0.0; for (int t = 0; t < D_G_A; t++) { gi[t] = Gi[t]; a += gam[t] * Gi[t]; } lse[i] = a; continue; }
+            lw.resize(Ri); double lmax = -HUGE_VAL;
+            for (int j = 0; j < Ri; j++) { double a = lqi[j]; const float *g = Gi + (size_t)j * D_G_A; for (int t = 0; t < D_G_A; t++) a += gam[t] * g[t]; lw[j] = a; if (a > lmax) lmax = a; }
+            double sw = 0.0; for (int t = 0; t < D_G_A; t++) gi[t] = 0.0;
+            for (int j = 0; j < Ri; j++) { double w = std::exp(lw[j] - lmax); sw += w; const float *g = Gi + (size_t)j * D_G_A; for (int t = 0; t < D_G_A; t++) gi[t] += w * g[t]; }
+            for (int t = 0; t < D_G_A; t++) gi[t] /= sw;
+            lse[i] = lmax + std::log(sw);
+        }
+    };
+    { std::vector<std::thread> pool; for (int t = 0; t < std::max(1, P->n_threads); t++) pool.emplace_back(work); for (auto &th : pool) th.join(); }
+    double F = 0.0, d[D_G_A] = {0};
+    for (int i = 0; i < n; i++) { F += lse[i]; for (int t = 0; t < D_G_A; t++) d[t] += gt[(size_t)i * D_G_A + t]; }
+    if (grad) for (unsigned q = 0; q < nf; q++) grad[q] = d[P->free_idx[q]] / n;
+    P->evals++;
+    return F / n;
+}
+static int g_inner_nm = 0;     // CLI inner_algo=lbfgs (default) | neldermead (Schennach's simplex on gamma, App. G)
+static int g_inner_dual = 0;   // CLI inner_start=fixed (default: gamma start fixed within a pass) | dual (convex dual first)
+// gamma_init=solve (2026-10-01, medians review S3; joint NM only): before pass 1, solve gamma alone at the start theta
+// (inner L-BFGS with the analytic gradient, as the nested inner step, up to 4 rounds of 300 evaluations) and start the joint NM there
+// instead of gamma = 0. Once per fit at its own start theta: no chaining across points. Default gamma_init=zero.
+static int g_gamma_init_solve = 0;
+// Solve the inner problem at the cached theta, starting from gam (updated in place). Returns L at the solution.
+static double nested_solve_gamma(NestedInner &P, double *gam, int *code) {
+    const int nf = (int)P.free_idx.size();
+    std::vector<double> xg(nf); for (int q = 0; q < nf; q++) xg[q] = gam[P.free_idx[q]];
+    if (g_inner_dual) {   // convex dual first, from the given start; its solution is the start of the CUE step
+        nlopt_opt od = nlopt_create(NLOPT_LD_LBFGS, nf);
+        nlopt_set_min_objective(od, nested_F, &P);
+        nlopt_set_ftol_rel(od, 1e-10); nlopt_set_xtol_rel(od, 1e-8); nlopt_set_maxeval(od, 300);
+        double fd = HUGE_VAL; nlopt_optimize(od, xg.data(), &fd); nlopt_destroy(od);
+    }
+    nlopt_opt o = nlopt_create(g_inner_nm ? NLOPT_LN_NELDERMEAD : NLOPT_LD_LBFGS, nf);
+    nlopt_set_min_objective(o, nested_inner_obj, &P);
+    if (g_inner_nm) {   // derivative-free: steps 0.2 / D_t, budget 200 x free gamma
+        std::vector<double> st(nf); for (int q = 0; q < nf; q++) st[q] = gamma_step(P.free_idx[q]);
+        nlopt_set_initial_step(o, st.data()); nlopt_set_xtol_rel(o, 1e-6); nlopt_set_ftol_rel(o, 1e-8);   // ftol: reachable from gamma = 0
+        nlopt_set_maxeval(o, 200 * nf);
+    } else { nlopt_set_ftol_rel(o, 1e-8); nlopt_set_xtol_rel(o, 1e-6); nlopt_set_maxeval(o, 300); }
+    double f = HUGE_VAL; nlopt_result r = nlopt_optimize(o, xg.data(), &f);
+    nlopt_destroy(o);
+    if (code) *code = (int)r;
+    for (int q = 0; q < nf; q++) gam[P.free_idx[q]] = xg[q];
+    return f;
+}
+
+struct NestedOuter {
+    const std::vector<FirmData> *firms; double lambda; int R; uint64_t base_seed; int n_threads;
+    int OG; std::vector<int> theta_free; const double *x_full0;   // full x layout, theta entries fixed where not free
+    double gam[D_G_A]; NestedCache C; NestedInner P; long outer_evals = 0; long inner_evals_total = 0;
+    long inner_maxeval_hits = 0, inner_failures = 0;
+    double gam_start[D_G_A];                         // inner start, FIXED within a pass (no warm-start chaining)
+    double best_f = HUGE_VAL; std::vector<double> best_xt; double best_gam[D_G_A];
+};
+
+static void nested_set_theta(const double *x, double &lam_use) {
+#ifdef KINK
+    g_kpow = x[3];
+#endif
+#ifdef KINK_S
+    g_kshare = x[4];
+#endif
+#ifdef KAPPA_FREE
+    lam_use = x[5];
+#else
+    (void)x; (void)lam_use;
+#endif
+}
+
+static double nested_outer_obj(unsigned nt, const double *xt, double *grad, void *data) {
+    (void)grad;
+    NestedOuter *O = static_cast<NestedOuter *>(data);
+    std::vector<double> x(O->x_full0, O->x_full0 + O->OG);
+    for (unsigned q = 0; q < nt; q++) x[O->theta_free[q]] = xt[q];
+    double lam_use = O->lambda; nested_set_theta(x.data(), lam_use);
+    nested_build_cache(O->C, *O->firms, lam_use, x[0], x[1], x[2], O->R, O->base_seed, O->n_threads);
+    O->P.C = &O->C; long e0 = O->P.evals;
+    std::copy(O->gam_start, O->gam_start + D_G_A, O->gam);   // same inner start for every theta in the pass
+    int icode = 0;
+    double f = nested_solve_gamma(O->P, O->gam, &icode);
+    if (icode == NLOPT_MAXEVAL_REACHED) O->inner_maxeval_hits++;
+    if (icode < 0) O->inner_failures++;
+    O->inner_evals_total += O->P.evals - e0; O->outer_evals++;
+    if (f < O->best_f) { O->best_f = f; O->best_xt.assign(xt, xt + nt); std::copy(O->gam, O->gam + D_G_A, O->best_gam); }
+    return f;
+}
+
+// ---- mode=cfprofile (2026-10-02): counterfactual revenue at a fixed theta (AK2020 App. F) ----
+// For each Delta: cache the draws at theta (sampler=is), row 10 = credit/scale; profile L(T) = min_gamma L(theta, gamma; T)
+// by warm-started L-BFGS (the nested inner solver); T_hat = argmin (golden section); bounds by test inversion:
+// hard = {T: 2nL <= chi2_{d_g,0.95}}, soft = {T: 2n(L - L_min) <= chi2_{1,0.95} = 3.841}. Writes one CSV row per Delta.
+static double chi2_q95(int d) {   // Wilson-Hilferty approximation of the 0.95 quantile (error < 0.05 for d >= 3)
+    const double z = 1.6448536269514722, a = 2.0 / (9.0 * d);
+    return d * std::pow(1.0 - a + z * std::sqrt(a), 3.0);
+}
+static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double *par, int n_keep, uint64_t base_seed,
+                               int n_threads, const std::vector<double> &deltas, const std::string &output_csv) {
+    const int n = (int)firms.size(), R = n_keep;
+    double kap = par[0];
+    double gam0[D_G_A]; for (int t = 0; t < D_G_A; t++) gam0[t] = par[4 + N_XFE + t];
+    gam0[10] = 0.0;
+    double mt1p = 0.0, sc = 0.0;
+    for (const FirmData &f : firms) { mt1p += f.t1 / f.pgdp; sc += f.tau_rho * f.Mstar; }
+    mt1p /= n; sc /= n; g_cf_scale = sc;
+    int dg = 0; std::vector<int> fidx; for (int t = 0; t < D_G_A; t++) if (!(g_dropmask & (1u << t))) { dg++; fidx.push_back(t); }
+    const double crit = chi2_q95(dg), crit1 = 3.841458820694124;
+    std::cout << "cfprofile: n " << n << ", live rows d_g " << dg << " (row 10 = credit), crit chi2_" << dg << " " << crit
+              << " | scale (mean tau_P M*) " << sc << " | mean t1/pgdp " << mt1p << "\n" << std::flush;
+    std::ofstream out(output_csv);
+    out << std::setprecision(10) << "Delta,T_hat,TS_min,d_g,crit,hard_lo,hard_hi,soft_lo,soft_hi,scale,mean_t1p,credit_hat,revenue_hat,"
+           "revenue_hard_lo,revenue_hard_hi,T_at_gamma0,evals\n";
+    for (double Dl : deltas) {
+        g_cf_on = true; g_cf_Delta = Dl; g_cf_T = 0.0;
+        NestedCache C; nested_build_cache(C, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
+        std::vector<float> c10((size_t)n * R), b10((size_t)n * R, 1.0f);   // row 10 = a - T b
+        for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] = C.G[((size_t)i * R + j) * D_G_A + 10];
+        if (g_cf_target >= 3) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
+            g_cf_T = 1.0; NestedCache C1; nested_build_cache(C1, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
+            for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] = c10[(size_t)i * R + j] - C1.G[((size_t)i * R + j) * D_G_A + 10];
+            g_cf_T = 0.0;
+        }
+        auto setT = [&](double T) { for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++)
+                                        C.G[((size_t)i * R + j) * D_G_A + 10] = (float)(c10[(size_t)i * R + j] - T * b10[(size_t)i * R + j]); };
+        NestedInner P; P.C = &C; P.firms = &firms; P.n_threads = n_threads; P.free_idx = fidx;
+        // T at the operating gamma (row 10's gamma = 0, so the weights are the fit's): starting value
+        double T0 = 0.0, Tb = 0.0;
+        for (int i = 0; i < n; i++) {
+            const int Ri = C.Ri[i]; const float *Gi = C.G.data() + (size_t)i * R * D_G_A; const float *lqi = C.lq.data() + (size_t)i * R;
+            std::vector<double> lw(Ri); double lmax = -HUGE_VAL;
+            for (int j = 0; j < Ri; j++) { double a = lqi[j]; for (int t = 0; t < D_G_A; t++) a += gam0[t] * Gi[(size_t)j * D_G_A + t]; lw[j] = a; lmax = std::max(lmax, a); }
+            double sw = 0.0, sc10 = 0.0, sb10 = 0.0;
+            for (int j = 0; j < Ri; j++) { double w = std::exp(lw[j] - lmax); sw += w; sc10 += w * c10[(size_t)i * R + j]; sb10 += w * b10[(size_t)i * R + j]; }
+            T0 += sc10 / sw; Tb += sb10 / sw;
+        }
+        T0 /= Tb;   // E[a] / E[b] (= E[a] for b = 1)
+        double gwarm[D_G_A]; std::copy(gam0, gam0 + D_G_A, gwarm);
+        const int nm_s = g_inner_nm, du_s = g_inner_dual; g_inner_nm = 0; g_inner_dual = 0;
+        long evals = 0;
+        auto Lprof = [&](double T) -> double {
+            setT(T); double g[D_G_A]; std::copy(gwarm, gwarm + D_G_A, g); int code = 0;
+            double L = nested_solve_gamma(P, g, &code);
+            for (int round = 2; round <= 4 && code == NLOPT_MAXEVAL_REACHED; round++) L = nested_solve_gamma(P, g, &code);
+            evals++;
+            if (std::isfinite(L)) std::copy(g, g + D_G_A, gwarm);   // warm start along T (theta fixed)
+            return L;
+        };
+        // golden section on [T0 - h, T0 + h], widened if the minimum sits at an edge
+        double h = std::max(0.02 * std::fabs(T0), 1e-4), lo = T0 - h, hi = T0 + h;
+        for (int w = 0; w < 6; w++) {
+            const double fl = Lprof(lo), fm = Lprof(0.5 * (lo + hi)), fh = Lprof(hi);
+            if (fm <= fl && fm <= fh) break;
+            if (fl < fm) { hi = 0.5 * (lo + hi); lo -= 2 * h; } else { lo = 0.5 * (lo + hi); hi += 2 * h; }
+            h *= 2;
+        }
+        const double gr = 0.6180339887498949;
+        double a = lo, b = hi, x1 = b - gr * (b - a), x2 = a + gr * (b - a), f1 = Lprof(x1), f2 = Lprof(x2);
+        while (b - a > 1e-5 * std::max(1.0, std::fabs(T0))) {
+            if (f1 < f2) { b = x2; x2 = x1; f2 = f1; x1 = b - gr * (b - a); f1 = Lprof(x1); }
+            else { a = x1; x1 = x2; f1 = f2; x2 = a + gr * (b - a); f2 = Lprof(x2); }
+        }
+        const double That = f1 < f2 ? x1 : x2, Lmin = std::min(f1, f2), TSmin = 2.0 * n * Lmin;
+        double gbest[D_G_A]; std::copy(gwarm, gwarm + D_G_A, gbest);
+        // bound search: the T where 2nL crosses a level, outward from T_hat (bisection after bracketing)
+        auto bound = [&](double level, int dir) -> double {
+            std::copy(gbest, gbest + D_G_A, gwarm);
+            if (TSmin > level) return std::numeric_limits<double>::quiet_NaN();
+            double step = std::max(0.01 * std::fabs(That), 1e-4), inside = That, outside = That;
+            for (int it = 0; it < 30; it++) { outside = That + dir * step; if (2.0 * n * Lprof(outside) > level) break; inside = outside; step *= 2; }
+            for (int it = 0; it < 30; it++) { const double mid = 0.5 * (inside + outside);
+                if (2.0 * n * Lprof(mid) > level) outside = mid; else inside = mid;
+                if (std::fabs(outside - inside) < 1e-5 * std::max(1.0, std::fabs(That))) break; }
+            return 0.5 * (inside + outside);
+        };
+        const double hlo = bound(crit, -1), hhi = bound(crit, +1), slo = bound(TSmin + crit1, -1), shi = bound(TSmin + crit1, +1);
+        g_inner_nm = nm_s; g_inner_dual = du_s;
+        std::cout << "  Delta " << Dl << ": T_hat " << That << " (T at operating gamma " << T0 << "), TS_min " << TSmin
+                  << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | revenue_hat "
+                  << mt1p - That * sc << " | " << evals << " profiled solves\n" << std::flush;
+        out << Dl << "," << That << "," << TSmin << "," << dg << "," << crit << "," << hlo << "," << hhi << "," << slo << "," << shi << ","
+            << sc << "," << mt1p << "," << That * sc << "," << mt1p - That * sc << "," << mt1p - hhi * sc << "," << mt1p - hlo * sc << ","
+            << T0 << "," << evals << "\n" << std::flush;
+    }
+    g_cf_on = false;
+    std::cout << "Saved: " << output_csv << "\n";
+}
 
 static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
     const std::vector<FirmData> &firms, double lambda,
@@ -2322,33 +3136,112 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
 
     double lower[n_par], upper[n_par], x[n_par];
     for (int t = 0; t < OG; t++) { lower[t] = -DELTA_BOUND; upper[t] = DELTA_BOUND; }
+    for (int t = 0; t < 3; t++) if (std::isfinite(g_dfix[t])) { lower[t] = upper[t] = g_dfix[t]; }   // pinned deltas
 #ifdef KINK
     lower[3] = 0.02; upper[3] = g_kmax;   // the power k
 #endif
 #ifdef KINK_S
     lower[3] = upper[3] = g_kfixed;       // k fixed (equal bounds)
+    if (g_kfree) { lower[3] = g_kmin; upper[3] = g_kmax; }   // k estimated (k_free=1)
     lower[4] = 0.02; upper[4] = 0.6;      // the share s beyond the kink
     if (g_sfixed > 0 && g_sfixed < 1) lower[4] = upper[4] = g_sfixed;   // s held fixed (s_fixed)
 #endif
 #ifdef KAPPA_FREE
-    lower[5] = 0.02; upper[5] = 5.0;      // the scale kappa
+    lower[5] = 0.02; upper[5] = g_kappa_max;   // the scale kappa (CLI kappa_max, default 5)
 #endif
     for (int t = 0; t < D_G_A; t++) { lower[OG + t] = -HUGE_VAL; upper[OG + t] = HUGE_VAL; }
     for (int t = 0; t < n_par; t++) x[t] = x0_in[t];
+    for (int t = 0; t < 3; t++) if (std::isfinite(g_dfix[t])) x[t] = g_dfix[t];
+#ifdef KINK_S
+    if (!g_kfree) x[3] = g_kfixed;                              // pinned k written into the start (audit 7.8)
+    if (g_sfixed > 0 && g_sfixed < 1) x[4] = g_sfixed;          // pinned s likewise
+    // gamma on rows zeroed by drop_rows has no effect on the objective: pin it at 0 (equal bounds) so the optimizer
+    // does not spend evaluations on flat directions (2026-09-30).
+    for (int t = 0; t < D_G_A; t++) if (g_dropmask & (1u << t)) { lower[OG + t] = upper[OG + t] = 0.0; x[OG + t] = 0.0; }
+#endif
 #ifdef KAPPA_FREE
     x[5] = lambda;                        // start kappa at the grid value
+    if (std::isfinite(g_kappa_fix)) { lower[5] = upper[5] = g_kappa_fix; x[5] = g_kappa_fix; }   // kappa_fixed
 #endif
 
+    if (g_nested) {   // outer NM over free theta, inner L-BFGS over gamma (analytic gradient); see NestedOuter
+        auto t0 = std::chrono::steady_clock::now();
+        NestedOuter O; O.firms = &firms; O.lambda = lambda; O.R = n_keep; O.base_seed = base_seed; O.n_threads = n_threads;
+        O.OG = OG; O.x_full0 = x;
+        for (int t = 0; t < OG; t++) if (lower[t] != upper[t]) O.theta_free.push_back(t);
+        for (int t = 0; t < D_G_A; t++) { O.gam[t] = x[OG + t]; O.gam_start[t] = x[OG + t]; }
+        O.P.firms = &firms; O.P.n_threads = n_threads;
+        for (int t = 0; t < D_G_A; t++) if (lower[OG + t] != upper[OG + t]) O.P.free_idx.push_back(t);
+        const int nt = (int)O.theta_free.size();
+        std::vector<double> xt(nt), lb(nt), ub(nt), st(nt);
+        for (int q = 0; q < nt; q++) { int t = O.theta_free[q]; xt[q] = x[t]; lb[q] = lower[t]; ub[q] = upper[t];
+            st[q] = (t <= 2) ? 0.5 : (t == 3 ? 0.1 : (t == 4 ? 0.05 : 0.1)); }
+        const int mev = g_maxeval > 0 ? g_maxeval : 200 * nt;
+        auto outer_pass = [&](int *code, int *nev) -> double {
+            nlopt_opt o = nlopt_create(NLOPT_LN_NELDERMEAD, nt);
+            nlopt_set_lower_bounds(o, lb.data()); nlopt_set_upper_bounds(o, ub.data());
+            nlopt_set_min_objective(o, nested_outer_obj, &O);
+            if (g_init_step_auto) nlopt_set_initial_step(o, st.data());
+            nlopt_set_xtol_rel(o, 1e-4); nlopt_set_maxeval(o, mev); nlopt_set_maxtime(o, maxtime);
+            double f = HUGE_VAL; nlopt_result r = nlopt_optimize(o, xt.data(), &f);
+            *nev = nlopt_get_numevals(o); nlopt_destroy(o); *code = (int)r;
+            if (r == NLOPT_MAXEVAL_REACHED || r == NLOPT_MAXTIME_REACHED || r < 0)
+                std::cout << "    WARNING: nested outer pass NOT converged (NLopt code " << (int)r << ", " << *nev << " evals)\n" << std::flush;
+            return f;
+        };
+        FitResultAFixedLambda R{};
+        O.best_xt = xt;
+        int c1 = 0, n1 = 0; outer_pass(&c1, &n1);
+        double f1 = O.best_f; int c = c1, nv = n1;
+        const std::vector<double> p1_xt = O.best_xt; double p1_gam[D_G_A]; std::copy(O.best_gam, O.best_gam + D_G_A, p1_gam);
+        for (int pass = 2; pass <= g_npasses; pass++) {   // restart NM from the best (theta, gamma) of the previous pass
+            double prev = O.best_f;
+            xt = O.best_xt; std::copy(O.best_gam, O.best_gam + D_G_A, O.gam_start);
+            outer_pass(&c, &nv);
+            std::cout << "    nested pass " << pass << ": best Lhat " << prev << " -> " << O.best_f << " (" << nv << " outer evals)\n" << std::flush;
+        }
+        // report the best (theta, gamma) evaluated -- no re-solve
+        std::vector<double> xf(x, x + OG); for (int q = 0; q < nt; q++) xf[O.theta_free[q]] = O.best_xt[q];
+        R.delta0 = xf[0]; R.delta1 = xf[1]; R.delta2 = xf[2];
+        for (int k = 0; k < N_XFE; k++) R.d0yr[k] = xf[3 + k];
+        for (int t = 0; t < D_G_A; t++) R.gamma[t] = O.best_gam[t];
+        const double fin = O.best_f;
+        R.Lhat = fin; R.convergence = c; R.iters = nv; R.Lhat_pass1 = f1; R.convergence_pass1 = c1; R.iters_pass1 = n1;
+        {   double sq = 0.0; for (int q = 0; q < nt; q++) sq += (O.best_xt[q] - p1_xt[q]) * (O.best_xt[q] - p1_xt[q]);
+            for (int t = 0; t < D_G_A; t++) sq += (O.best_gam[t] - p1_gam[t]) * (O.best_gam[t] - p1_gam[t]);
+            R.wander = std::sqrt(sq); }   // distance from pass 1's best (theta, gamma) to the final best
+        R.point_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
+        R.inner_cap = O.inner_maxeval_hits; R.inner_fail = O.inner_failures;
+        std::cout << "    nested: " << O.outer_evals << " outer evaluations, " << O.inner_evals_total << " inner (gamma) evaluations; inner solves at the eval cap "
+                  << O.inner_maxeval_hits << ", failed " << O.inner_failures << "\n" << std::flush;
+        return R;
+    }
+
     nlopt_algorithm cur_algo = algo;
+    int n_free = 0; for (int t = 0; t < n_par; t++) if (lower[t] != upper[t]) n_free++;
+    const int maxeval = g_maxeval > 0 ? g_maxeval : 200 * n_free;
+    double step[n_par];
+    for (int t = 0; t < n_par; t++) step[t] = 0.1;
+    step[0] = step[1] = step[2] = 0.5;
+#ifdef KINK_S
+    step[3] = 0.1; step[4] = 0.05;
+#endif
+#ifdef KAPPA_FREE
+    step[5] = 0.1;
+#endif
+    for (int t = 0; t < D_G_A; t++) step[OG + t] = gamma_step(t);
+    FDWrap fdw{inner_obj_A_fixedLambda, &params, lower, upper};
     auto run_opt = [&](double *xstart) -> FitResultAFixedLambda {
         nlopt_opt opt = nlopt_create(cur_algo, n_par);
         nlopt_set_lower_bounds(opt, lower);
         nlopt_set_upper_bounds(opt, upper);
-        nlopt_set_min_objective(opt, inner_obj_A_fixedLambda, &params);
+        if (cur_algo == NLOPT_LD_LBFGS) nlopt_set_min_objective(opt, fd_objective, &fdw);
+        else nlopt_set_min_objective(opt, inner_obj_A_fixedLambda, &params);
+        if (g_init_step_auto && cur_algo != NLOPT_LD_LBFGS) nlopt_set_initial_step(opt, step);
         nlopt_set_xtol_rel(opt, 1e-4);
-        nlopt_set_maxeval(opt, 2000);
+        nlopt_set_maxeval(opt, maxeval);
         nlopt_set_maxtime(opt, maxtime);
-        double minf;
+        double minf = HUGE_VAL;
         nlopt_result res = nlopt_optimize(opt, xstart, &minf);
         int iters = nlopt_get_numevals(opt);
         nlopt_destroy(opt);
@@ -2357,10 +3250,31 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
         for (int k = 0; k < N_XFE; k++) r.d0yr[k] = xstart[3 + k];
         for (int t = 0; t < D_G_A; t++) r.gamma[t] = xstart[OG + t];
         r.Lhat = minf; r.convergence = static_cast<int>(res); r.iters = iters;
+        if (res == NLOPT_MAXEVAL_REACHED || res == NLOPT_MAXTIME_REACHED || res < 0)
+            std::cout << "    WARNING: optimizer pass NOT converged (NLopt code " << static_cast<int>(res) << ", " << iters << " evals)\n" << std::flush;
         return r;
     };
 
     auto t_start = std::chrono::steady_clock::now();
+    double ws_L0 = std::numeric_limits<double>::quiet_NaN(), ws_L1 = ws_L0;
+    if (g_gamma_init_solve) {   // warm start for gamma at the start theta (see g_gamma_init_solve)
+        double lam_use = lambda; nested_set_theta(x, lam_use);
+        NestedCache C; nested_build_cache(C, firms, lam_use, x[0], x[1], x[2], n_keep, base_seed, n_threads);
+        NestedInner P; P.C = &C; P.firms = &firms; P.n_threads = n_threads;
+        for (int t = 0; t < D_G_A; t++) if (lower[OG + t] != upper[OG + t]) P.free_idx.push_back(t);
+        double gam[D_G_A]; for (int t = 0; t < D_G_A; t++) gam[t] = x[OG + t];
+        const double f0 = nested_L(P, gam, nullptr);
+        const int nm_save = g_inner_nm, du_save = g_inner_dual; g_inner_nm = 0; g_inner_dual = 0;
+        int code = 0; double f1 = nested_solve_gamma(P, gam, &code);
+        for (int round = 2; round <= 4 && code == NLOPT_MAXEVAL_REACHED; round++) f1 = nested_solve_gamma(P, gam, &code);   // up to 4 x 300 evals
+        g_inner_nm = nm_save; g_inner_dual = du_save;
+        double gmax = 0.0; for (int t = 0; t < D_G_A; t++) gmax = std::max(gmax, std::fabs(gam[t]));
+        std::cout << "    gamma_init=solve: L at start gamma " << f0 << " -> " << f1 << " (L-BFGS code " << code << ", "
+                  << P.evals << " evals, max|gamma| " << gmax << ")\n" << std::flush;
+        ws_L0 = f0; ws_L1 = f1;
+        if (std::isfinite(f1) && f1 < f0) for (int t = 0; t < D_G_A; t++) x[OG + t] = gam[t];
+        else std::cout << "    gamma_init=solve: no improvement, keeping the given gamma start\n";
+    }
     FitResultAFixedLambda r1 = run_opt(x);
     double x2[n_par];
     x2[0] = r1.delta0; x2[1] = r1.delta1; x2[2] = r1.delta2;
@@ -2410,7 +3324,19 @@ static FitResultAFixedLambda fit_one_grid_point_A_fixedLambda(
     }
     if (g_algo2 >= 0) cur_algo = static_cast<nlopt_algorithm>(g_algo2);
     FitResultAFixedLambda r2 = run_opt(x2);
+    for (int pass = 3; pass <= g_npasses; pass++) {
+        double x3[n_par];
+        std::copy(x2, x2 + n_par, x3);   // keeps fixed entries (e.g. k) as set
+        x3[0] = r2.delta0; x3[1] = r2.delta1; x3[2] = r2.delta2;
+        for (int k = 0; k < N_XFE; k++) x3[3 + k] = r2.d0yr[k];
+        for (int t = 0; t < D_G_A; t++) x3[OG + t] = r2.gamma[t];
+        double prev = r2.Lhat;
+        FitResultAFixedLambda r3 = run_opt(x3);
+        std::cout << "    pass " << pass << ": Lhat " << prev << " -> " << r3.Lhat << " (" << r3.iters << " evals)\n" << std::flush;
+        r2 = r3;
+    }
     r2.point_seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - t_start).count();
+    r2.ws_L0 = ws_L0; r2.ws_L1 = ws_L1;
 
     r2.Lhat_pass1 = r1.Lhat;
     r2.iters_pass1 = r1.iters;
@@ -2508,7 +3434,7 @@ static void run_lambdagrid_mode(
     for (int k = 0; k < N_XFE; k++) out << "d0yr" << (82 + k) << ",";   // YEAR_FE build only
 #endif
     for (int t = 0; t < D_G_A; t++) out << "gamma" << (t + 1) << ",";   // D_G_A-sized (9, 10 TAU_ROW, 20 YEAR_FE)
-    out << "Lhat,Lhat_pass1,wander,convergence,convergence_pass1,iters,iters_pass1,point_seconds,n\n";
+    out << "Lhat,Lhat_pass1,wander,convergence,convergence_pass1,iters,iters_pass1,point_seconds,n,inner_cap,inner_fail,ws_L0,ws_L1\n";
     for (auto &r : results) {
         out << r.first << ","
             << r.second.delta0 << "," << r.second.delta1 << "," << r.second.delta2 << ",";
@@ -2516,7 +3442,8 @@ static void run_lambdagrid_mode(
         for (int t = 0; t < D_G_A; t++) out << r.second.gamma[t] << ",";
         out << r.second.Lhat << "," << r.second.Lhat_pass1 << "," << r.second.wander << ","
             << r.second.convergence << "," << r.second.convergence_pass1 << ","
-            << r.second.iters << "," << r.second.iters_pass1 << "," << r.second.point_seconds << "," << firms.size() << "\n";
+            << r.second.iters << "," << r.second.iters_pass1 << "," << r.second.point_seconds << "," << firms.size() << ","
+            << r.second.inner_cap << "," << r.second.inner_fail << "," << r.second.ws_L0 << "," << r.second.ws_L1 << "\n";
     }
     out.close();
     std::cout << "Saved: " << output_csv << " (" << results.size() << " points)\n";
@@ -2543,7 +3470,7 @@ static void firm_accept_rate_A(
     n_accept = 0; n_total = 0;
     if (f.corner == 1) return;
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);
 
     GVecA g_current, g_try;
@@ -2629,7 +3556,7 @@ static void firm_redraw_count_A(
     n_redraws = 0; n_draws = 0;
     if (f.corner == 1) return;
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);
 
     GVecA g_current, g_try;
@@ -2733,7 +3660,7 @@ static void run_psitraj_mode(
             if (f.corner == 1) continue;
             n_interior_partial++;
 
-            std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+            std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
             std::uniform_real_distribution<double> unif(0.0, 1.0);
 
             GVecA g_current, g_try;
@@ -2806,7 +3733,7 @@ static void run_accepttraj_mode(
             if (f.corner == 1) continue;
             n_interior_partial++;
 
-            std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+            std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
             std::uniform_real_distribution<double> unif(0.0, 1.0);
 
             GVecA g_current, g_try;
@@ -2871,7 +3798,7 @@ static double firm_mean_gammag_A(
 ) {
     if (f.corner == 1) return std::numeric_limits<double>::quiet_NaN();
 
-    std::mt19937_64 rng(base_seed + static_cast<uint64_t>(f.row_id));
+    std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
     std::uniform_real_distribution<double> unif(0.0, 1.0);
 
     GVecA g_current, g_try;
@@ -2986,7 +3913,7 @@ static FitResultAFixed3 fit_one_grid_point_A_fixed3(
         nlopt_set_xtol_rel(opt, 1e-4);
         nlopt_set_maxeval(opt, 2000);
         nlopt_set_maxtime(opt, maxtime);
-        double minf;
+        double minf = HUGE_VAL;
         nlopt_result res = nlopt_optimize(opt, xstart, &minf);
         int iters = nlopt_get_numevals(opt);
         nlopt_destroy(opt);
@@ -3165,6 +4092,18 @@ static void run_grid3d_mode(
 
 int main(int argc, char **argv) {
     auto opt = parse_cli(argc, argv);
+    {   // reject unknown keys (2026-09-30, audit finding 9): a typo used to fall back silently to the default
+        static const char *known[] = {"algo","algo2","base_seed","cut","cv_beta","cv_mu_c","delta1_hi","delta1_lo","delta1_offset",
+            "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
+            "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
+            "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "threads_per_point","x0"};
+        for (const auto &kv : opt) {
+            bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
+            if (!ok) { std::cerr << "Unknown option: " << kv.first << "\n"; return 1; }
+        }
+    }
     std::string input_csv  = get_opt(opt, "input_csv", "");
     std::string output_csv = get_opt(opt, "output_csv", "");
     double lambda_lo = std::strtod(get_opt(opt, "lambda_lo", "1e-9").c_str(), nullptr);
@@ -3218,14 +4157,27 @@ int main(int argc, char **argv) {
               << "========================================\n";
 
     std::vector<FirmData> firms = read_firm_csv(input_csv);
+    {   std::string cls = get_opt(opt, "cluster", "none");
+        if (cls == "plant") {
+            std::map<long, int> ids;
+            for (FirmData &f : firms) {
+                if (f.plant < 0) { std::cerr << "cluster=plant needs a plant_id column (row_id " << f.row_id << ")\n"; return 1; }
+                auto it = ids.find(f.plant); if (it == ids.end()) it = ids.emplace(f.plant, (int)ids.size()).first;
+                f.cl = it->second;
+            }
+            g_ncl = (int)ids.size(); g_cluster_on = true;
+            std::cout << "cluster=plant: Omega clustered over " << g_ncl << " plants\n";
+        } else if (cls != "none") { std::cerr << "cluster must be none or plant\n"; return 1; }
+    }
     std::cout << "Loaded " << firms.size() << " firm-periods ("
               << std::count_if(firms.begin(), firms.end(), [](const FirmData &f) { return f.corner == 1; })
               << " corner) from " << input_csv << "\n";
 
     std::string mode = get_opt(opt, "mode", "flat");
-    {   std::string cut = get_opt(opt, "cut", "rel");
+    {   std::string cut = get_opt(opt, "cut", "ak");
         if (cut == "ak") { g_cut_ak = true; std::cout << "cut=ak: Omega/n, keep eigenvalues > 0, dropped rows removed before eigen (AK2020 objMCcu)\n"; }
-        else if (cut != "rel") { std::cerr << "cut must be rel or ak\n"; return 1; } }
+        else if (cut == "rel") { g_cut_ak = false; std::cout << "cut=rel: OLD relative eigen-cut (porting error; reproduction of pre-2026-09-30 runs only)\n"; }
+        else { std::cerr << "cut must be ak or rel\n"; return 1; } }
     {   // detection function for moment set A's chain (S3, 2026-09-28); default linear = every earlier result
         std::string qform = get_opt(opt, "qform", "linear");
         if (qform == "exp_scale" || qform == "power_scale") {
@@ -3237,21 +4189,41 @@ int main(int argc, char **argv) {
                 }
             if (g_qform == 1) std::cout << "Detection: qform=exp_scale, q = lambda1*(1-exp(-e/Mbar)); 'lambda' below is lambda1\n";
             else              std::cout << "Detection: qform=power_scale, q = (e/Mbar)^k; 'lambda' below is k\n";
-        } else if (qform == "power_kink") {
+        } else if (qform == "power_kink" || qform == "power_nokink") {
 #ifdef KINK
-            g_qform = 4;
+            g_qform = (qform == "power_nokink") ? 5 : 4;
             g_kshare = std::strtod(get_opt(opt, "kink_share", "0.3").c_str(), nullptr);
             g_kmax = std::min(2.9, std::strtod(get_opt(opt, "k_max", "0.99").c_str(), nullptr));
 #ifdef KINK_S
             g_kfixed = std::strtod(get_opt(opt, "k_fixed", "-1").c_str(), nullptr);
+            g_kfree = get_opt(opt, "k_free", "0") == "1";
+            if (g_kfree) { g_kmax = std::min(2.9, std::strtod(get_opt(opt, "k_max", "2.5").c_str(), nullptr));
+                           g_kmin = std::max(0.01, std::strtod(get_opt(opt, "k_min", "0.05").c_str(), nullptr));
+                           std::cout << "k estimated (k_free=1), bounds [" << g_kmin << ", " << g_kmax << "]\n"; }
             if (!(g_kfixed > 0 && g_kfixed < 2.9)) { std::cerr << "KINK_S build requires k_fixed in (0, 2.9)\n"; return 1; }
             g_sfixed = std::strtod(get_opt(opt, "s_fixed", "-1").c_str(), nullptr);
             {   std::string dr = get_opt(opt, "drop_rows", ""); std::stringstream ss(dr); std::string tok;
                 while (std::getline(ss, tok, ',')) if (!tok.empty()) {
-                    int r = std::atoi(tok.c_str());
-                    if (r < 0 || r >= D_G_A || r == 1 || r == 5 || r == 7 || r == 10) { std::cerr << "drop_rows: row " << r << " not droppable\n"; return 1; }
+                    char *endp = nullptr; long rl = std::strtol(tok.c_str(), &endp, 10);
+                    if (endp == tok.c_str() || *endp != '\0') { std::cerr << "drop_rows: bad token '" << tok << "'\n"; return 1; }
+                    int r = static_cast<int>(rl);
+                    // rows 1, 5, 7 droppable since 2026-09-30 (the corner branch applies the mask too); row 10 pins s
+                    if (r < 0 || r >= D_G_A || r == 10) { std::cerr << "drop_rows: row " << r << " not droppable\n"; return 1; }
                     g_dropmask |= (1u << r);
                 }
+                g_audit_p = std::strtod(get_opt(opt, "audit_p", "-1").c_str(), nullptr);
+                g_audit_on = g_audit_p >= 0.0;
+                if (g_audit_on && g_qform != 5) { std::cerr << "audit_p requires qform=power_nokink (row 10 is the share row under the kink)\n"; return 1; }
+                if (g_audit_on && !(g_audit_p < 1.0)) { std::cerr << "audit_p must be in [0,1)\n"; return 1; }
+                if (g_audit_on) {   // review 4: without the kink q <= 1/(1+k), the value at the FOC ceiling
+                    const double kk = g_kfree ? g_kmin : g_kfixed, qmax = 1.0 / (1.0 + kk);
+                    if (g_audit_p >= qmax) { std::cerr << "audit_p = " << g_audit_p << " >= detection ceiling 1/(1+k) = " << qmax << ": unreachable\n"; return 1; }
+                    if (g_audit_p > 0.8 * qmax) std::cout << "WARNING: audit_p = " << g_audit_p << " is within 20% of the detection ceiling " << qmax
+                                                          << " -- matching it needs the group near the FOC ceiling; check the CEILING EDGE line\n";
+                    if (!g_has_audit_g) { std::cerr << "audit_p needs input column audit_g\n"; return 1; }
+                }
+                if (g_qform == 5) { g_sfixed = 0.3; if (!g_audit_on) g_dropmask |= (1u << 10); }   // no kink: s inert; row 10 = audit row or dropped
+                if (g_audit_on) std::cout << "audit moment: row 10 = audit_g * (q(e) - " << g_audit_p << ")\n";
                 if (g_dropmask) std::cout << "drop_rows mask = " << g_dropmask << " (" << dr << ")\n";
             }
             if (g_sfixed > 0 && g_sfixed < 1) std::cout << "KINK_S: s fixed at " << g_sfixed << " (x0's s entry must equal it)\n";
@@ -3262,7 +4234,9 @@ int main(int argc, char **argv) {
                     std::cerr << "qform=power_kink needs a positive Mbar for every interior firm (row_id " << f.row_id << ")\n";
                     return 1;
                 }
-            std::cout << "Detection: qform=power_kink, q = (e/(kappa*Mbar))^k up to the FOC ceiling, flat beyond; 'lambda' below is"
+            if (g_qform == 5) std::cout << "Detection: qform=power_nokink (2026-09-30), q = (e/(kappa*Mbar))^k, support M in (max(0, M* - c_k kappa Mbar), M*]"
+                                           " (FOC ceiling as a support restriction, redraw at the floor edge); rows 10 dropped, s inert\n";
+            else std::cout << "Detection: qform=power_kink, q = (e/(kappa*Mbar))^k up to the FOC ceiling, flat beyond; 'lambda' below is"
                          " kappa, k estimated; share beyond the kink fixed at " << g_kshare << "\n";
 #else
             std::cerr << "qform=power_kink needs the KINK build (grid_estimator_kink)\n"; return 1;
@@ -3302,7 +4276,7 @@ int main(int argc, char **argv) {
         std::cout << "Year intercepts delta0_82..91 + rows psi*1{year} (YEAR_FE build, D_G_A=" << D_G_A << ")\n";
 #endif
 #ifdef KINK
-        if (g_qform != 4) { std::cerr << "KINK build: use qform=power_kink\n"; return 1; }
+        if (g_qform != 4 && g_qform != 5) { std::cerr << "KINK build: use qform=power_kink or power_nokink\n"; return 1; }
         if (mode == "lambdagrid") {
             std::string ls = get_opt(opt, "lambdas", "");
             if (ls.empty() || ls.find(',') != std::string::npos) {
@@ -3311,7 +4285,94 @@ int main(int argc, char **argv) {
         }
 #endif
     }
-    if (mode == "adiag") {
+    {   std::string sd = get_opt(opt, "seed", "hash");
+        if (sd == "hash") g_seed_hash = true;
+        else if (sd == "add") { g_seed_hash = false; std::cout << "seed=add: OLD per-firm seeding base_seed+row_id (reproduction of pre-2026-09-30 runs only)\n"; }
+        else { std::cerr << "seed must be hash or add\n"; return 1; } }
+    {   std::string sm = get_opt(opt, "sampler", "mh");
+        if (sm == "is") { g_sampler_is = true; std::cout << "sampler=is: self-normalized importance sampling on n_keep fixed draws per firm\n"; }
+        else if (sm != "mh") { std::cerr << "sampler must be mh or is\n"; return 1; }
+        {   std::string pr = get_opt(opt, "proposal", "uniform");
+            if (pr == "mix") {
+                if (!g_sampler_is) { std::cerr << "proposal=mix requires sampler=is\n"; return 1; }
+                if (g_qform != 4 && g_qform != 5) { std::cerr << "proposal=mix requires qform=power_kink or power_nokink\n"; return 1; }
+                g_prop_mix = true; g_mix_umax = std::strtod(get_opt(opt, "mix_umax", "25").c_str(), nullptr);
+                std::cout << "proposal=mix: uniform in M, log-uniform in M (u up to " << g_mix_umax << ") and, when the support is bounded below, log-uniform in M - lo; 1/2,1/2 or 1/3 each; reweighted\n";
+            } else if (pr != "uniform") { std::cerr << "proposal must be uniform or mix\n"; return 1; } }
+        {   std::string gi = get_opt(opt, "gamma_init", "zero");
+            if (gi == "solve") {
+                if (!g_sampler_is) { std::cerr << "gamma_init=solve requires sampler=is\n"; return 1; }
+                if (!g_cut_ak) { std::cerr << "gamma_init=solve requires cut=ak\n"; return 1; }
+                g_gamma_init_solve = 1; std::cout << "gamma_init=solve: gamma solved alone (L-BFGS) at the start theta before the joint NM\n";
+            } else if (gi != "zero") { std::cerr << "gamma_init must be zero or solve\n"; return 1; } }
+        if (get_opt(opt, "nested", "0") == "1") {
+            if (!g_sampler_is) { std::cerr << "nested=1 requires sampler=is\n"; return 1; }
+            if (!g_cut_ak) { std::cerr << "nested=1 requires cut=ak\n"; return 1; }
+            {   std::string ia = get_opt(opt, "inner_algo", "lbfgs");
+                if (ia == "neldermead") g_inner_nm = 1; else if (ia != "lbfgs") { std::cerr << "inner_algo must be lbfgs or neldermead\n"; return 1; }
+                std::cout << "nested inner algorithm: " << ia << "\n"; }
+            {   std::string is = get_opt(opt, "inner_start", "fixed");
+                if (is == "dual") g_inner_dual = 1; else if (is != "fixed") { std::cerr << "inner_start must be dual or fixed\n"; return 1; } }
+            if (g_gamma_init_solve) { std::cerr << "gamma_init=solve applies to the joint NM only; nested=1 already solves gamma at every theta\n"; return 1; }
+            g_nested = true; std::cout << "nested=1: outer Nelder-Mead over theta, inner solve over gamma (inner_algo above)\n";
+        } }
+    {   // dominating measure (Phase 1): rho=uniform (default, old runs) | prop21 (Schennach Prop. 2.1; needs rho_D)
+        std::string rho = get_opt(opt, "rho", "uniform");
+        if (rho == "prop21") {
+            std::string ds = get_opt(opt, "rho_D", ""); std::stringstream ss(ds); std::string tok; int i = 0;
+            while (std::getline(ss, tok, ',') && i < D_G_A) g_rhoD[i++] = std::strtod(tok.c_str(), nullptr);
+            if (i != D_G_A) { std::cerr << "rho=prop21 needs rho_D with " << D_G_A << " values (mode=rhoD prints it), got " << i << "\n"; return 1; }
+            for (int t = 0; t < D_G_A; t++) {
+                if (std::isinf(g_rhoD[t]) && !(a_rowmask() & (1u << t))) {   // review 5: inf (row out of the rho penalty) only for bounded indicator rows
+                    bool med_row = get_opt(opt, "ind_rows", "epslnm") == "median" && t >= 13 && t < 13 + 9;
+#ifdef IND5P
+                    if (t >= 13 + 9 && t < 13 + 18) med_row = true;   // share rows (bounded indicators)
+#endif
+                    if (!med_row) { std::cerr << "rho_D: inf is allowed only on the ind_rows=median rows 13-21 (bounded); row " << t << " is unbounded and inf would make the tilt improper\n"; return 1; } }
+                if (!(a_rowmask() & (1u << t)) && !(g_rhoD[t] > 0)) { std::cerr << "rho_D: row " << t << " is live but its D was not computed (0); rerun mode=rhoD with this drop set\n"; return 1; }
+                if (!(g_rhoD[t] > 0)) g_rhoD[t] = 1.0;   // dropped row: never used
+            }
+            g_rho_on = true;
+            std::cout << "rho=prop21: drho ~ exp(-||D^-1 (g(M) - g(M*))||^2) x uniform(0, M*]\n";
+        } else if (rho != "uniform") { std::cerr << "rho must be uniform or prop21\n"; return 1; }
+        else if (g_qform == 5 && mode != "rhoD") { std::cerr << "qform=power_nokink requires rho=prop21 (uniform rho gives an improper tilt for firms whose support reaches M -> 0)\n"; return 1; }
+    }
+    {   std::string ag = get_opt(opt, "audit_group", "k");   // audit group: k (capital, headline) | v (V, robustness)
+        if (ag == "v") { if (!g_has_audit_gv) { std::cerr << "audit_group=v needs input column audit_gv\n"; return 1; }
+                         for (FirmData &f : firms) f.audit_g = f.audit_gv; std::cout << "audit group: top 10% of V within industry\n"; }
+        else if (ag != "k") { std::cerr << "audit_group must be k or v\n"; return 1; } }
+    {   std::string ir = get_opt(opt, "ind_rows", "epslnm");
+        if (ir == "eps") g_ind_mode = 1; else if (ir == "median") g_ind_mode = 2; else if (ir != "epslnm") { std::cerr << "ind_rows must be epslnm, eps or median\n"; return 1; }
+#ifndef IND5
+        if (ir != "epslnm") { std::cerr << "ind_rows needs the IND5 build\n"; return 1; }
+#endif
+        if (g_ind_mode == 2 && !g_has_umed) { std::cerr << "ind_rows=median needs input column umed\n"; return 1; }
+#ifdef IND5P
+        {   g_share_u = std::strtod(get_opt(opt, "share_u", "0.05").c_str(), nullptr);
+            if (!(g_share_u > 0)) { std::cerr << "share_u must be positive\n"; return 1; }
+            bool live_share = false; for (int t = 13 + N_IND; t < 13 + 2 * N_IND; t++) if (!(g_dropmask & (1u << t))) live_share = true;
+            if (live_share && !g_has_pshare) { std::cerr << "IND5P share rows are live but the input has no pshare column (drop rows 22-30 or add it)\n"; return 1; }
+            std::cout << "IND5P: share rows 22-30 = (1{u >= " << g_share_u << "} - pshare_j) * 1{j}" << (live_share ? "" : " (all dropped)") << "\n"; }
+#else
+        if (opt.count("share_u")) { std::cerr << "share_u needs the IND5P build (grid_estimator_ind5p)\n"; return 1; }
+#endif
+        if (g_ind_mode) std::cout << "industry rows 13+: " << ir << "\n"; }
+    {   double hf = std::strtod(get_opt(opt, "h_floor", "1e-6").c_str(), nullptr);
+        if (!(hf > 0 && hf < 1)) { std::cerr << "h_floor must be in (0,1)\n"; return 1; }
+        g_h_floor_power = hf; if (hf != 1e-6) std::cout << "h_floor (power forms) = " << hf << "\n"; }
+    if ((g_nested || g_sampler_is || g_rho_on) && g_qform != 4 && g_qform != 5) {   // review 3: other qforms run a different chain
+        std::cerr << "nested=1, sampler=is and rho=prop21 require qform=power_kink or power_nokink\n"; return 1; }
+    // data checks for live rows (2026-09-30, audit 7.8)
+#ifdef EPSVAR
+    if (!(a_rowmask() & (1u << 12)))
+        for (const FirmData &f : firms) if (!std::isfinite(f.sig2eps)) { std::cerr << "row 12 live but sig2eps missing (row_id " << f.row_id << ")\n"; return 1; }
+#endif
+#ifdef IND5
+    {   std::vector<int> js; for (const FirmData &f : firms) if (f.corner == 0) js.push_back(f.jidx);
+        std::sort(js.begin(), js.end()); js.erase(std::unique(js.begin(), js.end()), js.end());
+        if ((int)js.size() != N_IND || js.front() != 0) { std::cerr << "IND5: interior industries = " << js.size() << " (or missing sic_3), N_IND = " << N_IND << "\n"; return 1; } }
+#endif
+    if (mode == "adiag" || mode == "rhoD" || mode == "nestedcheck" || mode == "cfprofile") {
         // par=<lambda,delta0,delta1,delta2,gamma1..D_G_A> (13 values in the default build, 14 with TAU_ROW)
         std::string par_str = get_opt(opt, "par", "");
         // YEAR_FE build: par = lambda,delta0,delta1,delta2,d0yr82..91,gamma1..20
@@ -3332,6 +4393,56 @@ int main(int argc, char **argv) {
 #ifdef KAPPA_FREE
         par[0] = par[6];   // par = kappa0,delta0,delta1,delta2,k,s,kappa_hat,gamma1..; kappa_hat is the one used
 #endif
+        if (mode == "rhoD") { run_rhoD_mode(firms, par[0], par[1], par[2], par[3], n_keep, base_seed); return 0; }
+        if (mode == "cfprofile") {
+            if (!g_sampler_is || !g_cut_ak || g_qform != 5 || g_audit_on) { std::cerr << "cfprofile needs sampler=is, cut=ak, qform=power_nokink, no audit row\n"; return 1; }
+            for (const FirmData &f : firms) if (f.corner == 1 || !std::isfinite(f.t1) || !std::isfinite(f.pgdp)) {
+                std::cerr << "cfprofile: interior firms with t1 and pgdp only (corner firms not supported yet)\n"; return 1; }
+            std::vector<double> dl; { std::stringstream ss(get_opt(opt, "deltas", "0")); std::string tok;
+                while (std::getline(ss, tok, ',')) if (!tok.empty()) dl.push_back(std::strtod(tok.c_str(), nullptr)); }
+            {   const std::string tg = get_opt(opt, "cf_target", "level");
+                const char *nm[5] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims"}; g_cf_target = -1;
+                for (int t = 0; t < 5; t++) if (tg == nm[t]) g_cf_target = t;
+                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x or elast_claims\n"; return 1; }
+                g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
+                std::cout << "cfprofile target: " << tg << (g_cf_target >= 3 ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
+            g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
+            g_rhoD[10] = std::numeric_limits<double>::infinity();   // bounded per firm (0 <= credit <= (1+Delta) tau_P M* (1+c_k kappa Mbar/M*)): out of the rho penalty
+            run_cfprofile_mode(firms, par, n_keep, base_seed, n_threads, dl, get_opt(opt, "output_csv", "/dev/null"));
+            return 0;
+        }
+        if (mode == "nestedcheck") {   // (1) cached inner L = regular IS objective; (2) analytic gradient vs central FD
+            if (!g_sampler_is) { std::cerr << "nestedcheck needs sampler=is\n"; return 1; }
+            const double *gam = par + 4 + N_XFE;
+            double dvec[D_G_A], Om[D_G_A * D_G_A];
+            compute_dvec_omega_A(firms, par[0], par[1], par[2], par[3], gam, n_burn, n_keep, base_seed, n_threads, dvec, Om);
+            double Lreg = cue_objective_A_std(dvec, Om);
+            NestedCache C; nested_build_cache(C, firms, par[0], par[1], par[2], par[3], n_keep, base_seed, n_threads);
+            NestedInner P; P.C = &C; P.firms = &firms; P.n_threads = n_threads;
+            for (int t = 0; t < D_G_A; t++) if (!(a_rowmask() & (1u << t))) P.free_idx.push_back(t);
+            std::vector<double> gr(P.free_idx.size());
+            double g0[D_G_A]; for (int t = 0; t < D_G_A; t++) g0[t] = gam[t];
+            double Lnest = nested_L(P, g0, gr.data());
+            std::cout << std::setprecision(10) << "Lhat regular (sampler=is) " << Lreg << " | nested cache " << Lnest
+                      << " | rel diff " << std::fabs(Lnest - Lreg) / std::fabs(Lreg) << "\n";
+            for (size_t q = 0; q < P.free_idx.size(); q++) {
+                int t = P.free_idx[q]; double h = 1e-4 * std::max(1.0, std::fabs(g0[t]));
+                double gp[D_G_A], gm[D_G_A]; std::copy(g0, g0 + D_G_A, gp); std::copy(g0, g0 + D_G_A, gm); gp[t] += h; gm[t] -= h;
+                double fd = (nested_L(P, gp, nullptr) - nested_L(P, gm, nullptr)) / (2 * h);
+                std::cout << "  grad row " << t << ": analytic " << gr[q] << "  FD " << fd << "  rel " << std::fabs(gr[q] - fd) / std::max(1e-12, std::fabs(fd)) << "\n";
+            }
+            {   // dual F: gradient = dbar, checked by central FD
+                const unsigned nf = P.free_idx.size(); std::vector<double> xg(nf), gF(nf);
+                for (unsigned q = 0; q < nf; q++) xg[q] = g0[P.free_idx[q]];
+                nested_F(nf, xg.data(), gF.data(), &P);
+                for (unsigned q = 0; q < nf; q++) {
+                    double h = 1e-4 * std::max(1.0, std::fabs(xg[q])); std::vector<double> xp = xg, xm = xg; xp[q] += h; xm[q] -= h;
+                    double fd = (nested_F(nf, xp.data(), nullptr, &P) - nested_F(nf, xm.data(), nullptr, &P)) / (2 * h);
+                    std::cout << "  dual grad row " << P.free_idx[q] << ": analytic " << gF[q] << "  FD " << fd << "\n";
+                }
+            }
+            return 0;
+        }
         run_adiag_mode(firms, par[0], par[1], par[2], par[3], par + 4 + N_XFE, n_burn, n_keep, base_seed, n_threads);
         return 0;
     }
@@ -3417,6 +4528,14 @@ int main(int argc, char **argv) {
                   << " delta1=" << par[2] << " delta2=" << par[3] << ")\n";
         run_redrawdiag_mode(firms, par, n_burn, n_keep, base_seed, n_threads, output_csv);
         return 0;
+    }
+    if (mode == "revenue_baseline" || mode == "revgrid" || mode == "revgrid_indep" || mode == "revgrid_fixedtheta" ||
+        mode == "grid3d" || mode == "deltagrid" || mode == "shell" || mode == "flat" ||
+        mode == "gammagdiag" || mode == "accepttraj" || mode == "psitraj" || mode == "acceptdiag" || mode == "redrawdiag" ||
+        mode == "dvecdiag" || mode == "omegadiag") {
+        // these modes run firm_chain_R (linear q, uniform rho, MH, no clustering); refuse options they would silently ignore
+        if (g_qform >= 4 || g_rho_on || g_sampler_is || g_cluster_on || g_nested) {
+            std::cerr << "mode=" << mode << " does not support qform=power_kink/power_nokink, rho=prop21, sampler=is, cluster=plant or nested=1 yet\n"; return 1; }
     }
     if (mode == "revenue_baseline") {
         // Phase 1 "step 1": NO optimization, forward-simulate baseline E[R]
@@ -3795,14 +4914,43 @@ int main(int argc, char **argv) {
         else if (algo_str4 != "neldermead") { std::cerr << "algo must be bobyqa or neldermead\n"; return 1; }
         {   std::string a2 = get_opt(opt, "algo2", "");
             if (a2 == "bobyqa") g_algo2 = NLOPT_LN_BOBYQA;
+            else if (a2 == "lbfgs") g_algo2 = NLOPT_LD_LBFGS;
             else if (a2 == "neldermead") g_algo2 = NLOPT_LN_NELDERMEAD;
-            else if (!a2.empty()) { std::cerr << "algo2 must be bobyqa or neldermead\n"; return 1; }
+            else if (!a2.empty()) { std::cerr << "algo2 must be bobyqa, neldermead or lbfgs\n"; return 1; }
             if (g_algo2 >= 0) std::cout << "pass 2 algorithm: " << a2 << "\n"; }
+        g_npasses = std::max(1, std::atoi(get_opt(opt, "n_passes", "2").c_str()));   // 1 allowed in nested mode only
+        if (g_npasses == 1 && get_opt(opt, "nested", "0") != "1") { g_npasses = 2; std::cout << "n_passes=1 applies to nested mode only; running 2 passes\n"; }
+        g_maxeval = std::atoi(get_opt(opt, "maxeval", "-1").c_str());
+        DELTA_BOUND = std::strtod(get_opt(opt, "delta_max", "60").c_str(), nullptr);
+        if (opt.count("kappa_fixed")) {
+#ifndef KAPPA_FREE
+            std::cerr << "kappa_fixed needs a KAPPA_FREE build (kappa is already fixed via lambdas= here)\n"; return 1;
+#endif
+            g_kappa_fix = std::strtod(opt["kappa_fixed"].c_str(), nullptr);
+            if (!(g_kappa_fix > 0)) { std::cerr << "kappa_fixed must be positive\n"; return 1; }
+            std::cout << "kappa_fixed = " << g_kappa_fix << " (pinned)\n"; }
+        {   const char *nm[3] = {"delta0_fixed", "delta1_fixed", "delta2_fixed"};
+            for (int t = 0; t < 3; t++) if (opt.count(nm[t])) { g_dfix[t] = std::strtod(opt[nm[t]].c_str(), nullptr);
+                if (!std::isfinite(g_dfix[t]) || std::fabs(g_dfix[t]) > DELTA_BOUND) { std::cerr << nm[t] << " must be finite and inside +/-delta_max\n"; return 1; }
+                std::cout << nm[t] << " = " << g_dfix[t] << " (pinned)\n"; } }
+        if (!(DELTA_BOUND > 0)) { std::cerr << "delta_max must be positive\n"; return 1; }
+        if (DELTA_BOUND != 60.0) std::cout << "delta bounds: +/-" << DELTA_BOUND << "\n";
+        g_kappa_max = std::strtod(get_opt(opt, "kappa_max", "5").c_str(), nullptr);
+        if (!(g_kappa_max > 0.02)) { std::cerr << "kappa_max must exceed 0.02\n"; return 1; }
+        {   std::string is = get_opt(opt, "init_step", "auto");
+            if (is == "nlopt") g_init_step_auto = false; else if (is != "auto") { std::cerr << "init_step must be auto or nlopt\n"; return 1; } }
+        if (g_npasses != 2) std::cout << "optimizer passes: " << g_npasses << "\n";
         std::cout << "Mode: lambdagrid, " << lambdas.size() << " lambda points, algo=" << algo_str4 << "\n";
         // Two-level work-stealing (2026-09-10): single process, no
         // shard_id/n_shards needed -- n_threads is now the TOTAL thread
         // budget, split across concurrent point-groups internally. Run
         // directly (no run_grid_shards.sh wrapper) even for a 1-point call.
+#ifdef KAPPA_FREE
+        for (double l : lambdas)   // review 4: an out-of-bounds kappa start made NLopt return -2 and still wrote Lhat = inf
+            if (!(l >= 0.02 && l <= g_kappa_max)) { std::cerr << "lambdas (kappa start) " << l << " outside [0.02, kappa_max = " << g_kappa_max << "]\n"; return 1; }
+#endif
+        if (!g_nested && (opt.count("inner_algo") || opt.count("inner_start"))) std::cout << "note: inner_algo/inner_start apply to nested=1 only; ignored\n";
+        if (!g_prop_mix && opt.count("mix_umax")) std::cout << "note: mix_umax applies to proposal=mix only; ignored\n";
         run_lambdagrid_mode(firms, lambdas, x0, n_burn, n_keep, base_seed, n_threads, maxtime,
                              output_csv, algo4);
         return 0;

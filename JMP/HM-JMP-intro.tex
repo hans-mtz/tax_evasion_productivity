@@ -1,0 +1,621 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  12pt]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{TeX Gyre Termes}
+  \setmathfont[]{texgyretermes-math.otf}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{setspace}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Tax Evasion and Productivity: Identifying and Correcting for Cost Overreporting},
+  pdfauthor={Hans Martinez},
+  pdfkeywords={Tax Evasion, Cost Overreporting, Production Function
+Estimation, Productivity},
+  colorlinks=true,
+  linkcolor={black},
+  filecolor={Maroon},
+  citecolor={black},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Tax Evasion and Productivity: Identifying and Correcting for Cost
+Overreporting\thanks{I thank Salvador Navarro, David Rivers, and Timothy
+Conley for helpful comments. All errors are my own.}}
+\author{Hans Martinez\thanks{Department of Economics, Western
+University. Email: \href{mailto:hmarti33@uwo.ca}{hmarti33@uwo.ca}. Website: \href{https://hansmartinez.com}{hansmartinez.com}.}}
+\date{October 01,
+2026\\[0.5em]\href{https://hansmartinez.com/project/tax\_prod/}{\small\textbf{Latest version, click here}}}
+\begin{document}
+\maketitle
+\begin{abstract}
+Value-added taxes (VAT) allow firms to deduct the taxes paid on
+purchases from the taxes collected on sales, creating an incentive for
+firms to overreport the purchases of inputs to reduce their tax bill.
+The fundamental issue in detecting input overreporting stems from two
+unobservables, true inputs and productivity. Because firms differ in
+productivity, a firm reporting high input use, for a given level of
+output, may be either overreporting or simply less productive. I use a
+structural production-function approach and a benchmark group, a subset
+of firms that report inputs correctly, to detect and measure
+overreporting. Because the benchmark firms are assumed to share the same
+technology as the other firms, I can estimate its parameters. Using
+these estimates, I generate predictions and compare how potentially
+tax-evading firms would behave without overreporting to what they
+report. I apply the method to a Colombian manufacturing survey from 1981
+to 1991. During this period, the Colombian sales tax worked as a VAT
+and, due to government and market scrutiny, a subset of firms reported
+their inputs correctly.
+
+My approach yields a simple yet informative statistical test to detect
+input overreporting. Under the null hypothesis of correct reporting, the
+test is robust to a wide family of specifications of both the
+probability of detection and the cost of overreporting. Among the 5
+largest industries, the test rejects the null hypothesis in all 4
+industries subject to the sales tax, and, as expected, it fails to
+reject in the industry exempt from the sales tax. Across the 7 largest
+industries where the null is rejected, the median input overreporting,
+as a share of true inputs, amounts to 16 percent. In addition, I find
+that, between 1983 and 1987, after a fiscal reform raised the sales tax
+in Colombia, firms in affected industries increased the ratio of
+overreported to true inputs by about 8.5 percentage points, an implied
+median-based overreporting elasticity of the tax rate between 4.7 and
+9.5.
+
+The magnitude of detected overreporting matters for methods of
+estimating production functions that exploit a flexible input to
+identify productivity (Levinsohn and Petrin 2003; Doraszelski and
+Jaumandreu 2013; Ackerberg et al. 2015; Gandhi et al. 2020). These
+methods typically assume that materials are flexible, and their demand
+or first-order conditions reveal productivity. However, materials are
+commonly tax deductible and, thus, the input firms have the incentive to
+overreport. I show that failing to correct for overreporting yields
+output elasticities of materials that are larger, and productivity
+distributions that are more dispersed and less persistent. Using the
+production-function parameters, I estimate a structural model of firm
+input overreporting to ask how does the expected claimed deductions, and
+thus government revenue, respond to the tax rate, where expected claimed
+deductions include true and undetected fictitious deductions.
+Approaching the observed tax rate from the left, the expected deductions
+elasticity of the tax rate is -9.7. Undetected overreporting costs the
+government around 3 percent of potential sales-tax revenue.
+\end{abstract}
+
+\begin{center}
+\textbf{JEL Classification:} H26, D22, L60, O47 \\
+\textbf{Keywords:} Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity
+\end{center}
+\bigskip
+
+
+\setstretch{1.15}
+\section*{Introduction}\label{sec-intro}
+\addcontentsline{toc}{section}{Introduction}
+
+Firms owned by the highest earners evade more tax through cost
+overreporting than firms owned by lower-income earners: relative to the
+bottom 80 percent of the income distribution, the tax evaded in Ecuador
+by the top 5 percent, as a share of owners' income, is 56 times larger
+(Carrillo et al. 2022). Despite its relevance, we still do not know much
+about firms' cost overreporting. Tax authorities around the world
+document this kind of tax evasion, often through fictitious invoices
+(OECD 2017), and the losses they report are significant: between 1.2 and
+2.7 percent of total tax revenue in Chile, Colombia, Ecuador, Poland,
+and Slovakia, and about a ninth of the entire VAT compliance gap in
+Colombia and Slovakia (OECD 2017; Carrillo et al. 2022; CASE and IHS
+2018; Longinotti 2022). Because some of these figures are tax
+administrations' own estimates, and all are conditional on detected
+evasion, true losses are plausibly larger.
+
+Research has documented how individuals' reported income responds to tax
+rates, but has overlooked how firms' overreporting of inputs responds.
+For individuals, a large literature estimates how reported income
+responds to the tax rate and shows that the response includes evasion
+and avoidance as well as changes in real activity (Saez et al. 2012;
+Chetty 2009). For firms, evidence on responses to tax rates comes mostly
+from bunching at kinks and notches in the tax schedule (Best et al.
+2015; Almunia and Lopez-Rodriguez 2018) and from misreported imports
+(Fisman and Wei 2004). Moreover, economic theory suggests that optimal
+commodity-tax rates should be lower on goods whose evasion is more
+elastic with respect to the tax rate (Cremer and Gahvari 1993). Yet, to
+my knowledge, no study has estimated how firms' overreporting of inputs,
+a form of tax evasion that the credit on purchases in value-added taxes
+incentivizes, responds to the tax rate. One reason is that true inputs
+are unobserved: for a given level of output, a firm reporting high input
+use may be overreporting, or it may suffer from low productivity.
+
+I investigate whether input overreporting rises with the tax rate, and
+the extent to which it affects government tax revenue through firms'
+claimed deductions. Colombia's sales tax worked as a value-added tax,
+and in 1983 it raised the rate for most manufacturing industries but
+left a few exempt. I find that, between 1983 and 1987, overreporting by
+unincorporated firms in the affected industries rose significantly, by
+about 8.5 percentage points of true materials. In a structural model
+estimated on all industries, I find that a 0.5 percent increase in the
+sales-tax rate raises claimed deductions by 16 to 28 percent, while cuts
+lower claimed deductions only gradually: the smallest cut
+distinguishable from current policy is 8 percent. A back-of-the-envelope
+calculation suggests that, as a share of potential net sales-tax revenue
+from unincorporated firms in the sample, undetected overreporting costs
+about 3 percent. Near the current rate, and holding the tax collected on
+sales fixed, the elasticity from the left of this revenue with respect
+to the tax rate is about −9 (\textbf{?@sec-app-backofenvelope}).
+
+To distinguish between evasion and productivity, I employ a structural
+production-function approach, and then use it to study how evasion
+responds to the tax rate. In the absence of evasion, the first-order
+condition for materials, the flexible deductible input, reveals the
+structural relationship between the firm's materials share of revenue
+and the common technology within the industry. The government and market
+scrutiny keep corporations from overreporting. Corporations are thus the
+benchmark that allows me to identify the common technology in each
+industry and the distribution of measurement error in output. Among
+unincorporated firms, deviations from the common technology reveal
+overreporting up to measurement error in output. Deconvolution then
+separates the distribution of overreporting from that of the measurement
+error, and the production-function estimates recover productivity net of
+overreporting. To study how overreporting responds to the tax rate, I
+exploit the 1983 reform, measuring overreporting against the output
+elasticity of materials identified from corporations. Finally, employing
+an entropy-based method that does not require specifying the
+distribution of the unobservables (Schennach 2014), I estimate a
+structural model in which firms choose inputs and overreporting to
+maximize expected after-tax profits, weighing the tax evaded against the
+probability of detection and a cost of evasion that varies with
+productivity.
+
+Separating overreporting from productivity also yields three findings of
+its own. First, a simple test compares unincorporated firms' materials
+shares with the corporate benchmark in each industry: under the null
+hypothesis of no overreporting, both should be equal; under the
+alternative, overreporting, the difference will be positive. Among the
+20 largest industries, the test detects overreporting in 9 of the 18
+industries liable for the sales tax, including 4 of the 5 largest, which
+together produce about two fifths of manufacturing output. It rejects
+decisively, at the 1 percent level, in 7 of them, where, in the median
+industry, unincorporated firms overreport an average of 16 percent of
+their true materials. It fails to reject in either of the 2 food
+industries, which were exempt from the sales tax and thus incentives to
+overreport were negligible. The test is valid for a broad class of
+models of detection and cost of evasion, and holds under any common
+production technology. A rejection is also unambiguous, because no firm
+gains by underreporting deductible inputs, so it can only point to
+overreporting. Second, failing to correct for overreporting biases
+estimates of the production function and of productivity. In those 7
+industries, the uncorrected estimates (Gandhi et al. 2020) show output
+elasticities of materials that are consistently larger, and productivity
+distributions that are more dispersed and less persistent, than the
+corrected ones: in the median industry, the ratio of the 90th to the
+10th percentile is 66 percent larger and the half-life of productivity
+shocks is 52 percent shorter. Third, the structural estimates show a
+cost of evasion that is convex in productivity and lowest near the 86th
+percentile of productivity, which rationalizes a pattern observed in
+other studies: evasion rises with firm size but drastically drops at the
+very top (Carrillo et al. 2022).
+
+These results relate to three strands of public economics and to one of
+productivity measurement. First, I estimate how a particular form of
+evasion by firms responds to the tax rate, a response that the
+literature on taxes and revenue has mostly studied through individuals'
+reported income. Traditionally, the elasticity of personal taxable
+income has combined all the different responses to the rate, evasion
+included, into a single statistic (Feldstein 1999; Slemrod and Kopczuk
+2002; Saez et al. 2012). However, when part of the cost of evasion is a
+transfer rather than a resource cost, this elasticity alone no longer
+measures the efficiency cost of taxation (Chetty 2009). Measuring that
+cost requires knowing how evasion itself responds to the rate,
+separately from real activity. Direct evidence on this response is
+scarcer, and comes from the gap between households' consumption and
+reported income (Gorodnichenko et al. 2009) and, for firms, from
+bunching at kinks and notches in the tax schedule (Best et al. 2015;
+Almunia and Lopez-Rodriguez 2018). I provide evidence for firms'
+overreporting of inputs under a sales tax that credits purchases, from
+both a statutory rate change and a structural model that separates
+overreporting from productivity. The structural model also speaks to the
+theory of optimal commodity taxation under evasion by estimating how
+claimed deductions respond to the rate (Cremer and Gahvari 1993).
+
+Second, I provide measures of firms' cost overreporting without relying
+on confidential tax records. Most evidence on firm evasion focuses on
+underreported revenue (Slemrod 2019), yet the cost side matters. Firms
+offset enforcement on revenue by raising reported costs (Carrillo et al.
+2017; Asatryan and Peichl 2017), and paper trails make transactions
+between firms harder to misreport than sales to final consumers
+(Pomeranz 2015); therefore, firms that sell to other firms have little
+room to misreport on the sales side and more on the cost side. Cost
+overreporting has mostly been measured directly with transaction-level
+tax records in Ecuador and Mexico. These studies reveal the mechanism:
+firms acquiring fake invoices from ghost firms (Carrillo et al. 2022;
+Zumaya et al. 2021). Tax records, however, are confidential, available
+for few countries, and accessible only to selected researchers.
+Survey-based measures of firm evasion rely instead on firms'
+self-reported share of sales declared to the tax authority (Dabla-Norris
+et al. 2019), whose truthfulness cannot be verified. My approach needs
+only reported inputs and output, and is thus equally applicable to
+standard firm-level surveys, administrative records, and confidential
+tax records.
+
+Third, I extend the validation-sample approach from individuals to
+firms. This approach infers evasion by comparing an indirect measure of
+true income between a truth-reporting group and a group that may
+misreport. For example, the self-employed report less income relative to
+their food consumption than employees, whose income is reported by their
+employers (Pissarides and Weber 1989). Researchers have also used the
+same comparison to measure how evasion responds to a tax reform
+(Gorodnichenko et al. 2009). For firms, however, the natural indirect
+measure, output relative to inputs, also depends on an additional
+unobservable, productivity. A firm reporting high input use may be
+overreporting or may simply have a negative productivity shock. I use
+the production function to separate the two, with corporations as the
+truth-reporting group. Unlike the comparisons for individuals, my
+approach does not require the two groups to be alike in size or
+productivity: corporations are much larger than unincorporated firms,
+and the production function accounts for the differences in productivity
+behind this gap.
+
+Finally, {the paper} shows how tax-motivated overreporting of inputs
+biases production-function estimates. Proxy-variable methods rely on a
+flexible input, typically materials, either inverting its demand
+(Levinsohn and Petrin 2003; Ackerberg et al. 2015) or using its
+first-order condition (Gandhi et al. 2020). These methods treat reported
+inputs as true. Work on mismeasured inputs has focused on classical
+measurement error (mean zero and independent of the true input), mostly
+in capital (Collard-Wexler and De Loecker 2020). Overreporting is
+neither: firms choose it based on their own productivity. Furthermore,
+it affects exactly the input on which these methods rely. Failing to
+correct for overreporting yields output elasticities of materials that
+are consistently larger, and productivity distributions that are more
+dispersed and less persistent, than the corrected estimates. These
+findings matter for any analysis built on measured productivity
+differences across firms.
+
+The rest of the paper follows the argument. \textbf{?@sec-model} shows
+how the tax rate generates incentives for a firm to overreport
+materials, and how its optimal choice depends on the probability of
+detection and the cost of evasion. \textbf{?@sec-setting} explains why
+Colombian corporations can serve as truth-tellers.
+\textbf{?@sec-testing} shows how overreporting can be detected and
+measured from production data alone. Then, \textbf{?@sec-pf}
+demonstrates how failing to correct for overreporting biases
+production-function and productivity estimates. \textbf{?@sec-fiscal}
+leverages the 1983 reform to document that overreporting responds to the
+tax rate, and \textbf{?@sec-counterfactual} turns the question around
+and asks how much revenue the government would lose to overreporting as
+it adjusts the tax rate. \textbf{?@sec-conclusion}, as tradition
+demands, concludes.
+
+\appendix
+
+\section*{Online Appendix}\label{sec-online-appendix}
+\addcontentsline{toc}{section}{Online Appendix}
+
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{1}
+\bibitem[\citeproctext]{ref-Ackerberg2015}
+Ackerberg, Daniel A, Kevin Caves, and Garth Frazer. 2015.
+\emph{IDENTIFICATION PROPERTIES OF RECENT PRODUCTION FUNCTION
+ESTIMATORS}. 83: 2411--51. \url{https://doi.org/10.3982/ECTA}.
+
+\bibitem[\citeproctext]{ref-Almunia2018}
+Almunia, Miguel, and David Lopez-Rodriguez. 2018. {``Under the Radar:
+The Effects of Monitoring Firms on Tax Compliance †.''} \emph{American
+Economic Journal: Economic Policy} 10: 1--38.
+\url{https://doi.org/10.1257/pol.20160229}.
+
+\bibitem[\citeproctext]{ref-Asatryan2017}
+Asatryan, Zareh, and Andreas Peichl. 2017. \emph{Responses of Firms to
+Tax, Administrative and Accounting Rules: Evidence from {Armenia}}.
+CESifo Working Paper No. 6754. {Center for Economic Studies and ifo
+Institute (CESifo)}.
+
+\bibitem[\citeproctext]{ref-Best2015}
+Best, Michael Carlos, Anne Brockmeyer, Henrik Jacobsen Kleven, Johannes
+Spinnewijn, and Mazhar Waseem. 2015. {``Production Versus Revenue
+Efficiency with Limited Tax Capacity: Theory and Evidence from
+{Pakistan}.''} \emph{Journal of Political Economy} 123 (6): 1311--55.
+\url{https://doi.org/10.1086/683849}.
+
+\bibitem[\citeproctext]{ref-Carrillo2022}
+Carrillo, Paul, Dave Donaldson, Dina Pomeranz, and Monica Singhal. 2022.
+\emph{Ghosting the Tax Authority: Fake Firms and Tax Fraud}. NBER.
+\url{http://www.nber.org/papers/w30242}.
+
+\bibitem[\citeproctext]{ref-Carrillo2017}
+Carrillo, Paul, Dina Pomeranz, and Monica Singhal. 2017. {``Dodging the
+Taxman: Firm Misreporting and Limits to Tax Enforcement.''}
+\emph{American Economic Journal: Applied Economics} 9: 144--64.
+\url{https://doi.org/10.1257/app.20140495}.
+
+\bibitem[\citeproctext]{ref-CASE2018}
+CASE, and IHS. 2018. \emph{Study and Reports on the {VAT} Gap in the
+{EU}-28 Member States: 2018 Final Report}. TAXUD/2015/CC/131. {European
+Commission, Directorate General Taxation and Customs Union}.
+
+\bibitem[\citeproctext]{ref-Chetty2009}
+Chetty, Raj. 2009. {``Is the Taxable Income Elasticity Sufficient to
+Calculate Deadweight Loss? The Implications of Evasion and Avoidance.''}
+\emph{American Economic Journal: Economic Policy} 1 (2): 31--52.
+\url{https://doi.org/10.1257/pol.1.2.31}.
+
+\bibitem[\citeproctext]{ref-Collard2020}
+Collard-Wexler, Allan, and Jan De Loecker. 2020. \emph{Production
+Function Estimation and Capital Measurement Error}. NBER.
+\url{http://www.nber.org/papers/w22437}.
+
+\bibitem[\citeproctext]{ref-Cremer1993}
+Cremer, Helmuth, and Firouz Gahvari. 1993. {``Tax Evasion and Optimal
+Commodity Taxation.''} \emph{Journal of Public Economics} 50 (2):
+261--75. \url{https://doi.org/10.1016/0047-2727(93)90052-U}.
+
+\bibitem[\citeproctext]{ref-Dabla2019}
+Dabla-Norris, Era, Mark Gradstein, Fedor Miryugin, and Florian Misch.
+2019. \emph{Productivity and Tax Evasion}. CESifo.
+\href{https://www.RePEc.org}{www.RePEc.org}.
+
+\bibitem[\citeproctext]{ref-Doraszelski2013}
+Doraszelski, Ulrich, and Jordi Jaumandreu. 2013. {``{R\&D} and
+Productivity: Estimating Endogenous Productivity.''} \emph{The Review of
+Economic Studies} 80 (4): 1338--83.
+\url{https://doi.org/10.1093/restud/rdt011}.
+
+\bibitem[\citeproctext]{ref-Feldstein1999}
+Feldstein, Martin. 1999. {``Tax Avoidance and the Deadweight Loss of the
+Income Tax.''} \emph{Review of Economics and Statistics} 81 (4):
+674--80. \url{https://doi.org/10.1162/003465399558391}.
+
+\bibitem[\citeproctext]{ref-FismanWei2004}
+Fisman, Raymond, and Shang-Jin Wei. 2004. {``Tax Rates and Tax Evasion:
+Evidence from {`Missing Imports'} in {China}.''} \emph{Journal of
+Political Economy} 112 (2): 471--96.
+\url{https://doi.org/10.1086/381476}.
+
+\bibitem[\citeproctext]{ref-Gandhi2020}
+Gandhi, Amit, Salvador Navarro, and David A Rivers. 2020. \emph{On the
+Identification of Gross Output Production Functions}.
+
+\bibitem[\citeproctext]{ref-Gorodnichenko2009}
+Gorodnichenko, Yuriy, Jorge Martinez-Vazquez, and Klara Sabirianova
+Peter. 2009. {``Myth and Reality of Flat Tax Reform: Micro Estimates of
+Tax Evasion Response and Welfare Effects in {Russia}.''} \emph{Journal
+of Political Economy} 117 (3): 504--54.
+\url{https://doi.org/10.1086/599760}.
+
+\bibitem[\citeproctext]{ref-Levinsohn2003}
+Levinsohn, James, and Amil Petrin. 2003. {``Estimating Production
+Functions Using Inputs to Control for Unobservables.''} \emph{Review of
+Economic Studies} 70 (April): 317--41.
+\url{https://doi.org/10.1111/1467-937X.00246}.
+
+\bibitem[\citeproctext]{ref-Pelaez2022}
+Longinotti, Fernando Peláez. 2022. \emph{Efficiency and Tax Gap in
+{Latin America} and the {Caribbean}: Value Added Tax and Corporate
+Income Tax}. CIAT Working Paper No. 1. Inter-American Center of Tax
+Administrations (CIAT).
+
+\bibitem[\citeproctext]{ref-OECD2017}
+OECD. 2017. \emph{Technology Tools to Tackle Tax Evasion and Tax Fraud}.
+OECD. \href{https://www.oecd.org}{www.oecd.org}.
+
+\bibitem[\citeproctext]{ref-Pissarides1989}
+Pissarides, Christopher A., and Guglielmo Weber. 1989. {``An
+Expenditure-Based Estimate of Britain's Black Economy.''} \emph{Journal
+of Public Economics} 39 (June): 17--32.
+\url{https://doi.org/10.1016/0047-2727(89)90052-2}.
+
+\bibitem[\citeproctext]{ref-Pomeranz2015}
+Pomeranz, Dina. 2015. {``No Taxation Without Information: Deterrence and
+Self-Enforcement in the Value Added Tax.''} \emph{American Economic
+Review} 105 (8): 2539--69. \url{https://doi.org/10.1257/aer.20130393}.
+
+\bibitem[\citeproctext]{ref-Saez2012}
+Saez, Emmanuel, Joel Slemrod, and Seth H. Giertz. 2012. {``The
+Elasticity of Taxable Income with Respect to Marginal Tax Rates: A
+Critical Review.''} \emph{Journal of Economic Literature} 50 (1): 3--50.
+\url{https://doi.org/10.1257/jel.50.1.3}.
+
+\bibitem[\citeproctext]{ref-Schennach2014}
+Schennach, Susane M. 2014. {``Entropic Latent Variable Integration via
+Simulation.''} \emph{Econometrica} 82: 345--85.
+\url{https://doi.org/10.3982/ecta9748}.
+
+\bibitem[\citeproctext]{ref-Slemrod2019}
+Slemrod, Joel. 2019. {``Tax Compliance and Enforcement.''} \emph{Journal
+of Economic Literature} 57: 904--54.
+\url{https://doi.org/10.1257/JEL.20181437}.
+
+\bibitem[\citeproctext]{ref-SlemrodKopczuk2002}
+Slemrod, Joel, and Wojciech Kopczuk. 2002. {``The Optimal Elasticity of
+Taxable Income.''} \emph{Journal of Public Economics} 84 (1): 91--112.
+\url{https://doi.org/10.1016/S0047-2727(01)00095-0}.
+
+\bibitem[\citeproctext]{ref-Zumaya2021}
+Zumaya, Martin, Rita Guerrero, Eduardo Islas, et al. 2021.
+\emph{Identifying Tax Evasion in Mexico with Tools from Network Science
+and Machine Learning}. April. \url{http://arxiv.org/abs/2104.13353}.
+
+\end{CSLReferences}
+
+
+
+
+\end{document}

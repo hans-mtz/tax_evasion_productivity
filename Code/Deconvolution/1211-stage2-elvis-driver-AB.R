@@ -121,7 +121,7 @@ add_industry_idx <- function(run_sample) {
 ## validated results.
 cue_objective_from_moments <- function(dvec, Omega) {
     eig   <- eigen(Omega, symmetric = TRUE)
-    pos   <- eig$values > 1e-8 * max(eig$values)
+    pos   <- eig$values > 0     # AK2020 objMCcu: keep eigenvalues > 0 (was 1e-8*max, a porting error; fixed 2026-09-30)
     A     <- eig$vectors[, pos, drop = FALSE]
     d2    <- as.numeric(t(A) %*% dvec)
     ## A's columns are Omega's own eigenvectors, so t(A) %*% Omega %*% A is

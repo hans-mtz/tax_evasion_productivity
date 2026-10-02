@@ -1,0 +1,71 @@
+==== grid_estimator (moment set C) ====
+  input_csv  = ../Products/1585-stage2-input-designA-interior-trim0.005.csv
+  output_csv = /dev/null
+  lambda     = [1e-09, 0.0001], n=10 (log-spaced)
+  delta1     = [-4, 2], n=10
+  delta2     = [-1, 1], n=10
+  n_burn=1000 n_keep=1000 n_threads=4 base_seed=20260830
+  shard: 0 / 1
+========================================
+industries (interior, jidx order): 313 321 322 324 331 342 351 352 369
+Loaded 12050 firm-periods (0 corner) from ../Products/1585-stage2-input-designA-interior-trim0.005.csv
+cut=ak: Omega/n, keep eigenvalues > 0, dropped rows removed before eigen (AK2020 objMCcu)
+drop_rows mask = 4288 (6,7,12)
+KINK_S: k fixed at 1, share s estimated (start 0.3), row [11] = eps * score(kappa)
+Detection: qform=power_kink, q = (e/(kappa*Mbar))^k up to the FOC ceiling, flat beyond; 'lambda' below is kappa, k estimated; share beyond the kink fixed at 0.3
+Moment set A row [6] = eps*psi
+Moment set A + row [9] psi*ltau_bar (TAU_ROW build, D_G_A=13)
+Lhat (recomputed) = 0.0118735   TS = 2 n Lhat = 286.153   n = 12050
+row  mean          se            t
+  0  -0.180849  0.0160764  -11.2493
+  1  0.0979895  0.00782979  12.515
+  2  0.0829965  0.0620016  1.33862
+  3  0.161381  0.0307734  5.24419
+  4  -0.566353  0.0842101  -6.72548
+  5  -0.226866  0.0390687  -5.80685
+  6  0  0  0
+  7  0  0  0
+  8  0.0186127  0.00227754  8.17228
+  9  0.960086  0.0713765  13.451
+  10  -0.00136675  0.00326216  -0.41897
+  11  0.0227192  0.00283997  7.99979
+  12  0  0  0
+gamma: -0.768788 -1.487 0.30196 -0.207887 0.160513 -0.424835 0.0902408 -0.118336 -0.650474 -0.0301886 0.35834 0.664947 -0.150831
+Omega: row sd (per firm) 1.76475 0.859496 6.80607 3.37807 9.24395 4.28867 0 0 0.250011 7.83518 0.358095 0.311751 0
+Omega as correlation matrix (rows/cols 0..12):
+  0:  1.000 -0.684 -0.045 -0.434  0.743  0.169  0.000  0.000 -0.777 -0.917  0.040 -0.743  0.000
+  1: -0.684  1.000  0.228  0.480 -0.359 -0.065  0.000  0.000  0.687  0.619 -0.036  0.639  0.000
+  2: -0.045  0.228  1.000  0.884  0.212 -0.254  0.000  0.000  0.294  0.035 -0.041  0.265  0.000
+  3: -0.434  0.480  0.884  1.000 -0.062 -0.244  0.000  0.000  0.568  0.407 -0.058  0.529  0.000
+  4:  0.743 -0.359  0.212 -0.062  1.000  0.175  0.000  0.000 -0.426 -0.652 -0.018 -0.410  0.000
+  5:  0.169 -0.065 -0.254 -0.244  0.175  1.000  0.000  0.000 -0.041 -0.137 -0.082 -0.061  0.000
+  6:  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000
+  7:  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000
+  8: -0.777  0.687  0.294  0.568 -0.426 -0.041  0.000  0.000  1.000  0.751 -0.057  0.987  0.000
+  9: -0.917  0.619  0.035  0.407 -0.652 -0.137  0.000  0.000  0.751  1.000 -0.056  0.743  0.000
+  10:  0.040 -0.036 -0.041 -0.058 -0.018 -0.082  0.000  0.000 -0.057 -0.056  1.000 -0.053  0.000
+  11: -0.743  0.639  0.265  0.529 -0.410 -0.061  0.000  0.000  0.987  0.743 -0.053  1.000  0.000
+  12:  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000
+eigen k  w_k           kept  contrib_to_Lhat  loading_on_last_row  top_row(|loading|)
+  9  126.87  yes   0.00446209  0  4(0.774568)
+  8  61.1887  yes   0.000988816  0  2(0.836716)
+  7  22.9208  yes   0.00133925  0  9(0.67223)
+  6  14.4995  yes   0.00184706  0  5(0.865851)
+  5  0.874497  yes   0.00011687  0  3(0.717709)
+  4  0.403393  yes   0.00171439  0  1(0.822714)
+  3  0.177419  yes   0.000752336  0  0(0.824948)
+  2  0.125801  yes   4.28915e-06  0  10(0.997971)
+  1  0.0475016  yes   0.000646016  0  11(0.804314)
+  0  0.000592361  yes   2.42661e-06  0  8(0.81421)
+interior firms: 12050
+  tilted eps    : mean of firm means 0.0979895; mean of firm E[eps^2] 0.868808 (=> tilted var(eps) 0.859206)
+  tilted u      : mean of firm means 0.268337, sd across firms 0.765438
+  tilted u quantiles (firm means): p10 0.0849822 p25 0.112216 p50 0.145322 p75 0.219295 p90 0.395127 p99 2.20127 max 16.7451 | share of firms with mean u < 0.01: 0, < 0.05: 0.0151037
+  share of draws beyond the kink (mean over firms) 0.192652; firms with >50% of draws beyond: 0.187303
+  TAIL: exposed to beyond-kink tail 0.456017; exposed with a_i>0 (improper tilt) 0.456017 | max kept u per firm: p50 1.09218 p99 8.32679 max 16.7451 | firms with a kept u > 8: 164, > 12: 23 | mean share of kept draws with u > 8: 0.00462647
+  tilted x=e/Mb : mean 0.0943185, sd 0.182962
+  tilted ln B   : mean -2.74019, sd 4.92205
+  omega at M=M* : mean 3.48788, sd 0.835149
+  tilted omega  : mean 3.3118, sd across firms 0.89467, mean within-firm sd 0.124673
+  cor with ln tau_P: omega(M*) -0.0776494, tilted omega 0.0639145, tilted ln B 0.146578, tilted u -0.23363
+  var(ln tau_P) 0.497772

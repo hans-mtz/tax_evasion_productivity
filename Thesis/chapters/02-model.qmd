@@ -14,66 +14,179 @@ Facts computed 2026-09-28 on the ch. 3 sample, both rates in [0, 0.5), 40,161 fi
 > 1 pp in 56% of firm-years; sd of ln((1-tau_S)/(1-tau_P)) = 0.05 vs 0.34 for the log gross share.
 -->
 
-This chapter models a firm that overreports its materials to reduce its sales tax liability. The sales tax worked as a VAT. The firm credits the tax paid on its purchases against the tax it owes on its sales, so every peso of fictitious materials lowers its tax bill by the rate on purchases. The probability of being caught and the resources allocated to concealment weigh against this benefit. Colombian manufacturers typically faced different rates on their sales and on their purchases (@sec-setting-incentive). In 56 percent of firm-years the two rates differ by more than one percentage point. I therefore allow firms to have two rates. This is not needed for identification: only the rate on purchases enters the decision to overreport, so a single-tax model would do just as well.
+
+<!--
+OUTLINE VERSION (2026-09-30, Hans + Claude). 
+
+0. Opening (link to the RAP).
+- The paper asks how overreporting responds to the rate.
+- This chapter supplies the mechanism and two equations: the materials condition and the evasion condition.
+
+1. The incentive.
+- The credit on purchases means each fictitious peso lowers the tax bill by $\tau_P$.
+- Only $\tau_P$ enters the evasion decision, and the chapter keeps two rates.
+
+2. Why overreporting is hard to see.
+- Setup: $Y$, $\omega$, $\varepsilon$ as measurement error in output, $M^*=M+e$.
+- A high reported $M^*/Y$ can mean $e>0$ or low $\omega$.
+
+3. What restrains the firm.
+- $q(e)$ with $q(0)=0$ and the fine $\phi$.
+- $\kappa(e,\omega)$ with $\kappa(0,\cdot)=0$, increasing in $e$ and depending on $\omega$, with no functional form.
+- Neither depends on true materials.
+- Expected profit, read term by term.
+- No firm gains from underreporting a deductible input.
+
+4. The materials condition.
+- Evasion does not enter it, so the net-of-tax log share is $\ln\beta-\varepsilon$.
+- Ch. 4–6 build on this equation.
+
+5. The evasion condition.
+- The FOC, the interior/corner split, and $\partial e^*/\partial\tau_P>0$ under the SOC.
+- Stated generally.
+- The asymmetry of increases and cuts is left to the ch. 8 estimates.
+
+6. Corporations (short).
+- They use the same technology and may differ in productivity.
+- They are corner firms: I'd say we assume $\partial\kappa(0,\omega)/\partial e>\tau_P\rho_t$ for them because of market and government scrutiny, and we don't model why.
+- They have no interior solution and are used only as the benchmark.
+- Corner status for other firms is a result of $\kappa$, $\omega$ and $\tau_P$. For corporations it is assumed, whatever their $\omega$ and $\tau_P$.
+- This fits the earlier decision of no corporate cost shifter $\delta_C$: it is an assumption on the corner condition, not a new parameter.
+
+Each paragraph of the earlier text is now a bullet with its main idea;
+details are sub-bullets, and equations sit between the bullets in the order of the ideas. Existing wording is kept.
+Tags: *[reuse: file, lines]* = text adapted from an older source; *[new]* = to be written. Structure follows the agreed
+outline: 0 opening, 1 incentive, 2 setup and why overreporting is hard to see, 3 restraints and expected profit,
+4 materials condition, 5 evasion condition, 6 corporations. Old SOC section moved to appendix D (text kept below,
+draft-only, until Hans confirms deletion). Pre-reorganization copy: session scratchpad only.
+-->
+
+This chapter models how the tax rate on deductible input purchases create an incentive for firms to overreport those inputs, and what shapes their optimal decision. The model delivers two equations that lay the foundation for the rest of the paper. The first, the materials condition, ties the share of materials in output to the technology, up to measurement error in output, so overreporting shows up as a positive deviation of the reported share from the value the technology implies. The test, the deconvolution, and the production-function estimates build on this condition (@sec-testing to @sec-pf). The second, the evasion condition (@eq-foc-e), shows how a firm's overreporting responds to the tax rate. The analysis of the 1983 reform and the counterfactual build on it (@sec-fiscal, @sec-counterfactual).
+
+- **Every peso of fictitious materials lowers the firm's tax bill by the rate on purchases.**
+    - The sales tax worked as a VAT. The firm credits the tax paid on its purchases against the tax it owes on its sales, so every peso of fictitious materials lowers its tax bill by the rate on purchases.
+    - The probability of being caught and the resources allocated to concealment weigh against this benefit.
+- **The model allows two rates, although identification does not need the second.**
+    - Colombian manufacturers typically faced different rates on their sales and on their purchases (@sec-setting-incentive). In 56 percent of firm-years the two rates differ by more than one percentage point. I therefore allow firms to have two rates.
+    - This is not needed for identification: only the rate on purchases enters the decision to overreport, so a single-tax model would do just as well.
 
 ## Setup
 
-A firm $i$ in year $t$ produces output with capital $K_{it}$, labour $L_{it}$, and materials $M_{it}$,
+- **Firms share a technology and differ in productivity; materials are the flexible input.**
+    - Price-taking firms maximize expected after-tax profits. They share a common technology but differ in productivity. *[reuse: `Paper/sections/45-model.qmd`, l. 3]*
+    - A firm $i$ in year $t$ produces output with capital $K_{it}$, labour $L_{it}$, and materials $M_{it}$,
+
 $$
 Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it}),
 $$ {#eq-pf}
-where $\omega_{it}$ is productivity, known to the firm when it chooses its inputs, and $\varepsilon_{it}$ is measurement error in output, with $\mathbb{E}[\varepsilon_{it}]=0$. Because $\varepsilon_{it}$ is an error in the record of output, not a shock to production, the firm's decisions depend on true output, $K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})$, and productivity is $\exp(\omega_{it})$. In @Gandhi2020, by contrast, $\varepsilon_{it}$ is a shock to output that the firm does not know when it chooses its inputs. I follow the production-function literature in treating materials as the flexible input, and capital and labour as predetermined or dynamic.
 
-The firm sells its output at price $P_t$ and owes sales tax at rate $\tau_S$ on its sales. It buys materials at price $\rho_t$ and credits, at rate $\tau_P$, the tax paid on them against the tax it owes; when the credit exceeds the tax owed, as for firms exempt from the tax on their sales, the tax authority refunds the difference. The two rates vary across firms and years, because firms sell and buy goods taxed at different rates. The firm claims the credit on reported purchases, $M^*_{it}=M_{it}+e_{it}$, where $e_{it}\ge0$ denotes overreported materials. Capital goods and labour carry no credit (@sec-setting-incentive), so the firm overreports only materials.
+- **Productivity is known to the firm when it chooses inputs; $\varepsilon$ is measurement error in output.**
+    - $\omega_{it}$ is productivity, known to the firm when it chooses its inputs, which is the simultaneity problem of the production-function literature [@Griliches1995]. *[reuse: `45-model.qmd`, l. 9]*
+    - $\varepsilon_{it}$ is measurement error in output, with $\mathbb{E}[\varepsilon_{it}]=0$. Because $\varepsilon_{it}$ is an error in the record of output, not a shock to production, the firm's decisions depend on true output, $K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})$, and productivity is $\exp(\omega_{it})$.
+    - In @Gandhi2020, by contrast, $\varepsilon_{it}$ is a shock to output that the firm does not know when it chooses its inputs.
+    - I follow the production-function literature in treating materials as the flexible input, and capital and labour as predetermined or dynamic.
+- **The firm sells at $P_t$, buys materials at $\rho_t$, and claims the credit on what it reports.**
+    - The firm sells its output at price $P_t$ and owes sales tax at rate $\tau_S$ on its sales. It buys materials at price $\rho_t$ and credits, at rate $\tau_P$, the tax paid on them against the tax it owes.
+    - When the credit exceeds the tax owed, as for firms exempt from the tax on their sales, the tax authority refunds the difference.
+    - The two rates vary across firms and years, because firms sell and buy goods taxed at different rates.
+    - The firm claims the credit on reported purchases, $M^*_{it}=M_{it}+e_{it}$, where $e_{it}\ge0$ denotes overreported materials.
+    - Capital goods and labour carry no credit (@sec-setting-incentive), so the firm overreports only materials.
+- **Overreporting is hard to see because true materials and productivity are both unobserved.** *[new; structure from `Paper/sections/45.1-model-old.qmd`, "Challenge for the econometrician"]*
+    - The econometrician observes reported materials $M^*_{it}$, not true materials $M_{it}$ or overreporting $e_{it}$.
+    - For a given level of output, a firm reporting high materials may be overreporting, or it may be less productive. @sec-model-foc-m shows how the materials condition separates the two.
 
-Overreporting carries two costs. First, following @Allingham1972, the tax authority audits the firm with probability $q(e_{it})$, which increases with overreporting, with $q(0)=0$, and an audit always uncovers the overreported materials. A firm that is caught repays the credit claimed on $e_{it}$ plus a fine, a multiple $\phi$ of that credit. Second, concealment diverts resources, such as the manager's time, from production; $\kappa_{it}(e_{it},\omega_{it})$ denotes this cost of evasion, which increases in $e_{it}$. Neither the detection probability nor the cost of evasion depends on true materials, so the firm decides how much to overreport separately from how much material to use.
+## Expected profit
 
-The firm chooses its inputs and overreporting to maximize expected profit,
+- **Overreporting carries two costs, detection and concealment.**
+    - First, following @Allingham1972, the tax authority audits the firm with probability $q(e_{it})$, which increases with overreporting, with $q(0)=0$, and an audit always uncovers the overreported materials. A firm that is caught repays the credit claimed on $e_{it}$ plus a fine, a multiple $\phi$ of that credit. A firm that does not overreport cannot be detected. *[reuse: `45-model.qmd`, l. 21, last sentence]*
+    - Second, concealment diverts resources, such as the manager's time, from production; $\kappa_{it}(e_{it},\omega_{it})$ denotes this cost of evasion, which increases in $e_{it}$. Not overreporting is costless, $\kappa_{it}(0,\omega_{it})=0$. *[reuse: `45-model.qmd`, l. 23]*
+    - The cost covers direct expenses, such as acquiring fake invoices and keeping parallel accounting books, and it is paid whether or not the firm is detected. *[reuse: `45-model.qmd`, l. 23]*
+    - Neither the detection probability nor the cost of evasion depends on true materials, so the firm decides how much to overreport separately from how much material to use.
+    - I leave the functional forms of $q$ and $\kappa$ open here; @sec-counterfactual chooses them, guided by the second-order condition (@sec-app-soc-model). *[new]*
+- **No firm gains by underreporting materials, so the departure of reported from true materials has a known sign.** *[new]*
+    - Materials are deductible: overstating them raises the credit, and understating them lowers it, with nothing to offset the loss. So $e_{it}\ge0$ for every firm.
+    - Reported materials are therefore never below true materials, and the reported share exceeds the true share by $u_{it}=\ln(M^*_{it}/M_{it})\ge0$. A deviation of the reported share from $\ln\beta$ can only be positive, up to $\varepsilon$ (@sec-testing).
+    - This is a property of the model. Noise in recorded inputs is not modelled.
+- **The firm chooses inputs and overreporting to maximize expected profit.**
+    - The first term is revenue net of the tax on sales; the second, the cost of true materials net of the credit on them; the third and fourth, the rental cost of capital and the wage bill.
+    - The fifth term is the credit on overreported materials that the firm expects to keep, net of the expected repayment and fine, and the last is the cost of evasion.
+    - Setting $\tau_S=\tau_P=\tau$ recovers the single-tax profit of @sec-app-single-tax.
+
 $$
 \begin{aligned}
   \max_{K,L,M,e}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau_S)P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})-(1-\tau_P)\rho_tM_{it}-r_tK_{it}-w_tL_{it}\\
   &+\tau_P\rho_te_{it}\big[1-(1+\phi)q(e_{it})\big]-\kappa_{it}(e_{it},\omega_{it}).
 \end{aligned}
 $$ {#eq-profit}
-The first term is revenue net of the tax on sales; the second, the cost of true materials net of the credit on them; the third and fourth, the rental cost of capital and the wage bill. The fifth term is the credit on overreported materials that the firm expects to keep, net of the expected repayment and fine, and the last is the cost of evasion.
-
-Setting $\tau_S=\tau_P=\tau$ in @eq-profit recovers the single-tax profit of @sec-app-single-tax.
 
 ## First-order conditions
 
-The firm uses materials until their marginal revenue, net of the tax on sales, equals their price, net of the credit:
+### The materials condition {#sec-model-foc-m}
+
+- **The firm uses materials until marginal revenue net of the tax on sales equals the price net of the credit.**
+    - The condition is
+
 $$
 (1-\tau_S)P_t\,\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})=(1-\tau_P)\rho_t.
 $$ {#eq-foc-m}
-Overreporting does not enter @eq-foc-m, because the credit on $e_{it}$ does not depend on true materials. The two rates enter only through the ratio $(1-\tau_P)/(1-\tau_S)$: when the rate on purchases exceeds the rate on sales, the credit lowers the price of materials relative to output, and the firm uses more of them.
 
-Multiplying @eq-foc-m by $M_{it}$ and dividing by measured output, $P_tY_{it}$, gives the log share of materials in output, net of sales taxes:
+- **Overreporting does not enter it.**
+    - Overreporting does not enter @eq-foc-m, because the credit on $e_{it}$ does not depend on true materials.
+    - The two rates enter only through the ratio $(1-\tau_P)/(1-\tau_S)$: when the rate on purchases exceeds the rate on sales, the credit lowers the price of materials relative to output, and the firm uses more of them.
+- **The log share of materials in output, net of sales taxes, equals $\ln\beta-\varepsilon$.**
+    - Multiplying @eq-foc-m by $M_{it}$ and dividing by measured output, $P_tY_{it}$, gives the log share of materials in output, net of sales taxes:
+
 $$
 \ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln\beta-\varepsilon_{it}.
 $$ {#eq-share-net}
-With a single rate, the tax terms cancel and the gross share, $\rho_tM_{it}/P_tY_{it}$, satisfies the same equation. @sec-testing builds on @eq-share-net to identify $\beta$.^[The two shares differ little in the data. The log ratio $\ln\big((1-\tau_S)/(1-\tau_P)\big)$ has a standard deviation of 0.05 across firm-years, against 0.34 for the log gross share.]
 
-The firm overreports until the credit it expects to keep on the marginal peso equals the marginal cost of evasion. For an interior choice,
+- **The share is free of productivity, so a deviation from $\ln\beta$ reveals overreporting.**
+    - With a single rate, the tax terms cancel and the gross share, $\rho_tM_{it}/P_tY_{it}$, satisfies the same equation.
+    - The two shares differ little in the data. The log ratio $\ln\big((1-\tau_S)/(1-\tau_P)\big)$ has a standard deviation of 0.05 across firm-years, against 0.34 for the log gross share.
+    - Productivity does not appear in the share, so a positive deviation of the reported share from $\ln\beta$ reveals overreporting, up to $\varepsilon$. *[new]*
+    - @sec-testing builds on @eq-share-net to identify $\beta$ and to test for overreporting; @sec-deconvolution and @sec-pf use it too. *[new: last clause]*
+
+### The evasion condition
+
+- **The firm overreports until the credit it expects to keep on the marginal peso equals the marginal cost of evasion.**
+    - For an interior choice,
+
 $$
 \tau_P\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]=\frac{\partial\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}}.
 $$ {#eq-foc-e}
-Only the rate on purchases enters @eq-foc-e, because the tax on sales does not depend on reported materials. A higher rate on purchases raises the credit on every fictitious peso, whether or not the firm is caught, so the firm overreports more. By the implicit function theorem, $\partial e^*_{it}/\partial\tau_P>0$ for any detection probability and cost of evasion that satisfy the second-order condition below.
 
-Some firms choose not to overreport at all. For them, the marginal cost of evasion at zero already exceeds the marginal credit, $\tau_P\rho_t\le\partial\kappa_{it}(0,\omega_{it})/\partial e_{it}$, and @eq-foc-e holds with $\le$ instead of $=$. Firms that pay no tax on their purchases ($\tau_P=0$) are always in this group.
+- **A higher rate on purchases raises overreporting.**
+    - Only the rate on purchases enters @eq-foc-e, because the tax on sales does not depend on reported materials.
+    - A higher rate on purchases raises the credit on every fictitious peso, whether or not the firm is caught, so the firm overreports more.
+    - By the implicit function theorem, $\partial e^*_{it}/\partial\tau_P>0$ for any detection probability and cost of evasion that satisfy the second-order condition.
+    - This sign is the prediction that @sec-fiscal tests with the 1983 reform, and $e^*_{it}(\tau_P)$ is the object that @sec-counterfactual estimates. *[new]*
+- **The second-order condition is a technical requirement, treated in appendix D.** *[new pointer]*
+    - An interior optimum requires the second-order condition (@sec-app-soc-model). Appendix D derives it and gives the restriction it places on the detection probability, and @sec-counterfactual checks that the functional forms satisfy it.
+- **Some firms choose not to overreport at all.**
+    - For them, the marginal cost of evasion at zero already exceeds the marginal credit, $\tau_P\rho_t\le\partial\kappa_{it}(0,\omega_{it})/\partial e_{it}$, and @eq-foc-e holds with $\le$ instead of $=$.
+    - Firms that pay no tax on their purchases ($\tau_P=0$) are always in this group.
 
-Corporations are different. Audited statements and scrutiny by government and markets keep them from overreporting (@sec-setting-jo), so $e_{it}=0$ is a constraint for them, not an outcome of @eq-foc-e. I use them only as the truth-reporting benchmark in @sec-testing.
+### Corporations
+
+- **Corporations are corner firms by assumption; they are the benchmark, not part of the model's interior solution.**
+    - Corporations share the technology of the other firms and may differ in productivity.
+    - Audited statements and scrutiny by government and markets keep them from overreporting (@sec-setting-jo). I assume that, for them, the marginal cost of evasion at zero exceeds the credit, $\tau_P\rho_t\le\partial\kappa_{it}(0,\omega_{it})/\partial e_{it}$, whatever their productivity and rate; I do not model why. *[reuse: corner condition of `45-model.qmd`, l. 135, without the corporate cost shifter $\gamma_1$]*
+    - For other firms, a corner solution follows from $\kappa$, $\omega$ and $\tau_P$. For corporations, $e_{it}=0$ is a constraint, not an outcome of @eq-foc-e.
+    - I use them only as the truth-reporting benchmark in @sec-testing.
 
 ::: {.content-visible when-meta="draft"}
-**Draft note:** no exogenous cost shifter $\delta_C$ for corporations (considered, rejected: can't classify corner firms exogenously; the convex $\kappa$ handles both tails through the interior channel alone).
+**Draft note:** no exogenous cost shifter $\delta_C$ for corporations (considered, rejected: can't classify corner firms exogenously; the convex $\kappa$ handles both tails through the interior channel alone). *Superseded in part by the corporations bullet above (corner condition assumed, no shifter); keep or delete?*
 :::
 
-## Second-order condition
+::: {.content-visible when-meta="draft"}
+**Old second-order condition section (moved to appendix D.2, already there; delete after Hans confirms).**
 
 Profit's Hessian is block-diagonal: $M_{it}\perp e_{it}$, so no cross-partial links overreporting to capital, labour, or materials, and the production function is strictly concave in $(K_{it},L_{it},M_{it})$. The second-order condition therefore reduces to a single scalar condition, $\partial^2\mathbb{E}[\pi_{it}]/\partial e_{it}^2<0$. With a cost of evasion linear in $e_{it}$ and $\phi=0$, this condition depends only on the curvature of the detection probability (derivation in @sec-app-soc-model):
 $$
 -\frac{q''(e_{it})}{q'(e_{it})}\,e_{it}<2.
 $$ {#eq-soc}
 The detection probability may be concave, but not too concave: the semi-elasticity of its marginal probability $q'$ with respect to $e_{it}$ must stay above $-2$. A linear $q$ satisfies the condition everywhere, since $q''=0$, as does any convex $q$; a concave $q$ such as $1-e^{-\lambda e_{it}}$ satisfies it only when $\lambda e_{it}<2$.
+:::
 
 <!-- MOVED 2026-09-24 (Hans: ch. 2 = general model only; functional forms live in ch. 8, identification
 conditions in the empirical chapters). Kept verbatim below for reference. What ch. 8 did not already

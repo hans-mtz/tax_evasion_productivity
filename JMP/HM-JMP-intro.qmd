@@ -1,0 +1,120 @@
+---
+title: "Tax Evasion and Productivity: Identifying and Correcting for Cost Overreporting"
+jmp: true
+draft: false
+author:
+  - name: Hans Martinez
+    email: hmarti33@uwo.ca
+    url:
+      address: https://hansmartinez.com # personal website -> shown in the author footnote
+      short: hansmartinez.com
+    affiliations:
+      - name: Western University
+        department: Department of Economics
+date: today
+date-format: "MMMM DD, YYYY"
+latest-version: https://hansmartinez.com/project/tax_prod/     # page hosting the newest PDF -> link under the date
+abstract: |
+    Value-added taxes (VAT) allow firms to deduct the taxes paid on purchases from the taxes collected on sales, creating an incentive for firms to overreport the purchases of inputs to reduce their tax bill. The fundamental issue in detecting input overreporting stems from two unobservables, true inputs and productivity. Because firms differ in productivity, a firm reporting high input use, for a given level of output, may be either overreporting or simply less productive. I use a structural production-function approach and a benchmark group, a subset of firms that report inputs correctly, to detect and measure overreporting. Because the benchmark firms are assumed to share the same technology as the other firms, I can estimate its parameters. Using these estimates, I generate predictions and compare how potentially tax-evading firms would behave without overreporting to what they report. I apply the method to a Colombian manufacturing survey from 1981 to 1991. During this period, the Colombian sales tax worked as a VAT and, due to government and market scrutiny, a subset of firms reported their inputs correctly.
+    
+    My approach yields a simple yet informative statistical test to detect input overreporting. Under the null hypothesis of correct reporting, the test is robust to a wide family of specifications of both the probability of detection and the cost of overreporting. Among the 5 largest industries, the test rejects the null hypothesis in all 4 industries subject to the sales tax, and, as expected, it fails to reject in the industry exempt from the sales tax. Across the 7 largest industries where the null is rejected, the median input overreporting, as a share of true inputs, amounts to 16 percent. In addition, I find that, between 1983 and 1987, after a fiscal reform raised the sales tax in Colombia, firms in affected industries increased the ratio of overreported to true inputs by about 8.5 percentage points, an implied median-based overreporting elasticity of the tax rate between 4.7 and 9.5.
+    
+    The magnitude of detected overreporting matters for methods of estimating production functions that exploit a flexible input to identify productivity [@Levinsohn2003; @Doraszelski2013; @Ackerberg2015; @Gandhi2020]. These methods typically assume that materials are flexible, and their demand or first-order conditions reveal productivity. However, materials are commonly tax deductible and, thus, the input firms have the incentive to overreport. I show that failing to correct for overreporting yields output elasticities of materials that are larger, and productivity distributions that are more dispersed and less persistent. Using the production-function parameters, I estimate a structural model of firm input overreporting to ask how does the expected claimed deductions, and thus government revenue, respond to the tax rate, where expected claimed deductions include true and undetected fictitious deductions. Approaching the observed tax rate from the left, the expected deductions elasticity of the tax rate is -9.7. Undetected overreporting costs the government around 3 percent of potential sales-tax revenue.  
+thanks: |
+  I thank Salvador Navarro, David Rivers, and Timothy Conley for helpful comments. All errors are my own.
+keywords:
+  - Tax Evasion
+  - Cost Overreporting
+  - Production Function Estimation
+  - Productivity
+jel: "H26, D22, L60, O47"
+bibliography: biblio/references.bib
+format:
+  pdf:
+    documentclass: article
+    classoption: [12pt]
+    geometry:
+      - margin=1in
+    linestretch: 1.15
+    mainfont: TeX Gyre Termes
+    mathfont: texgyretermes-math.otf
+    toc: false
+    number-sections: true
+    colorlinks: true
+    linkcolor: black
+    citecolor: black
+    urlcolor: blue
+    keep-tex: true
+    template-partials:
+      - partials/title.tex
+    include-before-body:
+      text: |
+        \begin{center}
+        \textbf{JEL Classification:} H26, D22, L60, O47 \\
+        \textbf{Keywords:} Tax Evasion, Cost Overreporting, Production Function Estimation, Productivity
+        \end{center}
+        \bigskip
+---
+
+<!--
+JMP FORMAT NOTE (not rendered as content):
+This document pulls most sections directly from Thesis/chapters/ and Thesis/appendices/
+via {{< include >}} -- one copy of the prose for those. Edit the source files in Thesis/,
+never here. Figures/tables/bib are symlinked (JMP/figures, JMP/tables, JMP/biblio ->
+../Thesis/*), so anything Code/Thesis/*.R regenerates shows up in both documents with no
+extra step.
+
+TWO deliberate exceptions, NOT shared with the thesis: the abstract (YAML field here vs.
+Thesis/index.qmd's chapter -- structurally different Quarto mechanisms, can't share one
+source) and the Introduction (sections/01-intro.qmd, local to this folder -- a JMP intro
+and a thesis intro are different animals; edit each separately).
+
+To trim a thesis-only passage (e.g. an extended robustness aside) out of the JMP body only,
+wrap it in the source chapter file with:
+  ::: {.content-hidden when-meta="jmp"}
+  ...thesis-only text...
+  :::
+This paper.qmd sets `jmp: true` below; Thesis/_quarto.yml does not set `jmp`, so the same
+passage still renders in the thesis book. Reverse logic (JMP-only text, e.g. a tighter
+restatement) uses `.content-visible when-meta="jmp"`.
+-->
+
+{{< include sections/01-intro.qmd >}}
+
+<!-- {{< include ../Thesis/chapters/02-model.qmd >}} -->
+
+<!-- {{< include ../Thesis/chapters/03-setting-data.qmd >}} -->
+
+<!-- {{< include ../Thesis/chapters/04-testing.qmd >}} -->
+
+<!-- {{< include ../Thesis/chapters/05-deconvolution.qmd >}} -->
+
+<!-- {{< include ../Thesis/chapters/06-pf-productivity.qmd >}} -->
+
+<!-- {{< include ../Thesis/chapters/07-fiscal-policy.qmd >}} -->
+
+<!-- {{< include ../Thesis/chapters/08-counterfactual.qmd >}}  -->
+
+
+
+<!-- DROPPED from the JMP 2026-09-24: ch. 9 is a stub; literature is folded into the intro (PLAN.md §10). Was: include ../Thesis/chapters/09-literature.qmd -->
+
+<!-- {{< include ../Thesis/chapters/10-conclusion.qmd >}} -->
+
+\appendix
+
+# Online Appendix {#sec-online-appendix .unnumbered}
+
+<!-- {{< include ../Thesis/appendices/A-elvis.qmd >}} -->
+
+<!-- DROPPED 2026-09-23: B-control-variate appendix (CV not used). Was: include ../Thesis/appendices/B-control-variate.qmd -->
+
+<!-- DROPPED from the JMP 2026-09-24: MSL appendix is a stub. Was: include ../Thesis/appendices/C-msl.qmd -->
+
+<!-- {{< include ../Thesis/appendices/D-soc-model.qmd >}} -->
+
+<!-- {{< include ../Thesis/appendices/E-pf-all-industries.qmd >}} -->
+
+<!-- {{< include ../Thesis/appendices/F-test-robustness.qmd >}} -->
+
+<!-- {{< include ../Thesis/appendices/G-fiscal-wedge.qmd >}}  -->
