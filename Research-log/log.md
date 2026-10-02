@@ -1237,3 +1237,406 @@ Crit $\chi^2_{12,.95}=21.0$. At the $k=1$ ak fit: row $t$'s 9.5–40 (row 1 $t$=
 ## 2026-09-30 — CLAUDE.md cleaned to reference-only
 
 Hans: CLAUDE.md holds references, not dated decisions. The previous 283-line file (dated tollgates, grid results, superseded operating points, counterfactual CI tables) is archived verbatim in `Research-log/claude-md-archive-2026-09-30.md`; its ELVIS numbers all predate the eigen-cut fix and are superseded. The new CLAUDE.md keeps the model, settled definitions, estimator roles, ELVIS conventions (incl. `cut=ak`), counterfactual methods, file map and working conventions, and points to `Thesis/PLAN.md` for status and to this log for history.
+
+## 2026-09-30 (night) — B: optimizer vs noise (`run-1580-optimizer-noise.sh`)
+
+$k$=0.5, start g0, κ fixed 0.556, n_keep 3,000; own-seed $TS$ (pass 1 in brackets; B1: pass 3 in brackets, pass 4 reported) and common-seed re-evaluation at seeds 40/41, n_keep 10,000:
+
+| treatment | s29 | s30 | s31 |
+|---|---|---|---|
+| 2 NM (baseline) | 5,548 (5,709); 6,573/6,514 | 3,038 (3,478); 3,163/3,148 | 3,100 (5,950); 3,247/3,275 |
+| B1 NM passes 3–4 | 5,049 (5,075); 5,924/5,648 | 3,036 (3,036); 3,166/3,151 | 2,826 (2,843); 2,930/2,914 |
+| B2 NM + BOBYQA | 5,697; 6,047/6,121 | 3,338; 3,713/3,694 | 4,059; 5,084/5,018 |
+| B3 NM + SA 1200 s + NM | 5,654; 6,137/6,191 | 3,051; 3,252/3,204 | 3,147; 3,437/3,393 |
+
+BOBYQA stopped after 164–206 evaluations (NLopt success) above the NM pass-2 value in all three; SA took ~2,300 s per fit. The seed-29 fits stay at 5,000–6,500 under every treatment and on the common seeds; seeds 30/31 at 2,800–3,700. Estimates: s29 δ ≈ (9.4, 7.49, 1.14), $\hat s$ 0.30–0.34; s30 (7.4–8.0, 6.29–6.56, 0.94–0.98), $\hat s$ 0.24; s31 (8.5–8.8, 6.9–7.3, 1.05–1.12), $\hat s$ 0.23–0.35. Files `1580-*`.
+
+## 2026-09-30 — Chain length (A, partial), soft-test rule, k grid without the ε-variance row (1583)
+
+**A, chain length:** the MacBook shut down overnight (battery); only n_keep=1,000 seeds 30/31 finished (TS 4,758 / 2,930 vs 3,038 / 3,100 at 3,000). Hans: seed matters more than 1,000 vs 3,000; use n_keep=1,000, three seeds when refining; the one n_keep=10,000 fit was killed. Pass timing (1580): pass 3 ≈ 8–12 min, pass 4 ≈ 5–8 min at 4 threads, n_keep 3,000; most of the gain in pass 3. New CLI `n_passes` (default 2; checked: pass 3 starts exactly at the 2-pass endpoint).
+
+**Rule (Hans):** compare grid points with the soft test $TS_{\text{soft}}=2n(\hat L_n-\hat L_{n,\min})$ vs $\chi^2_{d_g}$ while everything rejects; hard test once in the passing region. Seed 29 was a different, dominated optimum (2,510 above seed 30 at $k$=0.5) → dropped; two seeds per point kept as the noise yardstick.
+
+**1583: $k$ grid, rows 6 and 12 dropped (11 rows, crit 19.7), κ and $s$ free, n_keep 1,000, 3 NM passes, seeds 30/31, shared start (δ from 1579 $k$=1, κ 0.556, $s$ 0.2, γ 0).** Own-seed TS (soft in brackets); common-seed TS at seeds 40/41 (n_keep 3,000):
+
+| $k$ | s30 | s31 | κ̂ (30/31) | ŝ | δ₁, δ₂ (30) | δ₁, δ₂ (31) | ω* |
+|---|---|---|---|---|---|---|---|
+| 0.25 | 509 (214); 597/633 | 463 (168); 491/504 | 0.61/0.30 | 0.21/0.26 | 9.0, 1.32 | 14.4, 2.39 | 3.4/3.0 |
+| 0.5 | 658 (363); 807/783 | 393 (99); 498/439 | 0.66/0.71 | 0.25/0.28 | 15.0, 2.31 | 11.9, 1.96 | 3.3/3.0 |
+| 0.75 | **295 (0)**; 323/345 | 730 (436); 855/868 | 0.37/0.57 | 0.37/0.29 | 15.3, 2.46 | 9.5, 2.26 | 3.1/2.1 |
+| 1 | 557 (263); 678/647 | 523 (228); 768/746 | 0.26/0.94 | 0.29/0.22 | 12.2, 1.78 | 15.8, 2.70 | 3.4/2.9 |
+| 1.5 | 1,021 (727); 1,190/1,219 | 901 (606); 1,149/1,149 | 0.48/0.66 | 0.19/0.18 | 9.9, 1.46 | 6.0, 1.12 | 3.4/2.7 |
+| 2 | 458 (163); 532/588 | 536 (241); 610/617 | 0.29/0.15 | 0.26/0.47 | 14.2, 2.51 | 13.0, 1.92 | 2.8/3.4 |
+
+Within-$k$ seed gaps 35–436; every soft TS except the minimum exceeds 19.7. All 11 directions kept everywhere; all converged; max|γ| 1.6–54. Row $t$ at own seed: row 1 (ε) 11–19, row 5 (ε ln M) −8 to −22, row 7 (εω) −13 to −22, rows 8/11 (scores) 5–17 / 4–14, row 9 ($\psi\ln\tau$) |t| ≤ 2.4, row 0 (ψ) −5 to −16. Tilted Var(ε) 1.0–3.1 (was 5–8 with row 12; data 0.18); tilted mean $u$ 0.29–0.47, median 0.02–0.16, p90 0.45–0.85; share beyond kink 0.17–0.47. δ's roughly doubled vs the 13-row fits (δ₁ 6–16, δ₂ 1.1–2.7; ω* 2.1–3.4). Files `1583-*`.
+
+## 2026-09-30 — Drop row 7 (εω) (1584); fit-stats checklist rule; a mislabelled t-table corrected
+
+**Rules (Hans):** (i) every reported $TS$ comes with the fit-stats checklist (rank/eigen, row $t$'s, γ, tilted Var(ε)/u vs data, common-seed $TS$, seed gap) — a lower $TS$ alone is never an improvement (memory `feedback_fit_stats_checklist`); (ii) drop moments starting from the weakest, judged first by whether theory needs them imposed here (independence yields more unconditional moments than we can use), then by what happens when dropped. Row 7 ($\varepsilon\omega$, from $\varepsilon\perp\omega$, already used in stage 1) first; $\psi\omega$, $\psi\omega^2$ are the rows we care about. A t-table I produced for 1583 had its labels shifted from row 8 on (row 12, the dropped row, was read as the κ-score row at $t=0$); corrected — no code bug. In 1583 the share row (10) is the only row at |t| ≤ 2; rows 8, 9, 11 have |t| 4–17.
+
+**Code:** `drop_rows` now accepts rows 1, 5, 7 (corner branch applies the mask); row 10 stays undroppable while $s$ is estimated (`grid_estimator_kf3`). Checks: `drop_rows=6,12` reproduces 1583 $k$=0.75 s30 (294.861, 11 kept); `drop_rows=6,7,12` at the same parameters gives row 7 ≡ 0, 10 kept, $TS$ 1,089 (γ₇ = 16 now acts on a zero row).
+
+**1584: rows 6, 7, 12 dropped (10 rows, crit 18.3), $k\in\{0.5,0.75\}$ × seeds 30/31, else as 1583.** Own-seed $TS$ (pass 1), seeds 40/41; paired 1583 value in brackets:
+
+| k, seed | 1584 TS | e40/e41 | 1583 TS | e40/e41 | κ̂ 1584/1583 | ŝ | δ (1584) | ω* | max|γ| 1584/1583 |
+|---|---|---|---|---|---|---|---|---|---|
+| 0.5 s30 | 785 (p1 3,095) | 865/825 | 658 | 807/783 | 0.67/0.66 | 0.25/0.25 | 10.9, 8.36, 1.26 | 3.32 | 16/19 |
+| 0.5 s31 | 445 (p1 1,042) | 566/536 | 393 | 498/439 | 0.64/0.71 | 0.20/0.28 | 14.3, 11.1, 1.74 | 3.19 | 1.3/25 |
+| 0.75 s30 | 316 (p1 367) | 362/369 | 295 | 323/345 | 0.29/0.37 | 0.27/0.37 | 15.8, 11.9, 1.80 | 3.30 | 3.5/16 |
+| 0.75 s31 | 490 (p1 551) | 612/549 | 730 | 855/868 | 0.29/0.57 | 0.26/0.29 | 16.2, 12.4, 1.92 | 3.22 | 2.2/19 |
+
+Soft within 1584 (min $k$=0.75 s30): 469 / 129 / 0 / 175. All converged, 10 kept everywhere; condition numbers 5×10⁴–3×10⁸ (1583: 4×10⁷–6×10⁸). Row 1 (ε) carries 41–63% of $\hat L_n$ in every 1584 fit (1583: rows 5/7). Row $t$: r1 12–20, r5 −5 to −12, r9 6–15, r8/r11 5–15, r10 |t| ≤ 1.4. Tilted Var(ε) 1.1–1.7 (1583 pairs 1.0–3.0); u mean 0.30–0.43, median 0.01–0.21, p90 0.40–1.13; beyond 0.20–0.28. Three of four fits have max|γ| ≤ 3.5 (1583: 16–25). ω* 3.19–3.32 in all four (1583: 2.10–3.25). Files `1584-*`.
+
+## 2026-09-30 — Corner firms, interior-only run (1585), corner-branch design agreed
+
+**Corner firms' fixed rows** ($u\equiv0$, $\varepsilon=-\mathcal V$; 19,277 = 61% of the sample under design A, mostly the 19 non-rejecting industries): row 1 mean 0.0001 ($t$ 0.0) pooled but by industry −0.43 (331, $t$ −14) to +0.32 (369, $t$ 7.7); row 5 mean −0.33 ($t$ −12.9); row 12 $t$ 6.1 — rows 5 and 12 are rejected by corner firms alone, before any interior firm; the interior tilt must absorb it. Hans: drop them from the estimation. Interior-only input `1585-stage2-input-designA-interior-trim0.005.csv` (n = 12,050; unquoted header — the C++ reader needs it). At the 1584 $k$=0.75 s30 parameters: full sample $TS$ 315.5, interior-only 308.4, row 5 $t$ −10 → −2. Refits launched (`run-1585-interior.sh`).
+
+**Deconvolution as targets** (`1521`, per industry): $u$ concentrated within ±0.05 of its mean (sd 0.03–0.08); $P(u<0.05)$ ≈ 0 except 324 (0.16) and 342 (0.97, mean 0.04); skewness mixed (313/322 ≈ 0; 324/331/369 positive). Var($\mathcal V$) ≈ σ²_ε for interior firms, so the data leave little room for dispersion in $u$; the rejected ε² row was imposing exactly that. Median-$u$ and share rows per industry are valid population moments (cross-firm average of per-firm tilted probabilities = population CDF; no firm-invariance needed); $u=\mathcal V+\varepsilon$ firm by firm, so they re-target the same latent as the ε rows, adding per-industry location and dispersion.
+
+**Two kinds of corner in the code** (Hans's question): (1) input `corner==1` ($\tau_P=0$ or non-rejecting industry): no chain, ε rows as constants (`firm_chain_A`, lines 914–928); (2) a draw near $M=M^*$ for an interior firm: treated as an FOC *equality* at $e\approx0$, $\psi=\bar\psi(\omega)$ — no atom, no inequality (lines 858–866). Under the kink the FOC-ceiling inequality is not enforced: draws beyond it are kept as a mixture with share $s$ (nothing to redraw); the no-kink power sampler (`draw_from_rho_power_scale`) restores the support restriction with the linear-style redraw, but takes $\bar M$ not $\kappa\bar M$ and has no rows 10/11 — dropping the kink needs a small new branch.
+
+**Is a non-evader inequality trivial?** Only when $\psi$ at the atom is a free latent on $[\bar\psi(\omega),\infty)$ with first-moment rows alone (the tilt can put any $\psi$ there). It becomes informative with a dispersion restriction on $\psi$ ($E[\psi^2]=\sigma^2_\psi$, or bounded support at the atom) — the ELVIS analogue of MSL's parametric $f_\psi$ — and with the deconvolution share pinning corner mass from data. Concretely relevant: 342 (14% of interior firm-periods, $P(u<0.05)$ = 0.97) and 324 are being forced onto the FOC equality with $\psi$ pinned at the threshold. **Agreed order:** finish the drop ladder (interior-only; no-kink power branch with κ, FOC-ceiling support, redraw counter) → deconvolution rows (per-industry median/share of $u$) → corner branch (atom at $M^*$ proposed under the dominating measure, $\psi$ on $[\bar\psi,\bar\psi+\Delta]$, $E[\psi^2]-\sigma^2_\psi=0$; inequality as a support restriction, AK Theorem 4).
+
+**1585 results (interior only, n = 12,050; rows 6, 7, 12 dropped; else as 1584).** Own-seed $TS$ (pass 1), seeds 40/41; 1584 pair in brackets:
+
+| k, seed | 1585 TS | e40/e41 | 1584 TS | e40/e41 | κ̂ 1585/1584 | ŝ | δ (1585) | ω* | max|γ| |
+|---|---|---|---|---|---|---|---|---|---|
+| 0.5 s30 | 321 (p1 441) | 375/363 | 785 | 865/825 | 0.51/0.67 | 0.22/0.25 | 9.17, 7.79, 1.22 | 3.19 | 1.1 |
+| 0.5 s31 | 223 (p1 431) | 248/247 | 445 | 566/536 | 0.46/0.64 | 0.22/0.20 | 9.13, 7.80, 1.22 | 3.19 | 2.5 |
+| 0.75 s30 | 218 (p1 438) | 244/229 | 316 | 362/369 | 0.51/0.29 | 0.17/0.27 | 8.12, 7.00, 1.08 | 3.24 | 1.5 |
+| 0.75 s31 | 294 (p1 324) | 332/334 | 490 | 612/549 | 0.44/0.29 | 0.16/0.26 | 8.27, 7.06, 1.08 | 3.28 | 1.0 |
+
+Soft within 1585 (min $k$=0.75 s30): 103 / 5 / 0 / 76; seed gaps 98 ($k$=0.5), 76 ($k$=0.75) — 1584: 340, 175. δ agree across seeds to two decimals within each $k$; ω* 3.19–3.28; κ̂ 0.44–0.51 (1584: 0.29–0.67); ŝ 0.16–0.22. Row $t$: r1 (ε) 9–14, r9 ($\psi\ln\tau$) 11–13 and now the top $\hat L_n$ contributor (25–42%), r5 −5 to −7, r0 −8 to −11, r4 −3 to −6, r8/r11 6–10, r2 |t| ≤ 2.5, r10 |t| ≤ 0.7. Tilted Var(ε) 0.58–1.18 (1584: 1.14–1.72; data 0.18); u mean 0.23–0.29, median 0.10–0.18, p90 0.34–0.49 (deconvolution medians 0.04–0.40); beyond 0.16–0.22. max|γ| ≤ 2.5 everywhere; all converged; 10/10 kept; condition numbers 5×10⁴–3×10⁵. Files `1585-*`.
+
+## 2026-09-30 — Drop row 5 (ε ln M) (1586): mixed TS, fit stats degrade
+
+Hans: row 1 is the level normalization (not droppable); row 5 is valid but not needed for identification, and after dropping 7 and 12 it is the last row restraining ε dispersion — drop as a diagnostic. **1586:** interior only, rows 5, 6, 7, 12 dropped (9 rows, crit 16.9), else as 1585. Own-seed $TS$ (pass 1), seeds 40/41; 1585 pair in brackets:
+
+| k, seed | 1586 TS | e40/e41 | 1585 TS | κ̂ 1586/1585 | ŝ | δ (1586) | ω* | max|γ| 1586/1585 | u<0.05 share 1586/1585 | Var(ε) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.5 s30 | 111 (p1 365) | 175/129 | 321 | 0.09/0.51 | **0.60 (bound)**/0.22 | 13.4, 11.0, 1.88 | 2.93 | **88.5**/1.1 | 0.50/0.09 | 0.54/1.18 |
+| 0.5 s31 | 175 (p1 1,328) | 224/215 | 223 | 0.64/0.46 | 0.23/0.22 | 8.3, 6.96, 1.07 | 3.26 | 24.4/2.5 | 0.72/0.07 | 0.63/0.79 |
+| 0.75 s30 | 513 (p1 1,075) | 678/692 | 218 | 0.71/0.51 | 0.19/0.17 | 9.1, 6.88, 0.98 | 3.51 | 7.4/1.5 | 0.66/0.01 | 2.17/0.58 |
+| 0.75 s31 | 273 (p1 1,495) | 367/358 | 294 | 0.54/0.44 | 0.23/0.16 | 8.7, 7.26, 1.13 | 3.22 | 9.7/1.0 | 0.44/0.01 | 1.11/1.05 |
+
+Tilted $u$ medians 0.007–0.06 (1585: 0.10–0.18), share with $u<0.01$ 4–58% (1585: 0–0.1%), p99 1.9–9.0; share beyond kink 0.19–0.60. γ₂ (row 1) −88/−24/−7/−10; 9/9 kept; condition numbers 4×10⁵–6×10⁶. δ no longer agree across seeds at $k$=0.5 (δ₁ 11.0 vs 7.0). Checklist verdict: the TS gains at $k$=0.5 come with half the firms pushed to $u\approx0$, γ on row 1 an order of magnitude larger, and κ̂ at 0.09 with $s$ at its bound — mechanical, not an improvement; $k$=0.75 s30 is worse outright. Files `1586-*`.
+
+## 2026-09-30 — Fine k grid on the settled system (1587 + 1585)
+
+Row 5 put back (Hans: "this is what we wanted — keep dropping until it breaks"). Settled system: interior only (n = 12,050), AK cut, rows 6/7/12 dropped (10 rows, crit 18.3), kinked power $q$, κ and $s$ estimated, n_keep 1,000, 3 NM passes, shared start. $k\in\{0.4,0.5,0.6,0.75,0.9,1\}$ × seeds 30/31 (0.5, 0.75 from 1585). Own-seed $TS$ [soft vs grid min], seeds 40/41:
+
+| k | s30 | s31 | κ̂ 30/31 | ŝ | δ₁, δ₂ (30) | δ₁, δ₂ (31) | ω* | max|γ| |
+|---|---|---|---|---|---|---|---|---|
+| 0.4 | 315 [97]; 380/373 | 234 [17]; 302/291 | 0.62/0.54 | 0.19/0.22 | 6.71, 1.03 | 6.86, 1.06 | 3.25/3.22 | 4.2/2.4 |
+| 0.5 | 321 [103]; 375/363 | 223 [5]; 248/247 | 0.51/0.46 | 0.22/0.22 | 7.79, 1.22 | 7.80, 1.22 | 3.19/3.19 | 1.1/2.5 |
+| 0.6 | 295 [77]; 356/353 | 299 [82]; 358/339 | 0.57/0.50 | 0.20/0.19 | 7.58, 1.18 | 6.88, 1.06 | 3.22/3.26 | 8.2/2.0 |
+| 0.75 | **218 [0]**; 244/229 | 294 [76]; 332/334 | 0.51/0.44 | 0.17/0.16 | 7.00, 1.08 | 7.06, 1.08 | 3.24/3.28 | 1.5/1.0 |
+| 0.9 | 332 [114]; 359/378 | 279 [61]; 340/323 | 0.64/0.36 | 0.17/0.21 | 8.67, 1.35 | 6.97, 1.08 | 3.20/3.22 | 1.3/0.8 |
+| 1.0 | 286 [68]; 307/305 | 232 [14]; 253/261 | 0.45/0.47 | 0.19/0.16 | 5.76, 0.89 | 6.48, 1.00 | 3.22/3.26 | 1.5/2.2 |
+
+Best seed per $k$ (soft vs overall min 218 at $k$=0.75 s30): 0.4 → 17, 0.5 → 5, 0.6 → 77, 0.75 → 0, 0.9 → 61, 1.0 → 14. Seed gaps 5–98 (0.4: 80; 0.5: 98; 0.6: 5; 0.75: 76; 0.9: 53; 1.0: 54). Common-seed minima also at $k$=0.75 s30 (244/229), then 0.5 s31 (248/247), 1.0 s31 (253/261). All 12 converged, 10/10 kept, condition numbers 3×10⁴–5×10⁵, max|γ| ≤ 8.2. κ̂ 0.36–0.64, ŝ 0.16–0.22, ω* 3.19–3.28 at every fit. Row $t$: r1 9–14, r9 11–14, r0 −8 to −11, r5 −4 to −10, r8/r11 6–10, r4 −3 to −7, r2/r3 |t| ≤ 7, r10 |t| ≤ 2.5. Tilted Var(ε) 0.58–1.23; u mean 0.23–0.30, median 0.10–0.18, p90 0.33–0.54, p99 1.2–3.9; share u<0.05 0–14%; beyond kink 0.16–0.22. Files `1587-*`.
+
+## 2026-09-30 — ε ln M by industry (1588, IND5 build), seed 30 only
+
+Hans: one seed from now on (30); comparing two seeds is not informative point by point. Ranking by own-seed $TS$ only (re-scored $TS$ dropped as a ranking device: γ is fitted to the seed's draws). New build `IND5` (`grid_estimator_ind5`): rows 13–21 = $\varepsilon\ln M\cdot\mathbf 1\{j\}$ for the 9 interior industries (313 321 322 324 331 342 351 352 369, from `sic_3`), every draw; row 5 dropped (it is their sum). Checks: industry rows dropped reproduces 1585 (217.762) and 1586 (512.807) exactly. At the 1585 $k$=0.75 fit with the industry γ's at zero the rows have $t$ = −2, 12, 46, 23, 19, 17, 5, 16, −1 (TS 7,735).
+
+**Fits (18 rows, crit 28.9; 1585/1587 pooled-row pair in brackets):**
+
+| k | TS | κ̂ | ŝ | δ | ω* | Var(ε) | u p50/p90/p99 | u<0.05 | beyond | industry-row t (313…369) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0.5 | 202 [321] | 0.50 [0.51] | 0.19 [0.22] | 7.56, 6.64, 1.01 | 3.27 | 0.34 [1.18] | 0.24/0.72/1.6 | 0.000 [0.088] | 0.26 | 0.3, −0.8, −2.1, −2.2, −7.2, −1.1, 1.6, 0.1, 1.2 |
+| 0.75 | 1,109 [218] | 1.34 [0.51] | 0.10 [0.17] | 9.92, 7.24, 1.01 | 3.59 | 2.49 [0.58] | 0.05/1.56/9.0 | 0.472 [0.009] | 0.14 | 2.4, 0.2, −12.6, −6.0, 3.5, −3.6, 4.1, 11.0, −5.7 |
+| 1 | 351 [286] | 0.41 [0.45] | 0.17 [0.19] | 8.00, 6.80, 1.04 | 3.28 | 0.24 [0.86] | 0.16/0.59/1.4 | 0.042 [0.015] | 0.20 | −2.9, −6.4, −8.0, 1.7, −8.4, 0.4, 3.3, −1.1, −1.3 |
+
+All converged, 18/18 kept, condition numbers 4×10⁵–3×10⁶. Pooled rows at $k$=0.5: r1 10.6, r9 9.5, r0 −7.5, r8/r11 7; at $k$=0.75 everything 6–25. The largest γ's sit on DROPPED rows (γ₁₃ = −17.3 on row 12 at $k$=0.5; γ₆ = 10.6 on row 5 at $k$=0.75; γ₁₃ = −10.2 at $k$=1) — inert, but NM is spending evaluations on dead dimensions; live-row max|γ| 1.6 / 6.1 / 2.3. $k$=0.75 landed in a bad basin (pass 1 1,218 → 1,109; κ̂ 1.34, ŝ 0.10, 47% of firms below u = 0.05). Files `1588-*`.
+
+## 2026-09-30 (evening) — Code audit; Phase 0 confirms the improper tilt; housekeeping
+
+**Audit** (independent agent, read-only; report `Research-log/elvis-code-audit-2026-09-30.md`): (1) uniform ρ on (0, M*] violates Schennach Def. 2.2(ii) — beyond the kink the pure-ε rows grow like u², γ on row 5 (and IND rows) is negative at the fits, so exp(γ'g) ∝ exp(+a u²) and the tilt is not normalizable (Remark 2.3's "shape irrelevant" needs condition (ii)); (2) MH with CRN makes the objective piecewise constant in γ (Schennach p. 360 recommends smooth reweighting of fixed draws); (3) BUG: adiag's tilted summaries omitted `jidx` under IND5; (4) Ω not clustered by plant; (5) NM without initial steps, maxeval 2000, codes 5/6 read as converged; (6) seeds `base_seed+row_id` overlap across seeds; (7) relative eigen-cut still in the R/counterfactual objectives and default; (8)–(9) build-flag and CLI traps; the soft test has no χ²_{d_g} justification while the hard test rejects. Derivation note: recast in M valid; four statements to correct. κ-grid run 1589 killed before finishing.
+
+**Phase 0** (`run-1590-tail-diag.sh`, adiag only, same parameters and seed, n_keep 1,000 as fitted vs 10,000). New adiag TAIL line: exposure to the beyond-kink tail ($M^*\ge c_k\kappa\bar M$), $a_i>0$, max kept $u$, firms with kept $u>8$.
+
+| fit (seed 30) | exposed / a>0 | TS nk 1k → 10k | firms u>8: 1k → 10k | tilted Var(ε): 1k → 10k | u p99 |
+|---|---|---|---|---|---|
+| 1585 k0.5 | 45% / 45% | 321 → 523 | 175 → 952 | 1.18 → 2.69 | 3.4 → 8.4 |
+| 1585 k0.75 | 44% / 44% | 218 → 245 | 141 → 651 | 0.58 → 0.94 | 1.2 → 2.1 |
+| 1587 k0.4 | 41% / 41% | 315 → 529 | 297 → 1,479 | 1.22 → 2.80 | 3.4 → 8.6 |
+| 1587 k1 | 46% / 46% | 286 → 333 | 164 → 669 | 0.86 → 1.31 | 2.2 → 5.6 |
+| 1588 k0.5 | 46% / 43% | 202 → 286 | 75 → 302 | 0.74 → 1.52 | 1.3 → 6.6 |
+| 1588 k0.75 | 22% / 17% | 1,109 → 1,787 | 494 → 2,052 | 3.68 → 9.10 | 10.3 → 11.3 |
+| 1588 k1 | 48% / 45% | 351 → 489 | 132 → 489 | 0.99 → 2.25 | 1.9 → 8.5 |
+
+Confirmed: at fixed parameters a longer chain moves the objective systematically (TS +12% to +80%), because firms keep finding the improper tail (u up to 18–19, M/M* ≈ 10⁻⁸). Every fit since the kink (1558 on) targets an objective defined by chain length. Corrected 1588 tilted summaries (nk 1,000; TS/row t unchanged, 201.622 / 1,109.41 / 350.91): Var(ε) 0.74 / 3.68 / 0.99 (reported earlier as 0.34 / 2.49 / 0.24), u p50 0.13 / 0.05 / 0.12, u<0.05 4.7% / 51% / 8.0%.
+
+**Housekeeping (code):** `cut=ak` is the default for every CUE objective (sets A, C, R/counterfactual, omegadiag), `cut=rel` kept only to reproduce old runs; R drivers 1210/1211 switched to Λ > 0; `minf = HUGE_VAL`; build-flag `#error` guards (KINK⇒KINK_S, EPSVAR⇒KINK_S, IND5⇒KINK_S+EPSVAR, KAPPA_FREE⇒KINK_S) and `static_assert(D_G_A ≤ 32)`; unknown CLI keys rejected; strict `drop_rows` parse; pinned k/s written into the start vector; sig2eps and N_IND checks; Makefile target per binary. γ on dropped rows pinned at 0 and `k_free` (bounds [0.05, 2.5]) added earlier. All four current binaries rebuilt; adiag reproduces 1585 k0.75 (217.762) and 1588 k0.5 (201.622) with no `cut=` argument.
+
+## 2026-09-30 (evening) — Derivation note corrected; Phase 1: Proposition 2.1 dominating measure
+
+**`9999-elvis.qmd`** (text approved by Hans): support *equals* the model's (larger = conservative, Remark 2.2); Theorem 2.1 in infimum form (solutions at ‖γ‖→∞); the per-$z$ entropy derivation annotated — Schennach uses one γ on the averaged constraint; Remark 2.3 now states Definition 2.2's conditions (i) support and (ii) finite, differentiable $\int e^{\gamma'g}d\rho$ for every γ, with the uniform ρ as a violating example; AK Theorem 4 re-described as almost-sure (support) restrictions, not expectation inequalities (three places).
+
+**Dominating measure (`rho=prop21`, `grid_estimator.cpp`).** $d\rho(M\mid z;\theta)\propto\exp(-\lVert D^{-1}(g(M;\theta)-g(M^*;\theta))\rVert^2)\times\text{uniform}(0,M^*]$ (Schennach Prop. 2.1; $\bar u=M^*$; her point mass at $\bar u$ omitted — not needed for condition (ii)); implemented as the ρ ratio in the MH acceptance (as in her GAUSS `avg_mom`), in `firm_chain_A` and the adiag chain; dropped rows excluded from the quadratic form. $D$ = per-row sd of $g$ under the uniform proposal at a given par (new `mode=rhoD`, printed as `RHO_D:`), fixed and passed to every compared run (`rho_D=`). Default stays `rho=uniform`.
+
+**Validation.** V1: `rho=prop21` with $D=10^{12}$ reproduces the uniform objective exactly (1588 $k$=0.5: 201.622). V2 (old γ̂, not refitted; $D$ from `rhoD` at the same par): kept $u$ now bounded — max 1.36 → 1.70 (1588 $k$0.5) and 1.62 → 1.70 (1585 $k$0.75) for n_keep 1,000 → 10,000, no firm above $u$=8 (uniform: 75 → 302 and 141 → 651, max 16–19); tilted Var(ε) 0.1872 → 0.1872 and 0.1923 → 0.1923 (data 0.18; uniform 0.74 → 1.52, 0.58 → 0.94); $u$ quantiles unchanged to 3 decimals (p50 0.056/0.057, 0.093/0.093; p99 0.156/0.156, 0.190/0.186). TS at the old γ̂ is 206k → 263k and 718k → 1.04M: γ̂ was tuned to the improper measure, and at such a misfit TS ∝ 1/Ω, whose simulation component shrinks with n_keep — refits needed before TS means anything. $D$ at 1588 $k$0.5: 2.29, 1.08, 12.6, 4.81, 19.1, –, –, –, 0.59, 7.45, 0.44, 0.56, –, 1.16, 3.67, 4.32, 2.39, 1.64, 2.91, 1.30, 3.07, 1.82.
+
+**Seeds hashed** (`seed=hash`, now the default; `seed=add` reproduces old runs): per-firm stream = splitmix64(splitmix64(base_seed) ⊕ splitmix64(c + row_id)), replacing base_seed + row_id at all 11 sites (seed s+1 used to give firm r the stream of firm r+1 at seed s). Check at 1588 $k$0.5: `seed=add` → 201.622 (exact); `seed=hash` → 241.3 at the same parameters (new draws; γ̂ was fitted to the old ones). With both Phase-1 changes every old fit changes; nothing before this point reproduces under the new defaults except via `rho=uniform seed=add`.
+
+**Inference convention restated (Hans):** stage 2 is test inversion with β, α, σ²_ε taken as the true parameters (null: E[g]=0 at those values), θ fixed per grid point for the same reason — first-stage error is not propagated by design; the joint bootstrap (audit 7.9) waits.
+
+**Plant-clustered Ω** (`cluster=plant`, audit 7.3). New input `1592-stage2-input-designA-interior-plant-trim0.005.csv` (`1592-input-plant.R`): the 1585 interior input plus `plant_id`, row_id → plant rebuilt with 1532's export filters and verified row by row (M*, V, sic, year exact); 2,099 plants, 5.74 firm-periods per plant (max 11, 291 singletons). Ω = n⁻¹ Σ_p S_p S_p', S_p = Σ_{i∈p}(ĝ_i − d̄); used by the moment-set-A objective and adiag. Checks at 1585 $k$0.75 (rho=uniform, seed=add): cluster=none 217.762 (exact); every firm-period its own plant 217.762 (exact); real plants 142.7, row |t| down by about a third to a half (ε 9 → 5, ψ lnτ 11 → 7, ψ −8 → −5).
+
+**Phase 2 code (not yet used in any fit).** (a) `sampler=is` (audit 7.2): self-normalized importance sampling on n_keep fixed uniform draws per firm, weights exp(γ'g − Q_ρ); adiag reports per-firm effective sample size. Check at 1585 $k$0.75 with 0.5·γ̂, ρ=prop21, n_keep 5,000: MH vs IS row means agree to 3–4 digits (ψω² −7.3419 / −7.3420; ψ lnτ 1.4324 / 1.4322), tilted Var(ε) 0.19956 / 0.19955, u p50 0.1316 / 0.1321; ESS median 1,292 of 5,000, p1 72. (b) Optimizer (audit 7.5): NLopt initial steps set by default (δ 0.5, k 0.1, s 0.05, κ 0.1, γ_t 0.2/D_t; `init_step=nlopt` restores the old default), `maxeval` per pass defaults to 200 × free dimensions (CLI `maxeval`), and every pass ending on NLopt codes 5/6 or an error prints "NOT converged". (c) `algo2=lbfgs` (finite-difference gradients) implemented but NOT usable yet: in a smoke test it stopped after 3 evaluations (xtol) — FD derivatives in δ/κ/s cross the kink discontinuity; the audit's nested design (γ-only inner solve, analytic gradient, NM outer over θ) is the proper fix and is still open.
+
+**1591: chain length × seed under ρ=prop21 + hashed seeds** (10-row system, $k$=0.75, κ and $s$ free, MH, same start and D; `run-1591-rho-chain-seed.sh`). Own-seed $TS$ (pass 1):
+
+| n_keep, seed | TS | κ̂ | ŝ | δ | ω* | max|γ| | u p50 / p99 / max | beyond | Var(ε) |
+|---|---|---|---|---|---|---|---|---|---|
+| 1,000 s30 | 740 (1,345) | 0.34 | 0.32 | 6.90, 7.08, 1.26 | 2.80 | 7.8 | 0.051 / 3.8 / 11.9 | 0.31 | 0.65 |
+| 1,000 s31 | 455 (1,535) | 0.21 | 0.44 | 2.11, 3.13, 0.52 | 3.01 | 8.9 | 0.031 / 5.0 / 12.9 | 0.44 | 0.85 |
+| 5,000 s30 | 268,254 (1.7M) — degenerate: δ₀ at the −60 bound, $s$ 0.55 with 0 draws beyond the kink (row 10 $t$ ≈ −4×10¹⁴) | 1.19 | 0.55 | −60, 41.0, 45.4 | 0.45 | 0.2 | 0.003 / 0.013 | 0 | 0.18 |
+| 5,000 s31 | 532 (1,063) | 0.29 | 0.33 | 9.77, 8.72, 1.49 | 2.93 | 3.7 | 0.031 / 2.7 / 12.2 | 0.33 | 0.69 |
+
+Neither chain length nor seed is stable under the new ρ. The fitted γ's (up to 8–9) make the far tail attractive again: at the fits, 54–66% of firms are exposed with $a_i>0$, kept $u$ reaches 12–14 — the ρ penalty grows like $u^4/D^2$ and only dominates a $\gamma$-weighted $u^2$ term beyond $u\approx15$–20, so the tilt is proper but the fit still puts mass where the uniform proposal rarely reaches ($P(u>12)\approx6\times10^{-6}$), and MH results again depend on chain length. 31–44% of draws sit beyond the kink, where only the ε rows and the share row apply.
+
+**Nested solve** (`nested=1`, requires sampler=is and cut=ak): outer NM over free θ, inner L-BFGS over γ on cached draws with an analytic gradient (incl. plant clustering). Checks (`mode=nestedcheck`, 1585 $k$0.75, 0.5·γ̂): cached objective = regular IS objective to 2×10⁻⁸; analytic gradient = central FD to ≤3×10⁻⁵ relative on every row, with and without clustering. Smoke fit (n_keep 300): pass 1 L̂ 0.0026, pass 2 ended at 0.0042, and re-solving γ at the best θ gave 4.25 — the inner CUE problem in γ is not convex and the warm start makes the outer objective path-dependent; 181 outer and 76,669 inner evaluations, 22 min. Not usable as is.
+
+**No kink + nested, launched** (Hans: drop the kink; nested solver; k ∈ {0.25, 0.5, 0.75, 1} × seeds 30/31; κ estimated; no chaining of any parameter across fits; two passes, pass 2 from the best point of pass 1; n_keep 1,000 kept until the objective is smooth). Code: `qform=power_nokink` (q = (e/(κ M̄))^k, support M ∈ (max(0, M* − c_k κ M̄), M*] with redraw at the floor edge, row 10 dropped automatically, s pinned and inert); nested solver made deterministic within a pass (inner γ always starts from the pass's start; best (θ, γ) tracked and reported — no re-solve; pass 2 restarts NM from the best θ with the best γ as inner start); inner L-BFGS ftol_rel 10⁻⁸, xtol_rel 10⁻⁶, 300 evaluations. Smoke check (n_keep 200, k 0.75): reported L̂ reproduced exactly by adiag (0.0096501), pass 1 → 2: 0.01129 → 0.00965, 0 draws beyond the ceiling; ESS per firm median 7.8 of 200, p10 1.2 (few draws carry each firm at the fitted γ). `run-1593-nokink-nested.sh`: 9 rows (crit 16.9), ρ=prop21 (D at the start), sampler=is, cluster=plant, outer maxeval 200 per pass, xargs work-stealing 4 × 3 threads, ordered by k. Second agent sent to check implementations against the audit (report `Research-log/elvis-code-review-2026-09-30.md`, read-only, may test in a scratch dir).
+
+## 2026-09-30 (night) — Second review; fixes; mixture proposal; convex dual start
+
+**Second agent review** (`Research-log/elvis-code-review-2026-09-30.md`): ρ ratio, Def. 2.2, clustered Ω, analytic gradient, seed hashing, IS draws in adiag, no-kink support all verified. Found: (1) nested fits irreproducible with >1 thread (per-thread gradient buffers); (2) IS objective depends on R with the uniform proposal (TS 28/94/147 at R = 100/1,000/10,000 at one point; ESS = 1 for ≥10% of firms); (3) default/YEAR_FE builds broken; (4) `Delta` missing from whitelist; (5) counterfactual modes silently ignore new options; (6) smaller gaps (inner result code discarded, TAIL line under no-kink, rho=uniform allowed with no-kink, rhoD placeholders, wander = 0 in nested). Remark 2.3 now stated too strongly (identified set ρ-free, but the CUE statistic under rejection can depend on ρ, D). 1593 killed (Hans).
+
+**Fixes:** gradient accumulated per firm and summed in firm order — two 3-thread runs and a 1-thread run now identical to the last digit; build guard for `g_kpow` (all builds compile, incl. default and YEAR_FE); `Delta` whitelisted; rhoD writes 0 for dropped rows and a run refuses a live row with D = 0; `power_nokink` requires `rho=prop21`; counterfactual/legacy modes refuse the new options with an error; adiag TAIL under no-kink reports firms whose support reaches M → 0; inner L-BFGS cap hits and failures counted and printed; `wander` = distance pass-1 best → final best; Makefile target `grid_estimator_s2` (current binary).
+
+**`proposal=mix`** (sampler=is): 50/50 uniform in M and log-uniform in M (u uniform on [0, min(25, ln(M*/lo)))), each draw reweighted by uniform/mixture density. At one fixed (θ, γ): TS 321 / 329 / 329 at R = 100 / 1,000 / 10,000 (uniform: 337 / 285 / 339); tilted Var(ε) 5.10 / 5.39 / 5.39 (uniform: 0.73 / 2.41 / 4.70, rising toward the mixture's value — the uniform draws were missing tail mass the tilt actually carries).
+
+**`inner_start=dual`** (convex average log-normalizer, gradient = d̄, checked against FD): in a short nested fit (n_keep 300, 30 outer evaluations per pass, 71 s) the dual diverged — max|γ| 2.4×10¹³, ESS = 1 for every firm (each firm's tilt collapses on one draw), TS 722 (R=300) / 734 (R=1,200). By Schennach, divergence of the dual means d̄(γ) = 0 has no finite solution at that θ (the moments cannot be matched); as a start for the CUE step it lands on the degenerate limit, whereas the fixed start γ = 0 found a finite local CUE minimum (TS ≈ 232 at R=200 in the earlier smoke fit, ESS median 8).
+
+**What Schennach and AK do for γ (checked against the sources, after a review claim):** Schennach, supplement Appendix G: θ is gridded, not optimized; "for each θ, the optimization over γ is well behaved and we use the simplex method" (Nelder–Mead), with L-BFGS/guarded Newton named as faster alternatives; the γ problem "can be cast as a convex optimization problem" — the log-normalizer dual — but her code minimizes the CUE/EL objective over (nuisance, γ) with Nelder–Mead. AK: θ fixed; CUE over γ by differential evolution (100 s) then BOBYQA, restarted up to 3×. Neither runs the dual. The dual has a finite solution only when the moments can be matched exactly at θ (it diverged in our test fit). Also discussed: precomputing draws across θ saves little (g(M; θ) must be re-evaluated per θ; the nested cache already reuses draws across γ); AK's fresh acceptance uniforms make the objective random, and IS removes accept/reject altogether; hit-and-run in a one-dimensional latent reduces to a uniform draw on the support (the chord is the whole interval), so the gain is in the proposal's shape (mixture), not correlated draws.
+
+**Decisions (Hans):** fixed inner start is the default (`inner_start=fixed`; dual kept as an option and as a diagnostic — does a finite γ solve d̄ = 0 at the reported θ?); Remark 2.3 qualification written into `9999-elvis.qmd` (under rejection the CUE value and its argmin can depend on ρ and D; compare rejecting statistics only under the same ρ, D); joint null stated in ch. 4 already ("taking ln β̂ from corporations as the true value"), ch. 8 needs the same for β, α, σ²_ε; soft TS stays a ranking device. Optimizer comparison step by step: (1) nested single pass vs NM two passes without nesting; (2) nested two passes vs multi-start inner. R = n_keep (IS draws per firm); the "4R" check re-evaluates a fitted point with 4× draws, no refit. `n_passes=1` allowed in nested mode. Third agent sent to verify the post-review changes (`Research-log/elvis-code-review3-2026-09-30.md`).
+
+**1594 launched** (`run-1594-nested-vs-nm.sh`): k = 0.75, seed 30, no kink, 9 rows, ρ=prop21 (D from 1593, row 10 = 0), IS + mixture proposal, plant-clustered Ω, n_keep 1,000, same start; (a) nested, 1 pass; (b) NM joint over θ and γ, 2 passes; 6 threads each in parallel; adiag at each fit with R = 1,000 and 4,000.
+
+**1594 results** (k = 0.75, seed 30, no kink, 9 rows, n_keep 1,000; crit 16.9):
+
+| | nested, 1 pass | NM joint, 2 passes |
+|---|---|---|
+| TS at R = 1,000 (own) | 247.7 | 250.3 (pass 1: 271.7; pass 1 hit maxeval 2,600) |
+| TS at 4R = 4,000 (same θ, γ) | 275.5 (+11%) | 250.3 (+0.0%) |
+| κ̂ | 0.58 | 1.82 |
+| δ₀, δ₁, δ₂; ω* | 8.19, 7.34, 1.01; 3.62 | 31.4, 21.8, 3.36; 3.26 |
+| max|γ| | 535 | 260 |
+| tilted Var(ε) (data 0.18) | 16.9 | 0.121 |
+| tilted u: p50 / p90 / p99 / max | 0.028 / 1.04 / 18.2 / 21.3 | 0.103 / 0.488 / 0.74 / 1.11 |
+| IS ESS per firm, p10 / p50 (of 1,000) | 1 / 2.2 | 16 / 79 |
+| row t: ε, εlnM, ψ lnτ | 13.1, −13.8, 14.1 | 3.3, 2.1, 13.2 |
+| time | 18.5 min (93 outer, 21,438 inner; 32 inner solves at the cap) | 19.9 min |
+
+Same TS level, very different points: the nested solve reached a degenerate tilt (ESS ≈ 1–2, tail to u = 21, objective moves +11% at 4R); joint NM reached a regular one (ESS 79, u ≤ 1.1, Var(ε) 0.12, identical TS at 4R). Files `1594-*`.
+
+**Third review** (`Research-log/elvis-code-review3-2026-09-30.md`): nested determinism, mixture density/weights at all three draw sites, both gradients, `inner_start=fixed` default, builds/whitelist/guards verified. Main finding: the mixture does not remove R-dependence at *degenerate* tilts (its test point, a short nested fit with ESS ≈ 1: TS 56/85/93/98 at R = 1k/10k/40k/160k, uniform and mix converging to the same values) — mass piles at the FOC-ceiling edge (B ≈ 10⁻⁶–10⁻⁴, M within ~10⁻⁵ of lo), which neither component reached; possibly floor-dependent. Consistent with 1594: the NM point (regular tilt) was R-stable. Also: legacy modes `grid3d`/`deltagrid`/`shell`/`flat` and non-power qforms accepted the new options silently.
+
+**Fixes (Hans: keep NM; one more nested check with NM inner):** proposal=mix now has a third component when lo > 0, log-uniform in (M − lo) on [lo + 10⁻¹⁰(M* − lo), M*) (weights 1/3 each; 1/2, 1/2 when lo = 0); `h_floor` CLI (floor of the power forms, default 10⁻⁶, header variable `g_h_floor_power`); nested `inner_algo=neldermead` (steps 0.2/D_t, budget 200 × free γ); inner cap/failure counts written to the lambdagrid CSV (`inner_cap`, `inner_fail`); nested, IS and prop21 require qform power_kink/power_nokink; `grid3d`, `deltagrid`, `shell`, `flat` refuse the new options; `rhoD` exempt from the no-kink ρ requirement; adiag CEILING EDGE line (tilted mass with B < 10⁻³) and corrected TAIL label; `n_passes=1` outside nested says so; stale comments fixed. All builds compile. At the 1594 NM point: TS 250.39 (R 1,000) / 250.19 (4,000) with the 3-component proposal (2-component: 250.32); h_floor 10⁻⁸ / 10⁻⁴: 250.39 / 250.45; edge mass 0.016%. Proposal vs ρ (Hans asked): ρ is part of the estimand (Remark 2.3), the proposal only the simulation device — the review confirmed both proposals converge to the same values; R-dependence is Monte Carlo error.
+
+**1595 launched**: (a) nested with NM inner at the 1594 point (1 pass); (b) IS vs MH at the 1594 NM point: 5 seeds each at R = 1,000 (precision) and TS along γ̂ × c, c = 0.98…1.02 (smoothness).
+
+**IS vs MH evidence (1595b, at the 1594 NM point, R = 1,000):** precision over 5 seeds — IS + mix TS 250.32–250.46 (sd 0.05), row-1 mean 0.02190–0.02195; MH TS 249.95–250.28 (sd 0.12), row-1 mean 0.02160–0.02183: IS 2–4× less variable; the two sit ~0.1% apart (finite-chain bias). Smoothness along γ̂·c, c = 0.98…1.02: IS step changes −0.110, −0.101, −0.093, −0.084, −0.076, −0.068, −0.060, −0.053 (smooth); MH −0.113, −0.106, −0.098, −0.082, −0.120, −0.053, −0.042, −0.040 (accept/reject jumps). Hans: importance sampling it is.
+
+**Remark 2.3 sharpened** (`9999-elvis.qmd`, text approved): asymptotically and under correct specification ρ affects only simulation efficiency, never the identified set; in a finite sample ρ (D) can move the statistic and the boundary of a test-inversion region; under rejection the statistic and its argmin can depend on ρ; compare only under the same ρ and D, D fixed once and reported.
+
+**Moment re-test ladder (Hans: agreed moments and strategy).** Every structural choice so far was made on the broken objective (drop rows 7, 5, 12; corner firms out; industry ε ln M rows; kink vs no kink). Re-test on the fixed estimator by "drop one at a time until it breaks", starting from the full row set. New input `1596-stage2-input-designA-plant-trim0.005.csv` (`1596-input-plant-all.R`): full design A (31,327 firm-periods, 19,277 corner) + plant_id (5,077 plants), verified row by row. `run-1597-ladder.sh <tag> <drop_rows> <all|interior>`: s2 binary, joint NM 2 passes, IS + mix (3 components), ρ=prop21 with ONE D for every rung (rhoD at the start, all rows live, full sample: `1597-rhoD.txt`), plant clustering, seed 30, n_keep 1,000, power_nokink, k = 0.75, κ estimated; start θ from the 1594 NM point, γ = 0; adiag at R and 4R. Rung 1 (full: rows 0–9, 11, 12; corners in) launched.
+
+**Ladder rung 1 (full: rows 0–9, 11, 12; corner firms in; n = 31,327; crit 21.0):** TS 2,705 (R 1,000) / 2,708 (4R); pass 1 hit maxeval (3,200), pass 2 converged; κ̂ 1.08, δ = (60.0 — at the box bound, 41.3, 6.51), ω* 3.17, max|γ| 637; tilted Var(ε) 0.45, u p50 0.028 / p90 0.51 / p99 1.12 / max 10.4, ceiling-edge mass ≈ 0; ESS p50 24 (100 at 4R), p1 ≈ 1. Row t: ψ −9.4, ε 1.4, ψlnM −7.3, ψω −6.9, ψω² −10.0, εlnM −8.0, εψ −4.9, εω −11.1, score_k −3.6, ψlnτ 9.2, score_κ −7.3, ε² 3.8. `1597-full*`. Rung 2 (drop 12) launched.
+
+**Nested with NM inner (1595a)** at the 1594 point: TS 227.4 (R) / 226.2 (4R) — 23 below joint NM's 250.3 and R-stable, so a genuinely lower CUE value — but reached through a near-degenerate tilt: max|γ| 4,140, 91 of 93 inner solves at the cap, tilted Var(ε) 6.0, u p50 0.014 / p99 14.8 / max 16.4, 1.5% of firms with most mass at the ceiling edge, ESS p10 1.1 / p50 5; κ̂ 0.61, δ (8.05, 6.87, 1.04), ω* 3.29; 69 min. The CUE infimum lies along γ → ∞ (solutions at infinity, Theorem 2.1's infimum form); joint NM stops at a regular local optimum. **Decision (Hans): option 2 — regular tilts only.** The reported statistic is the minimum over tilts the simulation can represent, enforced by an acceptance rule on the effective sample size (and the R vs 4R check); report that the CUE infimum lies lower along degenerate directions. Joint NM is the optimizer. Watch the acceptance rule at every rung.
+
+**Ladder rung 2 (drop row 12, ε²; corners in; 11 rows, crit 19.7):** TS 1,033 (R) / 1,031 (4R); both NM passes hit maxeval (3,000); κ̂ 5.00 = upper bound, δ (22.2, 15.3, 2.26), ω* 3.39, max|γ| 301; tilted Var(ε) 0.40, u p50 0.18 / p90 0.57 / p99 1.00; ESS p1/p10/p50 2.0/8.4/76 (p10 32 at 4R — scales with R, unlike rung 1). Row t: ψ −5.7, ε 6.8, ψlnM −4.4, ψω 4.0, ψω² −5.8, εlnM −0.3, εψ −5.1, εω −5.9, score_k 4.3, ψlnτ 6.7, score_κ −0.7. Drop kept (improvement). Acceptance rule (proposed: TS(4R) within 2% of TS(R), ESS p10 ≥ 10): rung 1 fails the floor (p10 1.9), rung 2 just under (8.4). Hans: order after rung 2 = corner firms, εω (row 7), εlnM (row 5), then decide. **From rung 3 on:** κ upper bound 20 (new CLI `kappa_max`), maxeval 400 × free dims, 12 threads per rung. Rung 3 (drop 12 + corner firms out) launched. ESS rules of thumb discussed (Kong 1992; Kong, Liu & Wong 1994; Liu 2001; N/2 is a resampling trigger; Elvira, Martino & Robert on ESS's limits; PSIS k̂ < 0.7 per Vehtari et al. — proposed as a per-firm acceptance diagnostic, not yet implemented).
+
+**Ladder rung 3 (drop 12 + corner firms out; interior n = 12,050; 11 rows; κ_max 20, maxeval 6,000):** TS 163.8 (R) / 163.4 (4R); pass 1 hit maxeval, pass 2 converged (2,354 evals); κ̂ 17.6, δ (32.8, 22.1, 3.31), ω* 3.34, max|γ| 561; tilted Var(ε) 0.37, u p50 0.106 / p90 0.60 / p99 1.20 / max 8.1; ESS p1/p10/p50 1.3/5.0/50 (p10 18 at 4R). Row t: ψ −7.4, ε 8.6, ψlnM −2.2, ψω 4.0, ψω² −6.4, εlnM 4.1, εψ −7.0, εω 0.4, score_k 4.9, ψlnτ 8.2, score_κ 5.6. Drop kept. κ̂ high: at e/M̄ ≈ 0.09 and k = 0.75, q ≈ 0.28 / 0.11 / 0.05 / 0.02 at κ = 0.5 / 1.82 / 5 / 17.6 — detection fades and the cost side absorbs it (the δ-κ ridge). Proposed (pending Hans): keep industry scaling (no-scaling and common scaling each still have one free scale; the choice governs cross-industry variation, not identification) and grid κ as a parameter of interest after the ladder. Rung 4 (drop 12, 7; interior) launched.
+
+**δ₀–κ relationship (discussion).** For small detection, (e/M̄)^k ≈ [κ^k/(1+k)]·[ln τρ − δ₀ + δ₁ω − δ₂ω² − ψ]: e depends on κ^k times the bracket; scaling κ^k by c and the bracket by 1/c (δ's and ψ together — f_ψ is free) leaves e unchanged, broken only by the fixed coefficient 1 on ln τρ (cross-cell tax-rate variation, row 9) and by the curvature of ln B — the scale is weakly identified, the shape (ω* ≈ 3.2–3.4 in every fit) is not. The counterfactual response to Δ scales with κ^k, so the level matters for policy. Proposed anchor (pending Hans): grid κ (TS(κ), δ's, ω*, implied q, acceptance rule), then pick κ so the model-implied change in mean tilted u for the 1983 τ_P change matches ch. 7's event-study estimate (≈ 0.082), the CI giving a κ range; external audit rates as a weaker alternative.
+
+**Ladder rung 4 (drop 12, 7; interior; 10 rows, crit 18.3):** TS 93.2 (R) / 93.0 (4R); pass 1 hit maxeval, pass 2 converged; κ̂ 19.6 (bound 20), δ (59.5 — near the 60 bound, 38.2, 5.62), ω* 3.39, max|γ| 339; tilted Var(ε) 0.40, u p50 0.104 / p90 0.55 / p99 1.16 / max 6.0; ESS p1/p10/p50 2.2/6.3/62 (p10 24 at 4R). Row t: ψ −5.6, ε 5.8, ψlnM −4.8, ψω 2.8, ψω² −5.4, εlnM 3.8, εψ −5.0, score_k 3.1, ψlnτ 6.2, score_κ 2.1. Drop kept. Rung 5 (drop 12, 7, 5; interior) launched.
+
+**Ladder rung 5 (drop 12, 7, 5; interior; 9 rows, crit 16.9):** TS 67.1 (R) / 67.4 (4R); both passes converged; κ̂ 9.95 (interior), δ (57.4 — near the 60 bound, 37.4, 5.61), ω* 3.34, max|γ| 441; tilted Var(ε) 0.20 (data 0.18), u p50 0.034 / p90 0.58 / p99 0.83; ESS p10 5.2 (20 at 4R). Row t: ψ −5.1, ε 2.0, ψlnM −3.3, ψω −0.8, ψω² −4.3, εψ −4.4, score_k 0.2, ψlnτ 6.5, score_κ −0.5. Drop kept. Candidates (Hans asked): ψ, ε normalizations; ψω, ψω² identify δ₁, δ₂; ψlnM is M⊥e; ψlnτ identifies the scale; score_κ identifies κ — keep; score_k has no parameter with k fixed (t 0.2) → rung 6 drops it; εψ is valid, carries rejection (t −4.4), kept (dropping it would lower TS for the wrong reason). Rung 6 (drop 12, 7, 5, 8) launched.
+
+**Scale: two separate estimates to compare (Hans), not joint.** Design i (deconvolution): E[u] − E[V] = 0 by industry, i.e. E[ε | j] = 0 for the 9 interior industries (`ind_rows=eps`, rows 13–21, pooled row 1 dropped); robustness: deconvolved medians (1{u ≤ m_j} − ½)·1{j} for the 7 deconvolved industries (`ind_rows=median`; m_j: 313 0.396, 321 0.148, 322 0.207, 324 0.089, 331 0.209, 342 0.036, 369 0.095). Design ii (outside validation): E[(q(e) − p̄)·G] = 0, G = top 10% of capital K within industry (not V, M*, Y — those would make q depend on M; capital: corporations hold more than other forms, LLCs more than proprietorships), p̄ = 0.53 first (`audit_p`, row 10 — unused without the kink); robustness G = top 10% of V within industry (`audit_group=v`; Hans: V is our leading proxy). K and V groups overlap in only 68 of ~1,205 firm-periods. Targets kept for the sensitivity analysis: 0.53 (Mexico, high end, nearest the ceiling q = 1/(1+k) = 0.57), 0.33 (Mexico, low end), 0.108 (Ecuador, buyer side, upper bound), IRS coverage by asset class. Code: `audit_g`, `audit_gv`, `umed` read from input `1598-stage2-input-designA-interior-plant-k-trim0.005.csv` (`1598-input-designs.R`); CLI `ind_rows`, `audit_p`, `audit_group`. Checks: IND default mode reproduces 1588 (201.622); industry ε rows sum exactly to row 1 (0.001814); audit row at the rung-5 point mean −0.048 (t −13.5, group K; t −19.4, group V) → implied mean detection in G ≈ 5% vs 53% target. D for row 10 and rows 13–21 computed at the ladder start and spliced into the ladder D (`1599-rhoD-audit.txt`, `1599-rhoD-ind.txt`).
+
+**Ladder rung 6 (drop 12, 7, 5, 8; interior; 8 rows, crit 15.5):** TS 32.4 (R) / 32.5 (4R); pass 1 at the cap, pass 2 converged; κ̂ 8.31, δ (34.9, 23.3, 3.46), ω* 3.36, max|γ| 885; tilted Var(ε) 0.32 (rung 5: 0.20), u p50 0.017 / p90 0.62 / p99 1.17; ESS p10/p50 4.2/17 (p10 17 at 4R). Row t: ψ −4.1, ε 2.1, ψlnM −1.1, ψω 3.3, ψω² −4.1, εψ −4.1, ψlnτ 4.9, score_κ 0.3. Nothing broke (R-stable, κ interior, no degenerate tilt); the TS gain is partly the lost row, the δ's moved along the ridge (δ₀ 57 → 35) with ω* unchanged, Var(ε) and ESS worsened. Row 8 has no parameter with k fixed → **ladder base = rung 6: rows 0–4, 6, 9, 11, interior firms.**
+
+**1600 launched** (`run-1600-scale-designs.sh`): four separate estimates on the rung-6 base, same estimator/start/seed, 3 threads each: i (ε by industry, row 1 dropped; 16 live rows), i_med (7 deconvolved medians; rows 19, 20 for 351/352 dropped), ii_k (audit row, G = top-10% capital, p̄ 0.53), ii_v (G = top-10% V, p̄ 0.53). D for the median rows computed at the ladder start (`1600-rhoD-med.txt`).
+**Correction (Hans):** rung 5, not rung 6, is the ladder base — by the checklist rule rung 6's lower TS is partly mechanical (one row fewer, δ₀ sliding 57 → 35 along the ridge) while Var(ε) (0.20 → 0.32), u median (0.034 → 0.017), ESS (median 35 → 17) and convergence all worsened: dropping row 8 was a mild break (it identifies no parameter with k fixed, but it constrains ε against the detection term). **Base = rows 0–4, 6, 8, 9, 11, interior.** The four 1600 design fits were stopped after ~20 min and relaunched on the rung-5 base (row 8 live; maxeval 400 × free dims + 1 γ).
+
+**Fourth review** (`Research-log/elvis-code-review4-2026-10-01.md`, latest changes only): no bugs; every equivalence test passed (h_floor default, 1 vs 2 threads, adiag reproduces fits incl. audit row, `ind_rows=epslnm` reproduces 1588, industry ε rows sum to row 1, nestedcheck with audit/median rows, 3-component proposal = uniform estimand over 60 seeds × 2M draws, 11 call sites, CSV alignment, run-script arithmetic). Risks: R1 audit target 0.53 vs the no-kink detection ceiling 1/(1+k) = 0.571 (matching needs the top-capital group near the FOC ceiling; unreachable for k ≥ 0.89); R2 missing design columns left rows silently zero; R3 out-of-bounds κ start wrote Lhat = inf; R4 inner NM tolerance unreachable from γ = 0; R5 (inferred) populations differ — median targets come from the deconvolution sample (incl. τ_P = 0 firms, different trim), the audit group is defined after the top-0.5% M* trim (largest firms excluded). **Fixes (Hans: agree with all, ceiling included):** audit_p ≥ 1/(1+k) refused, > 0.8 × ceiling warned; audit_g / audit_gv / umed required when their options are on; κ start outside [0.02, kappa_max] refused; inner NM gets ftol_rel 10⁻⁸; startup message, ignored-option notes, five more legacy modes refused. Guards tested. Built as `*_next`, swapped in after the 1600 fits finish (their adiag steps use the current binaries). Deferred until between comparable run sets: MIX_EDGE_EPS 10⁻¹⁰ → 10⁻⁷ and always three components (changes the draws). If design ii lands stacked at the ceiling, rerun with p̄ = 0.33 as the main target (0.53 as the upper end of the sensitivity range).
+
+**1600 results (3 of 4; scale designs on the rung-5 base):**
+
+| | rung 5 | i_med (medians) | ii_k (audit, capital, p̄ 0.53) | ii_v (audit, V, p̄ 0.53) |
+|---|---|---|---|---|
+| rows / crit | 9 / 16.9 | 16 / 26.3 | 10 / 18.3 | 10 / 18.3 |
+| TS R / 4R | 67.1 / 67.4 | 1,115 / 1,115 | 248 / 248 | 454 / 455 |
+| κ̂ | 9.95 | 0.52 | 11.5 | 1.66 |
+| δ; ω* | 57.4, 37.4, 5.61; 3.34 | 37.2, 21.7, 2.85; 3.81 | 24.8, 17.1, 2.55; 3.35 | 39.7, 27.1, 4.16; 3.27 |
+| Var(ε) | 0.20 | 0.197 | 0.27 | 0.23 |
+| u p50 / p90 | 0.034 / 0.58 | 0.090 / 0.45 | 0.040 / 0.53 | 0.025 / 0.28 |
+| ESS p10 R / 4R | 5.2 / 20 | 24 / 86 | 9.7 / 39 | 7.1 / 27 |
+| audit row t; mean q in G | — | — | −13.6; 0.001 | −19.2; 0.003 |
+
+i_med row t: base ψ −16.1, ε 0.2, ψlnM −15.5, ψω −13.2, ψω² −8.7, εψ −9.1, score_k −2.4, ψlnτ 17.1, score_κ −3.0; medians 313 5.3, 321 0.9, 322 −1.6, 324 11.6, 331 9.0, 342 15.3, 369 2.1. First fit to pass the acceptance rule (ESS p10 24, R-stable, Var(ε) at the data); pins κ at 0.52; rejection concentrated in the ψ rows, ψlnτ and the near-zero-evasion industries (342, 324). ii_k/ii_v: the audit target is not met — the tilt sends the group's firms to near-zero evasion (q ≈ 0) rather than toward 53%; the audit row's mean ≈ −0.10 × 0.53. **Hans:** if medians are the way to go, deconvolve (try) the remaining industries; rerun design ii at p̄ = 0.108 (Ecuador) now — `run-1601-audit-0108.sh` (groups k and v, otherwise identical to 1600 ii). Binary swap watcher restarted to wait for 1600 and 1601.
+
+**1600-i (design i: ε by industry; 17 rows, crit 27.6):** TS 59.8 (R) / 60.2 (4R); pass 1 at the cap, pass 2 converged; **κ̂ 0.42** (medians: 0.52 — the two deconvolution anchors agree), δ (39.7, 25.1, 3.52), ω* 3.56, max|γ| 103; tilted Var(ε) 0.62, u p50 0.029 / p90 0.62 / p99 2.54; ESS p10 9.6 (37 at 4R). Industry ε rows t: 313 0.1, 321 5.1, 322 −0.2, 324 0.7, 331 0.0, 342 −1.6, 351 0.8, 352 −0.7, 369 3.5; base ψ −6.2, ψlnM −1.9, ψω 5.5, ψω² −5.0, εψ −6.3, score_k 5.1, ψlnτ 6.9, score_κ 4.3. Tilted E[u] = E[V] + tilted E[ε]: seven industries within 0.05 of E[V]; 321 (0.458 vs 0.149) and 369 (0.630 vs 0.361) about 0.3 above.
+
+**1601 (design ii at p̄ = 0.108):** ii_k TS 286.8, κ̂ 13.2, mean q in G 0.0018, audit t −13.6; ii_v TS 416.2, κ̂ 7.95, mean q in G 0.0023, audit t −18.9. As at 0.53: the tilt sends the group's firms to near-zero evasion instead of matching the target. **The audit anchor does not pin the scale in this model** (at 0.53 or 0.108, top-capital or top-V group); the deconvolution anchors do (κ 0.42–0.52).
+
+**Deconvolution vs stage-2 samples (Hans asked):** samples match by construction except (i) τ_P = 0 firms, which the deconvolution keeps: few in most industries (0–37) but 268 of 847 in 331 (32%), 287 of 1,089 in 369 (26%), 91 of 1,391 in 352; (ii) the 369 upper cut — share < 0.75 (`upper_threshold_cut` = 0.75, in `first_stage_panel_me` and 1501, 369 only) is applied in the stage-2 first stage (1501) but lifted in 1521 (the test's sample); (iii) the stage-2 top-0.5% M* trim of interior firms. Mean V, deconvolution sample vs stage-2 interior: equal except 331 (0.250 vs 0.168) and 369 (0.193 vs 0.361). Separate issue: the penalized-logspline deconvolution does not preserve E[u] = E[V] in every industry — deconvolved E[u] vs the same sample's mean V: 369 0.098 vs 0.193, 342 0.040 vs 0.074, 331 0.218 vs 0.250, 322 0.207 vs 0.224 (321, 313, 324 match); 369's corporate ε sd is 0.618 against V sd 0.635. Not yet acted on (shown to Hans first).
+
+**1602 launched:** k grid on design i, k ∈ {0.25, 0.5, 0.9} (0.75 = 1600-i), κ free, same estimator/start/D, 4 threads each.
+
+**τ_P = 0 firms' mean V** (does it matter? Hans): only in 331 (τ_P=0 mean V 0.427 vs 0.168; pooled shift +0.082) and 369 (−0.316 vs 0.361; shift −0.178); |shift| ≤ 0.007 elsewhere. **369 cut:** the stage-2 first stage (1501, and `first_stage_panel_me` internally) applies log share < log(0.75) for 369; it removes only 13 of 1,493 base rows, all unincorporated (codes 0, 1; one τ_P = 0), no corporations — β and f_ε unaffected. Not the source of the 369 deconvolution mismatch (that was the 287 τ_P = 0 firms). Hans: keep the cut; ELVIS and the deconvolution both keep it.
+
+**1603 launched on the MacBook** (`1603-np-deconv-stage2.R`, screen `deconv1603`): deconvolution on exactly the stage-2 interior sample for all 9 interior industries (V, f_ε from 1501; estimator unchanged from 1521). Sample check at start: n and mean V per industry equal the ELVIS input (313 245/0.388, 321 2,132/0.149, 322 4,111/0.225, 324 1,004/0.095, 331 579/0.168, 342 1,673/0.074, 351 204/0.167, 352 1,300/0.059, 369 802/0.361).
+
+## 2026-10-01 — k grid on design i; stage-2-sample deconvolution; new targeted diagnostics; fine grids launched
+
+**Stage-2-sample deconvolution (1603, MacBook; `1603-np-deconv-stage2-*-macbook.*`):** all 9 converged; n and mean V equal the ELVIS input. E[u] − E[V]: 313 +0.004, 321 0.000, 322 −0.017, 324 +0.003, 331 −0.034, 342 −0.031, 351 −0.045, 352 +0.003, 369 −0.244. Medians: 313 0.392, 321 0.147, 322 0.208, 324 0.089, 331 0.120, 342 0.039, 351 0.109, 352 0.059, 369 0.116. P(u < 0.05): 342 0.91, 352 0.28, 324 0.16, others ≤ 0.03. 369 (corporate ε sd 0.610 > unincorporated V sd 0.472) and 351 (0.630 > 0.555) violate Var(V) ≥ Var(ε): no u distribution reconciles them; the fit collapses (369 sd(u) 0.02) and misses the mean. **Hans: keep all industries; report these observations in the discussion.**
+
+**k grid on design i (1602 + 1600-i; 17 rows, crit 27.6):** TS (soft vs min) — k 0.25: 234.2 (174), κ̂ 1.04, final pass at cap; 0.5: 226.1 (166), κ̂ 9.59, δ₀ at the 60 bound, final pass at cap; **0.75: 59.8 (0), κ̂ 0.42**; 0.9: 98.9 (39), κ̂ 16.1. ω* 3.3–3.6 at every k; κ̂^k not stable across k (0.52 at k = 0.75, 12.2 at k = 0.9) — the anchor pins the scale at the minimum, not along the k axis. **Hans: lead every fit report with the targeted moments** (evasion by industry vs data, share overreporting, detection probability), tilted Var(ε) secondary (memory `feedback_lead_with_target_moments`); move away from k = 0.9 on those grounds.
+
+**adiag TARGETED lines (new):** by industry n, E[V], tilted E[u], share of firms with tilted E[u] ≥ 0.05, mean tilted E[q]; overall share overreporting and E[q] mean/p50/p90/p99/max; E[q] in the audit group. At 1600-i (k 0.75): tilted E[u] by industry as above (321 0.458, 369 0.630; others within 0.05 of E[V]); share overreporting 0.42 (342 0.11, 352 0.04, 369 0.74, 313 0.70); E[q] mean 0.100, p50 0.040, p90 0.30, p99 0.44. At 1602-i-k0.5: share 0.49, E[q] mean 0.046, p90 0.095; 331's tilted E[u] 0.014 vs E[V] 0.168. CLI `delta_max` (δ box; default 60).
+
+**Launched:** 1604 (Mac mini) design i at k ∈ {0.65, 0.7, 0.8, 0.85}, δ ±100, maxeval 800 × 21, 4 × 3 threads (`run-1604-kfine-design-i.sh`); 1605 (MacBook, 10 cores, screen `med1605`) medians design with the 1603 targets (input `1604-stage2-input-designA-interior-plant-k-umed-trim0.005.csv`, D `1604-rhoD-med.txt`) at k ∈ {0.5, 0.65, 0.75}, same settings (`run-1605-medians-macbook.sh`). MacBook build reproduces a Mac mini adiag exactly (63.3355).
+
+## 2026-10-01: elasticity of overreporting with respect to the purchases-side rate (abstract ballpark; ch. 7 reform)
+
+**Question (Hans, for the abstract):** how elastic is overreporting to the tax rate, in the dimensions of the counterfactual? Elasticity = percentage change in overreporting over percentage change in $\tau_P$ between 1983 and the post-reform plateau.
+
+**Scripts:** `Code/Thesis/ch07-overreporting-elasticity.R` (point estimates), `-ci.R` (plant bootstrap and delta method), `-inversion.R` (headline test inversion). Outputs `Code/Products/ch07-overreporting-elasticity{,-ci,-inversion}.{csv,RData}`.
+
+**Definitions.** $\mu_t$ = ch. 7 level coefficient (unincorporated firms in the 18 ST-liable industries, i.e. all but 311 and 312, net share; 0.0150 in 1983, 0.0970 in 1987); overreporting ratio $r_t=\exp(\mu_t)-1$ (1.5% to 10.2% of true materials); $\tau_P$ = sales tax paid on purchases over raw materials, firms with $0<\tau_P<50\%$ (median 7.1% to 10.1%, +43%; mean 8.2% to 10.0%, +23%).
+
+**Corrections along the way (Hans).** My first outputs were not elasticities: the "0.23" was $\Delta u/\Delta\ln\tau_P$ (a change in a log level over a log change) and the "0.20" was percentage points per 1% change in $\tau_P$; both read as inelastic. The standard point-to-point elasticity is $\%\Delta r/\%\Delta\tau_P$ = 572/43 = **13.3** (median rate) or 572/22.8 = **25.1** (mean rate); the log-log arc version is 5.3. All elastic. Readers cannot judge "pp per 1%", so the headline is an elasticity. The counterfactual's own implied elasticity (0.5% rate rise lifts claimed deductions by 16 to 28%) is 32 to 56: same order of magnitude, a different object (claimed deductions, not the overreporting ratio).
+
+**Uncertainty, what failed.** Plant bootstrap (2,000 draws) of the point-to-point elasticity: CI $[-141, 154]$ (median rate) because $r_{1983}=1.5\%$ has SE 1.7 pp (plant bootstrap; 0.021 two-way) and $r_{1983}\le 0$ in 19% of draws, so the ratio has no finite moments. The rise itself is precise (SE of $\mu_{1987}-\mu_{1983}$ about 0.002: the common baseline error cancels). **Var($\varepsilon$) point (Hans's idea, then a correction by me):** $V=u-\varepsilon$, so $\operatorname{Var}(\hat\mu)=[\operatorname{Var}(u)+\operatorname{Var}(\varepsilon)]/n$; for the population mean $E[u]$ both terms are real sampling noise, so the bootstrap is not "contaminated". Subtracting $\operatorname{Var}(\varepsilon)$ (absolute value) gives the SE of the infeasible estimator that observes $u$, a lower bound and a decomposition, not a CI. It is also unreliable here: in 1983 $\operatorname{Var}(V)=0.1842<0.1865=\operatorname{Var}(\varepsilon)$ (corporations' residual variance), so the difference is negative and the absolute value is noise (the "corrected" delta-method CI 19.9 to 30.3 is an artifact). I first mislabelled the corrected version as the finite-sample estimand; the finite-population variance is $\operatorname{Var}(\varepsilon)/n$, the opposite term.
+
+**Headline method (Hans): midpoint (arc) elasticity plus test inversion.** $E=\frac{(r_1-r_0)/\bar r}{(T_1-T_0)/\bar T}$ with $\bar r=(r_0+r_1)/2$, $\bar T=(T_0+T_1)/2$. Under the null, $\ln D_j$ (corporations' mean log net share by industry, held fixed as in 1510), $\mu_0,\mu_1,T_0,T_1$ are the truth. $\theta(E_0)=(r_1-r_0)-E_0\,D\,\bar r=0$, $D=(T_1-T_0)/\bar T$ (numerator minus $E_0$ times denominator: no division by $r$). $TS(E_0)=\theta^2/(\nabla\theta'V\nabla\theta)\sim\chi^2_1$; $V$ = plant-clustered centred covariance of the four means' influence scores, divisor $n$, gradient (hence $V$) re-evaluated at each $E_0$. Only $E_0$ is gridded; the four means are each pinned by their own moment (just identified, so no weight-matrix choice and no optimizer). The simplification replaced a profiled-GMM design ($\varphi$ a free level along the null line, $T$ profiled) that Hans questioned: same asymptotics, more machinery; the profiled version stays as a possible check. Bound: $u\ge0$ implies $E\le 2/D$. Clustering convention checked against ELVIS (`grid_estimator.cpp`, `cluster=plant`: $\Omega=n^{-1}\sum_p S_pS_p'$, $S_p=\sum_{i\in p}(g_i-\bar g)$), `1510`, `1512`, `1513`, `1522` (`1516`, `1517` reuse 1512/1513): all the same estimator. Only 4 of 42 stage-2 launchers pass `cluster=plant` (`run-1593`, `1594`, `1595`, `1597`); earlier ELVIS runs are iid firm-periods.
+
+**Results (mean $\tau_P$, 1983 base).** 1987: $E_{mid}=5.95$ (delta SE 1.04), **95% set [4.2, 8.5]**, below the cap 9.8, $E_0=1$ rejected ($p\approx3\cdot10^{-12}$). By post year: 1984 5.1 [2.2, 10.4]; 1985 4.1 [2.4, 6.9]; 1986 5.0 [3.3, 7.5]; 1988 6.65 [4.7, 9.5]. Here $\mu_{1983}=0.027$, $\mu_{1987}=0.107$ ($r$: 2.7% to 11.3%), against 0.015 and 0.097 in ch. 7: the industry-baseline moments differ from the fixed-effects regression (probably industry composition, not tested), which moves the elasticity from 7.2 (midpoint with ch. 7 coefficients) to 5.95. The midpoint measure is compressed by construction (bounded by $2/D$), so it is a conservative number; point-to-point (13 to 25) is larger.
+
+**Caveats.** Reduced-form elasticity of the whole reform (includes the income-tax cut, which pushes the other way for proprietorships, and the 1984-87 phase-in); not the structural counterfactual elasticity. Sharp test conditions on $\ln D_j$, $\mu$, $T$ as truth (corporations' sampling error in $\ln D$ not carried through, as in the sharp 1510 test).
+
+**Hans's decision:** these are the headlines (midpoint elasticity with the test-inversion set); add an appendix explainer and a draft description with a link to it (thesis/JMP).
+
+**Written into the thesis and JMP (Hans approved the outline and the draft, same day).** New ch. 7 section `sec-fiscal-elasticity` ("Overreporting responds more than proportionally to the tax rate") between the reform results and the takeaways: the analysis of the reform first, then what it means, then the takeaways. Text uses the mean $\tau_P$ (8.2 to 10.0 percent), the median in parentheses (7.1 to 10.1). New appendix H (`Thesis/appendices/H-elasticity.qmd`, `sec-app-elasticity`: definition, test, results table, why not a bootstrap interval, caveats; table by `Code/Thesis/appH-elasticity.R` from the inversion csv), added to `Thesis/_quarto.yml` and to `JMP/paper.qmd`. Hans's rule: round to one decimal, so "about 9 percentage points" became "about 8.5 percentage points" in the abstract, both intros and the conclusion. That is the rise of overreporting in the liable industries on the elasticity baseline (2.7 to 11.3 percent); the ch. 7 event-study coefficients give 8.7 (0.015 to 0.097 in the level model), and ch. 7's takeaways still say "about 9 percent of true materials" for the all-unincorporated level (8.9 percent), a different quantity, left unchanged. The abstract's elasticity sentence ("median-based ... between 4.7 and 9.5") is Hans's placeholder, not edited; the new estimate is 5.9 (mean-based), 95 percent set 4.2 to 8.5. A placeholder `[[XX to XX]]` for the counterfactual's implied elasticity stays in the ch. 7 text until stage 2 is re-estimated. Environment note: on this machine `renv` could not activate (stale `renv/library/macos/R-4.6/x86_64-apple-darwin20/00LOCK-renv`) and `colorspace` is missing, so `001-setup.R` fails at `colorspace::lighten`; the table was built by running the script with that single line neutralized, files unchanged.
+
+## 2026-10-01 — Industry reporting rule: top 5 in text, 9 in appendix E
+
+**Hans's rule (readability):** chapter text and tables show the five largest industries, by share of output, where overreporting is detected at 1 percent: 313 (7.7 percent), 321 (7.2), 369 (3.0), 342 (2.3), 322 (2.1). Appendix E covers all nine stage-2 industries (adds 324, 331, 351, 352). This replaces the 2026-09-26 seven-industry rule (99 percent sharp region excludes 0). The rule is stated in the table notes; the text just says "the five largest industries where evasion was detected at the 1 percent significance level".
+
+- **Ch. 5 deconvolution:** now on the stage-2 sample (1603). Five-industry table and figure; nine-industry versions `appE-overreporting-ratio-all` are in appendix E. Median of the five means is 16.2 percent (mean of the means 21 percent). 369: E[u] 0.116 vs E[V] 0.361, Var(V)/Var(eps) 0.60; 313's ratio is also below 1 (0.69).
+- **Ch. 6:** pf-comparison and productivity-comparison tables now cover the five industries. Text updated:
+  - P90/P10: corrected 1.70–2.30 vs GNR 2.88–6.86, 43 percent lower on average.
+  - Persistence: gamma_1 0.90–0.95 vs 0.81–0.89; half-life 1.5–2.9 times longer.
+  - GNR beta lies outside the sharp region in 313, 321, 322.
+- **appE-pf-all-industries:** restricted to the 9 industries (was 28).
+- **Productivity table bug:** corrected rows outside the list used to print as "NA". Fixed by filtering.
+
+## 2026-10-01 — Design i k grid (1604) results; medians diagnostic (1606); finer grid 1607 launched
+
+**Results.** All points keep 17 rows; critical value chi2_17 = 27.59. None passes the hard test.
+- **Soft TS (min 59.75):** k = 0.75 scores 0, 0.7 scores 1.6, 0.85 scores 24.1 — these three pass. k = 0.9 (39.2), 0.8 (43.1), 0.65 (123), 0.5 (166) and 0.25 (174) fail.
+- **k = 0.85 looks like a fluke:** 331 has u ≈ 0, 351 has E[u] = 6.2, and max|gamma| is 559.
+- **k = 0.7–0.75, matched:** the industry means in 313, 322, 324, 331 and 351.
+- **k = 0.7–0.75, misfits:**
+  - 321 and 369 overshoot (0.37–0.46 vs 0.149; 0.63–0.76 vs 0.361).
+  - Evasion is too concentrated: 42% of firms have u ≥ 0.05, against 0.97 or more in 6 industries in the 1603 deconvolution.
+- **Detection at k = 0.7–0.75:** E[q] mean 7–10%, median 3–4%, p90 22–30%.
+
+**Medians (1606).** d2 reproduces 1605 at k = 0.75 exactly, so 1605 had finished rather than stalled. Those fits stop after about 400 NM iterations at TS ≈ 2,900, with gamma ≈ 0, and Omega is singular (smallest eigenvalue 6e-13, equal loadings on the 9 median rows). The fits are degenerate; why the median rows become dependent is not yet traced. d1 (the replication of 1600-i_med) is still running.
+
+**Next.** 1607 launched: k ∈ {0.71, 0.72, 0.725, 0.73, 0.74}, same settings as 1604, 2 threads each on the Mac mini (`run-1607-kfiner-design-i.sh`).
+
+## 2026-10-01 — Finer k grid (1607), MH medians (1609), D diagnosis
+
+**1607 (design i):**
+
+| k | TS (R / 4R) | ESS p10 | max\|gamma\| | Notes |
+|---|---|---|---|---|
+| 0.71 | 72.4 / 72.5 | 20.7 | | regular |
+| 0.72 | 227 | 7.3 | | other basin: delta 85/51/7, kappa 10.7 |
+| 0.725 | 89.9 | 7.8 | | 313 collapses to u = 0.005 |
+| 0.73 | 71.7 | 6.8 | 295 | |
+| 0.74 | 40.3 / 41.3 | 6.2 | 922 | 351 E[u] = 6.47 |
+
+- Across 0.70–0.75 the TS profile is jagged (61, 72, 227, 90, 72, 40, 60): refit noise and basin switching dominate at the 0.01 scale.
+- Irregular tilts concentrate in the two smallest industries, 313 and 351, which have the smallest pooled D (0.17, 0.18).
+- k = 0.74 has the lowest TS but fails the regular-tilt rule.
+
+**1609 (MH, medians, k = 0.75):**
+- TS 2,930 at both R and 4R.
+- Eight of the nine median-row means equal 0.5·n_j/n exactly, the same as under IS: tilted P(u ≤ ũ_j) = 1.
+- **Cause:** a pooled D for the indicator rows (0.065–0.28) makes rho charge (1/D)² = 13–239 for crossing the median. 322 has the smallest penalty and is the only industry that moved.
+- Omega is singular because each firm's median row is then constant.
+- **Proposed fix (not yet approved):** (a) leave bounded rows out of the rho penalty; (b) industry rows use within-industry D.
+
+## 2026-10-01 — Independent medians review; D tests (1610) launched
+
+**Review** (`Research-log/medians-review-2026-10-01.md`, independent agent, no hypotheses given). The medians moment is correct (Schennach p. 354: g need only be measurable).
+
+Why the fits fail:
+- **rho penalty on indicator rows is only a γ shift.** For a ±½ indicator row, the penalty (g − g(M*))²/D² is linear in g. So putting the row in rho just relabels γ' = γ + 1/D² and leaves the estimand unchanged. Verified: D_med = 1e6 plus the γ shift reproduces 1605 exactly.
+- **Flat start.** γ = 0 is equivalent to a tilt of 13–239 towards u ≤ m_j. There the median rows are pinned, with zero gradient, and NM's γ step (~3) cannot leave.
+- **TS ≈ 2,900 is not a statistic.** Pinned rows make Omega singular (eigenvalue ±1e-12). With cut=ak keeping eigenvalues > 0, L̂ flips between 0.12 and 1e10 on roundoff.
+- So the medians failure is an optimization and Omega-conditioning problem, not a change in the estimand. This is consistent with Nail's point. My earlier "support blocked" reading was wrong on the estimand.
+
+Suggestions:
+1. Take the indicator rows out of rho (= D inf), or start γ_med at −1/D².
+2. Guard near-zero eigenvalues: penalize when the moment mean on that direction is not near zero.
+3. Better γ start: γ-only global search plus BOBYQA, or the convex dual.
+4. Medians alone hardly pin the mean (tilted E[u] 0.18–0.33 everywhere after the fix). Use them with design i, or add share rows. Flag the 369/351 targets.
+
+**1610 launched** (Hans's tests): medians design, k = 0.7. D = ones (M0), current (M1), median rows inf (M2), within-industry (M3). Same start and settings as 1605. M0/M1 on the Mac mini (6 threads each); M2/M3 on the MacBook (5 each).
+
+## 2026-10-01 — S1–S3 implemented (medians review); design naming
+
+**Naming (Hans):** the medians design is now **design iib** (design ii, the external-validation moments, was dropped). Whatever works on iib carries over to design i. Share-of-overreporting rows: later.
+
+**Runs killed (Hans):** M0, M1, M3 killed. M2 (median rows out of rho, no warm start) is left running on the MacBook.
+
+**Code** (`grid_estimator.cpp`, binaries `_ind5b`/`_s2` rebuilt on the Mac mini; backups in the job tmp):
+- **S2, null-direction guard** in `cue_objective_A_std` and `nested_L`. Under cut=ak, an eigenvalue < 1e-12·max with |z'd| > 1e-8·max(1, ‖d‖) returns 1e10. Null directions with ~zero projection are skipped. adiag marks them NULL.
+- **S1:** `mode=rhoD` writes inf for the ind_rows=median rows.
+- **γ step:** NM γ step for D = inf rows is 0.4 (was 0.2/D → 0, which NLopt silently replaces with its default).
+- **S3:** `gamma_init=solve` (joint NM only, sampler=is, cut=ak). Before pass 1 it solves γ alone at the start θ, with the nested L-BFGS and analytic gradient, up to 4×300 evaluations.
+
+**Checks:**
+- **Regression:** design i TS unchanged (1600-i 59.7509, 1604-i-k0.7 61.3052, 1607-i-k0.74 40.2526, 1602-i-k0.5 226.051; no null directions).
+- **Guard:** at the 1605 point, L̂ = 1e10 for γ_med shifts c = 0, 1, 2, 4. Before, it flipped between 0.12 and 1e10. The null direction loads equally on the median rows, with z'd = −0.167.
+- **Warm start:** at the 1594 start θ with k = 0.7 and D_med = inf, L goes 0.1766 → 0.00369 (TS 89) in 603 L-BFGS evaluations, 43 s, max|γ| 172. k = 0.75: 0.179 → 0.0067 (300-evaluation cap). With the current D: stuck at the 1e10 penalty.
+
+## 2026-10-01 — Code review 5 and fixes 1–4 (Hans approved)
+
+**Review** (`Research-log/elvis-code-review5-2026-10-01.md`): no bugs. Old runs reproduce bit for bit, the warm start optimizes the same objective, and results are thread-independent. One medium issue: the null test on the raw Omega was relative to max_eig. With large deltas (δ2 ≥ 80, δ1 = 100, inside the ±100 box) the eps·score_κ direction fell below 1e-12·max, and the guard returned 1e10 (a wall).
+
+**Fixes:**
+1. **Scale-invariant core.** Under cut=ak the CUE quadratic is computed on the correlation-scaled Omega (`cue_core_ak`, shared by `cue_objective_A_std`, `nested_L` and adiag). This is the same objective whenever Omega has full rank, and the null test is now scale-invariant.
+2. **Continuous penalty.** A violated null eigenvalue is floored at tol (it keeps a slope) instead of returning a flat 1e10.
+3. **inf restricted.** inf in rho_D is accepted only on the ind_rows=median rows; anything else is refused.
+4. **Small fixes.** gamma_init=solve together with nested=1 is refused. The CSV gains ws_L0 and ws_L1.
+
+**Checks (new binary):**
+- Design i L̂ is identical to 6 digits at 1600-i, 1604-i-k0.7, 1607-i-k0.74 and 1602-i-k0.5.
+- At 1600-i with δ2 = 60/80/100, L̂ is 23.99/27.88/30.17 (the old guard gave 1e10). It matches the pre-guard binary (30.1724 vs 30.1726).
+- 1605 medians point with the finite D: one floored null direction, L̂ = 1.163e10, identical under γ shifts.
+- With D_med = inf: 0.149409, matching the reviewer.
+- Refusals work.
+- Warm start at k = 0.7: 0.1766 → 0.00428. The earlier build gave 0.00369 from the same start, so the γ problem has several local solutions; the joint NM continues from either.
+
+**Binaries:** the new binaries are built to the job tmp. They swap in automatically after 1611 completes, and the 1611 binaries are kept as `*_v1611`. The MacBook still needs a rebuild after M2.
+
+## 2026-10-01 — M2 result; MacBook rebuilt; coarse k grid on design i (1612)
+
+- **M2** (design iib, k = 0.7, median rows out of rho only, no guard or warm start): TS 114.9 (R) / 115.5 (4R) after 2.6 h. Industry E[u] far off (342 0.21 vs 0.074; 321 0.37 vs 0.149).
+- **1611-iib with guard and warm start:** TS 36.5 in 49 min, with all median rows at t ≈ 0. The warm start and the guard are what make iib work.
+- **1611-i (design i, guard and warm start):** TS 48.6 (was 61.3 without). Industry means within 0.05 in 7 of 9; 321 at 0.25.
+- **Binaries:** MacBook rebuilt from the same source (sha 938782d9); it reproduces 1604-i-k0.7 TS 61.3052. The old binaries are kept as `*_v1611`.
+- **Plan (Hans):** design i is the leading design. iib is run only at design i's best k, to compare fit. 1612 coarse k grid on design i, k ∈ {0.4, 0.5, 0.6, 0.7, 0.8}, on the Mac mini (3 × 4 threads); the fine grid follows.

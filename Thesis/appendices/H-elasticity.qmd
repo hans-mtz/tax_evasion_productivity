@@ -1,0 +1,41 @@
+# The Elasticity of Overreporting to the Tax Rate {#sec-app-elasticity}
+
+This appendix defines the elasticity of overreporting with respect to $\tau_P$ reported in @sec-fiscal-elasticity, explains the test behind its confidence set, and reports the results by year.
+
+## Definition
+
+Let $\mu_t$ be the average log ratio of reported to true materials of unincorporated firms in ST-liable industries in year $t$, and let $r_t=\exp(\mu_t)-1$ be overreporting as a share of true materials. Let $T_t$ be the average $\tau_P$ of the same firms. The midpoint elasticity between 1983 (subscript 0) and a later year (subscript 1) is
+
+$$E=\frac{(r_1-r_0)/\bar r}{(T_1-T_0)/\bar T},\qquad \bar r=\tfrac12(r_0+r_1),\quad \bar T=\tfrac12(T_0+T_1).$$ {#eq-elasticity-mid}
+
+Both changes are divided by their midpoints, not by their 1983 values. Since $r_0$ is close to zero, a change measured from $r_0$ is very large and very noisy, while the midpoint changes the base only mildly. Because overreporting cannot be negative, $r_0,r_1\ge0$, and @eq-elasticity-mid cannot exceed $2/d$, where $d=(T_1-T_0)/\bar T$. The cap is 9.8 in 1987.
+
+## The test
+
+The null hypothesis that the elasticity equals $E_0$ can be written without a division:
+
+$$\theta(E_0)=(r_1-r_0)-E_0\,d\,\bar r=0.$$ {#eq-elasticity-null}
+
+The function $\theta$ depends on four means, $m=(\mu_0,\mu_1,T_0,T_1)$, each estimated from its own moment. As in the sharp version of the test for overreporting, I take the corporations' mean log share in each industry, $\ln\hat\beta_j$, as the true value. Then $\mu_t$ is the mean of $s_{ijt}-\ln\hat\beta_j$ and $T_t$ the mean of $\tau_P$ among unincorporated firms in ST-liable industries in year $t$, so the null asks whether these means, taken as the truth, imply an elasticity of $E_0$. The statistic is
+
+$$TS(E_0)=\frac{\hat\theta(E_0)^2}{\nabla\theta(E_0)'\,\hat V\,\nabla\theta(E_0)},$$
+
+compared with a $\chi^2_1$ critical value. $\hat V$ is the variance of $\hat m$, estimated from centred influence scores summed within plant, with the divisor $n$: the covariance estimator of the test for overreporting, of the production-function step, and of the structural estimator. The gradient depends on $E_0$, so the variance is re-evaluated at every candidate. The confidence set contains the values of $E_0$ that the test does not reject at 5 percent. The four means are just identified, so no weight matrix enters.
+
+## Results
+
+@tbl-app-elasticity reports the elasticity for each year after 1983. The 1987 set, 4.2 to 8.5, lies below its cap, so the cap does not drive it. The elasticity is stable at roughly 4 to 7 once the response has phased in.
+
+::: {#tbl-app-elasticity}
+![](/tables/appH-elasticity.png)
+
+Midpoint elasticity of overreporting with respect to $\tau_P$, 1983 to each year, unincorporated firms in ST-liable industries. Overreporting $r_t$ as a share of true materials, mean $\tau_P$, elasticity from @eq-elasticity-mid, and the 95 percent test-inversion set, with variance clustered by plant.
+:::
+
+## Why not a bootstrap interval
+
+The usual elasticity, $(r_1-r_0)/r_0$ over $(T_1-T_0)/T_0$, is 25 in 1987, but its plant-bootstrap interval runs from $-260$ to $301$. The 1983 level has a standard error of 1.7 percentage points, so $r_0$ is not distinguishable from zero and is negative in 19 percent of the draws: the ratio has no finite moments. The rise itself is precise, because the error in the baseline cancels in the difference. Removing the variance of the output measurement error from the standard error would not help: $\mathcal V=u-\varepsilon$ is what the estimator averages, so the variance of $\varepsilon$ is part of its sampling variance.
+
+## Caveats
+
+The elasticity is a reduced-form response to the reform as a whole, including the income-tax cut and the phase-in. The baseline here is the corporations' mean in each industry, while the event study of @sec-fiscal uses industry fixed effects, so the levels differ ($\hat\mu_{1983}=0.027$ and $\hat\mu_{1987}=0.107$ here, 0.015 and 0.097 there). With the fixed-effects levels the 1987 midpoint elasticity is 7.2, inside the set.

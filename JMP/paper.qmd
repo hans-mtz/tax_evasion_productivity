@@ -15,11 +15,11 @@ date: today
 date-format: "MMMM DD, YYYY"
 latest-version: https://hansmartinez.com/project/tax_prod/     # page hosting the newest PDF -> link under the date
 abstract: |
-  Value-added taxes (VAT) allow firms to deduct the taxes paid on purchases from the taxes collected on sales, creating an incentive for firms to overreport their purchases of inputs to reduce their tax bill. The fundamental issue in identifying input overreporting stems from two unobservables, true inputs and productivity. Because firms differ in productivity, a firm reporting high input use for a given level of output may be overreporting or less productive. I use a structural production-function approach and a subset of firms that share the same technology as the rest but report truthfully. I then use the common technology to predict how potentially tax-evading firms would behave without overreporting, and compare the prediction to what they report. My method requires only firm-level input and output data, and a truth-reporting group. The method thus applies equally to standard firm-level surveys, administrative data, or confidential tax records. I apply the method to a Colombian manufacturing survey from 1981 to 1991. During this period, the Colombian sales tax worked as a VAT and, due to government and market scrutiny, corporations refrained from overreporting inputs.
+  Value-added taxes (VAT) allow firms to deduct the taxes paid on purchases from the taxes collected on sales, creating an incentive for firms to overreport the purchases of inputs to reduce their tax bill. The fundamental issue in detecting input overreporting stems from two unobservables, true inputs and productivity. Because firms differ in productivity, a firm reporting high input use, for a given level of output, may be either overreporting or simply less productive. To distinguish between overreporting and productivity, I use a structural production-function approach and a benchmark group, a subset of firms that report inputs correctly. Because the benchmark firms are assumed to share the same technology as the other firms, I estimate the technology's parameters from them. Using these estimates, I compare what potentially tax-evading firms report with predictions of the true inputs they would use. I apply the method to a Colombian manufacturing survey from 1981 to 1991. During this period, the Colombian sales tax worked as a VAT and the data include a subset of firms that, due to government and market scrutiny, reported inputs correctly.
   
-  The approach yields a simple statistical test to detect input overreporting. Under the null hypothesis of no overreporting, the test is robust to a wide family of specifications of the probability of detection and the cost of overreporting. Among the 5 largest industries, the test detects overreporting in all 4 industries subject to the sales tax, and, as expected, fails to reject in the industry exempt from it. In the median of the 7 largest industries where overreporting is detected, firms report inputs that are 16 percent larger, on average, than true inputs. Next, I show that failing to correct for overreporting yields output elasticities of materials that are larger, and productivity distributions that are more dispersed and less persistent. I then estimate a structural model of firm tax evasion to study how claimed deductions, and thus government tax revenue, respond to a counterfactual tax rate. I find that a 0.5 percent increase in the sales-tax rate raises claimed deductions by 16 to 28 percent.
+  My approach yields a simple and robust statistical test to detect input overreporting. Under the null hypothesis of correct reporting, the test is agnostic about the specification of both the probability of detection and the cost of overreporting. Among the 5 largest industries, the test rejects the null hypothesis in all 4 industries subject to the sales tax, and, as expected, it fails to reject in the industry exempt from the sales tax. Among the 5 largest industries where the null is rejected, the median across industry average overreporting is 16.2 percent of true inputs. Exploiting a 1983 fiscal reform in Colombia that increased the sales tax rate, I then document that firms overreport more after the raise. The response implies a midpoint elasticity of overreporting with respect to the tax rate of 5.9.
   
-  Finally, I exploit a sales-tax increase introduced by the 1983 reform to investigate how firms' overreporting responds to changes in the tax rate. I find that between 1983 and 1987, among the industries subject to the tax change, the ratio of overreported to true inputs rose by about 9 percentage points.  
+  The magnitude of detected overreporting matters for methods of estimating production functions that exploit a flexible input to identify productivity [@Levinsohn2003; @Doraszelski2013; @Ackerberg2015; @Gandhi2020]. These methods typically assume that materials are flexible, and their demand or first-order conditions reveal productivity. However, materials are deductible under the VAT. Therefore, firms have the incentive to overreport the very input these methods rely on. I show that failing to correct for overreporting yields larger output elasticities of materials, and more dispersed and less persistent productivity distributions. Using the production-function parameters, I estimate a structural model of input overreporting. With the model, I study how government revenue changes as expected deductions, true and fictitious, respond to the tax rate. At the current rate, a 0.5 percent increase in the tax rate raises expected deductions between 15.7 and 28.3 percent. Undetected overreporting costs the government about 3 percent of potential sales-tax revenue of overreporting firms.
 thanks: |
   I thank Salvador Navarro, David Rivers, and Timothy Conley for helpful comments. All errors are my own.
 keywords:
@@ -99,6 +99,11 @@ restatement) uses `.content-visible when-meta="jmp"`.
 
 {{< include ../Thesis/chapters/10-conclusion.qmd >}}
 
+# References
+
+::: {#refs}
+:::
+
 \appendix
 
 # Online Appendix {#sec-online-appendix .unnumbered}
@@ -116,3 +121,5 @@ restatement) uses `.content-visible when-meta="jmp"`.
 {{< include ../Thesis/appendices/F-test-robustness.qmd >}}
 
 {{< include ../Thesis/appendices/G-fiscal-wedge.qmd >}}
+
+{{< include ../Thesis/appendices/H-elasticity.qmd >}}
