@@ -125,6 +125,7 @@ struct FirmData {
     // deconvolved median of u for the firm's industry (-1 = none). Read from columns audit_g, umed when present.
     int audit_g = 0, audit_gv = 0; double umed = -1.0;   // audit_gv: group by V (robustness), used when audit_group=v
     double pshare = -1.0;   // IND5P (2026-10-02): deconvolved P(u >= share_u) of the firm's industry (column pshare; -1 = none)
+    double cw = 1.0;        // ind_rows=eps_cw (2026-10-03): claims weight tau_P M* / industry mean of tau_P M* (interior firms)
 };
 // Which optional design columns the input carried (review 4: a missing column used to leave its rows silently zero).
 static bool g_has_audit_g = false, g_has_audit_gv = false, g_has_umed = false, g_has_pshare = false;
@@ -838,7 +839,10 @@ static const int N_IND = 9;
 #endif
 // IND5 row content (2026-10-01, CLI ind_rows): epslnm = eps*lnM*1{j} (default, 1588), eps = eps*1{j} (design i:
 // E[u] - E[V] = 0 by industry, i.e. E[eps | j] = 0; drop the pooled row 1, their sum), median = (1{u <= umed_j} - 1/2)*1{j}
-// for firms whose industry has a deconvolved median (design i robustness; other firms 0).
+// for firms whose industry has a deconvolved median (design i robustness; other firms 0), eps_cw = w_i*eps*1{j} with
+// w_i = tau_P M*_i / (mean of tau_P M* over interior firms of industry j) (2026-10-03, Hans: fit claims, not firm counts;
+// E[w eps | j] = 0 is valid because eps, output measurement error, is independent of the observables tau_P and M*; mean
+// one within industry, so the rows keep the eps scale; drop the pooled row 1 as with eps).
 static int g_ind_mode = 0;
 [[maybe_unused]] static double g_share_u = 0.05;   // IND5P threshold (CLI share_u)
 // Audit moment (2026-10-01, design ii, CLI audit_p; power_nokink only): row 10 (unused without the kink) becomes
@@ -1084,9 +1088,10 @@ static inline double is_draw(std::mt19937_64 &rng, const FirmData &f, double lam
 static inline void moment_g_A_one_exp_scale(
     double M, double Mstar, double V, double Wt, double tau_rho, double beta, double Mbar, double ltau_bar, int yidx,
     double lambda, double delta0, double delta1, double delta2,
-    GVecA &g_out, double sig2eps = 0.0, int jidx = -1, double umed_in = -1.0, int audit_in = 0, double pshare_in = -1.0
+    GVecA &g_out, double sig2eps = 0.0, int jidx = -1, double umed_in = -1.0, int audit_in = 0, double pshare_in = -1.0,
+    double cw_in = 1.0
 ) {
-    (void)sig2eps; (void)jidx; (void)umed_in; (void)audit_in; (void)pshare_in;
+    (void)sig2eps; (void)jidx; (void)umed_in; (void)audit_in; (void)pshare_in; (void)cw_in;
     double e      = e_of_M(M, Mstar);
     double eps    = eps_of_M(M, Mstar, V);
     double om     = omega_of_M(M, Mstar, V, Wt, beta);
@@ -1103,6 +1108,7 @@ static inline void moment_g_A_one_exp_scale(
         if (jidx >= 0 && jidx < N_IND) {   // per-industry rows, every draw (content by ind_rows)
             if (g_ind_mode == 0) g_out[13 + jidx] = eps * lnM;
             else if (g_ind_mode == 1) g_out[13 + jidx] = eps;
+            else if (g_ind_mode == 3) g_out[13 + jidx] = cw_in * eps;
             else if (umed_in >= 0.0) g_out[13 + jidx] = (std::log(Mstar / M) <= umed_in ? 1.0 : 0.0) - 0.5;
 #ifdef IND5P
             if (pshare_in >= 0.0) g_out[13 + N_IND + jidx] = (std::log(Mstar / M) >= g_share_u ? 1.0 : 0.0) - pshare_in;
@@ -1203,6 +1209,7 @@ static inline void firm_chain_A(
         if (f.jidx >= 0 && f.jidx < N_IND) {   // corner firm: M = M*, u = 0
             if (g_ind_mode == 0) ghat_row[13 + f.jidx] = eps_pt * lnM_pt;
             else if (g_ind_mode == 1) ghat_row[13 + f.jidx] = eps_pt;
+            else if (g_ind_mode == 3) ghat_row[13 + f.jidx] = f.cw * eps_pt;
             else if (f.umed >= 0.0) ghat_row[13 + f.jidx] = 0.5;
 #ifdef IND5P
             if (f.pshare >= 0.0) ghat_row[13 + N_IND + f.jidx] = (0.0 >= g_share_u ? 1.0 : 0.0) - f.pshare;   // u = 0
@@ -1225,12 +1232,12 @@ static inline void firm_chain_A(
         // S3 (2026-09-28): exp_scale detection, fixed support M in (max(0,Mstar-Mbar), Mstar]. Same MH scheme,
         // same RNG stream layout (one proposal draw, then one accept draw, per step) as the linear branch below.
         GVecA g_bar; double q_cur = 0.0;   // rho=prop21: g at ubar = M*, and the current draw's quadratic form
-        if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_bar, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+        if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_bar, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
         if (g_sampler_is) {   // self-normalized IS on n_keep fixed draws
             std::vector<GVecA> G(n_keep); std::vector<double> lw(n_keep); double lmax = -HUGE_VAL;
             for (int j = 0; j < n_keep; j++) {
                 double lwp = 0.0; double Mj = is_draw(rng, f, lambda, lwp);
-                moment_g_A_one_exp_scale(Mj, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, G[j], f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                moment_g_A_one_exp_scale(Mj, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, G[j], f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
                 double a = lwp; for (int t = 0; t < D_G_A; t++) a += gamma[t] * G[j][t];
                 if (g_rho_on) a -= rho_Q(G[j], g_bar);
                 lw[j] = a; if (a > lmax) lmax = a;
@@ -1241,11 +1248,11 @@ static inline void firm_chain_A(
             return;
         }
         double M_current = q_draw(rng, f.Mstar, lambda, f.Mbar);
-        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+        moment_g_A_one_exp_scale(M_current, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_current, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
         if (g_rho_on) q_cur = rho_Q(g_current, g_bar);
         for (int r = -n_burn + 1; r <= n_keep; r++) {
             double M_try = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            moment_g_A_one_exp_scale(M_try, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g_try, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
             double log_ratio = 0.0, q_try = 0.0;
             for (int t = 0; t < D_G_A; t++) log_ratio += gamma[t] * (g_try[t] - g_current[t]);
             if (g_rho_on) { q_try = rho_Q(g_try, g_bar); log_ratio -= (q_try - q_cur); }
@@ -2328,7 +2335,7 @@ static void run_rhoD_mode(const std::vector<FirmData> &firms, double lambda, dou
         GVecA g;
         for (int r = 0; r < n_keep; r++) {
             double M = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(M, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            moment_g_A_one_exp_scale(M, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
             for (int t = 0; t < D_G_A; t++) { s1[t] += g[t]; s2[t] += g[t] * g[t]; }
             cnt += 1;
         }
@@ -2439,9 +2446,9 @@ static void run_adiag_mode(
             std::mt19937_64 rng(firm_seed(base_seed, f.row_id));
             std::uniform_real_distribution<double> unif(0.0, 1.0);
             GVecA gc, gt, gb; double qc = 0.0;
-            if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gb, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gb, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
             double Mc = q_draw(rng, f.Mstar, lambda, f.Mbar);
-            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            moment_g_A_one_exp_scale(Mc, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gc, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
             if (g_rho_on) qc = rho_Q(gc, gb);
             double su = 0, sx = 0, so = 0, so2 = 0, sb = 0, se = 0, se2 = 0;
             if (g_sampler_is) {   // same fixed draws as firm_chain_A's IS branch (first draw Mc is not used there: redo the stream)
@@ -2449,7 +2456,7 @@ static void run_adiag_mode(
                 std::vector<double> Ms(n_keep), lw(n_keep); double lmax = -HUGE_VAL;
                 for (int j = 0; j < n_keep; j++) {
                     double lwp = 0.0; Ms[j] = is_draw(rng2, f, lambda, lwp);
-                    moment_g_A_one_exp_scale(Ms[j], f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                    moment_g_A_one_exp_scale(Ms[j], f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
                     double a = lwp; for (int t = 0; t < D_G_A; t++) a += gamma[t] * gt[t];
                     if (g_rho_on) a -= rho_Q(gt, gb);
                     lw[j] = a; if (a > lmax) lmax = a;
@@ -2477,7 +2484,7 @@ static void run_adiag_mode(
             } else
             for (int r = -n_burn + 1; r <= n_keep; r++) {
                 double Mt = q_draw(rng, f.Mstar, lambda, f.Mbar);
-                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                moment_g_A_one_exp_scale(Mt, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gt, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
                 double lr = 0.0, qt = 0.0; for (int t = 0; t < D_G_A; t++) lr += gamma[t] * (gt[t] - gc[t]);
                 if (g_rho_on) { qt = rho_Q(gt, gb); lr -= (qt - qc); }
                 if (std::log(unif(rng)) < lr) { gc = gt; Mc = Mt; qc = qt; }
@@ -2537,6 +2544,18 @@ static void run_adiag_mode(
             char buf[200]; std::snprintf(buf, sizeof buf, "  %d | %d | %.3f | %.3f | %.3f | %.4f\n", kv.first, nn, ev / nn, eu / nn, sh / nn, eq / nn);
             std::cout << buf;
         }
+        std::cout << "TARGETED-CW (claims-weighted, w = tau_P M* / industry mean): industry | claims share | E_w[V] data | tilted E_w[u] | gap\n";
+        {   std::map<int, double> cl; double ctot = 0, aw = 0, av = 0, au = 0;
+            for (int k2 = 0; k2 < ni; k2++) { const FirmData &f = firms[idx[k2]]; cl[f.sic] += f.tau_rho * f.Mstar; ctot += f.tau_rho * f.Mstar; }
+            for (auto &kv : by) { double w = 0, v = 0, u = 0;
+                for (int k2 : kv.second) { const FirmData &f = firms[idx[k2]]; w += f.cw; v += f.cw * f.V; u += f.cw * mu_u[k2]; }
+                double sh = cl[kv.first] / ctot; aw += sh; av += sh * v / w; au += sh * u / w;
+                char bc[160]; std::snprintf(bc, sizeof bc, "  %d | %.4f | %.3f | %.3f | %+.3f\n", kv.first, sh, v / w, u / w, (u - v) / w); std::cout << bc; }
+            double mae = 0; for (auto &kv : by) { double w = 0, v = 0, u = 0;
+                for (int k2 : kv.second) { const FirmData &f = firms[idx[k2]]; w += f.cw; v += f.cw * f.V; u += f.cw * mu_u[k2]; }
+                mae += cl[kv.first] / ctot * std::fabs(u - v) / w; }
+            char bc[200]; std::snprintf(bc, sizeof bc, "TARGETED-CW: all | E_w[V] %.3f | tilted E_w[u] %.3f | claims-weighted MAE of industry gaps %.4f\n", av / aw, au / aw, mae);
+            std::cout << bc; }
         std::cout << "TARGETED-P: industry | mean tilted P(u >= 0.05) | mean tilted P(u >= 0.10)   (comparable to the deconvolution's P)\n";
         for (auto &kv : by) { double a = 0, b = 0; for (int k2 : kv.second) { a += p05[k2]; b += p10[k2]; }
             char bp[120]; std::snprintf(bp, sizeof bp, "  %d | %.3f | %.3f\n", kv.first, a / kv.second.size(), b / kv.second.size()); std::cout << bp; }
@@ -2826,10 +2845,10 @@ static void nested_build_cache(NestedCache &C, const std::vector<FirmData> &firm
             }
             std::mt19937_64 rng(firm_seed(base_seed, f.row_id));   // same stream and order as firm_chain_A's IS branch
             GVecA g, gbar;
-            if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gbar, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+            if (g_rho_on) moment_g_A_one_exp_scale(f.Mstar, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, gbar, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
             for (int j = 0; j < R; j++) {
                 double lwp = 0.0; double M = is_draw(rng, f, lambda, lwp);
-                moment_g_A_one_exp_scale(M, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare);
+                moment_g_A_one_exp_scale(M, f.Mstar, f.V, f.Wt, f.tau_rho, f.beta, f.Mbar, f.ltau_bar, f.yidx, lambda, delta0, delta1, delta2, g, f.sig2eps, f.jidx, f.umed, f.audit_g, f.pshare, f.cw);
                 for (int t = 0; t < D_G_A; t++) Gi[(size_t)j * D_G_A + t] = (float)g[t];
                 lqi[j] = (float)((g_rho_on ? -rho_Q(g, gbar) : 0.0) + lwp);
             }
@@ -4342,7 +4361,8 @@ int main(int argc, char **argv) {
                          for (FirmData &f : firms) f.audit_g = f.audit_gv; std::cout << "audit group: top 10% of V within industry\n"; }
         else if (ag != "k") { std::cerr << "audit_group must be k or v\n"; return 1; } }
     {   std::string ir = get_opt(opt, "ind_rows", "epslnm");
-        if (ir == "eps") g_ind_mode = 1; else if (ir == "median") g_ind_mode = 2; else if (ir != "epslnm") { std::cerr << "ind_rows must be epslnm, eps or median\n"; return 1; }
+        if (ir == "eps") g_ind_mode = 1; else if (ir == "median") g_ind_mode = 2; else if (ir == "eps_cw") g_ind_mode = 3;
+        else if (ir != "epslnm") { std::cerr << "ind_rows must be epslnm, eps, eps_cw or median\n"; return 1; }
 #ifndef IND5
         if (ir != "epslnm") { std::cerr << "ind_rows needs the IND5 build\n"; return 1; }
 #endif
@@ -4372,6 +4392,17 @@ int main(int argc, char **argv) {
         std::sort(js.begin(), js.end()); js.erase(std::unique(js.begin(), js.end()), js.end());
         if ((int)js.size() != N_IND || js.front() != 0) { std::cerr << "IND5: interior industries = " << js.size() << " (or missing sic_3), N_IND = " << N_IND << "\n"; return 1; } }
 #endif
+    {   // claims weights w_i = tau_P M*_i / industry mean over interior firms (ind_rows=eps_cw rows; adiag's claims-weighted
+        // TARGETED line uses the same weights in every mode). Corner firms keep the weight of their industry's interior mean.
+        std::map<int, double> sum_c; std::map<int, int> cnt;
+        for (const FirmData &f : firms) if (f.corner == 0) { sum_c[f.sic] += f.tau_rho * f.Mstar; cnt[f.sic]++; }
+        for (FirmData &f : firms) if (cnt.count(f.sic) && sum_c[f.sic] > 0) f.cw = f.tau_rho * f.Mstar / (sum_c[f.sic] / cnt[f.sic]);
+        if (g_ind_mode == 3) {
+            std::map<int, double> mx; for (const FirmData &f : firms) if (f.corner == 0) mx[f.sic] = std::max(mx[f.sic], f.cw);
+            std::cout << "eps_cw: w = tau_P M* / industry mean (interior); max w by industry:";
+            for (auto &kv : mx) std::cout << " " << kv.first << ":" << std::setprecision(4) << kv.second;
+            std::cout << std::setprecision(6) << "\n"; }
+    }
     if (mode == "adiag" || mode == "rhoD" || mode == "nestedcheck" || mode == "cfprofile") {
         // par=<lambda,delta0,delta1,delta2,gamma1..D_G_A> (13 values in the default build, 14 with TAU_ROW)
         std::string par_str = get_opt(opt, "par", "");
