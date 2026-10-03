@@ -1,7 +1,7 @@
 #!/bin/bash
 # Trimming analysis and moment variants (2026-10-03, Hans): same fit as run-1627 (design i, warm start, D 1599, IS + mix,
 # plant clusters, seed 30, joint NM 2 passes, adiag at R = NK, 1000, 4NK), with env IN (input csv in Products), DROP (drop_rows),
-# BIN (binary), START (fit whose deltas seed every point), TAGP and TAGS (tag prefix/suffix). Usage: run-1633-fit.sh "<k> <kappa>" ...
+# SEED (base_seed, default 20260830 = "seed 30"), BIN (binary), START (fit whose deltas seed every point), TAGP and TAGS (tag prefix/suffix). Usage: run-1633-fit.sh "<k> <kappa>" ...
 set -uo pipefail
 export LC_ALL=C
 cd "$(dirname "$0")/../C-estimator"
@@ -12,7 +12,7 @@ getp() { Rscript -e "r <- read.csv('$1'); cat(sprintf('%.15g', unlist(r[1, c('la
 fit() { local K=$1 KA=$2 T=$TAGP-i-${TAGS:-notrim}-k$1-kappa$2-R$NK
   local KS=$KA KFX="kappa_fixed=$KA"; case "$KA" in free*) KS=${KA#free}; KFX="";; esac   # "free<start>": kappa estimated from <start>
   local X0=$(Rscript -e "r <- read.csv('$P/$START.csv'); cat(sprintf('%.15g', c(unlist(r[1, c('delta0_hat','delta1_hat','delta2_hat')]), $K, 0.3, $KS, rep(0,22))), sep=',')" 2>/dev/null)
-  local B="qform=power_nokink k_fixed=$K row6=eps_psi input_csv=$IN n_burn=0 rho=prop21 rho_D=$DI sampler=is proposal=mix cluster=plant base_seed=20260830 drop_rows=$DROP ind_rows=eps"
+  local B="qform=power_nokink k_fixed=$K row6=eps_psi input_csv=$IN n_burn=0 rho=prop21 rho_D=$DI sampler=is proposal=mix cluster=plant base_seed=${SEED:-20260830} drop_rows=$DROP ind_rows=eps"
   ./$BIN mode=lambdagrid $B $KFX n_keep=$NK lambdas=$KS x0=$X0 algo=neldermead n_passes=2 n_threads=$NT \
     gamma_init=solve maxtime=43200 maxeval=16800 kappa_max=${KMAX:-20} delta_max=100 output_csv=$P/$T.csv > $P/$T.Rout 2>&1
   for R in $NK 1000 $((4*NK)); do ./$BIN mode=adiag $B n_keep=$R par=$(getp $P/$T.csv) n_threads=$NT output_csv=/dev/null > $P/$T-adiag-R$R.txt 2>&1; done
