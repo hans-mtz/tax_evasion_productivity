@@ -842,7 +842,8 @@ static const int N_IND = 9;
 // for firms whose industry has a deconvolved median (design i robustness; other firms 0), eps_cw = w_i*eps*1{j} with
 // w_i = tau_P M*_i / (mean of tau_P M* over interior firms of industry j) (2026-10-03, Hans: fit claims, not firm counts;
 // E[w eps | j] = 0 is valid because eps, output measurement error, is independent of the observables tau_P and M*; mean
-// one within industry, so the rows keep the eps scale; drop the pooled row 1 as with eps).
+// one within industry, so the rows keep the eps scale; drop the pooled row 1 as with eps); eps_cwj = c_j*eps*1{j}, c_j =
+// industry mean claims / interior mean claims (one constant per industry: under the CUE a reparametrization of eps).
 static int g_ind_mode = 0;
 [[maybe_unused]] static double g_share_u = 0.05;   // IND5P threshold (CLI share_u)
 // Audit moment (2026-10-01, design ii, CLI audit_p; power_nokink only): row 10 (unused without the kink) becomes
@@ -1108,7 +1109,7 @@ static inline void moment_g_A_one_exp_scale(
         if (jidx >= 0 && jidx < N_IND) {   // per-industry rows, every draw (content by ind_rows)
             if (g_ind_mode == 0) g_out[13 + jidx] = eps * lnM;
             else if (g_ind_mode == 1) g_out[13 + jidx] = eps;
-            else if (g_ind_mode == 3) g_out[13 + jidx] = cw_in * eps;
+            else if (g_ind_mode >= 3) g_out[13 + jidx] = cw_in * eps;
             else if (umed_in >= 0.0) g_out[13 + jidx] = (std::log(Mstar / M) <= umed_in ? 1.0 : 0.0) - 0.5;
 #ifdef IND5P
             if (pshare_in >= 0.0) g_out[13 + N_IND + jidx] = (std::log(Mstar / M) >= g_share_u ? 1.0 : 0.0) - pshare_in;
@@ -1209,7 +1210,7 @@ static inline void firm_chain_A(
         if (f.jidx >= 0 && f.jidx < N_IND) {   // corner firm: M = M*, u = 0
             if (g_ind_mode == 0) ghat_row[13 + f.jidx] = eps_pt * lnM_pt;
             else if (g_ind_mode == 1) ghat_row[13 + f.jidx] = eps_pt;
-            else if (g_ind_mode == 3) ghat_row[13 + f.jidx] = f.cw * eps_pt;
+            else if (g_ind_mode >= 3) ghat_row[13 + f.jidx] = f.cw * eps_pt;
             else if (f.umed >= 0.0) ghat_row[13 + f.jidx] = 0.5;
 #ifdef IND5P
             if (f.pshare >= 0.0) ghat_row[13 + N_IND + f.jidx] = (0.0 >= g_share_u ? 1.0 : 0.0) - f.pshare;   // u = 0
@@ -2544,15 +2545,15 @@ static void run_adiag_mode(
             char buf[200]; std::snprintf(buf, sizeof buf, "  %d | %d | %.3f | %.3f | %.3f | %.4f\n", kv.first, nn, ev / nn, eu / nn, sh / nn, eq / nn);
             std::cout << buf;
         }
-        std::cout << "TARGETED-CW (claims-weighted, w = tau_P M* / industry mean): industry | claims share | E_w[V] data | tilted E_w[u] | gap\n";
+        std::cout << "TARGETED-CW (claims-weighted within industry, w = tau_P M*; industries by claims share): industry | claims share | E_w[V] data | tilted E_w[u] | gap\n";
         {   std::map<int, double> cl; double ctot = 0, aw = 0, av = 0, au = 0;
             for (int k2 = 0; k2 < ni; k2++) { const FirmData &f = firms[idx[k2]]; cl[f.sic] += f.tau_rho * f.Mstar; ctot += f.tau_rho * f.Mstar; }
             for (auto &kv : by) { double w = 0, v = 0, u = 0;
-                for (int k2 : kv.second) { const FirmData &f = firms[idx[k2]]; w += f.cw; v += f.cw * f.V; u += f.cw * mu_u[k2]; }
+                for (int k2 : kv.second) { const FirmData &f = firms[idx[k2]]; const double c = f.tau_rho * f.Mstar; w += c; v += c * f.V; u += c * mu_u[k2]; }
                 double sh = cl[kv.first] / ctot; aw += sh; av += sh * v / w; au += sh * u / w;
                 char bc[160]; std::snprintf(bc, sizeof bc, "  %d | %.4f | %.3f | %.3f | %+.3f\n", kv.first, sh, v / w, u / w, (u - v) / w); std::cout << bc; }
             double mae = 0; for (auto &kv : by) { double w = 0, v = 0, u = 0;
-                for (int k2 : kv.second) { const FirmData &f = firms[idx[k2]]; w += f.cw; v += f.cw * f.V; u += f.cw * mu_u[k2]; }
+                for (int k2 : kv.second) { const FirmData &f = firms[idx[k2]]; const double c = f.tau_rho * f.Mstar; w += c; v += c * f.V; u += c * mu_u[k2]; }
                 mae += cl[kv.first] / ctot * std::fabs(u - v) / w; }
             char bc[200]; std::snprintf(bc, sizeof bc, "TARGETED-CW: all | E_w[V] %.3f | tilted E_w[u] %.3f | claims-weighted MAE of industry gaps %.4f\n", av / aw, au / aw, mae);
             std::cout << bc; }
@@ -4361,8 +4362,8 @@ int main(int argc, char **argv) {
                          for (FirmData &f : firms) f.audit_g = f.audit_gv; std::cout << "audit group: top 10% of V within industry\n"; }
         else if (ag != "k") { std::cerr << "audit_group must be k or v\n"; return 1; } }
     {   std::string ir = get_opt(opt, "ind_rows", "epslnm");
-        if (ir == "eps") g_ind_mode = 1; else if (ir == "median") g_ind_mode = 2; else if (ir == "eps_cw") g_ind_mode = 3;
-        else if (ir != "epslnm") { std::cerr << "ind_rows must be epslnm, eps, eps_cw or median\n"; return 1; }
+        if (ir == "eps") g_ind_mode = 1; else if (ir == "median") g_ind_mode = 2; else if (ir == "eps_cw") g_ind_mode = 3; else if (ir == "eps_cwj") g_ind_mode = 4;
+        else if (ir != "epslnm") { std::cerr << "ind_rows must be epslnm, eps, eps_cw, eps_cwj or median\n"; return 1; }
 #ifndef IND5
         if (ir != "epslnm") { std::cerr << "ind_rows needs the IND5 build\n"; return 1; }
 #endif
@@ -4397,6 +4398,12 @@ int main(int argc, char **argv) {
         std::map<int, double> sum_c; std::map<int, int> cnt;
         for (const FirmData &f : firms) if (f.corner == 0) { sum_c[f.sic] += f.tau_rho * f.Mstar; cnt[f.sic]++; }
         for (FirmData &f : firms) if (cnt.count(f.sic) && sum_c[f.sic] > 0) f.cw = f.tau_rho * f.Mstar / (sum_c[f.sic] / cnt[f.sic]);
+        if (g_ind_mode == 4) {   // eps_cwj: one constant per industry, c_j = industry mean claims / interior mean claims
+            double tot = 0; int nt = 0; for (auto &kv : sum_c) { tot += kv.second; nt += cnt[kv.first]; }
+            for (FirmData &f : firms) if (cnt.count(f.sic)) f.cw = (sum_c[f.sic] / cnt[f.sic]) / (tot / nt);
+            std::cout << "eps_cwj: c_j = industry mean claims / interior mean:";
+            for (auto &kv : sum_c) std::cout << " " << kv.first << ":" << std::setprecision(6) << (kv.second / cnt[kv.first]) / (tot / nt);
+            std::cout << "\n"; }
         if (g_ind_mode == 3) {
             std::map<int, double> mx; for (const FirmData &f : firms) if (f.corner == 0) mx[f.sic] = std::max(mx[f.sic], f.cw);
             std::cout << "eps_cw: w = tau_P M* / industry mean (interior); max w by industry:";
