@@ -1733,3 +1733,55 @@ Suggestions:
 - **Plan split (Hans):**
   - Supervisors: sanity checks (no trim; the other corner κ = 9, lower detection), figures updated everywhere.
   - Post-JMP: share moments plus an elasticity moment matched to ch. 7; κ sensitivity; D robustness. Focus on the government revenue question.
+
+## 2026-10-02/03 — Untrimmed search: no point passes; next is the trimming analysis
+
+All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, seed 30. TS is reported at the fit's own R, then at R = 1000. Critical value χ²₁₇ = 27.59.
+
+**Line search (1627 at R = 1000; 1628, 1629, 1631 at R = 500):**
+
+| Fit | (k, κ) | TS |
+|---|---|---|
+| center 1625 | (0.75, 0.5) | 46.9 |
+| 1627 | (0.75, 0.4) | **46.1** |
+| 1627 | (0.75, 0.6) | 77.8 |
+| 1627 | (0.725, 0.5) | 49.2 |
+| 1627 | (0.775, 0.5) | 84.3 |
+| 1628 | (0.75, 0.2) | 47.7 |
+| 1628 | (0.775, 0.4) | 64.3 |
+| 1628 | (0.725, 0.4) | 78.8 |
+| 1629 | (0.75, 0.45) | 66.7 |
+| 1629 | (0.75, 0.3) | 50.6 |
+| 1629 | k 0.75, κ free from 0.4 | 68.4 (κ̂ 0.31) |
+| 1629 | k 0.7, κ free from 9 | 44.0 (κ̂ 7.8; implausible, κ must be ≤ 1, Hans) |
+| 1631 | (0.75, 0.38) | 70.8 |
+| 1631 | (0.75, 0.36) | 54.6 |
+| 1631 | (0.75, 0.34) | 68.9 |
+| 1631 | (0.75, 0.32) | 66.4 |
+| 1631 | (0.74, 0.4) | 61.2 |
+| 1631 | (0.73, 0.4) | 79.9 |
+
+- **R = 500 agrees with R = 1000 within about 2% everywhere;** fine for searching, refit the final point at 1000/4000.
+- **Pattern at every point:** fitting 321 (data V 0.150; the model gives 0.33–0.52 at the better points) pushes the misfit into 331, 342, 352 or 369. The cost rows (ψ, ψω, ψω², εψ, ψ ln τ) are at |t| 5–7.
+- **Best data fit:** (0.75, 0.4) pinned (TS 46.1): eight of nine industries within 0.02, best mean fit by equal and firm-count weights, settled solution (pass-2 wander 5.5, ESS p10 12.8). κ free from 0.4 is best on the share of overreporters.
+
+**Why the large firms matter:**
+- The top 0.5% (61 firm-years; 22 in 321) barely move industry mean V (321: 0.150 vs 0.149), yet including them moves the model's 321 mean from 0.17 to 0.46.
+- In 321 they are 7–13× the industry's lagged mean M̄. The FOC caps evasion at about 0.24·M̄ (κ = 0.5, k = 0.75), i.e. u ≤ ~0.02 for them, against observed V ≈ 0.27. So the model must explain them through ε. This mechanism is not yet confirmed by a diagnostic. The structural fix (a size-aware detection scale) is post-JMP.
+
+**Trim-level inputs** (`1630-trim-levels.R`, `1630-*-trim{0.001..0.004}.csv`):
+
+| Trim | Firm-years removed | Credit share | From 321 |
+|---|---|---|---|
+| 0.1% | 13 | 4.4% | 6 |
+| 0.2% | 25 | 7.0% | 10 |
+| 0.3% | 37 | 9.8% | 17 |
+| 0.4% | 49 | 11.1% | 19 |
+| 0.5% | 61 | 12.9% | 22 |
+
+**Next (Hans's plan):**
+1. Trimming analysis from the best point (0.75, 0.4), κ ≤ 1: find the smallest trim that passes. Start at 0.1% and 0.2%, R = 500.
+2. Then the counterfactual at the passing point, with trimmed firms added mechanically.
+3. Share rows are a fallback.
+
+**Practice change (Hans):** commit and push after each meaningful change, not at wrap-up.
