@@ -867,6 +867,7 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 //   4 elast_claims: (1+Delta)[C(Delta+h) - C(Delta-h)]/(2h)/scale - T C(Delta)/scale (T = elasticity of claimed credits)
 // C(D) = (1+D) tau_P [M + (1 - q') e'(D)], xbar(D) = e'(D)/M; h = cf_h (default 0.01: one percent up and down).
 static int g_cf_target = 0;
+static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
 static double g_cf_h = 0.01;
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
@@ -3098,7 +3099,7 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         const int nm_s = g_inner_nm, du_s = g_inner_dual; g_inner_nm = 0; g_inner_dual = 0;
         long evals = 0;
         auto Lprof = [&](double T) -> double {
-            setT(T); double g[D_G_A]; std::copy(gwarm, gwarm + D_G_A, g); int code = 0;
+            setT(T); double g[D_G_A]; std::copy(g_cf_cold ? gam0 : gwarm, (g_cf_cold ? gam0 : gwarm) + D_G_A, g); int code = 0;
             double L = nested_solve_gamma(P, g, &code);
             for (int round = 2; round <= 4 && code == NLOPT_MAXEVAL_REACHED; round++) L = nested_solve_gamma(P, g, &code);
             evals++;
@@ -4117,7 +4118,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_cold","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4443,6 +4444,7 @@ int main(int argc, char **argv) {
                 for (int t = 0; t < 5; t++) if (tg == nm[t]) g_cf_target = t;
                 if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x or elast_claims\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
+                g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 std::cout << "cfprofile target: " << tg << (g_cf_target >= 3 ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
             g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
             g_rhoD[10] = std::numeric_limits<double>::infinity();   // bounded per firm (0 <= credit <= (1+Delta) tau_P M* (1+c_k kappa Mbar/M*)): out of the rho penalty
