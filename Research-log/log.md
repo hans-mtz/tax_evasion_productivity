@@ -1785,3 +1785,24 @@ All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, 
 3. Share rows are a fallback.
 
 **Practice change (Hans):** commit and push after each meaningful change, not at wrap-up.
+
+## 2026-10-03 — Third compute node: the old MacBook
+
+- **What:** Hans's old MacBook Pro (`Hanss-Old-MacBook-Pro.local`, first seen at 192.168.0.35) set up as a headless compute node. Its screen is broken, so it sits on the desk with the lid closed. It is a different machine from "the MacBook" (`Hanss-MacBook-Pro-2`, Hans's working laptop).
+- **Hardware:** Intel i7-9750H, 6 cores / 12 threads, 16 GB RAM, about 60 GB free. macOS 26.7.1 after today's update. Wi-Fi only.
+- **Access:** passwordless SSH from the Mac mini (Hans ran `ssh-copy-id`). Host key `SHA256:HXTG4Aez…` is pinned under both the IP and the hostname.
+- **Lid-closed operation:**
+  - Hans ran `pmset -a disablesleep 1`, with sleep, disksleep, standby and powernap set to 0.
+  - A sudoers rule allows `pmset` only, without a password; general `sudo` still needs it.
+  - Waking it over Wi-Fi is unreliable, so the design is that it never sleeps.
+  - Verified with the lid closed: 7 SSH checks over 3 minutes all got through, with the lid sensor reading closed.
+- **Software:**
+  - Homebrew, R 4.3.2 and NLopt were already present; RcppParallel installed today.
+  - `Code/` rsynced from the Mac mini, one way. `grid_estimator_eps_ak2`, `_kf3`, `_s2` and `_ind5b` built.
+  - The repo Makefile's binaries abort at launch there (NLopt has an `@rpath` install name), so it builds with an added `-Wl,-rpath,/usr/local/lib`. The Makefile is unchanged.
+- **Validation:** `adiag` at the 1627 (0.75, 0.4) untrimmed fit, R = 1000, gives TS 46.1248 with every moment row identical to the Mac mini. It ran again after the OS update with the same TS. Wall time is about 3.5× the Mac mini's.
+- **Open risks:**
+  - FileVault stays on: an unplanned reboot stops at the pre-boot unlock, which needs an external monitor or blind typing.
+  - Automatic macOS installs should be off.
+  - Thermals under a long lid-closed fit are not yet checked.
+- **Side finding:** the Mac mini's `grid_estimator_ind5b` (built Oct 2 04:18) predates the last `grid_estimator.cpp` edit (12:51). A fresh build reproduces TS 46.1248, but rebuild it before the trimming runs.
