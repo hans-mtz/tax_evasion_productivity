@@ -16,7 +16,7 @@ fit() { local K=$1 KA=$2 T=$TAGP-i-notrim-k$1-kappa$2-R$NK
   local X0=$(Rscript -e "r <- read.csv('$P/$START.csv'); cat(sprintf('%.15g', c(unlist(r[1, c('delta0_hat','delta1_hat','delta2_hat')]), $K, 0.3, $KS, rep(0,22))), sep=',')" 2>/dev/null)
   local B="qform=power_nokink k_fixed=$K row6=eps_psi input_csv=$IN n_burn=0 rho=prop21 rho_D=$DI sampler=is proposal=mix cluster=plant base_seed=20260830 drop_rows=1,12,7,5 ind_rows=eps"
   ./grid_estimator_ind5b mode=lambdagrid $B $KFX n_keep=$NK lambdas=$KS x0=$X0 algo=neldermead n_passes=2 n_threads=$NT \
-    gamma_init=solve maxtime=43200 maxeval=16800 kappa_max=20 delta_max=100 output_csv=$P/$T.csv > $P/$T.Rout 2>&1
+    gamma_init=solve maxtime=43200 maxeval=16800 kappa_max=${KMAX:-20} delta_max=100 output_csv=$P/$T.csv > $P/$T.Rout 2>&1
   for R in $NK 1000 $((4*NK)); do ./grid_estimator_ind5b mode=adiag $B n_keep=$R par=$(getp $P/$T.csv) n_threads=$NT output_csv=/dev/null > $P/$T-adiag-R$R.txt 2>&1; done
   echo "done $T TS(R$NK) $(grep -o 'TS = 2 n Lhat = [0-9.]*' $P/$T-adiag-R$NK.txt | awk '{print $NF}') TS(R1000) $(grep -o 'TS = 2 n Lhat = [0-9.]*' $P/$T-adiag-R1000.txt | awk '{print $NF}') $(date +%H:%M)"; }
 for pt in "$@"; do fit $pt & done; wait; echo "all done"
