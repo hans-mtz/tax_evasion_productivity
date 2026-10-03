@@ -1806,3 +1806,10 @@ All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, 
   - Automatic macOS installs should be off.
   - Thermals under a long lid-closed fit are not yet checked.
 - **Side finding:** the Mac mini's `grid_estimator_ind5b` (built Oct 2 04:18) predates the last `grid_estimator.cpp` edit (12:51). A fresh build reproduces TS 46.1248, but rebuild it before the trimming runs.
+
+## 2026-10-03 — Claims-weighted fit, 331 moment dropped, κ search (1632–1634)
+
+- **Claims weighting (Hans):** the counterfactual cares about claims, so rank points by $\sum_j s_j|E[u_j]-E[V_j]|$, $s_j$ = industry share of interior $\sum\tau_PM^*$ (321 33.6%, 322 26.8%, 352 13.7%, 331 1.1%). On it (0.75, 0.38) ranks first (0.031; 321 +0.01, 331 +1.55) and the soft-passing points rank 7–16 (321 +0.25 to +0.37). The moments' efficient weighting ranks points almost in reverse.
+- **Weights in the moments do nothing at the industry level:** `ind_rows=eps_cwj` ($c_j\varepsilon 1\{j\}$) with $\gamma_j/c_j$, $D_j c_j$ reproduces TS 72.5202 at (0.75, 0.38) exactly (the CUE undoes constant row scaling). Firm-level weights (`ind_rows=eps_cw`, $w_i=\tau_PM^*_i$/industry mean) are not undone but cannot be met: within every industry the claims-weighted V is higher (0.272 pooled vs 0.171 by count) and the FOC cap ($e\le c_k\kappa\bar M$) holds large firms to $u\lesssim0.05$–$0.10$ at κ ≤ 1. A claims-weighted $W=\Lambda^{1/2}\Omega^{-1}\Lambda^{1/2}$ is possible but loses the χ² TS; not built.
+- **Decision (Hans):** drop 331's industry ε row (row 17) from the moments, not 331 from the data (16 rows, crit χ²₁₆ = 26.30). γ-only re-solves at fixed θ are inconclusive (331 u rises to 1.1–1.3, 369 to 0.7–1.6).
+- **Running (1634):** untrimmed, drop 1,12,7,5,17, κ free ≤ 1 from 0.8 and 0.2, k ∈ {0.75 (Mac mini), 0.7 (old MacBook)}, δ from the 1631 (0.75, 0.38) fit, warm start, D 1599, seed 30, R = 500. Launcher `run-1633-fit.sh`. Trimming analysis and the drop-17 κ-pinned fits on hold.
