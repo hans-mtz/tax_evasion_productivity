@@ -872,10 +872,14 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 //                  (credits on true materials only); actual R = P - L, so T = 1 - R/P, and with P < 0, R/P - 1 = L/|P|.
 //                  The moment function returns b = -tau_P M/scale; cfprofile adds the firm's t1/pgdp/scale.)
 //   7 true_credit: tau_P M/scale - T  (static; expected credits on true materials, in units of scale)
+//   8 loss_t1    : L/scale - T (t1/pgdp + x)/scale  (static; 2026-10-04 Hans: revenue lost to undetected overreporting as a
+//                  share of the sales tax owed on sales; x = cf_t1_extra, pesos per interior firm added to the denominator
+//                  for other firms' observed t1 (0 = interior firms only; (A) trimmed firms; (B) whole economy))
 // C(D) = (1+D) tau_P [M + (1 - q') e'(D)], xbar(D) = e'(D)/M; h = cf_h (default 0.01: one percent up and down).
 static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
 static double g_cf_h = 0.01;
+static double g_cf_t1_extra = 0.0;   // cf_target=loss_t1: extra t1/pgdp per interior firm in the denominator
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
 #elif defined(KINK_S) && defined(EPSVAR) && defined(IND5) && defined(IND5P)
@@ -1154,6 +1158,7 @@ static inline void moment_g_A_one_exp_scale(
                 case 5: a = Mstar / M - 1.0; break;
                 case 6: { double ep, qp; epq(0.0, ep, qp); a = tau_rho * (1.0 - qp) * ep / g_cf_scale; b = -tau_rho * M / g_cf_scale; break; }
                 case 7: a = tau_rho * M / g_cf_scale; break;
+                case 8: { double ep, qp; epq(0.0, ep, qp); a = tau_rho * (1.0 - qp) * ep / g_cf_scale; b = 0.0; break; }
             }
             g_out[10] = a - g_cf_T * b;
         }
@@ -3086,12 +3091,12 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         NestedCache C; nested_build_cache(C, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
         std::vector<float> c10((size_t)n * R), b10((size_t)n * R, 1.0f);   // row 10 = a - T b
         for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] = C.G[((size_t)i * R + j) * D_G_A + 10];
-        if (g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 6) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
+        if (g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 6 || g_cf_target == 8) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
             g_cf_T = 1.0; NestedCache C1; nested_build_cache(C1, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
             for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] = c10[(size_t)i * R + j] - C1.G[((size_t)i * R + j) * D_G_A + 10];
             g_cf_T = 0.0;
-            if (g_cf_target == 6)   // gap: potential revenue P = t1/pgdp - tau_P M (the moment function returned -tau_P M/scale)
-                for (int i = 0; i < n; i++) { const double t1s = firms[i].t1 / firms[i].pgdp / sc;
+            if (g_cf_target == 6 || g_cf_target == 8)   // gap: P = t1/pgdp - tau_P M (fn returned -tau_P M/scale); loss_t1: t1/pgdp + extra (fn returned 0)
+                for (int i = 0; i < n; i++) { const double t1s = (firms[i].t1 / firms[i].pgdp + (g_cf_target == 8 ? g_cf_t1_extra : 0.0)) / sc;
                     for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] += (float)t1s; }
         }
         auto setT = [&](double T) { for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++)
@@ -4131,7 +4136,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_cold","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_cold","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4453,10 +4458,11 @@ int main(int argc, char **argv) {
             std::vector<double> dl; { std::stringstream ss(get_opt(opt, "deltas", "0")); std::string tok;
                 while (std::getline(ss, tok, ',')) if (!tok.empty()) dl.push_back(std::strtod(tok.c_str(), nullptr)); }
             {   const std::string tg = get_opt(opt, "cf_target", "level");
-                const char *nm[8] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit"}; g_cf_target = -1;
-                for (int t = 0; t < 8; t++) if (tg == nm[t]) g_cf_target = t;
-                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap or true_credit\n"; return 1; }
+                const char *nm[9] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1"}; g_cf_target = -1;
+                for (int t = 0; t < 9; t++) if (tg == nm[t]) g_cf_target = t;
+                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit or loss_t1\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
+                g_cf_t1_extra = std::strtod(get_opt(opt, "cf_t1_extra", "0").c_str(), nullptr);
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 std::cout << "cfprofile target: " << tg << ((g_cf_target == 3 || g_cf_target == 4) ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
             g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
