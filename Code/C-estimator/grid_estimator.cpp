@@ -879,7 +879,8 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
 static double g_cf_h = 0.01;
-static double g_cf_t1_extra = 0.0;   // cf_target=loss_t1: extra t1/pgdp per interior firm in the denominator
+static double g_cf_t1_extra = 0.0;
+static std::vector<double> g_cf_grid;   // cf_grid=T1,T2,...: also print 2nL at these T (diagnostic of the profile's shape)   // cf_target=loss_t1: extra t1/pgdp per interior firm in the denominator
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
 #elif defined(KINK_S) && defined(EPSVAR) && defined(IND5) && defined(IND5P)
@@ -3152,6 +3153,8 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             return 0.5 * (inside + outside);
         };
         const double hlo = bound(crit, -1), hhi = bound(crit, +1), slo = bound(TSmin + crit1, -1), shi = bound(TSmin + crit1, +1);
+        for (double Tg : g_cf_grid) { std::copy(gbest, gbest + D_G_A, gwarm);
+            std::cout << "  profile: T " << Tg << " TS " << 2.0 * n * Lprof(Tg) << "\n" << std::flush; }
         g_inner_nm = nm_s; g_inner_dual = du_s;
         std::cout << "  Delta " << Dl << ": T_hat " << That << " (T at operating gamma " << T0 << "), TS_min " << TSmin
                   << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | revenue_hat "
@@ -4136,7 +4139,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_cold","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4463,6 +4466,7 @@ int main(int argc, char **argv) {
                 if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit or loss_t1\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
                 g_cf_t1_extra = std::strtod(get_opt(opt, "cf_t1_extra", "0").c_str(), nullptr);
+                { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 std::cout << "cfprofile target: " << tg << ((g_cf_target == 3 || g_cf_target == 4) ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
             g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
