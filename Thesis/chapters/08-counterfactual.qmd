@@ -241,8 +241,21 @@ decision + @fig-cf-trim, and the justification for the conservative test design 
 :::{#tbl-cf-estimates}
 ![](/tables/ch08-headline-estimates.png)
 
-Stage-2 estimates of the detection and evasion-cost parameters at the best point, with production-function instrument $m^*_{it-1}$. $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{9,.95}$.
+Stage-2 estimates at the operating point: detection $q=(e/\kappa\bar M_{j,t-1})^k$ with $(k,\kappa)=(0.75,0.5)$ fixed, interior firms in the nine industries where the test rejects (top 0.5 percent by $M^*$ trimmed). $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{17,.95}$.
 :::
+
+- The operating point passes the conservative test: $TS_{\text{cons}}=23.7<\chi^2_{17,.95}=27.6$, with all 17 directions of $\hat\Omega$ kept.
+- The cost function is convex in productivity: $\hat\delta_1=27.15>0$ and $\hat\delta_2=3.80>0$, so the cost of evasion falls with productivity up to $\hat\omega^*=3.57$ and rises after it. $\hat\omega^*$ lies at about the 57th percentile of productivity in the estimation sample.
+- Fit to the target moments: the model's mean overreporting $E[u]$ is within 0.02 of the data's $E[\mathcal V]$ in seven of the nine industries; 331 is lower (0.144 vs 0.168) and 369 higher (0.551 vs 0.361).
+- 37 percent of interior firms overreport by at least 5 percent ($E[u]\ge0.05$).
+- Implied detection probabilities: mean 8.5 percent, median 2.0 percent, 90th percentile 27 percent, maximum 57 percent.
+
+::: {.content-visible when-meta="draft"}
+**Draft note ($\hat\omega^*$ percentile, 2026-10-03):** ballpark from $\tilde{\mathcal W}_{it}$ as the productivity proxy (57th percentile; 59th after shrinking out the $(1-\beta)\varepsilon$ noise). The percentile differs widely by industry (2nd in 331, 98th in 342) because the level of $\omega$ differs by industry while $\hat\omega^*$ is common.
+:::
+
+::: {.content-visible when-meta="draft"}
+**Superseded (linear $q$, single-tax run, 2026-09-22).** Kept for reference; the assets it cites are from that run.
 
 Summary of findings:
 
@@ -251,7 +264,7 @@ Summary of findings:
   - $\hat\delta_1>0$ and $\hat\delta_2>0$: the evasion cost function is decreasing in productivity up to $\hat\omega^*$, then increasing again
   - $\hat\omega^*=3.98$, the 86th percentile of productivity (forward simulation)
 
-#### What would the estimated detection probabilities imply?
+**What would the estimated detection probabilities imply?**
 
 To get a ballpark of what $\hat\lambda$ would imply in terms of detection probability, I forward-simulate different percentiles of the evasion distribution and compare their implied detection probabilities. Since $q(e)$ is linear, the ratio of these statistics provides a measure of the relative likelihood of detection. A firm that evades twice as much as another is twice as likely to be caught. @tbl-cf-detection displays the results.
 
@@ -267,15 +280,14 @@ Key observations:
 - P99 $\to$ Max: detection probability jumps from about 1 percent at the 99th percentile to ~37 percent for the most aggressive evader (0.5 percent-trimmed sample) 
 - A handful of extreme evaders pull $E[e]$ **up** *and* the fitted $\hat\lambda$ **down**
 
-### Discussion
+**Discussion**
 
 - **$\hat\lambda$ is very small**: a few aggressive evaders dominate the estimate; the model is trying to fit a straight line over a highly right-skewed distribution.
   - Mechanically, selecting a functional form for the probability of detection imposes a ceiling probability
   - Assuming all unincorporated firms with a non-zero sales tax rate on purchases evade taxes implies that all firms evade below the ceiling (normalization)
 - **($\hat\delta_1, \hat\delta_2$)**: seem to be consistently identified by the curvature of the evasion distribution and productivity $\omega$. $\hat\omega^*$ is stable across the grid searches in @sec-app-elvis, and $(\hat\delta_1,\hat\delta_2)$ have the expected signs at every tested point
 
-::: {.content-visible when-meta="draft"}
-**Draft note:**
+**Draft note (old):**
 
 - Alternatively, I could 
   - trim the sample more (currently 0.5 percent, see @sec-app-elvis for details) to reduce the influence of aggressive evaders
@@ -304,7 +316,7 @@ $$ {#eq-counter-e}
 
 where $e_i=M^*_i-M_i$ is the firm's baseline evasion at the current state, a function of the latent $M_i$, and captures the firm heterogeneity defined by $(\omega, \psi)$. @eq-counter-e shows that the counterfactual evasion is linear in the model's current evasion with slope $1/(1+\Delta)$ and an intercept, $\Delta/[2\lambda(1+\Delta)]$, constant across firms.
 
-The counterfactual evasion is a function of the same latent $M_i$ as the main moments system. As briefly mentioned in @sec-counter-estimation, define firm $i$'s counterfactual deduction claims as $\text{Claims}_i(\Delta)\equiv\tilde\tau_{it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$, the credit claimed on true inputs plus undetected overreporting. I include an auxiliary parameter $\theta_C(\Delta)$, mean deduction claims, with its own moment $E\big[\text{Claims}_i(\Delta)-\theta_C(\Delta)\big]=0$. Claims are measured in nominal COP; each firm-period's claims are deflated by the GDP deflator of its year before averaging, so $\theta_C(\Delta)$ is real mean claims per firm-period. Therefore, the number of moments increases to $d_g=10$.
+The counterfactual evasion is a function of the same latent $M_i$ as the main moments system. As briefly mentioned in @sec-counter-estimation, define firm $i$'s counterfactual deduction claims as $\text{Claims}_i(\Delta)\equiv\tilde\tau_{it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$, the credit claimed on true inputs plus undetected overreporting. I include an auxiliary parameter $\theta_C(\Delta)$, mean deduction claims, with its own moment $E\big[\text{Claims}_i(\Delta)-\theta_C(\Delta)\big]=0$. Claims are measured in nominal COP; each firm-period's claims are deflated by the GDP deflator of its year before averaging, so $\theta_C(\Delta)$ is real mean claims per firm-period. Therefore, the number of moments increases to $d_g=18$.
 
 <!-- 
 implementation details 
@@ -312,7 +324,7 @@ implementation details
 $\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ cell. Question answered: given our best estimates, is a candidate revenue consistent with the data? Precedent: Aguiar and Kashaev (2020) fix their support parameter in their counterfactual; Nail Kashaev endorsed this for the exercise's scope.
 -->
 
-To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $\Delta$, $\theta$ is fixed at the best point from @sec-cf-estimates and only $\gamma$ is re-optimized [@AK2020]. I grid over candidate $\theta_C$ and build the confidence set $\{\theta_C: TS(\Delta,\theta_C)<\chi^2_{10,.95}=18.31\}$.
+To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $\Delta$, $\theta$ is fixed at the best point from @sec-cf-estimates and only $\gamma$ is re-optimized [@AK2020]. I grid over candidate $\theta_C$ and build the confidence set $\{\theta_C: TS(\Delta,\theta_C)<\chi^2_{18,.95}=28.86\}$.
 
 <!-- Dropping control variate; Only R_i(\Delta)-t1
 
@@ -323,7 +335,7 @@ To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $
 
 ## Results {#sec-cf-results}
 
-![Conservative-test 95 percent confidence sets for real mean deduction claims per firm-period (COP), by tax-rate change $\Delta$. Each marker is a tested candidate value of $\theta_C(\Delta)$: filled circles are not rejected, crosses are rejected. The dotted and dashed lines connect the lowest and highest non-rejected candidates at each $\Delta$. The grey band is the confidence set at current policy ($\Delta=0$). The structural parameters are fixed at the best point in @tbl-cf-estimates; critical value $\chi^2_{10,.95}=18.31$.](/figures/ch08-claims-ci-hard.png){#fig-cf-claims}
+![Claimed purchase deductions per firm-year (real pesos), ELVIS interior firms, by change $\Delta$ in the purchases rate. Points: estimates; lines: 95 percent conservative-test bounds; bars: soft region; grey band: the current policy's set; dashed: mechanical response $(1+\Delta)\hat C(0)$. Structural parameters fixed at the operating point (@tbl-cf-estimates); $\chi^2_{18,.95}=28.86$.](/figures/ch08-cf-claims-bounds.png){#fig-cf-claims}
 
 ::: {.content-visible when-meta="draft"}
 **Draft note (why Claims, not revenue):**
@@ -335,29 +347,44 @@ The headline result is the counterfactual change in purchases-side deduction cla
 @fig-cf-claims displays the estimated curve of the counterfactual real average claims per firm-period. 
 
 :::{#tbl-cf-claims}
-![](/tables/ch08-claims-ci.png)
+![](/tables/ch08-claims-level.png)
 
-Real mean deduction claims per firm-period (COP), 95 percent conservative-test confidence sets, 9 tested $\Delta$ points.
+Claimed purchase deductions by $\Delta$: per firm-year for the interior firms, and totals for the evader industries (A) and the whole economy (B). Interim: six $\Delta$ points.
 :::
 
-Key findings (@tbl-cf-claims-headline):
+Key findings (@tbl-cf-claims, @tbl-cf-elasticities, @fig-cf-beh-elast):
 
-- A tax increase of 0.5 percent is already statistically distinguishable from current policy, raising claims; a cut lowers claims but only becomes distinguishable at $-8$ percent.
-  - Baseline CI $[763,807]$. Cut of 8 percent: $[680,720]$, change bounded between $-15.71$ percent and $-5.69$ percent. Increase of 0.5 percent: $[934,979]$, change bounded between $+15.70$ percent and $+28.28$ percent.
+- At current rates, interior firms claim 1,949 real pesos per firm-year (95 percent set [1,672, 2,215]). Claims total 27.0 million in the evader industries (A) and 59.1 million in the whole economy (B).
+- The level sets at different $\Delta$ overlap. The response is measured more precisely through the elasticities, which compare the two policies on the same draws.
+- The elasticity of claimed deductions with respect to $\tau_P$ is 1.17 [1.13, 1.21]: a 1 percent rise in the rate raises claims by about 1.17 percent, of which 1 point is mechanical and the rest is firms overreporting more.
+- The behavioural response is asymmetric. For increases, the behavioural elasticity is 0.21 [0.20, 0.22] at +1 percent, rising to 0.23 at +2 percent. For cuts it is 0.14 [0.13, 0.16] at $-1$ percent, falling to 0.12 at $-2$ percent. The sets at $\pm1$ percent do not overlap.
 
+:::{#tbl-cf-elasticities}
+![](/tables/ch08-elasticities.png)
 
-:::{#tbl-cf-claims-headline}
-![](/tables/ch08-claims-headline-pct.png)
+Elasticity of claimed purchase deductions with respect to $\tau_P$: total (central difference at $\pm1$ percent) and behavioural, by side, at $\Delta=\pm1,\pm1.5,\pm2$ percent. 95 percent conservative-test sets.
+:::
 
-Change in real mean deduction claims relative to current policy, for the smallest tested tax cut that is distinguishable from baseline and the smallest tested tax increase. The bounds compare the two 95 percent conservative-test confidence sets.
+![Behavioural elasticity of claimed purchase deductions with respect to $\tau_P$, by change $\Delta$ in the purchases rate: estimates and 95 percent conservative-test sets. ELVIS interior firms; structural parameters fixed at the operating point.](/figures/ch08-behavioural-elasticity.png){#fig-cf-beh-elast}
+
+::: {.content-visible when-meta="draft"}
+**Draft note (2026-10-03):** the mechanism behind the asymmetry has not been checked; the $e'=0$ corner is a candidate only. The behavioural share in @tbl-cf-claims differences two separately profiled levels and is noisy (0.26 at +5 percent against about 0.20 from the paired difference); replace with paired numbers when the 1 percent grid is in.
 :::
 
 ::: {.content-visible when-meta="draft"}
-**Draft note:** the result is a set, not a point $\tau^*$; state this as the deliverable, not a fallback.
-:::
+**Superseded (linear $q$, single-tax run, 2026-09-22).** Old figure: `ch08-claims-ci-hard.png`; old tables: `ch08-claims-ci.png`, `ch08-claims-headline-pct.png`.
 
+Old figure caption: Conservative-test 95 percent confidence sets for real mean deduction claims per firm-period (COP), by tax-rate change $\Delta$. Each marker is a tested candidate value of $\theta_C(\Delta)$: filled circles are not rejected, crosses are rejected. The dotted and dashed lines connect the lowest and highest non-rejected candidates at each $\Delta$. The grey band is the confidence set at current policy ($\Delta=0$). The structural parameters are fixed at the best point in @tbl-cf-estimates; critical value $\chi^2_{10,.95}=18.31$.
+
+Old key findings:
+
+- A tax increase of 0.5 percent is already statistically distinguishable from current policy, raising claims; a cut lowers claims but only becomes distinguishable at $-8$ percent.
+  - Baseline CI $[763,807]$. Cut of 8 percent: $[680,720]$, change bounded between $-15.71$ percent and $-5.69$ percent. Increase of 0.5 percent: $[934,979]$, change bounded between $+15.70$ percent and $+28.28$ percent.
+- Old table caption: Change in real mean deduction claims relative to current policy, for the smallest tested tax cut that is distinguishable from baseline and the smallest tested tax increase. The bounds compare the two 95 percent conservative-test confidence sets.
+- Old draft note: the result is a set, not a point $\tau^*$; state this as the deliverable, not a fallback.
 - Mechanism for the asymmetry: $e'_i(\Delta)=[e_i+\Delta/(2\lambda)]/(1+\Delta)$ is a horse race between $e_i$ and the constant term $\Delta/(2\lambda)$. With $\hat\lambda$ tiny, the constant wins: an increase shifts every firm by about the same large amount; a cut removes evasion firm by firm (small evaders hit zero first), so the aggregate response is gradual.
-- This is a property of linear $q$ and linear $\kappa$ combined with small $\hat\lambda$, not of linearity alone. Convex $q=(\lambda e)^k$ and concave $q=1-e^{-\lambda e}$ break the uniform-shift result [(closed forms derived, not estimated)]{.content-visible when-meta="draft"}.
+- This is a property of linear $q$ and linear $\kappa$ combined with small $\hat\lambda$, not of linearity alone. Convex $q=(\lambda e)^k$ and concave $q=1-e^{-\lambda e}$ break the uniform-shift result (closed forms derived, not estimated).
+:::
 
 ## Robustness {#sec-cf-robust}
 
