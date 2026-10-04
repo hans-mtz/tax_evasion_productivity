@@ -28,16 +28,33 @@ below that needs more than the one-line summary already moved from ch. 8.
 
 <!-- Moved from ch. 8's "Estimation" subsection. -->
 
-- CUE quadratic objective with eigenvalue-truncated weighting matrix.
-- **Sales-tax revenue on sales is observed.** The data record the sales tax each firm pays on its sales in each period, which is the observed counterpart of $\tau_{it}P_tY_{it}$ in @eq-govt-rev; total revenue in the counterfactual is computed from it directly, held at its baseline value.
+- CUE quadratic objective. The weighting matrix keeps every eigen-direction of $\hat\Omega/n$ with a positive eigenvalue [@AK2020]; $\hat\Omega$ is clustered by plant.
+- $\tilde g$ by self-normalized importance sampling: 1,000 fixed draws per firm from a mixture of a uniform and two log-uniform proposals on the support (uniform in $M$, log-uniform in $M$, and log-uniform in the distance to the support's lower edge), reweighted. Fixed draws make the objective smooth in $(\theta,\gamma)$ [@Schennach2014, p. 360].
+- Reference measure: @Schennach2014's Proposition 2.1, $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with the row scales $D$ computed once and held fixed across every compared fit.
+- **Sales-tax revenue on sales is observed.** The data record the sales tax each firm pays on its sales in each period, which is the observed counterpart of $\tau_{S,it}P_tY_{it}$ in @eq-govt-rev; total revenue in the counterfactual is computed from it directly, held at its baseline value.
+- **The score rows enter in bounded form.** With $B=1-(1+k)x^k$, the scores of $h$ are $\partial h/\partial k=-x^k[1+(1+k)\ln x]/B$ and $\partial h/\partial\kappa=k(1+k)x^k/(\kappa B)$. Both diverge at the FOC ceiling ($B\to0$), where a single extreme draw can dominate the weighting matrix. The rows use the softsign $s/(1+|s|)\in(-1,1)$ instead ($B$ floored at $10^{-6}$); softsign rather than $s/(1-s)$ because the score in $k$ changes sign. Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$. The transform decays polynomially, so firms stay distinguishable across the range of $e$; $\exp$ and $\tanh$ saturate.
+- Nelder–Mead, two passes; every grid point starts from the same validated point (no chaining across points), with common random numbers within a fit. $\gamma$ is solved for at the start point.
+- $\gamma$ is unbounded in the optimizer: @Schennach2014 and @AK2020 both treat $\gamma\to\pm\infty$ as an expected solution, not a numerical failure.
+
+::: {.content-visible when-meta="draft"}
+**Superseded (linear $q$, single-tax run, 2026-09-22).**
+
 - **The $\lambda$-score moment enters in bounded form.** The score $h_\lambda(e)\equiv\partial h(e;\lambda)/\partial\lambda=-2e/(1-2\lambda e)$ diverges near the FOC ceiling $e\to1/(2\lambda)$, where a single extreme draw can dominate the weighting matrix's eigenvalues and silently collapse the effective moment count. The implementation therefore replaces $h_\lambda$ with $h_\lambda/(1-h_\lambda)\in(-1,0]$ in the ninth moment ($1-2\lambda e$ floored at $10^{-6}$). Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$ under the same argument that licenses the raw score. The transform decays polynomially, not exponentially, so firms stay numerically distinguishable across the whole range of $e$; $\exp(h_\lambda)$ and $\tanh(h_\lambda)$ were rejected because both saturate to a constant for most of the sample.
 - Per-firm Metropolis chain: $n_{burn}=1000$, $n_{keep}=3000$ [(settled convention -- see CLAUDE.md's "MCMC chain-length convention" entry for why this length, not a longer one, and why acceptance-rate SD is the more reliable diagnostic than $\gamma'g$ variance)]{.content-visible when-meta="draft"}.
 - Nelder-Mead optimizer [(beats BOBYQA decisively on this problem -- see CLAUDE.md)]{.content-visible when-meta="draft"}.
-- $\gamma$ is unbounded in the optimizer: @Schennach2014 and @AK2020 both treat $\gamma\to\pm\infty$ as an expected solution, not a numerical failure.
+:::
 
 ## Trim cutoff
 
 <!-- Moved from ch. 8's "Estimation" subsection, including @fig-cf-trim. -->
+
+- Top 0.5 percent of interior firms by $M^*$ dropped before fitting: 61 firm-years, 22 of them in 321.
+- Without the trim, no tested $(k,\kappa)$ passes the conservative test (best $TS=46.1$ against 27.59).
+- The largest firms in 321 report 7 to 13 times $\bar M_{j,t-1}$. At the operating point, the FOC ceiling caps their overreporting at about $0.24\,\bar M_{j,t-1}$ ($u\lesssim0.02$), against an observed $\mathcal V_{it}\approx0.27$.
+- The trimmed firms enter the counterfactual mechanically: their claims scale with the rate.
+
+::: {.content-visible when-meta="draft"}
+**Superseded (linear $q$, single-tax run, 2026-09-22).**
 
 - Top 0.5 percent of interior (non-corner) firms by $M^*$ dropped before fitting.
 - Why: a handful of extreme evaders near the FOC ceiling drive $\hat\lambda$ toward zero without it; 0.5 percent is the first cutoff where the 95 percent CI's upper bound stabilizes.
@@ -46,9 +63,22 @@ below that needs more than the one-line summary already moved from ch. 8.
 - Revised down from an earlier 1 percent decision (see CLAUDE.md's "Trim-cutoff decision" entries for the fuller investigation, including the industry/firm-composition checks that aren't repeated here).
 :::
 
-![Trim-cutoff test inversion, instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. At each trim level (share of the largest non-corner firms dropped, by reported materials), every tested $\lambda$ is marked as not rejected (dot) or rejected (cross); the ring marks the grid minimum within that trim level. Pass/fail uses $2n(\hat L_n-\min\hat L_n)$ against $\chi^2_{8,.95}$, from the earlier eight-moment system.](/figures/ch08-trim-cutoff.png){#fig-cf-trim}
+![Trim-cutoff test inversion, instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. At each trim level (share of the largest non-corner firms dropped, by reported materials), every tested $\lambda$ is marked as not rejected (dot) or rejected (cross); the ring marks the grid minimum within that trim level. Pass/fail uses $2n(\hat L_n-\min\hat L_n)$ against $\chi^2_{8,.95}$, from the earlier eight-moment system.](/figures/ch08-trim-cutoff.png)
+:::
 
-## Search strategy for the joint $(\lambda,\delta_1,\delta_2)$ region
+## Search over the detection parameters $(k,\kappa)$
+
+- $(k,\kappa)$ is fixed on a grid; at each point $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated.
+- Coarse grid: $k\in\{0.65,0.70,0.75\}\times\kappa\in\{0.5,4.5,9\}$. Only $(0.75,0.5)$ passes the conservative test ($TS=23.7$); the next best is $(0.70,9)$ at 29.5.
+- Fine grid around it: $k\in\{0.725,0.75,0.775\}\times\kappa\in\{0.4,0.5,0.6\}$.
+- The moments do not pin down the level of detection $\kappa$; relative detection risk is nearly free of it: across industries, relative risk at $\kappa=0.5$ and $\kappa=9$ correlates at 0.87.
+
+![Conservative test statistic over the detection parameters. Left: coarse grid; right: fine grid around the operating point. Each cell is a separate fit with $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ estimated; height is $TS_{\text{cons}}$. Blue dots are not rejected, grey crosses are rejected; the plane is $\chi^2_{17,.95}=27.59$.](/figures/ch08-k-kappa-grid.png){#fig-cf-kkappa}
+
+::: {.content-visible when-meta="draft"}
+**Superseded (linear $q$, single-tax run, 2026-09-22).**
+
+Search strategy for the joint $(\lambda,\delta_1,\delta_2)$ region (old section).
 
 <!-- Moved from ch. 8's "Estimates" subsection: the HOW-we-searched narrative and its three
 diagnostic figures. The WHAT-we-found (the two instruments' point estimates, the headline
@@ -64,11 +94,12 @@ table) stays in ch. 8's body -- only the search-process visualizations move here
 - Warm-starting convention: every grid point seeded independently from the SAME already-validated point, not chained sequentially across points. Found the hard way -- sequential chaining lets the seed only affect the grid's first point, silently reproducing a known-bad chain's results; same-point seeding resolved genuine local-optimum traps a naive chain had fallen into (see CLAUDE.md's "Warm-starting convention, revised" entry for the full story, including why a properly-scoped global optimizer was tried and rejected here).
 :::
 
-![Joint $(\lambda,\delta_1,\delta_2)$ cube, instrument $m^*_{t-1}$: 27 tested cells, with $\delta_0$ and $\gamma$ profiled out at each. Blue: not rejected by the conservative test ($\chi^2_{9,.95}$); grey: rejected. Ball size grows with the test's p-value.](/figures/ch08-elvis-cube.png){#fig-cf-cube}
+![Joint $(\lambda,\delta_1,\delta_2)$ cube, instrument $m^*_{t-1}$: 27 tested cells, with $\delta_0$ and $\gamma$ profiled out at each. Blue: not rejected by the conservative test ($\chi^2_{9,.95}$); grey: rejected. Ball size grows with the test's p-value.](/figures/ch08-elvis-cube.png)
 
-![$\lambda$-grid: the CUE objective $\hat L_n$ at each tested $\lambda$, with $\delta_0,\delta_1,\delta_2$ and $\gamma$ profiled out, for instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. The labelled point is each grid's minimum.](/figures/ch08-lambda-grid.png){#fig-cf-lambda}
+![$\lambda$-grid: the CUE objective $\hat L_n$ at each tested $\lambda$, with $\delta_0,\delta_1,\delta_2$ and $\gamma$ profiled out, for instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. The labelled point is each grid's minimum.](/figures/ch08-lambda-grid.png)
 
-![$(\delta_1,\delta_2)$-grid: $\hat L_n$ at each tested pair, with $\lambda$, $\delta_0$ and $\gamma$ profiled out, instrument $m^*_{t-1}$. The marked point is the grid minimum, $(\delta_1,\delta_2)=(4.3,0.54)$.](/figures/ch08-delta-grid.png){#fig-cf-delta}
+![$(\delta_1,\delta_2)$-grid: $\hat L_n$ at each tested pair, with $\lambda$, $\delta_0$ and $\gamma$ profiled out, instrument $m^*_{t-1}$. The marked point is the grid minimum, $(\delta_1,\delta_2)=(4.3,0.54)$.](/figures/ch08-delta-grid.png)
+:::
 
 ## Test inversion: the conservative test, and why
 
@@ -78,7 +109,7 @@ statement of the test (TS=2n*Lhat against chi2_{d_g,.95}, "conservative" test, w
 means) since results there are unreadable without it -- don't duplicate that here, this
 section is the justification for the design, not a restatement of it. -->
 
-- **Source definition (Schennach 2014, Definition F.1 and Theorem F.1):** with $\hat g(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ (the sample average of the tilted moment from @eq-elvis-tilt) and $\hat V(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)\tilde g(Z_i,\theta,\gamma)'$, her continuous updating objective is $\hat L_n^S(\theta)=\sup_{\gamma\in\mathbb R^{d_g}}-\tfrac12\,\hat g(\theta,\gamma)'\hat V(\theta,\gamma)^{-}\hat g(\theta,\gamma)$, with $\hat V^-$ a generalized inverse. Theorem F.1: at any $\theta$ satisfying the moment condition, $-2n\hat L_n^S(\theta)$ is asymptotically bounded above by $\chi^2_{d_g}$. Maximizing $\hat L_n^S$ over $\gamma$ is the same as minimizing the nonnegative quadratic form $\tfrac12\hat g'\hat V^-\hat g$; we report this positive quantity as $\hat L_n(\theta)$, so $TS(\theta)=2n\hat L_n(\theta)=-2n\hat L_n^S(\theta)$ — same statistic, sign flipped purely so the optimizer minimizes a nonnegative objective instead of maximizing a nonpositive one. $\hat V^-$ in our implementation discards eigen-directions with eigenvalues below $10^{-8}$ times the largest, for numerical stability.
+- **Source definition (Schennach 2014, Definition F.1 and Theorem F.1):** with $\hat g(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ (the sample average of the tilted moment from @eq-elvis-tilt) and $\hat V(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)\tilde g(Z_i,\theta,\gamma)'$, her continuous updating objective is $\hat L_n^S(\theta)=\sup_{\gamma\in\mathbb R^{d_g}}-\tfrac12\,\hat g(\theta,\gamma)'\hat V(\theta,\gamma)^{-}\hat g(\theta,\gamma)$, with $\hat V^-$ a generalized inverse. Theorem F.1: at any $\theta$ satisfying the moment condition, $-2n\hat L_n^S(\theta)$ is asymptotically bounded above by $\chi^2_{d_g}$. Maximizing $\hat L_n^S$ over $\gamma$ is the same as minimizing the nonnegative quadratic form $\tfrac12\hat g'\hat V^-\hat g$; we report this positive quantity as $\hat L_n(\theta)$, so $TS(\theta)=2n\hat L_n(\theta)=-2n\hat L_n^S(\theta)$ — same statistic, sign flipped purely so the optimizer minimizes a nonnegative objective instead of maximizing a nonpositive one. $\hat V^-$ in our implementation keeps every eigen-direction with a positive eigenvalue, following @AK2020.
 - **Conservative test** (Theorem F.1, absolute): $TS_{\text{cons}}=2n\hat L_n$ against $\chi^2_{d_g,.95}$ directly -- no credit for profiling out nuisance parameters or $\gamma$.
 - **Why the conservative test:** the counterfactual's purpose is to support a policy claim, so the confidence sets use the test whose size is guaranteed not to exceed its nominal level.
 
@@ -100,6 +131,10 @@ section is the justification for the design, not a restatement of it. -->
 - Full derivations: Schennach (2014), Theorem F.1 and its proof; [`Paper/sections/9999-elvis.qmd`]{.content-visible when-meta="draft"}.
 
 ## Back-of-envelope: revenue loss and its tax-rate elasticity {#sec-app-backofenvelope}
+
+::: {.content-visible when-meta="draft"}
+**Draft note (2026-10-03): this section rests on the superseded linear-$q$ run** ($1/2\lambda$, its closed-form derivative). It stays visible only because the thesis and JMP intros and the conclusion still cite it; redo or drop it together with the intro/abstract/conclusion update.
+:::
 
 ::: {.content-visible when-meta="draft"}
 **Draft note:** these are ballpark figures for the Friday JMP draft. To do afterwards: estimate them inside ELVIS as auxiliary parameters with their own moments (listed in ch. 8's Robustness to-do).
