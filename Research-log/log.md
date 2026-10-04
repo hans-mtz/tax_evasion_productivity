@@ -1836,3 +1836,10 @@ All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, 
 - **Pushed before the failure:** everything through `68f6cac`. **Lost unless the SSD recovers:** the raw outputs 1632–1640 (`*.csv` is git-ignored; .Rout, adiag). Their numbers are in this log.
 - **Recovered from the session:** `Code/Products/1641-cf-results-2026-10-03-from-session.csv` (1622 level, 1638 elasticity and diff_beh, 1639 small Δ, 1640 cold reruns; full precision as printed) and `1641-cf-economy-1621-from-session.csv` (1621 combination). Force-added to git (only copy). Also in `~/Backup-TaxEvasion-2026-10-03/`.
 - **This wrap-up was committed from the backup clone** `/Volumes/Extreme SSD/Github Backup/Tax_Evasion_Productivity` (exFAT: `core.fileMode=false` set there). Hans restarts the Mac mini; when the SSD returns, `git pull` there before any work.
+
+## 2026-10-03 night — Migration to the Mac mini's internal disk
+
+- **Why (Hans):** the external SSD failed twice in two days. After the restart it read again briefly, then dropped off mid-copy.
+- **How:** fresh `git clone` from GitHub (`e97b09d`) into `~/Github/Tax_Evasion_Productivity`; untracked and ignored files added with `rsync --ignore-existing` (never overwriting git's newer copies) for the folders in use only: `Code`, `Data/Colombia`, `Thesis`, `JMP`, `Quarto-Slides`, `Research-log`, `Lit-Papers`, `Paper/sections`, `renv`, `_extensions`. First from the SSD while it read (rescued today's raw outputs 1628–1640; rsync discarded the one file it could not finish), then the rest from the Extreme SSD backup. Left behind: `Paper/` outside `sections`, `Data/Ecuador`, `Data/Spain`, `Results/`, old `Slides/` and build folders (all on the backup).
+- **Check:** `grid_estimator_ind5b_cf3` rebuilt; adiag at the operating point (0.75, 0.5), 0.5% trim, R = 1000 gives TS 23.6894 (n = 12,050), identical to before.
+- Claude memory copied to the new project key (`-Users-hans-Github-Tax-Evasion-Productivity`). Rescued results committed (`e843fa1`).
