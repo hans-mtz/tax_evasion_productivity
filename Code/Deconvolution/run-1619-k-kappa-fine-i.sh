@@ -5,6 +5,8 @@
 # gamma_init=solve, IS + mix, rho=prop21 (1599-rhoD-ind), plant clusters, seed 30, start delta from the best validated
 # fit 1611-i-k0.7 (same start for every point: no chaining), joint NM 2 passes, maxeval 800 x 21, delta box 100.
 # Mac mini, 3 fits x 4 threads. adiag at R = 1000 and 4000.
+# Rerun 2026-10-03 (Hans): POINTS="0.75 0.6;0.725 0.4;0.775 0.4;0.775 0.5" NP=4 NT=3, binary rebuilt after the migration
+# (the copied grid_estimator_ind5b was a 7 KB stub; the rebuild reproduces TS 23.6894 at 1616).
 set -uo pipefail
 export LC_ALL=C
 cd "$(dirname "$0")/../C-estimator"
@@ -21,7 +23,9 @@ fit() { local K=$1 KA=$2 KFREE=${3:-0} T
   for R in 1000 4000; do ./grid_estimator_ind5b mode=adiag ${B/k_fixed=$K/k_fixed=$KH} n_keep=$R par=$(getp $P/$T.csv) n_threads=$NT output_csv=/dev/null > $P/$T-adiag-R$R.txt 2>&1; done
   echo "done $T k=$KH $(date +%H:%M)"; }
 export -f fit getp; export P IN DI RS NT SUF
-if [ "${MODE:-grid}" = grid ]; then
+if [ -n "${POINTS:-}" ]; then   # POINTS="k kappa;k kappa;..." (2026-10-03: the four points killed on 2026-10-02), NP fits at once
+  echo "$POINTS" | tr ';' '\n' | sed 's/$/ 0/' | xargs -P ${NP:-4} -L 1 bash -c 'fit $0 $1 $2'
+elif [ "${MODE:-grid}" = grid ]; then
   for k in 0.725 0.75 0.775; do for ka in 0.4 0.5 0.6; do [ "$k $ka" = "0.75 0.5" ] || echo "$k $ka 0"; done; done | xargs -P 4 -L 1 bash -c 'fit $0 $1 $2'
 else   # MODE=kfree: kappa profile with k profiled (free in [0.4, 1.0]), same kappa grid
   for ka in 0.5 4.5 9; do echo "0.7 $ka 1"; done | xargs -P 3 -L 1 bash -c 'fit $0 $1 $2'
