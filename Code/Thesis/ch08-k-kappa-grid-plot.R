@@ -4,10 +4,12 @@
 ## {0.4, 0.5, 0.6}; centre (0.75, 0.5) from 1616). Each cell is its own fit (delta0-2 and gamma free, (k, kappa) pinned,
 ## same start for every cell, seed 30, design i, 0.5% trim); height = TS_cons = 2 n Lhat from the fit's own adiag at
 ## R = 1000. Translucent plane = chi2_{17,.95}; blue dots pass, grey crosses are rejected; missing cells are left open.
+## Dashed drop line = the operating point (0.75, 0.5).
 source("Code/Thesis/001-setup.R")
 
 ts_of <- function(run, k, ka) {
     f <- file.path(PRODUCTS_DIR, sprintf("%s-i-k%s-kappa%s-adiag-R1000.txt", run, k, ka))
+    if (!file.exists(f)) f <- sub("\\.txt$", "-macbook.txt", f)   # (0.775, 0.6) was fitted on the MacBook (2026-10-04)
     if (!file.exists(f)) return(NA_real_)
     l <- grep("^Lhat \\(recomputed\\)", readLines(f), value = TRUE)[1]
     if (is.na(l)) NA_real_ else as.numeric(sub(".*TS = 2 n Lhat = ([0-9.]+).*", "\\1", l))
@@ -42,7 +44,7 @@ panel <- function(d, theta = -35) {
     pass <- d$TS[ok] < crit
     points(p$x[!pass], p$y[!pass], pch = 4, cex = 1.3, lwd = 2, col = THESIS_REJECT)
     points(p$x[pass], p$y[pass], pch = 19, cex = 1.5, col = THESIS_COLS[1])
-    im <- which.min(d$TS)
+    im <- which(as.numeric(d$k) == 0.75 & as.numeric(d$kappa) == 0.5)   # the operating point (Hans, 2026-10-04), not the grid minimum
     lines(trans3d(rep(as.numeric(d$k[im]), 2), rep(as.numeric(d$kappa[im]), 2), c(zfloor, d$TS[im]), res),
           col = THESIS_COLS[1], lwd = 1.5, lty = "dashed")
 }
