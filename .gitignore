@@ -8,6 +8,16 @@ Code/C-estimator/grid_estimator
 *.doc*
 *.ppt
 *.csv
+# Results CSVs in Code/Products are tracked (2026-10-03, after the second SSD failure: untracked results were lost).
+# Firm-level files stay out (microdata and stage-2 inputs): inputs, firm-level outputs, percentile/ballpark panels, Stata exports.
+!Code/Products/*.csv
+Code/Products/*input*.csv
+Code/Products/*firmlevel*.csv
+Code/Products/*percentiles*.csv
+Code/Products/*ballpark*.csv
+Code/Products/stata-*.csv
+# macOS AppleDouble files (exFAT drives)
+._*
 # Paper/*.pdf
 # *.png
 # */*/*.png
