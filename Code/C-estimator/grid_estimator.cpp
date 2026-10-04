@@ -865,6 +865,8 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 //   3 elast_x    : (1+Delta)[xbar(Delta+h) - xbar(Delta-h)]/(2h) - T xbar(Delta)   (T = elasticity of mean overreporting
 //                  e'/M w.r.t. tau_P; ratio moment, T = E[slope]/E[level])
 //   4 elast_claims: (1+Delta)[C(Delta+h) - C(Delta-h)]/(2h)/scale - T C(Delta)/scale (T = elasticity of claimed credits)
+//   5 overrep    : M*/M - 1 - T  (static, Delta ignored; 2026-10-03, Hans: T = E[filed claims / true claims - 1] =
+//                  E[M*/M] - 1, the mean of firm-level overreporting ratios; unbounded as M -> 0, a test of whether it breaks)
 // C(D) = (1+D) tau_P [M + (1 - q') e'(D)], xbar(D) = e'(D)/M; h = cf_h (default 0.01: one percent up and down).
 static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
@@ -1144,6 +1146,7 @@ static inline void moment_g_A_one_exp_scale(
                 case 2: a = (Cr(D) - Cr(0.0)) / g_cf_scale; break;
                 case 3: a = (1.0 + D) * (Xb(D + hh) - Xb(D - hh)) / (2.0 * hh); b = Xb(D); break;
                 case 4: a = (1.0 + D) * (Cr(D + hh) - Cr(D - hh)) / (2.0 * hh) / g_cf_scale; b = Cr(D) / g_cf_scale; break;
+                case 5: a = Mstar / M - 1.0; break;
             }
             g_out[10] = a - g_cf_T * b;
         }
@@ -3076,7 +3079,7 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         NestedCache C; nested_build_cache(C, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
         std::vector<float> c10((size_t)n * R), b10((size_t)n * R, 1.0f);   // row 10 = a - T b
         for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] = C.G[((size_t)i * R + j) * D_G_A + 10];
-        if (g_cf_target >= 3) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
+        if (g_cf_target == 3 || g_cf_target == 4) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
             g_cf_T = 1.0; NestedCache C1; nested_build_cache(C1, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
             for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] = c10[(size_t)i * R + j] - C1.G[((size_t)i * R + j) * D_G_A + 10];
             g_cf_T = 0.0;
@@ -4440,9 +4443,9 @@ int main(int argc, char **argv) {
             std::vector<double> dl; { std::stringstream ss(get_opt(opt, "deltas", "0")); std::string tok;
                 while (std::getline(ss, tok, ',')) if (!tok.empty()) dl.push_back(std::strtod(tok.c_str(), nullptr)); }
             {   const std::string tg = get_opt(opt, "cf_target", "level");
-                const char *nm[5] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims"}; g_cf_target = -1;
-                for (int t = 0; t < 5; t++) if (tg == nm[t]) g_cf_target = t;
-                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x or elast_claims\n"; return 1; }
+                const char *nm[6] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep"}; g_cf_target = -1;
+                for (int t = 0; t < 6; t++) if (tg == nm[t]) g_cf_target = t;
+                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims or overrep\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 std::cout << "cfprofile target: " << tg << (g_cf_target >= 3 ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
