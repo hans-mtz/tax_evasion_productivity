@@ -1905,3 +1905,18 @@ All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, 
 - **Rule (Hans):** the median is computed on the scope the surrounding sentence names; 313 stays in (it is only the top value; medians without it: 13.4, 13.2, 14.3), its caveat stays in ch. 5.
 - **Numbers** (`Code/Thesis/ch05-overreporting-medians.R`, now three sets): 7 at 1 percent 14.5; 4 liable of the 5 largest (313, 321, 351, 352) 14.7 (unweighted median of four = mean of 321 and 351, so no single "median industry" to name); 5 largest at 1 percent 16.2. Firm-weighted medians are 16.2 for all three.
 - **Text:** JMP abstract "In these 4 industries, firms overreport on average 14.7 percent of their true inputs in the median industry." (replaces Hans's "...the median industry, textiles, is 16.2 percent"); 16 → 14.5 in both intros, `Thesis/index.qmd` and the conclusion; ch. 5 summary note reports 14.5 over the seven, figure keeps five.
+
+## 2026-10-05 — Revenue target re-checked (1647); old-Mac trims (1635) collected; detection notation
+
+- **Why (Hans):** under linear q the revenue CI was unbounded, so the counterfactual moved to claimed deductions; q is now power (concave) and the revenue units bug is fixed. Does revenue still give open sets?
+- **Code:** `cf_target=revenue` (binary `grid_estimator_ind5b_cf5`): row 10 = [t1/pgdp − C(Δ)]/scale − T, the firm's observed t1/pgdp added in cfprofile, so t1's variance enters Ω (the CSV's `revenue_hat` columns treat mean t1 as known and are not meaningful for this target). Launcher `run-1647-cf-revenue.sh`: 1642/1645 configuration (1616 operating point, base_seed 20260830, R = 1000, cf_cold=1), 3 threads × 4 runs, ≈ 7–13 min each.
+- **Results** (per firm-year, real; scale = mean τ_P M* = 1,960.05, mean t1/p_gdp = 1,547.05; χ²₁₈ = 28.86):
+
+| Δ | Revenue row (t1 in Ω) | Claims (level) | Revenue = mean t1 − claims |
+|---|---|---|---|
+| −0.3 | 221 [40, 393], soft [61, 370], TS_min 23.69 | 1,335 [1,172, 1,493], TS_min 23.69 | 212 [54, 375] |
+| +0.3 | −1,167 [−1,364, −953], soft [−1,337, −977], TS_min 23.69 | 2,639 [2,421, 3,019], soft [2,497, 2,943], TS_min 22.52 | −1,092 [−1,472, −874] |
+
+- **Reading:** both revenue sets are bounded; the open sets under linear q do not recur. At +0.3 the revenue-row set is narrower than claims shifted by mean t1 (soft width 360 vs 446): t1 and claims are positively correlated across firms (sales and materials), so the net row is less noisy than claims alone. TS_min of every revenue run equals the operating TS (23.689): the extra row is fit exactly at T̂. The claims run at +0.3 found a lower TS_min (22.52), so its conservative set has more slack.
+- **Old MacBook 1635** (trims 0.1–0.5% at (0.75, 0.38), 17 rows, R = 500 fits; TS at R 500/1000/2000): 0.1% 62.9/63.8/64.2; 0.2% 33.2/34.9/36.8; 0.3% 36.3/39.0/42.1; 0.4% 56.6/59.6/63.4; 0.5% 38.9/41.3/43.8. None passes (27.59); not monotone in the trim (swings of the order of the refit noise); δ̂1 31.7–34.9, δ̂2 4.5–4.8. Results fetched with `-oldmac`. Old MacBook and MacBook idle.
+- **Notation (Hans):** κ is the cost of evasion and k is log capital, so detection is now $q=(\lambda_{0,jt}e)^{\lambda_1}$, $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$ ($\bar\lambda$ = old κ, $\lambda_1$ = old k; operating point $(\lambda_1,\bar\lambda)=(0.75,0.5)$), ceiling $c_{\lambda_1}$, scores $s_{\lambda_1}, s_{\bar\lambda}$. Applied to ch. 8 live text, appendix A, appendix D's headline row, the headline table and the surface figure. Left: draft-only blocks; appendix D's alternative forms (λ, k); ch. 5's P-spline penalty λ, to be renamed when the implementation moves to an appendix (proposal: penalty ζ, coefficients ϑ, log-density g(u; ϑ), basis 𝓑_j, difference matrix **D**). Code and file names keep k/kappa.
