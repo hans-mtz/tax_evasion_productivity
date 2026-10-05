@@ -1,7 +1,8 @@
 ## PRODUCT: Code/Products/ch05-overreporting-medians.csv := summaries across industries of the deconvolved mean
 ## overreporting ratio x = e/M (ch. 5 text, abstracts): unweighted median, firm-weighted median and firm-weighted mean,
-## for (i) the five largest industries where overreporting is detected (313, 321, 322, 342, 369; ch. 5 rule) and
-## (ii) four of the five largest industries by output (313, 321, 351, 352; 311 is exempt; ch. 4 ranking).
+## for (i) the seven industries where the test rejects at 1 percent (313, 321, 322, 324, 331, 342, 369; intros, thesis
+## abstract, conclusion, ch. 5 summary), (ii) four of the five largest industries by output (313, 321, 351, 352; 311 is
+## exempt; ch. 4 ranking; JMP abstract) and (iii) the five largest of (i) (313, 321, 322, 342, 369; ch. 5 figure).
 ## Also writes Code/Products/ch05-overreporting-by-industry.csv (per-industry E[u], E[x], quantiles, firm counts).
 ## Reads:  Code/Products/1603-np-deconv-stage2-macbook.RData (penalized B-spline deconvolution of u = ln(M*/M) on the
 ##         stage-2 sample, f_eps from corporations, net log materials share; the fits behind ch05-overreporting-ratio.R)
@@ -33,8 +34,9 @@ print(by_ind)
 write.csv(by_ind, file.path(PRODUCTS_DIR, "ch05-overreporting-by-industry.csv"), row.names = FALSE)
 
 wmed <- function(v, w) { o <- order(v); v[o][which(cumsum(w[o]) / sum(w) >= 0.5)[1]] }
-sets <- list("five largest evaders" = c("313", "321", "322", "342", "369"),
-             "four of the five largest" = c("313", "321", "351", "352"))
+sets <- list("seven at 1 percent" = c("313", "321", "322", "324", "331", "342", "369"),
+             "four of the five largest" = c("313", "321", "351", "352"),
+             "five largest evaders" = c("313", "321", "322", "342", "369"))
 out <- imap_dfr(sets, function(s, nm) {
     d <- by_ind %>% filter(sic_3 %in% s); stopifnot(nrow(d) == length(s))
     tibble(set = nm, industries = paste(s, collapse = " "), median = median(d$Ex),
