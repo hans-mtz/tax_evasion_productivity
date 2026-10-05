@@ -20,6 +20,7 @@ Job-market paper (economics PhD). Structural model of **tax evasion via overrepo
 ### Detection function $q(e)$
 - **Open.** Supervisors reopened $q$: a level-$e$ $\lambda$ is not credible (scale problem). Candidates: external audit evidence (Ecuador, Mexico); convex/two-parameter forms; scale-normalized $q(e/\bar M_{j,t-1})$, $\bar M_{j,t-1}$ = lagged industry mean of reported $M^*$ (1981 by leave-one-out). Working note: `Paper/sections/9999-detection-q.qmd`.
 - **Current system (under re-estimation, see PLAN §9b):** kinked power $q=(e/(\kappa\bar M_{j,t-1}))^k$ up to the FOC ceiling $c_k=(1+k)^{-1/k}$, draws beyond it get only the $\varepsilon$ rows, share beyond the kink $s$ pinned by a moment (`qform=power_kink`).
+- **Paper notation:** $q=(\lambda_{0,jt}e)^{\lambda_1}$, $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$; $\bar\lambda$ = code's κ (`kappa`), $\lambda_1$ = code's $k$ (`k_fixed`), ceiling $c_{\lambda_1}$. In the text κ is the cost of evasion and $k$ is log capital, so never use them for detection. Code and file names keep k/kappa.
 - Forms and their properties: linear $q=\lambda e$ (SOC always; ceiling $\lambda e<\tfrac12$; $T\sim U[0,1/\lambda]$ audit-threshold story); exponential $1-e^{-\lambda e}$ (ceiling $\lambda e<1$; Lambert-$W$ closed form); power $(\lambda e)^k$ (nests linear; ceiling $(1+k)^{-1/k}$; closed form $e=\lambda^{-1}([1-C/\tau\rho]/(1+k))^{1/k}$).
 - Report detection risk in **relative** terms where possible (under linear $q$, $q(e_A)/q(e_B)=e_A/e_B$ is $\lambda$-free). `Code/Deconvolution/1303-detection-prob-table.R`.
 
