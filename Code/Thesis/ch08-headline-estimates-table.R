@@ -24,7 +24,7 @@ crit <- qchisq(0.95, dg)
 f3 <- function(v) formatC(v, format = "f", digits = 3)
 f2 <- function(v) formatC(v, format = "f", digits = 2)
 tbl <- tibble(
-    ` ` = c("$k$ (fixed)", "$\\kappa$ (fixed)", "$\\hat\\delta_0$", "$\\hat\\delta_1$", "$\\hat\\delta_2$",
+    ` ` = c("$\\lambda_1$ (fixed)", "$\\bar\\lambda$ (fixed)", "$\\hat\\delta_0$", "$\\hat\\delta_1$", "$\\hat\\delta_2$",
             "$\\hat\\omega^*=\\hat\\delta_1/2\\hat\\delta_2$",
             "Firm-years ($n$)", "Moment rows ($d_g$)", "Directions kept", "$\\max\\vert\\hat\\gamma\\vert$",
             "$TS_{\\text{cons}}$ ($R=1000$)", "$TS_{\\text{cons}}$ ($R=4000$)",
@@ -39,7 +39,7 @@ print(tbl)
 
 tt_obj <- tbl |> tt(width = 0.55, notes = paste0(
     "Interior firms in the nine industries where the test rejects, top 0.5\\% by $M^*$ trimmed. ",
-    "Detection $q=(e/\\kappa\\bar M_{j,t-1})^k$ with $(k,\\kappa)$ fixed at the operating point; ",
+    "Detection $q=(\\lambda_{0,jt}e)^{\\lambda_1}$, $\\lambda_{0,jt}=1/(\\bar\\lambda\\bar M_{j,t-1})$, with $(\\lambda_1,\\bar\\lambda)$ fixed at the operating point; ",
     "$R$ = draws per firm. Directions kept = eigenvalues of $\\hat\\Omega$ retained in the objective.")) |>
     style_tt(i = nrow(tbl), j = 2, bold = TRUE) |>
     style_tt(i = 6, line = "b", line_width = 0.05) |>

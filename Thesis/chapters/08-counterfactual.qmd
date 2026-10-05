@@ -15,7 +15,7 @@ Sources
 NOTES: since 2026-10-03 the chapter tells the TWO-tax story (net-of-tax first stage, power q, operating point 1616). Old single-tax / linear-q text is kept in draft-only "Superseded" blocks.
 -->
 
-## Partial Equilibrium Claimed-Deductions Curve {#sec-cf-question}
+<!-- ## Partial Equilibrium Claimed-Deductions Curve {#sec-cf-question} -->
 
 <!-- what's the question -->
 How do tax revenues change as the government changes the sales tax rate? As the tax rate increases, the incentives to claim additional fictitious deductions increase, but an increase in evasion raises the probability of detection. Therefore, firms face a trade-off. On the flip side, a decrease in the tax rate reduces the incentives to evade and firms start to decrease the level of overreporting (intensive margin) and some firms start jumping out of evasion altogether (extensive margin). For the government, taking the current observed state as given, what is the marginal change in revenue as the tax rate changes?
@@ -24,13 +24,15 @@ How do tax revenues change as the government changes the sales tax rate? As the 
 I study this question using the estimates of the structural objects from the firms' tax evasion model. With the parameters at hand, I construct a partial-equilibrium claimed-deductions curve: expected claimed deductions as a function of the tax rate. Claimed deductions are the channel through which evasion moves revenue; every extra peso claimed is a peso of revenue lost.
 
 <!-- what do I find -->
-Claimed deductions rise more than one-for-one with the purchases rate, and they respond more to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.21 percent; 0.21 points of that come from firms overreporting more. A 1 percent cut lowers them by about 1.14 percent, of which 0.14 points come from firms overreporting less.
+Claimed deductions rise more than one-for-one with the purchases rate, and they respond more to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.21 percent; 0.21 points of that come from firms overreporting more. A 1 percent cut lowers them by about 1.14 percent, of which 0.14 points come from firms overreporting less. Undetected overreporting costs the government about 4 percent of the sales tax firms in tax evading industries owe on their sales.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
 
 The curve rises gently on the tax-cut side and steeply on the tax-increase side. A 0.5 percent increase in the rate already raises claimed deductions significantly, by 16–28 percent, lowering revenue, while claimed deductions fall significantly below their current level only after a cut of at least 8 percent.
 :::
+
+## Government Revenue and Claimed Deductions
 
 <!-- how do I do it -->
 
@@ -54,13 +56,13 @@ $$ {#eq-govt-rev-single}
 where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev-single is the revenue collected from sales taxes on sales, $\tilde\tau_{it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases. The term includes the firms' true inputs, $M_i$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
 :::
 
-In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. 
+In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. I abstract from these because during the time there was no clear increase in the Colombian government effor to reduce tax evasion and at the time, there were no penalties for evading, if firms were caught evading they only had to repay their true liabilities.
 
 ::: {.content-visible when-meta="draft"}
 **Draft note (two-tax, PLAN.md 7b):** Moreover, firms might change their optimal true inputs because when there are two different sales taxes on sales and purchases, the government can affect the relative prices and thus influence output indirectly. 
 :::
 
-Since I lack information on these margins, I hold output and input decisions fixed. The tax on sales then changes only mechanically with the rate, and the behavioural response of revenue runs entirely through claimed deductions, so I focus on
+Since I lack information on these margins, I hold output and input decisions fixed. The tax on sales then changes only mechanically with the rate, and the behavioural response of revenue runs entirely through claimed deductions. Therefore, I focus on
 
 $$
 -\tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
@@ -107,37 +109,37 @@ The cost of evasion, convex in productivity, rationalizes the observed pattern i
 
 In contrast, the pattern can be rationalized by the cost of evasion being an economic opportunity cost. Take, for example, the manager's time. For small firms, managers commonly multitask across different productive activities, such as sales, HR, purchasing, and administrative tasks. For these firms, allocating time to tax evasion is costly. As firms increase in size and resources, managers delegate activities according to the firm's division of labour. For large firms, allocating some of the manager's time to evasion is not as costly. However, as firms grow past a certain threshold, departments grow in resources, including the number of employees. Allocating resources to any single activity requires coordination among a larger number of employees in different departments. For example, the records from the warehouse, accounting, purchasing, and finance must match for every fake invoice used to claim deductions. Therefore, the cost of evasion might decrease as firms get bigger but increase past a certain threshold.
 
-I assume a power detection probability, scaled by the size of the firm's industry, and an evasion cost that is linear in evasion and convex in productivity:
+I assume a concave detection probability and an evasion cost that is linear in evasion and convex in productivity:
 
 $$
-q(e_{it})=\Big(\frac{e_{it}}{\kappa\bar M_{j,t-1}}\Big)^{k},\qquad 0<k<1
+q(e_{it})=\Big(e_{it}\lambda_{0,jt}\Big)^{\lambda_1},\qquad 0<\lambda_1<1
 $$ {#eq-prob-detect}
 
 $$
-c_{it}(e_{it}, \omega_{it})=e_{it}\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
+\kappa_{it}(e_{it}, \omega_{it})=e_{it}\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
 $$ {#eq-eva-cost}
 
-where $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year. The scale makes detection depend on how much a firm overreports relative to a typical firm in its industry, not on the peso amount: $\kappa$ sets the level of detection and $k$ its curvature. With $0<k<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
+where $\lambda_{0,jt}\equiv1/(\bar\lambda\bar M_{j,t-1})$ and $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year. The scale makes detection depend on how much a firm overreports relative to a typical firm in its industry, not on the peso amount: $\bar\lambda$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
 
-Let $x_{it}\equiv e_{it}/(\kappa\bar M_{j,t-1})$. Then $q+q'e=(1+k)x^k$, and the first-order condition with respect to tax evasion for evaders (interior solution) becomes,
+Let $x_{it}\equiv \lambda_{0,jt}e_{it}$. Then $q+q'e=(1+\lambda_1)x^{\lambda_1}$, and the first-order condition with respect to tax evasion for evaders (interior solution) becomes,
 
 $$
-\tau_{P,it}\rho_t\big(1-(1+k)x_{it}^k\big) = \textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
+\tau_{P,it}\rho_t\big(1-(1+\lambda_1)x_{it}^{\lambda_1}\big) = \textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
 $$
 
 Let 
 $$
-h(e_{it};k,\kappa)\;\equiv\;\ln(\tau_{P,it}\rho_t)+\ln\big(1-(1+k)x_{it}^k\big),
-\qquad x_{it}\in(0,c_k),\quad c_k=(1+k)^{-1/k}
+h(e_{it};\lambda_1,\bar\lambda)\;\equiv\;\ln(\tau_{P,it}\rho_t)+\ln\big(1-(1+\lambda_1)x_{it}^{\lambda_1}\big),
+\qquad x_{it}\in(0,c_{\lambda_1}),\quad c_{\lambda_1}=(1+\lambda_1)^{-1/\lambda_1}
 $$
 
 Taking logs, the evasion FOC becomes,
 
 $$
-\psi_{it}\;=\;h(e_{it};k,\kappa)-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
+\psi_{it}\;=\;h(e_{it};\lambda_1,\bar\lambda)-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
 $$ {#eq-foc-psi}
 
-The ceiling $c_k$ is the largest relative overreporting the FOC can rationalize; there the detection probability is $1/(1+k)$. The parameters are $\theta=(k,\kappa,\delta_0,\delta_1,\delta_2)$.
+The ceiling $c_{\lambda_1}$ is the largest relative overreporting the FOC can rationalize; there the detection probability is $1/(1+\lambda_1)$. The parameters are $\theta=(\lambda_1,\bar\lambda,\delta_0,\delta_1,\delta_2)$.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -213,13 +215,13 @@ $$
 \psi(M)\;=\;h\big(e(M)\big)-\delta_0+\delta_1\omega(M)-\delta_2\omega(M)^2
 $$ {#eq-psi-of-m}
 
-In addition to depending on a single unobservable, $M_{it}$, the setup presents two non-standard features. First, it is nonlinear and nonseparable in $M$ through the log term in $h$, and thus a traditional method of moments cannot help (one cannot interact with an instrument to make the undesired error term go away). Second, the domain of $M$ depends on the parameters being estimated. The support of the latent variable depends on $(k,\kappa)$: the FOC ceiling restricts true materials to $M\in\big(\max\{0,M^*_{it}-c_k\kappa\bar M_{j,t-1}\},M^*_{it}\big)$.
+In addition to depending on a single unobservable, $M_{it}$, the setup presents two non-standard features. First, it is nonlinear and nonseparable in $M$ through the log term in $h$, and thus a traditional method of moments cannot help (one cannot interact with an instrument to make the undesired error term go away). Second, the domain of $M$ depends on the parameters being estimated. The support of the latent variable depends on $(\lambda_1,\bar\lambda)$: the FOC ceiling restricts true materials to $M\in\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$.
 
 The method *Entropic Latent Variable Integration via Simulation* (ELVIS) [@Schennach2014] is built for exactly this combination of features.
 
 Let $f_Z$ denote the density of the observed data $Z_{it}$, and let $f_{M|Z}$ denote a candidate conditional density of $M_{it}$ given $Z_{it}$, so that $f_{M|Z}f_Z$ is the implied joint density of $(M_{it},Z_{it})$.[^elvis-densities] The question is whether some choice of $f_{M|Z}$ makes $E_{f_{M|Z}f_Z}[g(M,Z,\theta)]=0$.
 
-[^elvis-densities]: @Schennach2014 states the result for general probability measures. I write it with densities because, in this application, $M_{it}$ is continuous on the known support $\big(\max\{0,M^*_{it}-c_k\kappa\bar M_{j,t-1}\},M^*_{it}\big)$; every candidate conditional distribution therefore has a density there. The reference measure follows @Schennach2014's Proposition 2.1: a density proportional to $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with fixed row scales $D$, which keeps the tilted density proper for every $\gamma$. I compute $\tilde g$ in @eq-elvis-tilt by self-normalized importance sampling on 1,000 fixed draws per firm from a mixture of uniform and log-uniform proposals, so the objective is smooth in $(\theta,\gamma)$.
+[^elvis-densities]: @Schennach2014 states the result for general probability measures. I write it with densities because, in this application, $M_{it}$ is continuous on the known support $\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$; every candidate conditional distribution therefore has a density there. The reference measure follows @Schennach2014's Proposition 2.1: a density proportional to $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with fixed row scales $D$, which keeps the tilted density proper for every $\gamma$. I compute $\tilde g$ in @eq-elvis-tilt by self-normalized importance sampling on 1,000 fixed draws per firm from a mixture of uniform and log-uniform proposals, so the objective is smooth in $(\theta,\gamma)$.
 
 <!-- Superseded footnote text (linear q, Metropolis sampler): The reference density $f^0_{M|Z}$ used in estimation is the uniform density on that support: the estimator draws $M_{it}$ uniformly on the support and accepts each draw with probability $\min\{1,\exp[\gamma'(g_{\text{new}}-g_{\text{old}})]\}$; the chain's average therefore computes $\tilde g$ in @eq-elvis-tilt. -->
 
@@ -250,16 +252,16 @@ g(M,Z,\theta)=\begin{bmatrix}
 \psi(M,Z)\omega(M,Z) \\
 \psi(M,Z)\omega(M,Z)^2 \\
 \varepsilon(M,Z)\psi(M,Z) \\
-\varepsilon(M,Z)\,s_k(e) \\
+\varepsilon(M,Z)\,s_{\lambda_1}(e) \\
 \psi(M,Z)\ln\bar\tau_{P,jt} \\
-\varepsilon(M,Z)\,s_\kappa(e) \\
+\varepsilon(M,Z)\,s_{\bar\lambda}(e) \\
 \varepsilon(M,Z)\,1\{j=1\} \\
 \vdots \\
 \varepsilon(M,Z)\,1\{j=9\}
 \end{bmatrix}
 $$
 
-$s_k$ and $s_\kappa$ are the scores of $h$ in $k$ and $\kappa$, bounded by $s/(1+|s|)$. $\bar\tau_{P,jt}$ is the leave-one-out industry–year mean purchases rate: the cost shock is independent of the benefit shifter, so variation in the rate must be absorbed through evasion. The industry rows set $E[\varepsilon\mid j]=0$, so in each industry the model's mean overreporting matches the data's $E[\mathcal V_{it}]$.
+$s_{\lambda_1}$ and $s_{\bar\lambda}$ are the scores of $h$ in $\lambda_1$ and $\bar\lambda$, bounded by $s/(1+|s|)$. $\bar\tau_{P,jt}$ is the leave-one-out industry–year mean purchases rate: the cost shock is independent of the benefit shifter, so variation in the rate must be absorbed through evasion. The industry rows set $E[\varepsilon\mid j]=0$, so in each industry the model's mean overreporting matches the data's $E[\mathcal V_{it}]$.
 
 <!-- Superseded moment vector (linear q, nine rows):
 $$
@@ -281,7 +283,7 @@ The seventeen moments are combined into a single test statistic through the cont
 
 The estimation sample has 12,050 firm-years of unincorporated firms in the nine industries where the test in @sec-testing rejects, after dropping the 0.5 percent with the largest reported materials (@sec-app-elvis). Firms in the other industries, and the trimmed firms, enter the counterfactual mechanically (@sec-cf-design).
 
-I do not estimate $(k,\kappa)$ jointly with the $\delta$'s. I fix them on a grid and estimate $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ at each point (@sec-app-elvis); $(k,\kappa)=(0.75,0.5)$ passes the conservative test ($TS=23.7$), and I fix $\theta$ there for the counterfactual. The moments do not pin down the level of detection $\kappa$, so the counterfactual is conditional on it. Relative detection risk barely moves with $\kappa$: across industries, relative risk at $\kappa=0.5$ and $\kappa=9$ correlates at 0.87.
+I do not estimate $(\lambda_1,\bar\lambda)$ jointly with the $\delta$'s. I fix them on a grid and estimate $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ at each point (@sec-app-elvis); $(\lambda_1,\bar\lambda)=(0.75,0.5)$ passes the conservative test ($TS=23.7$), and I fix $\theta$ there for the counterfactual. The moments do not pin down the level of detection $\bar\lambda$, so the counterfactual is conditional on it. Relative detection risk barely moves with $\kappa$: across industries, relative risk at $\bar\lambda=0.5$ and $\bar\lambda=9$ correlates at 0.87.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -316,7 +318,7 @@ decision + @fig-cf-trim, and the justification for the conservative test design 
 :::{#tbl-cf-estimates}
 ![](/tables/ch08-headline-estimates.png)
 
-Stage-2 estimates at the operating point: detection $q=(e/\kappa\bar M_{j,t-1})^k$ with $(k,\kappa)=(0.75,0.5)$ fixed, interior firms in the nine industries where the test rejects (top 0.5 percent by $M^*$ trimmed). $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{17,.95}$.
+Stage-2 estimates at the operating point: detection $q=(\lambda_{0,jt}e)^{\lambda_1}$ with $(\lambda_1,\bar\lambda)=(0.75,0.5)$ fixed, interior firms in the nine industries where the test rejects (top 0.5 percent by $M^*$ trimmed). $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{17,.95}$.
 :::
 
 - The operating point passes the conservative test: $TS_{\text{cons}}=23.7<\chi^2_{17,.95}=27.6$, with all 17 directions of $\hat\Omega$ kept.
@@ -375,10 +377,10 @@ Key observations:
 
 ## Counterfactual design {#sec-cf-design}
 
-Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding true materials $M_i$ fixed, and with them $\omega_i$ and $\psi_i$, the FOC at the new rate gives the new evasion in closed form. With $B_i\equiv1-(1+k)x_i^k$ at the baseline,
+Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding true materials $M_i$ fixed, and with them $\omega_i$ and $\psi_i$, the FOC at the new rate gives the new evasion in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
 $$
-x'_i(\Delta)^k=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+k}\Big\},\qquad e'_i(\Delta)=\kappa\bar M_{j,t-1}\,x'_i(\Delta)
+x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad e'_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
 $$ {#eq-counter-e}
 
 A firm with $B_i\ge1+\Delta$ stops overreporting.
@@ -544,7 +546,7 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 ## Scope and limits {#sec-cf-limits}
 
 - Partial equilibrium: $K$, $L$, $\omega$, $\varepsilon$ and $M$ held fixed; only evasion responds. Large $\Delta$ is outside what the exercise can speak to.
-- $(k,\kappa)$ is fixed at one operating point that passes the conservative test. The moments do not identify the level of detection, so the results are conditional on it; relative detection risk is nearly free of $\kappa$.
+- $(\lambda_1,\bar\lambda)$ is fixed at one operating point that passes the conservative test. The moments do not identify the level of detection, so the results are conditional on it; relative detection risk is nearly free of $\bar\lambda$.
 - Estimates use the trimmed sample; the trimmed firms enter the counterfactual mechanically.
 
 ::: {.content-visible when-meta="draft"}

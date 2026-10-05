@@ -32,7 +32,7 @@ below that needs more than the one-line summary already moved from ch. 8.
 - $\tilde g$ by self-normalized importance sampling: 1,000 fixed draws per firm from a mixture of a uniform and two log-uniform proposals on the support (uniform in $M$, log-uniform in $M$, and log-uniform in the distance to the support's lower edge), reweighted. Fixed draws make the objective smooth in $(\theta,\gamma)$ [@Schennach2014, p. 360].
 - Reference measure: @Schennach2014's Proposition 2.1, $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with the row scales $D$ computed once and held fixed across every compared fit.
 - **Sales-tax revenue on sales is observed.** The data record the sales tax each firm pays on its sales in each period, which is the observed counterpart of $\tau_{S,it}P_tY_{it}$ in @eq-govt-rev; total revenue in the counterfactual is computed from it directly, held at its baseline value.
-- **The score rows enter in bounded form.** With $B=1-(1+k)x^k$, the scores of $h$ are $\partial h/\partial k=-x^k[1+(1+k)\ln x]/B$ and $\partial h/\partial\kappa=k(1+k)x^k/(\kappa B)$. Both diverge at the FOC ceiling ($B\to0$), where a single extreme draw can dominate the weighting matrix. The rows use the softsign $s/(1+|s|)\in(-1,1)$ instead ($B$ floored at $10^{-6}$); softsign rather than $s/(1-s)$ because the score in $k$ changes sign. Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$. The transform decays polynomially, so firms stay distinguishable across the range of $e$; $\exp$ and $\tanh$ saturate.
+- **The score rows enter in bounded form.** With $B=1-(1+\lambda_1)x^{\lambda_1}$, the scores of $h$ are $\partial h/\partial\lambda_1=-x^{\lambda_1}[1+(1+\lambda_1)\ln x]/B$ and $\partial h/\partial\bar\lambda=\lambda_1(1+\lambda_1)x^{\lambda_1}/(\bar\lambda B)$. Both diverge at the FOC ceiling ($B\to0$), where a single extreme draw can dominate the weighting matrix. The rows use the softsign $s/(1+|s|)\in(-1,1)$ instead ($B$ floored at $10^{-6}$); softsign rather than $s/(1-s)$ because the score in $\lambda_1$ changes sign. Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$. The transform decays polynomially, so firms stay distinguishable across the range of $e$; $\exp$ and $\tanh$ saturate.
 - Nelder–Mead, two passes; every grid point starts from the same validated point (no chaining across points), with common random numbers within a fit. $\gamma$ is solved for at the start point.
 - $\gamma$ is unbounded in the optimizer: @Schennach2014 and @AK2020 both treat $\gamma\to\pm\infty$ as an expected solution, not a numerical failure.
 
@@ -49,7 +49,7 @@ below that needs more than the one-line summary already moved from ch. 8.
 <!-- Moved from ch. 8's "Estimation" subsection, including @fig-cf-trim. -->
 
 - Top 0.5 percent of interior firms by $M^*$ dropped before fitting: 61 firm-years, 22 of them in 321.
-- Without the trim, no tested $(k,\kappa)$ passes the conservative test (best $TS=46.1$ against 27.59).
+- Without the trim, no tested $(\lambda_1,\bar\lambda)$ passes the conservative test (best $TS=46.1$ against 27.59).
 - The largest firms in 321 report 7 to 13 times $\bar M_{j,t-1}$. At the operating point, the FOC ceiling caps their overreporting at about $0.24\,\bar M_{j,t-1}$ ($u\lesssim0.02$), against an observed $\mathcal V_{it}\approx0.27$.
 - The trimmed firms enter the counterfactual mechanically: their claims scale with the rate.
 
@@ -66,13 +66,13 @@ below that needs more than the one-line summary already moved from ch. 8.
 ![Trim-cutoff test inversion, instruments $m^*_{t-1}$ and $\mathcal W_{t-2}$. At each trim level (share of the largest non-corner firms dropped, by reported materials), every tested $\lambda$ is marked as not rejected (dot) or rejected (cross); the ring marks the grid minimum within that trim level. Pass/fail uses $2n(\hat L_n-\min\hat L_n)$ against $\chi^2_{8,.95}$, from the earlier eight-moment system.](/figures/ch08-trim-cutoff.png)
 :::
 
-## Search over the detection parameters $(k,\kappa)$
+## Search over the detection parameters $(\lambda_1,\bar\lambda)$
 
-- $(k,\kappa)$ is fixed on a grid; at each point $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated.
-- Coarse grid: $k\in\{0.65,0.70,0.75\}\times\kappa\in\{0.5,4.5,9\}$. Only $(0.75,0.5)$ passes the conservative test ($TS=23.7$); the next best is $(0.70,9)$ at 29.5.
-- Fine grid around it: $k\in\{0.725,0.75,0.775\}\times\kappa\in\{0.4,0.5,0.6\}$.
-- A second point passes on the fine grid: $(k,\kappa)=(0.775,0.5)$, $TS=22.0$ ($R=1000$; 23.8 at $R=4000$, against 23.7 and 24.7 at the operating point), with all 17 directions kept and $(\hat\delta_0,\hat\delta_1,\hat\delta_2)=(42.2,27.1,3.87)$, $\hat\omega^*=3.50$. The difference in $TS$ is within the noise between refits, and the fit is less settled (smaller effective sample size per firm, larger $\gamma$), so the operating point stays at $(0.75,0.5)$; the passing region is not a single point.
-- The moments do not pin down the level of detection $\kappa$; relative detection risk is nearly free of it: across industries, relative risk at $\kappa=0.5$ and $\kappa=9$ correlates at 0.87.
+- $(\lambda_1,\bar\lambda)$ is fixed on a grid; at each point $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated.
+- Coarse grid: $\lambda_1\in\{0.65,0.70,0.75\}\times\bar\lambda\in\{0.5,4.5,9\}$. Only $(0.75,0.5)$ passes the conservative test ($TS=23.7$); the next best is $(0.70,9)$ at 29.5.
+- Fine grid around it: $\lambda_1\in\{0.725,0.75,0.775\}\times\bar\lambda\in\{0.4,0.5,0.6\}$.
+- A second point passes on the fine grid: $(\lambda_1,\bar\lambda)=(0.775,0.5)$, $TS=22.0$ ($R=1000$; 23.8 at $R=4000$, against 23.7 and 24.7 at the operating point), with all 17 directions kept and $(\hat\delta_0,\hat\delta_1,\hat\delta_2)=(42.2,27.1,3.87)$, $\hat\omega^*=3.50$. The difference in $TS$ is within the noise between refits, and the fit is less settled (smaller effective sample size per firm, larger $\gamma$), so the operating point stays at $(0.75,0.5)$; the passing region is not a single point.
+- The moments do not pin down the level of detection $\bar\lambda$; relative detection risk is nearly free of it: across industries, relative risk at $\bar\lambda=0.5$ and $\bar\lambda=9$ correlates at 0.87.
 
 ![Conservative test statistic over the detection parameters. Left: coarse grid; right: fine grid around the operating point. Each cell is a separate fit with $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ estimated; height is $TS_{\text{cons}}$. Blue dots are not rejected, grey crosses are rejected; the plane is $\chi^2_{17,.95}=27.59$.](/figures/ch08-k-kappa-grid.png){#fig-cf-kkappa}
 

@@ -35,7 +35,11 @@ panel <- function(d, theta = -35) {
     zr <- range(c(Z, crit), na.rm = TRUE); zfloor <- zr[1] - 0.15 * diff(zr)
     res <- persp(ks, kas, Z, zlim = c(zfloor, zr[2]), theta = theta, phi = 22, expand = 0.65, col = "grey90",
                  border = "grey50", ticktype = "detailed", shade = 0.35, nticks = 3,
-                 xlab = "k", ylab = "κ", zlab = "TS", cex.lab = 1.1, cex.axis = 0.75)
+                 xlab = "", ylab = "", zlab = "TS", cex.lab = 1.1, cex.axis = 0.75)
+    # axis titles drawn with plotmath (persp takes plain strings only, and the font drops the combining macron)
+    dk <- diff(range(ks)); dka <- diff(range(kas))
+    lx <- trans3d(mean(range(ks)), kas[1] - 0.22 * dka, zfloor, res); ly <- trans3d(ks[1] - 0.22 * dk, mean(range(kas)), zfloor, res)
+    text(lx$x, lx$y, expression(lambda[1]), cex = 1.2, xpd = NA); text(ly$x, ly$y, expression(bar(lambda)), cex = 1.2, xpd = NA)
     pl <- trans3d(c(ks[1], ks[length(ks)], ks[length(ks)], ks[1]), c(kas[1], kas[1], kas[length(kas)], kas[length(kas)]),
                   rep(crit, 4), res)
     polygon(pl, col = adjustcolor(THESIS_COLS[2], 0.18), border = THESIS_COLS[2], lty = "dashed")

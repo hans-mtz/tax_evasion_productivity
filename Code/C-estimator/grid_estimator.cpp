@@ -875,6 +875,10 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 //   8 loss_t1    : L/scale - T (t1/pgdp + x)/scale  (static; 2026-10-04 Hans: revenue lost to undetected overreporting as a
 //                  share of the sales tax owed on sales; x = cf_t1_extra, pesos per interior firm added to the denominator
 //                  for other firms' observed t1 (0 = interior firms only; (A) trimmed firms; (B) whole economy))
+//   9 revenue    : [t1/pgdp - C(Delta)]/scale - T  (2026-10-05 Hans: T = expected real net sales-tax revenue per firm, in
+//                  units of scale. The moment function returns a = -C(Delta)/scale; cfprofile adds the firm's observed
+//                  t1/pgdp/scale to a, so the variance of t1 enters Omega -- unlike revenue_hat in the CSV, which is
+//                  mean(t1/pgdp) - T_hat*scale from the claims target, t1 treated as known)
 // C(D) = (1+D) tau_P [M + (1 - q') e'(D)], xbar(D) = e'(D)/M; h = cf_h (default 0.01: one percent up and down).
 static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
@@ -1160,6 +1164,7 @@ static inline void moment_g_A_one_exp_scale(
                 case 6: { double ep, qp; epq(0.0, ep, qp); a = tau_rho * (1.0 - qp) * ep / g_cf_scale; b = -tau_rho * M / g_cf_scale; break; }
                 case 7: a = tau_rho * M / g_cf_scale; break;
                 case 8: { double ep, qp; epq(0.0, ep, qp); a = tau_rho * (1.0 - qp) * ep / g_cf_scale; b = 0.0; break; }
+                case 9: a = -Cr(D) / g_cf_scale; break;
             }
             g_out[10] = a - g_cf_T * b;
         }
@@ -3100,6 +3105,9 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
                 for (int i = 0; i < n; i++) { const double t1s = (firms[i].t1 / firms[i].pgdp + (g_cf_target == 8 ? g_cf_t1_extra : 0.0)) / sc;
                     for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] += (float)t1s; }
         }
+        if (g_cf_target == 9)   // revenue: add the firm's observed t1/pgdp/scale to a (fn returned -C(Delta)/scale)
+            for (int i = 0; i < n; i++) { const double t1s = firms[i].t1 / firms[i].pgdp / sc;
+                for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] += (float)t1s; }
         auto setT = [&](double T) { for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++)
                                         C.G[((size_t)i * R + j) * D_G_A + 10] = (float)(c10[(size_t)i * R + j] - T * b10[(size_t)i * R + j]); };
         NestedInner P; P.C = &C; P.firms = &firms; P.n_threads = n_threads; P.free_idx = fidx;
@@ -4461,9 +4469,9 @@ int main(int argc, char **argv) {
             std::vector<double> dl; { std::stringstream ss(get_opt(opt, "deltas", "0")); std::string tok;
                 while (std::getline(ss, tok, ',')) if (!tok.empty()) dl.push_back(std::strtod(tok.c_str(), nullptr)); }
             {   const std::string tg = get_opt(opt, "cf_target", "level");
-                const char *nm[9] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1"}; g_cf_target = -1;
-                for (int t = 0; t < 9; t++) if (tg == nm[t]) g_cf_target = t;
-                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit or loss_t1\n"; return 1; }
+                const char *nm[10] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue"}; g_cf_target = -1;
+                for (int t = 0; t < 10; t++) if (tg == nm[t]) g_cf_target = t;
+                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit, loss_t1 or revenue\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
                 g_cf_t1_extra = std::strtod(get_opt(opt, "cf_t1_extra", "0").c_str(), nullptr);
                 { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }

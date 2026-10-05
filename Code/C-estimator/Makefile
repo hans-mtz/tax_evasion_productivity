@@ -27,6 +27,7 @@ SRC := grid_estimator.cpp ../Rcpp/1200-stage2-elvis-common.h
 #   grid_estimator_ind5b   : IND5 with kappa estimated
 #   grid_estimator_ind5b_cf3: ind5b flags, current source (cfprofile cf_target + cf_cold), 2026-10-03
 #   grid_estimator_ind5b_cf4: + cf_target=overrep (E[M*/M] - 1, static), 2026-10-03
+#   grid_estimator_ind5b_cf5: + cf_target=revenue (t1/pgdp - claims, t1's variance in Omega), 2026-10-05
 #   grid_estimator_ind5b_cw: same source as ind5b, built 2026-10-03 with ind_rows=eps_cw (claims-weighted eps by industry)
 #   grid_estimator_s2      : CURRENT stage-2 binary (2026-09-30): KINK_S + EPSVAR + KAPPA_FREE with all options
 #                            (qform=power_nokink, rho=prop21, sampler=is, cluster=plant, nested=1, seed=hash)
@@ -52,6 +53,9 @@ grid_estimator_ind5b_cf3: $(SRC)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE -DIND5 grid_estimator.cpp -o $@ $(LDFLAGS)
 
 grid_estimator_ind5b_cf4: $(SRC)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE -DIND5 grid_estimator.cpp -o $@ $(LDFLAGS)
+
+grid_estimator_ind5b_cf5: $(SRC)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -DKINK_S -DEPSVAR -DKAPPA_FREE -DIND5 grid_estimator.cpp -o $@ $(LDFLAGS)
 
 grid_estimator_ind5p: $(SRC)
