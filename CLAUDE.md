@@ -25,7 +25,7 @@ Job-market paper (economics PhD). Structural model of **tax evasion via overrepo
 - Report detection risk in **relative** terms where possible (under linear $q$, $q(e_A)/q(e_B)=e_A/e_B$ is $\lambda$-free). `Code/Deconvolution/1303-detection-prob-table.R`.
 
 ### Cost function $\kappa$
-$\kappa_{it}=e_{it}\exp\{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}\}$ (written $c_{it}$ in ch. 8 and appendix D, where $\kappa$ is the detection scale) — linear in $e$, **convex in $\omega$** (never "U-shaped": evasion-by-size rises roughly linearly to p90–95, then drops sharply at the top). $\omega^*=\delta_1/2\delta_2$. $\psi$ = idiosyncratic cost shock; $E[\psi]=0$ (location normalization; $\delta_0$ absorbs the level).
+$\kappa_{it}=e_{it}\exp\{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}\}$ (κ in chs. 2, 4, 5 and ch. 8's cost equation; appendix D and parts of ch. 8 still write $c_{it}$, from when κ was the detection scale) — linear in $e$, **convex in $\omega$** (never "U-shaped": evasion-by-size rises roughly linearly to p90–95, then drops sharply at the top). $\omega^*=\delta_1/2\delta_2$. $\psi$ = idiosyncratic cost shock; $E[\psi]=0$ (location normalization; $\delta_0$ absorbs the level).
 
 ### Corporations
 - Constrained non-evaders: $e=0$ is an institutional constraint (audited statements, third-party reporting), outside the FOC, used only in the first stage; they are the validation sample, never in the stage-2 sample.
