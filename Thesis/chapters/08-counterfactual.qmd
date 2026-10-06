@@ -58,10 +58,6 @@ where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev
 
 In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. I abstract from these because during the time there was no clear increase in the Colombian government effor to reduce tax evasion and at the time, there were no penalties for evading, if firms were caught evading they only had to repay their true liabilities.
 
-::: {.content-visible when-meta="draft"}
-**Draft note (two-tax, PLAN.md 7b):** Moreover, firms might change their optimal true inputs because when there are two different sales taxes on sales and purchases, the government can affect the relative prices and thus influence output indirectly. 
-:::
-
 Since I lack information on these margins, I hold output and input decisions fixed. The tax on sales then changes only mechanically with the rate, and the behavioural response of revenue runs entirely through claimed deductions. Therefore, I focus on
 
 $$
@@ -119,7 +115,9 @@ $$
 \kappa_{it}(e_{it}, \omega_{it})=e_{it}\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
 $$ {#eq-eva-cost}
 
-where $\lambda_{0,jt}\equiv1/(\bar\lambda\bar M_{j,t-1})$ and $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year. The scale makes detection depend on how much a firm overreports relative to a typical firm in its industry, not on the peso amount: $\bar\lambda$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
+where $\lambda_{0,jt}$ is an scaling parameter and $0<\lambda_1<1$ defines the curvature of the probability of detection. The scaling parameter brings industries consuming different inputs and thus input levels to a relative scale within the industry and comparable across industries at each $t$. In this way we can find a common probability of detection across industries. Put differently, $\lambda_{0,jt}$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
+
+<!-- where $\lambda_{0,jt}\equiv1/(\bar\lambda\bar M_{j,t-1})$ and $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year. The scale makes detection depend on how much a firm overreports relative to a typical firm in its industry, not on the peso amount: $\bar\lambda$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model). -->
 
 Let $x_{it}\equiv \lambda_{0,jt}e_{it}$. Then $q+q'e=(1+\lambda_1)x^{\lambda_1}$, and the first-order condition with respect to tax evasion for evaders (interior solution) becomes,
 
@@ -129,17 +127,17 @@ $$
 
 Let 
 $$
-h(e_{it};\lambda_1,\bar\lambda)\;\equiv\;\ln(\tau_{P,it}\rho_t)+\ln\big(1-(1+\lambda_1)x_{it}^{\lambda_1}\big),
+h(e_{it};\lambda_1,\lambda_{0,jt})\;\equiv\;\ln(\tau_{P,it}\rho_t)+\ln\big(1-(1+\lambda_1)x_{it}^{\lambda_1}\big),
 \qquad x_{it}\in(0,c_{\lambda_1}),\quad c_{\lambda_1}=(1+\lambda_1)^{-1/\lambda_1}
 $$
 
 Taking logs, the evasion FOC becomes,
 
 $$
-\psi_{it}\;=\;h(e_{it};\lambda_1,\bar\lambda)-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
+\psi_{it}\;=\;h(e_{it};\lambda_1,\lambda_{0,jt})-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
 $$ {#eq-foc-psi}
 
-The ceiling $c_{\lambda_1}$ is the largest relative overreporting the FOC can rationalize; there the detection probability is $1/(1+\lambda_1)$. The parameters are $\theta=(\lambda_1,\bar\lambda,\delta_0,\delta_1,\delta_2)$.
+The ceiling $c_{\lambda_1}$ is the largest relative overreporting the FOC can rationalize; there the detection probability is $1/(1+\lambda_1)$. The parameters are $\theta=(\lambda_1,\lambda_{0,jt},\delta_0,\delta_1,\delta_2)$.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**

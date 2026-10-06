@@ -303,7 +303,7 @@ RAP 2 (tax rates) chosen; options and reasoning in `Thesis/feedback/jmp-intro-ra
 - [x] Contribution 2: measuring firm evasion (absorbed old "Despite its relevance…", superseded)
 - [x] Contribution 3: validation samples (PF as the indirect measure; corporations as reference group; groups need not be alike in size or productivity)
 - [x] Production functions (secondary) paragraph -- final after Hans edit + second proof-read
-- [x] Roadmap (follows the actual include order: model before setting, kept by Hans 2026-09-25; §10's table lists setting first)
+- [x] Roadmap (follows the include order; REORDERED 2026-10-05 by Hans: setting (file `03-setting-data.qmd`) now precedes the model (file `02-model.qmd`), because ch. 3 is what convinces the reader that corporations are truth-reporters, which the model only assumes; filenames and `Code/Thesis/chNN-*` prefixes kept, so file numbers no longer match chapter numbers; matches §10's table)
 - [x] Abstract (`JMP/paper.qmd`) rewritten to RAP 2 (176 words; old testing-first version saved in `JMP/sections/01-intro-pr-240926.md`); Hans editing
 - [x] Para. 1 hook reframed around the rate-dependent incentive (fake invoices kept as one example), 2026-09-25; Hans to edit
 - [x] Clean up stale draft blocks in the intro file (2026-09-25): intro is now final prose only (23 lines); superseded drafts and notes moved to `Thesis/feedback/jmp-intro-archive-250926.md`; visible prose verified identical, JMP re-rendered

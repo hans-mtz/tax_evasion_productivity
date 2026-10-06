@@ -34,12 +34,12 @@ cat(sprintf("ch. 3 sample: %d firm-years, %d plants, %d industries, %d-%d\n",
 ## --- Table 1: numeric skim, materials share + sales-tax rates ---------------
 
 share_labels <- c(
-    y                        = "Log gross output, $y$",
-    k                        = "Log capital, $k$",
-    l                        = "Log labour, $l$",
-    m_raw                    = "Log raw materials, $m^*$",
-    sales_tax_rate_sales     = "Sales-tax rate on sales, $\\tau_S$",
-    sales_tax_rate_purchases = "Sales-tax rate on purchases, $\\tau_P$"
+    y                        = "Output (log)",
+    k                        = "Capital (log)",
+    l                        = "Labour (log)",
+    m_raw                    = "Raw materials, as reported (log)",
+    sales_tax_rate_sales     = "Sales-tax rate on sales",
+    sales_tax_rate_purchases = "Sales-tax rate on purchases"
 )
 
 skim_one <- function(x) {
@@ -81,7 +81,7 @@ skim_tbl <- skim_tbl %>%
 ## one (decided in chat 2026-09-22). width as a per-column vector: the
 ## Variable labels are longer than the 6 numeric columns, so weighted ~3x.
 skim_tt <- skim_tbl %>%
-    tt(width = c(3.8, 0.8, 1, 1.1, 0.9, 0.9, 1), notes = "Firm-years with finite output, capital, labour and materials; corporations, LLCs, partnerships and proprietorships. $\\tau_S$: sales tax paid on sales over sales; $\\tau_P$: sales tax paid on purchases over raw materials. Values above 1 are treated as data errors and counted as missing. Gross output, capital and raw materials are deflated to 1981 prices; labour is in employee-years.") %>%
+    tt(width = c(3.8, 0.8, 1, 1.1, 0.9, 0.9, 1), notes = "Firm-years with finite output, capital, labour and materials; corporations, LLCs, partnerships and proprietorships. Rate on sales: sales tax paid on sales over sales. Rate on purchases: sales tax paid on purchases over raw materials. Values above 1 are treated as data errors and counted as missing. Output, capital and raw materials are in logs of 1981 pesos; labour is in logs of employee-years.") %>%
     style_tt(i = "notes", fontsize = 0.8) %>%
     style_tt(j = 2:7, align = "r")
 

@@ -1925,3 +1925,32 @@ All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, 
 
 - **Design (Hans):** (λ_1, λ̄) = (0.75, 0.5) pinned, 1616 configuration (17 rows, R = 1000, seed 20260830, NM 2 passes), δ's from 1616, trims 0.4 → 0.3 → 0.2 → 0.1%, stop at the first TS(R1000) > χ²₁₇ = 27.59. Old MacBook synced to current source and rebuilt; adiag at 1616 reproduced 23.6894 first. Launcher `run-1648-trim-down.sh`.
 - **Result:** 0.4% trim (n = 12,062) **fails**: TS 29.21 (R1000), 30.50 (R4000); stop rule ended the search. 1.6 h on 12 threads, 2,012 NM iterations (1616: 5,787), δ̂ = (·, 27.11, 3.81) ≈ 1616's (27.15, 3.80); 17/17 directions kept, max|γ| 79; industry fit as at the operating point (321 0.177 vs data 0.149; 369 0.518 vs 0.361; others within 0.02). So the smallest passing trim on this rule is the current 0.5%; the 0.4% fail is by 1.6 TS units, inside the refit noise measured on 2026-10-03, so it is borderline rather than decisive. Files fetched with `-oldmac`.
+
+## 2026-10-05 (evening) — Counterfactual engine audit and fixes; M response; revenue grid (1651) launched
+
+**Audit (subagent, Hans's request before reporting revenue).** No formula, sign, unit or seeding bug. Found: (1) cold single-start γ solves often never moved γ10 (the counterfactual tilt) off 0, so TS_min stuck at the operating 23.68900 (1644 gap/true_credit, 1647 level −0.3, revenue ±0.3): the profile was an upper envelope, hard sets too narrow; (2) an uncrossed bound was returned as a huge finite number; (3) claims-only CSV columns for every target, no target label; (4) Wilson–Hilferty χ² (28.860 vs 28.869), warm-mode gbest from the last evaluation.
+
+**Fixes (binary `grid_estimator_ind5b_cf6`, commits 9a7d1d4, 56c061b, e83871e, dcbe8ba):** `cf_multi=1` (several γ starts per profiled solve, keep the lowest); T̂/γ from the lowest evaluation; soft set re-centred (≤ 10 rounds) when a later search finds a lower TS; hard set = union of every T accepted by any solve; ±Inf + WARNING for an uncrossed side, NaN when every solve fails; exact χ² for d = 10–25; CSV columns cf_target, cf_multi, cf_mresp, TS_min_seen, γ10 and max|γ| at T̂ and the hard bounds; claims-derived revenue columns NA unless level; 1621 refuses non-level and cf_mresp CSVs; finite-bound checks in 1621 and the claims-bounds plot; elasticities table binds by name. Second reviewer found two bugs in the first fixes (hard set not recomputed after re-centring; re-centring capped at 2), reproduced and fixed; toy tests of all six bound/re-centring cases pass.
+
+**Smoke (R = 200, Δ = +0.3):** level TS_min 22.70 (single start, stuck) → 20.69 (6 starts) → 20.07 (9 starts); hard [1.343, 1.468] → [1.205, 1.580] → [1.194, 1.581]. Revenue 20.36 (T̂ 1.367 in level units vs 1.391; hard [1.238, 1.508] in level units; sets legitimately differ because t1's variance enters row 10). **Hans:** different γ are fine (set identification); only hard sets are reported; accept "same digits", tolerance ≈ 0.01 on bounds before submission, full starts after.
+
+**Start diagnostics (wins / profiled solves; max marginal TS):** level: warm 89/95 (1.06), best-so-far 25 (ties), operating 1 (tie), γ10 = +10 1 (2.09), +30 1, others 0. Revenue: warm 157/179 (3.97), best-so-far 38 (0.46), operating 4 (1.84), γ10 = +3 3 (0.92), −30 1 (2.79), +10 1 (0.31). Grid uses 3 starts: warm, best-so-far, γ10 = +10 (`cf_op=0 cf_g10=10`; Hans OK).
+
+**M response (Hans: with two rates the wedge moves true M when τ_P changes).** Fixed M was justified under linear q (evasion channel ≈ 45,000× the M channel; `9999-tax-wedge.qmd`, ch. 8 comment lines 78–86 — now stale); under power q the M elasticity w.r.t. τ_P (≈ 0.16 at the median) is the same order as the behavioural 0.2. `cf_mresp=1`: r = [(1 − (1+Δ)τ_P)/(1 − τ_P)]^(−1/(1−β)) per firm (same for every draw), claims (1+Δ)τ_P[rM + (1 − q(e′))e′], revenue t1 r^β/p_gdp − claims; e′ unchanged (evasion FOC has no M; λ_{0,jt} is a detection parameter set by the lagged industry mean). Reviewer verified r against a direct FOC solve to 10 digits. K, L fixed (Hans: CD PF; relaxing the PF would matter more). **Hans: M-responding is the headline once estimated, fixed M the robustness check.** Formulas written into appendix A, `@sec-app-cf-implementation` (Hans checked the maths). R = 100 smoke: claims −0.3 1,267 [1,096, 1,442], +0.3 2,875 [2,501, 3,241]; revenue −0.3 266 [32, 503], +0.3 −1,288 [−1,533, −1,043]; revenue-row and claims-derived revenue agree.
+
+**Launched (1651, `run-1651-cf-revenue-grid.sh`):** revenue, cf_mresp=1, R = 1000, operating point 1616, seed 20260830, 3 starts. Mac mini wave 1: Δ = ±0.3, ±0.2 (3 threads each, ~23:35); wave 2 chained: ±0.1 (6 threads). Old MacBook (re-synced, adiag 23.6894): −0.05 then +0.05 (12 threads, screen `cf1651`). MacBook unreachable over SSH (asleep/off network). Outputs `Products/1651-cf-revenue-mr1-D<Δ>.{csv,Rout}`; old-Mac files come back with `-oldmac`.
+
+**Next session:** (1) review 1651 results; fetch old-Mac files. (2) Fixed-M revenue grid (MRESP=0, same 8 Δ) as robustness. (3) With Hans's OK: rerun the thesis numbers made with the stuck solver (1644 gap/true_credit, 1645 loss shares, 1642 claims elasticity, 1622 levels), with cf_multi; decide the claims headline under cf_mresp. (4) Extend 1621 (corner/trimmed firms, t1) to r for the economy totals. (5) Ch. 8: replace the stale "M does not respond" comment block; ch. 8 text "I hold output and input decisions fixed" vs the new headline. (6) Pending Hans: appendix D / ch. 8 cost written c_it vs κ_it; ch. 5 P-spline notation (ζ, ϑ, g, 𝓑_j) when it moves to the appendix; optional second start at the 0.4% trim (29.2, borderline).
+
+**1651 results so far (Mac mini, finished 01:09; 20–64 min per run, faster than the 1.5–2.5 h estimate).** Revenue per interior firm-year, real, M responding, hard 95% set, χ²₁₈ = 28.87:
+
+| Δ | Revenue | Hard set | TS_min |
+|---|---|---|---|
+| −0.3 | 264 | [49, 480] | 20.62 |
+| −0.2 | 59 | [−166, 279] | 20.02 |
+| −0.1 | −159 | [−372, 51] | 20.79 |
+| +0.1 | −668 | [−882, −468] | 21.46 |
+| +0.2 | −965 | [−1,180, −733] | 22.63 |
+| +0.3 | −1,270 | [−1,545, −1,013] | 20.64 |
+
+All bounded, no WARNING lines, TS_min = TS_min_seen everywhere. Monotone: about 300 per firm-year per 10 percent of the rate. Start wins (slot "operating" = warm under cf_op=0): warm 84–186 of 97–210 solves (max marginal 3.4 TS at +0.3), best-so-far 27–39 (max 0.97), γ10 = +10 1–9 (max 1.8). Old MacBook (±0.05) still running at wrap-up.
