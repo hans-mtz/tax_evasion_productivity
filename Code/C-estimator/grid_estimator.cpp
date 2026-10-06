@@ -879,7 +879,15 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 //                  units of scale. The moment function returns a = -C(Delta)/scale; cfprofile adds the firm's observed
 //                  t1/pgdp/scale to a, so the variance of t1 enters Omega -- unlike revenue_hat in the CSV, which is
 //                  mean(t1/pgdp) - T_hat*scale from the claims target, t1 treated as known)
-// C(D) = (1+D) tau_P [M + (1 - q') e'(D)], xbar(D) = e'(D)/M; h = cf_h (default 0.01: one percent up and down).
+//  10 elast_revenue: (1+D)[R(D+h) - R(D-h)]/(2h)/scale - T R(D)/scale, R = t1 r^beta/pgdp - C (2026-10-06 Hans: elasticity of net
+//                  revenue w.r.t. tau_P; R < 0 at the baseline, so T > 0 means revenue becomes more negative). The moment function
+//                  returns the -C parts; cfprofile adds the t1 parts (a: (1+D) t1/pgdp [r(D+h)^beta - r(D-h)^beta]/(2h)/scale,
+//                  b: t1/pgdp r(D)^beta/scale)
+//  11 mrev       : 0.01 (1+D)[R(D+h) - R(D-h)]/(2h)/scale - T  (change in net revenue per 1 percent of the rate; same split)
+//  12 diff_input : (1+D) tau_P (r(D) - 1) M/scale - T   (input-demand part of C(D) - C(0); 0 unless cf_mresp=1)
+//  13 diff_evasion: (1+D) tau_P [(1 - q(e')) e' - (1 - q(e)) e]/scale - T   (evasion part; diff_beh = diff_input + diff_evasion,
+//                  and C(D) - C(0) = D C(0) + diff_input + diff_evasion)
+// C(D) = (1+D) tau_P [r M + (1 - q') e'(D)], xbar(D) = e'(D)/(r M); h = cf_h (default 0.01: one percent up and down).
 static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
 static double g_cf_h = 0.01;
@@ -1180,6 +1188,11 @@ static inline void moment_g_A_one_exp_scale(
                 case 7: a = tau_rho * M / g_cf_scale; break;
                 case 8: { double ep, qp; epq(0.0, ep, qp); a = tau_rho * (1.0 - qp) * ep / g_cf_scale; b = 0.0; break; }
                 case 9: a = -Cr(D) / g_cf_scale; break;
+                case 10: a = -(1.0 + D) * (Cr(D + hh) - Cr(D - hh)) / (2.0 * hh) / g_cf_scale; b = -Cr(D) / g_cf_scale; break;
+                case 11: a = -0.01 * (1.0 + D) * (Cr(D + hh) - Cr(D - hh)) / (2.0 * hh) / g_cf_scale; break;
+                case 12: a = (1.0 + D) * tau_rho * (cf_mresp_r(D, tau_rho, beta) - 1.0) * M / g_cf_scale; break;
+                case 13: { double ep, qp, e0, q0; epq(D, ep, qp); epq(0.0, e0, q0);
+                           a = (1.0 + D) * tau_rho * ((1.0 - qp) * ep - (1.0 - q0) * e0) / g_cf_scale; break; }
             }
             g_out[10] = a - g_cf_T * b;
         }
@@ -3109,7 +3122,7 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
               << " | scale (mean tau_P M*) " << sc << " | mean t1/pgdp " << mt1p << "\n" << std::flush;
     if (g_cf_mresp) {   // r needs 1 - (1+D) tau_P > 0 at every Delta used (Delta, and Delta +- h for the elasticity targets)
         double tmax = 0.0; for (const FirmData &f : firms) tmax = std::max(tmax, f.tau_rho);
-        for (double Dl : deltas) { const double Dm = Dl + ((g_cf_target == 3 || g_cf_target == 4) ? g_cf_h : 0.0);
+        for (double Dl : deltas) { const double Dm = Dl + ((g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 10 || g_cf_target == 11) ? g_cf_h : 0.0);
             if (!(1.0 - (1.0 + Dm) * tmax > 0.0)) { std::cerr << "cf_mresp: 1 - (1+Delta) tau_P <= 0 at Delta " << Dm << " (max tau_P "
                                                              << tmax << "): the M response is undefined\n"; std::exit(1); } }
     }
@@ -3124,13 +3137,24 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         NestedCache C; nested_build_cache(C, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
         std::vector<float> c10((size_t)n * R), b10((size_t)n * R, 1.0f);   // row 10 = a - T b
         for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] = C.G[((size_t)i * R + j) * D_G_A + 10];
-        if (g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 6 || g_cf_target == 8) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
+        if (g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 6 || g_cf_target == 8 || g_cf_target == 10) {   // ratio targets: b from a second pass at T = 1 (b = a - row(T=1))
             g_cf_T = 1.0; NestedCache C1; nested_build_cache(C1, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
             for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] = c10[(size_t)i * R + j] - C1.G[((size_t)i * R + j) * D_G_A + 10];
             g_cf_T = 0.0;
             if (g_cf_target == 6 || g_cf_target == 8)   // gap: P = t1/pgdp - tau_P M (fn returned -tau_P M/scale); loss_t1: t1/pgdp + extra (fn returned 0)
                 for (int i = 0; i < n; i++) { const double t1s = (firms[i].t1 / firms[i].pgdp + (g_cf_target == 8 ? g_cf_t1_extra : 0.0)) / sc;
                     for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] += (float)t1s; }
+            if (g_cf_target == 10)   // elast_revenue: b = R(D)/scale = [t1 r(D)^beta/pgdp - C(D)]/scale (fn returned -C(D)/scale)
+                for (int i = 0; i < n; i++) { const double t1s = firms[i].t1 / firms[i].pgdp / sc
+                                                                 * std::pow(cf_mresp_r(Dl, firms[i].tau_rho, firms[i].beta), firms[i].beta);
+                    for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] += (float)t1s; }
+        }
+        if (g_cf_target == 10 || g_cf_target == 11) {   // revenue derivatives: add the t1 part of (1+D)[R(D+h) - R(D-h)]/(2h)/scale to a
+            const double hh = g_cf_h, mult = (g_cf_target == 11 ? 0.01 : 1.0) * (1.0 + Dl) / (2.0 * hh);
+            for (int i = 0; i < n; i++) { const double bi = firms[i].beta;
+                const double dt1 = firms[i].t1 / firms[i].pgdp / sc * (std::pow(cf_mresp_r(Dl + hh, firms[i].tau_rho, bi), bi)
+                                                                       - std::pow(cf_mresp_r(Dl - hh, firms[i].tau_rho, bi), bi));
+                for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] += (float)(mult * dt1); }
         }
         if (g_cf_target == 9)   // revenue: add the firm's observed t1/pgdp/scale to a (fn returned -C(Delta)/scale); with cf_mresp, t1 r^beta
             for (int i = 0; i < n; i++) { const double t1s = firms[i].t1 / firms[i].pgdp / sc
@@ -3265,7 +3289,8 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             }
             std::cout << "\n" << std::flush;
         }
-        static const char *tnm[10] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue"};
+        static const char *tnm[14] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue",
+                                      "elast_revenue", "mrev", "diff_input", "diff_evasion"};
         const bool lev = g_cf_target == 0;   // credit_hat and revenue_* are claims-derived: meaningful for cf_target=level only (NA otherwise)
         std::cout << "  Delta " << Dl << ": T_hat " << That << " (T at operating gamma " << T0 << "), TS_min " << TSmin
                   << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | T_hat*scale " << That * sc
@@ -4577,9 +4602,10 @@ int main(int argc, char **argv) {
             std::vector<double> dl; { std::stringstream ss(get_opt(opt, "deltas", "0")); std::string tok;
                 while (std::getline(ss, tok, ',')) if (!tok.empty()) dl.push_back(std::strtod(tok.c_str(), nullptr)); }
             {   const std::string tg = get_opt(opt, "cf_target", "level");
-                const char *nm[10] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue"}; g_cf_target = -1;
-                for (int t = 0; t < 10; t++) if (tg == nm[t]) g_cf_target = t;
-                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit, loss_t1 or revenue\n"; return 1; }
+                const char *nm[14] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue",
+                                     "elast_revenue", "mrev", "diff_input", "diff_evasion"}; g_cf_target = -1;
+                for (int t = 0; t < 14; t++) if (tg == nm[t]) g_cf_target = t;
+                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit, loss_t1, revenue, elast_revenue, mrev, diff_input or diff_evasion\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
                 g_cf_t1_extra = std::strtod(get_opt(opt, "cf_t1_extra", "0").c_str(), nullptr);
                 { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }
@@ -4594,7 +4620,7 @@ int main(int argc, char **argv) {
                 if (g_cf_multi) { std::cout << "cf_multi=1: starts = operating gamma, warm gamma, best gamma so far, operating gamma with gamma10 in {";
                     for (size_t i = 0; i < g_cf_g10.size(); i++) std::cout << (i ? ", " : "") << g_cf_g10[i]; std::cout << "}\n";
                     if (g_cf_cold) std::cout << "  (cf_cold has no effect with cf_multi=1: the operating and warm starts are both used)\n"; }
-                std::cout << "cfprofile target: " << tg << ((g_cf_target == 3 || g_cf_target == 4) ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
+                std::cout << "cfprofile target: " << tg << ((g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 10 || g_cf_target == 11) ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
             g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
             g_rhoD[10] = std::numeric_limits<double>::infinity();   // bounded per firm (0 <= credit <= (1+Delta) tau_P M* (1+c_k kappa Mbar/M*)): out of the rho penalty
             run_cfprofile_mode(firms, par, n_keep, base_seed, n_threads, dl, get_opt(opt, "output_csv", "/dev/null"));
