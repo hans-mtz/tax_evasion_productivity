@@ -1968,3 +1968,21 @@ All bounded, no WARNING lines, TS_min = TS_min_seen everywhere. Monotone: about 
 
 **Process.** Standing rule saved to memory: every prose draft goes through `draft-prose`, scratchpad, two `proof-read` passes. On this machine (MacBook over the SMB mount of the Mac mini) renv cannot lock its library; R scripts run on the Mac mini.
 - **Reallocation (2026-10-06 ~02:15, Hans: the Mac mini is fastest, move work off the slowest first).** Old MacBook's 1651 −0.05 (2.5 h in, unfinished) stopped and its +0.05 dropped from the queue. MacBook's 1652 queues were cut; killing the queue scripts also killed the two running ±0.3 runs (12 min lost), so they were relaunched alone (one screen each, 4 threads). Mac mini now runs 1651 ±0.05 (M responding) and 1652 ±0.2 (fixed M), 3 threads each, then 1652 ±0.1, ±0.05 (chained). Lesson: to trim a queued loop, wait for its current run to finish or kill only the binary's siblings, not the parent script inside the screen.
+
+## 2026-10-06 — Revenue grids complete: 1651 (M responds, headline) and 1652 (fixed M, robustness)
+
+Revenue per interior firm-year (real), hard 95% set, TS_min; χ²₁₈ = 28.87; R = 1000, 3 starts, operating point 1616. Mac mini: 1651 all, 1652 ±0.2/±0.1/±0.05; MacBook: 1652 ±0.3 (files `-macbook`).
+
+| Δ | M responds (1651) | fixed M (1652) |
+|---|---|---|
+| −0.3 | 264 [49, 480], 20.62 | 223 [0, 439], 20.74 |
+| −0.2 | 59 [−166, 279], 20.02 | 23 [−180, 240], 20.17 |
+| −0.1 | −159 [−372, 51], 20.79 | −183 [−395, 30], 20.74 |
+| −0.05 | −272 [−485, −64], 20.78 | −285 [−486, −77], 21.39 |
+| +0.05 | −528 [−740, −309], 21.31 | −512 [−709, −310], 22.24 |
+| +0.1 | −668 [−882, −468], 21.46 | −640 [−840, −435], 22.18 |
+| +0.2 | −965 [−1,180, −733], 22.63 | −899 [−1,126, −668], 20.75 |
+| +0.3 | −1,270 [−1,545, −1,013], 20.64 | −1,163 [−1,386, −867], 20.89 |
+
+- All sets bounded; no WARNING lines; 17 re-centrings across the 16 runs (expected with few starts). Both curves monotone in Δ; interior net revenue is negative at the baseline (≈ −400 per firm-year between ±0.05), as in the data.
+- The M response steepens the curve: from −0.05 to +0.05 revenue falls by 256 (M responds) vs 227 (fixed M); at +0.3 the loss is 107 larger, at −0.3 the gain 41 larger. The two versions' sets overlap at every Δ.
