@@ -59,7 +59,9 @@ Because materials are deductible, every overreported peso lowers a firm's tax bi
 
 ## Setup
 
-Overreporting is hard to detect because the econometrician observes neither true materials nor productivity. For a given level of output, a firm that reports a large amount of materials may be overreporting, or it may simply be less productive. The model describes how firms choose their inputs and how much to overreport, and @sec-model-foc-m shows how the materials condition separates overreporting from productivity.
+The setup combines a production-function model with a tax-evasion model and departs from each. It departs from the production-function model of @Gandhi2020 in two ways. First, firms choose how much material to report as well as how much to use, and the data record only what they report. Second, firms pay sales taxes, which @Gandhi2020 leave out. When the rate on sales differs from the rate on purchases, the taxes change the price of materials relative to output, and with it how much material the firm uses (@sec-model-foc-m).
+
+The setup departs from the tax-evasion model of @Allingham1972 in three ways. First, the taxpayer is a risk-neutral firm that evades by overreporting a deductible input, not a risk-averse individual who underreports income. Second, the probability of detection rises continuously from zero with the amount overreported. In @Allingham1972, the tax authority investigates the taxpayer with a given probability, so even the smallest evasion is detected with that probability. Third, besides the expected penalty, overreporting uses up resources, which the firm spends whether or not it is caught.
 
 Price-taking firms maximize expected after-tax profits. They share a common technology but differ in productivity. A firm $i$ in year $t$ produces output $Y_{it}$ with capital $K_{it}$, labour $L_{it}$, and materials $M_{it}$,
 
@@ -73,7 +75,7 @@ The two unobservables in @eq-pf play different roles. Productivity, $\omega_{it}
 
 The firm sells its output at price $P_t$ and owes sales tax at rate $\tau_S$ on its sales. It buys materials at price $\rho_t$ and credits, at rate $\tau_P$, the tax paid on them against the tax it owes. When the credit exceeds the tax owed, as for firms exempt from the tax on their sales, the tax authority refunds the difference (@sec-setting-incentive). The firm claims the credit on reported materials, $M^*_{it}=M_{it}+e_{it}$, where $e_{it}$ denotes overreported materials. Capital goods and labour carry no credit, so the firm overreports only materials.
 
-The model allows the two rates to differ, as they do in the data. Firms sell and buy goods taxed at different rates, and the two rates differ by more than one percentage point in 56 percent of firm-years. Identification does not need a second rate: only the rate on purchases enters the decision to overreport, so a single-tax model would serve as well. The rate on sales matters for input choices instead. Together with the rate on purchases, it sets the price of materials relative to output, net of taxes, and with it how much material the firm uses (@sec-model-foc-m).
+The model allows the two rates to differ, as they do in the data. Firms sell and buy goods taxed at different rates, and the two rates differ by more than one percentage point in 56 percent of firm-years. Identification does not need a second rate: only the rate on purchases enters the decision to overreport, so a single-tax model would serve as well.
 
 The model's notation matches the variables of @tbl-sum-stats: output $Y_{it}$, capital $K_{it}$, labour $L_{it}$, reported materials $M^*_{it}$, and the rates $\tau_S$ and $\tau_P$. Lowercase letters denote logs. The econometrician observes reported materials, $M^*_{it}$, but not true materials, $M_{it}$, or overreporting, $e_{it}$.
 
