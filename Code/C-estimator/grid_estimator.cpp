@@ -3105,11 +3105,20 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
     const double crit = chi2_q95(dg), crit1 = 3.841458820694124;
     std::cout << "cfprofile: n " << n << ", live rows d_g " << dg << " (row 10 = credit), crit chi2_" << dg << " " << crit
               << " | scale (mean tau_P M*) " << sc << " | mean t1/pgdp " << mt1p << "\n" << std::flush;
+    if (g_cf_mresp) {   // r needs 1 - (1+D) tau_P > 0 at every Delta used (Delta, and Delta +- h for the elasticity targets)
+        double tmax = 0.0; for (const FirmData &f : firms) tmax = std::max(tmax, f.tau_rho);
+        for (double Dl : deltas) { const double Dm = Dl + ((g_cf_target == 3 || g_cf_target == 4) ? g_cf_h : 0.0);
+            if (!(1.0 - (1.0 + Dm) * tmax > 0.0)) { std::cerr << "cf_mresp: 1 - (1+Delta) tau_P <= 0 at Delta " << Dm << " (max tau_P "
+                                                             << tmax << "): the M response is undefined\n"; std::exit(1); } }
+    }
     std::ofstream out(output_csv);
     out << std::setprecision(10) << "Delta,T_hat,TS_min,d_g,crit,hard_lo,hard_hi,soft_lo,soft_hi,scale,mean_t1p,credit_hat,revenue_hat,"
-           "revenue_hard_lo,revenue_hard_hi,T_at_gamma0,evals,cf_target,cf_multi,TS_min_seen,T_min_seen,g10_hat,maxg_hat,g10_hard_lo,maxg_hard_lo,g10_hard_hi,maxg_hard_hi\n";
+           "revenue_hard_lo,revenue_hard_hi,T_at_gamma0,evals,cf_target,cf_multi,TS_min_seen,T_min_seen,g10_hat,maxg_hat,g10_hard_lo,maxg_hard_lo,g10_hard_hi,maxg_hard_hi,cf_mresp\n";
     for (double Dl : deltas) {
         g_cf_on = true; g_cf_Delta = Dl; g_cf_T = 0.0;
+        double mt1pD = 0.0;   // mean real sales tax on sales at this Delta (scaled by r^beta when true M responds)
+        for (const FirmData &f : firms) mt1pD += f.t1 / f.pgdp * std::pow(cf_mresp_r(Dl, f.tau_rho, f.beta), f.beta);
+        mt1pD /= n;
         NestedCache C; nested_build_cache(C, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
         std::vector<float> c10((size_t)n * R), b10((size_t)n * R, 1.0f);   // row 10 = a - T b
         for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] = C.G[((size_t)i * R + j) * D_G_A + 10];
@@ -3244,10 +3253,10 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         auto gstr = [](double bnd, double v) { std::ostringstream o; o << std::setprecision(10); if (std::isnan(bnd)) o << "NA"; else o << v; return o.str(); };
         auto NA = [&](double v) { std::ostringstream o; o << std::setprecision(10); if (lev) o << v; else o << "NA"; return o.str(); };
         out << Dl << "," << That << "," << TSmin << "," << dg << "," << crit << "," << hlo << "," << hhi << "," << slo << "," << shi << ","
-            << sc << "," << mt1p << "," << NA(That * sc) << "," << NA(mt1p - That * sc) << "," << NA(mt1p - hhi * sc) << "," << NA(mt1p - hlo * sc) << ","
+            << sc << "," << mt1pD << "," << NA(That * sc) << "," << NA(mt1pD - That * sc) << "," << NA(mt1pD - hhi * sc) << "," << NA(mt1pD - hlo * sc) << ","
             << T0 << "," << evals << "," << tnm[g_cf_target] << "," << (g_cf_multi ? 1 : 0) << "," << 2.0 * n * Lseen << "," << Tseen << ","
             << gbest[10] << "," << maxabs(gbest) << "," << gstr(hlo, ghl[10]) << "," << gstr(hlo, maxabs(ghl)) << ","
-            << gstr(hhi, ghh[10]) << "," << gstr(hhi, maxabs(ghh)) << "\n" << std::flush;
+            << gstr(hhi, ghh[10]) << "," << gstr(hhi, maxabs(ghh)) << "," << (g_cf_mresp ? 1 : 0) << "\n" << std::flush;
     }
     g_cf_on = false;
     std::cout << "Saved: " << output_csv << "\n";
