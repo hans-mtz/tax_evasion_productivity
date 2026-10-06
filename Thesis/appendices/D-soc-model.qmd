@@ -8,11 +8,11 @@ This appendix presents the single-tax model that @sec-model nests, and derives t
 
 ## The single-tax model {#sec-app-single-tax}
 
-The single-tax model keeps every assumption of @sec-model except one: a single rate $\tau$ applies to both sales and purchases. The firm solves
+The single-tax model keeps every assumption of @sec-model except one: a single rate $\tau$ applies to both sales and purchases. The firm, taking capital and labour as given, solves
 $$
 \begin{aligned}
-  \max_{K,L,M,e}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau)\big(P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})-\rho_tM_{it}\big)-r_tK_{it}-w_tL_{it}\\
-  &+\big[1-q(e_{it})\big]\tau\rho_te_{it}-q(e_{it})\phi\tau\rho_te_{it}-c_{it}(e_{it},\omega_{it}),
+  \max_{M,e}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau)\big(P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})-\rho_tM_{it}\big)-r_tK_{it}-w_tL_{it}\\
+  &+\big[1-q(e_{it})\big]\tau\rho_te_{it}-q(e_{it})\phi\tau\rho_te_{it}-\kappa_{it}(e_{it},\omega_{it}),
 \end{aligned}
 $$ {#eq-app-st-profit}
 which is @eq-profit with $\tau_S=\tau_P=\tau$. The tax rate drops out of the materials first-order condition,
@@ -21,57 +21,56 @@ $$
 $$ {#eq-app-st-foc-m}
 so the gross log share, $\ln(\rho_tM_{it}/P_tY_{it})=\ln\beta-\varepsilon_{it}$, takes the place of the net share in @eq-share-net. The evasion first-order condition is @eq-foc-e with $\tau$ in place of $\tau_P$,
 $$
-\tau\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]=\frac{\partial c_{it}(e_{it},\omega_{it})}{\partial e_{it}},
+\tau\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]=\frac{\partial \kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}},
 $$ {#eq-app-st-foc-e}
-and firms for which $\tau\rho_t\le\partial c_{it}(0,\omega_{it})/\partial e_{it}$ do not overreport.
+and firms for which $\tau\rho_t\le\partial \kappa_{it}(0,\omega_{it})/\partial e_{it}$ do not overreport.
 
 ## The second-order condition {#sec-app-soc}
 
 ### Setup
 
-Recall the firm's problem in the two-tax model, @eq-profit, and its two first-order conditions, @eq-foc-m and @eq-foc-e. For a candidate solution $(K_{it},L_{it},M_{it},e_{it})$ to be a maximum, the Hessian of expected profit must be negative semi-definite at that point.
+Recall the firm's problem in the two-tax model, @eq-profit, and its two first-order conditions, @eq-foc-m and @eq-foc-e. Capital and labour are given, so the firm chooses only materials and overreporting. A candidate solution $(M_{it},e_{it})$ is a strict local maximum if the Hessian of expected profit with respect to $M_{it}$ and $e_{it}$ is negative definite at that point.
 
-### The Hessian is block-diagonal
+### The Hessian is diagonal
 
-Two features of the model make the Hessian easy to sign.
-
-First, $M_{it}\perp e_{it}$: neither the materials FOC (@eq-foc-m) nor the evasion FOC (@eq-foc-e) contains the other's choice variable, so every cross-partial between $e_{it}$ and $(K_{it},L_{it},M_{it})$ is zero. Second, the production function $Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^\beta\exp(\omega_{it}+\varepsilon_{it})$ is Cobb-Douglas, hence strictly concave in $(K_{it},L_{it},M_{it})$ jointly. The Hessian is therefore block-diagonal,
+Two features of the model make the Hessian easy to sign. First, $M_{it}\perp e_{it}$: neither the materials FOC (@eq-foc-m) nor the evasion FOC (@eq-foc-e) contains the other's choice variable, so the cross-partial between $M_{it}$ and $e_{it}$ is zero. Second, the output elasticity of materials is below one, $0<\beta<1$, so expected profit is strictly concave in materials,
+$$
+\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}^2}=(1-\tau_S)P_t\,\beta(\beta-1)K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-2}\exp(\omega_{it})<0.
+$$
+The Hessian is therefore diagonal,
 $$
 \nabla^2\mathbb{E}[\pi_{it}]=
 \begin{bmatrix}
-\dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2} & 0 & 0 & 0\\[4pt]
-0 & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}^2} & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}\partial L_{it}} & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}\partial K_{it}}\\[4pt]
-0 & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial L_{it}\partial M_{it}} & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial L_{it}^2} & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial L_{it}\partial K_{it}}\\[4pt]
-0 & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial K_{it}\partial M_{it}} & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial K_{it}\partial L_{it}} & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial K_{it}^2}
-\end{bmatrix}
+\dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2} & 0\\[4pt]
+0 & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}^2}
+\end{bmatrix},
 $$ {#eq-app-soc-hessian}
-
-with a single nonzero entry in the first row and column. Negative definiteness requires the leading principal minors to alternate in sign (odd-order minors negative, even-order positive). Since the lower $3\times3$ block is already negative definite (strict concavity of the Cobb-Douglas production function in $K_{it},L_{it},M_{it}$), the *only* condition the evasion margin adds to the firm's problem is that the first leading principal minor — the top-left scalar entry — is itself negative:
+and it is negative definite if and only if both diagonal entries are negative. The materials entry is negative, so the only condition the evasion margin adds to the firm's problem is
 $$
 \frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2}<0.
 $$
 
-The capital, labour, and materials choices place no restriction on the evasion technology, and vice versa; the SOC for $e_{it}$ can be analyzed entirely on its own.
+The materials choice places no restriction on the evasion technology, and vice versa, so the rest of this appendix analyzes the SOC for $e_{it}$ on its own.
 
 ### The scalar condition
 
 Differentiating the evasion FOC (@eq-foc-e) once more with respect to $e_{it}$,
 $$
-\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2}=-\tau_P\rho_t(1+\phi)\Big(2q'(e_{it})+e_{it}q''(e_{it})\Big)-\frac{\partial^2c_{it}(e_{it},\omega_{it})}{\partial e_{it}^2}<0.
+\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2}=-\tau_P\rho_t(1+\phi)\Big(2q'(e_{it})+e_{it}q''(e_{it})\Big)-\frac{\partial^2\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}^2}<0.
 $$ {#eq-app-soc-full}
 
 Rearranging, the SOC holds whenever
 $$
-\tau_P\rho_t(1+\phi)\Big(2q'(e_{it})+e_{it}q''(e_{it})\Big)+\frac{\partial^2c_{it}(e_{it},\omega_{it})}{\partial e_{it}^2}>0,
+\tau_P\rho_t(1+\phi)\Big(2q'(e_{it})+e_{it}q''(e_{it})\Big)+\frac{\partial^2\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}^2}>0,
 $$
 a sum of two terms. It is therefore *sufficient* — not necessary — that either term alone be strictly positive:
 $$
-\frac{\partial^2c_{it}(e_{it},\omega_{it})}{\partial e_{it}^2}\ge0
+\frac{\partial^2\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}^2}\ge0
 \qquad\text{or}\qquad
 \tau_P\rho_t(1+\phi)\Big(2q'(e_{it})+e_{it}q''(e_{it})\Big)\ge0.
 $$ {#eq-app-soc-split}
 
-**Under this paper's headline cost function**, $c_{it}(e_{it},\omega_{it})=e_{it}\exp\{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}\}$ — linear in $e_{it}$ — the first term is identically zero, $\partial^2c_{it}/\partial e_{it}^2=0$. The cost function therefore contributes nothing toward satisfying the SOC on its own; the entire burden falls on the second condition, the curvature of the detection function.
+**Under this paper's headline cost function**, $\kappa_{it}(e_{it},\omega_{it})=e_{it}\exp\{\delta_0-\delta_1\omega_{it}+\delta_2\omega_{it}^2+\psi_{it}\}$ — linear in $e_{it}$ — the first term is identically zero, $\partial^2\kappa_{it}/\partial e_{it}^2=0$. The cost function therefore contributes nothing toward satisfying the SOC on its own; the entire burden falls on the second condition, the curvature of the detection function.
 
 ### The curvature restriction
 
@@ -84,7 +83,7 @@ This is a restriction on the **curvature of $q$ alone** — a firm's evasion cos
 
 ### Application to the candidate detection functions
 
-@tbl-app-soc-forms applies @eq-app-soc-final to the headline detection function of @sec-counterfactual and to the three functional forms considered in @sec-model.
+@tbl-app-soc-forms applies @eq-app-soc-final to the headline detection function of @sec-counterfactual and to three alternative forms.
 
 | | $q(e)$ | $q''(e)$ | $-q''e/q'$ | SOC holds when |
 |:--|:--:|:--:|:--:|:--:|
@@ -97,9 +96,9 @@ This is a restriction on the **curvature of $q$ alone** — a firm's evasion cos
 
 **Scaled power detection, $q(e)=(\lambda_{0,jt}e)^{\lambda_1}$, $0<\lambda_1<1$, $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$** (headline specification, @sec-counterfactual): with $x=\lambda_{0,jt}e$, $q'(e)=\lambda_1\lambda_{0,jt}x^{\lambda_1-1}$ and $q''(e)=\lambda_1(\lambda_1-1)\lambda_{0,jt}^2x^{\lambda_1-2}$, so $-q''e/q'=1-\lambda_1\in(0,1)$. The SOC holds at every interior point, for any $0<\lambda_1<1$ and any scale; the binding constraint is the FOC's own ceiling $x<(1+\lambda_1)^{-1/\lambda_1}$.
 
-**Linear detection, $q(e)=\min\{\lambda e,1\}$**: $q''(e)=0$ on the interior, so $-q''e/q'=0<2$ unconditionally — the SOC holds at every interior point, with no restriction on $\lambda e$ beyond the FOC's own ceiling ($\lambda e<1/2$, from @sec-model).
+**Linear detection, $q(e)=\min\{\lambda e,1\}$**: $q''(e)=0$ on the interior, so $-q''e/q'=0<2$ unconditionally — the SOC holds at every interior point, with no restriction on $\lambda e$ beyond the FOC's own ceiling ($\lambda e<1/2$ with $\phi=0$, from @eq-foc-e).
 
-**Concave detection, $q(e)=1-e^{-\lambda e}$**: $q'(e)=\lambda e^{-\lambda e}$ and $q''(e)=-\lambda^2e^{-\lambda e}$, so $-q''e/q'=\lambda e$. The SOC requires $\lambda e<2$ — a genuine restriction, distinct from (and, for this functional form, looser than) the FOC's own ceiling $\lambda e<1$ derived in @sec-model. Since $\lambda e<1\implies\lambda e<2$, the FOC ceiling is the binding constraint in practice; the SOC is automatically satisfied wherever the FOC has an interior solution at all.
+**Concave detection, $q(e)=1-e^{-\lambda e}$**: $q'(e)=\lambda e^{-\lambda e}$ and $q''(e)=-\lambda^2e^{-\lambda e}$, so $-q''e/q'=\lambda e$. The SOC requires $\lambda e<2$ — a genuine restriction, distinct from (and, for this functional form, looser than) the FOC's own ceiling $\lambda e<1$ implied by @eq-foc-e with $\phi=0$. Since $\lambda e<1\implies\lambda e<2$, the FOC ceiling is the binding constraint in practice; the SOC is automatically satisfied wherever the FOC has an interior solution at all.
 
 **Convex detection, $q(e)=\min\{(\lambda e)^k,1\}$, $k>1$**: $q'(e)=k\lambda(\lambda e)^{k-1}$ and $q''(e)=k(k-1)\lambda^2(\lambda e)^{k-2}$, so $-q''e/q'=1-k$. Since $k>1$, this is always negative, hence always less than $2$ — convex detection satisfies the SOC unconditionally, for any $k>1$.
 
