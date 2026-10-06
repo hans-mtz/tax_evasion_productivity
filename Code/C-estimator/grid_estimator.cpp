@@ -3178,7 +3178,7 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             T0 += sc10 / sw; Tb += sb10 / sw;
         }
         if (g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 6 || g_cf_target == 8 || g_cf_target == 10)
-            std::cout << "  ratio target: E[b] at the operating gamma = " << Tb / n << " (scale units; the set assumes E[b] is bounded away from 0)\n" << std::flush;
+            std::cout << "  ratio target: E[b] at the operating gamma = " << Tb / n << " (units of b; the set assumes E[b] is bounded away from 0)\n" << std::flush;
         T0 /= Tb;   // E[a] / E[b] (= E[a] for b = 1)
         double gwarm[D_G_A]; std::copy(gam0, gam0 + D_G_A, gwarm);
         const int nm_s = g_inner_nm, du_s = g_inner_dual; g_inner_nm = 0; g_inner_dual = 0;
