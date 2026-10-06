@@ -887,6 +887,8 @@ static double g_cf_Delta = 0.0, g_cf_T = 0.0, g_cf_scale = 1.0;
 //  12 diff_input : (1+D) tau_P (r(D) - 1) M/scale - T   (input-demand part of C(D) - C(0); 0 unless cf_mresp=1)
 //  13 diff_evasion: (1+D) tau_P [(1 - q(e')) e' - (1 - q(e)) e]/scale - T   (evasion part; diff_beh = diff_input + diff_evasion,
 //                  and C(D) - C(0) = D C(0) + diff_input + diff_evasion)
+//  15 mean_q     : q(e) - T  (static; 2026-10-06 Hans: mean detection probability at the baseline evasion, q = x^k; CI by test
+//                  inversion. Quantiles of q are not linear in T and stay forward-simulated (adiag TARGETED lines))
 //  14 diff_revenue: [R(D) - R(0)]/scale - T, paired on the same draw (2026-10-06 Hans: revenue elasticity like the claims one, at
 //                  Delta = +-1, 1.5, 2 percent: T/(Delta R(0)) with R(0) from the Delta = 0 revenue run). Moment function: -(C(D) - C(0));
 //                  cfprofile adds t1 (r(D)^beta - 1)/pgdp/scale (0 under fixed M).
@@ -1195,6 +1197,7 @@ static inline void moment_g_A_one_exp_scale(
                 case 11: a = -0.01 * (1.0 + D) * (Cr(D + hh) - Cr(D - hh)) / (2.0 * hh) / g_cf_scale; break;
                 case 12: a = (1.0 + D) * tau_rho * (cf_mresp_r(D, tau_rho, beta) - 1.0) * M / g_cf_scale; break;
                 case 14: a = -(Cr(D) - Cr(0.0)) / g_cf_scale; break;
+                case 15: { double ep, qp; epq(0.0, ep, qp); a = qp; break; }
                 case 13: { double ep, qp, e0, q0; epq(D, ep, qp); epq(0.0, e0, q0);
                            a = (1.0 + D) * tau_rho * ((1.0 - qp) * ep - (1.0 - q0) * e0) / g_cf_scale; break; }
             }
@@ -2620,6 +2623,9 @@ static void run_adiag_mode(
         char buf[300]; std::snprintf(buf, sizeof buf, "TARGETED: all | share overreporting (E[u] >= 0.05) %.3f | detection E[q]: mean %.4f p50 %.4f p90 %.4f p99 %.4f max %.4f\n",
                                      sh_all / ni, mq, qq(0.5), qq(0.9), qq(0.99), qs.back());
         std::cout << buf;
+        std::snprintf(buf, sizeof buf, "TARGETED: detection E[q] by firm: p25 %.4f p50 %.4f p75 %.4f p80 %.4f p90 %.4f p95 %.4f (firm-level tilted means, %d firms)\n",
+                      qq(0.25), qq(0.5), qq(0.75), qq(0.8), qq(0.9), qq(0.95), ni);
+        std::cout << buf;
         double qg = 0; int ng = 0; for (int k2 = 0; k2 < ni; k2++) if (firms[idx[k2]].audit_g) { qg += mu_q[k2]; ng++; }
         if (ng) { std::snprintf(buf, sizeof buf, "TARGETED: mean E[q] in audit group (%d firms) %.4f\n", ng, qg / ng); std::cout << buf; }
     }
@@ -3303,8 +3309,8 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             }
             std::cout << "\n" << std::flush;
         }
-        static const char *tnm[15] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue",
-                                      "elast_revenue", "mrev", "diff_input", "diff_evasion", "diff_revenue"};
+        static const char *tnm[16] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue",
+                                      "elast_revenue", "mrev", "diff_input", "diff_evasion", "diff_revenue", "mean_q"};
         const bool lev = g_cf_target == 0;   // credit_hat and revenue_* are claims-derived: meaningful for cf_target=level only (NA otherwise)
         std::cout << "  Delta " << Dl << ": T_hat " << That << " (T at operating gamma " << T0 << "), TS_min " << TSmin
                   << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | T_hat*scale " << That * sc
@@ -4616,10 +4622,10 @@ int main(int argc, char **argv) {
             std::vector<double> dl; { std::stringstream ss(get_opt(opt, "deltas", "0")); std::string tok;
                 while (std::getline(ss, tok, ',')) if (!tok.empty()) dl.push_back(std::strtod(tok.c_str(), nullptr)); }
             {   const std::string tg = get_opt(opt, "cf_target", "level");
-                const char *nm[15] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue",
-                                     "elast_revenue", "mrev", "diff_input", "diff_evasion", "diff_revenue"}; g_cf_target = -1;
-                for (int t = 0; t < 15; t++) if (tg == nm[t]) g_cf_target = t;
-                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit, loss_t1, revenue, elast_revenue, mrev, diff_input, diff_evasion or diff_revenue\n"; return 1; }
+                const char *nm[16] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue",
+                                     "elast_revenue", "mrev", "diff_input", "diff_evasion", "diff_revenue", "mean_q"}; g_cf_target = -1;
+                for (int t = 0; t < 16; t++) if (tg == nm[t]) g_cf_target = t;
+                if (g_cf_target < 0) { std::cerr << "cf_target must be level, diff_beh, diff_total, elast_x, elast_claims, overrep, gap, true_credit, loss_t1, revenue, elast_revenue, mrev, diff_input, diff_evasion, diff_revenue or mean_q\n"; return 1; }
                 g_cf_h = std::strtod(get_opt(opt, "cf_h", "0.01").c_str(), nullptr);
                 g_cf_t1_extra = std::strtod(get_opt(opt, "cf_t1_extra", "0").c_str(), nullptr);
                 { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }
