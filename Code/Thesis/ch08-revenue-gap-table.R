@@ -8,16 +8,19 @@
 ## Loss as a share of sales tax owed on sales (2026-10-04): 1645-cf-loss-t1-{int,A,B}.csv (cf_target=loss_t1, T = E[L]/E[t1/pgdp + x];
 ## (A) adds the trimmed firms' t1, (B) all other firms' t1, their L = 0, so lower bounds). Interior set = union of the cold
 ## (1645) and warm (1646b) runs: a failed gamma solve only raises TS, so every accepted value is in the set.
+## 2026-10-06: point estimates and sets from the audited-solver reruns 1653-cf-{gap,true-credit,loss-t1-*}.csv (cf_multi, 3 starts);
+## each set is the union with the earlier runs' accepted values (1644/1645/1646b), which stay valid evidence.
 source("Code/Thesis/001-setup.R")
 
-g <- read.csv(file.path(PRODUCTS_DIR, "1644-cf-gap.csv"))
-tc <- read.csv(file.path(PRODUCTS_DIR, "1644-cf-true-credit.csv"))
+un <- function(new, ...) { for (o in list(...)) { new$hard_lo <- min(new$hard_lo, o$hard_lo); new$hard_hi <- max(new$hard_hi, o$hard_hi) }; new }
+rp <- function(f) read.csv(file.path(PRODUCTS_DIR, f))
+g <- un(rp("1653-cf-gap.csv"), rp("1644-cf-gap.csv"))
+tc <- un(rp("1653-cf-true-credit.csv"), rp("1644-cf-true-credit.csv"))
 sc <- tc$scale; t1p <- tc$mean_t1p
 P <- c(est = t1p - tc$T_hat * sc, lo = t1p - tc$hard_hi * sc, hi = t1p - tc$hard_lo * sc)
 stopifnot(P["hi"] < 0, all(is.finite(c(g$hard_lo, g$hard_hi))))
-lt <- lapply(c(int = "int", A = "A", B = "B"), function(t) read.csv(file.path(PRODUCTS_DIR, sprintf("1645-cf-loss-t1-%s.csv", t))))
-lw <- read.csv(file.path(PRODUCTS_DIR, "1646-cf-loss-t1-int-profile-warm.csv"))
-lt$int$hard_lo <- min(lt$int$hard_lo, lw$hard_lo); lt$int$hard_hi <- max(lt$int$hard_hi, lw$hard_hi)
+lt <- lapply(c(int = "int", A = "A", B = "B"), function(t) un(rp(sprintf("1653-cf-loss-t1-%s.csv", t)), rp(sprintf("1645-cf-loss-t1-%s.csv", t))))
+lt$int <- un(lt$int, rp("1646-cf-loss-t1-int-profile-warm.csv"))
 pc <- function(v) sprintf("%.1f\\%%", 100 * v)
 
 f0 <- function(v) formatC(v, format = "f", digits = 0, big.mark = ",")
@@ -37,7 +40,7 @@ print(tbl)
 tt_obj <- tt(tbl, width = c(1.6, 0.6, 0.9, 0.5), notes = paste0(
     "ELVIS interior firms, real pesos per firm-year, current rates. $L=\\tau_P(1-q(e))e$; $P=t1/p_{gdp}-\\tau_PM$; $R=P-L$. ",
     "The $E[P]$ set follows from the $E[\\tau_PM]$ set because $t1$ is observed (mean ", f0(t1p), "). ",
-    "Loss $L$ as a share of the sales tax owed on sales: (A) adds the trimmed firms' tax, (B) every firm's tax in the sample; their loss is set to zero, so (A) and (B) are lower bounds. The interior set is the union over two starting points of the $\\gamma$ solve. ",
+    "Loss $L$ as a share of the sales tax owed on sales: (A) adds the trimmed firms' tax, (B) every firm's tax in the sample; their loss is set to zero, so (A) and (B) are lower bounds. Each set is the union of the values accepted over several solver runs. ",
     "Conservative test, $TS\\le\\chi^2_{", g$d_g, ",.95}=", sprintf("%.2f", g$crit), "$.")) |>
     style_tt(i = "notes", fontsize = 0.8)
 
