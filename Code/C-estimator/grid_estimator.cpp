@@ -3120,6 +3120,10 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
     const double crit = chi2_q95(dg), crit1 = 3.841458820694124;
     std::cout << "cfprofile: n " << n << ", live rows d_g " << dg << " (row 10 = credit), crit chi2_" << dg << " " << crit
               << " | scale (mean tau_P M*) " << sc << " | mean t1/pgdp " << mt1p << "\n" << std::flush;
+    for (double Dl : deltas) if (g_cf_target == 10 && std::fabs(Dl) > 0.05 + 1e-12) {   // review 2026-10-06: E[R(D)] crosses 0 near
+        std::cerr << "elast_revenue: only for |Delta| <= 0.05 (net revenue changes sign near Delta = -0.15, so the ratio's set can be "
+                     "unbounded); use mrev for the revenue derivative elsewhere\n"; std::exit(1); }
+    if (g_cf_target == 12 && !g_cf_mresp) { std::cerr << "diff_input is identically 0 without cf_mresp=1\n"; std::exit(1); }
     if (g_cf_mresp) {   // r needs 1 - (1+D) tau_P > 0 at every Delta used (Delta, and Delta +- h for the elasticity targets)
         double tmax = 0.0; for (const FirmData &f : firms) tmax = std::max(tmax, f.tau_rho);
         for (double Dl : deltas) { const double Dm = Dl + ((g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 10 || g_cf_target == 11) ? g_cf_h : 0.0);
@@ -3173,6 +3177,8 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             for (int j = 0; j < Ri; j++) { double w = std::exp(lw[j] - lmax); sw += w; sc10 += w * c10[(size_t)i * R + j]; sb10 += w * b10[(size_t)i * R + j]; }
             T0 += sc10 / sw; Tb += sb10 / sw;
         }
+        if (g_cf_target == 3 || g_cf_target == 4 || g_cf_target == 6 || g_cf_target == 8 || g_cf_target == 10)
+            std::cout << "  ratio target: E[b] at the operating gamma = " << Tb / n << " (scale units; the set assumes E[b] is bounded away from 0)\n" << std::flush;
         T0 /= Tb;   // E[a] / E[b] (= E[a] for b = 1)
         double gwarm[D_G_A]; std::copy(gam0, gam0 + D_G_A, gwarm);
         const int nm_s = g_inner_nm, du_s = g_inner_dual; g_inner_nm = 0; g_inner_dual = 0;
