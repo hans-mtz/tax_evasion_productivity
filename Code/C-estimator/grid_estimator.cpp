@@ -884,6 +884,10 @@ static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
 static double g_cf_h = 0.01;
 static double g_cf_t1_extra = 0.0;
+static bool g_cf_multi = false;   // cf_multi=1 (2026-10-05, audit): each profiled gamma solve runs from several starts and keeps the lowest L:
+                                   // the operating gamma, the warm gamma, and the operating gamma with gamma[10] (the counterfactual tilt) set to
+                                   // each value in cf_g10, and the best gamma seen so far at any T. Cold-only solves often left gamma[10] at 0 (TS_min stuck at the operating 23.689).
+static std::vector<double> g_cf_g10 = {3.0, -3.0, 10.0, -10.0, 30.0, -30.0};
 static std::vector<double> g_cf_grid;   // cf_grid=T1,T2,...: also print 2nL at these T (diagnostic of the profile's shape)   // cf_target=loss_t1: extra t1/pgdp per interior firm in the denominator
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
@@ -3072,7 +3076,10 @@ static double nested_outer_obj(unsigned nt, const double *xt, double *grad, void
 // For each Delta: cache the draws at theta (sampler=is), row 10 = credit/scale; profile L(T) = min_gamma L(theta, gamma; T)
 // by warm-started L-BFGS (the nested inner solver); T_hat = argmin (golden section); bounds by test inversion:
 // hard = {T: 2nL <= chi2_{d_g,0.95}}, soft = {T: 2n(L - L_min) <= chi2_{1,0.95} = 3.841}. Writes one CSV row per Delta.
-static double chi2_q95(int d) {   // Wilson-Hilferty approximation of the 0.95 quantile (error < 0.05 for d >= 3)
+static double chi2_q95(int d) {   // exact 0.95 quantiles for d = 10..25 (R qchisq); Wilson-Hilferty otherwise (error < 0.05 for d >= 3)
+    static const double ex[16] = {18.307038, 19.675138, 21.026070, 22.362032, 23.684791, 24.995790, 26.296228, 27.587112,
+                                  28.869299, 30.143527, 31.410433, 32.670573, 33.924438, 35.172462, 36.415029, 37.652484};
+    if (d >= 10 && d <= 25) return ex[d - 10];
     const double z = 1.6448536269514722, a = 2.0 / (9.0 * d);
     return d * std::pow(1.0 - a + z * std::sqrt(a), 3.0);
 }
@@ -3091,7 +3098,7 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
               << " | scale (mean tau_P M*) " << sc << " | mean t1/pgdp " << mt1p << "\n" << std::flush;
     std::ofstream out(output_csv);
     out << std::setprecision(10) << "Delta,T_hat,TS_min,d_g,crit,hard_lo,hard_hi,soft_lo,soft_hi,scale,mean_t1p,credit_hat,revenue_hat,"
-           "revenue_hard_lo,revenue_hard_hi,T_at_gamma0,evals\n";
+           "revenue_hard_lo,revenue_hard_hi,T_at_gamma0,evals,cf_target,cf_multi,TS_min_seen,T_min_seen,g10_hat,maxg_hat,g10_hard_lo,maxg_hard_lo,g10_hard_hi,maxg_hard_hi\n";
     for (double Dl : deltas) {
         g_cf_on = true; g_cf_Delta = Dl; g_cf_T = 0.0;
         NestedCache C; nested_build_cache(C, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
@@ -3125,14 +3132,31 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         double gwarm[D_G_A]; std::copy(gam0, gam0 + D_G_A, gwarm);
         const int nm_s = g_inner_nm, du_s = g_inner_dual; g_inner_nm = 0; g_inner_dual = 0;
         long evals = 0;
-        auto Lprof = [&](double T) -> double {
-            setT(T); double g[D_G_A]; std::copy(g_cf_cold ? gam0 : gwarm, (g_cf_cold ? gam0 : gwarm) + D_G_A, g); int code = 0;
-            double L = nested_solve_gamma(P, g, &code);
-            for (int round = 2; round <= 4 && code == NLOPT_MAXEVAL_REACHED; round++) L = nested_solve_gamma(P, g, &code);
+        // every profiled L is an upper bound on the true profile (a failed solve only raises it), so track the lowest L seen at any T
+        double Lseen = HUGE_VAL, Tseen = std::numeric_limits<double>::quiet_NaN(), gseen[D_G_A], glast[D_G_A];
+        std::copy(gam0, gam0 + D_G_A, gseen); std::copy(gam0, gam0 + D_G_A, glast);
+        auto solve_from = [&](const double *g0, double *gout) -> double {
+            std::copy(g0, g0 + D_G_A, gout); int code = 0;
+            double L = nested_solve_gamma(P, gout, &code);
+            for (int round = 2; round <= 4 && code == NLOPT_MAXEVAL_REACHED; round++) L = nested_solve_gamma(P, gout, &code);
             evals++;
-            if (std::isfinite(L)) std::copy(g, g + D_G_A, gwarm);   // warm start along T (theta fixed)
             return L;
         };
+        auto Lprof = [&](double T) -> double {
+            setT(T); double g[D_G_A], gb[D_G_A];
+            double L = solve_from(g_cf_cold || g_cf_multi ? gam0 : gwarm, gb);
+            if (g_cf_multi) {   // more starts: warm path, then the operating gamma with the counterfactual tilt gamma[10] moved
+                auto take = [&](double Lc) { if (std::isfinite(Lc) && (!std::isfinite(L) || Lc < L)) { L = Lc; std::copy(g, g + D_G_A, gb); } };
+                take(solve_from(gwarm, g));
+                if (std::isfinite(Lseen)) take(solve_from(gseen, g));   // the best gamma found so far, at any T
+                for (double c : g_cf_g10) { double s0[D_G_A]; std::copy(gam0, gam0 + D_G_A, s0); s0[10] = c; take(solve_from(s0, g)); }
+            }
+            if (std::isfinite(L)) std::copy(gb, gb + D_G_A, gwarm);   // warm start along T (theta fixed)
+            std::copy(gb, gb + D_G_A, glast);
+            if (std::isfinite(L) && L < Lseen) { Lseen = L; Tseen = T; std::copy(gb, gb + D_G_A, gseen); }
+            return L;
+        };
+        auto maxabs = [](const double *g) { double m = 0.0; for (int t = 0; t < D_G_A; t++) m = std::max(m, std::fabs(g[t])); return m; };
         // golden section on [T0 - h, T0 + h], widened if the minimum sits at an edge
         double h = std::max(0.02 * std::fabs(T0), 1e-4), lo = T0 - h, hi = T0 + h;
         for (int w = 0; w < 6; w++) {
@@ -3147,29 +3171,50 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             if (f1 < f2) { b = x2; x2 = x1; f2 = f1; x1 = b - gr * (b - a); f1 = Lprof(x1); }
             else { a = x1; x1 = x2; f1 = f2; x2 = a + gr * (b - a); f2 = Lprof(x2); }
         }
-        const double That = f1 < f2 ? x1 : x2, Lmin = std::min(f1, f2), TSmin = 2.0 * n * Lmin;
-        double gbest[D_G_A]; std::copy(gwarm, gwarm + D_G_A, gbest);
+        // T_hat and its gamma: the lowest profiled L seen so far (golden-section end points included); with exact solves this is the
+        // golden-section minimum, and in warm mode the old code took gamma from the last evaluation instead (audit 2026-10-05)
+        double That = Tseen, TSmin = 2.0 * n * Lseen;
+        double gbest[D_G_A]; std::copy(gseen, gseen + D_G_A, gbest);
         // bound search: the T where 2nL crosses a level, outward from T_hat (bisection after bracketing)
-        auto bound = [&](double level, int dir) -> double {
-            std::copy(gbest, gbest + D_G_A, gwarm);
+        // bound search: returns +-Inf (and says so) if 30 doublings never cross the level; gin = gamma at the last accepted T
+        auto bound = [&](double level, int dir, double *gin) -> double {
+            std::copy(gbest, gbest + D_G_A, gwarm); std::copy(gbest, gbest + D_G_A, gin);
             if (TSmin > level) return std::numeric_limits<double>::quiet_NaN();
-            double step = std::max(0.01 * std::fabs(That), 1e-4), inside = That, outside = That;
-            for (int it = 0; it < 30; it++) { outside = That + dir * step; if (2.0 * n * Lprof(outside) > level) break; inside = outside; step *= 2; }
+            double step = std::max(0.01 * std::fabs(That), 1e-4), inside = That, outside = That; bool crossed = false;
+            for (int it = 0; it < 30; it++) { outside = That + dir * step;
+                if (2.0 * n * Lprof(outside) > level) { crossed = true; break; }
+                inside = outside; std::copy(glast, glast + D_G_A, gin); step *= 2; }
+            if (!crossed) { std::cout << "  WARNING: " << (dir < 0 ? "lower" : "upper") << " bound at level " << level
+                                      << " not crossed after 30 doublings (last accepted T " << inside << "): set UNBOUNDED\n" << std::flush;
+                            return dir * std::numeric_limits<double>::infinity(); }
             for (int it = 0; it < 30; it++) { const double mid = 0.5 * (inside + outside);
-                if (2.0 * n * Lprof(mid) > level) outside = mid; else inside = mid;
+                if (2.0 * n * Lprof(mid) > level) outside = mid; else { inside = mid; std::copy(glast, glast + D_G_A, gin); }
                 if (std::fabs(outside - inside) < 1e-5 * std::max(1.0, std::fabs(That))) break; }
             return 0.5 * (inside + outside);
         };
-        const double hlo = bound(crit, -1), hhi = bound(crit, +1), slo = bound(TSmin + crit1, -1), shi = bound(TSmin + crit1, +1);
+        double ghl[D_G_A], ghh[D_G_A], gsl[D_G_A], gsh[D_G_A];
+        const double hlo = bound(crit, -1, ghl), hhi = bound(crit, +1, ghh);   // hard: TS_min-free (each accepted T is valid evidence)
+        double slo = bound(TSmin + crit1, -1, gsl), shi = bound(TSmin + crit1, +1, gsh);
+        for (int rc = 0; rc < 2 && 2.0 * n * Lseen < TSmin - 1e-6; rc++) {   // the bound search found a lower TS: re-centre the soft set there
+            std::cout << "  NOTE: the bound search found a lower TS than TS_min: " << 2.0 * n * Lseen << " at T " << Tseen << " (was "
+                      << TSmin << " at " << That << "); T_hat and the soft set re-centred\n" << std::flush;
+            That = Tseen; TSmin = 2.0 * n * Lseen; std::copy(gseen, gseen + D_G_A, gbest);
+            slo = bound(TSmin + crit1, -1, gsl); shi = bound(TSmin + crit1, +1, gsh);
+        }
         for (double Tg : g_cf_grid) { std::copy(gbest, gbest + D_G_A, gwarm);
             std::cout << "  profile: T " << Tg << " TS " << 2.0 * n * Lprof(Tg) << "\n" << std::flush; }
         g_inner_nm = nm_s; g_inner_dual = du_s;
+        static const char *tnm[10] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue"};
+        const bool lev = g_cf_target == 0;   // credit_hat and revenue_* are claims-derived: meaningful for cf_target=level only (NA otherwise)
         std::cout << "  Delta " << Dl << ": T_hat " << That << " (T at operating gamma " << T0 << "), TS_min " << TSmin
-                  << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | revenue_hat "
-                  << mt1p - That * sc << " | " << evals << " profiled solves\n" << std::flush;
+                  << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | T_hat*scale " << That * sc
+                  << " | gamma10 " << gbest[10] << " max|gamma| " << maxabs(gbest) << " (hard lo " << ghl[10] << "/" << maxabs(ghl)
+                  << ", hard hi " << ghh[10] << "/" << maxabs(ghh) << ") | " << evals << " profiled solves\n" << std::flush;
+        auto NA = [&](double v) { std::ostringstream o; o << std::setprecision(10); if (lev) o << v; else o << "NA"; return o.str(); };
         out << Dl << "," << That << "," << TSmin << "," << dg << "," << crit << "," << hlo << "," << hhi << "," << slo << "," << shi << ","
-            << sc << "," << mt1p << "," << That * sc << "," << mt1p - That * sc << "," << mt1p - hhi * sc << "," << mt1p - hlo * sc << ","
-            << T0 << "," << evals << "\n" << std::flush;
+            << sc << "," << mt1p << "," << NA(That * sc) << "," << NA(mt1p - That * sc) << "," << NA(mt1p - hhi * sc) << "," << NA(mt1p - hlo * sc) << ","
+            << T0 << "," << evals << "," << tnm[g_cf_target] << "," << (g_cf_multi ? 1 : 0) << "," << 2.0 * n * Lseen << "," << Tseen << ","
+            << gbest[10] << "," << maxabs(gbest) << "," << ghl[10] << "," << maxabs(ghl) << "," << ghh[10] << "," << maxabs(ghh) << "\n" << std::flush;
     }
     g_cf_on = false;
     std::cout << "Saved: " << output_csv << "\n";
@@ -4147,7 +4192,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_g10","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4476,6 +4521,11 @@ int main(int argc, char **argv) {
                 g_cf_t1_extra = std::strtod(get_opt(opt, "cf_t1_extra", "0").c_str(), nullptr);
                 { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
+                g_cf_multi = get_opt(opt, "cf_multi", "0") == "1";
+                if (opt.count("cf_g10")) { g_cf_g10.clear(); std::stringstream ss(get_opt(opt, "cf_g10", "")); std::string tok;
+                    while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_g10.push_back(std::strtod(tok.c_str(), nullptr)); }
+                if (g_cf_multi) { std::cout << "cf_multi=1: starts = operating gamma, warm gamma, best gamma so far, operating gamma with gamma10 in {";
+                    for (size_t i = 0; i < g_cf_g10.size(); i++) std::cout << (i ? ", " : "") << g_cf_g10[i]; std::cout << "}\n"; }
                 std::cout << "cfprofile target: " << tg << ((g_cf_target == 3 || g_cf_target == 4) ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
             g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
             g_rhoD[10] = std::numeric_limits<double>::infinity();   // bounded per firm (0 <= credit <= (1+Delta) tau_P M* (1+c_k kappa Mbar/M*)): out of the rho penalty
