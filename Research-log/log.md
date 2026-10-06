@@ -1954,3 +1954,4 @@ All fits are on the untrimmed sample `1624` (n = 12,111), design i, warm start, 
 | +0.3 | −1,270 | [−1,545, −1,013] | 20.64 |
 
 All bounded, no WARNING lines, TS_min = TS_min_seen everywhere. Monotone: about 300 per firm-year per 10 percent of the rate. Start wins (slot "operating" = warm under cf_op=0): warm 84–186 of 97–210 solves (max marginal 3.4 TS at +0.3), best-so-far 27–39 (max 0.97), γ10 = +10 1–9 (max 1.8). Old MacBook (±0.05) still running at wrap-up.
+- **After wrap-up (2026-10-06 ~02:00):** MacBook back at 192.168.0.24 (fingerprint verified); synced, rebuilt cf6, adiag 23.6894. Launched the **fixed-M revenue grid 1652** (MRESP=0, same settings as 1651) there: two screens (`fm1652a`: −0.3, −0.2, −0.1; `fm1652b`: +0.3, +0.2, +0.1), 4 threads each (4 cores left for Hans), under caffeinate. Results return with `-macbook`. ±0.05 fixed M still to run.
