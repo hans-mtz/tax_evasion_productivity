@@ -3135,6 +3135,10 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         // every profiled L is an upper bound on the true profile (a failed solve only raises it), so track the lowest L seen at any T
         double Lseen = HUGE_VAL, Tseen = std::numeric_limits<double>::quiet_NaN(), gseen[D_G_A], glast[D_G_A];
         std::copy(gam0, gam0 + D_G_A, gseen); std::copy(gam0, gam0 + D_G_A, glast);
+        // hard set = union of every T accepted at the hard level by ANY profiled solve (review 2026-10-05: the bound searches alone
+        // miss T's accepted later by the soft search, re-centring or cf_grid)
+        double Tacc_lo = HUGE_VAL, Tacc_hi = -HUGE_VAL, gacc_lo[D_G_A], gacc_hi[D_G_A];
+        std::copy(gam0, gam0 + D_G_A, gacc_lo); std::copy(gam0, gam0 + D_G_A, gacc_hi);
         auto solve_from = [&](const double *g0, double *gout) -> double {
             std::copy(g0, g0 + D_G_A, gout); int code = 0;
             double L = nested_solve_gamma(P, gout, &code);
@@ -3154,6 +3158,9 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             if (std::isfinite(L)) std::copy(gb, gb + D_G_A, gwarm);   // warm start along T (theta fixed)
             std::copy(gb, gb + D_G_A, glast);
             if (std::isfinite(L) && L < Lseen) { Lseen = L; Tseen = T; std::copy(gb, gb + D_G_A, gseen); }
+            if (std::isfinite(L) && 2.0 * n * L <= crit) {
+                if (T < Tacc_lo) { Tacc_lo = T; std::copy(gb, gb + D_G_A, gacc_lo); }
+                if (T > Tacc_hi) { Tacc_hi = T; std::copy(gb, gb + D_G_A, gacc_hi); } }
             return L;
         };
         auto maxabs = [](const double *g) { double m = 0.0; for (int t = 0; t < D_G_A; t++) m = std::max(m, std::fabs(g[t])); return m; };
@@ -3179,7 +3186,7 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         // bound search: returns +-Inf (and says so) if 30 doublings never cross the level; gin = gamma at the last accepted T
         auto bound = [&](double level, int dir, double *gin) -> double {
             std::copy(gbest, gbest + D_G_A, gwarm); std::copy(gbest, gbest + D_G_A, gin);
-            if (TSmin > level) return std::numeric_limits<double>::quiet_NaN();
+            if (!std::isfinite(TSmin) || TSmin > level) return std::numeric_limits<double>::quiet_NaN();   // also: every solve failed
             double step = std::max(0.01 * std::fabs(That), 1e-4), inside = That, outside = That; bool crossed = false;
             for (int it = 0; it < 30; it++) { outside = That + dir * step;
                 if (2.0 * n * Lprof(outside) > level) { crossed = true; break; }
@@ -3193,16 +3200,30 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             return 0.5 * (inside + outside);
         };
         double ghl[D_G_A], ghh[D_G_A], gsl[D_G_A], gsh[D_G_A];
-        const double hlo = bound(crit, -1, ghl), hhi = bound(crit, +1, ghh);   // hard: TS_min-free (each accepted T is valid evidence)
+        double hlo = bound(crit, -1, ghl), hhi = bound(crit, +1, ghh);   // hard: TS_min-free (each accepted T is valid evidence)
         double slo = bound(TSmin + crit1, -1, gsl), shi = bound(TSmin + crit1, +1, gsh);
-        for (int rc = 0; rc < 2 && 2.0 * n * Lseen < TSmin - 1e-6; rc++) {   // the bound search found a lower TS: re-centre the soft set there
-            std::cout << "  NOTE: the bound search found a lower TS than TS_min: " << 2.0 * n * Lseen << " at T " << Tseen << " (was "
+        int rc = 0;
+        for (; rc < 10 && 2.0 * n * Lseen < TSmin - 1e-6; rc++) {   // a later search found a lower TS: re-centre T_hat and the soft set there
+            std::cout << "  NOTE: a bound search found a lower TS than TS_min: " << 2.0 * n * Lseen << " at T " << Tseen << " (was "
                       << TSmin << " at " << That << "); T_hat and the soft set re-centred\n" << std::flush;
             That = Tseen; TSmin = 2.0 * n * Lseen; std::copy(gseen, gseen + D_G_A, gbest);
+            if (std::isnan(hlo)) hlo = bound(crit, -1, ghl);   // the old TS_min was above crit: the hard set may now be non-empty
+            if (std::isnan(hhi)) hhi = bound(crit, +1, ghh);
             slo = bound(TSmin + crit1, -1, gsl); shi = bound(TSmin + crit1, +1, gsh);
         }
+        if (rc == 10 && 2.0 * n * Lseen < TSmin - 1e-6)
+            std::cout << "  WARNING: re-centring stopped after 10 rounds; TS_min " << TSmin << " vs lowest seen " << 2.0 * n * Lseen << "\n" << std::flush;
         for (double Tg : g_cf_grid) { std::copy(gbest, gbest + D_G_A, gwarm);
             std::cout << "  profile: T " << Tg << " TS " << 2.0 * n * Lprof(Tg) << "\n" << std::flush; }
+        if (2.0 * n * Lseen < TSmin - 1e-6)
+            std::cout << "  NOTE: cf_grid found a lower TS (" << 2.0 * n * Lseen << " at T " << Tseen << "); soft set NOT re-centred\n" << std::flush;
+        // hard set: extend each bisected bound to the outermost T accepted by any solve (and fill an empty side if anything was accepted)
+        if (Tacc_lo <= Tacc_hi) {
+            if (std::isnan(hlo) || Tacc_lo < hlo) { if (!std::isnan(hlo)) std::cout << "  NOTE: hard lower bound extended from " << hlo << " to accepted T " << Tacc_lo << "\n";
+                                                     hlo = Tacc_lo; std::copy(gacc_lo, gacc_lo + D_G_A, ghl); }
+            if (std::isnan(hhi) || Tacc_hi > hhi) { if (!std::isnan(hhi)) std::cout << "  NOTE: hard upper bound extended from " << hhi << " to accepted T " << Tacc_hi << "\n";
+                                                     hhi = Tacc_hi; std::copy(gacc_hi, gacc_hi + D_G_A, ghh); }
+        }
         g_inner_nm = nm_s; g_inner_dual = du_s;
         static const char *tnm[10] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue"};
         const bool lev = g_cf_target == 0;   // credit_hat and revenue_* are claims-derived: meaningful for cf_target=level only (NA otherwise)
@@ -3210,11 +3231,13 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
                   << " | hard [" << hlo << ", " << hhi << "] | soft [" << slo << ", " << shi << "] | T_hat*scale " << That * sc
                   << " | gamma10 " << gbest[10] << " max|gamma| " << maxabs(gbest) << " (hard lo " << ghl[10] << "/" << maxabs(ghl)
                   << ", hard hi " << ghh[10] << "/" << maxabs(ghh) << ") | " << evals << " profiled solves\n" << std::flush;
+        auto gstr = [](double bnd, double v) { std::ostringstream o; o << std::setprecision(10); if (std::isnan(bnd)) o << "NA"; else o << v; return o.str(); };
         auto NA = [&](double v) { std::ostringstream o; o << std::setprecision(10); if (lev) o << v; else o << "NA"; return o.str(); };
         out << Dl << "," << That << "," << TSmin << "," << dg << "," << crit << "," << hlo << "," << hhi << "," << slo << "," << shi << ","
             << sc << "," << mt1p << "," << NA(That * sc) << "," << NA(mt1p - That * sc) << "," << NA(mt1p - hhi * sc) << "," << NA(mt1p - hlo * sc) << ","
             << T0 << "," << evals << "," << tnm[g_cf_target] << "," << (g_cf_multi ? 1 : 0) << "," << 2.0 * n * Lseen << "," << Tseen << ","
-            << gbest[10] << "," << maxabs(gbest) << "," << ghl[10] << "," << maxabs(ghl) << "," << ghh[10] << "," << maxabs(ghh) << "\n" << std::flush;
+            << gbest[10] << "," << maxabs(gbest) << "," << gstr(hlo, ghl[10]) << "," << gstr(hlo, maxabs(ghl)) << ","
+            << gstr(hhi, ghh[10]) << "," << gstr(hhi, maxabs(ghh)) << "\n" << std::flush;
     }
     g_cf_on = false;
     std::cout << "Saved: " << output_csv << "\n";
@@ -4525,7 +4548,8 @@ int main(int argc, char **argv) {
                 if (opt.count("cf_g10")) { g_cf_g10.clear(); std::stringstream ss(get_opt(opt, "cf_g10", "")); std::string tok;
                     while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_g10.push_back(std::strtod(tok.c_str(), nullptr)); }
                 if (g_cf_multi) { std::cout << "cf_multi=1: starts = operating gamma, warm gamma, best gamma so far, operating gamma with gamma10 in {";
-                    for (size_t i = 0; i < g_cf_g10.size(); i++) std::cout << (i ? ", " : "") << g_cf_g10[i]; std::cout << "}\n"; }
+                    for (size_t i = 0; i < g_cf_g10.size(); i++) std::cout << (i ? ", " : "") << g_cf_g10[i]; std::cout << "}\n";
+                    if (g_cf_cold) std::cout << "  (cf_cold has no effect with cf_multi=1: the operating and warm starts are both used)\n"; }
                 std::cout << "cfprofile target: " << tg << ((g_cf_target == 3 || g_cf_target == 4) ? " (central difference h = " + std::to_string(g_cf_h) + ")" : "") << "\n"; }
             g_dropmask &= ~(1u << 10);   // row 10 = the credit moment
             g_rhoD[10] = std::numeric_limits<double>::infinity();   // bounded per firm (0 <= credit <= (1+Delta) tau_P M* (1+c_k kappa Mbar/M*)): out of the rho penalty

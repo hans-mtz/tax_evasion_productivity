@@ -8,6 +8,7 @@
 ## (no behavioural response). Same layout as ch08-claims-ci-hard-plot.R.
 source("Code/Thesis/001-setup.R")
 cf <- read.csv(file.path(PRODUCTS_DIR, "1622-cf-i-k0.75-kappa0.5.csv"))
+stopifnot(all(is.finite(c(cf$hard_lo, cf$hard_hi, cf$soft_lo, cf$soft_hi))))   # an open (Inf) or empty (NaN) set needs explicit handling
 delta_pct <- function(x) paste0(ifelse(x > 0, "+", ""), round(x * 100, 2), "%")
 d <- cf %>% mutate(c_hat = T_hat * scale, hard_lo = hard_lo * scale, hard_hi = hard_hi * scale,
                    soft_lo = soft_lo * scale, soft_hi = soft_hi * scale,

@@ -30,6 +30,7 @@ print(as.data.frame(base))
 n_int <- base$n[base$group == "interior (ELVIS)"]
 cf <- read.csv(opt$cf_csv)
 if ("cf_target" %in% names(cf)) stopifnot(all(cf$cf_target == "level"))   # T_hat is claims only for cf_target=level (audit 2026-10-05)
+stopifnot("hard bounds must be finite (an open or empty set needs explicit handling)" = all(is.finite(c(cf$hard_lo, cf$hard_hi))))
 stopifnot(abs(cf$scale[1] - base$credit0[base$group == "interior (ELVIS)"] / n_int) < 1e-6 * cf$scale[1])   # same interior sample
 mech <- function(g, D) { v <- base$credit0[base$group == g]; if (length(v) == 0) 0 else (1 + D) * v }
 c00 <- cf$T_hat[cf$Delta == 0] * cf$scale[1] * n_int

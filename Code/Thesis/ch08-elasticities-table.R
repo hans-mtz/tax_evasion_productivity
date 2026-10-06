@@ -14,7 +14,7 @@ source("Code/Thesis/001-setup.R")
 rd <- function(f) read.csv(file.path(PRODUCTS_DIR, f))
 lev <- rd("1622-cf-i-k0.75-kappa0.5.csv"); C0 <- lev$T_hat[lev$Delta == 0]
 el <- rd("1642-cf-elast-claims-cold.csv")
-db <- rbind(rd("1639-cf-diffbeh-small.csv") %>% filter(Delta != -0.02), rd("1640-cf-diffbeh-cold-m002.csv")[, names(rd("1639-cf-diffbeh-small.csv"))]) %>%
+db <- bind_rows(rd("1639-cf-diffbeh-small.csv") %>% filter(Delta != -0.02), rd("1640-cf-diffbeh-cold-m002.csv")) %>%   # bind_rows: files may differ in trailing columns (cf6 adds cf_target, gamma)
     arrange(Delta)
 stopifnot(nrow(el) == 1, all(is.finite(c(el$hard_lo, el$hard_hi))), nrow(db) == 6, all(is.finite(c(db$hard_lo, db$hard_hi))),
           all(db$TS_min < db$crit))
