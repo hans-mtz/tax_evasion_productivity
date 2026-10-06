@@ -124,13 +124,18 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
 
 ## 6. Schedule
 
+JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule is in git history).
+
 | Day | Target | Status |
 |---|---|---|
-| Mon 09-21 | Plan; scaffold book; bib merge; book renders (HTML checked, PDF not yet); ch. 7 and 8 outline files | `[x]` PDF render still to check |
-| Tue 09-22 | Ch. 2-4 (model, setting/data, testing) incl. figure/table scripts | `[ ]` |
-| Wed 09-23 | Ch. 5-6 (deconvolution, PF/productivity) | `[ ]` |
-| Thu 09-24 | Ch. 7-8 (fiscal policy, counterfactual) | `[ ]` |
-| Fri 09-25 | Intro, literature, appendices; full render; fix cross-refs and missing assets | `[ ]` |
+| Tue 10-06 – Wed 10-07 | Model chapter (`02-model.qmd`): Setup → Corporations from bullets to prose (draft-prose, two proof-reads, Hans approves); decide the δ_C and old SOC draft blocks | `[~]` outline + opening done |
+| Wed 10-07 – Thu 10-08 | Ch. 8 text on the M-responding headline: claims arcs (1655), loss shares (1653), revenue figure/table and break-even (1651/1652), mean q (1657); replace "input decisions fixed" passages | `[ ]` |
+| Fri 10-09 | Numbers propagated: JMP abstract (full pass + "median overreporting", "after the raise"), intro para. 3, conclusion (1.9 → 1.5 percent), thesis abstract | `[ ]` |
+| Sat 10-10 – Sun 10-11 | Conclusion prose (Hans); `thanks:`, JEL codes | `[ ]` |
+| Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[ ]` |
+| Tue 10-13 | Send to supervisors | `[ ]` |
+
+Post-deadline (not before Oct 13): κ sensitivity, D robustness, 1% level grid, M/M* flip (§7a), net-share denominator (§9a).
 
 ## 7. Open questions
 
