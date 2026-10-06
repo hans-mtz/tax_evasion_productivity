@@ -884,6 +884,15 @@ static int g_cf_target = 0;
 static bool g_cf_cold = false;   // cf_cold=1 (2026-10-03): every profiled gamma solve starts from the operating gamma (no warm path along T)
 static double g_cf_h = 0.01;
 static double g_cf_t1_extra = 0.0;
+// cf_mresp=1 (2026-10-05, Hans): true materials respond to the purchases rate through the two-tax wedge in the materials FOC,
+// (1-tau_S) P beta Y/M = (1 - (1+Delta) tau_P) rho, with K, L, omega, eps fixed (Cobb-Douglas): M(Delta) = r M, where
+// r = [(1 - (1+Delta) tau_P)/(1 - tau_P)]^(-1/(1-beta)) is the same for every draw of a firm; output and the sales tax on sales
+// scale by r^beta. Claims use r M; the revenue target uses t1 r^beta. e'(Delta) is unchanged (the evasion FOC has no M).
+// Default 0 = true M fixed (every run before 2026-10-05).
+static bool g_cf_mresp = false;
+static inline double cf_mresp_r(double D, double tau_P, double beta) {
+    return g_cf_mresp ? std::pow((1.0 - (1.0 + D) * tau_P) / (1.0 - tau_P), -1.0 / (1.0 - beta)) : 1.0;
+}
 static bool g_cf_multi = false;   // cf_multi=1 (2026-10-05, audit): each profiled gamma solve runs from several starts and keeps the lowest L:
                                    // the operating gamma, the warm gamma, and the operating gamma with gamma[10] (the counterfactual tilt) set to
                                    // each value in cf_g10, and the best gamma seen so far at any T. Cold-only solves often left gamma[10] at 0 (TS_min stuck at the operating 23.689).
@@ -1154,8 +1163,8 @@ static inline void moment_g_A_one_exp_scale(
                 const double br = 1.0 - Bx / (1.0 + D);
                 const double xp = br > 0.0 ? std::pow(br / (1.0 + k), 1.0 / k) : 0.0;
                 ep = sc * xp; qp = std::pow(xp, k); };
-            auto Cr = [&](double D) { double ep, qp; epq(D, ep, qp); return (1.0 + D) * tau_rho * (M + (1.0 - qp) * ep); };
-            auto Xb = [&](double D) { double ep, qp; epq(D, ep, qp); return ep / M; };
+            auto Cr = [&](double D) { double ep, qp; epq(D, ep, qp); return (1.0 + D) * tau_rho * (cf_mresp_r(D, tau_rho, beta) * M + (1.0 - qp) * ep); };
+            auto Xb = [&](double D) { double ep, qp; epq(D, ep, qp); return ep / (cf_mresp_r(D, tau_rho, beta) * M); };
             const double D = g_cf_Delta, hh = g_cf_h;
             double a = 0.0, b = 1.0;
             switch (g_cf_target) {
@@ -3112,8 +3121,9 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
                 for (int i = 0; i < n; i++) { const double t1s = (firms[i].t1 / firms[i].pgdp + (g_cf_target == 8 ? g_cf_t1_extra : 0.0)) / sc;
                     for (int j = 0; j < C.Ri[i]; j++) b10[(size_t)i * R + j] += (float)t1s; }
         }
-        if (g_cf_target == 9)   // revenue: add the firm's observed t1/pgdp/scale to a (fn returned -C(Delta)/scale)
-            for (int i = 0; i < n; i++) { const double t1s = firms[i].t1 / firms[i].pgdp / sc;
+        if (g_cf_target == 9)   // revenue: add the firm's observed t1/pgdp/scale to a (fn returned -C(Delta)/scale); with cf_mresp, t1 r^beta
+            for (int i = 0; i < n; i++) { const double t1s = firms[i].t1 / firms[i].pgdp / sc
+                                                             * std::pow(cf_mresp_r(Dl, firms[i].tau_rho, firms[i].beta), firms[i].beta);
                 for (int j = 0; j < C.Ri[i]; j++) c10[(size_t)i * R + j] += (float)t1s; }
         auto setT = [&](double T) { for (int i = 0; i < n; i++) for (int j = 0; j < C.Ri[i]; j++)
                                         C.G[((size_t)i * R + j) * D_G_A + 10] = (float)(c10[(size_t)i * R + j] - T * b10[(size_t)i * R + j]); };
@@ -4215,7 +4225,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_g10","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_g10","cf_mresp","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4545,6 +4555,8 @@ int main(int argc, char **argv) {
                 { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 g_cf_multi = get_opt(opt, "cf_multi", "0") == "1";
+                g_cf_mresp = get_opt(opt, "cf_mresp", "0") == "1";
+                if (g_cf_mresp) std::cout << "cf_mresp=1: true M responds to the purchases rate (two-tax wedge, K and L fixed): M r, t1 r^beta\n";
                 if (opt.count("cf_g10")) { g_cf_g10.clear(); std::stringstream ss(get_opt(opt, "cf_g10", "")); std::string tok;
                     while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_g10.push_back(std::strtod(tok.c_str(), nullptr)); }
                 if (g_cf_multi) { std::cout << "cf_multi=1: starts = operating gamma, warm gamma, best gamma so far, operating gamma with gamma10 in {";
