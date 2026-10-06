@@ -4,11 +4,16 @@
 ##       top-0.5% interior firms trimmed from stage 2 (their credits scale with the rate, no behavioural response);
 ##   (B) whole economy: (A) + all corner firms (non-evader industries with tau_P > 0, and tau_P = 0 firms, which add 0),
 ##       whose claimed deductions are deterministic, (1 + Delta) tau_P M* (e = 0, M = M*; no PF needed).
+## 2026-10-06 (Hans): option mresp = 1 lets true materials respond to the purchases rate for the mechanical groups too
+## (corner and trimmed firms: M = M*, e = 0, so claims (1+Delta) tau_P r M* and sales tax t1 r^beta, with
+## r = [(1-(1+Delta) tau_P)/(1-tau_P)]^(-1/(1-beta)); appendix A @sec-app-cf-implementation); the cf CSVs must then be cf_mresp = 1 runs.
+## cf_csv may be a comma-separated list (one file per Delta). cf_target = revenue CSVs give the interior revenue directly;
+## the economy revenue adds the other groups' t1 r^beta - claims.
 ## Units: real pesos (M* = nominal materials / p_gdp; credits tau_P M*; sales taxes t1 / p_gdp). Totals over firm-years
 ## and per-year averages; changes relative to Delta = 0, with the interior response split into mechanical
 ## ((1+Delta) x baseline) and behavioural (the rest).
 source("Code/Deconvolution/utils-cli.R")
-defaults <- list(cf_csv = "Code/Products/1622-cf-smoke.csv", out = "Code/Products/1621-cf-economy-smoke.csv", trim = 0.005)
+defaults <- list(cf_csv = "Code/Products/1622-cf-smoke.csv", out = "Code/Products/1621-cf-economy-smoke.csv", trim = 0.005, mresp = 0)
 opt <- parse_cli_args(defaults); log_run_header("1621-cf-economy.R", opt)
 suppressPackageStartupMessages(library(dplyr))
 load("Code/Products/1532-stage2-data-final.RData")   # stage2_final
@@ -28,12 +33,29 @@ n_years <- n_distinct(b$year)
 base <- b %>% group_by(group) %>% summarise(n = n(), credit0 = sum(credit0), t1r = sum(t1r), .groups = "drop")
 print(as.data.frame(base))
 n_int <- base$n[base$group == "interior (ELVIS)"]
-cf <- read.csv(opt$cf_csv)
-if ("cf_mresp" %in% names(cf)) stopifnot("1621 holds true M fixed for corner/trimmed firms and t1; extend it before combining cf_mresp=1 runs" = all(cf$cf_mresp == 0))
-if ("cf_target" %in% names(cf)) stopifnot(all(cf$cf_target == "level"))   # T_hat is claims only for cf_target=level (audit 2026-10-05)
+cf <- bind_rows(lapply(unlist(strsplit(opt$cf_csv, ",")), read.csv)) %>% arrange(Delta)   # parse_cli_args already splits commas
+mresp <- as.integer(opt$mresp)
+stopifnot("cf_mresp in the CSVs must match option mresp" = all((if ("cf_mresp" %in% names(cf)) cf$cf_mresp else 0) == mresp))
+tg <- if ("cf_target" %in% names(cf)) unique(cf$cf_target) else "level"
+stopifnot("one target per call: level (claims) or revenue" = length(tg) == 1 && tg %in% c("level", "revenue"))
 stopifnot("hard bounds must be finite (an open or empty set needs explicit handling)" = all(is.finite(c(cf$hard_lo, cf$hard_hi))))
 stopifnot(abs(cf$scale[1] - base$credit0[base$group == "interior (ELVIS)"] / n_int) < 1e-6 * cf$scale[1])   # same interior sample
-mech <- function(g, D) { v <- base$credit0[base$group == g]; if (length(v) == 0) 0 else (1 + D) * v }
+rr <- function(D, tau, beta) if (mresp == 1) ((1 - (1 + D) * tau) / (1 - tau))^(-1 / (1 - beta)) else rep(1, length(tau))
+mech <- function(g, D) { x <- b[b$group == g, ]; if (nrow(x) == 0) 0 else sum((1 + D) * x$credit0 * rr(D, x$sales_tax_rate_purchases, x$beta)) }
+t1g <- function(gs, D) { x <- b[b$group %in% gs, ]; sum(x$t1r * rr(D, x$sales_tax_rate_purchases, x$beta)^x$beta) }
+if (tg == "revenue") {   # interior revenue from the revenue target; the other groups are deterministic
+    out <- cf %>% rowwise() %>% mutate(
+        revenue_int = T_hat * scale * n_int, revenue_int_hard_lo = hard_lo * scale * n_int, revenue_int_hard_hi = hard_hi * scale * n_int,
+        rev_trim = t1g("interior trimmed (mechanical)", Delta) - mech("interior trimmed (mechanical)", Delta),
+        rev_corner = t1g(c("corner, evader industries", "corner, other industries"), Delta)
+                     - mech("corner, evader industries", Delta) - mech("corner, other industries", Delta),
+        revenue_A = revenue_int + rev_trim, revenue_A_hard_lo = revenue_int_hard_lo + rev_trim, revenue_A_hard_hi = revenue_int_hard_hi + rev_trim,
+        revenue_B = revenue_A + rev_corner, revenue_B_hard_lo = revenue_A_hard_lo + rev_corner, revenue_B_hard_hi = revenue_A_hard_hi + rev_corner,
+        per_year_revenue_B = revenue_B / n_years) %>% ungroup()
+    print(as.data.frame(out %>% select(Delta, TS_min, revenue_int, revenue_int_hard_lo, revenue_int_hard_hi, revenue_A, revenue_B,
+                                      revenue_B_hard_lo, revenue_B_hard_hi) %>% mutate(across(where(is.numeric), ~ signif(.x, 5)))))
+    write.csv(out, opt$out, row.names = FALSE); cat("Saved:", opt$out, "\n"); quit(save = "no")
+}
 c00 <- cf$T_hat[cf$Delta == 0] * cf$scale[1] * n_int
 out <- cf %>% rowwise() %>% mutate(
     claimed_int = T_hat * scale * n_int, claimed_int_hard_lo = hard_lo * scale * n_int, claimed_int_hard_hi = hard_hi * scale * n_int,
@@ -43,7 +65,7 @@ out <- cf %>% rowwise() %>% mutate(
     claimed_A = claimed_int + claimed_trim,
     claimed_corner_i9 = mech("corner, evader industries", Delta), claimed_corner_other = mech("corner, other industries", Delta),
     claimed_B = claimed_A + claimed_corner_i9 + claimed_corner_other,
-    t1_A = sum(base$t1r[base$group %in% c("interior (ELVIS)", "interior trimmed (mechanical)")]), t1_B = sum(base$t1r),
+    t1_A = t1g(c("interior (ELVIS)", "interior trimmed (mechanical)"), Delta), t1_B = t1g(unique(b$group), Delta),
     revenue_A = t1_A - claimed_A, revenue_B = t1_B - claimed_B,
     share_A_in_B = claimed_A / claimed_B, per_year_claimed_B = claimed_B / n_years) %>% ungroup()
 b0 <- out %>% filter(Delta == 0)
