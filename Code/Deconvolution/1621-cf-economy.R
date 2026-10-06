@@ -51,9 +51,15 @@ if (tg == "revenue") {   # interior revenue from the revenue target; the other g
                      - mech("corner, evader industries", Delta) - mech("corner, other industries", Delta),
         revenue_A = revenue_int + rev_trim, revenue_A_hard_lo = revenue_int_hard_lo + rev_trim, revenue_A_hard_hi = revenue_int_hard_hi + rev_trim,
         revenue_B = revenue_A + rev_corner, revenue_B_hard_lo = revenue_A_hard_lo + rev_corner, revenue_B_hard_hi = revenue_A_hard_hi + rev_corner,
-        per_year_revenue_B = revenue_B / n_years) %>% ungroup()
+        per_year_revenue_B = revenue_B / n_years,
+        # interim claims (Hans, 2026-10-06): interior claims = interior sales tax (t1 r^beta, no latent) - interior revenue; the set is
+        # the revenue moment's (it differs slightly from the claims-level moment's); replaced by the cf_target=level runs after the JMP
+        claims_int = t1g("interior (ELVIS)", Delta) - revenue_int, claims_int_hard_lo = t1g("interior (ELVIS)", Delta) - revenue_int_hard_hi,
+        claims_int_hard_hi = t1g("interior (ELVIS)", Delta) - revenue_int_hard_lo,
+        claims_A = claims_int + mech("interior trimmed (mechanical)", Delta),
+        claims_B = claims_A + mech("corner, evader industries", Delta) + mech("corner, other industries", Delta)) %>% ungroup()
     print(as.data.frame(out %>% select(Delta, TS_min, revenue_int, revenue_int_hard_lo, revenue_int_hard_hi, revenue_A, revenue_B,
-                                      revenue_B_hard_lo, revenue_B_hard_hi) %>% mutate(across(where(is.numeric), ~ signif(.x, 5)))))
+                                      revenue_B_hard_lo, revenue_B_hard_hi, claims_int, claims_A, claims_B) %>% mutate(across(where(is.numeric), ~ signif(.x, 5)))))
     write.csv(out, opt$out, row.names = FALSE); cat("Saved:", opt$out, "\n"); quit(save = "no")
 }
 c00 <- cf$T_hat[cf$Delta == 0] * cf$scale[1] * n_int
