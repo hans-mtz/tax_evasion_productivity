@@ -22,9 +22,17 @@ d <- d %>% mutate(rev = T_hat * scale, lo = hard_lo * scale, hi = hard_hi * scal
 print(d %>% arrange(version, Delta) %>% select(version, Delta, rev, lo, hi, TS_min))
 write.csv(d %>% arrange(version, Delta) %>% select(version, Delta, rev, lo, hi, TS_min, crit),
           file.path(PRODUCTS_DIR, "ch08-cf-revenue.csv"), row.names = FALSE)
+# break-even (Hans, 2026-10-06): where the headline estimate crosses zero, by linear interpolation between adjacent Delta
+h <- d %>% filter(version == "True materials respond") %>% arrange(Delta)
+k <- which(diff(sign(h$rev)) != 0)[1]
+be <- if (is.na(k)) NA else h$Delta[k] - h$rev[k] * (h$Delta[k + 1] - h$Delta[k]) / (h$rev[k + 1] - h$rev[k])
+cat(sprintf("Break-even Delta (true materials respond): %.3f\n", be))
 dodge <- position_dodge(width = 1.6)
 p <- ggplot(d, aes(x = 100 * Delta, y = rev, colour = version, group = version)) +
     geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
+    { if (!is.na(be)) list(annotate("segment", x = 100 * be, xend = 100 * be, y = -Inf, yend = 0, colour = "grey55", linewidth = 0.3, linetype = "dashed"),
+                           annotate("text", x = 100 * be, y = min(d$lo), label = sprintf("Break-even: %+.0f%%", 100 * be), colour = "grey35",
+                                    hjust = 1.08, vjust = 0, size = 3.2, family = THESIS_FONT)) } +
     geom_errorbar(aes(ymin = lo, ymax = hi), width = 1.2, linewidth = 0.5, position = dodge) +
     geom_line(linewidth = 0.5, position = dodge) +
     geom_point(size = 2, position = dodge) +
