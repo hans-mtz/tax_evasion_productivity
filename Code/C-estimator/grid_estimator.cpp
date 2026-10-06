@@ -896,6 +896,8 @@ static inline double cf_mresp_r(double D, double tau_P, double beta) {
 static bool g_cf_multi = false;   // cf_multi=1 (2026-10-05, audit): each profiled gamma solve runs from several starts and keeps the lowest L:
                                    // the operating gamma, the warm gamma, and the operating gamma with gamma[10] (the counterfactual tilt) set to
                                    // each value in cf_g10, and the best gamma seen so far at any T. Cold-only solves often left gamma[10] at 0 (TS_min stuck at the operating 23.689).
+static bool g_cf_op = true;   // cf_op=0 (2026-10-05): with cf_multi, skip the separate operating-gamma start (the warm start is the
+                              // operating gamma at the first T anyway; the operating start won 1 of 95 solves, as a tie, in the start diagnostics)
 static std::vector<double> g_cf_g10 = {3.0, -3.0, 10.0, -10.0, 30.0, -30.0};
 static std::vector<double> g_cf_grid;   // cf_grid=T1,T2,...: also print 2nL at these T (diagnostic of the profile's shape)   // cf_target=loss_t1: extra t1/pgdp per interior firm in the denominator
 #if defined(YEAR_FE)
@@ -3171,17 +3173,17 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
         std::vector<long> s_win(NS, 0), s_ran(NS, 0); std::vector<double> s_msum(NS, 0.0), s_mmax(NS, 0.0);
         auto Lprof = [&](double T) -> double {
             setT(T); double g[D_G_A], gb[D_G_A];
-            double L = solve_from(g_cf_cold || g_cf_multi ? gam0 : gwarm, gb);
+            double L = solve_from((g_cf_cold || g_cf_multi) && g_cf_op ? gam0 : gwarm, gb);   // slot 0: operating (or warm if cf_op=0)
             if (g_cf_multi) {   // more starts: warm path, best so far, then the operating gamma with the counterfactual tilt gamma[10] moved
                 std::vector<double> Ls(NS, HUGE_VAL); Ls[0] = std::isfinite(L) ? L : HUGE_VAL;
                 auto take = [&](double Lc, int si) { Ls[si] = std::isfinite(Lc) ? Lc : HUGE_VAL;
                                                      if (std::isfinite(Lc) && (!std::isfinite(L) || Lc < L)) { L = Lc; std::copy(g, g + D_G_A, gb); } };
-                take(solve_from(gwarm, g), 1);
+                if (g_cf_op) take(solve_from(gwarm, g), 1);
                 const bool ran2 = std::isfinite(Lseen);
                 if (ran2) take(solve_from(gseen, g), 2);   // the best gamma found so far, at any T
                 for (size_t ci = 0; ci < g_cf_g10.size(); ci++) { double s0[D_G_A]; std::copy(gam0, gam0 + D_G_A, s0); s0[10] = g_cf_g10[ci]; take(solve_from(s0, g), 3 + (int)ci); }
                 double best = HUGE_VAL; for (int si = 0; si < NS; si++) best = std::min(best, Ls[si]);
-                if (best < HUGE_VAL) for (int si = 0; si < NS; si++) { if (si == 2 && !ran2) continue; s_ran[si]++;
+                if (best < HUGE_VAL) for (int si = 0; si < NS; si++) { if ((si == 2 && !ran2) || (si == 1 && !g_cf_op)) continue; s_ran[si]++;
                     if (Ls[si] <= best) { s_win[si]++; double other = HUGE_VAL; for (int sj = 0; sj < NS; sj++) if (sj != si) other = std::min(other, Ls[sj]);
                         const double m = other < HUGE_VAL ? 2.0 * n * (other - best) : 0.0; s_msum[si] += m; s_mmax[si] = std::max(s_mmax[si], m); } }
             }
@@ -4253,7 +4255,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_g10","cf_mresp","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_g10","cf_mresp","cf_op","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4584,6 +4586,8 @@ int main(int argc, char **argv) {
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 g_cf_multi = get_opt(opt, "cf_multi", "0") == "1";
                 g_cf_mresp = get_opt(opt, "cf_mresp", "0") == "1";
+                g_cf_op = get_opt(opt, "cf_op", "1") == "1";
+                if (g_cf_multi && !g_cf_op) std::cout << "cf_op=0: no separate operating-gamma start (slot 'operating' in the start diagnostics is the warm start)\n";
                 if (g_cf_mresp) std::cout << "cf_mresp=1: true M responds to the purchases rate (two-tax wedge, K and L fixed): M r, t1 r^beta\n";
                 if (opt.count("cf_g10")) { g_cf_g10.clear(); std::stringstream ss(get_opt(opt, "cf_g10", "")); std::string tok;
                     while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_g10.push_back(std::strtod(tok.c_str(), nullptr)); }
