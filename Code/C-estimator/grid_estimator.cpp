@@ -3165,14 +3165,25 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             evals++;
             return L;
         };
+        // start diagnostics (cf_multi): per start s, wins (unique or tied best), and its marginal value = min L over the other starts
+        // minus the best L (in TS units 2n dL); local measure, since dropping a start would also change later warm paths
+        const int NS = 3 + (int)g_cf_g10.size();   // 0 operating, 1 warm, 2 best-so-far, 3.. gamma10 = cf_g10[s-3]
+        std::vector<long> s_win(NS, 0), s_ran(NS, 0); std::vector<double> s_msum(NS, 0.0), s_mmax(NS, 0.0);
         auto Lprof = [&](double T) -> double {
             setT(T); double g[D_G_A], gb[D_G_A];
             double L = solve_from(g_cf_cold || g_cf_multi ? gam0 : gwarm, gb);
-            if (g_cf_multi) {   // more starts: warm path, then the operating gamma with the counterfactual tilt gamma[10] moved
-                auto take = [&](double Lc) { if (std::isfinite(Lc) && (!std::isfinite(L) || Lc < L)) { L = Lc; std::copy(g, g + D_G_A, gb); } };
-                take(solve_from(gwarm, g));
-                if (std::isfinite(Lseen)) take(solve_from(gseen, g));   // the best gamma found so far, at any T
-                for (double c : g_cf_g10) { double s0[D_G_A]; std::copy(gam0, gam0 + D_G_A, s0); s0[10] = c; take(solve_from(s0, g)); }
+            if (g_cf_multi) {   // more starts: warm path, best so far, then the operating gamma with the counterfactual tilt gamma[10] moved
+                std::vector<double> Ls(NS, HUGE_VAL); Ls[0] = std::isfinite(L) ? L : HUGE_VAL;
+                auto take = [&](double Lc, int si) { Ls[si] = std::isfinite(Lc) ? Lc : HUGE_VAL;
+                                                     if (std::isfinite(Lc) && (!std::isfinite(L) || Lc < L)) { L = Lc; std::copy(g, g + D_G_A, gb); } };
+                take(solve_from(gwarm, g), 1);
+                const bool ran2 = std::isfinite(Lseen);
+                if (ran2) take(solve_from(gseen, g), 2);   // the best gamma found so far, at any T
+                for (size_t ci = 0; ci < g_cf_g10.size(); ci++) { double s0[D_G_A]; std::copy(gam0, gam0 + D_G_A, s0); s0[10] = g_cf_g10[ci]; take(solve_from(s0, g), 3 + (int)ci); }
+                double best = HUGE_VAL; for (int si = 0; si < NS; si++) best = std::min(best, Ls[si]);
+                if (best < HUGE_VAL) for (int si = 0; si < NS; si++) { if (si == 2 && !ran2) continue; s_ran[si]++;
+                    if (Ls[si] <= best) { s_win[si]++; double other = HUGE_VAL; for (int sj = 0; sj < NS; sj++) if (sj != si) other = std::min(other, Ls[sj]);
+                        const double m = other < HUGE_VAL ? 2.0 * n * (other - best) : 0.0; s_msum[si] += m; s_mmax[si] = std::max(s_mmax[si], m); } }
             }
             if (std::isfinite(L)) std::copy(gb, gb + D_G_A, gwarm);   // warm start along T (theta fixed)
             std::copy(gb, gb + D_G_A, glast);
@@ -3244,6 +3255,14 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
                                                      hhi = Tacc_hi; std::copy(gacc_hi, gacc_hi + D_G_A, ghh); }
         }
         g_inner_nm = nm_s; g_inner_dual = du_s;
+        if (g_cf_multi) {
+            std::cout << "  starts (wins/ran, mean and max marginal TS when it wins):";
+            for (int si = 0; si < NS; si++) {
+                const std::string nm = si == 0 ? "operating" : si == 1 ? "warm" : si == 2 ? "best-so-far" : "g10=" + std::to_string((int)g_cf_g10[si - 3]);
+                std::cout << " | " << nm << " " << s_win[si] << "/" << s_ran[si] << " " << (s_win[si] ? s_msum[si] / s_win[si] : 0.0) << " " << s_mmax[si];
+            }
+            std::cout << "\n" << std::flush;
+        }
         static const char *tnm[10] = {"level", "diff_beh", "diff_total", "elast_x", "elast_claims", "overrep", "gap", "true_credit", "loss_t1", "revenue"};
         const bool lev = g_cf_target == 0;   // credit_hat and revenue_* are claims-derived: meaningful for cf_target=level only (NA otherwise)
         std::cout << "  Delta " << Dl << ": T_hat " << That << " (T at operating gamma " << T0 << "), TS_min " << TSmin

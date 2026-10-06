@@ -131,6 +131,78 @@ section is the justification for the design, not a restatement of it. -->
 
 - Full derivations: Schennach (2014), Theorem F.1 and its proof; [`Paper/sections/9999-elvis.qmd`]{.content-visible when-meta="draft"}.
 
+## Counterfactual implementation {#sec-app-cf-implementation}
+
+This section states every formula the counterfactual computes, for one firm-year $i$ and one candidate value $M$ of its true materials. Materials are measured as real expenditure (nominal expenditure divided by $p_{\text{gdp}}$), so purchase credits are $\tau_{P,it}M$. The counterfactual purchases rate is $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$; the rate on sales $\tau_{S,it}$ does not change.
+
+**Held fixed.** The detection and cost parameters $\theta=(\lambda_1,\bar\lambda,\delta_0,\delta_1,\delta_2)$ at the operating point; capital and labour; productivity $\omega_{it}$, the cost shock $\psi_{it}$ and the output measurement error $\varepsilon_{it}$; prices $P_t$, $\rho_t$; and the detection scale $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$, which uses the industry's lagged mean of reported materials and so does not react within the year.
+
+### Baseline objects at a candidate $M$
+
+From the data $Z_{it}$ and a candidate $M\in\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$:
+$$
+e=M^*_{it}-M,\qquad x=\lambda_{0,jt}\,e,\qquad B\equiv1-(1+\lambda_1)x^{\lambda_1}.
+$$
+The baseline evasion FOC, $\tau_{P,it}\rho_t\big(1-(1+\lambda_1)x^{\lambda_1}\big)=\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$, says that $B$ is the firm's marginal cost of evasion relative to its marginal benefit, $B=\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}/(\tau_{P,it}\rho_t)$. Each candidate $M$ therefore pins down the firm's type $(\omega,\psi)$, and the tilt integrates over candidates.
+
+### New evasion
+
+At the new rate, the same marginal cost (same $\omega$, $\psi$, linear cost in $e$) meets a marginal benefit scaled by $1+\Delta$:
+$$
+(1+\Delta)\tau_{P,it}\rho_t\big(1-(1+\lambda_1)x'^{\lambda_1}\big)=\tau_{P,it}\rho_t B
+\quad\Longrightarrow\quad
+x'^{\lambda_1}=\max\Big\{0,\ \frac{1-B/(1+\Delta)}{1+\lambda_1}\Big\},\qquad e'=x'/\lambda_{0,jt}.
+$$ {#eq-app-cf-eprime}
+
+Since $B/(1+\Delta)>0$, $x'^{\lambda_1}<1/(1+\lambda_1)$: the new evasion stays below the FOC ceiling $c_{\lambda_1}$ for any $\Delta$. A firm with $B\ge1+\Delta$ stops overreporting.
+
+**Why $e'$ does not depend on the response of $M$.** The evasion FOC contains $\tau_{P,it}\rho_t$, the detection probability $q(e)$ through $\lambda_{0,jt}$ and $\lambda_1$, and the marginal cost $\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$. None of these is $M$: detection is scaled by the industry's lagged reported materials, not the firm's own, and the cost depends on productivity, not on the input level. So when $M$ re-optimizes, the evasion FOC is unchanged and @eq-app-cf-eprime holds as is. The candidate $M$ enters $e'$ only through the baseline $B$, as the firm's type. (Symmetrically, the materials FOC below contains no $e$: $M\perp e\mid\omega$.)
+
+### Response of true materials
+
+The materials FOC with the two rates (@sec-model) is, with true output $Y=K^{\alpha_K}L^{\alpha_L}M^{\beta}\exp(\omega)$,
+$$
+(1-\tau_{S,it})P_t\,\beta K^{\alpha_K}L^{\alpha_L}M^{\beta-1}\exp(\omega)=(1-\tau_{P,it})\rho_t
+\quad\Longrightarrow\quad
+M=\left[\frac{(1-\tau_{S,it})P_t\beta K^{\alpha_K}L^{\alpha_L}\exp(\omega)}{(1-\tau_{P,it})\rho_t}\right]^{\frac1{1-\beta}}.
+$$
+Taking the ratio of this solution at $\tilde\tau_{P,it}$ and at $\tau_{P,it}$, everything except the purchases rate cancels:
+$$
+r_{it}(\Delta)\equiv\frac{M(\Delta)}{M}=\left(\frac{1-(1+\Delta)\tau_{P,it}}{1-\tau_{P,it}}\right)^{-\frac1{1-\beta}}.
+$$ {#eq-app-cf-r}
+
+**Why $r$ does not depend on $M$.** The level of $M$ is set by $K$, $L$, $\omega$, $P_t$, $\rho_t$ and $\tau_{S,it}$, all held fixed, so they cancel in the ratio. The ratio depends only on $\tau_{P,it}$, $\Delta$ and $\beta$. It is therefore the same for every candidate $M$ of a firm: whatever the firm's true materials are, they scale by the same factor. With $\beta\approx0.39$ and $\tau_P\approx0.088$, the elasticity of $M$ with respect to the purchases rate at $\Delta=0$ is $\tau_P/[(1-\beta)(1-\tau_P)]\approx0.16$. The new true materials are $M'=r_{it}(\Delta)M$, and reported materials become $M'+e'$.
+
+Output and the sales tax on sales scale with $M^{\beta}$, holding $K$, $L$, $\omega$ and the measurement error $\varepsilon$ fixed: $Y'=r_{it}^{\beta}Y$, so the observed sales tax on sales becomes $t1_{it}\,r_{it}^{\beta}$, where $t1_{it}=\tau_{S,it}\times$ nominal reported sales.
+
+### Claimed deductions and revenue
+
+Claims are the credit on true purchases plus the credit on undetected overreporting:
+$$
+C_i(\Delta;M)=(1+\Delta)\tau_{P,it}\Big[r_{it}(\Delta)\,M+\big(1-q(e')\big)e'\Big],\qquad q(e')=x'^{\lambda_1},
+$$ {#eq-app-cf-claims}
+and net sales-tax revenue from the firm, in real terms, is
+$$
+R_i(\Delta;M)=\frac{t1_{it}\,r_{it}(\Delta)^{\beta}}{p_{\text{gdp},t}}-C_i(\Delta;M).
+$$ {#eq-app-cf-revenue}
+With true materials held fixed (the robustness version), $r_{it}\equiv1$: claims use $M$ and the sales tax is the observed $t1_{it}/p_{\text{gdp},t}$.
+
+### Estimation
+
+The target is the expected value per firm-year, in units of $S=n^{-1}\sum_i\tau_{P,it}M^*_{it}$ (the mean claimed credit in the data), entered as one more moment with its own parameter $T$:
+$$
+g_{10}(M,Z_{it};T)=\frac{R_i(\Delta;M)}{S}-T .
+$$
+Only $\gamma$ is free; $\theta$ stays at the operating point [@AK2020, App. F]. For each firm the tilted moment is the importance-sampling average over draws $M^{(s)}$ of the latent,
+$$
+\tilde g_{10,i}=\sum_s w_{is}(\gamma)\,g_{10}(M^{(s)},Z_{it};T),\qquad w_{is}(\gamma)=\frac{\pi_{is}\exp\big(\gamma'g(M^{(s)},Z_{it})\big)}{\sum_{s'}\pi_{is'}\exp\big(\gamma'g(M^{(s')},Z_{it})\big)},
+$$
+where $\pi_{is}$ is the importance weight of draw $s$ with respect to the reference density $f^0_{M|Z}$ and $g$ includes $g_{10}$. The draws are the same for every $T$ and $\Delta$. The sales-tax term $t1_{it}r_{it}^{\beta}/(p_{\text{gdp},t}S)$ is the same for every draw of firm $i$: it cancels in the weights and adds a firm-level constant to $\tilde g_{10,i}$. It still enters the variance $\hat\Omega$ across firms. The moment is linear in $T$, so the profiled statistic is
+$$
+TS(T)=2n\min_{\gamma}\hat L_n(\hat\theta,\gamma;T),
+$$
+$\hat T$ is its minimizer, and the reported set is the conservative one, $\{T:TS(T)\le\chi^2_{d_g,.95}\}$ with $d_g=18$ (the 17 estimation rows plus row 10). Row 10 is left out of the reference measure's penalty, since it is bounded for each firm. Because a failed inner solve can only raise $TS$, each $\gamma$ problem is solved from several starting values (the operating $\gamma$, the solution at the previous $T$, and the best solution found so far), keeping the lowest; the set is the union of every $T$ accepted along the way, located by bisection outward from $\hat T$. Revenue per firm-year is $\hat T\times S$, and the set's bounds scale the same way.
+
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22); replaced by @sec-cf-gap (2026-10-03).**
 
