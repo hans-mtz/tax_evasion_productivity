@@ -59,7 +59,7 @@ Code/Thesis/              # one script per figure/table + 000-build-all.R
 | # | Chapter | Sources (copy from) | Status |
 |---|---|---|---|
 | 1 | Introduction | `Paper/sections/010-intro`, abstract in `Paper/Tax-Prod.qmd`, `001-TODO` | `[ ]` mostly new writing; abstract stale (no counterfactual) |
-| 2 | Model | Slides `200-model`, `600-opt-tax` (model/FOC parts); `Paper/sections/9999-tax-wedge` | `[ ]` |
+| 2 | Model | Slides `200-model`, `600-opt-tax` (model/FOC parts); `Paper/sections/9999-tax-wedge` | `[x]` done 2026-10-07 (prose, proof-read; appendix D aligned) |
 | 3 | Setting and data | `80-colombia`, `90-colombia-data`; Colombian tax-system notes from `30-lit-rev` | `[~]` outline written (`chapters/03-setting-data.qmd`); all 4 tables ported + rendered |
 | 4 | Testing for evasion | `200-deconv` §Testing (`#sec-tax-ev-test`), `11-the-story`, `56-id-evasion` "Testing for Tax Evasion" | `[ ]` |
 | 5 | Deconvolving tax evasion | `56-id-evasion` (Identifying Tax Evasion, non-parametric), `120-implementation`, `200-deconv` (moments, parametric MLE), `930-eps-density`; Slides `700-deconvolving-evasion` | `[ ]` split `200-deconv` between ch. 4 and 5 |
@@ -128,7 +128,7 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 
 | Day | Target | Status |
 |---|---|---|
-| Tue 10-06 – Wed 10-07 | Model chapter (`02-model.qmd`): Setup → Corporations from bullets to prose (draft-prose, two proof-reads, Hans approves); decide the δ_C and old SOC draft blocks | `[~]` outline + opening done |
+| Tue 10-06 – Wed 10-07 | Model chapter (`02-model.qmd`): Setup → Corporations from bullets to prose (draft-prose, two proof-reads, Hans approves); decide the δ_C and old SOC draft blocks | `[x]` done 2026-10-07 |
 | Wed 10-07 – Thu 10-08 | Ch. 8 text on the M-responding headline: claims arcs (1655), loss shares (1653), revenue figure/table and break-even (1651/1652), mean q (1657); replace "input decisions fixed" passages | `[ ]` |
 | Fri 10-09 | Numbers propagated: JMP abstract (full pass + "median overreporting", "after the raise"), intro para. 3, conclusion (1.9 → 1.5 percent), thesis abstract | `[ ]` |
 | Sat 10-10 – Sun 10-11 | Conclusion prose (Hans); `thanks:`, JEL codes | `[ ]` |
