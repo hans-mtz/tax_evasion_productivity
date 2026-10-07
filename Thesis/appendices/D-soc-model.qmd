@@ -8,10 +8,10 @@ This appendix presents the single-tax model that @sec-model nests, and derives t
 
 ## The single-tax model {#sec-app-single-tax}
 
-The single-tax model keeps every assumption of @sec-model except one: a single rate $\tau$ applies to both sales and purchases. The firm, taking capital and labour as given, solves
+The single-tax model keeps every assumption of @sec-model except one: a single rate $\tau$ applies to both sales and purchases. The firm solves
 $$
 \begin{aligned}
-  \max_{M,e}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau)\big(P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})-\rho_tM_{it}\big)-r_tK_{it}-w_tL_{it}\\
+  \max_{K,L,M,e}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau)\big(P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it})-\rho_tM_{it}\big)-r_tK_{it}-w_tL_{it}\\
   &+\big[1-q(e_{it})\big]\tau\rho_te_{it}-q(e_{it})\phi\tau\rho_te_{it}-\kappa_{it}(e_{it},\omega_{it}),
 \end{aligned}
 $$ {#eq-app-st-profit}
@@ -29,28 +29,28 @@ and firms for which $\tau\rho_t\le\partial \kappa_{it}(0,\omega_{it})/\partial e
 
 ### Setup
 
-Recall the firm's problem in the two-tax model, @eq-profit, and its two first-order conditions, @eq-foc-m and @eq-foc-e. Capital and labour are given, so the firm chooses only materials and overreporting. A candidate solution $(M_{it},e_{it})$ is a strict local maximum if the Hessian of expected profit with respect to $M_{it}$ and $e_{it}$ is negative definite at that point.
+Recall the firm's problem in the two-tax model, @eq-profit. The firm chooses capital, labour, materials, and overreporting, but the analysis uses only two first-order conditions, for materials (@eq-foc-m) and for overreporting (@eq-foc-e). Capital and labour are predetermined or dynamic, and the model does not solve for them. A candidate solution is a strict local maximum if the Hessian of expected profit is negative definite at that point.
 
-### The Hessian is diagonal
+### The evasion margin is separable
 
-Two features of the model make the Hessian easy to sign. First, $M_{it}\perp e_{it}$: neither the materials FOC (@eq-foc-m) nor the evasion FOC (@eq-foc-e) contains the other's choice variable, so the cross-partial between $M_{it}$ and $e_{it}$ is zero. Second, the output elasticity of materials is below one, $0<\beta<1$, so expected profit is strictly concave in materials,
-$$
-\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}^2}=(1-\tau_S)P_t\,\beta(\beta-1)K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-2}\exp(\omega_{it})<0.
-$$
-The Hessian is therefore diagonal,
+Overreporting is separable from the input choices. The probability of detection, the cost of evasion, and the credit on overreported materials do not depend on capital, labour, or materials, so every cross-partial between $e_{it}$ and the inputs $X_{it}=(K_{it},L_{it},M_{it})$ is zero. The Hessian of expected profit is therefore block-diagonal,
 $$
 \nabla^2\mathbb{E}[\pi_{it}]=
 \begin{bmatrix}
-\dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2} & 0\\[4pt]
-0 & \dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}^2}
+\dfrac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2} & \mathbf{0}'\\[4pt]
+\mathbf{0} & \nabla^2_{X}\mathbb{E}[\pi_{it}]
 \end{bmatrix},
 $$ {#eq-app-soc-hessian}
-and it is negative definite if and only if both diagonal entries are negative. The materials entry is negative, so the only condition the evasion margin adds to the firm's problem is
+where $\nabla^2_{X}\mathbb{E}[\pi_{it}]$ is the $3\times3$ Hessian with respect to the inputs and $\mathbf{0}$ is a $3\times1$ vector of zeros. Whatever the input choices require of that block, the evasion margin adds a single condition,
 $$
-\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2}<0.
+\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial e_{it}^2}<0,
+$$
+and places no restriction on the inputs, which place none on it. For materials, the only input whose first-order condition the analysis uses, the second-order condition holds because the output elasticity of materials is below one, $0<\beta<1$:
+$$
+\frac{\partial^2\mathbb{E}[\pi_{it}]}{\partial M_{it}^2}=(1-\tau_S)P_t\,\beta(\beta-1)K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-2}\exp(\omega_{it})<0.
 $$
 
-The materials choice places no restriction on the evasion technology, and vice versa, so the rest of this appendix analyzes the SOC for $e_{it}$ on its own.
+The rest of this appendix analyzes the SOC for $e_{it}$ on its own.
 
 ### The scalar condition
 
