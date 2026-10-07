@@ -10,6 +10,9 @@ source("Code/Thesis/001-setup.R")
 rd <- function(f) { p <- file.path(PRODUCTS_DIR, f); pm <- sub("\\.csv$", "-macbook.csv", p)
     if (file.exists(p) && length(readLines(p)) > 1) read.csv(p) else if (file.exists(pm)) read.csv(pm) else NULL }
 grid <- c(-0.3, -0.2, -0.1, -0.05, 0.05, 0.1, 0.2, 0.3)
+bracket <- c(-0.225, -0.25, -0.275, -0.29)   # break-even bracket (1651, M responds only): table rows, not plotted
+br <- bind_rows(lapply(bracket, function(x) rd(sprintf("1651-cf-revenue-mr1-D%s.csv", x)))) %>% mutate(version = "True materials respond")
+stopifnot(nrow(br) == length(bracket), all(br$cf_target == "revenue"), all(br$cf_mresp == 1), all(is.finite(c(br$hard_lo, br$hard_hi))))
 d <- bind_rows(
     bind_rows(lapply(grid, function(x) rd(sprintf("1651-cf-revenue-mr1-D%s.csv", x)))) %>% mutate(version = "True materials respond"),
     bind_rows(lapply(grid, function(x) rd(sprintf("1652-cf-revenue-mr0-D%s.csv", x)))) %>% mutate(version = "True materials fixed"))
@@ -19,9 +22,14 @@ stopifnot(all(d$cf_target == "revenue"), all(is.finite(c(d$hard_lo, d$hard_hi)))
           nrow(d) == 2 * (length(grid) + !is.null(z)))
 d <- d %>% mutate(rev = T_hat * scale, lo = hard_lo * scale, hi = hard_hi * scale,
                   version = factor(version, levels = c("True materials respond", "True materials fixed")))
-print(d %>% arrange(version, Delta) %>% select(version, Delta, rev, lo, hi, TS_min))
-write.csv(d %>% arrange(version, Delta) %>% select(version, Delta, rev, lo, hi, TS_min, crit),
+br <- br %>% mutate(rev = T_hat * scale, lo = hard_lo * scale, hi = hard_hi * scale, bracket = TRUE)
+out <- bind_rows(d %>% mutate(bracket = FALSE), br) %>% mutate(version = as.character(version)) %>% arrange(version, Delta)
+print(out %>% select(version, Delta, rev, lo, hi, TS_min, bracket))
+write.csv(out %>% select(version, Delta, rev, lo, hi, TS_min, crit, bracket),
           file.path(PRODUCTS_DIR, "ch08-cf-revenue.csv"), row.names = FALSE)
+# first bracket point whose 95% set excludes zero (headline)
+z0 <- out %>% filter(version == "True materials respond", lo > 0) %>% arrange(desc(Delta)) %>% slice(1)
+cat(sprintf("Largest Delta (closest to 0) whose set excludes zero: %.3f, set [%.0f, %.0f]\n", z0$Delta, z0$lo, z0$hi))
 # break-even (Hans, 2026-10-06): where the headline estimate crosses zero, by linear interpolation between adjacent Delta
 h <- d %>% filter(version == "True materials respond") %>% arrange(Delta)
 k <- which(diff(sign(h$rev)) != 0)[1]
@@ -31,15 +39,15 @@ dodge <- position_dodge(width = 1.6)
 p <- ggplot(d, aes(x = 100 * Delta, y = rev, colour = version, group = version)) +
     geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
     { if (!is.na(be)) list(annotate("segment", x = 100 * be, xend = 100 * be, y = -Inf, yend = 0, colour = "grey55", linewidth = 0.3, linetype = "dashed"),
-                           annotate("text", x = 100 * be, y = min(d$lo), label = sprintf("Break-even: %+.0f%%", 100 * be), colour = "grey35",
+                           annotate("text", x = 100 * be, y = min(d$lo), label = paste0("Break-even: \u2212", sprintf("%.0f%%", abs(100 * be))), colour = "grey35",
                                     hjust = 1.08, vjust = 0, size = 3.2, family = THESIS_FONT)) } +
     geom_errorbar(aes(ymin = lo, ymax = hi), width = 1.2, linewidth = 0.5, position = dodge) +
     geom_line(linewidth = 0.5, position = dodge) +
     geom_point(size = 2, position = dodge) +
     scale_colour_manual(values = c("True materials respond" = THESIS_COLS[1], "True materials fixed" = THESIS_COLS[2]), name = NULL) +
-    scale_x_continuous(breaks = 100 * c(-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3), labels = function(x) paste0(ifelse(x > 0, "+", ""), x, "%")) +
-    scale_y_continuous(labels = scales::label_comma()) +
-    labs(x = "Change in the purchases tax rate", y = "Net sales-tax revenue per firm-year") +
+    scale_x_continuous(breaks = 100 * c(-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3), labels = function(x) paste0(ifelse(x > 0, "+", ifelse(x < 0, "\u2212", "")), abs(x), "%")) +
+    scale_y_continuous(labels = function(v) sub("^-", "\u2212", scales::label_comma()(v))) +
+    labs(x = expression("Change in the purchases rate, " * Delta), y = "Net sales-tax revenue per firm-year") +
     theme_thesis()
 save_thesis_plot(p, "ch08-cf-revenue-bounds")
 cat("Saved: Thesis/figures/ch08-cf-revenue-bounds.{png,pdf}; Code/Products/ch08-cf-revenue.csv\n")

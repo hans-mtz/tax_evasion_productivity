@@ -27,20 +27,24 @@ f0 <- function(v) formatC(v, format = "f", digits = 0, big.mark = ",")
 f3 <- function(v) formatC(v, format = "f", digits = 3)
 neg <- function(s) sub("^-", "$-$", s)
 set0 <- function(a, b) paste0("[", neg(f0(a)), ", ", neg(f0(b)), "]")
+# 2026-10-07 (Hans, D6): the table reports the cost of evasion as the loss L, in pesos and relative to the sales tax owed on
+# sales (observed, positive base; the same base as the revenue elasticities). True credits E[tau_P M], potential revenue E[P]
+# and L/|P| (negative latent base, poorly bounded) are still computed above but no longer shown.
+stopifnot(abs(lt$int$mean_t1p - t1p) < 1e-6)   # interior run: no extra t1, so E[L] = T x mean t1/pgdp
+Lp <- c(lt$int$T_hat, lt$int$hard_lo, lt$int$hard_hi) * t1p
 tbl <- tibble(
-    ` ` = c("True credits, $E[\\tau_PM]$", "Potential revenue, $E[P]$", "Increase in net refunds, $L/\\vert P\\vert$",
+    ` ` = c("Loss per firm-year, interior firms (real pesos)",
             "Loss / sales tax on sales: interior firms", "\\quad (A) evader industries", "\\quad (B) all firms"),
-    Estimate = c(f0(tc$T_hat * sc), neg(f0(P["est"])), f3(-g$T_hat), pc(lt$int$T_hat), pc(lt$A$T_hat), pc(lt$B$T_hat)),
-    `95\\% set` = c(set0(tc$hard_lo * sc, tc$hard_hi * sc), set0(P["lo"], P["hi"]),
-                    paste0("[", f3(-g$hard_hi), ", ", f3(-g$hard_lo), "]"),
-                    sapply(lt, function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]"))),
-    `$TS_{\\min}$` = formatC(c(tc$TS_min, tc$TS_min, g$TS_min, lt$int$TS_min, lt$A$TS_min, lt$B$TS_min), format = "f", digits = 1))
+    Estimate = c(f0(Lp[1]), pc(lt$int$T_hat), pc(lt$A$T_hat), pc(lt$B$T_hat)),
+    `95\\% set` = c(set0(Lp[2], Lp[3]), sapply(lt, function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]"))),
+    `$TS_{\\min}$` = formatC(c(lt$int$TS_min, lt$int$TS_min, lt$A$TS_min, lt$B$TS_min), format = "f", digits = 1))
 print(tbl)
 
 tt_obj <- tt(tbl, width = c(1.6, 0.6, 0.9, 0.5), notes = paste0(
-    "ELVIS interior firms, real pesos per firm-year, current rates. $L=\\tau_P(1-q(e))e$; $P=t1/p_{gdp}-\\tau_PM$; $R=P-L$. ",
-    "The $E[P]$ set follows from the $E[\\tau_PM]$ set because $t1$ is observed (mean ", f0(t1p), "). ",
-    "Loss $L$ as a share of the sales tax owed on sales: (A) adds the trimmed firms' tax, (B) every firm's tax in the sample; their loss is set to zero, so (A) and (B) are lower bounds. Each set is the union of the values accepted over several solver runs. ",
+    "Current rates. Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting, estimated with its own moment. ",
+    "Interior firms: ELVIS sample, mean sales tax on sales ", f0(t1p), " real pesos per firm-year. ",
+    "(A) adds the trimmed firms' sales tax and (B) every other firm's; their loss is set to zero, so (A) and (B) are lower bounds. ",
+    "Each set is the union of the values accepted over several solver runs. ",
     "Conservative test, $TS\\le\\chi^2_{", g$d_g, ",.95}=", sprintf("%.2f", g$crit), "$.")) |>
     style_tt(i = "notes", fontsize = 0.8)
 

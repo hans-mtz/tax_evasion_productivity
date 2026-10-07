@@ -32,6 +32,73 @@ Claimed deductions rise more than one-for-one with the purchases rate, and they 
 The curve rises gently on the tax-cut side and steeply on the tax-increase side. A 0.5 percent increase in the rate already raises claimed deductions significantly, by 16–28 percent, lowering revenue, while claimed deductions fall significantly below their current level only after a cut of at least 8 percent.
 :::
 
+<!--
+OUTLINE (approved 2026-10-07): from "Government Revenue and Claimed Deductions" to "Scope and limits".
+Headline: true materials RESPOND to the rate (two-tax wedge in the materials FOC); fixed materials = robustness.
+
+Job: the only place that measures how net sales-tax revenue from overreporting firms responds to the purchases rate,
+and through which channels (RAP part 2: rates and revenue).
+Reader questions coming in (abstract; JMP intro para. 1; ch. 2 line "the government can indirectly influence how much material"):
+  Q1 why does tau_P move revenue?  Q2 what responds, what is held fixed (why do TRUE materials respond)?
+  Q3 why net refunds?  Q4 slope, break-even, precision?  Q5 mechanical vs input vs evasion; why smaller for cuts?
+  Q6 cost of overreporting today, vs external evidence?  Q7 dependence on fixed theta, detection level, partial equilibrium?
+Used later: 1.4 / 0.2 + 0.2 / smaller for cuts / net refunds / 1.7 percent of sales tax per 1 percent / -17 percent / 4.7 / 1.5;
+labels sec-counterfactual, sec-cf-gap. All formulas live in appendix A (sec-app-cf-implementation).
+
+Government revenue and claimed deductions (Q1, Q2)
+ 1. The question is local: how revenue from these firms responds to tau_P at the current state, not the revenue-maximizing rate.
+ 2. Revenue = sales tax on sales - claims; claims = credit on true materials + credit on undetected overreporting
+    (eq-govt-rev with M(Delta) and Y(Delta)).
+ 3. A higher tau_P works through three channels: mechanical (each credited peso is worth more); evasion (firms overreport
+    more, ch. 2 comparative static); input (two-tax wedge raises true M, so claims rise, and output and the sales tax rise too).
+ 4. Held fixed, and why: enforcement and penalties (Colombian enforcement of the period), tau_S, K, L, omega, eps, prices.
+
+Counterfactual design (Q2, Q4)
+ 5. New evasion in closed form for each type; independent of the materials response; firms with B >= 1+Delta stop (eq-counter-e).
+ 6. True materials scale by r(Delta), a function of tau_P, beta and Delta only, the same for every draw of a firm; output and
+    the sales tax scale by r^beta. One equation in the body, the rest in appendix A. Magnitude: -4.4 / +4.8 percent at -/+30 percent.
+ 7. Each counterfactual quantity is an auxiliary parameter with its own moment; theta fixed at the operating point, only gamma
+    free [AK2020]; conservative sets by test inversion, d_g = 18, chi2 = 28.87.
+ 8. Two summaries: revenue levels on a Delta grid (-30 to +30 percent); paired differences at +-1, 1.5, 2 percent as arc
+    elasticities (same draws, so precise). Bases: mean sales tax on sales and |R(0)|; why not the textbook elasticity (negative base).
+ 9. Which firms: interior firms in the nine industries; (A) and (B) add the other firms mechanically.
+
+Results (Q3-Q5)
+10. At the current rate interior firms receive net refunds: R(0) = -391 [-605, -174] per firm-year; claims exceed the sales tax
+    for 57 percent of firm-years. A fact of the data (D1): stated, not explained.
+11. Revenue falls steadily with the rate: -391 to -1,270 at +30 percent, +264 [49, 480] at -30 percent. Break-even of the point
+    estimate at about -17 percent; the set excludes zero from about -27.5 percent (bracket rows in the table, D2).
+    fig-cf-revenue, tbl-cf-revenue; economy totals (A), (B) in tbl-cf-revenue-totals (D3; Hans decides after reading the text).
+12. Near the current rate, each 1 percent increase lowers revenue by about 1.7 percent of the sales tax on sales
+    (tbl-cf-elasticities, revenue columns).
+13. Claims respond more than one-for-one: 1.39 at +1 percent, 1.32 at -1 percent. Input response 0.18 on both sides; evasion
+    response 0.21 vs 0.14, gap widening at +-2 percent (0.23 vs 0.12). Two margins (D4): on an increase, every firm in the sample
+    already overreports, so the response is intensive only (no entrants: firms not overreporting at baseline are outside the
+    structural sample); on a cut, firms overreport less and the smallest evaders stop (B >= 1+Delta), one by one.
+    tbl-cf-elasticities, fig-cf-beh-elast.
+14. The input channel lowers revenue: the extra sales tax from output is 3-5 times smaller than the extra credit on true
+    materials, so the curve is steeper when materials respond (-256 vs -227 between +-5 percent).
+
+Revenue lost to undetected overreporting, sec-cf-gap (Q6)
+15. The cost of overreporting at current rates is the loss L, the credit paid on undetected overreporting (D6: the cleanest
+    measure; observed, positive base, same as the revenue elasticities): 72 [43, 109] per firm-year, 4.7 percent [2.8, 7.1] of
+    the sales tax owed on sales; (A) 4.1, (B) at least 1.5 (lower bounds); compare 1.2-2.7 percent detected by tax authorities.
+
+Robustness (Q7)
+16. True materials fixed: same shape, sets overlap at every Delta (1652, revenue only; claims with fixed M after the JMP, D5).
+
+Scope and limits (Q7)
+17. Partial equilibrium: materials and evasion respond, everything else fixed; moderate Delta (types held fixed).
+18. theta fixed at one passing operating point; the detection level is not identified, so results are conditional on it;
+    relative detection risk barely depends on it.
+19. Trimmed firms enter mechanically.
+
+Exclusions: formulas for r, claims, revenue, IS (appendix A); claims-level figure and table 1622 (out until claims levels are
+rerun after the JMP); the "why Claims, not revenue" note and the CV robustness block (obsolete); back-of-envelope
+(sec-app-backofenvelope, superseded by sec-cf-gap); mean detection probability and quantiles (Estimates); fixed-M claims
+elasticities (after the JMP); true credits, E[P] and L/|P| (out of the loss table, D6).
+-->
+
 ## Government Revenue and Claimed Deductions
 
 <!-- how do I do it -->
