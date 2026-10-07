@@ -66,7 +66,7 @@ The model's notation matches the variables of @tbl-sum-stats: output $Y_{it}$, c
 
 
 
-## Expected profit
+## Expected profit {#sec-exp-prof}
 
 The firm might choose to increase its reported material consumption by $e_{it}$ units to claims additional credits on materials; $M^*_{it}=M_{it}+e_{it}$ is overreported materials. Capital goods and labour expenses cannot be deducted from sales tax liabilities.
 
@@ -74,9 +74,9 @@ Overreporting is detected with a probability $q(e_{it})$, which increases with t
 
 Evaders pay $\kappa_{it}(e_{it},\omega_{it})$ for each unit overreported. The cost is increasing in the overreported amount, is zero for a firm that does not overreport, $\kappa_{it}(0,\omega_{it})=0$, and is paid whether or not the firm is caught. $\kappa_{it}(e_{it},\omega_{it})$ represents direct costs of overreporting such as the price of fake invoices and opportunity costs, any resource reallocated from a productive to the tax evasion activity, such as the manager's time.
 
-The cost of evasion depends on productivity, which lets the model match how overreporting varies with firm size. In Ecuador, the share of firms' deductions backed by receipts from fake firms rises with firm revenue over most of the size distribution but drops sharply at the very top [@Carrillo2022, p. 6]. Even if the probability of detection varied with size, it could not explain the rise with size: larger firms are more visible to the tax authority, so their probability of detection is, if anything, at least as high as that of smaller firms, which would make overreporting fall with size, not rise. Only the drop at the top could come from a higher probability of detection.
+The cost of evasion depends on productivity, which lets the model match the observed pattern in recent evidence. In Ecuador, the share of firms' deductions backed by receipts from fake firms rises with firm revenue over most of the size distribution but drops sharply at the very top [@Carrillo2022, p. 6]. The probability of detection could not explain this patterm. If allowed to vary with size, it will imply that larger firms overreport more because their probability of detection is lower. This does not make economic sense. Larger firms are more visible to the tax authority, so their probability of detection is, if anything, at least as high as that of smaller firms. Only the drop at the top could come from a higher probability of detection.
 
-In the model, the probability of detection does not depend on size, so the cost of evasion produces the whole pattern, the drop included. More productive firms are larger and have more resources to devote to evasion, so their cost of evasion is lower. For the most productive firms, however, the cost rises: they can turn to legal avoidance instead of fake invoices [@Carrillo2022, p. 6], they have more to lose if caught, and evading requires more employees to collude [@Almunia2018]. A cost of evasion that falls with productivity over most of the distribution and rises at the top captures both forces; @sec-counterfactual specifies it as convex in productivity.
+In the model, the cost of evasion produces the whole pattern because it is a better candidate to explain the pattern. More productive firms are larger and have more resources to allocate to evasion, and thus their cost of evasion is lower. For the most productive firms, however, the cost rises of relative to other tools: they can turn to legal avoidance instead of overreporting, which is illegal [@Carrillo2022, p. 6]. The largest firms also have more to lose if caught, and evading requires more employees to collude [@Almunia2018]. A cost of evasion that falls with productivity over most of the distribution and rises at the top captures both forces. Therefore, I assume a cost of evasion convex in productivity.
 
 <!-- I leave the functional forms of $q$ and $\kappa$ open here; @sec-counterfactual chooses them, guided by the second-order condition (@sec-app-soc-model). -->
 
@@ -104,15 +104,15 @@ The first term is revenue net of the tax on sales; the second, the cost of true 
 
 ### The materials condition {#sec-model-foc-m}
 
-The firm uses materials until their marginal revenue, net of the tax on sales, equals their price, net of the credit:
+Taking the first-order conditions of @eq-profit with respect to $M_{it}$, we have,
 
 $$
 (1-\tau_S)P_t\,\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})=(1-\tau_P)\rho_t.
 $$ {#eq-foc-m}
 
-@eq-foc-m is the familiar optimality condition: the left-hand side is the marginal revenue product of materials and the right-hand side is the price of materials, both net of taxes. Overreporting does not enter it, because the credit on $e_{it}$ does not depend on true materials.
+@eq-foc-m looks familiar except for the tax wedge: the left-hand side is the marginal revenue product of materials and the right-hand side is the price of materials, both net of taxes. 
 
-The taxes, however, do enter it. By changing either rate, the government changes the price of materials relative to output, and with it the firm's choice of materials. If $(1-\tau_P)/(1-\tau_S)>1$, materials become more expensive relative to output than without taxes, and the firm uses less of them; if the ratio is below one, as when the rate on purchases exceeds the rate on sales, materials become cheaper and the firm uses more of them.
+The taxes, however, do enter it when $\tau_P\not=\tau_S$. By changing either rate, the government changes the price of materials relative to output, and with it the firm's choice of materials. If $(1-\tau_P)/(1-\tau_S)>1$, materials become more expensive relative to output than without taxes, and the firm uses less of them; if the ratio is below one, as when the rate on purchases exceeds the rate on sales, materials become cheaper and the firm uses more of them.
 
 Multiplying @eq-foc-m by $M_{it}$, dividing by measured output, $P_tY_{it}$, and taking logs gives the log share of materials in output, net of sales taxes:
 
@@ -120,15 +120,14 @@ $$
 \ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln\beta-\varepsilon_{it}.
 $$ {#eq-share-net}
 
-With a single rate, the tax terms cancel and the gross share, $\rho_tM_{it}/P_tY_{it}$, satisfies the same equation. The two shares differ little in the data: the log ratio $\ln\big((1-\tau_S)/(1-\tau_P)\big)$ has a standard deviation of 0.05 across firm-years, against 0.34 for the log gross share.
+With a single rate, the tax terms cancel and the gross share, $\rho_tM_{it}/P_tY_{it}$, satisfies the same equation as the no-tax optimization condition. The two shares differ little in the data: the log ratio $\ln\big((1-\tau_S)/(1-\tau_P)\big)$ has a standard deviation of 0.05 across firm-years, against 0.34 for the log gross share.
 
-Productivity does not appear in the share, which is why a deviation of the reported share from $\ln\beta$ separates overreporting from productivity. @sec-testing builds on @eq-share-net to identify $\beta$ and to test for overreporting, and @sec-deconvolution and @sec-pf use it too.
-
+Productivity does not appear in the share. If we knew $\ln\beta$, a deviation of the reported share from it could separate overreporting from productivity. Furthermore, if we knew moments or the distribution of $\varepsilon_{it}$, then we could estimate moments and properties of the distribution of overreporting. @sec-testing builds on @eq-share-net to identify $\beta$ and to test for overreporting. @sec-deconvolution employs deconvolution techniques to learn about the distribution of overreporting extracting $\varepsilon_{it}$.
 
 
 ### The evasion condition
 
-The firm overreports until the credit it expects to keep on the marginal peso equals the marginal cost of evasion. For an interior choice,
+The first-order contidion with respect to $e_{it}$ shows that,
 
 $$
 \tau_P\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]=\frac{\partial\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}}.
@@ -142,7 +141,7 @@ $$ {#eq-foc-e-elas}
 
 The left-hand side is the marginal benefit of overreporting, and the right-hand side is its marginal cost. The marginal benefit decreases with the fine, $\phi$, the probability of detection, $q(e_{it})$, and the elasticity of the probability of detection, $\xi_{q,e}$.
 
-A higher rate on purchases raises overreporting. Only the rate on purchases enters @eq-foc-e, because the tax on sales does not depend on reported materials. A higher rate on purchases raises the credit on every fictitious peso, whether or not the firm is caught, so the firm overreports more. By the implicit function theorem, $\partial e^*_{it}/\partial\tau_P>0$ for any probability of detection and cost of evasion that satisfy the second-order condition, which @sec-app-soc-model derives. This sign is the prediction that @sec-fiscal tests with the 1983 reform, and $e^*_{it}(\tau_P)$ is the object that @sec-counterfactual estimates.
+A higher tax rate on purchases raises overreporting. A higher rate on purchases raises the credit on every fictitious peso, whether or not the firm is caught, so the firm overreports more. By the implicit function theorem, $\partial e^*_{it}/\partial\tau_P>0$ for any probability of detection and cost of evasion that satisfy the second-order condition (@sec-app-soc-model). This sign is the prediction that @sec-fiscal tests with the 1983 reform, and $e^*_{it}(\tau_P)$ is the object that @sec-counterfactual estimates.
 
 Some firms choose not to overreport at all. For them, the marginal cost of evasion exceeds the marginal benefit at any positive level of overreporting, so @eq-foc-e does not hold with equality; instead, at $e_{it}=0$,
 
@@ -156,8 +155,10 @@ The model allows the two rates to differ, as they do in the data. Firms sell and
 
 The model departs from standard production-function methods that depend on the flexible input [@Levinsohn2003; @Doraszelski2013; @Ackerberg2015; @Gandhi2020] in two ways. First, true materials are unobserved. Second, firms pay sales taxes. This matters if the rate on sales differs from the rate on purchases, the taxes change the price of materials relative to output. Hence, the government can indirectly influence how much material the firm uses and thus real output(@sec-model-foc-m).
 
-Regarding the firm's evasion decision in the tradition of @Allingham1972, @Almunia2018 sit close to the model presented in this section. I departs from it in three ways. First, the firm overreports a deductible input under a sales tax that credits purchases, rather than underreporting revenue under a tax on profits. Firms might also have incentives to underreport sales to reduce their tax bill. Theory and evidence indicate that underreporting of sales matters more for companies selling directly to consumer than firms selling to other firms. First, because of thinner paper trail. Consumers do not always require invoices for their purchases, whereas firms require invoices so they can deduct their purchases. Second, firms selling to other firms face counterincentives, which renders coordination between sellers and buyers impossible: the seller firm has incentives to underreport the sale, but the buyer firm to overreport the purchase. Lastly, the literature support this claim [@Slemrod2019]. I focus on manufacturing firms in Colombia during 1981 and 1991. These firms sold a large share of their output to other firms, wholesale companies or retailers. The evidence points that the underrerporting of Second, the probability of detection depends on the firm's choices only through the amount overreported; it does not jump when the firm's reported revenue crosses a threshold. Third, the cost of evasion varies with the firm's productivity.
+Regarding the firm's evasion decision in the tradition of @Allingham1972, @Almunia2018 sit close to the model presented in this section. I depart from them in three ways. First, the firm overreports a deductible input under a sales tax that credits purchases, rather than underreporting revenue under a tax on profits. Firms might also have incentives to underreport sales to reduce their tax bill. Theory and evidence indicate that underreporting of sales matters more for companies selling directly to consumer than firms selling to other firms. First, because of thinner paper trail. Consumers do not always require invoices for their purchases, whereas firms require invoices so they can deduct their purchases. Second, firms selling to other firms face counterincentives, which renders coordination between sellers and buyers impossible: the seller firm has incentives to underreport the sale, but the buyer firm to overreport the purchase. Lastly, the literature support this claim [@Slemrod2019]. I focus on manufacturing firms in Colombia during 1981 and 1991. These firms sold a large share of their output to other firms, wholesale companies or retailers. 
+
+Second, the probability of detection does not jump when the firm's reported revenue crosses a threshold. There is no discontinuity in the data we could exploit. Third, the cost of evasion varies with the firm's productivity, as explained before in this section (@sec-exp-prof).
 
 ### Corporations
 
-Corporations are corner firms by assumption. They share the technology of the other firms and may differ in productivity, but audited statements and scrutiny by government and markets keep them from overreporting (@sec-setting-jo). I assume that @eq-foc-noeva holds for them whatever their productivity and rate; I do not model why. For other firms, a corner solution follows from $\kappa_{it}$, $\omega_{it}$, and $\tau_P$. For corporations, $e_{it}=0$ is a constraint, not an outcome of @eq-foc-e, and I use them only as the truth-reporting benchmark in @sec-testing.
+Corporations are corner firms by assumption. They share the technology of the other firms and may differ in productivity, but audited statements and scrutiny by government and markets keep them from overreporting (@sec-setting-jo). I assume that @eq-foc-noeva holds for them always. For other firms, a corner solution follows from $\kappa_{it}$, $\omega_{it}$, and $\tau_P$. For corporations, $e_{it}=0$ is a constraint, and I use them only as the truth-reporting benchmark. If corporations nonetheless overreport a little, my estimates understate the overreporting of unincorporated firms and are a lower bound.
