@@ -136,6 +136,8 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 | Tue 10-13 | Send to supervisors | `[ ]` |
 
 Post-deadline (not before Oct 13): κ sensitivity, D robustness, 1% level grid, M/M* flip (§7a), net-share denominator (§9a).
+Post-deadline, ch. 8 counterfactual (2026-10-07): claims levels with true materials responding (replace the 1622 claims figure/table, now draft-only); claims elasticities with true materials fixed (robustness); entry of corner firms in the 19 non-rejecting industries via design `allcorr` (stage-2 re-estimation; the increase-side response is a lower bound without it); share of firms that stop overreporting on a cut (new auxiliary target, engine review sequence).
+Ch. 8 rewrite tracker: the TRACKER comment below the outline in `Thesis/chapters/08-counterfactual.qmd`.
 
 ## 7. Open questions
 

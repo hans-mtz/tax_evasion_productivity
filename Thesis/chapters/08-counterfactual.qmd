@@ -61,20 +61,26 @@ Counterfactual design (Q2, Q4)
     free [AK2020]; conservative sets by test inversion, d_g = 18, chi2 = 28.87.
  8. Two summaries: revenue levels on a Delta grid (-30 to +30 percent); paired differences at +-1, 1.5, 2 percent as arc
     elasticities (same draws, so precise). Bases: mean sales tax on sales and |R(0)|; why not the textbook elasticity (negative base).
- 9. Which firms: interior firms in the nine industries; (A) and (B) add the other firms mechanically.
+ 9. Which firms: interior firms in the nine industries (all overreport at baseline); (A) adds the trimmed firms and (B) the
+    corner firms, mechanically. Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit at any Delta, so no
+    reason to start; (ii) tau_P > 0 in the 19 industries where the test does not reject (16,154 firm-years): treated as
+    truthful (M = M*, e = 0) by the ex-ante rule, not by the model.
 
 Results (Q3-Q5)
 10. At the current rate interior firms receive net refunds: R(0) = -391 [-605, -174] per firm-year; claims exceed the sales tax
     for 57 percent of firm-years. A fact of the data (D1): stated, not explained.
 11. Revenue falls steadily with the rate: -391 to -1,270 at +30 percent, +264 [49, 480] at -30 percent. Break-even of the point
-    estimate at about -17 percent; the set excludes zero from about -27.5 percent (bracket rows in the table, D2).
+    estimate at about -17 percent; the set first excludes zero at -27.5 percent [2, 426] (one bracket row in the table, D2).
     fig-cf-revenue, tbl-cf-revenue; economy totals (A), (B) in tbl-cf-revenue-totals (D3; Hans decides after reading the text).
 12. Near the current rate, each 1 percent increase lowers revenue by about 1.7 percent of the sales tax on sales
     (tbl-cf-elasticities, revenue columns).
 13. Claims respond more than one-for-one: 1.39 at +1 percent, 1.32 at -1 percent. Input response 0.18 on both sides; evasion
-    response 0.21 vs 0.14, gap widening at +-2 percent (0.23 vs 0.12). Two margins (D4): on an increase, every firm in the sample
-    already overreports, so the response is intensive only (no entrants: firms not overreporting at baseline are outside the
-    structural sample); on a cut, firms overreport less and the smallest evaders stop (B >= 1+Delta), one by one.
+    response 0.21 vs 0.14, gap widening at +-2 percent (0.23 vs 0.12). Two margins (D4): on an increase, every interior firm
+    already overreports, so the response is intensive only (ELVIS has no mass at e = 0; a firm whose type would put it at the
+    corner is represented with a very small e); on a cut, firms overreport less and the smallest evaders stop (B >= 1+Delta),
+    one by one. No entry from the corner firms (entry 9): group (i) has no credit to gain; group (ii) is held truthful by
+    the rule. Letting group (ii) enter would steepen the response to increases and leave cuts unchanged, so the increase-side
+    response is a lower bound in magnitude and the asymmetry would only grow.
     tbl-cf-elasticities, fig-cf-beh-elast.
 14. The input channel lowers revenue: the extra sales tax from output is 3-5 times smaller than the extra credit on true
     materials, so the curve is steeper when materials respond (-256 vs -227 between +-5 percent).
@@ -86,6 +92,8 @@ Revenue lost to undetected overreporting, sec-cf-gap (Q6)
 
 Robustness (Q7)
 16. True materials fixed: same shape, sets overlap at every Delta (1652, revenue only; claims with fixed M after the JMP, D5).
+    Planned after the JMP (draft note): entry of group (ii) corner firms, via design allcorr (every industry corrected,
+    corner = tau_P = 0 only; 28,123 interior firm-years), which needs a stage-2 re-estimation at an operating point.
 
 Scope and limits (Q7)
 17. Partial equilibrium: materials and evasion respond, everything else fixed; moderate Delta (types held fixed).
@@ -97,6 +105,32 @@ Exclusions: formulas for r, claims, revenue, IS (appendix A); claims-level figur
 rerun after the JMP); the "why Claims, not revenue" note and the CV robustness block (obsolete); back-of-envelope
 (sec-app-backofenvelope, superseded by sec-cf-gap); mean detection probability and quantiles (Estimates); fixed-M claims
 elasticities (after the JMP); true credits, E[P] and L/|P| (out of the loss table, D6).
+-->
+
+<!--
+TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed / done. Anchors are text in the current draft.
+| #  | Status | Where now (anchor)                                     | Change |
+|----|--------|--------------------------------------------------------|--------|
+| 1  | todo   | only in the old comment "Not \"what Delta maximizes"  | one sentence in the section opening; chapter opening "claimed-deductions curve" -> revenue |
+| 2  | todo   | eq-govt-rev                                            | M(Delta), Y(Delta) in the equation |
+| 3  | todo   | "The firm's FOC shows tau_P directly modifies"         | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
+| 4  | todo   | "In general, governments can also choose"; "Since I lack information on these margins" | keep the first (typo "effor"); replace the second and its claims-only equation with the held-fixed list |
+| 5  | todo   | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; e' independent of the materials response |
+| 6  | todo   | missing (appendix A eq-app-cf-r)                       | one equation + magnitude sentence |
+| 7  | todo   | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
+| 8  | todo   | "Two further auxiliary parameters"                     | paired arcs split into input and evasion; revenue bases; why not textbook |
+| 9  | todo   | last sentence of "Two further auxiliary parameters"    | (1+Delta) tau_P r M*, t1 r^beta; two kinds of corner firms |
+| 10 | todo   | "Among the interior firms, potential revenue is negative" (sec-cf-gap) | move to Results opening with R(0); fact of the data |
+| 11 | todo   | missing                                                | wire fig-cf-revenue, tbl-cf-revenue, tbl-cf-revenue-totals; new paragraph |
+| 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
+| 13 | todo   | "Key findings" bullets                                 | keep numbers; add the two margins and the corner-firm lower bound; replace the asymmetry draft note |
+| 14 | todo   | missing                                                | new; input-channel columns of tbl-cf-revenue |
+| 15 | todo   | sec-cf-gap paragraphs + tbl-cf-gap caption             | define L and the share; drop E[P], L/|P|, true credits; add 72 pesos; new caption |
+| 16 | todo   | Robustness: dropped CV comment + draft notes           | one paragraph on 1652; allcorr entry check as a post-JMP draft note; "Rejected alternative target" -> cut or appendix A |
+| 17 | todo   | Scope: "Partial equilibrium: $K$, $L$"                 | materials and evasion respond |
+| 18 | done   | Scope: "$(\lambda_1,\bar\lambda)$ is fixed"            | - |
+| 19 | done   | Scope: "Estimates use the trimmed sample"              | - |
+| -  | done   | claims-level figure/table, "why Claims" note           | moved to a draft-only Superseded block (2026-10-07) |
 -->
 
 ## Government Revenue and Claimed Deductions
@@ -491,14 +525,15 @@ To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $
 
 ## Results {#sec-cf-results}
 
+::::: {.content-visible when-meta="draft"}
+**Superseded (claims levels with true materials fixed, pre-audit solver, runs 1621/1622). Out of the body 2026-10-07: Results lead with revenue (Hans); claims levels with true materials responding are rerun after the JMP.**
+
 ![Claimed purchase deductions per firm-year (real pesos), ELVIS interior firms, by change $\Delta$ in the purchases rate. Points: estimates; lines: 95 percent conservative-test bounds; bars: soft region; grey band: the current policy's set; dashed: mechanical response $(1+\Delta)\hat C(0)$. Structural parameters fixed at the operating point (@tbl-cf-estimates); $\chi^2_{18,.95}=28.86$.](/figures/ch08-cf-claims-bounds.png){#fig-cf-claims}
 
-::: {.content-visible when-meta="draft"}
 **Draft note (why Claims, not revenue):**
 
 The headline result is the counterfactual change in purchases-side deduction claims, $\text{Claims}_i(\Delta)=\tilde\tau_{i}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$ — the credit term the policy actually shocks. Sales-tax revenue on sales, $\tilde\tau_{it}P_tY_{it}$ in @eq-govt-rev, moves with $\Delta$ only mechanically, since output is held fixed, and carries no evasion response. Total revenue also bundles in sales-tax revenue on sales held at its baseline value, $\tau_{it}P_tY_{it}$, whose own cross-firm heterogeneity dominates the sampling variance of revenue (its cross-firm standard deviation is about as large as that of revenue itself). Claims excludes this term entirely, so it isolates the evasion-and-detection response to the tax-rate shifter without importing noise from a revenue stream with no evasion response; the raw, uncorrected auxiliary moment for Claims already has a standard error an order of magnitude smaller than the revenue moment. 
 
-:::
 
 @fig-cf-claims displays the estimated curve of the counterfactual real average claims per firm-period. 
 
@@ -508,10 +543,12 @@ The headline result is the counterfactual change in purchases-side deduction cla
 Claimed purchase deductions by $\Delta$: per firm-year for the interior firms, and totals for the evader industries (A) and the whole economy (B). Interim: six $\Delta$ points.
 :::
 
-Key findings (@tbl-cf-claims, @tbl-cf-elasticities, @fig-cf-beh-elast):
-
 - At current rates, interior firms claim 1,949 real pesos per firm-year (95 percent set [1,672, 2,215]). Claims total 27.0 million in the evader industries (A) and 59.1 million in the whole economy (B).
 - The level sets at different $\Delta$ overlap. The response is measured more precisely through the elasticities, which compare the two policies on the same draws.
+:::::
+
+Key findings (@tbl-cf-elasticities, @fig-cf-beh-elast):
+
 - With true materials responding, the elasticity of claimed deductions with respect to $\tau_P$ is 1.39 at +1 percent and 1.32 at $-1$ percent: 1 point is mechanical, 0.18 [0.15, 0.21] comes from firms buying more materials, and the rest from firms overreporting more.
 - The evasion response is asymmetric: 0.21 [0.19, 0.23] at +1 percent, rising to 0.23 at +2 percent, and 0.14 [0.12, 0.16] at $-1$ percent, falling to 0.12 at $-2$ percent. The input response is symmetric, between 0.17 and 0.18.
 
