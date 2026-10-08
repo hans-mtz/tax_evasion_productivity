@@ -113,15 +113,15 @@ elasticities (after the JMP); true credits, E[P] and L/|P| (out of the loss tabl
 TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed / done. Anchors are text in the current draft.
 | #  | Status | Where now (anchor)                                     | Change |
 |----|--------|--------------------------------------------------------|--------|
-| 1  | half done | only in the old comment "Not \"what Delta maximizes"  | chapter opening -> revenue curve: done 2026-10-08; one sentence in the section opening still todo (with Design) |
+| 1  | done 2026-10-08 | only in the old comment "Not \"what Delta maximizes"  | chapter opening -> revenue curve: done 2026-10-08; one sentence in the section opening still todo (with Design) |
 | 2  | done 2026-10-08 | eq-govt-rev                          | M(Delta), Y(Delta) in the equation |
 | 3  | done 2026-10-08 | "A change in the rate on purchases moves revenue" | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
 | 4  | done 2026-10-08 | "In general, governments can also choose"; "I also hold fixed" | done; old text in a Superseded block. Hans reviewed 2026-10-08; locator now 2:143-146 (3:277-278 was wrong) |
-| 5  | todo   | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; e' independent of the materials response |
-| 6  | todo   | missing (appendix A eq-app-cf-r)                       | one equation + magnitude sentence |
-| 7  | todo   | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
-| 8  | todo   | "Two further auxiliary parameters"                     | paired arcs split into input and evasion; revenue bases; why not textbook |
-| 9  | todo   | last sentence of "Two further auxiliary parameters"    | (1+Delta) tau_P r M*, t1 r^beta; two kinds of corner firms |
+| 5  | done 2026-10-08 | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; e' independent of the materials response |
+| 6  | done 2026-10-08 | missing (appendix A eq-app-cf-r)                       | one equation + magnitude sentence |
+| 7  | done 2026-10-08 | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
+| 8  | done 2026-10-08 | "Two further auxiliary parameters"                     | paired arcs split into input and evasion; revenue bases; why not textbook |
+| 9  | done 2026-10-08 | last sentence of "Two further auxiliary parameters"    | (1+Delta) tau_P r M*, t1 r^beta; two kinds of corner firms |
 | 10 | todo   | "Among the interior firms, potential revenue is negative" (sec-cf-gap) | move to Results opening with R(0); fact of the data |
 | 11 | todo   | missing                                                | wire fig-cf-revenue, tbl-cf-revenue, tbl-cf-revenue-totals; new paragraph |
 | 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
@@ -138,6 +138,8 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 ## Government Revenue and Claimed Deductions
 
 <!-- how do I do it -->
+
+I ask how net sales-tax revenue responds to moderate changes in the rate on purchases around its current level, not which rate maximizes it.
 
 Given the firm's optimization problem, the expected net sales-tax revenue from firm $i$ is,
 
@@ -200,7 +202,7 @@ $$
 
 ### Setup
 
-Using estimates of the production function parameters $(\beta,\alpha_K, \alpha_L)$ and constructed residuals, $\mathcal V_{it}$, $\tilde{\mathcal W}_{it}$ from @sec-deconvolution and @sec-pf, the objective is to recover the parameters of the probability of detection and the cost of evasion function $(q(e),c(e,\omega))$. 
+Using estimates of the production function parameters $(\beta,\alpha_K, \alpha_L)$ and constructed residuals, $\mathcal V_{it}$, $\tilde{\mathcal W}_{it}$ from @sec-deconvolution and @sec-pf, the objective is to recover the parameters of the probability of detection and the cost of evasion function $(q(e),\kappa_{it}(e,\omega))$. 
 
 As described in @sec-model, I follow the classical tax evasion literature building on the seminal work of @Allingham1972. In this literature, the probability of detection, $q(e)$, is increasing in the evasion level. This assumption is consistent with a tax authority that audits a firm whenever its overreporting exceeds a random threshold.[^effort] The cost of evasion, $c_{it}(e,\omega)$, represents the resources of the firm allocated to the evasion endeavour that could have been employed in a productive activity for the firm. The cost of evasion is increasing in the evasion level and convex in productivity. The $\psi$ term, an exogenous cost shock, allows cross-firm heterogeneity.
 
@@ -486,13 +488,21 @@ Key observations:
 
 ## Counterfactual design {#sec-cf-design}
 
-Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding true materials $M_i$ fixed, and with them $\omega_i$ and $\psi_i$, the FOC at the new rate gives the new evasion in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
+Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the new overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
 $$
 x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad e'_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
 $$ {#eq-counter-e}
 
-A firm with $B_i\ge1+\Delta$ stops overreporting.
+A firm with $B_i\ge1+\Delta$ stops overreporting. The new overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e).
+
+True materials respond through the materials condition (@eq-foc-m). Taking the ratio of its solution at the new and at the current rate, everything except the rate on purchases cancels:
+
+$$
+r_{it}(\Delta)\equiv\frac{M_{it}(\Delta)}{M_{it}}=\left(\frac{1-(1+\Delta)\tau_{P,it}}{1-\tau_{P,it}}\right)^{-\frac{1}{1-\beta}}
+$$ {#eq-cf-r}
+
+The factor depends only on $\tau_{P,it}$, $\Delta$ and $\beta$, so it is the same whatever the firm's true materials are. Holding capital, labour and productivity fixed, output and gross sales-tax revenue scale by $r_{it}(\Delta)^{\beta}$ (@sec-app-cf-implementation). The response is small: on average, true materials fall by 4.4 percent with a 30 percent cut in the rate and rise by 4.8 percent with a 30 percent increase.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -514,17 +524,39 @@ $$
 where $e_i=M^*_i-M_i$ is the firm's baseline evasion at the current state, a function of the latent $M_i$, and captures the firm heterogeneity defined by $(\omega, \psi)$. @eq-counter-e shows that the counterfactual evasion is linear in the model's current evasion with slope $1/(1+\Delta)$ and an intercept, $\Delta/[2\lambda(1+\Delta)]$, constant across firms.
 :::
 
+The new overreporting and the new true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so no counterfactual quantity can be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$, which brings the number of moments from 17 to $d_g=18$. Quantities in pesos are real and per firm-year.
+
+To obtain the confidence set of $\theta_T(\Delta)$, I invert the test. At each $\Delta$, $\theta$ is fixed at the operating point from @sec-cf-estimates and only $\gamma$ is re-optimized [@AK2020]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{18,.95}=28.87\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
+
+I report two summaries. The first is net sales-tax revenue on a grid of changes in the rate from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent. Each elasticity is built from a paired difference between the new and the current rate, computed on the same draws of $M_i$, which makes the differences precise.
+
+Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(e'_i))e'_i\big)\big]$. Its arc elasticity decomposes into the three parts named at the start of the chapter:
+$$
+\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_i\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(e'_i))e'_i-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)},
+$$
+the mechanical effect, the materials response and the overreporting response; the last two are each estimated with their own moment. Because the new overreporting does not depend on true materials, the two responses add up with no interaction term, whatever the order in which they are taken.
+
+For net sales-tax revenue, I divide the change by $\Delta$ times a positive baseline: mean gross sales-tax revenue (1,547 pesos per firm-year) or the absolute value of mean net sales-tax revenue (391 pesos). I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. Baselines are treated as known.
+
+The estimation covers the interior firms: unincorporated firms that pay sales tax on their purchases in the nine industries (12,050 firm-years). All of them overreport at the current rate, because the model puts no mass at zero overreporting. Totals add two groups mechanically: (A) adds the 0.5 percent of firms trimmed from the estimation, and (B) also adds the corner firms, of two kinds. Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate, so they have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$, by the ex-ante selection rule, not by the model. For the added firms, claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$ and gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$.
+
+::: {.content-visible when-meta="draft"}
+**Superseded (true materials fixed, until 2026-10-08).**
+
+Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding true materials $M_i$ fixed, and with them $\omega_i$ and $\psi_i$, the FOC at the new rate gives the new evasion in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
+
 The counterfactual evasion is a function of the same latent $M_i$ as the main moments system. As briefly mentioned in @sec-counter-estimation, define firm $i$'s counterfactual deduction claims as $\text{Claims}_i(\Delta)\equiv\tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$, the credit claimed on true inputs plus undetected overreporting. I include an auxiliary parameter $\theta_C(\Delta)$, mean deduction claims, with its own moment $E\big[\text{Claims}_i(\Delta)-\theta_C(\Delta)\big]=0$. Claims are measured in nominal COP; each firm-period's claims are deflated by the GDP deflator of its year before averaging, so $\theta_C(\Delta)$ is real mean claims per firm-period. Therefore, the number of moments increases to $d_g=18$.
 
 Two further auxiliary parameters summarize the response near current policy, each with its own moment and estimated the same way. The first is the elasticity of claims, $[C(h)-C(-h)]/(2h\,C(0))$ with $h=1$ percent. The second is the behavioural change $C(\Delta)-(1+\Delta)C(0)$, computed on the same draw of $M_i$, which I report as an elasticity by dividing by $\Delta C(0)$. Totals: (A) adds the trimmed firms, and (B) adds every firm outside the nine industries; both groups' claims scale mechanically with the rate, $(1+\Delta)\tau_PM^*$.
+
+To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $\Delta$, $\theta$ is fixed at the operating point from @sec-cf-estimates and only $\gamma$ is re-optimized [@AK2020]. I grid over candidate $\theta_C$ and build the confidence set $\{\theta_C: TS(\Delta,\theta_C)<\chi^2_{18,.95}=28.86\}$.
+:::
 
 <!-- 
 implementation details 
 
 $\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ cell. Question answered: given our best estimates, is a candidate revenue consistent with the data? Precedent: @AK2020 fix their support parameter in their counterfactual; Nail Kashaev endorsed this for the exercise's scope.
 -->
-
-To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $\Delta$, $\theta$ is fixed at the operating point from @sec-cf-estimates and only $\gamma$ is re-optimized [@AK2020]. I grid over candidate $\theta_C$ and build the confidence set $\{\theta_C: TS(\Delta,\theta_C)<\chi^2_{18,.95}=28.86\}$.
 
 <!-- Dropping control variate; Only R_i(\Delta)-t1
 
