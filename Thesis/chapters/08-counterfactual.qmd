@@ -111,10 +111,10 @@ elasticities (after the JMP); true credits, E[P] and L/|P| (out of the loss tabl
 TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed / done. Anchors are text in the current draft.
 | #  | Status | Where now (anchor)                                     | Change |
 |----|--------|--------------------------------------------------------|--------|
-| 1  | todo   | only in the old comment "Not \"what Delta maximizes"  | one sentence in the section opening; chapter opening "claimed-deductions curve" -> revenue |
-| 2  | todo   | eq-govt-rev                                            | M(Delta), Y(Delta) in the equation |
-| 3  | todo   | "The firm's FOC shows tau_P directly modifies"         | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
-| 4  | todo   | "In general, governments can also choose"; "Since I lack information on these margins" | keep the first (typo "effor"); replace the second and its claims-only equation with the held-fixed list |
+| 1  | todo (with Design) | only in the old comment "Not \"what Delta maximizes"  | one sentence in the section opening; chapter opening "claimed-deductions curve" -> revenue |
+| 2  | written, Hans reviews 2026-10-08 | eq-govt-rev                          | M(Delta), Y(Delta) in the equation |
+| 3  | written, Hans reviews 2026-10-08 | "A change in the rate on purchases moves revenue" | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
+| 4  | written, Hans reviews 2026-10-08 | "In general, governments can also choose"; "I also hold fixed" | done; old text in a Superseded block. Check Perry-Cardenas locators (2:144-145, 3:277-278) and the "no clear increase in effort" claim |
 | 5  | todo   | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; e' independent of the materials response |
 | 6  | todo   | missing (appendix A eq-app-cf-r)                       | one equation + magnitude sentence |
 | 7  | todo   | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
@@ -140,10 +140,12 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 Given the firm's optimization problem, the government's expected tax revenue from firm $i$ is,
 
 $$
-R_i(\Delta;M_i) = \tau_{S,it}P_tY_{it} - \tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
+R_i(\Delta;M_i) = \tau_{S,it}P_tY_{it}(\Delta) - \tilde\tau_{P,it}\big[M_{it}(\Delta)+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
 $$ {#eq-govt-rev}
 
-where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is the revenue collected from sales taxes on sales $\tau_{S,it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases, $\tau_{P,it}$. The term includes the firms' true inputs, $M_{it}$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau_P$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
+where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is the revenue collected from sales taxes on sales, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is the credit claimed on purchases at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(e'_i(\Delta)))e'_i(\Delta)$.
+
+A change in the rate on purchases moves revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), so the firm overreports more. Third, when the rate on purchases differs from the rate on sales, the taxes change the price of materials relative to output (@sec-model-foc-m): a higher rate on purchases makes materials cheaper, so the firm buys more of them, claims the credit on more purchases, and produces more output, which raises the tax on sales. With a higher rate, the first two channels lower revenue; the third lowers it through the credit and raises it through the tax on sales.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (single-tax version, until 2026-10-03).**
@@ -157,13 +159,21 @@ $$ {#eq-govt-rev-single}
 where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev-single is the revenue collected from sales taxes on sales, $\tilde\tau_{it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases. The term includes the firms' true inputs, $M_i$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
 :::
 
-In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. I abstract from these because during the time there was no clear increase in the Colombian government effor to reduce tax evasion and at the time, there were no penalties for evading, if firms were caught evading they only had to repay their true liabilities.
+In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. I abstract from both because, during the sample period, the Colombian government made no clear increase in its effort to reduce tax evasion, and there were no effective penalties for evading: firms caught evading only had to repay their true liabilities [@PerryCardenas1986, 2:144--145 and 3:277--278].
+
+I also hold fixed the firm's capital, labour and productivity, the measurement error in output, the prices of output and materials, and the rate on sales. True materials and overreporting respond to the new rate and, through true materials, so do output and the tax on sales.
+
+::: {.content-visible when-meta="draft"}
+**Superseded (true materials fixed, until 2026-10-07).**
+
+where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is the revenue collected from sales taxes on sales $\tau_{S,it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases, $\tau_{P,it}$. The term includes the firms' true inputs, $M_{it}$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau_P$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
 
 Since I lack information on these margins, I hold output and input decisions fixed. The tax on sales then changes only mechanically with the rate, and the behavioural response of revenue runs entirely through claimed deductions. Therefore, I focus on
 
 $$
 -\tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
 $$
+:::
 
 <!-- 
 - Not "what $\Delta$ maximizes revenue?" (an interior optimum need not exist) but "what is the derivative of tax revenue with respect to the purchases-side credit rate at the current state?"
