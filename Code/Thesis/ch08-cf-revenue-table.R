@@ -43,7 +43,7 @@ tt_obj <- tt(tbl, width = c(0.5, 0.7, 1.3, 0.7, 1.3, 0.7, 1.2), notes = paste0(
     "True $M$: mean change in true materials; tax from output: mean change in the sales tax on sales from the output response. ",
     "Both come from the data alone. ", pct(z0), " is the smallest cut, on a finer grid, whose 95\\% set excludes zero ",
     "(true materials respond only).")) |>
-    group_tt(j = list("True materials respond" = 2:3, "True materials fixed" = 4:5, "Input channel" = 6:7)) |>
+    group_tt(j = list("True materials respond" = 2:3, "True materials fixed" = 4:5, "Materials channel" = 6:7)) |>
     style_tt(i = which(w$Delta == 0), background = "#f2f2f2") |>
     style_tt(i = "notes", fontsize = 0.8)
 

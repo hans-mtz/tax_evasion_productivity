@@ -1,5 +1,5 @@
 ## PRODUCT: Thesis/tables/ch08-cf-elasticities-mresp.png := arc elasticities with respect to the purchases rate, true materials
-## responding (headline), at Delta = +-1, 1.5, 2 percent: claimed deductions split into mechanical (1), input response and evasion
+## responding (headline), at Delta = +-1, 1.5, 2 percent: claimed deductions decomposed into mechanical (1), materials response and overreporting
 ## response; net sales-tax revenue relative to |R(0)| (the base scales the magnitude, the difference carries the sign) and relative
 ## to the mean sales tax on sales. ELVIS interior firms.
 ## Sources (mode=cfprofile, cf_mresp=1, R = 1000, theta fixed at 1616, cf_multi 3 starts, 2026-10-06):
@@ -31,13 +31,13 @@ pct <- function(x) paste0(ifelse(x < 0, "$-$", "+"), sprintf("%g\\%%", abs(100 *
 f2 <- function(v) ifelse(v < 0, paste0("$-$", sprintf("%.2f", -v)), sprintf("%.2f", v))
 set <- function(lo, hi) paste0("[", f2(lo), ", ", f2(hi), "]")
 tbl <- d %>% transmute(`$\\Delta$` = pct(Delta), `Total` = f2(total),
-                       `Input` = paste(f2(input), set(input_lo, input_hi)), `Evasion` = paste(f2(evasion), set(evasion_lo, evasion_hi)),
+                       `Materials` = paste(f2(input), set(input_lo, input_hi)), `Overreporting` = paste(f2(evasion), set(evasion_lo, evasion_hi)),
                        `Base $|R_0|$` = paste(f2(revA), set(revA_lo, revA_hi)), `Base sales tax` = paste(f2(revT), set(revT_lo, revT_hi)))
 print(tbl)
 tt_obj <- tt(tbl, width = c(0.5, 0.5, 1.2, 1.2, 1.5, 1.5), notes = paste0(
     "Arc elasticities with respect to the purchases rate, true materials responding, ELVIS interior firms; conservative 95\\% sets ",
-    "in brackets ($\\chi^2_{18,.95}=28.87$). Claimed deductions: $[C(\\Delta)-C(0)]/(\\Delta C(0))$ = 1 (mechanical) + input response + ",
-    "evasion response; the total is the sum of the point estimates. Net sales-tax revenue: $[R(\\Delta)-R(0)]/(\\Delta|R(0)|)$, with ",
+    "in brackets ($\\chi^2_{18,.95}=28.87$). Claimed deductions: $[C(\\Delta)-C(0)]/(\\Delta C(0))$ = 1 (mechanical) + materials response + ",
+    "overreporting response; the total is the sum of the point estimates. Net sales-tax revenue: $[R(\\Delta)-R(0)]/(\\Delta|R(0)|)$, with ",
     "$R(0)=", sprintf("%.0f", R0 * r0$scale), "$ per firm-year, and $[R(\\Delta)-R(0)]/(\\Delta\\,\\overline{t1})$, relative to the mean sales tax on sales ",
     "(", formatC(r0$mean_t1p, format = "f", digits = 0, big.mark = ","), " per firm-year). Baselines treated as known.")) |>
     group_tt(j = list("Claimed deductions" = 2:4, "Net sales-tax revenue" = 5:6)) |>
