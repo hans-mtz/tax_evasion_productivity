@@ -69,3 +69,32 @@ Hans: P2 defines net sales-tax revenue, so the reader can see why it is negative
 | 1 | P3, "Materials response accounts for 0.18 points" (cut sentence) | missing article; the increase sentence has "The materials response" | "The materials response accounts for …" |
 | 2 | P4, "would make net sales-tax revenue positive at the 5 percent significance level" | "significance level" is now right. "Make … positive at the 5 percent level" reads slightly as the break-even; the claim is that revenue is significantly positive from that cut on | "A cut of about 28 percent or more would make net sales-tax revenue significantly positive, at the 5 percent level." |
 | 3 | P4 vs abstract | the abstract reports the point break-even (about 17 percent), the opener only the significance edge (about 28 percent); a reader coming from the abstract looks for 17 | fine if deliberate; ch. 8 Results reports both |
+
+---
+
+# Proof-read: motivation section (L138-166), Hans's review edits, 2026-10-08
+
+Source checked: Perry and Cárdenas (1986), vol. 2, pp. 143-147 (Lit-Papers PDF, pdftotext), and vol. 3, pp. 277-278.
+
+## Three-channels paragraph (L150)
+
+| # | Where | Issue | Suggestion |
+|---|-------|-------|------------|
+| 1 | "makes materials cheaper, hence the firm buys more materials, claims …" | "hence" is an adverb, so the comma joins two sentences (comma splice) | "makes materials cheaper, so the firm buys more materials, …" |
+| 2 | "Third, when the rate on purchases differs from the rate on sales, the taxes change the price of materials relative to output" (my text, 2026-10-07) | the condition is wrong for this exercise: raising $\tau_P$ alone changes the relative price whether or not the two rates differ at baseline (ch. 2: "By changing either rate, the government changes the price of materials relative to output") | "Third, the rate on purchases changes the net-of-tax price of materials relative to output (@sec-model-foc-m)." |
+
+## Enforcement paragraph (L164)
+
+| # | Where | Issue | Suggestion |
+|---|-------|-------|------------|
+| 3 | "Likewise, governments might collect …" | "likewise" means "in the same way"; penalties are a second instrument, not a similar one | "Governments might also collect …" or keep "In addition" |
+| 4 | "suffered from lack of resources and auditors" | article missing ("a lack of"). Source (2:143-146): a very precarious administration; no autonomy over staff and supplies; the budget increase the reforms needed was frustrated by austerity from 1976; audit activity fell; strikes in 1975 and 1979 cost staff. "Auditors" is close but the source speaks of staff and audit activity | "the tax administration was weak: it lacked budget and control over its staff, and it audited little" |
+| 5 | "did not applied penalties" | grammar ("did not apply"); and stronger than the source, which says the penalty system was ineffective: some penalties trivial, others too large to be applied, plus recurrent amnesties (2:144-145) | "its penalties were ineffective: some were trivial and others too large to be applied" |
+| 6 | "caught infraganti" | Spanish; English would be "red-handed", but "caught" already says it | drop "infraganti" |
+| 7 | "only had to repay their true liabilities" | not in the cited pages. 2:145, note: from 1974 the only change was interest on amounts in dispute. With trivial penalties, "repay with little or no penalty" is what the source supports | fold into item 5, or cite the source that says it |
+| 8 | locator "3:277--278" (added by me, 2026-10-07) | wrong: those pages are the 1974 inaugural speech announcing a fight against evasion, before the sample period | "2:143--146" only |
+| 9 | (context, not an error) | 2:146: administrative problems "seem to have affected sales-tax collection much less, despite the relative 'disadministration' of this tax"; the weakness evidence is mostly about the income tax. Also 2:146: "greater tolerance of evasion by the government" from 1976. The volume covers up to about 1985; the sample runs to 1991 | the wording "tax administration" (not "sales-tax enforcement") stays within the source |
+
+## Suggested enforcement paragraph
+
+In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. Governments might also collect additional income by penalizing firms caught evading. I abstract from both because, during the sample period, the Colombian tax administration was weak: it lacked budget and control over its staff, it audited little, and its penalties were ineffective, some trivial and others too large to be applied [@PerryCardenas1986, 2:143--146].

@@ -114,9 +114,9 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | #  | Status | Where now (anchor)                                     | Change |
 |----|--------|--------------------------------------------------------|--------|
 | 1  | half done | only in the old comment "Not \"what Delta maximizes"  | chapter opening -> revenue curve: done 2026-10-08; one sentence in the section opening still todo (with Design) |
-| 2  | written, Hans reviews 2026-10-08 | eq-govt-rev                          | M(Delta), Y(Delta) in the equation |
-| 3  | written, Hans reviews 2026-10-08 | "A change in the rate on purchases moves revenue" | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
-| 4  | written, Hans reviews 2026-10-08 | "In general, governments can also choose"; "I also hold fixed" | done; old text in a Superseded block. Check Perry-Cardenas locators (2:144-145, 3:277-278) and the "no clear increase in effort" claim |
+| 2  | done 2026-10-08 | eq-govt-rev                          | M(Delta), Y(Delta) in the equation |
+| 3  | done 2026-10-08 | "A change in the rate on purchases moves revenue" | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
+| 4  | done 2026-10-08 | "In general, governments can also choose"; "I also hold fixed" | done; old text in a Superseded block. Hans reviewed 2026-10-08; locator now 2:143-146 (3:277-278 was wrong) |
 | 5  | todo   | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; e' independent of the materials response |
 | 6  | todo   | missing (appendix A eq-app-cf-r)                       | one equation + magnitude sentence |
 | 7  | todo   | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
@@ -147,7 +147,7 @@ $$ {#eq-govt-rev}
 
 where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is gross sales-tax revenue, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is sales-tax refunds, the credit paid at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(e'_i(\Delta)))e'_i(\Delta)$.
 
-A change in the rate on purchases moves net sales-tax revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), so the firm overreports more. Third, when the rate on purchases differs from the rate on sales, the taxes change the price of materials relative to output (@sec-model-foc-m): a higher rate on purchases makes materials cheaper, so the firm buys more of them, claims the credit on more purchases, and produces more output, which raises gross sales-tax revenue. With a higher rate, the first two channels lower net sales-tax revenue; the third lowers it through sales-tax refunds and raises it through gross sales-tax revenue.
+A change in the rate on purchases moves net sales-tax revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), so the firm overreports more. Third, the rate on purchases changes the net-of-tax price of materials relative to output (@sec-model-foc-m). A higher rate on purchases makes materials cheaper, so the firm buys more materials, claims the credit on more purchases, and produces more output, which raises gross sales-tax revenue. With a higher rate, the first two channels lower net sales-tax revenue; the third lowers it through sales-tax refunds and raises it through gross sales-tax revenue.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (single-tax version, until 2026-10-03).**
@@ -161,7 +161,7 @@ $$ {#eq-govt-rev-single}
 where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev-single is the revenue collected from sales taxes on sales, $\tilde\tau_{it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases. The term includes the firms' true inputs, $M_i$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
 :::
 
-In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. I abstract from both because, during the sample period, the Colombian government made no clear increase in its effort to reduce tax evasion, and there were no effective penalties for evading: firms caught evading only had to repay their true liabilities [@PerryCardenas1986, 2:144--145 and 3:277--278].
+In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. Governments might also collect additional income by penalizing firms caught evading. I abstract from both. During the sample period, the Colombian tax administration was inefficient: it lacked budget and control over its staff, and it audited little. Its penalties were also ineffective: some were trivial and others too large to be applied [@PerryCardenas1986, 2:143--146].
 
 I also hold fixed the firm's capital, labour and productivity, the measurement error in output, the prices of output and materials, and the rate on sales. True materials and overreporting respond to the new rate and, through true materials, so do output and gross sales-tax revenue.
 
@@ -194,8 +194,6 @@ $$
 
   Evasion dominates by about 45,000x, driven by $1/(2\hat\lambda)\approx921{,}000$. Holding $M$ fixed does not distort the answer.
 - Derivation goes to the appendix (`9999-tax-wedge.qmd`). -->
-
-
 
 
 ## Estimating the model
