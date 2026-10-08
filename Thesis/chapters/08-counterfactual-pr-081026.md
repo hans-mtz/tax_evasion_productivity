@@ -98,3 +98,20 @@ Source checked: Perry and Cárdenas (1986), vol. 2, pp. 143-147 (Lit-Papers PDF,
 ## Suggested enforcement paragraph
 
 In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. Governments might also collect additional income by penalizing firms caught evading. I abstract from both because, during the sample period, the Colombian tax administration was weak: it lacked budget and control over its staff, it audited little, and its penalties were ineffective, some trivial and others too large to be applied [@PerryCardenas1986, 2:143--146].
+
+---
+
+# Proof-read: Design section, Hans's revisions, 2026-10-08
+
+| # | Where | Issue | Suggestion |
+|---|-------|-------|------------|
+| 1 | eq-counter-e paragraph, "The counterfacutal overreporting" | typo | "counterfactual" |
+| 2 | "new overreporting" vs "counterfactual overreporting" | Hans now says "counterfactual"; the first Design paragraph ("gives the new overreporting") and the decomposition paragraph ("Because the new overreporting") still say "new" | one term throughout: "counterfactual overreporting" |
+| 3 | auxiliary-parameter paragraph, "… @sec-counter-estimation, therefore these variables cannot be computed" | comma splice ("therefore" is an adverb); "variables" for quantities | "…, so these quantities cannot be computed firm by firm from the data." |
+| 4 | "I invert the test., following @AK2020." | stray period before the comma | "I invert the test, following @AK2020." |
+| 5 | same paragraph, removed sentence "At each $\Delta$, $\theta$ is fixed at the operating point … and only $\gamma$ is re-optimized" | content: this is the only body statement that the cost parameters $\delta$ are also held fixed and only $\gamma$ moves (Scope says only that $(\lambda_1,\bar\lambda)$ is fixed). @AK2020 is cited for fixing $\theta$ (App. F), not for test inversion, so "following @AK2020" now credits them with the wrong thing | restore one sentence: "At each $\Delta$, the structural parameters $\theta$ stay at the operating point (@sec-cf-estimates) and only $\gamma$ is re-optimized, as in @AK2020." |
+| 6 | "$\chi^2_{d_g,1-\alpha}=\}$" | broken: nothing after "="; $\alpha$ undefined | "$\chi^2_{18,.95}=28.87$" (or "$\chi^2_{d_g,.95}$" without the value) |
+| 7 | revenue-base sentence | fine; with the textbook-elasticity sentence commented out, the reader learns why the base is $|R(0)|$ from the opener (net revenue negative) | none |
+| 8 | firms paragraph, "in the nine industries (12,050 firm-years) where the test rejected correct reporting" | the parenthesis splits "industries … where"; tense and term differ from the opener ("where the test detects overreporting") | "in the nine industries where the test detects overreporting (12,050 firm-years)" |
+| 9 | "A group of corner firms pay no sales tax on their purchases (…) get no credit at any rate" | two finite verbs, no conjunction | "Some corner firms pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years): they get no credit at any rate, so they have no reason to start overreporting." |
+| 10 | "treated as truthful … because the test could not reject truthful reporting" | accuracy: of the other 19 industries, the test was run and did not reject in 8 (311, 312, 332, 341, 381, 382, 383, 390); 323, 356 and 384 have no test result, and 8 more are not tested (`1510-test-inversion.csv`). A non-rejection is also inconclusive on its own | "are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, so the ex-ante selection rule keeps them out of the structural estimation." |

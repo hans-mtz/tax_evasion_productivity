@@ -139,8 +139,6 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 
 <!-- how do I do it -->
 
-I ask how net sales-tax revenue responds to moderate changes in the rate on purchases around its current level, not which rate maximizes it.
-
 Given the firm's optimization problem, the expected net sales-tax revenue from firm $i$ is,
 
 $$
@@ -488,13 +486,13 @@ Key observations:
 
 ## Counterfactual design {#sec-cf-design}
 
-Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the new overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
+Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the counterfactual overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
 $$
 x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad e'_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
 $$ {#eq-counter-e}
 
-A firm with $B_i\ge1+\Delta$ stops overreporting. The new overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e).
+A firm with $B_i\ge1+\Delta$ stops overreporting. The counterfactual overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e).
 
 True materials respond through the materials condition (@eq-foc-m). Taking the ratio of its solution at the new and at the current rate, everything except the rate on purchases cancels:
 
@@ -524,21 +522,24 @@ $$
 where $e_i=M^*_i-M_i$ is the firm's baseline evasion at the current state, a function of the latent $M_i$, and captures the firm heterogeneity defined by $(\omega, \psi)$. @eq-counter-e shows that the counterfactual evasion is linear in the model's current evasion with slope $1/(1+\Delta)$ and an intercept, $\Delta/[2\lambda(1+\Delta)]$, constant across firms.
 :::
 
-The new overreporting and the new true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so no counterfactual quantity can be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$, which brings the number of moments from 17 to $d_g=18$. Quantities in pesos are real and per firm-year.
+The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so these quantities cannot be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$, which brings the number of moments from 17 to $d_g=18$. Quantities in pesos are real and per firm-year.
 
-To obtain the confidence set of $\theta_T(\Delta)$, I invert the test. At each $\Delta$, $\theta$ is fixed at the operating point from @sec-cf-estimates and only $\gamma$ is re-optimized [@AK2020]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{18,.95}=28.87\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
+To obtain the confidence set of $\theta_T(\Delta)$, I invert the test, as in the counterfactual exercise of @AK2020 [App. F]: the structural parameters $\theta$ stay at the operating point of @sec-cf-estimates, which passes the test, and at each $\Delta$ only $\gamma$ is re-optimized. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{18,.95}=28.87\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
 
 I report two summaries. The first is net sales-tax revenue on a grid of changes in the rate from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent. Each elasticity is built from a paired difference between the new and the current rate, computed on the same draws of $M_i$, which makes the differences precise.
 
-Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(e'_i))e'_i\big)\big]$. Its arc elasticity decomposes into the three parts named at the start of the chapter:
+Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(e'_i))e'_i\big)\big]$. Its arc elasticity decomposes into the three components:
 $$
 \frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_i\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(e'_i))e'_i-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)},
 $$
-the mechanical effect, the materials response and the overreporting response; the last two are each estimated with their own moment. Because the new overreporting does not depend on true materials, the two responses add up with no interaction term, whatever the order in which they are taken.
 
-For net sales-tax revenue, I divide the change by $\Delta$ times a positive baseline: mean gross sales-tax revenue (1,547 pesos per firm-year) or the absolute value of mean net sales-tax revenue (391 pesos). I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. Baselines are treated as known.
+the mechanical effect, the materials response and the overreporting response; the last two are each estimated with their own moment. Because the counterfactual overreporting does not depend on true materials, the two responses add up with no interaction term.
 
-The estimation covers the interior firms: unincorporated firms that pay sales tax on their purchases in the nine industries (12,050 firm-years). All of them overreport at the current rate, because the model puts no mass at zero overreporting. Totals add two groups mechanically: (A) adds the 0.5 percent of firms trimmed from the estimation, and (B) also adds the corner firms, of two kinds. Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate, so they have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$, by the ex-ante selection rule, not by the model. For the added firms, claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$ and gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$.
+For net sales-tax revenue, I divide the change by $\Delta$ times the mean gross sales-tax revenue (1,547 pesos per firm-year), or the absolute value of mean net sales-tax revenue (391 pesos). Baselines are treated as known.
+
+<!-- I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. -->
+
+The estimation covers the interior firms: unincorporated firms that pay sales tax on their purchases in the nine industries (12,050 firm-years) where the test rejected correct reporting. All of them overreport at the current rate, because the model puts no mass at zero overreporting. Totals add two groups mechanically: (A) adds the 0.5 percent of firms trimmed from the estimation, and (B) also adds the corner firms. Some corner firms pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years): they get no credit at any rate, so they have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, so the ex-ante selection rule keeps them out of the structural estimation. For the added firms, claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$ and gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (true materials fixed, until 2026-10-08).**
