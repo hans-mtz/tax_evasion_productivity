@@ -1,4 +1,4 @@
-# The Counterfactual: Claimed Deductions and the Tax Rate {#sec-counterfactual}
+# The Counterfactual: Sales-Tax Revenue and the Rate on Purchases {#sec-counterfactual}
 
 <!--
 OUTLINE FILE. Bullets = what each section must say + key values (all from CLAUDE.md / slides / tbls; nothing invented).
@@ -10,7 +10,7 @@ Sources
           200-model / 600-opt-tax (functional forms, FOC)
   Paper notes (appendix material): 9999-elvis, 9999-control-variate, 9999-tax-wedge, 9999-msl-implementation
   Log: Research-log/log.md (dated history; do not cite in the thesis)
-  Units: nominal COP deflated once at aggregation (p_gdp_new); revenue = real mean revenue per firm-period.
+  Units: real throughout (nominal / p_gdp); revenue = mean per firm-year.
 
 NOTES: since 2026-10-03 the chapter tells the TWO-tax story (net-of-tax first stage, power q, operating point 1616). Old single-tax / linear-q text is kept in draft-only "Superseded" blocks.
 -->
@@ -18,13 +18,15 @@ NOTES: since 2026-10-03 the chapter tells the TWO-tax story (net-of-tax first st
 <!-- ## Partial Equilibrium Claimed-Deductions Curve {#sec-cf-question} -->
 
 <!-- what's the question -->
-How do tax revenues change as the government changes the sales tax rate? As the tax rate increases, the incentives to claim additional fictitious deductions increase, but an increase in evasion raises the probability of detection. Therefore, firms face a trade-off. On the flip side, a decrease in the tax rate reduces the incentives to evade and firms start to decrease the level of overreporting (intensive margin) and some firms start jumping out of evasion altogether (extensive margin). For the government, taking the current observed state as given, what is the marginal change in revenue as the tax rate changes?
+How does tax revenue change as the government changes the sales-tax rate on purchases? As the rate increases, the incentive to claim additional fictitious deductions increases, but more overreporting raises the probability of detection. Therefore, firms face a trade-off. Conversely, a decrease in the rate reduces the incentive to overreport: firms decrease their overreporting (intensive margin), and some stop overreporting altogether (extensive margin). The rate also moves true materials: a higher rate lowers the net-of-tax price of materials relative to output, so firms buy more materials, which raises both their claimed deductions and their output. Taking the current observed state as given, how does the government's revenue change as the rate moves away from its current level?
 
 <!-- what do I do -->
-I study this question using the estimates of the structural objects from the firms' tax evasion model. With the parameters at hand, I construct a partial-equilibrium claimed-deductions curve: expected claimed deductions as a function of the tax rate. Claimed deductions are the channel through which evasion moves revenue; every extra peso claimed is a peso of revenue lost.
+I study this question using the estimates of the structural objects from the firms' tax evasion model. With the parameters at hand, I construct a partial-equilibrium revenue curve: expected net sales-tax revenue as a function of the rate on purchases. I compute it for unincorporated firms in the nine industries where the test detects overreporting (@sec-testing). Net revenue is the sales tax that firms owe on their sales minus the deductions they claim for their purchases, true and fictitious. Claimed deductions carry most of the response, so I split their change into three parts: the new rate applied to the same purchases, firms buying more or fewer materials, and firms overreporting more or less.
 
 <!-- what do I find -->
-Claimed deductions rise more than one-for-one with the purchases rate, and they respond more to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.39 percent: 0.21 points come from firms overreporting more and 0.18 points from firms buying more materials. A 1 percent cut lowers them by about 1.32 percent, of which 0.14 points come from firms overreporting less and 0.18 points from firms buying fewer materials. Net sales-tax revenue from these firms is negative at the current rate and falls further as the rate rises; a cut of about 17 percent would make it positive, and the 95 percent set excludes zero for cuts of about 28 percent or more. Undetected overreporting costs the government 4.7 percent of the sales tax that firms in tax-evading industries owe on their sales.
+Claimed deductions rise more than one-for-one with the rate on purchases, and they respond more to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.39 percent: beyond the mechanical 1 percent, 0.21 points come from firms overreporting more and 0.18 points from firms buying more materials. A 1 percent cut lowers them by about 1.32 percent, of which 0.14 points come from firms overreporting less and 0.18 points from firms buying fewer materials.
+
+At the current rate, the government pays these firms net refunds, because their claimed deductions exceed the sales tax they owe on their sales. Each 1 percent increase in the rate lowers net revenue by about 1.7 percent of that sales tax. A cut of about 17 percent would turn the refunds into positive revenue, and the 95 percent confidence set excludes zero for cuts of about 28 percent or more. Undetected overreporting costs the government 4.1 percent of the sales tax these firms owe on their sales.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -111,7 +113,7 @@ elasticities (after the JMP); true credits, E[P] and L/|P| (out of the loss tabl
 TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed / done. Anchors are text in the current draft.
 | #  | Status | Where now (anchor)                                     | Change |
 |----|--------|--------------------------------------------------------|--------|
-| 1  | todo (with Design) | only in the old comment "Not \"what Delta maximizes"  | one sentence in the section opening; chapter opening "claimed-deductions curve" -> revenue |
+| 1  | half done | only in the old comment "Not \"what Delta maximizes"  | chapter opening -> revenue curve: done 2026-10-08; one sentence in the section opening still todo (with Design) |
 | 2  | written, Hans reviews 2026-10-08 | eq-govt-rev                          | M(Delta), Y(Delta) in the equation |
 | 3  | written, Hans reviews 2026-10-08 | "A change in the rate on purchases moves revenue" | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
 | 4  | written, Hans reviews 2026-10-08 | "In general, governments can also choose"; "I also hold fixed" | done; old text in a Superseded block. Check Perry-Cardenas locators (2:144-145, 3:277-278) and the "no clear increase in effort" claim |
