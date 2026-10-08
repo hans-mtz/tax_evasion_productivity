@@ -60,6 +60,9 @@ jmp:
 thesis:
 	quarto render Thesis/index.qmd
 
+abstract:
+	quarto render JMP/HM-JMP-Abstract.qmd
+
 # Rules
 $(RDIR)/%.Rout: $(RDIR)/%.R 
 	R CMD BATCH --no-save --no-restore-data $< $@
