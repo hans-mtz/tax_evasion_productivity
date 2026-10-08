@@ -32,15 +32,15 @@ tbl <- w %>% transmute(
     `Estimate` = f0(rev_mr), `95\\% set` = set(lo_mr, hi_mr),
     `Estimate ` = ifelse(is.na(rev_fx), "", f0(rev_fx)), `95\\% set ` = ifelse(is.na(rev_fx), "", set(lo_fx, hi_fx)),
     `True $M$` = ifelse(Delta == 0, "0", paste0(ifelse(r_mean < 0, "$-$", "+"), sprintf("%.1f\\%%", abs(100 * r_mean)))),
-    `Tax from output` = f0(t1_out))
+    `Gross revenue` = f0(t1_out))
 print(tbl)
 
 crit <- d$crit[1]
 tt_obj <- tt(tbl, width = c(0.5, 0.7, 1.3, 0.7, 1.3, 0.7, 1.2), notes = paste0(
-    "Real pesos per firm-year, ELVIS interior firms (12,050 firm-years). Net sales-tax revenue = sales tax on sales minus ",
-    "expected claimed purchase credits. 95\\% set: conservative test, $TS\\le\\chi^2_{18,.95}=", sprintf("%.2f", crit), "$. ",
+    "Real pesos per firm-year, ELVIS interior firms (12,050 firm-years). Net sales-tax revenue = gross sales-tax revenue minus ",
+    "expected sales-tax refunds. 95\\% set: conservative test, $TS\\le\\chi^2_{18,.95}=", sprintf("%.2f", crit), "$. ",
     "True materials respond: the materials first-order condition with the two tax rates, capital, labour and productivity fixed. ",
-    "True $M$: mean change in true materials; tax from output: mean change in the sales tax on sales from the output response. ",
+    "True $M$: mean change in true materials; gross revenue: mean change in gross sales-tax revenue from the output response. ",
     "Both come from the data alone. ", pct(z0), " is the smallest cut, on a finer grid, whose 95\\% set excludes zero ",
     "(true materials respond only).")) |>
     group_tt(j = list("True materials respond" = 2:3, "True materials fixed" = 4:5, "Materials channel" = 6:7)) |>

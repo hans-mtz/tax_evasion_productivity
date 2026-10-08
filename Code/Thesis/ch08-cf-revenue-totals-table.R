@@ -26,7 +26,7 @@ tt_obj <- tt(tbl, width = c(0.5, 0.7, 1.3, 0.7, 1.3), notes = paste0(
     "Millions of real pesos, sum over all firm-years in the sample (1981--1991), true materials respond. ",
     "(A) evader industries: the ELVIS interior firms plus the 0.5\\% trimmed from estimation; ",
     "(B) all firms: (A) plus every other firm in the sample. Firms outside the ELVIS sample are treated as reporting their true materials, ",
-    "so their claims and sales tax change only through the rate and the response of their materials. The 95\\% sets (conservative test, ",
+    "so their claimed deductions and gross sales-tax revenue change only through the rate and the response of their materials. The 95\\% sets (conservative test, ",
     "$TS\\le\\chi^2_{18,.95}=", sprintf("%.2f", d$crit[1]), "$) come from the interior firms; the other firms add a known amount.")) |>
     group_tt(j = list("(A) Evader industries" = 2:3, "(B) All firms" = 4:5)) |>
     style_tt(i = which(d$Delta == 0), background = "#f2f2f2") |>

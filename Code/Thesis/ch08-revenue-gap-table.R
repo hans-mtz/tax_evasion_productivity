@@ -34,7 +34,7 @@ stopifnot(abs(lt$int$mean_t1p - t1p) < 1e-6)   # interior run: no extra t1, so E
 Lp <- c(lt$int$T_hat, lt$int$hard_lo, lt$int$hard_hi) * t1p
 tbl <- tibble(
     ` ` = c("Loss per firm-year, interior firms (real pesos)",
-            "Loss / sales tax on sales: interior firms", "\\quad (A) evader industries", "\\quad (B) all firms"),
+            "Loss / gross sales-tax revenue: interior firms", "\\quad (A) evader industries", "\\quad (B) all firms"),
     Estimate = c(f0(Lp[1]), pc(lt$int$T_hat), pc(lt$A$T_hat), pc(lt$B$T_hat)),
     `95\\% set` = c(set0(Lp[2], Lp[3]), sapply(lt, function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]"))),
     `$TS_{\\min}$` = formatC(c(lt$int$TS_min, lt$int$TS_min, lt$A$TS_min, lt$B$TS_min), format = "f", digits = 1))
@@ -42,8 +42,8 @@ print(tbl)
 
 tt_obj <- tt(tbl, width = c(1.6, 0.6, 0.9, 0.5), notes = paste0(
     "Current rates. Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting, estimated with its own moment. ",
-    "Interior firms: ELVIS sample, mean sales tax on sales ", f0(t1p), " real pesos per firm-year. ",
-    "(A) adds the trimmed firms' sales tax and (B) every other firm's; their loss is set to zero, so (A) and (B) are lower bounds. ",
+    "Interior firms: ELVIS sample, mean gross sales-tax revenue ", f0(t1p), " real pesos per firm-year. ",
+    "(A) adds the trimmed firms' gross sales-tax revenue and (B) every other firm's; their loss is set to zero, so (A) and (B) are lower bounds. ",
     "Each set is the union of the values accepted over several solver runs. ",
     "Conservative test, $TS\\le\\chi^2_{", g$d_g, ",.95}=", sprintf("%.2f", g$crit), "$.")) |>
     style_tt(i = "notes", fontsize = 0.8)

@@ -18,15 +18,15 @@ NOTES: since 2026-10-03 the chapter tells the TWO-tax story (net-of-tax first st
 <!-- ## Partial Equilibrium Claimed-Deductions Curve {#sec-cf-question} -->
 
 <!-- what's the question -->
-How does tax revenue change as the government changes the sales-tax rate on purchases? As the rate increases, the incentive to claim additional fictitious deductions increases, but more overreporting raises the probability of detection. Therefore, firms face a trade-off. Conversely, a decrease in the rate reduces the incentive to overreport. Firms decrease their overreporting (intensive margin), and some stop overreporting altogether (extensive margin). An increase in the rate also raises firms' use of true materials because it lowers the net-of-tax price of materials relative to output. Hence, firms buy more materials and produce more. Larger output raises the tax collected on sales, but more materials lower revenue because claimed deductions rise. How does tax revenue change at the margin for a change in the rate? How much of that change comes from firms overreporting more, and how much from firms buying more materials?
+How does net sales-tax revenue change as the government changes the sales-tax rate on purchases? As the rate increases, the incentive to claim additional fictitious deductions increases, but more overreporting raises the probability of detection. Therefore, firms face a trade-off. Conversely, a decrease in the rate reduces the incentive to overreport. Firms decrease their overreporting (intensive margin), and some stop overreporting altogether (extensive margin). An increase in the rate also raises firms' use of true materials because it lowers the net-of-tax price of materials relative to output. Hence, firms buy more materials and produce more. Larger output raises gross sales-tax revenue, but more materials raise sales-tax refunds because claimed deductions rise. How does net sales-tax revenue change at the margin for a change in the rate? How much of that change comes from firms overreporting more, and how much from firms buying more materials?
 
 <!-- what do I do -->
-I study this question using the estimates of the structural objects from the firms' tax evasion model. With the parameters at hand, I construct a partial-equilibrium revenue curve, the expected net sales-tax revenue as a function of the rate on purchases, where net revenue is the sales tax that firms owe on their sales minus the deductions they claim for their purchases, true and fictitious. Since claimed deductions are the interesting part of the response, I decompose their change into three parts: the *mechanical effect* of raising the rate while keeping the claimed purchases fixed, and two behavioural responses, the *materials response* of firms buying more or fewer materials and the *overreporting response* of firms overreporting more or less.
+I study this question using the estimates of the structural objects from the firms' tax evasion model. With the parameters at hand, I construct a partial-equilibrium revenue curve, the expected net sales-tax revenue as a function of the rate on purchases, where net sales-tax revenue is gross sales-tax revenue, the tax collected on firms' sales, minus sales-tax refunds, the credit the government pays on the deductions firms claim for their purchases, true and fictitious. Since claimed deductions are the interesting part of the response, I decompose their change into three parts: the *mechanical effect* of raising the rate while keeping the claimed purchases fixed, and two behavioural responses, the *materials response* of firms buying more or fewer materials and the *overreporting response* of firms overreporting more or less.
 
 <!-- what do I find -->
 Claimed deductions respond elastically to changes in the rate on purchases, and the response is more elastic to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.39 percent: beyond the mechanical 1 percent, the overreporting response adds 0.21 points and the materials response 0.18 points. A 1 percent cut lowers them by about 1.32 percent, of which the overreporting response accounts for 0.14 points and the materials response for 0.18 points.
 
-At the current rate, the government pays net refunds to firms in the nine industries where the test detects overreporting (@sec-testing): their claimed deductions exceed the sales tax they owe on their sales. Each 1 percent increase in the rate lowers net revenue by about 1.7 percent of that sales tax. A cut of about 17 percent would turn the refunds into positive revenue, and the 95 percent confidence set excludes zero for cuts of about 28 percent or more. Undetected overreporting costs the government 4.1 percent of the sales tax these firms owe on their sales.
+At the current rate, net sales-tax revenue from firms in the nine industries where the test detects overreporting (@sec-testing) is negative: sales-tax refunds exceed gross sales-tax revenue. A 1 percent increase in the rate lowers net sales-tax revenue by about 1.7 percent of gross sales-tax revenue. A cut of about 17 percent would make net sales-tax revenue positive, and the 95 percent confidence set excludes zero for cuts of about 28 percent or more. Undetected overreporting costs the government 4.1 percent of gross sales-tax revenue from these firms.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -127,7 +127,7 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
 | 13 | todo   | "Key findings" bullets                                 | keep numbers; add the two margins and the corner-firm lower bound; replace the asymmetry draft note |
 | 14 | todo   | missing                                                | new; input-channel columns of tbl-cf-revenue |
-| 15 | todo   | sec-cf-gap paragraphs + tbl-cf-gap caption             | define L and the share; drop E[P], L/|P|, true credits; add 72 pesos; new caption |
+| 15 | todo   | sec-cf-gap paragraphs + tbl-cf-gap caption             | define L and the share; drop E[P], L/|P|, true credits; add 72 pesos; new caption (L602, caption still say "net refunds": use gross/net sales-tax revenue, sales-tax refunds) |
 | 16 | todo   | Robustness: dropped CV comment + draft notes           | one paragraph on 1652; allcorr entry check as a post-JMP draft note; "Rejected alternative target" -> cut or appendix A |
 | 17 | todo   | Scope: "Partial equilibrium: $K$, $L$"                 | materials and evasion respond |
 | 18 | done   | Scope: "$(\lambda_1,\bar\lambda)$ is fixed"            | - |
@@ -139,15 +139,15 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 
 <!-- how do I do it -->
 
-Given the firm's optimization problem, the government's expected tax revenue from firm $i$ is,
+Given the firm's optimization problem, the expected net sales-tax revenue from firm $i$ is,
 
 $$
 R_i(\Delta;M_i) = \tau_{S,it}P_tY_{it}(\Delta) - \tilde\tau_{P,it}\big[M_{it}(\Delta)+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
 $$ {#eq-govt-rev}
 
-where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is the revenue collected from sales taxes on sales, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is the credit claimed on purchases at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(e'_i(\Delta)))e'_i(\Delta)$.
+where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is gross sales-tax revenue, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is sales-tax refunds, the credit paid at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(e'_i(\Delta)))e'_i(\Delta)$.
 
-A change in the rate on purchases moves revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), so the firm overreports more. Third, when the rate on purchases differs from the rate on sales, the taxes change the price of materials relative to output (@sec-model-foc-m): a higher rate on purchases makes materials cheaper, so the firm buys more of them, claims the credit on more purchases, and produces more output, which raises the tax on sales. With a higher rate, the first two channels lower revenue; the third lowers it through the credit and raises it through the tax on sales.
+A change in the rate on purchases moves net sales-tax revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), so the firm overreports more. Third, when the rate on purchases differs from the rate on sales, the taxes change the price of materials relative to output (@sec-model-foc-m): a higher rate on purchases makes materials cheaper, so the firm buys more of them, claims the credit on more purchases, and produces more output, which raises gross sales-tax revenue. With a higher rate, the first two channels lower net sales-tax revenue; the third lowers it through sales-tax refunds and raises it through gross sales-tax revenue.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (single-tax version, until 2026-10-03).**
@@ -163,7 +163,7 @@ where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev
 
 In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. In addition, governments might collect additional income by penalizing firms caught evading. I abstract from both because, during the sample period, the Colombian government made no clear increase in its effort to reduce tax evasion, and there were no effective penalties for evading: firms caught evading only had to repay their true liabilities [@PerryCardenas1986, 2:144--145 and 3:277--278].
 
-I also hold fixed the firm's capital, labour and productivity, the measurement error in output, the prices of output and materials, and the rate on sales. True materials and overreporting respond to the new rate and, through true materials, so do output and the tax on sales.
+I also hold fixed the firm's capital, labour and productivity, the measurement error in output, the prices of output and materials, and the rate on sales. True materials and overreporting respond to the new rate and, through true materials, so do output and gross sales-tax revenue.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (true materials fixed, until 2026-10-07).**
@@ -597,11 +597,11 @@ Old key findings:
 
 ### Revenue lost to undetected overreporting {#sec-cf-gap}
 
-The same machinery measures what overreporting costs at current rates. For each firm, actual net revenue is $R=t1-\tau_P[M+(1-q(e))e]$, and potential revenue, with credits on true materials only, is $P=t1-\tau_PM$. The loss $L=P-R=\tau_P(1-q(e))e$ is the credit paid on undetected overreporting. I estimate the gap $E[L]/E[P]$ as an auxiliary parameter with its own moment, with $\theta$ fixed at the operating point (@tbl-cf-gap).
+The same machinery measures what overreporting costs at current rates. For each firm, net sales-tax revenue is $R=t1-\tau_P[M+(1-q(e))e]$, and potential net sales-tax revenue, with credits on true materials only, is $P=t1-\tau_PM$. The loss $L=P-R=\tau_P(1-q(e))e$ is the credit paid on undetected overreporting. I estimate the gap $E[L]/E[P]$ as an auxiliary parameter with its own moment, with $\theta$ fixed at the operating point (@tbl-cf-gap).
 
 Among the interior firms, potential revenue is negative: even reporting truthfully, these firms claim more in purchase credits than they owe on sales, $E[P]=-328$ real pesos per firm-year (95 percent set $[-590,-42]$). Undetected overreporting makes these net refunds larger, by $L/|P|=22$ percent ($[11, 131]$). Relative to claims, the loss is small: true credits are 1,875 per firm-year ($[1{,}589, 2{,}137]$), and claims paid exceed them by about 4 percent at the point estimates.
 
-Measured against a positive base, the loss is 4.7 percent of the sales tax the interior firms owe on their sales (95 percent set $[2.8, 7.1]$), 4.1 percent ($[2.8, 5.5]$) for all firms in the nine industries, and 1.5 percent ($[1.1, 3.1]$) for all firms in the sample. The last two treat the firms outside the structural sample as losing nothing, so they are lower bounds. The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022], although the bases differ.
+Measured against a positive base, the loss is 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$), 4.1 percent ($[2.8, 5.5]$) for all firms in the nine industries, and 1.5 percent ($[1.1, 3.1]$) for all firms in the sample. The last two treat the firms outside the structural sample as losing nothing, so they are lower bounds. The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022], although the bases differ.
 
 ::: {.content-visible when-meta="draft"}
 **Draft note (2026-10-04):** the interior set depends on the start of the $\gamma$ solve (cold $[3.5, 7.1]$, warm $[3.1, 6.2]$); reported as their union, since a failed solve only raises $TS$. A multi-start profile would settle it (post-JMP). Research log 2026-10-04.
