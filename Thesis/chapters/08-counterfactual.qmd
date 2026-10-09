@@ -517,7 +517,7 @@ Key observations:
 **Placeholder (outline 5):** restate the goal: the counterfactual quantities are means over the interior firms of quantities that depend on the latent $M_i$, namely net sales-tax revenue $R_i(\Delta)$ (@eq-govt-rev) and claimed deductions with their three parts, at each $\Delta$.
 :::
 
-The objective is to estimate how the overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the optimal true materials decision of firms.
+The objective is to estimate the counterfactual overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the counterfactual true materials decision of firms.
 
 The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation. These quantities cannot be computed firm by firm from the data. Instead, I estimate each counterfactual quantity as an auxiliary parameter with its own moment, which I add to the moments of @sec-counter-estimation. For a quantity $T_i(\Delta;M_i)$, such as net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. Its confidence set comes from inverting the test (@sec-cf-test). Quantities in pesos are real and per firm-year.
 
@@ -530,7 +530,7 @@ $$ {#eq-counter-e}
 A firm with $B_i\ge1+\Delta$ stops overreporting.
 
 ::: {.content-visible when-meta="draft"}
-**Placeholder (outline 7a):** what $B_i$ is: by the evasion condition, the marginal cost of evasion relative to $\tau_{P,it}\rho_t$; with $\omega_i$, $\psi_i$ and $\lambda_{0,jt}$ held fixed, the marginal cost does not move, so only $B_i/(1+\Delta)$ changes. Since $B_i<1$, only a cut makes a firm stop.
+**Placeholder (outline 7a), draft:** By the evasion condition, $B_i$ is the firm's marginal cost of evasion relative to the benefit of evading, $\tau_{P,it}\rho_t$. A change in the rate scales the benefit by $1+\Delta$ but leaves the marginal cost unchanged, because the marginal cost depends only on $\omega_i$ and $\psi_i$, which are held fixed. The scaling parameter $\lambda_{0,jt}$ stays fixed too: it is a lagged industry mean, which the firm's choice does not move. The counterfactual overreporting therefore responds to the rate only through $B_i/(1+\Delta)$. Every interior firm overreports at the current rate, so $B_i<1$, and only a cut in the rate can make a firm stop.
 :::
 
 True materials respond through the materials condition (@eq-foc-m). Taking the ratio of its solution at the new and at the current rate, everything except the rate on purchases cancels:
