@@ -440,11 +440,11 @@ The implied mean detection probability is 6.8 percent (95 percent set 5.7 to 11.
 
 The model's mean overreporting $E[u]$ is within 0.02 of the data's $E[\mathcal V]$ in seven of the nine industries. 37 percent of interior firms overreport by at least 5 percent ($u\ge0.05$).
 
-The moments cannot identify the level of detection $\bar\lambda$ from data alone because it does not contain information regarding auditing or detected evading firms. Audit records would show only detected evasion, so they would mix the probability of detection with the amount of evasion. However, relative detection risk, a firm's detection probability relative to its industry's mean, barely moves with the level: across industries it correlates at 0.87 between $\bar\lambda=0.5$ and $\bar\lambda=9$. 
+The level of detection $\bar\lambda$ is identified only through the model. Note that the data come from a firm-level survey and do not contain audit records, but, under the model, they are not needed. The model identifies $\bar\lambda$ through the evasion condition (@eq-foc-e). Because the cost shock $\psi$ is independent of the tax rate, the probability of detection must offset changes in the benefit of evading, $\tau_P\rho_t$. If detection is too low to offset them, the changes show up in $\psi$, and the test rejects that level. Higher values of $\bar\lambda$ mean lower detection. The test rejects the higher values I tried and fails to reject only near $\bar\lambda=0.5$.
 
-<!-- improve this closing sentence, what do we want to say? levels are no identified, we present our best guess at what could be happening, but there is no way to know. However, if we look at elasticities, that are relative changes, and shares of gross revenue, which control for level, then those measures can be read with more confidence that the true should be close to those values. -->
+<!-- A confidence set for $(\lambda_1,\bar\lambda)$ needs a finer grid around the operating point, which I leave for future work. -->
 
-Relative measures, such as elasticities and shares of gross sales-tax revenue, should therefore depend less on $\bar\lambda$ than levels do. Levels, such as the detection probabilities above and the claimed deductions and net sales-tax revenue in @sec-cf-results, are conditional on the operating point's $\bar\lambda$: they are my best estimate, not identified quantities.
+Having said this, a cautious reader would find comfort knowing that relative detection risk, a firm's detection probability relative to its industry's mean, is stable across grid points. Relative measures, such as elasticities and shares of gross sales-tax revenue, depend less on the scaling parameter, $\bar\lambda$, than levels, such as the detection probabilities, the claimed deductions and net sales-tax revenue in @sec-cf-results. Such a reader could therefore lean towards the relative measures.
 
 
 ::: {.content-visible when-meta="draft"}
