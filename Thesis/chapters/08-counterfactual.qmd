@@ -26,7 +26,7 @@ I study this question using the estimates of the structural objects from the fir
 <!-- what do I find -->
 Claimed deductions respond elastically to changes in the rate on purchases, and the response is more elastic to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.39 percent. The materials response accounts for 0.18 points and the overreporting response for 0.21 points. A 1 percent cut lowers them by about 1.32 percent. The materials response accounts for 0.18 points and the overreporting response for 0.14 points.
 
-At the current rate, net sales-tax revenue from firms in the nine industries where the test detects overreporting (@sec-testing) is negative. A 1 percent increase in the rate lowers net sales-tax revenue by about 1.7 percent of gross sales-tax revenue. A cut of about 17 percent would make net sales-tax revenue break even, and a cut of 28 percent or more would make net sales-tax revenue significantly positive, at the 5 percent level. Undetected overreporting costs the government 4.1 percent of gross sales-tax revenue from these firms.
+At the current rate, net sales-tax revenue from firms in the nine industries where the test detects overreporting (@sec-testing) is negative. A 1 percent increase in the rate lowers net sales-tax revenue by about 1.7 percent of gross sales-tax revenue. A cut of about 17 percent would make net sales-tax revenue break even, and a cut of 28 percent or more would make net sales-tax revenue significantly positive, at the 5 percent level. Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from these firms.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -400,7 +400,11 @@ g(M,Z,\theta)=\begin{bmatrix}
 $$
 -->
 
+### Test and test inversion {#sec-cf-test}
+
 The moments are combined into a single test statistic through the continuously updated estimator (CUE) objective $\hat L_n(\theta)$ of @Schennach2014's Definition F.1. Her Theorem F.1 shows that, at any $\theta$ satisfying the moment condition, $TS_n(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. Comparing $TS_n(\theta)$ with the $\chi^2_{d_g}$ critical value therefore gives a conservative test, whose size is at most its nominal level. 
+
+To obtain the confidence set of $\theta_T(\Delta)$, I invert the test, as in the counterfactual exercise of @AK2020 [App. F]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{d_g,1-\alpha}\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
 
 <!-- Soft test dropped: I call it the conservative test throughout and report as confidence sets the tested points it does not reject.  -->
 
@@ -547,8 +551,6 @@ where $e_i=M^*_i-M_i$ is the firm's baseline evasion at the current state, a fun
 
 The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so these quantities cannot be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$. Quantities in pesos are real and per firm-year.
 
-To obtain the confidence set of $\theta_T(\Delta)$, I invert the test, as in the counterfactual exercise of @AK2020 [App. F]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{d_g,1-\alpha}\}$, where  and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
-
 I report two summaries. The first is net sales-tax revenue on a grid of changes in the rate from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent. Each elasticity is built from a paired difference between the new and the current rate, computed on the same draws of $M_i$, which makes the differences precise.
 
 Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(\tilde{e}_i))\tilde{e}_i\big)\big]$. Its arc elasticity decomposes into the three components:
@@ -558,11 +560,11 @@ $$
 
 the mechanical effect, the materials response and the overreporting response; the last two are each estimated with their own moment. Because the counterfactual overreporting does not depend on true materials, the two responses add up with no interaction term.
 
-For net sales-tax revenue, I divide the change by $\Delta$ times the mean gross sales-tax revenue (1,547 pesos per firm-year), or the absolute value of mean net sales-tax revenue (391 pesos). Baselines are treated as known.
+For net sales-tax revenue, I divide the change by $\Delta$ times the mean gross sales-tax revenue (1,547 pesos per firm-year), or the absolute value of mean net sales-tax revenue (391 pesos).
 
 <!-- I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. -->
 
-The estimation covers the interior firms: unincorporated firms that pay sales tax on their purchases in the nine industries (12,050 firm-years) where the test rejected correct reporting. All of them overreport at the current rate, because the model puts no mass at zero overreporting. Totals add two groups mechanically: (A) adds the 0.5 percent of firms trimmed from the estimation, and (B) also adds the corner firms. Some corner firms pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years): they get no credit at any rate, so they have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, so the ex-ante selection rule keeps them out of the structural estimation. For the added firms, claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$ and gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$.
+Totals for the whole economy add two groups mechanically: the 0.5 percent of firms trimmed from the estimation and the corner firms. Some corner firms pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years): they get no credit at any rate, so they have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, so the ex-ante selection rule keeps them out of the structural estimation. For the added firms, claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$ and gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (true materials fixed, until 2026-10-08).**
@@ -617,6 +619,7 @@ Key findings (@tbl-cf-elasticities, @fig-cf-beh-elast):
 
 - With true materials responding, the elasticity of claimed deductions with respect to $\tau_P$ is 1.39 at +1 percent and 1.32 at $-1$ percent: 1 point is mechanical, 0.18 [0.15, 0.21] comes from firms buying more materials, and the rest from firms overreporting more.
 - The overreporting response is asymmetric: 0.21 [0.19, 0.23] at +1 percent, rising to 0.23 at +2 percent, and 0.14 [0.12, 0.16] at $-1$ percent, falling to 0.12 at $-2$ percent. The materials response is symmetric, between 0.17 and 0.18.
+- All interior firms overreport at the current rate, because the model puts no mass at zero overreporting.
 
 :::{#tbl-cf-elasticities}
 ![](/tables/ch08-cf-elasticities-mresp.png)
