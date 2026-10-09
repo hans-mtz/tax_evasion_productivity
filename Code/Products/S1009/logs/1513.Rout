@@ -1,0 +1,26 @@
+- The project is out-of-sync -- use `renv::status()` for details.
+-- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+v dplyr     1.2.1     v readr     2.2.0
+v forcats   1.0.1     v stringr   1.6.0
+v ggplot2   4.0.3     v tibble    3.3.1
+v lubridate 1.9.5     v tidyr     1.3.2
+v purrr     1.2.2     
+-- Conflicts ------------------------------------------ tidyverse_conflicts() --
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()
+i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Reference: chi2_3,.95=7.81 (sharp), chi2_5,.95=11.07 (conservative)
+== Test-inversion region for (alpha_K,alpha_L), joint 5-moment system, beta fixed ==
+sic_3	min_J	aK_at_min	aL_at_min	K_range_sharp	L_range_sharp	share_sharp	share_cons
+313	9.212	0.3	0.16	empty	empty	0	0.053
+321	4.046	0.3	0.32	[0.24,0.34]	[0.24,0.42]	0.017	0.038
+322	3.093	0.16	0.36	[0.08,0.22]	[0.32,0.42]	0.015	0.025
+331	0.136	0.08	0.54	[0.00,0.22]	[0.40,0.68]	0.051	0.07
+369	5.792	0.36	0.32	[0.14,0.46]	[0.06,0.52]	0.083	0.246
+Saved: Paper/images/1513-pf-joint-testinv-regions.png
+sic_3	min_J	aK_min	aL_min	K_sharp	L_sharp	K_cons	L_cons	share_sharp	share_cons	passes_sharp
+331	0.136	0.08	0.54	[0.00,0.22]	[0.40,0.68]	[0.00,0.24]	[0.36,0.72]	0.051	0.07	TRUE
+322	3.093	0.16	0.36	[0.08,0.22]	[0.32,0.42]	[0.06,0.24]	[0.30,0.44]	0.015	0.025	TRUE
+369	5.792	0.36	0.32	[0.14,0.46]	[0.06,0.52]	[0.00,0.54]	[0.00,0.62]	0.083	0.246	TRUE
+313	9.212	0.3	0.16	empty	empty	[0.08,0.38]	[0.02,0.24]	0	0.053	FALSE
+321	4.046	0.3	0.32	[0.24,0.34]	[0.24,0.42]	[0.16,0.36]	[0.20,0.46]	0.017	0.038	TRUE
