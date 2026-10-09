@@ -158,3 +158,50 @@ Audience: JMP/thesis readers, first-year PhD level. Facts checked against the co
 - **L205** attributes increasing detection to the literature building on @Allingham1972; in Allingham–Sandmo itself the audit probability is fixed. Ch. 2 names @Almunia2018 as the closest model. Suggest: "As in @Almunia2018 (@sec-model), the probability of detection, $q(e)$, increases with overreporting."
 - **L403** ("will be performed as a robustness check"; "$\delta$ behaved well during exploratory analysis") promises future work and gives an informal assessment in a supervisors' draft. Suggest dropping the two sentences or moving them to a draft note; the operating-point sentence (A7) carries what the reader needs.
 - **L409** opens the estimates section with fit statistics before the reader has seen the parameters. Suggested order: the operating point and test (A7), the cost function (L429), detection (L431), the level caveat (L433), then fit (E[u] within 0.02 in seven of nine; 331 0.144 vs 0.168, 369 0.551 vs 0.361).
+
+# Proof-read round 2: "Estimating the model", identification vs implementation, 2026-10-09
+
+Rule (Hans): the chapter keeps identification and the estimator (model, moments, why ELVIS, the test); computational choices go to appendix A ("Estimation mechanics"). Round-1 items re-sorted against Hans's new version.
+
+## Where each item belongs
+
+| Item | Belongs in | Status in Hans's version |
+|---|---|---|
+| Score rows bounded by $s/(1+\lvert s\rvert)$ (round 1, A4) | appendix (computation) | done: chapter shows $\partial h/\partial\lambda_1$, $\partial h/\partial\bar\lambda$. But appendix L38 repeats L35 (which already has the full bullet) and has a typo ("socres"): delete L38 |
+| Which tax variable enters $\psi\perp\tau_P$ | chapter (it defines the moment) | chapter now has $\ln\tau_{P,jt}$, still wrong: the row uses the firm's own rate, $\ln\tau_{P,it}$ (same in the independence sentence, L355). Appendix L39 ("leave-one-out industry–year mean") is wrong for the operating fit: that was the robustness file; delete L39, or replace with "The row uses the firm's own rate; the leave-one-out industry–year mean gives a robustness check." |
+| $d_g=17$, $\chi^2_{17,.95}=27.59$ | chapter (the reader needs it to read the table and the test), value also fine in the appendix | in the appendix only (L40); the table has a "Moment rows ($d_g$)" label but its value is commented out. Fill the table rows, or add "$d_g=17$" at L389 |
+| Reference measure with row scales $D$ (footnote L333, second sentence) | appendix | duplicated: appendix L31 already says it. Cut the second sentence of the footnote; keep the first (densities vs measures) |
+| $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$ | chapter, with the specification (L229) | now at L403, after $\bar\lambda$ is used (L327, L366), and justified by "to reduce dimensionality of the grid search", a computational reason. The modelling reason is the one in your commented L231: detection depends on overreporting relative to a typical firm in the industry, so one $\bar\lambda$ is comparable across industries. Suggest: restore L231's definition at L229 and drop L403 |
+| Grid search over $(\lambda_1,\bar\lambda)$, $\delta$'s and $\gamma$ profiled, fine grid | appendix (search strategy); one sentence in the chapter | fine as is (L405) |
+| "Operating point" | chapter (it is the inference concept) | used at L405, L435 without a definition. Add one clause: "a grid point the conservative test does not reject, at which $\theta$ is fixed for the counterfactual" |
+| Quantiles forward-simulated, mean estimated with its own moment (L437) | chapter, short (says why only the mean has a confidence set) | fine; see wording below |
+| $\bar\lambda$ not identified (L441) | chapter (identification) | right place; wording below |
+| Trim | data section | still not in ch. 3 (pending) |
+
+## Remaining fixes in the chapter
+
+| Line | Now | Suggestion |
+|---|---|---|
+| 229 | "In this way we can find a common probability of detection across industries." | "I"; or replace L229's middle sentences with the definition from L231 |
+| 251 | $\theta=(\lambda_1,\lambda_{0,jt},\delta_0,\delta_1,\delta_2)$ | $\theta=(\lambda_1,\bar\lambda,\delta_0,\delta_1,\delta_2)$ |
+| 337 | "@Schennach2014 Theorem 2.1 shows" | "Theorem 2.1 of @Schennach2014 shows" |
+| 353 | "equivalent to test that the auxiliary moment condition is compatible with …" | "A candidate value of the counterfactual quantity is in its confidence set if some conditional distribution of $M$ given $Z$ satisfies its moment together with all the others." |
+| 355, 365 | $\tau_{P,jt}$ | $\tau_{P,it}$ |
+| 367, 371 | $\varepsilon_j(M,Z)$; "$E[\mathcal V_j]$, from @sec-pf" | $\varepsilon(M,Z)\,1\{j\}$; "$E[\mathcal V\mid j]$ (@sec-deconvolution)": $\mathcal V$ comes from the first stage |
+| 405 | "rejects [^sample]."; "the operating-point" | "rejects.[^sample]" (no space); "the operating point" |
+| 411 | "Sample used here is the same as in the deconvolution chapter" | "The sample is the one of @sec-deconvolution." (true: ch. 5 deconvolves on this sample) |
+| 432 (caption) | "Model parameter estimates from a grid search …"; $E[g(M,X,\hat\theta)]$ | "Estimates at the operating point $(\lambda_1,\bar\lambda)=(0.75,0.5)$; $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ estimated at that point."; $Z$ |
+| 435 | "decreasing and convex in productivity, since $\hat\delta_1>0$ and $\hat\delta_2>0$" | "decreasing" holds only up to $\hat\omega^*$, as the next sentence says. "The cost of evasion is convex in productivity ($\hat\delta_2=3.80>0$): it falls with productivity up to $\hat\omega^*=\hat\delta_1/2\hat\delta_2=3.57$ and rises after it." |
+| 437 | "(95 percent set …). The median 2.0 percent, …" | "(95 percent confidence set 5.7 to 11.0 percent). The median is 2.0 percent, the 80th percentile 18.5 percent, the 90th 27 percent, and the maximum 57 percent. Only the mean has a confidence set: it is estimated with its own moment, while the quantiles are simulated at the operating point." |
+| 439 | "($E[u]\ge0.05$)" | "($u\ge0.05$)" |
+| 441 | "The moments cannot identify the level of detection $\bar\lambda$ from data alone because it does not contain information regarding auditing or detected evading firms." | "The moments do not identify the level of detection $\bar\lambda$: the data contain no audits or detected evaders." |
+| 441 | "Even if the data did, those would be interpreted as probability of evading conditional on being detected." | Reversed as written (audit data give detection given evasion, not evasion given detection) and the point is unclear. If the point is selection, "Audit records would show only detected evasion, so they would mix the probability of detection with the amount of evasion." Otherwise cut |
+| 441 | "relative detection risk is identified under the model's specifications; it barely moved across different optimization points." | "identified" claims more than shown (one correlation, 0.87, between $(0.75,0.5)$ and $(0.70,9)$; the second fails the test). "Relative detection risk, a firm's detection probability relative to its industry's mean, barely moves with the level: across industries it correlates at 0.87 between $\bar\lambda=0.5$ and $\bar\lambda=9$." |
+| 441 | "The counterfactual excercise nonetheless shoudl be interpreted with caution when interpreting detection probabilities." | typos; repetition. "The counterfactual is therefore conditional on the level of detection." |
+
+## Appendix A (Estimation mechanics)
+
+- L38: duplicate of L35; delete.
+- L39: wrong for the operating fit (see above); delete or correct.
+- L40: fine (or move the value into the chapter).
+- L41: empty bullet "- ".
