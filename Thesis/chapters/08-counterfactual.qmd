@@ -517,7 +517,9 @@ Key observations:
 **Placeholder (outline 5):** restate the goal: the counterfactual quantities are means over the interior firms of quantities that depend on the latent $M_i$, namely net sales-tax revenue $R_i(\Delta)$ (@eq-govt-rev) and claimed deductions with their three parts, at each $\Delta$.
 :::
 
-The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so these quantities cannot be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$. Quantities in pesos are real and per firm-year.
+The objective is to estimate how the overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the optimal true materials decision of firms.
+
+The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation. These quantities cannot be computed firm by firm from the data. Instead, I estimate each counterfactual quantity as an auxiliary parameter with its own moment, which I add to the moments of @sec-counter-estimation. For a quantity $T_i(\Delta;M_i)$, such as net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. Its confidence set comes from inverting the test (@sec-cf-test). Quantities in pesos are real and per firm-year.
 
 Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the counterfactual overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
