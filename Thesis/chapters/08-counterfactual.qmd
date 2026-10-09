@@ -513,13 +513,11 @@ Key observations:
 
 ## Counterfactual design {#sec-cf-design}
 
-::: {.content-visible when-meta="draft"}
-**Placeholder (outline 5):** restate the goal: the counterfactual quantities are means over the interior firms of quantities that depend on the latent $M_i$, namely net sales-tax revenue $R_i(\Delta)$ (@eq-govt-rev) and claimed deductions with their three parts, at each $\Delta$.
-:::
+The objective is to estimate how the counterfactual overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the counterfactual true materials decision of firms. However, the counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation. Since only $M^*_i$ is observed, these quantities cannot be computed firm by firm from the data.
 
-The objective is to estimate how the counterfactual overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the counterfactual true materials decision of firms.
+Instead, I cast each counterfactual as a moment condition and add it to the set of moments in @sec-counter-estimation. For example, net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev becomes the moment $E[R_i(\Delta;M_i)-\theta_R(\Delta)]=0$, where $\theta_R(\Delta)$ is its mean. In general, for a quantity $T_i(\Delta;M_i)$ whose mean is the auxiliary parameter $\theta_T(\Delta)$, I cast it as $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. The confidence set of $\theta_T(\Delta)$ comes from inverting the test (@sec-cf-test). 
 
-The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation. Since only $M^*_i$ is observed, these quantities cannot be computed firm by firm from the data. Instead, I estimate each counterfactual quantity as an auxiliary parameter with its own moment, which I add to the moments of @sec-counter-estimation. For a quantity $T_i(\Delta;M_i)$, such as net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. Its confidence set comes from inverting the test (@sec-cf-test). Quantities in pesos are real and per firm-year.
+<!-- Quantities in pesos are real and per firm-year. -->
 
 Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the counterfactual overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
