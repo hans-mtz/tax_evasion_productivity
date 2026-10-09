@@ -205,3 +205,5 @@ Rule (Hans): the chapter keeps identification and the estimator (model, moments,
 - L39: wrong for the operating fit (see above); delete or correct.
 - L40: fine (or move the value into the chapter).
 - L41: empty bullet "- ".
+
+**Status (2026-10-09, end of day): rounds 1 and 2 marked done (Hans: "I'm done with all the points").** Still on disk at wrap-up (03:03 save), possibly by choice or unsaved: $\theta=(\lambda_1,\lambda_{0,jt},\ldots)$ (L251); $\varepsilon_j(M,Z)$ and "$E[\mathcal V_{j}]$, from @sec-pf" (L367, L371); "to reduce dimensionality of the grid search" and "the operating-point" (L403, L405); $E[g(M,X,\hat\theta)]$ in the caption; appendix A L38 (duplicate, "socres"), L39 (leave-one-out mean, wrong for the operating fit; also uses `\ind`, defined only in the JMP header, not in the thesis book), L41 (empty bullet).

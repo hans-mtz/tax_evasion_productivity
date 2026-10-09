@@ -35,6 +35,10 @@ below that needs more than the one-line summary already moved from ch. 8.
 - **The score rows enter in bounded form.** With $B=1-(1+\lambda_1)x^{\lambda_1}$, the scores of $h$ are $\partial h/\partial\lambda_1=-x^{\lambda_1}[1+(1+\lambda_1)\ln x]/B$ and $\partial h/\partial\bar\lambda=\lambda_1(1+\lambda_1)x^{\lambda_1}/(\bar\lambda B)$. Both diverge at the FOC ceiling ($B\to0$), where a single extreme draw can dominate the weighting matrix. The rows use the softsign $s/(1+|s|)\in(-1,1)$ instead ($B$ floored at $10^{-6}$); softsign rather than $s/(1-s)$ because the score in $\lambda_1$ changes sign. Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$. The transform decays polynomially, so firms stay distinguishable across the range of $e$; $\exp$ and $\tanh$ saturate.
 - Nelder–Mead, two passes; every grid point starts from the same validated point (no chaining across points), with common random numbers within a fit. $\gamma$ is solved for at the start point.
 - $\gamma$ is unbounded in the optimizer: @Schennach2014 and @AK2020 both treat $\gamma\to\pm\infty$ as an expected solution, not a numerical failure.
+- Implementation of h's socres: $s_{\lambda_1}$ and $s_{\bar\lambda}$ are the scores of $h$ in $\lambda_1$ and $\bar\lambda$, bounded by $s/(1+|s|)$.
+- Implementation of $\psi \ind \tau_P$: $\bar\tau_{P,jt}$ is the leave-one-out industry–year mean purchases rate
+- For the seventeen moments, the 95 percent critical value is $\chi^2_{17,.95}=27.59$.
+- 
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
