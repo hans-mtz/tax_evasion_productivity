@@ -117,7 +117,7 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 2  | done 2026-10-08 | eq-govt-rev                          | M(Delta), Y(Delta) in the equation |
 | 3  | done 2026-10-08 | "A change in the rate on purchases moves revenue" | add mechanical and input channels (link ch. 2 sec-model-foc-m) |
 | 4  | done 2026-10-08 | "In general, governments can also choose"; "I also hold fixed" | done; old text in a Superseded block. Hans reviewed 2026-10-08; locator now 2:143-146 (3:277-278 was wrong) |
-| 5  | done 2026-10-08 | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; e' independent of the materials response |
+| 5  | done 2026-10-08 | eq-counter-e paragraph "Holding true materials $M_i$ fixed" | hold omega, psi fixed; \tilde{e} independent of the materials response |
 | 6  | done 2026-10-08 | missing (appendix A eq-app-cf-r)                       | one equation + magnitude sentence |
 | 7  | done 2026-10-08 | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
 | 8  | done 2026-10-08 | "Two further auxiliary parameters"                     | paired arcs split into input and evasion; revenue bases; why not textbook |
@@ -139,15 +139,15 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 
 <!-- how do I do it -->
 
-Given the firm's optimization problem, the expected net sales-tax revenue from firm $i$ is,
+Given the firm's optimization problem, the government's expected net sales-tax revenue from firm $i$ is,
 
 $$
-R_i(\Delta;M_i) = \tau_{S,it}P_tY_{it}(\Delta) - \tilde\tau_{P,it}\big[M_{it}(\Delta)+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
+R_i(\Delta;M_i) = \tau_{S,it}P_tY_{it}(\Delta) - \tilde\tau_{P,it}\big[M_{it}(\Delta)+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]
 $$ {#eq-govt-rev}
 
-where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is gross sales-tax revenue, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is sales-tax refunds, the credit paid at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(e'_i(\Delta)))e'_i(\Delta)$.
+where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$ is the counterfactual tax rate on purchases. The first term in @eq-govt-rev is gross sales-tax revenue, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is sales-tax refunds, the credit paid at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)$.
 
-A change in the rate on purchases moves net sales-tax revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), so the firm overreports more. Third, the rate on purchases changes the net-of-tax price of materials relative to output (@sec-model-foc-m). A higher rate on purchases makes materials cheaper, so the firm buys more materials, claims the credit on more purchases, and produces more output, which raises gross sales-tax revenue. With a higher rate, the first two channels lower net sales-tax revenue; the third lowers it through sales-tax refunds and raises it through gross sales-tax revenue.
+A change in the rate on purchases moves net sales-tax revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), leading the firm to overreport more. Third, the rate on purchases changes the net-of-tax price of materials relative to output (@sec-model-foc-m). A higher rate yields materials cheaper, therefore the firm buys more materials, claims the credit on more purchases, and produces more output, which raises gross sales-tax revenue. With a higher rate, the first two channels lower net sales-tax revenue. The third lowers net sales-tax revenue through refunds and raises it through gross sales-tax revenue.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (single-tax version, until 2026-10-03).**
@@ -155,25 +155,25 @@ A change in the rate on purchases moves net sales-tax revenue through three chan
 Given the firm's optimization problem, the government's expected tax revenue is,
 
 $$
-R_i(\Delta;M_i) = \tilde\tau_{it}\big(P_tY_{it} - \big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]\big)
+R_i(\Delta;M_i) = \tilde\tau_{it}\big(P_tY_{it} - \big[M_i+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]\big)
 $$ {#eq-govt-rev-single}
 
-where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev-single is the revenue collected from sales taxes on sales, $\tilde\tau_{it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases. The term includes the firms' true inputs, $M_i$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
+where $\tilde\tau_{it}\equiv(1+\Delta)\tau_{it}$. The first term in @eq-govt-rev-single is the revenue collected from sales taxes on sales, $\tilde\tau_{it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases. The term includes the firms' true inputs, $M_i$, plus the counterfactual undetected evasion, $(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $\tilde{e}_i(\Delta)$.
 :::
 
-In general, governments can also choose the level of enforcement effort, and therefore they can affect $q(\cdot)$. Governments might also collect additional income by penalizing firms caught evading. I abstract from both. During the sample period, the Colombian tax administration was inefficient: it lacked budget and control over its staff, and it audited little. Its penalties were also ineffective: some were trivial and others too large to be applied [@PerryCardenas1986, 2:143--146].
+In general, governments can also choose the level of enforcement effort, and therefore they can affect the probability of detection $q(\cdot)$. Governments might also collect additional income by penalizing firms caught evading. I abstract from both. During the sample period, the Colombian tax administration was inefficient: it lacked budget and control over its staff, and it audited little. Its penalties were also ineffective: some were trivial and others too large to be applied [@PerryCardenas1986, 2:143--146].
 
 I also hold fixed the firm's capital, labour and productivity, the measurement error in output, the prices of output and materials, and the rate on sales. True materials and overreporting respond to the new rate and, through true materials, so do output and gross sales-tax revenue.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (true materials fixed, until 2026-10-07).**
 
-where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is the revenue collected from sales taxes on sales $\tau_{S,it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases, $\tau_{P,it}$. The term includes the firms' true inputs, $M_{it}$, plus the counterfactual undetected evasion, $(1-q(e'_i(\Delta)))e'_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau_P$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $e'_i(\Delta)$.
+where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$. The first term in @eq-govt-rev is the revenue collected from sales taxes on sales $\tau_{S,it}P_tY_{it}$. The second term is the credits claimed on sales taxes on purchases, $\tau_{P,it}$. The term includes the firms' true inputs, $M_{it}$, plus the counterfactual undetected evasion, $(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)$, at tax rate percentage change $\Delta$. The firm's FOC shows $\tau_P$ directly modifies the marginal benefit of evasion leading to changes in the optimal evasion $\tilde{e}_i(\Delta)$.
 
 Since I lack information on these margins, I hold output and input decisions fixed. The tax on sales then changes only mechanically with the rate, and the behavioural response of revenue runs entirely through claimed deductions. Therefore, I focus on
 
 $$
--\tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]
+-\tilde\tau_{P,it}\big[M_i+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]
 $$
 :::
 
@@ -182,7 +182,7 @@ $$
 - Holding sales-tax revenue, $M$, $K$, $L$, $\omega$, $\varepsilon$ fixed; only evasion responds. A local comparative static, not a general-equilibrium optimal-tax result.
 - Two-tax-rate model: only $\tau_P$ enters the evasion FOC; $\tau_S$ never does. Shock: $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$.
 - Revenue:
-  $R_i(\Delta;M_i)=t1_{it}-\tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$, with $t1_{it}=\tau_{S,it}P_tY_{it}$ fixed; corner firms ($\tau_P=0$): $R_i=t1_{it}-\tilde\tau_{P,it}M^*_{it}$.
+  $R_i(\Delta;M_i)=t1_{it}-\tilde\tau_{P,it}\big[M_i+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]$, with $t1_{it}=\tau_{S,it}P_tY_{it}$ fixed; corner firms ($\tau_P=0$): $R_i=t1_{it}-\tilde\tau_{P,it}M^*_{it}$.
 - Structural result (envelope theorem, any regular $q,\kappa$): $dR/dx<0$ always with $M$ fixed ($x=1+\Delta$). Revenue is a pure transfer between government and evaders.
 - Check that $M$ does not respond (materials FOC gives $M'(x)>0$): at $\Delta=0$, median firm, $\hat\beta=0.387$, $\hat\tau_P=0.088$, $\hat\tau_S=0.089$, $\hat\lambda=5.427\times10^{-7}$:
 
@@ -202,7 +202,7 @@ $$
 
 Using estimates of the production function parameters $(\beta,\alpha_K, \alpha_L)$ and constructed residuals, $\mathcal V_{it}$, $\tilde{\mathcal W}_{it}$ from @sec-deconvolution and @sec-pf, the objective is to recover the parameters of the probability of detection and the cost of evasion function $(q(e),\kappa_{it}(e,\omega))$. 
 
-As described in @sec-model, I follow the classical tax evasion literature building on the seminal work of @Allingham1972. In this literature, the probability of detection, $q(e)$, is increasing in the evasion level. This assumption is consistent with a tax authority that audits a firm whenever its overreporting exceeds a random threshold.[^effort] The cost of evasion, $c_{it}(e,\omega)$, represents the resources of the firm allocated to the evasion endeavour that could have been employed in a productive activity for the firm. The cost of evasion is increasing in the evasion level and convex in productivity. The $\psi$ term, an exogenous cost shock, allows cross-firm heterogeneity.
+As described in @sec-model, I follow the classical tax evasion literature building on the seminal work of @Allingham1972. In this literature, the probability of detection, $q(e)$, is increasing in the evasion level. This assumption is consistent with a tax authority that audits a firm whenever its overreporting exceeds a random threshold.[^effort] The cost of evasion, $\kappa_{it}(e,\omega)$, represents the resources of the firm allocated to the evasion endeavour that could have been employed in a productive activity for the firm. The cost of evasion is increasing in the evasion level and convex in productivity. The $\psi$ term, an exogenous cost shock, allows cross-firm heterogeneity.
 
 [^effort]: The probability of detection might also depend on enforcement effort $a$, $q(e,a)$. However, since I do not observe enforcement, I treat it as constant across firms and time.
 
@@ -226,7 +226,7 @@ $$
 \kappa_{it}(e_{it}, \omega_{it})=e_{it}\textbf{e}^{\delta_0-\delta_1\omega_{it}+\delta_2\omega^2_{it}+\psi_{it}}
 $$ {#eq-eva-cost}
 
-where $\lambda_{0,jt}$ is an scaling parameter and $0<\lambda_1<1$ defines the curvature of the probability of detection. The scaling parameter brings industries consuming different inputs and thus input levels to a relative scale within the industry and comparable across industries at each $t$. In this way we can find a common probability of detection across industries. Put differently, $\lambda_{0,jt}$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
+where $\lambda_{0,jt}$ is a scaling parameter and $0<\lambda_1<1$ defines the curvature of the probability of detection. The scaling parameter brings industries consuming different inputs and thus input levels to a relative scale within the industry and comparable across industries at each $t$. In this way we can find a common probability of detection across industries. Put differently, $\lambda_{0,jt}$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
 
 <!-- where $\lambda_{0,jt}\equiv1/(\bar\lambda\bar M_{j,t-1})$ and $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year. The scale makes detection depend on how much a firm overreports relative to a typical firm in its industry, not on the peso amount: $\bar\lambda$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model). -->
 
@@ -248,7 +248,7 @@ $$
 \psi_{it}\;=\;h(e_{it};\lambda_1,\lambda_{0,jt})-\delta_0+\delta_1\omega_{it}-\delta_2\omega^2_{it}
 $$ {#eq-foc-psi}
 
-The ceiling $c_{\lambda_1}$ is the largest relative overreporting the FOC can rationalize; there the detection probability is $1/(1+\lambda_1)$. The parameters are $\theta=(\lambda_1,\lambda_{0,jt},\delta_0,\delta_1,\delta_2)$.
+The ceiling $c_{\lambda_1}$ is the largest relative overreporting the FOC can rationalize; there the detection probability is $1/(1+\lambda_1)$. The parameters of interest are $\theta=(\lambda_1,\lambda_{0,jt},\delta_0,\delta_1,\delta_2)$.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -324,17 +324,17 @@ $$
 \psi(M)\;=\;h\big(e(M)\big)-\delta_0+\delta_1\omega(M)-\delta_2\omega(M)^2
 $$ {#eq-psi-of-m}
 
-In addition to depending on a single unobservable, $M_{it}$, the setup presents two non-standard features. First, it is nonlinear and nonseparable in $M$ through the log term in $h$, and thus a traditional method of moments cannot help (one cannot interact with an instrument to make the undesired error term go away). Second, the domain of $M$ depends on the parameters being estimated. The support of the latent variable depends on $(\lambda_1,\bar\lambda)$: the FOC ceiling restricts true materials to $M\in\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$.
+In addition to depending on a single unobservable, $M_{it}$, the setup presents two non-standard features. First, it is nonlinear and nonseparable in $M$ through the log term in $h$. Second, the domain of $M$ depends on the parameters being estimated. The support of the latent variable depends on $(\lambda_1,\bar\lambda)$: the FOC ceiling restricts true materials to $M\in\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$.
 
-The method *Entropic Latent Variable Integration via Simulation* (ELVIS) [@Schennach2014] is built for exactly this combination of features.
+The method *Entropic Latent Variable Integration via Simulation* (ELVIS) [@Schennach2014] addresses both nonlinearity and nonseparability, and a parameter-dependent support of the unobserved variable.
 
-Let $f_Z$ denote the density of the observed data $Z_{it}$, and let $f_{M|Z}$ denote a candidate conditional density of $M_{it}$ given $Z_{it}$, so that $f_{M|Z}f_Z$ is the implied joint density of $(M_{it},Z_{it})$.[^elvis-densities] The question is whether some choice of $f_{M|Z}$ makes $E_{f_{M|Z}f_Z}[g(M,Z,\theta)]=0$.
+Let $f_Z$ denote the density of the observed data $Z_{it}$, and let $f_{M|Z}$ denote a candidate conditional density of $M_{it}$ given $Z_{it}$, so that $f_{M|Z}\;f_Z$ is the implied joint density of $(M_{it},Z_{it})$.[^elvis-densities] The question is whether some choice of $f_{M|Z}$ makes $E_{f_{M|Z}\;f_Z}[g(M,Z,\theta)]=0$.
 
-[^elvis-densities]: @Schennach2014 states the result for general probability measures. I write it with densities because, in this application, $M_{it}$ is continuous on the known support $\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$; every candidate conditional distribution therefore has a density there. The reference measure follows @Schennach2014's Proposition 2.1: a density proportional to $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with fixed row scales $D$, which keeps the tilted density proper for every $\gamma$. I compute $\tilde g$ in @eq-elvis-tilt by self-normalized importance sampling on 1,000 fixed draws per firm from a mixture of uniform and log-uniform proposals, so the objective is smooth in $(\theta,\gamma)$.
+[^elvis-densities]: @Schennach2014 states the result for general probability measures. I write it with densities because, in this application, $M_{it}$ is continuous on the known support $\big(\max\{0,M^*_{it}-c_{\lambda_1}/\lambda_{0,jt}\},M^*_{it}\big)$; every candidate conditional distribution therefore has a density there. The reference measure follows @Schennach2014's Proposition 2.1: a density proportional to $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with fixed row scales $D$, which keeps the tilted density proper for every $\gamma$.
 
 <!-- Superseded footnote text (linear q, Metropolis sampler): The reference density $f^0_{M|Z}$ used in estimation is the uniform density on that support: the estimator draws $M_{it}$ uniformly on the support and accepts each draw with probability $\min\{1,\exp[\gamma'(g_{\text{new}}-g_{\text{old}})]\}$; the chain's average therefore computes $\tilde g$ in @eq-elvis-tilt. -->
 
-@Schennach2014 shows the abstract *existence* problem of $f_{M|Z}$ is equivalent to a more concrete optimization problem (her Theorem 2.1):
+@Schennach2014 Theorem 2.1 shows the abstract *existence* problem of $f_{M|Z}$ is equivalent to a more concrete optimization problem:
 
 $$
 \inf_{f_{M|Z}}\big\|E_{f_{M|Z}f_Z}[g(M,Z,\theta)]\big\|=0 \quad\Longleftrightarrow\quad \inf_{\gamma\in\mathbb R^{d_g}}\big\|E_{f_Z}[\tilde g(Z,\theta,\gamma)]\big\|=0
@@ -346,11 +346,11 @@ $$
 \tilde g(Z,\theta,\gamma)\equiv\frac{\int g(M,Z,\theta)\exp\big(\gamma'g(M,Z,\theta)\big)\,f^0_{M|Z}(M|Z)\,dM}{\int \exp\big(\gamma'g(M,Z,\theta)\big)\,f^0_{M|Z}(M|Z)\,dM}
 $$ {#eq-elvis-tilt}
 
-Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to an arbitrary reference density $f^0_{M|Z}$. In the optimization problem, $\gamma\in\mathbb{R}^{d_g}$ is the Lagrange multiplier vector on the moment constraints. $f^0_{M|Z}$ only needs to be positive wherever the true conditional density of $M$ is; any choice with the right support gives the same $\hat\theta$ [Remark 2.3, @Schennach2014]. In this setting, this allows me to avoid specifying $f_\psi$ or $f_\varepsilon$ or searching over the space of all conditional distributions of $M$. Instead, I solve a finite optimization problem.
+Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to an arbitrary reference density $f^0_{M|Z}$. In the optimization problem, $\gamma\in\mathbb{R}^{d_g}$ is the Lagrange multiplier vector on the moment constraints. $f^0_{M|Z}$ only needs to be positive wherever the true conditional density of $M$ is. Any choice of $f^0_{M|Z}$ with the right support gives the same $\hat\theta$ [Remark 2.3, @Schennach2014]. In this setting, this allows me to avoid specifying $f_\psi$ or $f_\varepsilon$ or searching over the space of all conditional distributions of $M$. Instead, I solve a finite optimization problem.
 
-The true (unobserved) conditional distribution of $M$ satisfies the moment condition at the true $\theta_0$, so Theorem 2.1 guarantees some $\gamma$ also solves the right-hand side of @eq-elvis-equiv at $\theta_0$. Searching over $\theta$ for the value where this finite-dimensional problem has a solution therefore recovers $\theta_0$, regardless of the chosen $f^0_{M|Z}$, without requiring knowledge of the true conditional distribution of $M$.
+The true conditional distribution of $M$ satisfies the moment condition at the true $\theta_0$. Theorem 2.1 guarantees some $\gamma$ also solves the right-hand side of @eq-elvis-equiv at $\theta_0$. Searching over $\theta$ for the value where this finite-dimensional problem has a solution therefore recovers $\theta_0$, regardless of the chosen $f^0_{M|Z}$, without requiring knowledge of the true conditional distribution of $M$.
 
-The entropy-maximizing distribution satisfies $E[g(M,Z,\theta_0)]=0$, but it should not be treated as the actual distribution of $M$, since many conditional distributions of $M$ given $Z$ satisfy the moment condition [@Schennach2022, p. 1250]. This matters for the counterfactual question. Since expected counterfactual revenue depends on the latent $M_{it}$, it would be tempting to average it over draws from such a distribution. Instead, I include the counterfactual object as an auxiliary parameter with its own moment condition and estimate it jointly with $\theta$ and $\gamma$.
+Although the entropy-maximizing distribution satisfies $E[g(M,Z,\theta_0)]=0$, it should not be treated as the actual distribution of $M$, since many conditional distributions of $M$ given $Z$ may satisfy the moment condition [@Schennach2022, p. 1250]. This matters for the counterfactual question. Since expected counterfactual revenue depends on the latent $M_{it}$, it would be tempting to average it over draws from such a distribution. Instead, I include the counterfactual object as an auxiliary parameter with its own moment condition and estimate it jointly with $\theta$ and $\gamma$. The counterfactual question is equivalent to test that the auxiliary moment condition is compatible with the distribution of unobservable $M$ conditional on the observables $Z$ such that the rest of the moment conditions are satisfied. 
 
 During estimation, I use the model's independence assumptions: $\varepsilon$ is independent of $(M,e,\omega,\psi,\tau_P)$ and $\psi$ is independent of $(\omega,M,\bar\tau_{P,jt})$, with $E[\varepsilon]=E[\psi]=0$. They imply the following set of moments,
 
@@ -361,16 +361,14 @@ g(M,Z,\theta)=\begin{bmatrix}
 \psi(M,Z)\omega(M,Z) \\
 \psi(M,Z)\omega(M,Z)^2 \\
 \varepsilon(M,Z)\psi(M,Z) \\
-\varepsilon(M,Z)\,s_{\lambda_1}(e) \\
-\psi(M,Z)\ln\bar\tau_{P,jt} \\
-\varepsilon(M,Z)\,s_{\bar\lambda}(e) \\
-\varepsilon(M,Z)\,1\{j=1\} \\
-\vdots \\
-\varepsilon(M,Z)\,1\{j=9\}
+\varepsilon(M,Z)\,\frac{\partial h(e)}{\partial\lambda_1} \\
+\psi(M,Z)\ln\tilde\tau_{P,jt} \\
+\varepsilon(M,Z)\,\frac{\partial h(e)}{\partial\bar\lambda} \\
+\varepsilon_j(M,Z)\\
 \end{bmatrix}
 $$
 
-$s_{\lambda_1}$ and $s_{\bar\lambda}$ are the scores of $h$ in $\lambda_1$ and $\bar\lambda$, bounded by $s/(1+|s|)$. $\bar\tau_{P,jt}$ is the leave-one-out industry–year mean purchases rate: the cost shock is independent of the benefit shifter, so variation in the rate must be absorbed through evasion. The industry rows set $E[\varepsilon\mid j]=0$, so in each industry the model's mean overreporting matches the data's $E[\mathcal V_{it}]$.
+Note that the cost shock is independent of the tax rate, the benefit shifter, such that variation in the rate is absorbed through evasion. The industry rows set $E[\varepsilon_j]=0$, such that in each industry the model's mean overreporting matches the overreporting share of true materials $E[\mathcal V_{j}]=E[\ln(1+\tfrac{e_{j}}{M_{j}})]$, from @sec-pf.
 
 <!-- Superseded moment vector (linear q, nine rows):
 $$
@@ -388,29 +386,27 @@ g(M,Z,\theta)=\begin{bmatrix}
 $$
 -->
 
-The seventeen moments are combined into a single test statistic through the continuously updated estimator (CUE) objective $\hat L_n(\theta)$ of @Schennach2014's Definition F.1. Her Theorem F.1 shows that, at any $\theta$ satisfying the moment condition, $TS(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. Comparing $TS(\theta)$ with the $\chi^2_{d_g}$ critical value therefore gives a conservative test, whose size is at most its nominal level; I call it the conservative test throughout and report as confidence sets the tested points it does not reject. For the seventeen moments, the 95 percent critical value is $\chi^2_{17,.95}=27.59$. The exact objective and my sign convention relative to hers are in @sec-app-elvis.
+The moments are combined into a single test statistic through the continuously updated estimator (CUE) objective $\hat L_n(\theta)$ of @Schennach2014's Definition F.1. Her Theorem F.1 shows that, at any $\theta$ satisfying the moment condition, $TS_n(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. Comparing $TS_n(\theta)$ with the $\chi^2_{d_g}$ critical value therefore gives a conservative test, whose size is at most its nominal level. 
 
-The estimation sample has 12,050 firm-years of unincorporated firms in the nine industries where the test in @sec-testing rejects, after dropping the 0.5 percent with the largest reported materials (@sec-app-elvis). Firms in the other industries, and the trimmed firms, enter the counterfactual mechanically (@sec-cf-design).
-
-I do not estimate $(\lambda_1,\bar\lambda)$ jointly with the $\delta$'s. I fix them on a grid and estimate $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ at each point (@sec-app-elvis); $(\lambda_1,\bar\lambda)=(0.75,0.5)$ passes the conservative test ($TS=23.7$), and I fix $\theta$ there for the counterfactual. The moments do not pin down the level of detection $\bar\lambda$, so the counterfactual is conditional on it. Relative detection risk barely moves with $\kappa$: across industries, relative risk at $\bar\lambda=0.5$ and $\bar\lambda=9$ correlates at 0.87.
-
-::: {.content-visible when-meta="draft"}
-**Superseded (linear $q$, single-tax run, 2026-09-22).**
-
-The estimation sample has 32,232 unincorporated firm-periods (3,340 at the $\tau=0$ corner), after dropping the 0.5 percent of non-corner firm-periods with the largest reported materials (@sec-app-elvis).
-:::
+<!-- Soft test dropped: I call it the conservative test throughout and report as confidence sets the tested points it does not reject.  -->
 
 
+
+ <!-- Trimming should be stated once in the data section and never mentione again after.
+ 
+ after dropping the 0.5 percent with the largest reported materials (@sec-app-elvis) -->
 
 <!-- Estimation mechanics (CUE objective, MCMC chain length, optimizer), the trim-cutoff
 decision + @fig-cf-trim, and the justification for the conservative test design all moved to
 @sec-app-elvis (implementation detail and trimming go in the appendix). -->
 
+I searched over a $(\lambda_1,\bar\lambda)$ grid, profiling over $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ (@sec-app-elvis). The grid over the full set of parameters of interest to identify confidence intervals will be performed as a robustness check. During exploratory analysis, $\delta=(\delta_0,\delta_1, \delta_2)$ behaved well. 
 
+The estimation sample has 12,050 firm-years of unincorporated firms in the nine industries where the test in @sec-testing rejects. Details of the implementation, including the exact objective function can be found in @sec-app-elvis. Next section discusses the point estimates for the parameters of interest.
 
-### Estimates {#sec-cf-estimates}
+### Model parameter estimates {#sec-cf-estimates}
 
-@tbl-cf-estimates displays the estimates at the operating point. The estimation uses the headline production-function estimates of @sec-pf and the interior firms of the nine industries above.
+@tbl-cf-estimates displays the point estimates found by grid search over $(\lambda_1,\bar\lambda)$. The model's mean overreporting $E[u]$ is within 0.02 of the data's $E[\mathcal V]$ in seven of the nine industries. 37 percent of interior firms overreport by at least 5 percent ($E[u]\ge0.05$).
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -427,14 +423,15 @@ decision + @fig-cf-trim, and the justification for the conservative test design 
 :::{#tbl-cf-estimates}
 ![](/tables/ch08-headline-estimates.png)
 
-Stage-2 estimates at the operating point: detection $q=(\lambda_{0,jt}e)^{\lambda_1}$ with $(\lambda_1,\bar\lambda)=(0.75,0.5)$ fixed, interior firms in the nine industries where the test rejects (top 0.5 percent by $M^*$ trimmed). $TS_{\text{cons}}$ is the conservative test statistic, compared with $\chi^2_{17,.95}$.
+Model parameter estimates from a grid search over $(\lambda_1,\bar\lambda)$ profiling over $(\delta_0,\delta_1,\delta_2)$ and $\gamma$. Interior firms in the nine industries where the test rejects. The test statistic $TS_n$ fails to reject at the 5 percent significance level the null hypothesis that $E[g(M,X,\hat\theta)]=0$.
 :::
 
-- The operating point passes the conservative test: $TS_{\text{cons}}=23.7<\chi^2_{17,.95}=27.6$, with all 17 directions of $\hat\Omega$ kept.
-- The cost function is convex in productivity: $\hat\delta_1=27.15>0$ and $\hat\delta_2=3.80>0$, so the cost of evasion falls with productivity up to $\hat\omega^*=3.57$ and rises after it. $\hat\omega^*$ lies at about the 57th percentile of productivity in the estimation sample.
-- Fit to the target moments: the model's mean overreporting $E[u]$ is within 0.02 of the data's $E[\mathcal V]$ in seven of the nine industries; 331 is lower (0.144 vs 0.168) and 369 higher (0.551 vs 0.361).
-- 37 percent of interior firms overreport by at least 5 percent ($E[u]\ge0.05$).
-- Implied detection probabilities: mean 6.8 percent (95 percent set 5.7 to 11.0 percent); median 2.0 percent, 80th percentile 18.5 percent, 90th percentile 27 percent, maximum 57 percent. The quantiles are forward-simulated at the operating point; the mean is estimated with its own moment.
+The estimates indicate that the cost function is convex in productivity, since $\hat\delta_1=27.15>0$ and $\hat\delta_2=3.80>0$. This implies that the cost of evasion falls with productivity up to $\hat\omega^*=3.57$ and rises after it. $\hat\omega^*$ lies at about the 57th percentile of productivity in the estimation sample.
+
+The implied mean detection probability is 6.8 percent (95 percent set 5.7 to 11.0 percent). The median 2.0 percent, 80th percentile 18.5 percent, 90th percentile 27 percent, and maximum 57 percent. The quantiles are forward-simulated at the operating point; the mean is estimated with its own moment.
+
+The moments do not pin down the level of detection $\bar\lambda$, so the counterfactual is conditional on it. Relative detection risk barely moves with $\kappa$: across industries, relative risk at $\bar\lambda=0.5$ and $\bar\lambda=9$ correlates at 0.87.
+
 
 ::: {.content-visible when-meta="draft"}
 **Draft note ($\hat\omega^*$ percentile, 2026-10-03):** ballpark from $\tilde{\mathcal W}_{it}$ as the productivity proxy (57th percentile; 59th after shrinking out the $(1-\beta)\varepsilon$ noise). The percentile differs widely by industry (2nd in 331, 98th in 342) because the level of $\omega$ differs by industry while $\hat\omega^*$ is common.
@@ -489,7 +486,7 @@ Key observations:
 Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the counterfactual overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
 $$
-x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad e'_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
+x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad \tilde{e}_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
 $$ {#eq-counter-e}
 
 A firm with $B_i\ge1+\Delta$ stops overreporting. The counterfactual overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e).
@@ -508,29 +505,29 @@ The factor depends only on $\tau_{P,it}$, $\Delta$ and $\beta$, so it is the sam
 Let the counterfactual tax rate be $\tilde\tau_{it}=(1+\Delta)\tau_{it}$. Then, given the parameter estimates, the counterfactual evasion is, 
 
 $$
-e'_i(\Delta)=\max\left(0,\ \frac{\tilde\tau_{it}\rho_t-C(\omega_i,\psi_i)}{2\lambda\,\tilde\tau_{it}\rho_t}\right),\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
+\tilde{e}_i(\Delta)=\max\left(0,\ \frac{\tilde\tau_{it}\rho_t-C(\omega_i,\psi_i)}{2\lambda\,\tilde\tau_{it}\rho_t}\right),\qquad C(\omega,\psi)\equiv\textbf{e}^{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi}
 $$
 
-Firms might jump out of evasion and optimally select $e'_i=0$ as $\Delta$ adjusts the marginal benefit of evasion. This decision justifies $\max(0,\cdot)$.
+Firms might jump out of evasion and optimally select $\tilde{e}_i=0$ as $\Delta$ adjusts the marginal benefit of evasion. This decision justifies $\max(0,\cdot)$.
 
-Substituting the baseline FOC, $e'_i$ can be written in terms of the firm's baseline evasion $e_i$,
+Substituting the baseline FOC, $\tilde{e}_i$ can be written in terms of the firm's baseline evasion $e_i$,
 
 $$
-e'_i(\Delta)=\max\!\big(0,\frac{1}{1+\Delta}[e_i+\Delta/(2\lambda)]\big)
+\tilde{e}_i(\Delta)=\max\!\big(0,\frac{1}{1+\Delta}[e_i+\Delta/(2\lambda)]\big)
 $$ 
 
 where $e_i=M^*_i-M_i$ is the firm's baseline evasion at the current state, a function of the latent $M_i$, and captures the firm heterogeneity defined by $(\omega, \psi)$. @eq-counter-e shows that the counterfactual evasion is linear in the model's current evasion with slope $1/(1+\Delta)$ and an intercept, $\Delta/[2\lambda(1+\Delta)]$, constant across firms.
 :::
 
-The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so these quantities cannot be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$, which brings the number of moments from 17 to $d_g=18$. Quantities in pesos are real and per firm-year.
+The counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation, so these quantities cannot be computed firm by firm from the data. Instead, I estimate each one as an auxiliary parameter with its own moment. For a quantity $T_i(\Delta)$, such as net sales-tax revenue $R_i(\Delta)$ in @eq-govt-rev, the parameter is its mean, $\theta_T(\Delta)$, and the moment is $E[T_i(\Delta)-\theta_T(\Delta)]=0$. Quantities in pesos are real and per firm-year.
 
-To obtain the confidence set of $\theta_T(\Delta)$, I invert the test, as in the counterfactual exercise of @AK2020 [App. F]: the structural parameters $\theta$ stay at the operating point of @sec-cf-estimates, which passes the test, and at each $\Delta$ only $\gamma$ is re-optimized. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{18,.95}=28.87\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
+To obtain the confidence set of $\theta_T(\Delta)$, I invert the test, as in the counterfactual exercise of @AK2020 [App. F]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{d_g,1-\alpha}\}$, where  and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
 
 I report two summaries. The first is net sales-tax revenue on a grid of changes in the rate from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent. Each elasticity is built from a paired difference between the new and the current rate, computed on the same draws of $M_i$, which makes the differences precise.
 
-Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(e'_i))e'_i\big)\big]$. Its arc elasticity decomposes into the three components:
+Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(\tilde{e}_i))\tilde{e}_i\big)\big]$. Its arc elasticity decomposes into the three components:
 $$
-\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_i\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(e'_i))e'_i-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)},
+\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_i\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(\tilde{e}_i))\tilde{e}_i-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)},
 $$
 
 the mechanical effect, the materials response and the overreporting response; the last two are each estimated with their own moment. Because the counterfactual overreporting does not depend on true materials, the two responses add up with no interaction term.
@@ -546,7 +543,7 @@ The estimation covers the interior firms: unincorporated firms that pay sales ta
 
 Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding true materials $M_i$ fixed, and with them $\omega_i$ and $\psi_i$, the FOC at the new rate gives the new evasion in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
-The counterfactual evasion is a function of the same latent $M_i$ as the main moments system. As briefly mentioned in @sec-counter-estimation, define firm $i$'s counterfactual deduction claims as $\text{Claims}_i(\Delta)\equiv\tilde\tau_{P,it}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$, the credit claimed on true inputs plus undetected overreporting. I include an auxiliary parameter $\theta_C(\Delta)$, mean deduction claims, with its own moment $E\big[\text{Claims}_i(\Delta)-\theta_C(\Delta)\big]=0$. Claims are measured in nominal COP; each firm-period's claims are deflated by the GDP deflator of its year before averaging, so $\theta_C(\Delta)$ is real mean claims per firm-period. Therefore, the number of moments increases to $d_g=18$.
+The counterfactual evasion is a function of the same latent $M_i$ as the main moments system. As briefly mentioned in @sec-counter-estimation, define firm $i$'s counterfactual deduction claims as $\text{Claims}_i(\Delta)\equiv\tilde\tau_{P,it}\big[M_i+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]$, the credit claimed on true inputs plus undetected overreporting. I include an auxiliary parameter $\theta_C(\Delta)$, mean deduction claims, with its own moment $E\big[\text{Claims}_i(\Delta)-\theta_C(\Delta)\big]=0$. Claims are measured in nominal COP; each firm-period's claims are deflated by the GDP deflator of its year before averaging, so $\theta_C(\Delta)$ is real mean claims per firm-period. Therefore, the number of moments increases to $d_g=18$.
 
 Two further auxiliary parameters summarize the response near current policy, each with its own moment and estimated the same way. The first is the elasticity of claims, $[C(h)-C(-h)]/(2h\,C(0))$ with $h=1$ percent. The second is the behavioural change $C(\Delta)-(1+\Delta)C(0)$, computed on the same draw of $M_i$, which I report as an elasticity by dividing by $\Delta C(0)$. Totals: (A) adds the trimmed firms, and (B) adds every firm outside the nine industries; both groups' claims scale mechanically with the rate, $(1+\Delta)\tau_PM^*$.
 
@@ -556,7 +553,7 @@ To obtain the confidence set of $\theta_C(\Delta)$, I invert the test. At each $
 <!-- 
 implementation details 
 
-$\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ cell. Question answered: given our best estimates, is a candidate revenue consistent with the data? Precedent: @AK2020 fix their support parameter in their counterfactual; Nail Kashaev endorsed this for the exercise's scope.
+$\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ cell. Question answered: given our best estimates, is a candidate revenue consistent with the data? Precedent: @AK2020 fix their support parameter in their counterfactual; Nail Kashaev endorsed this for the exercis\tilde{e}s scope.
 -->
 
 <!-- Dropping control variate; Only R_i(\Delta)-t1
@@ -575,7 +572,7 @@ $\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ 
 
 **Draft note (why Claims, not revenue):**
 
-The headline result is the counterfactual change in purchases-side deduction claims, $\text{Claims}_i(\Delta)=\tilde\tau_{i}\big[M_i+(1-q(e'_i(\Delta)))e'_i(\Delta)\big]$ — the credit term the policy actually shocks. Sales-tax revenue on sales, $\tilde\tau_{it}P_tY_{it}$ in @eq-govt-rev, moves with $\Delta$ only mechanically, since output is held fixed, and carries no evasion response. Total revenue also bundles in sales-tax revenue on sales held at its baseline value, $\tau_{it}P_tY_{it}$, whose own cross-firm heterogeneity dominates the sampling variance of revenue (its cross-firm standard deviation is about as large as that of revenue itself). Claims excludes this term entirely, so it isolates the evasion-and-detection response to the tax-rate shifter without importing noise from a revenue stream with no evasion response; the raw, uncorrected auxiliary moment for Claims already has a standard error an order of magnitude smaller than the revenue moment. 
+The headline result is the counterfactual change in purchases-side deduction claims, $\text{Claims}_i(\Delta)=\tilde\tau_{i}\big[M_i+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]$ — the credit term the policy actually shocks. Sales-tax revenue on sales, $\tilde\tau_{it}P_tY_{it}$ in @eq-govt-rev, moves with $\Delta$ only mechanically, since output is held fixed, and carries no evasion response. Total revenue also bundles in sales-tax revenue on sales held at its baseline value, $\tau_{it}P_tY_{it}$, whose own cross-firm heterogeneity dominates the sampling variance of revenue (its cross-firm standard deviation is about as large as that of revenue itself). Claims excludes this term entirely, so it isolates the evasion-and-detection response to the tax-rate shifter without importing noise from a revenue stream with no evasion response; the raw, uncorrected auxiliary moment for Claims already has a standard error an order of magnitude smaller than the revenue moment. 
 
 
 @fig-cf-claims displays the estimated curve of the counterfactual real average claims per firm-period. 
@@ -608,7 +605,7 @@ table /tables/ch08-elasticities.png, caption "Elasticity of claimed purchase ded
 figure /figures/ch08-behavioural-elasticity.png, caption "Behavioural elasticity of claimed purchase deductions with respect to $\tau_P$, by change $\Delta$ in the purchases rate: estimates and 95 percent conservative-test sets. ELVIS interior firms; structural parameters fixed at the operating point." -->
 
 ::: {.content-visible when-meta="draft"}
-**Draft note (2026-10-03):** the mechanism behind the asymmetry has not been checked; the $e'=0$ corner is a candidate only. The behavioural share in @tbl-cf-claims differences two separately profiled levels and is noisy (0.26 at +5 percent against about 0.20 from the paired difference); replace with paired numbers when the 1 percent grid is in.
+**Draft note (2026-10-03):** the mechanism behind the asymmetry has not been checked; the $\tilde{e}=0$ corner is a candidate only. The behavioural share in @tbl-cf-claims differences two separately profiled levels and is noisy (0.26 at +5 percent against about 0.20 from the paired difference); replace with paired numbers when the 1 percent grid is in.
 :::
 
 ::: {.content-visible when-meta="draft"}
@@ -622,7 +619,7 @@ Old key findings:
   - Baseline CI $[763,807]$. Cut of 8 percent: $[680,720]$, change bounded between $-15.71$ percent and $-5.69$ percent. Increase of 0.5 percent: $[934,979]$, change bounded between $+15.70$ percent and $+28.28$ percent.
 - Old table caption: Change in real mean deduction claims relative to current policy, for the smallest tested tax cut that is distinguishable from baseline and the smallest tested tax increase. The bounds compare the two 95 percent conservative-test confidence sets.
 - Old draft note: the result is a set, not a point $\tau^*$; state this as the deliverable, not a fallback.
-- Mechanism for the asymmetry: $e'_i(\Delta)=[e_i+\Delta/(2\lambda)]/(1+\Delta)$ is a horse race between $e_i$ and the constant term $\Delta/(2\lambda)$. With $\hat\lambda$ tiny, the constant wins: an increase shifts every firm by about the same large amount; a cut removes evasion firm by firm (small evaders hit zero first), so the aggregate response is gradual.
+- Mechanism for the asymmetry: $\tilde{e}_i(\Delta)=[e_i+\Delta/(2\lambda)]/(1+\Delta)$ is a horse race between $e_i$ and the constant term $\Delta/(2\lambda)$. With $\hat\lambda$ tiny, the constant wins: an increase shifts every firm by about the same large amount; a cut removes evasion firm by firm (small evaders hit zero first), so the aggregate response is gradual.
 - This is a property of linear $q$ and linear $\kappa$ combined with small $\hat\lambda$, not of linearity alone. Convex $q=(\lambda e)^k$ and concave $q=1-e^{-\lambda e}$ break the uniform-shift result (closed forms derived, not estimated).
 :::
 
@@ -668,7 +665,7 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 :::
 
 - Is the revenue CV precision real? Truncation pattern of $\hat\Omega^-$ is the same for raw and CV revenue (4 of 10 directions kept in both). At $\Delta=-4\%$, $R=1850$: same deviation ($\approx\$82$), different yardstick (SE \$559.4 vs. \$13.5): $0.15$ SEs vs. $6.03$ SEs. Efficient weighting working correctly, not a numerical artifact.
-- Is the CV coefficient $\hat b$ data-mined? The Claims headline above answers this a different way, since it uses the exact coefficient. As a check on the CV-adjusted revenue system, setting the coefficient to exactly 1 from the revenue identity ($R_i-t1_i=-\tilde\tau_i[M_i+(1-q(e'_i))e'_i]$) gives, at every one of 9 tested $\Delta$'s, a CI that nests inside the CV-adjusted revenue CI (e.g. $\Delta=0$: $[1701,1745]$ vs. $[1666,1745]$; $\Delta=-8\%$: $[1788,1827]$ vs. $[1751,1839]$).
+- Is the CV coefficient $\hat b$ data-mined? The Claims headline above answers this a different way, since it uses the exact coefficient. As a check on the CV-adjusted revenue system, setting the coefficient to exactly 1 from the revenue identity ($R_i-t1_i=-\tilde\tau_i[M_i+(1-q(\tilde{e}_i))\tilde{e}_i]$) gives, at every one of 9 tested $\Delta$'s, a CI that nests inside the CV-adjusted revenue CI (e.g. $\Delta=0$: $[1701,1745]$ vs. $[1666,1745]$; $\Delta=-8\%$: $[1788,1827]$ vs. $[1751,1839]$).
 
 ![Theory-coefficient vs. CV passing points.](/figures/ch08-theory-vs-cv.png){#fig-cf-theory-cv}
 
@@ -681,12 +678,12 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 - $\theta$ free instead of fixed: at $\Delta=-4\%$ with $\theta$ free (seeded at the fixed point), $\hat\theta$ moved 0.1-2 percent and pass/fail replicated at 4 of 5 candidates, so the tight sets reflect cross-firm heterogeneity, not fixing $\theta$.
 :::
 
-- Rejected alternative target: only the undetected-overreporting part of claimed deductions, $\tilde\tau_{it}(1-q(e'_i))e'_i$, leaving out the credit on true inputs. For cuts beyond about 2 percent, most firms stop evading ($e'_i=0$), so its distribution piles up at zero, and in a coarse grid most tested brackets were inconclusive. Claimed deductions in full remain the target.
+- Rejected alternative target: only the undetected-overreporting part of claimed deductions, $\tilde\tau_{it}(1-q(\tilde{e}_i))\tilde{e}_i$, leaving out the credit on true inputs. For cuts beyond about 2 percent, most firms stop evading ($\tilde{e}_i=0$), so its distribution piles up at zero, and in a coarse grid most tested brackets were inconclusive. Claimed deductions in full remain the target.
 
 ::: {.content-visible when-meta="draft"}
 **Draft note:**
 
-- Planned (not run): instrument comparison ($\tilde{\mathcal W}_{it-2}$); cap $R_i\ge0$ (equivalent to capping $e'_i$) at $+2\%,+4\%,+8\%$, pending Nail Kashaev.
+- Planned (not run): instrument comparison ($\tilde{\mathcal W}_{it-2}$); cap $R_i\ge0$ (equivalent to capping $\tilde{e}_i$) at $+2\%,+4\%,+8\%$, pending Nail Kashaev.
 - To do (after the JMP draft): fine-tune the Claims confidence sets. Only the coarse grid (5 candidates per $\Delta$) has been run; bisect toward each conservative-test crossing, as was done for the revenue grid.
 - To do (after the JMP draft): run the $\theta$-free check on Claims ($\theta$ seeded, not fixed, at the best point), replacing the CV-based check parked above.
 - To do (after the JMP draft): estimate the back-of-envelope revenue loss and its tax-rate elasticity (@sec-app-backofenvelope) inside ELVIS, as auxiliary parameters with their own moments. The current numbers are ballparks for the JMP draft.
