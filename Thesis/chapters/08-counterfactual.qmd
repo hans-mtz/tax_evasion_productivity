@@ -210,7 +210,7 @@ $$
 
 ## Estimating the model
 
-### Setup
+### Setup {#sec-setup}
 
 Using estimates of the production function parameters $(\beta,\alpha_K, \alpha_L)$ and constructed residuals, $\mathcal V_{it}$, $\tilde{\mathcal W}_{it}$ from @sec-deconvolution and @sec-pf, the objective is to recover the parameters of the probability of detection and the cost of evasion function $(q(e),\kappa_{it}(e,\omega))$. 
 
@@ -362,7 +362,9 @@ Among the conditional distributions of $M$ given $Z$ that satisfy the moment con
 
 The true conditional distribution of $M$ satisfies the moment condition at the true $\theta_0$. Theorem 2.1 guarantees some $\gamma$ also solves the right-hand side of @eq-elvis-equiv at $\theta_0$. Searching over $\theta$ for the value where this finite-dimensional problem has a solution therefore recovers $\theta_0$, regardless of the chosen $f^0_{M|Z}$, without requiring knowledge of the true conditional distribution of $M$.
 
-Although the entropy-maximizing distribution satisfies $E[g(M,Z,\theta_0)]=0$, it should not be treated as the actual distribution of $M$, since many conditional distributions of $M$ given $Z$ may satisfy the moment condition [@Schennach2022, p. 1250]. This matters for the counterfactual question. Since expected counterfactual revenue depends on the latent $M_{it}$, it would be tempting to average it over draws from such a distribution. Instead, I include the counterfactual object as an auxiliary parameter with its own moment condition and estimate it jointly with $\theta$ and $\gamma$. The counterfactual question is equivalent to test if a candidate value of the counterfactual quantity is compatible with the distribution of $M$ conditional on $Z$ such that its auxiliary moment and the rest of the moment conditions are satisfied.
+Although the entropy-maximizing distribution satisfies $E[g(M,Z,\theta_0)]=0$, it should not be treated as the actual distribution of $M$, since many conditional distributions of $M$ given $Z$ may satisfy the moment condition [@Schennach2022, p. 1250]. This matters for the counterfactual question. Since expected counterfactual revenue depends on the latent $M_{it}$, it would be tempting to average it over draws from such a distribution. 
+
+Instead, I include the counterfactual object as an auxiliary parameter with its own moment condition and estimate it jointly with $\theta$ and $\gamma$. The counterfactual question is equivalent to test if a candidate value of the counterfactual quantity is compatible with the distribution of $M$ conditional on $Z$ such that its auxiliary moment and the rest of the moment conditions are satisfied.
 
 For estimation, I set $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$ where $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year. The scale makes detection depend on how much a firm overreports relative to a typical firm in its industry, not on the peso amount. $\bar\lambda$ sets the level of detection and $\lambda_1$ its curvature. With $0<\lambda_1<1$ and a cost linear in $e$, the second-order condition holds for every firm (@sec-app-soc-model).
 
@@ -513,31 +515,33 @@ Key observations:
 
 ## Counterfactual design {#sec-cf-design}
 
-The objective is to estimate how the counterfactual overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the counterfactual true materials decision of firms. However, the counterfactual overreporting and the counterfactual true materials depend on the same latent $M_i$ as the moments of @sec-counter-estimation. Since only $M^*_i$ is observed, these quantities cannot be computed firm by firm from the data.
+The objective is to estimate how the counterfactual overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the counterfactual true materials decision of firms. The counterfactual overreporting and the counterfactual true materials however depend on the same latent $M_i$ as the moments of @sec-counter-estimation. Since only $M^*_i$ is observed, these quantities cannot be computed firm by firm from the data.
 
 Instead, I cast each counterfactual as a moment condition and add it to the set of moments in @sec-counter-estimation. For example, net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev becomes the moment $E[R_i(\Delta;M_i)-\theta_R(\Delta)]=0$, where $\theta_R(\Delta)$ is its mean. In general, for a quantity $T_i(\Delta;M_i)$ whose mean is the auxiliary parameter $\theta_T(\Delta)$, I cast it as $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. The confidence set of $\theta_T(\Delta)$ comes from inverting the test (@sec-cf-test). 
 
 <!-- Quantities in pesos are real and per firm-year. -->
 
-Let the counterfactual purchases rate be $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the counterfactual overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
+Now, I show how counterfactual overreporting and true inputs were estimated and how both depend on $M_i$. Holding the firm's productivity $\omega_i$ and cost shock $\psi_i$ fixed, the evasion condition at the new rate gives the counterfactual overreporting in closed form. With $B_i\equiv1-(1+\lambda_1)x_i^{\lambda_1}$ at the baseline,
 
 $$
 x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad \tilde{e}_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
 $$ {#eq-counter-e}
 
-A firm with $B_i\ge1+\Delta$ stops overreporting.
+where $x_i$ is the same as in @sec-setup. A firm with $B_i\ge1+\Delta$ stops overreporting.
 
-::: {.content-visible when-meta="draft"}
-**Placeholder (outline 7a), draft:** By the evasion condition, $B_i$ is the firm's marginal cost of evasion relative to the benefit of evading, $\tau_{P,it}\rho_t$. This is how the counterfactual overreporting depends on the latent $M_i$: $B_i$ contains current overreporting through $x_i=\lambda_{0,jt}(M^*_i-M_i)$. A change in the rate scales the benefit by $1+\Delta$ but leaves the marginal cost unchanged, because the marginal cost depends only on $\omega_i$ and $\psi_i$, which are held fixed. The scaling parameter $\lambda_{0,jt}$ stays fixed too: it is a lagged industry mean, which the firm's choice does not move. The counterfactual overreporting therefore responds to the rate only through $B_i/(1+\Delta)$. Every interior firm overreports at the current rate, so $B_i<1$, and only a cut in the rate can make a firm stop.
-:::
+By the evasion condition, $B_i$ is the firm's marginal cost of evasion relative to the benefit of evading, $\tau_{P,it}\rho_t$. 
 
-True materials respond through the materials condition (@eq-foc-m). Taking the ratio of its solution at the new and at the current rate, everything except the rate on purchases cancels:
+The counterfactual overreporting depends on the latent $M_i$ through $B_i$ because $B_i$ contains current overreporting through $x_i=\lambda_{0,jt}(M^*_i-M_i)$. A change in the rate scales the benefit by $1+\Delta$ but leaves the marginal cost unchanged, because the marginal cost depends only on $\omega_i$ and $\psi_i$, which are held fixed. The scaling parameter $\lambda_{0,jt}$ stays fixed too, as it is a lagged industry mean, which the firm's choice does not move. The counterfactual overreporting therefore responds to the rate only through $B_i/(1+\Delta)$. Every interior firm overreports at the current rate, so $B_i<1$, and only a cut in the rate can make a firm stop.
+
+True materials respond through the materials condition (@eq-foc-m). With capital, labour, productivity, prices and the rate on sales held fixed, the ratio of its solution at the new and at the current rate depends only on the rate on purchases:
 
 $$
 r_{it}(\Delta)\equiv\frac{M_{it}(\Delta)}{M_{it}}=\left(\frac{1-(1+\Delta)\tau_{P,it}}{1-\tau_{P,it}}\right)^{-\frac{1}{1-\beta}}
 $$ {#eq-cf-r}
 
-The factor depends only on $\tau_{P,it}$, $\Delta$ and $\beta$, so it is the same whatever the firm's true materials are. This is how the counterfactual true materials depend on the latent $M_i$: they equal current true materials scaled by the factor, $M_{it}(\Delta)=r_{it}(\Delta)M_i$. Holding capital, labour and productivity fixed, output and gross sales-tax revenue scale by $r_{it}(\Delta)^{\beta}$ (@sec-app-cf-implementation). The response is small: on average, true materials fall by 4.4 percent with a 30 percent cut in the rate and rise by 4.8 percent with a 30 percent increase.
+The factor depends only on $\tau_{P,it}$, $\Delta$ and $\beta$, so it is the same whatever the firm's true materials are. 
+
+This is how the counterfactual true materials depend on the latent $M_i$: they equal current true materials scaled by the factor, $M_{it}(\Delta)=r_{it}(\Delta)M_{it}$. Output and gross sales-tax revenue then scale by $r_{it}(\Delta)^{\beta}$ (@sec-app-cf-implementation). The response is small: across interior firms, true materials fall on average by 4.4 percent with a 30 percent cut in the rate and rise by 4.8 percent with a 30 percent increase.
 
 The counterfactual overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e).
 
