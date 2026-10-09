@@ -55,18 +55,30 @@ Government revenue and claimed deductions (Q1, Q2)
     more, ch. 2 comparative static); input (two-tax wedge raises true M, so claims rise, and output and the sales tax rise too).
  4. Held fixed, and why: enforcement and penalties (Colombian enforcement of the period), tau_S, K, L, omega, eps, prices.
 
-Counterfactual design (Q2, Q4)
- 5. New evasion in closed form for each type; independent of the materials response; firms with B >= 1+Delta stop (eq-counter-e).
- 6. True materials scale by r(Delta), a function of tau_P, beta and Delta only, the same for every draw of a firm; output and
-    the sales tax scale by r^beta. One equation in the body, the rest in appendix A. Magnitude: -4.4 / +4.8 percent at -/+30 percent.
- 7. Each counterfactual quantity is an auxiliary parameter with its own moment; theta fixed at the operating point, only gamma
-    free [AK2020]; conservative sets by test inversion, d_g = 18, chi2 = 28.87.
- 8. Two summaries: revenue levels on a Delta grid (-30 to +30 percent); paired differences at +-1, 1.5, 2 percent as arc
-    elasticities (same draws, so precise). Bases: mean sales tax on sales and |R(0)|; why not the textbook elasticity (negative base).
- 9. Which firms: interior firms in the nine industries (all overreport at baseline); (A) adds the trimmed firms and (B) the
-    corner firms, mechanically. Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit at any Delta, so no
-    reason to start; (ii) tau_P > 0 in the 19 industries where the test does not reject (16,154 firm-years): treated as
-    truthful (M = M*, e = 0) by the ex-ante rule, not by the model.
+Counterfactual design (revised 2026-10-09, Hans): goal -> what I do -> how I do it
+ 5. Goal, restated (opening paragraph; the reader is lost after the estimation details): the counterfactual quantities are
+    means over the interior firms of quantities that depend on the latent true materials M_i: net sales-tax revenue
+    R_i(Delta) (eq-govt-rev) and claimed deductions with their three parts, at each change Delta in the rate.
+ 6. What I do: each quantity T_i(Delta) is an auxiliary parameter theta_T(Delta) with its own moment
+    E[T_i(Delta;M) - theta_T(Delta)] = 0, added to g (d_g = 18). Why: M is latent and the tilted distribution of M is not the
+    true one (callback to Estimation). Its set comes from the test inversion of the new Estimation subsection.
+ 7. How I do it, for a given draw of M_i:
+    7a. New overreporting: the evasion condition at the new rate, omega_i, psi_i, lambda_{0,jt} held fixed, gives the closed
+        form (eq-counter-e). B_i = marginal cost / (tau_P rho_t), fixed, so only B_i/(1+Delta) moves; a firm stops when
+        B_i >= 1+Delta, which only a cut can do.
+    7b. New true materials: r(Delta) (eq-cf-r), the same for every draw of a firm; output and gross sales-tax revenue scale by
+        r^beta. Magnitude: -4.4 / +4.8 percent at -/+30 percent.
+    7c. Plug 7a and 7b into eq-govt-rev; e~ does not depend on the materials response, so the two responses add up.
+ 8. What I report: revenue on a Delta grid (-30 to +30 percent); arc elasticities at +-1, 1.5, 2 percent from paired
+    differences on the same draws; claims decomposition equation in the body (mechanical 1 + materials + overreporting, no
+    interaction; carries the opener's 1.39 = 1 + 0.18 + 0.21); revenue change scaled by gross sales-tax revenue (1,547) and
+    |net revenue| (391), because net revenue is negative.
+ 9. Totals: (B) whole economy = interior + trimmed + corner firms, mechanically; (A) dropped as a separate total (Hans,
+    2026-10-09; B already contains the trimmed firms). Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit
+    at any Delta; (ii) tau_P > 0 in the 19 industries where the test does not reject (16,154 firm-years): truthful by the
+    ex-ante rule, not by the model. No firm starts overreporting (Results uses this for the increase-side lower bound).
+ Not here (Hans): theta fixed at the operating point, only gamma free = computational (appendix A), never in the body;
+    the test and test inversion get their own subsection in Estimation; which firms are estimated is stated in Estimation.
 
 Results (Q3-Q5)
 10. At the current rate interior firms receive net refunds: R(0) = -391 [-605, -174] per firm-year; claims exceed the sales tax
