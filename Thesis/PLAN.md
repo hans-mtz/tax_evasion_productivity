@@ -161,6 +161,13 @@ Ch. 8 rewrite tracker: the TRACKER comment below the outline in `Thesis/chapters
 - **Now:** ch. 8's two-tax material (two-tax revenue equation, two-tax profit function, net-of-tax limitation bullets) is kept but gated `::: {.content-visible when-meta="draft"}`. Visible text uses $\tau$, not $\tau_P$.
 - **After Friday (the better version):** two-tax model; first stage re-estimated net-of-tax (`log_mats_share_net`); PF step as joint efficient GMM with both instruments ($m^*_{it-1}$, $\tilde{\mathcal W}_{it-2}$); re-run ELVIS and the counterfactual on it; switch the document's story to two-tax and un-gate the ch. 8 blocks.
 
+## 7c. DEFERRED — post-submission (after Oct 13): one sample rule for every exercise
+
+**Decided 2026-10-09 (Hans): no reruns before submission; the JMP keeps the current estimates.** After submission, every exercise moves to one sample (Research-log 2026-10-09). Tooling is ready: `1700-sample-rule.R`, `run-1700-newsample.sh` (validated: MODE=old reproduces the current products exactly), `1701-compare-samples.R`; partial new-sample outputs in `Code/Products/S1009/` (through 1516).
+- **Leading rule (A):** gross materials share above 5 percent (a cleaning rule, not tied to the two-tax model), no 369 cap, top 0.75 percent of unincorporated firm-years by $M^*$ dropped in every industry (corporations untouched). Defined without the industry set, so not circular; drops the same 61 interior firm-years as the current trim. Stated once in the data section, never again.
+- **Decide first:** the industry set. Under A the 5 percent test rejects in 313 321 322 324 331 342 352 369 **390** (351 out: its 5 largest firm-years carry the rejection; 390 in: two rows with gross share just under 5 percent leave). The seven at 1 percent are stable under every variant; using only them drops ~20 percent of interior claims (mostly 352). The lower 5 percent cut is needed (without it 322 and 369 break).
+- **Then:** 1700 rebuilt for rule A (gross only, percentile on all unincorporated); detection scale $ar M_{j,t-1}$ on the cut or uncut sample (audit: the cut lowers it, 342 −20%); 1621 with `trim=0`; ELVIS refit at (0.75, 0.5) and every counterfactual run; text and assets.
+
 ## 9a. After the supervisor meeting (2026-09-25) — NEW DEADLINE Oct 13
 
 Supervisors need one week for letters (due to the department Oct 20), so the JMP goes to them by **Tue 2026-10-13**. ELVIS approved for the counterfactual; $\hat\lambda$ not credible (scale problem). Plan, in order:
