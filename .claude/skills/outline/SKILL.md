@@ -1,6 +1,6 @@
 ---
 name: outline
-description: Builds the outline of a section, chapter, or paper before any prose is written, so every part provides unique minimum information the reader needs to keep following the argument, and then audits existing text against that outline and provides recommendations for improvement. Use it when the user asks for an outline, a structure, "what should this section contain", or a comparison of existing text with an intended structure, even if they don't say "outline".
+description: Builds the outline of a section, chapter, or paper before any prose is written, so every part provides unique minimum information the reader needs to keep following the argument, and then audits existing text against that outline and provides recommendations for improvement. Use it when the user asks for an outline, a structure, "what should this section contain", or a comparison of existing text with an intended structure, even if they don't say "outline". Also use it when the user asks whether a section answers the reader's questions, or what the reader knows or needs at a given point.
 ---
 
 # Outline
@@ -17,8 +17,15 @@ An outline is a plan of what the reader must take away, in the order they need i
 
 ## Before outlining
 
-1. **The section's job.** State in one sentence what this section adds that no other section can. If another section already answers a question, the question does not belong here.
-2. **Questions coming in.** Read what precedes the section (abstract, introduction, earlier chapters, the roadmap paragraph that promises this section). List the follow-up questions a reader has at that point that only this section can answer. Quote or cite where each question arises.
+1. **Reader state, blind.** Read only what precedes the section: the abstract, the introduction, earlier chapters, the chapter opener, and the sections before this one. Do not open the section itself, even if you have read it before. Write down:
+   - **What the reader knows** at the section's first line: definitions, equations, results and numbers, each with the line where it was given.
+   - **What the reader asks** at that point: the follow-up questions the preceding text raises and leaves open, each with the line that raises it. Phrase them the way the reader would ("you have estimates, now what about the counterfactual?"), not as topics.
+   - **Inconsistencies** in the preceding text that the reader will trip over, such as two passages that say different things about the same object.
+
+   Never build a question from what the section contains. A question built that way is always "answered", so the check finds nothing.
+2. **The section's job.** From the reader's questions, state in one sentence what this section must answer that no other section can. Mark any question that belongs to a later section (results, scope, robustness) and say which one.
+
+   Present the reader state, the questions and the job, and wait for the author to agree before going on. The author may reframe the job, and the rest of the outline or audit follows from their version.
 3. **Dependencies going out.** Read what follows and list what later sections take from this one (definitions, equations, assumptions, labels they cite). Anything a later section uses but this one does not supply is a gap; anything no later section uses is a candidate to cut or move.
 4. **Minimum.** For each candidate item ask: can the reader keep up with the rest of the document without it? If yes, it goes to an appendix, a later section, or out. Say where it goes.
 5. **The argument the section serves.** Connect the section to the document's research question, answer, and positioning (see the argument-rap skill, if the document has one). The outline opens with that link.
@@ -38,9 +45,11 @@ Show the outline in chat, in this order: the section's job and the questions it 
 
 ## After approval: the audit against existing text
 
+If the author asks only for a check of existing text ("is this section answering the reader's questions?"), still run the blind reader state from step 1 first and get agreement on it. The audit compares the section against those questions, or against an approved outline if one exists.
+
 Run these steps one at a time, each with the author's go-ahead.
 
-1. **Compare.** Read the existing text and mark each outline entry as covered, partial, missing, or misplaced. Also list existing content that matches no entry (cut, move, or add an entry). Present it as a table: entry, status, where it is now, what to change.
+1. **Compare.** Read the existing text and mark each outline entry as covered, partial, missing, or misplaced. Also list existing content that matches no entry (cut, move, or add an entry). Present it as a table: entry, status, where it is now, what to change. The questions are fixed by the agreed reader state. Do not add, drop or reword a question because of what the section says. If the section answers something no agreed question asked, list it as content that matches no entry (cut, move, or propose a new question for the author to accept).
 2. **Reuse.** For missing and partial entries, search the author's earlier writing (older drafts, notes, slides, approved papers) for text that can be adapted. Report source, what it covers, and what must change (notation, scope, claims that no longer hold). Do not paste it in.
 3. **Proof-read** with the proof-read skill, presenting findings in chat.
 4. **Author edits.**
