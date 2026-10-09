@@ -527,27 +527,35 @@ $$
 x'_i(\Delta)^{\lambda_1}=\max\Big\{0,\ \frac{1-B_i/(1+\Delta)}{1+\lambda_1}\Big\},\qquad \tilde{e}_i(\Delta)=x'_i(\Delta)/\lambda_{0,jt}
 $$ {#eq-counter-e}
 
-A firm with $B_i\ge1+\Delta$ stops overreporting. Every interior firm overreports at the current rate ($x_i>0$), so $B_i<1$, and only a cut in the rate can make a firm stop.
+At the current rate $x_i>0$, every interior firm overreports $B_i<1$. A cut in the rate can make a firm stop, $B_i\ge1+\Delta$. 
 
 The counterfactual overreporting responds to the rate only through $B_i/(1+\Delta)$. By the evasion condition, $B_i$ is the firm's marginal cost of evasion relative to the benefit of evading, $\tau_{P,it}\rho_t$. A change in the rate scales the benefit by $1+\Delta$ but leaves the marginal cost unchanged, because the marginal cost depends only on $\omega_i$ and $\psi_i$, which are held fixed. The scaling parameter $\lambda_{0,jt}$ stays fixed too, as it is a lagged industry mean, which the firm's choice does not move.
 
 The counterfactual overreporting depends on the latent $M_i$ through $B_i$, which contains current overreporting, $x_i=\lambda_{0,jt}(M^*_i-M_i)$. Each draw of $M_i$ therefore gives its own $B_i$ and its own counterfactual overreporting.
 
-True materials respond through the materials condition (@eq-foc-m). With capital, labour, productivity, prices and the rate on sales held fixed, the ratio of its solution at the new and at the current rate depends only on the rate on purchases:
+True materials respond through the materials condition (@eq-foc-m). With capital, labour, productivity, prices and the rate on sales held fixed, solve for $M_{it}(\Delta)$ and $M_{it}$, counterfactual and current true materials. The ratio of the two depends only on the rate on purchases:
 
 $$
 r_{it}(\Delta)\equiv\frac{M_{it}(\Delta)}{M_{it}}=\left(\frac{1-(1+\Delta)\tau_{P,it}}{1-\tau_{P,it}}\right)^{-\frac{1}{1-\beta}}
 $$ {#eq-cf-r}
 
-The factor depends only on $\tau_{P,it}$, $\Delta$ and $\beta$, so it is the same whatever the firm's true materials are. Output and gross sales-tax revenue then scale by $r_{it}(\Delta)^{\beta}$ (@sec-app-cf-implementation). The response is small: across interior firms, true materials fall on average by 4.4 percent with a 30 percent cut in the rate and rise by 4.8 percent with a 30 percent increase.
+The factor $r_{it}(\Delta)$ depends only on $\tau_{P,it}$, $\Delta$ and $\beta$, but it is independent of the firm's true materials. The response of counterfactual true materials is proportional to $\beta$, the materials elasticity of output. Across interior firms, true materials rise by 4.8 percent with a 30 percent increase.
 
 The counterfactual true materials depend on the latent $M_i$ through current true materials, which the factor scales: $M_{it}(\Delta)=r_{it}(\Delta)M_{it}$. Each draw of $M_i$ therefore gives its own counterfactual true materials, but the factor is the same for every draw.
 
-The counterfactual overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e).
+$r_{it}(\Delta)^{\beta}$ scale output and gross sales-tax revenue (@sec-app-cf-implementation).
 
-::: {.content-visible when-meta="draft"}
-**Placeholder (outline 7c):** plug the new overreporting (@eq-counter-e) and the new true materials (@eq-cf-r) into @eq-govt-rev to get $R_i(\Delta)$ and claimed deductions for each draw of $M_i$.
-:::
+<!-- 
+Answer to a question nobody asked:
+The counterfactual overreporting does not depend on how true materials respond, because the evasion condition contains no materials (@eq-foc-e). -->
+
+Substituting the counterfactual overreporting (@eq-counter-e) and the counterfactual true materials (@eq-cf-r) into @eq-govt-rev gives net sales-tax revenue at the new rate for each draw of $M_i$:
+
+$$
+R_i(\Delta;M_i)=r_{it}(\Delta)^{\beta}\,\tau_{S,it}P_tY_{it}-\tilde\tau_{P,it}\big[r_{it}(\Delta)M_{it}+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big].
+$$
+
+Its mean is the auxiliary parameter $\theta_R(\Delta)$. Gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$, and sales-tax refunds split into the credit on true materials and the credit on undetected overreporting.
 
 I report two summaries. The first is net sales-tax revenue on a grid of changes in the rate from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent. Each elasticity is built from a paired difference between the new and the current rate, computed on the same draws of $M_i$, which makes the differences precise.
 
