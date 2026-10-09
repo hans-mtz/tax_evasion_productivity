@@ -2054,3 +2054,15 @@ Revenue per interior firm-year (real), hard 95% set, TS_min; χ²₁₈ = 28.87;
   - Claims (rule A, interior, real): seven 18.96 M (10,575 firm-years); nine with 390 24.24 M (12,719); nine with 351 23.71 M (12,083). Seven instead of nine drops ~20–22% of interior claims, mostly 352 (15.6%).
   - The 5 percent lower cut is `threshold_cut <- 0.05` in `021-deconv-funs.R:18` (in the repo since at least July 2025); no written rationale found. It drops 1,016 of 40,511 firm-years (median gross share among them 1.2%; 288 with net share ≤ 0 or undefined). The gross-and-net combination was inherited, not chosen (1501 built on the gross-filtered 931.1 df; 1510 rebuilt from the raw panel with the net cut only).
 - **Decision (Hans): no reruns before submission; keep the current estimates in the JMP; move to the one-sample rule after submission** (PLAN §7c). The partial new-sample run (through 1516) was killed; its outputs stay in `Code/Products/S1009/`.
+- **Sample filters by exercise, current estimates (the JMP's; audit 2026-10-09).** Every exercise drops juridical codes 6–9 and keeps a net-of-tax materials share above 5 percent; three further filters are applied unevenly:
+
+  | Exercise | Scripts | Gross share > 5% | 369: net share < 75% | Top 0.5% of interior $M^*$ trimmed |
+  |---|---|---|---|---|
+  | Data, ch. 3 | `ch03-sample.R` | no (no share cut at all) | no | no |
+  | Test, ch. 4 (and app. F) | `1510`, `1514` | no | no | no |
+  | Deconvolution, ch. 5 | `1603` (stage-2 sample) | yes | yes | yes |
+  | PF and productivity, ch. 6 (and app. E) | `1501`, `1517`, `1520`, `1522`–`1524` | yes | yes | no |
+  | 1983 reform, ch. 7 (and apps. G, H) | `1530`, `ch07-overreporting-elasticity-inversion.R` | yes | no | no |
+  | ELVIS and counterfactual, ch. 8 (and app. A) | `1532`→`1598`, `grid_estimator` | yes | yes | yes |
+
+  Row differences (20 test industries; test 37,154 firm-years): PF 37,130 (−24 = 11 rows with net share > 5% but gross share < 5%, 322: 1, 369: 8, 390: 2; plus 13 rows in 369 above the 75% cap); ch. 7 37,143 (−11, the gross-share rows only); stage-2 interior 12,111 before the trim vs the test's 12,125 unincorporated firm-years with $\tau_P>0$ in the nine (−14: 322 1, 369 13), then 61 trimmed → 12,050. The gross-share filter is inherited from the gross-share base data (`931.1` df, `921` wip_df); the 369 cap is `upper_threshold_cut` in `021-deconv-funs.R:19`; the trim is `trim_top_pct` in `1532`.
