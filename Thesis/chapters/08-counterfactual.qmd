@@ -26,7 +26,7 @@ I study this question using the estimates of the structural objects from the fir
 <!-- what do I find -->
 Claimed deductions respond elastically to changes in the rate on purchases, and the response is more elastic to increases than to cuts. A 1 percent increase in the rate raises claimed deductions by about 1.39 percent. The materials response accounts for 0.18 points and the overreporting response for 0.21 points. A 1 percent cut lowers them by about 1.32 percent. The materials response accounts for 0.18 points and the overreporting response for 0.14 points.
 
-At the current rate, net sales-tax revenue from firms in the nine industries where the test detects overreporting (@sec-testing) is negative. A 1 percent increase in the rate lowers net sales-tax revenue by about 1.7 percent of gross sales-tax revenue. A cut of about 17 percent would make net sales-tax revenue break even, and a cut of 28 percent or more would make net sales-tax revenue significantly positive, at the 5 percent level. Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from these firms.
+At the current rate, net sales-tax revenue from firms in the nine industries where the test detects overreporting (@sec-testing) is negative. A 1 percent increase in the rate lowers net sales-tax revenue by about 1.7 percent of gross sales-tax revenue. A cut of about 17 percent would make net sales-tax revenue break even, and a cut of about 28 percent or more would make net sales-tax revenue significantly positive, at the 5 percent level. Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from these firms.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -147,7 +147,7 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 8  | done 2026-10-08 | "Two further auxiliary parameters"                     | paired arcs split into input and evasion; revenue bases; why not textbook |
 | 9  | done 2026-10-08 | last sentence of "Two further auxiliary parameters"    | (1+Delta) tau_P r M*, t1 r^beta; two kinds of corner firms |
 | 10 | proposed 2026-10-09 | "Among the interior firms, potential revenue is negative" (sec-cf-gap) | move to Results opening with R(0); fact of the data |
-| 11 | todo   | missing                                                | wire fig-cf-revenue, tbl-cf-revenue, tbl-cf-revenue-totals; new paragraph |
+| 11 | partial 2026-10-09 | revenue-curve paragraph + fig-cf-revenue, tbl-cf-revenue wired | totals: fig-cf-revenue-totals (B only) + paragraph still to do |
 | 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
 | 13 | partial 2026-10-09 | "Key findings" bullets + asymmetry paragraphs (floor, near-zero firms = extensive margin) | asymmetry done (draft note replaced, last bullet cut); bullets 1-2 still to prose; corner-firm lower bound open |
 | 14 | todo   | missing                                                | new; input-channel columns of tbl-cf-revenue |
@@ -633,7 +633,17 @@ $\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ 
 
 ## Results {#sec-cf-results}
 
-At the current rate, mean net sales-tax revenue from the interior firms is negative, $-391$ real pesos per firm-year (95 percent set $[-605,-174]$). The negative sign does not come from overreporting: even if the interior firms reported truthfully, mean net sales-tax revenue would be negative, with a 95 percent set of $[-590,-42]$ real pesos per firm-year.
+At the current rate, mean net sales-tax revenue from the interior firms is negative, $-391$ real pesos per firm-year (95 percent set $[-605,-174]$). Even if the interior firms reported truthfully, mean net sales-tax revenue would be negative, with a 95 percent set of $[-590,-42]$ real pesos per firm-year. Therefore, the negative sign does not come from overreporting. 
+
+A large enough cut in the rate on purchases would turn net sales-tax revenue from negative to positive (@fig-cf-revenue, @tbl-cf-revenue). Net sales-tax revenue rises steadily as the rate falls. The estimate breaks even at a cut of about 17 percent, and for cuts of about 28 percent or more the 95 percent set lies entirely above zero ($[2, 426]$ at $-27.5$ percent). Raising the rate pushes net sales-tax revenue further below zero: a 30 percent increase lowers it from $-391$ to $-1{,}270$ real pesos per firm-year. The sets at nearby rates overlap because they share the uncertainty about the level of net sales-tax revenue; the elasticities below, which compare two rates on the same draws of $M_i$, measure the change more precisely. @fig-cf-revenue also shows the curve with true materials fixed, which I discuss in @sec-cf-robust.
+
+![Net sales-tax revenue per firm-year (real pesos) from the interior firms, by change $\Delta$ in the rate on purchases, with true materials responding and with true materials fixed. Points: estimates; bars: 95 percent sets (conservative test). Dashed line: break-even of the estimate with true materials responding.](/figures/ch08-cf-revenue-bounds.png){#fig-cf-revenue}
+
+:::{#tbl-cf-revenue}
+![](/tables/ch08-cf-revenue.png)
+
+Net sales-tax revenue per firm-year (real pesos) from the interior firms, by change $\Delta$ in the rate on purchases: estimates and 95 percent sets with true materials responding and with true materials fixed. The materials-channel columns give the mean change in true materials and in gross sales-tax revenue.
+:::
 
 ::::: {.content-visible when-meta="draft"}
 **Superseded (claims levels with true materials fixed, pre-audit solver, runs 1621/1622). Out of the body 2026-10-07: Results lead with revenue (Hans); claims levels with true materials responding are rerun after the JMP.**
