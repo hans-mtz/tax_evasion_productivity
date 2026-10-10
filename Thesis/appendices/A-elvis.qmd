@@ -210,6 +210,60 @@ $\hat T$ is its minimizer, and the reported set is the conservative one, $\{T:TS
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22); replaced by @sec-cf-gap (2026-10-03).**
 
+### Robustness: true materials fixed {#sec-app-cf-robust}
+
+::: {.content-visible when-meta="draft"}
+**Paragraph pending Hans's OK (draft in chat 2026-10-10).**
+:::
+
+:::{#tbl-app-cf-revenue-fixed}
+![](/tables/appA-cf-revenue-fixed.png)
+
+Net sales-tax revenue per firm-year (real pesos) from the interior firms, by change $\Delta$ in the rate on purchases, with true materials responding and with true materials fixed: estimates and 95 percent sets.
+:::
+
+::: {.content-visible when-meta="draft"}
+**Moved from ch. 8 Robustness (2026-10-10, Hans: robustness goes to the appendix).** Everything below predates the audited solver and the materials response; kept for reference only.
+
+<!-- DROPPED 2026-09-23 (Hans): control-variate-adjusted revenue is not used in the thesis
+(committee). Kept here for reference; figure/table assets still exist on disk.
+
+- **Corroborating check on total revenue $R=t1-\text{Claims}$ (sales-tax revenue held at its baseline $t1$):** the same construction targeting $R$ directly, rather than Claims, shows the same qualitative pattern — a cut only separates from baseline at $-8$ percent, an increase separates immediately — with wider, noisier CIs from carrying $t1$'s heterogeneity. Baseline CI $[1666,1745]$. Cut of 8%: $[1751,1839]$, change bounded between +0.35% and +10.34%. Increase of 0.5%: $[1492,1575]$, change bounded between $-14.45$ percent and $-5.50$ percent.
+
+![Conservative-test 95% confidence sets for real mean revenue by $\Delta$; grey band = current policy's interval.](/figures/ch08-laffer-ci-hard.png){#fig-cf-laffer}
+
+:::{#tbl-cf-ci}
+![](/tables/ch08-laffer-ci.png)
+
+Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, all 15 tested $\Delta$ points.
+:::
+
+:::{#tbl-cf-headline}
+![](/tables/ch08-headline-pct.png)
+:::
+
+- Is the revenue CV precision real? Truncation pattern of $\hat\Omega^-$ is the same for raw and CV revenue (4 of 10 directions kept in both). At $\Delta=-4\%$, $R=1850$: same deviation ($\approx\$82$), different yardstick (SE \$559.4 vs. \$13.5): $0.15$ SEs vs. $6.03$ SEs. Efficient weighting working correctly, not a numerical artifact.
+- Is the CV coefficient $\hat b$ data-mined? The Claims headline above answers this a different way, since it uses the exact coefficient. As a check on the CV-adjusted revenue system, setting the coefficient to exactly 1 from the revenue identity ($R_i-t1_i=-\tilde\tau_i[M_i+(1-q(\tilde{e}_i))\tilde{e}_i]$) gives, at every one of 9 tested $\Delta$'s, a CI that nests inside the CV-adjusted revenue CI (e.g. $\Delta=0$: $[1701,1745]$ vs. $[1666,1745]$; $\Delta=-8\%$: $[1788,1827]$ vs. $[1751,1839]$).
+
+![Theory-coefficient vs. CV passing points.](/figures/ch08-theory-vs-cv.png){#fig-cf-theory-cv}
+
+- Costs of the revenue CV's variance reduction: forcing $\gamma$ to fit a tight $R$ target inflates the SE of the $\varepsilon\cdot e$ moment (about 5.4x at the tested point); a sharper test also rejects on other small misspecifications.
+-->
+
+**Draft note:** this check was run on the CV-adjusted revenue moment, which is dropped. Rerun it on Claims before it can go back in the text.
+
+- $\theta$ free instead of fixed: at $\Delta=-4\%$ with $\theta$ free (seeded at the fixed point), $\hat\theta$ moved 0.1-2 percent and pass/fail replicated at 4 of 5 candidates, so the tight sets reflect cross-firm heterogeneity, not fixing $\theta$.
+
+- **Stale (moved from ch. 8 Robustness 2026-10-10; old claims target, fixed M):** rejected alternative target: only the undetected-overreporting part of claimed deductions, $\tilde\tau_{it}(1-q(\tilde{e}_i))\tilde{e}_i$, leaving out the credit on true inputs. For cuts beyond about 2 percent, most firms stop evading ($\tilde{e}_i=0$), so its distribution piles up at zero, and in a coarse grid most tested brackets were inconclusive. Claimed deductions in full remain the target.
+
+**Draft note:**
+
+- Planned (not run): instrument comparison ($\tilde{\mathcal W}_{it-2}$); cap $R_i\ge0$ (equivalent to capping $\tilde{e}_i$) at $+2\%,+4\%,+8\%$, pending Nail Kashaev.
+- To do (after the JMP draft): fine-tune the Claims confidence sets. Only the coarse grid (5 candidates per $\Delta$) has been run; bisect toward each conservative-test crossing, as was done for the revenue grid.
+- To do (after the JMP draft): run the $\theta$-free check on Claims ($\theta$ seeded, not fixed, at the best point), replacing the CV-based check parked above.
+- To do (after the JMP draft): estimate the back-of-envelope revenue loss and its tax-rate elasticity (@sec-app-backofenvelope) inside ELVIS, as auxiliary parameters with their own moments. The current numbers are ballparks for the JMP draft.
+:::
+
 ## Back-of-envelope: revenue loss and its tax-rate elasticity {#sec-app-backofenvelope}
 
 ::: {.content-visible when-meta="draft"}

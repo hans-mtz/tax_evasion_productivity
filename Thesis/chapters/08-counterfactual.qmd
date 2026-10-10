@@ -152,7 +152,7 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 13 | partial 2026-10-10 | claims-split paragraph + asymmetry paragraphs (floor, near-zero firms = extensive margin) | bullets 1-2 to prose 2026-10-10 (+ back-of-envelope revenue split, R6); corner-firm lower bound open |
 | 14 | done 2026-10-10 | back-of-envelope paragraph after the claims split | materials share net of gross revenue; extra credit on true materials ~3.6x the extra gross sales-tax revenue |
 | 15 | done 2026-10-10 | sec-cf-gap paragraph + tbl-cf-gap (interior 4.7, all firms 1.5 lower bound; no (A), no 72-peso level, no TS column) + caption | stale draft notes deleted (Hans 2026-10-10) |
-| 16 | todo   | Robustness: dropped CV comment + draft notes           | to the appendix (Hans 2026-10-10; fixed-M columns out of tbl-cf-revenue, numbers in ch08-cf-revenue.csv); one paragraph on 1652; allcorr entry check as a post-JMP draft note; "Rejected alternative target" -> cut or appendix A |
+| 16 | moved 2026-10-10 | Robustness section -> appendix A @sec-app-cf-robust (tbl-app-cf-revenue-fixed; old notes draft-only there) | appendix paragraph pending Hans's OK; allcorr entry check post-JMP |
 | 17 | Hans 2026-10-10: Scope section deleted (covered elsewhere) | - | - |
 | 18 | Hans 2026-10-10: Scope section deleted (covered elsewhere) | - | - |
 | 19 | done   | Scope: "Estimates use the trimmed sample"              | - |
@@ -637,7 +637,7 @@ At the current rate, mean net sales-tax revenue from the interior firms is negat
 
 A 30 percent cut in the rate on purchases would turn net sales-tax revenue from negative to positive (@fig-cf-revenue, @tbl-cf-revenue). Net sales-tax revenue rises steadily as the rate falls. The estimate breaks even at a cut of about 17 percent, and for cuts of about 28 percent or more the 95 percent set lies entirely above zero ($[2, 426]$ at $-27.5$ percent). Raising the rate pushes net sales-tax revenue further below zero. A 20 percent increase lowers it from $-391$ to $-965$ real pesos per firm-year, and the 95 percent sets of the two levels do not overlap. 
 
-<!-- The sets at nearby rates overlap because they share the uncertainty about the level of net sales-tax revenue; the elasticities below, which compare two rates on the same draws of $M_i$, measure the change more precisely. @tbl-cf-revenue also reports net sales-tax revenue with true materials fixed, which I discuss in @sec-cf-robust. -->
+<!-- The sets at nearby rates overlap because they share the uncertainty about the level of net sales-tax revenue; the elasticities below, which compare two rates on the same draws of $M_i$, measure the change more precisely. @tbl-cf-revenue also reports net sales-tax revenue with true materials fixed, which I discuss in @sec-app-cf-robust. -->
 
 ![95 percent sets (conservative test) for net sales-tax revenue per firm-year (real pesos) from the interior firms, by change $\Delta$ in the rate on purchases, true materials responding. Dashed lines join the lower bounds and the upper bounds of the sets at each $\Delta$ evaluated.](/figures/ch08-cf-revenue-bounds.png){#fig-cf-revenue}
 
@@ -732,57 +732,6 @@ Measured against a positive base, the loss is 4.7 percent of gross sales-tax rev
 ![](/tables/ch08-revenue-gap.png)
 
 Revenue lost to undetected overreporting at the current rate, as a share of gross sales-tax revenue: interior firms and all firms in the sample. 95 percent conservative-test sets.
-:::
-
-## Robustness {#sec-cf-robust}
-
-<!-- DROPPED 2026-09-23 (Hans): control-variate-adjusted revenue is not used in the thesis
-(committee). Kept here for reference; figure/table assets still exist on disk.
-
-- **Corroborating check on total revenue $R=t1-\text{Claims}$ (sales-tax revenue held at its baseline $t1$):** the same construction targeting $R$ directly, rather than Claims, shows the same qualitative pattern — a cut only separates from baseline at $-8$ percent, an increase separates immediately — with wider, noisier CIs from carrying $t1$'s heterogeneity. Baseline CI $[1666,1745]$. Cut of 8%: $[1751,1839]$, change bounded between +0.35% and +10.34%. Increase of 0.5%: $[1492,1575]$, change bounded between $-14.45$ percent and $-5.50$ percent.
-
-![Conservative-test 95% confidence sets for real mean revenue by $\Delta$; grey band = current policy's interval.](/figures/ch08-laffer-ci-hard.png){#fig-cf-laffer}
-
-:::{#tbl-cf-ci}
-![](/tables/ch08-laffer-ci.png)
-
-Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, all 15 tested $\Delta$ points.
-:::
-
-:::{#tbl-cf-headline}
-![](/tables/ch08-headline-pct.png)
-:::
-
-- Is the revenue CV precision real? Truncation pattern of $\hat\Omega^-$ is the same for raw and CV revenue (4 of 10 directions kept in both). At $\Delta=-4\%$, $R=1850$: same deviation ($\approx\$82$), different yardstick (SE \$559.4 vs. \$13.5): $0.15$ SEs vs. $6.03$ SEs. Efficient weighting working correctly, not a numerical artifact.
-- Is the CV coefficient $\hat b$ data-mined? The Claims headline above answers this a different way, since it uses the exact coefficient. As a check on the CV-adjusted revenue system, setting the coefficient to exactly 1 from the revenue identity ($R_i-t1_i=-\tilde\tau_i[M_i+(1-q(\tilde{e}_i))\tilde{e}_i]$) gives, at every one of 9 tested $\Delta$'s, a CI that nests inside the CV-adjusted revenue CI (e.g. $\Delta=0$: $[1701,1745]$ vs. $[1666,1745]$; $\Delta=-8\%$: $[1788,1827]$ vs. $[1751,1839]$).
-
-![Theory-coefficient vs. CV passing points.](/figures/ch08-theory-vs-cv.png){#fig-cf-theory-cv}
-
-- Costs of the revenue CV's variance reduction: forcing $\gamma$ to fit a tight $R$ target inflates the SE of the $\varepsilon\cdot e$ moment (about 5.4x at the tested point); a sharper test also rejects on other small misspecifications.
--->
-
-::: {.content-visible when-meta="draft"}
-**Draft note:** this check was run on the CV-adjusted revenue moment, which is dropped. Rerun it on Claims before it can go back in the text.
-
-- $\theta$ free instead of fixed: at $\Delta=-4\%$ with $\theta$ free (seeded at the fixed point), $\hat\theta$ moved 0.1-2 percent and pass/fail replicated at 4 of 5 candidates, so the tight sets reflect cross-firm heterogeneity, not fixing $\theta$.
-:::
-
-- Rejected alternative target: only the undetected-overreporting part of claimed deductions, $\tilde\tau_{it}(1-q(\tilde{e}_i))\tilde{e}_i$, leaving out the credit on true inputs. For cuts beyond about 2 percent, most firms stop evading ($\tilde{e}_i=0$), so its distribution piles up at zero, and in a coarse grid most tested brackets were inconclusive. Claimed deductions in full remain the target.
-
-::: {.content-visible when-meta="draft"}
-**Draft note:**
-
-- Planned (not run): instrument comparison ($\tilde{\mathcal W}_{it-2}$); cap $R_i\ge0$ (equivalent to capping $\tilde{e}_i$) at $+2\%,+4\%,+8\%$, pending Nail Kashaev.
-- To do (after the JMP draft): fine-tune the Claims confidence sets. Only the coarse grid (5 candidates per $\Delta$) has been run; bisect toward each conservative-test crossing, as was done for the revenue grid.
-- To do (after the JMP draft): run the $\theta$-free check on Claims ($\theta$ seeded, not fixed, at the best point), replacing the CV-based check parked above.
-- To do (after the JMP draft): estimate the back-of-envelope revenue loss and its tax-rate elasticity (@sec-app-backofenvelope) inside ELVIS, as auxiliary parameters with their own moments. The current numbers are ballparks for the JMP draft.
-:::
-
-::: {.content-visible when-meta="draft"}
-**Draft note (two-tax limitation, PLAN.md 7b). Resolved (2026-10-03): stage 2 uses the net-of-tax first stage (`1501-fs-net`, via `1532`).**
-
-- Stage 1 is not yet re-estimated with net-of-tax sales and purchases (pending supervisor conversation); mention as extension.
-- **MUST STATE EXPLICITLY TO SUPERVISORS, not silently:** the ELVIS estimates $\hat\theta=(\hat\lambda,\hat\delta_0,\hat\delta_1,\hat\delta_2)$ and everything built on them (the whole counterfactual) inherit $\hat\beta$ from the gross/single-tax first stage, not the net-of-tax one -- even though the evasion FOC itself is already correctly two-tax ($h(e)$ uses only $\tau_P$). The exposure is the *materials-FOC/production-identity* side that feeds $\mathcal V_{it}$/$\tilde{\mathcal W}_{it}$, same channel the `1470`/`1471` diagnostic measured ($\hat\beta$ moves $-0.006$ on average) -- small, but ELVIS has not itself been re-run to confirm it stays small there. Re-running ELVIS on a net-of-tax first stage is future work, explicitly NOT scoped for this week.
 :::
 
 ::: {.content-visible when-meta="draft"}
