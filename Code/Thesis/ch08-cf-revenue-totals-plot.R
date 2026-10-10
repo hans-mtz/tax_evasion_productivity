@@ -4,8 +4,8 @@
 ## interior firms, the top 0.5% trimmed from estimation, and the corner firms, whose claims are (1+Delta) tau_P r M* and
 ## gross sales-tax revenue t1 r^beta (no overreporting, no response of overreporting).
 ## Source: Code/Products/ch08-cf-revenue-totals.csv (written by ch08-cf-revenue-totals-table.R from 1621-cf-economy-revenue-mr1.csv).
-## Bars = conservative 95% sets; they carry only the interior firms' uncertainty (the other groups add a known amount).
-## Break-even: where the estimate crosses zero, by linear interpolation between adjacent Delta (as ch08-cf-revenue-bounds-plot.R).
+## Dashed lines join the lower and the upper bounds of the conservative 95% sets; the sets carry only the interior firms' uncertainty (the other groups add a known amount).
+## Break-even (printed for the text, not drawn): where the estimate crosses zero, by linear interpolation between adjacent Delta (as ch08-cf-revenue-bounds-plot.R).
 ## Formulas: appendix A, @sec-app-cf-implementation.
 source("Code/Thesis/001-setup.R")
 
@@ -17,14 +17,13 @@ k <- which(diff(sign(d$rev)) != 0)[1]
 be <- if (is.na(k)) NA else d$Delta[k] - d$rev[k] * (d$Delta[k + 1] - d$Delta[k]) / (d$rev[k + 1] - d$rev[k])
 cat(sprintf("Break-even Delta (whole economy, true materials respond): %.3f\n", be))
 
-p <- ggplot(d, aes(x = 100 * Delta, y = rev)) +
+# Hans 2026-10-10: same style as fig-cf-revenue (ch08-cf-revenue-bounds-plot.R): no point estimate, no break-even line (the
+# text gives it); the lower bounds and the upper bounds of the 95% sets are each joined by a dashed line.
+pl <- d %>% select(Delta, lo, hi) %>% pivot_longer(c(lo, hi), names_to = "bound", values_to = "v")
+p <- ggplot(pl, aes(x = 100 * Delta, y = v, group = bound)) +
     geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
-    { if (!is.na(be)) list(annotate("segment", x = 100 * be, xend = 100 * be, y = -Inf, yend = 0, colour = "grey55", linewidth = 0.3, linetype = "dashed"),
-                           annotate("text", x = 100 * be, y = min(d$lo), label = paste0("Break-even: −", sprintf("%.0f%%", abs(100 * be))), colour = "grey35",
-                                    hjust = -0.08, vjust = 0, size = 3.2, family = THESIS_FONT)) } +
-    geom_errorbar(aes(ymin = lo, ymax = hi), width = 1.2, linewidth = 0.5, colour = THESIS_COLS[1]) +
-    geom_line(linewidth = 0.5, colour = THESIS_COLS[1]) +
-    geom_point(size = 2, colour = THESIS_COLS[1]) +
+    geom_line(linewidth = 0.5, linetype = "dashed", colour = THESIS_COLS[1]) +
+    geom_point(size = 1.4, colour = THESIS_COLS[1]) +
     scale_x_continuous(breaks = 100 * c(-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3), labels = function(x) paste0(ifelse(x > 0, "+", ifelse(x < 0, "−", "")), abs(x), "%")) +
     scale_y_continuous(labels = function(v) sub("^-", "−", scales::label_comma()(v))) +
     labs(x = expression("Change in the purchases rate, " * Delta), y = "Net sales-tax revenue, millions of real pesos") +
