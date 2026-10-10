@@ -9,6 +9,12 @@
 source("Code/Thesis/001-setup.R")
 
 d <- read.csv(file.path(PRODUCTS_DIR, "ch08-cf-revenue.csv"))
+# Break-even of the estimate, true materials respond (Hans 2026-10-10: in the note, so the reader finds the text's number here):
+# linear interpolation between the adjacent Delta where the estimate changes sign (as ch08-cf-revenue-bounds-plot.R)
+m <- d %>% filter(version == "True materials respond") %>% arrange(Delta)
+k <- which(diff(sign(m$rev)) != 0); stopifnot(length(k) == 1)
+be <- m$Delta[k] - m$rev[k] * (m$Delta[k + 1] - m$Delta[k]) / (m$rev[k + 1] - m$rev[k])
+cat(sprintf("Break-even Delta (true materials respond): %.4f, between %g and %g\n", be, m$Delta[k], m$Delta[k + 1]))
 # Hans 2026-10-07: of the bracket rows keep only the first (closest to 0) whose 95% set excludes zero
 z0 <- max(d$Delta[d$bracket & d$lo > 0]); stopifnot(is.finite(z0))
 d <- d %>% filter(!bracket | Delta == z0)
@@ -42,7 +48,8 @@ tt_obj <- tt(tbl, width = c(0.5, 0.7, 1.3, 0.7, 1.3, 0.7, 1.2), notes = paste0(
     "True materials respond: the materials first-order condition with the two tax rates, capital, labour and productivity fixed. ",
     "True $M$: mean change in true materials; gross revenue: mean change in gross sales-tax revenue from the output response. ",
     "Both come from the data alone. ", pct(z0), " is the smallest cut, on a finer grid, whose 95\\% set excludes zero ",
-    "(true materials respond only).")) |>
+    "(true materials respond only). With true materials responding, the estimate breaks even at a cut of about ",
+    sprintf("%.0f", abs(100 * be)), "\\%, interpolating linearly between ", pct(m$Delta[k]), " and ", pct(m$Delta[k + 1]), ".")) |>
     group_tt(j = list("True materials respond" = 2:3, "True materials fixed" = 4:5, "Materials channel" = 6:7)) |>
     style_tt(i = which(w$Delta == 0), background = "#f2f2f2") |>
     style_tt(i = "notes", fontsize = 0.8)
