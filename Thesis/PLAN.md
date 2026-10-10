@@ -130,7 +130,7 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 |---|---|---|
 | Tue 10-06 – Wed 10-07 | Model chapter (`02-model.qmd`): Setup → Corporations from bullets to prose (draft-prose, two proof-reads, Hans approves); decide the δ_C and old SOC draft blocks | `[x]` done 2026-10-07 |
 | Wed 10-07 – Thu 10-08 | Ch. 8 text on the M-responding headline: claims arcs (1655), loss shares (1653), revenue figure/table and break-even (1651/1652), mean q (1657); replace "input decisions fixed" passages | `[x]` ch. 8 rewrite complete 2026-10-10 (robustness in appendix A) |
-| Fri 10-09 | Numbers propagated: JMP abstract (full pass + "median overreporting", "after the raise"), intro para. 3, conclusion (1.9 → 1.5 percent), thesis abstract | `[x]` ch. 8 numbers done 2026-10-10 (both intros, thesis abstract, conclusion outline; break-even 17 / significant 28; conclusion limits and policy bullets updated); open: thesis abstract "about 9" vs "8.5" pp elsewhere |
+| Fri 10-09 | Numbers propagated: JMP abstract (full pass + "median overreporting", "after the raise"), intro para. 3, conclusion (1.9 → 1.5 percent), thesis abstract | `[x]` ch. 8 numbers done 2026-10-10 (both intros, thesis abstract, conclusion outline; break-even 17 / significant 28; conclusion limits and policy bullets updated) |
 | Sat 10-10 – Sun 10-11 | Conclusion prose (Hans); `thanks:`, JEL codes | `[ ]` |
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[ ]` |
 | Tue 10-13 | Send to supervisors | `[ ]` |
