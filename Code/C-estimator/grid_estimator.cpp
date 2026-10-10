@@ -912,6 +912,13 @@ static bool g_cf_multi = false;   // cf_multi=1 (2026-10-05, audit): each profil
 static bool g_cf_op = true;   // cf_op=0 (2026-10-05): with cf_multi, skip the separate operating-gamma start (the warm start is the
                               // operating gamma at the first T anyway; the operating start won 1 of 95 solves, as a tie, in the start diagnostics)
 static std::vector<double> g_cf_g10 = {3.0, -3.0, 10.0, -10.0, 30.0, -30.0};
+// cf_decomp=1 (2026-10-09, Hans; read-only diagnostic, cf_target=diff_evasion only): for each Delta > 0, the overreporting response
+// at +Delta and -Delta at the OPERATING weights (theta and gamma of the fit, row 10's gamma = 0; no gamma solve, no profile), split
+// by the draw's current detection probability q = x^k into bins [0, Delta/(1+k)) (draws that stop at the cut -Delta: e' = 0),
+// [Delta/(1+k), 0.02), [0.02, 0.05), [0.05, 0.15), [0.15, inf). Per bin: weight share and contribution to E[diff_evasion(+-Delta)]
+// (units of scale); the bins add up to the "T at operating gamma" of the cfprofile runs at +-Delta. Asymmetry per bin:
+// resp_plus + resp_minus (the first-order parts cancel). Writes one CSV row per Delta and bin; no profiling.
+static bool g_cf_decomp = false;
 static std::vector<double> g_cf_grid;   // cf_grid=T1,T2,...: also print 2nL at these T (diagnostic of the profile's shape)   // cf_target=loss_t1: extra t1/pgdp per interior firm in the denominator
 #if defined(YEAR_FE)
 static const int D_G_A = 20;
@@ -3140,6 +3147,62 @@ static void run_cfprofile_mode(const std::vector<FirmData> &firms, const double 
             if (!(1.0 - (1.0 + Dm) * tmax > 0.0)) { std::cerr << "cf_mresp: 1 - (1+Delta) tau_P <= 0 at Delta " << Dm << " (max tau_P "
                                                              << tmax << "): the M response is undefined\n"; std::exit(1); } }
     }
+    if (g_cf_decomp) {   // read-only diagnostic (see g_cf_decomp): operating weights only, caches built one at a time (each ~1 GB)
+        if (g_cf_target != 13) { std::cerr << "cf_decomp needs cf_target=diff_evasion\n"; std::exit(1); }
+        std::ofstream dout(output_csv);
+        dout << std::setprecision(10) << "Delta,bin,q_lo,q_hi,weight_share,resp_plus,resp_minus,resp_plus_total,resp_minus_total,maxdiff_lw,scale\n";
+        const double kk = g_kfixed;
+        std::vector<double> wn((size_t)n * R), lw0((size_t)n * R);   // normalized operating weights and their log kernels (from the q cache)
+        std::vector<float> qd((size_t)n * R), rp((size_t)n * R), rm((size_t)n * R);
+        // log kernel of draw j of firm i at the operating gamma (gam0[10] = 0, so row 10 -- the only row that differs across caches -- drops out)
+        auto lker = [&](const NestedCache &Cc, int i, int j) { const float *g = Cc.G.data() + ((size_t)i * R + j) * D_G_A;
+            double a = Cc.lq[(size_t)i * R + j]; for (int t = 0; t < D_G_A; t++) a += gam0[t] * g[t]; return a; };
+        for (double Dl : deltas) {
+            if (!(Dl > 0.0)) { std::cerr << "cf_decomp: give positive deltas (each runs at +Delta and -Delta)\n"; std::exit(1); }
+            double maxd = 0.0;
+            {   // pass 1: current q (mean_q's row at Delta = 0) and the operating weights
+                g_cf_on = true; g_cf_target = 15; g_cf_Delta = 0.0; g_cf_T = 0.0;
+                NestedCache Cc; nested_build_cache(Cc, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
+                for (int i = 0; i < n; i++) {
+                    if (Cc.Ri[i] != R) { std::cerr << "cf_decomp: interior firms only\n"; std::exit(1); }
+                    double lmax = -HUGE_VAL;
+                    for (int j = 0; j < R; j++) { lw0[(size_t)i * R + j] = lker(Cc, i, j); lmax = std::max(lmax, lw0[(size_t)i * R + j]); }
+                    double sw = 0.0; for (int j = 0; j < R; j++) sw += std::exp(lw0[(size_t)i * R + j] - lmax);
+                    for (int j = 0; j < R; j++) { wn[(size_t)i * R + j] = std::exp(lw0[(size_t)i * R + j] - lmax) / sw;
+                                                  qd[(size_t)i * R + j] = Cc.G[((size_t)i * R + j) * D_G_A + 10]; }
+                }
+            }
+            for (int sgn = +1; sgn >= -1; sgn -= 2) {   // passes 2 and 3: diff_evasion at +Delta and -Delta, same draws (same seed and theta)
+                g_cf_on = true; g_cf_target = 13; g_cf_Delta = sgn * Dl; g_cf_T = 0.0;
+                NestedCache Cc; nested_build_cache(Cc, firms, kap, par[1], par[2], par[3], R, base_seed, n_threads);
+                std::vector<float> &dst = sgn > 0 ? rp : rm;
+                for (int i = 0; i < n; i++) for (int j = 0; j < R; j++) {
+                    maxd = std::max(maxd, std::fabs(lker(Cc, i, j) - lw0[(size_t)i * R + j]));
+                    dst[(size_t)i * R + j] = Cc.G[((size_t)i * R + j) * D_G_A + 10]; }
+            }
+            g_cf_target = 13;
+            const std::vector<double> edges = {0.0, Dl / (1.0 + kk), 0.02, 0.05, 0.15, HUGE_VAL};
+            const int NB = (int)edges.size() - 1;
+            if (!(edges[1] < edges[2])) { std::cerr << "cf_decomp: Delta/(1+k) must be below 0.02 (bin edges must increase)\n"; std::exit(1); }
+            std::vector<double> ws(NB, 0.0), sp(NB, 0.0), sm(NB, 0.0);
+            for (size_t ij = 0; ij < (size_t)n * R; ij++) {
+                int b = 0; while (b < NB - 1 && qd[ij] >= edges[b + 1]) b++;
+                ws[b] += wn[ij]; sp[b] += wn[ij] * rp[ij]; sm[b] += wn[ij] * rm[ij]; }
+            double tp = 0.0, tm = 0.0; for (int b = 0; b < NB; b++) { ws[b] /= n; sp[b] /= n; sm[b] /= n; tp += sp[b]; tm += sm[b]; }
+            std::cout << "  cf_decomp Delta +-" << Dl << ": E[diff_evasion] at +Delta " << tp << ", at -Delta " << tm << " (units of scale; compare T at operating gamma)"
+                      << " | max |log-weight difference| across caches " << maxd << "\n";
+            for (int b = 0; b < NB; b++) {
+                std::cout << "    q in [" << edges[b] << ", " << edges[b + 1] << "): weight " << ws[b] << " | resp at +Delta " << sp[b] << ", at -Delta " << sm[b]
+                          << " | asymmetry (sum) " << sp[b] + sm[b] << "\n";
+                dout << Dl << "," << b << "," << edges[b] << "," << (std::isfinite(edges[b + 1]) ? edges[b + 1] : -1.0) << "," << ws[b] << ","
+                     << sp[b] << "," << sm[b] << "," << tp << "," << tm << "," << maxd << "," << sc << "\n";
+            }
+            std::cout << std::flush;
+        }
+        g_cf_on = false;
+        std::cout << "Saved: " << output_csv << "\n";
+        return;
+    }
     std::ofstream out(output_csv);
     out << std::setprecision(10) << "Delta,T_hat,TS_min,d_g,crit,hard_lo,hard_hi,soft_lo,soft_hi,scale,mean_t1p,credit_hat,revenue_hat,"
            "revenue_hard_lo,revenue_hard_hi,T_at_gamma0,evals,cf_target,cf_multi,TS_min_seen,T_min_seen,g10_hat,maxg_hat,g10_hard_lo,maxg_hard_lo,g10_hard_hi,maxg_hard_hi,cf_mresp\n";
@@ -4300,7 +4363,7 @@ int main(int argc, char **argv) {
             "delta1_stride","delta2_hi","delta2_lo","delta2_offset","delta2_stride","deltas","drop_rows","gamma","gamma0","input_csv",
             "k_fixed","k_free","k_max","k_min","kink_share","lambda_hi","lambda_lo","lambda_offset","lambda_stride","lambdas",
             "max_shell","maxtime","mode","n_burn","n_delta1","n_delta2","n_keep","n_lambda","n_passes","n_shards","n_threads",
-            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_g10","cf_mresp","cf_op","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
+            "output_csv","par","points_csv","qform","rho","rho_D","gamma_init","kappa_fixed","share_u","deltas","cf_target","cf_h","cf_t1_extra","cf_grid","cf_cold","cf_multi","cf_decomp","cf_g10","cf_mresp","cf_op","delta0_fixed","delta1_fixed","delta2_fixed","row6","seed","cluster","sampler","maxeval","init_step","nested","Delta","proposal","mix_umax","inner_start","inner_algo","h_floor","kappa_max","ind_rows","audit_p","audit_group","delta_max","row9_mode","rvals","s_fixed","sa_time","seed_csv","shard_id","theta",
             "threads_per_point","x0"};
         for (const auto &kv : opt) {
             bool ok = false; for (const char *k : known) if (kv.first == k) { ok = true; break; }
@@ -4631,6 +4694,8 @@ int main(int argc, char **argv) {
                 { std::stringstream ss(get_opt(opt, "cf_grid", "")); std::string tok; while (std::getline(ss, tok, ',')) if (!tok.empty()) g_cf_grid.push_back(std::strtod(tok.c_str(), nullptr)); }
                 g_cf_cold = get_opt(opt, "cf_cold", "0") == "1"; if (g_cf_cold) std::cout << "cf_cold=1: every profiled gamma solve starts from the operating gamma\n";
                 g_cf_multi = get_opt(opt, "cf_multi", "0") == "1";
+                g_cf_decomp = get_opt(opt, "cf_decomp", "0") == "1";
+                if (g_cf_decomp) std::cout << "cf_decomp=1: read-only split of diff_evasion at +-Delta by current q, operating weights, no profile\n";
                 g_cf_mresp = get_opt(opt, "cf_mresp", "0") == "1";
                 g_cf_op = get_opt(opt, "cf_op", "1") == "1";
                 if (g_cf_multi && !g_cf_op) std::cout << "cf_op=0: no separate operating-gamma start (slot 'operating' in the start diagnostics is the warm start)\n";
