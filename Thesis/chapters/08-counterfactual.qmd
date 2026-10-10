@@ -121,7 +121,7 @@ Robustness (Q7)
     Planned after the JMP (draft note): entry of group (ii) corner firms, via design allcorr (every industry corrected,
     corner = tau_P = 0 only; 28,123 interior firm-years), which needs a stage-2 re-estimation at an operating point.
 
-Scope and limits (Q7)
+Scope and limits (Q7): section deleted 2026-10-10 (Hans: covered elsewhere); entries 17-19 kept for the record
 17. Partial equilibrium: materials and evasion respond, everything else fixed; moderate Delta (types held fixed).
 18. theta fixed at one passing operating point; the detection level is identified only through the model (evasion FOC +
     benefit shifter, no audit data; sec-cf-estimates), results are at that point; relative detection risk barely depends on it.
@@ -151,10 +151,10 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
 | 13 | partial 2026-10-10 | claims-split paragraph + asymmetry paragraphs (floor, near-zero firms = extensive margin) | bullets 1-2 to prose 2026-10-10 (+ back-of-envelope revenue split, R6); corner-firm lower bound open |
 | 14 | done 2026-10-10 | back-of-envelope paragraph after the claims split | materials share net of gross revenue; extra credit on true materials ~3.6x the extra gross sales-tax revenue |
-| 15 | done 2026-10-10 | sec-cf-gap paragraph + tbl-cf-gap (interior 4.7, all firms 1.5 lower bound; no (A), no 72-peso level, no TS column) + caption | two stale draft notes in the section (2026-10-03, 2026-10-04) still to delete on Hans's OK |
+| 15 | done 2026-10-10 | sec-cf-gap paragraph + tbl-cf-gap (interior 4.7, all firms 1.5 lower bound; no (A), no 72-peso level, no TS column) + caption | stale draft notes deleted (Hans 2026-10-10) |
 | 16 | todo   | Robustness: dropped CV comment + draft notes           | to the appendix (Hans 2026-10-10; fixed-M columns out of tbl-cf-revenue, numbers in ch08-cf-revenue.csv); one paragraph on 1652; allcorr entry check as a post-JMP draft note; "Rejected alternative target" -> cut or appendix A |
-| 17 | Hans 2026-10-10: covered elsewhere | Scope bullet "Partial equilibrium" | bullet still says $M$ held fixed (stale: M responds); remove or fix |
-| 18 | Hans 2026-10-10: covered elsewhere | Scope bullet "$(\lambda_1,\bar\lambda)$ is fixed" | covered by the lambda-bar paragraph in sec-cf-estimates; bullet stale, remove or fix |
+| 17 | Hans 2026-10-10: Scope section deleted (covered elsewhere) | - | - |
+| 18 | Hans 2026-10-10: Scope section deleted (covered elsewhere) | - | - |
 | 19 | done   | Scope: "Estimates use the trimmed sample"              | - |
 | -  | done   | claims-level figure/table, "why Claims" note           | moved to a draft-only Superseded block (2026-10-07) |
 -->
@@ -728,18 +728,10 @@ Among the interior firms, potential revenue is negative: even reporting truthful
 Measured against a positive base, the loss is 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$), 4.1 percent ($[2.8, 5.5]$) for all firms in the nine industries, and 1.5 percent ($[1.1, 3.1]$) for all firms in the sample. The last two treat the firms outside the structural sample as losing nothing, so they are lower bounds. The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022], although the bases differ.
 :::
 
-::: {.content-visible when-meta="draft"}
-**Draft note (2026-10-04):** the interior set depends on the start of the $\gamma$ solve (cold $[3.5, 7.1]$, warm $[3.1, 6.2]$); reported as their union, since a failed solve only raises $TS$. A multi-start profile would settle it (post-JMP). Research log 2026-10-04.
-:::
-
 :::{#tbl-cf-gap}
 ![](/tables/ch08-revenue-gap.png)
 
 Revenue lost to undetected overreporting at the current rate, as a share of gross sales-tax revenue: interior firms and all firms in the sample. 95 percent conservative-test sets.
-:::
-
-::: {.content-visible when-meta="draft"}
-**Draft note (2026-10-03):** net revenue is negative also for the firms outside the nine industries, for which $M=M^*$ ($t1$ 22.75 M vs $\tau_PM^*$ 32.12 M in `1621`). Check why before the defence, for example exempt or export sales in $t1$.
 :::
 
 ## Robustness {#sec-cf-robust}
@@ -784,19 +776,6 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 - To do (after the JMP draft): fine-tune the Claims confidence sets. Only the coarse grid (5 candidates per $\Delta$) has been run; bisect toward each conservative-test crossing, as was done for the revenue grid.
 - To do (after the JMP draft): run the $\theta$-free check on Claims ($\theta$ seeded, not fixed, at the best point), replacing the CV-based check parked above.
 - To do (after the JMP draft): estimate the back-of-envelope revenue loss and its tax-rate elasticity (@sec-app-backofenvelope) inside ELVIS, as auxiliary parameters with their own moments. The current numbers are ballparks for the JMP draft.
-:::
-
-## Scope and limits {#sec-cf-limits}
-
-- Partial equilibrium: $K$, $L$, $\omega$, $\varepsilon$ and $M$ held fixed; only evasion responds. Large $\Delta$ is outside what the exercise can speak to.
-- $(\lambda_1,\bar\lambda)$ is fixed at one operating point that passes the conservative test. The moments do not identify the level of detection, so the results are conditional on it; relative detection risk is nearly free of $\bar\lambda$.
-- Estimates use the trimmed sample; the trimmed firms enter the counterfactual mechanically.
-
-::: {.content-visible when-meta="draft"}
-**Superseded (linear $q$, single-tax run, 2026-09-22).**
-
-- $\theta$ fixed at one operating point that is not rejected (conservative test), with production-function instrument $m^*_{it-1}$.
-- $\hat\lambda$ is identified mostly from a thin tail of aggressive evaders; the estimate depends on the 0.5 percent trim.
 :::
 
 ::: {.content-visible when-meta="draft"}
