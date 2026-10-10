@@ -557,12 +557,12 @@ Its mean is the auxiliary parameter $\theta_R(\Delta)$. Gross sales-tax revenue 
 
 I report two summaries. The first traces the revenue curve: net sales-tax revenue on a grid of changes in the rate, $\Delta$, from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities of net sales-tax revenue and of claimed deductions at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent. I build each elasticity from a paired difference between the new and the current rate, computed on the same draws of $M_i$: noise common to both rates cancels in the difference.
 
-Let $C(\Delta)$ be mean claimed deductions per firm-year, $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_i+(1-q(\tilde{e}_i))\tilde{e}_i\big)\big]$. Its arc elasticity decomposes into the three components:
+The arc elasticity of claimed deductions splits into three parts: the mechanical effect, the materials response and the overreporting response. With mean claimed deductions per firm-year $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_{it}+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big)\big]$,
 $$
-\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_i\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(\tilde{e}_i))\tilde{e}_i-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)},
+\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_{it}\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)}.
 $$
 
-the mechanical effect, the materials response and the overreporting response; the last two are each estimated with their own moment. Because the counterfactual overreporting does not depend on true materials, the two responses add up with no interaction term.
+The mechanical effect, 1, applies the new rate to unchanged claims. I estimate the materials response and the overreporting response each with its own moment.
 
 For net sales-tax revenue, I divide the change by $\Delta$ times the mean gross sales-tax revenue (1,547 pesos per firm-year), or the absolute value of mean net sales-tax revenue (391 pesos).
 
