@@ -172,7 +172,7 @@ $$
 R_i(\Delta;M_i) = \tau_{S,it}P_tY_{it}(\Delta) - \tilde\tau_{P,it}\big[M_{it}(\Delta)+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]
 $$ {#eq-govt-rev}
 
-where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$ is the counterfactual tax rate on purchases. The first term in @eq-govt-rev is gross sales-tax revenue, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is claimed deductions, sales-tax refunds paid at the new rate, $\tilde\tau_{P,it}$. The credit applies to the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)$.
+where $\tilde\tau_{P,it}\equiv(1+\Delta)\tau_{P,it}$ is the counterfactual tax rate on purchases. The first term in @eq-govt-rev is gross sales-tax revenue, $\tau_{S,it}P_tY_{it}(\Delta)$. The second term is claimed deductions: the sales-tax refunds the government pays at the new rate, $\tilde\tau_{P,it}$, on the firm's true materials, $M_{it}(\Delta)$, plus the counterfactual undetected overreporting, $(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)$.
 
 A change in the rate on purchases moves net sales-tax revenue through three channels. First, every peso the firm claims is credited at the new rate. Second, a higher rate raises the marginal benefit of overreporting in the evasion condition (@eq-foc-e), leading the firm to overreport more. Third, the rate on purchases changes the net-of-tax price of materials relative to output (@sec-model-foc-m). A higher rate yields materials cheaper, therefore the firm buys more materials, claims the credit on more purchases, and produces more output, which raises gross sales-tax revenue. With a higher rate, the first two channels lower net sales-tax revenue. The third lowers net sales-tax revenue through refunds and raises it through gross sales-tax revenue.
 
@@ -564,7 +564,7 @@ The counterfactual overreporting does not depend on how true materials respond, 
 
 I report two summaries. The first traces the revenue curve: net sales-tax revenue on a grid of changes in the rate, $\Delta$, from $-30$ to $+30$ percent. The second measures the response near the current rate through arc elasticities of net sales-tax revenue and of claimed deductions at $\Delta=\pm1$, $\pm1.5$ and $\pm2$ percent.
 
-### Net sales-tax revenue {#sec-cf-design-levels}
+### Net sales-tax revenue and claimed deductions{#sec-cf-design-levels}
 
 Substituting the counterfactual overreporting (@eq-counter-e) and the counterfactual true materials (@eq-cf-r) into @eq-govt-rev gives net sales-tax revenue at the new rate for each draw of $M_i$:
 
@@ -572,11 +572,11 @@ $$
 R_i(\Delta;M_i)=r_{it}(\Delta)^{\beta}\,\tau_{S,it}P_tY_{it}-\tilde\tau_{P,it}\big[r_{it}(\Delta)M_{it}+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big].
 $$
 
-Its mean is the auxiliary parameter $\theta_R(\Delta)$. Gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$ (@sec-app-cf-implementation). Claimed deductions split into refunds on true materials and the refunds on undetected overreporting.
+Its mean is the auxiliary parameter $\theta_R(\Delta)$. Gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$ (@sec-app-cf-implementation). Claimed deductions split into deductions on true materials and deductions on undetected overreporting.
 
-Totals for the whole economy multiply each interior mean by the number of interior firm-years and add the corner firms.^[The top 0.5 percent of interior firms by reported materials (61 firm-years), trimmed from the estimation, enter with the same formula.] The corner firms fall into two groups: a) Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate and have no incentive to start overreporting, and b) firms in the remaining 19 industries (16,154 firm-years). Firms in b) are treated as truthful, $M=M^*$ and $e=0$. The test fails to reject correct reporting for them, or their industry is small and they were not tested for overreporting, and the ex-ante selection rule keeps them out of the structural estimation. The claimed deductions of all corner firms are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$, and their gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$;. Neither needs a draw of $M_i$. Corner firms add gross sales-tax revenue but no loss to undetected overreporting. The reported loss share for the whole economy is therefore a lower bound.
+Totals for the whole economy multiply each interior mean by the number of interior firm-years and add the corner firms.^[The top 0.5 percent of interior firms by reported materials (61 firm-years), trimmed from the estimation, enter with the same formula.] The corner firms fall into two groups: (a) firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate and have no incentive to start overreporting, and (b) firms in the remaining 19 industries (16,154 firm-years). Firms in (b) are treated as truthful, $M=M^*$ and $e=0$. The test fails to reject correct reporting for them, or their industry is small and they were not tested for overreporting, and the ex-ante selection rule keeps them out of the structural estimation. The claimed deductions of all corner firms are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$, and their gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$. Neither needs a draw of $M_i$. Corner firms add gross sales-tax revenue but no loss to undetected overreporting. The reported loss share for the whole economy is therefore a lower bound.
 
-At the current rate, mean net sales-tax revenue from the interior firms is negative, $-391$ real pesos per firm-year (95 percent set $[-605,-174]$). Even if the interior firms reported truthfully ($M^*_i=M_i$), mean net sales-tax revenue would be negative, with a 95 percent set of $[-590,-42]$ real pesos per firm-year.
+At the current rate, mean net sales-tax revenue from the interior firms is negative, $-391$ real pesos per firm-year (95 percent set $[-605,-174]$). Even if the interior firms reported truthfully ($M_i=M^*_i$; @sec-cf-gap), mean net sales-tax revenue would be negative, with a 95 percent set of $[-590,-42]$ real pesos per firm-year.
 
 ### Elasticities {#sec-cf-design-elast}
 
@@ -586,12 +586,12 @@ For mean net sales-tax revenue, $R(\Delta)$, I report two elasticities. The firs
 
 <!-- I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. -->
 
-For mean arc elasticity of claimed deductions, I decompose it into two parts: the materials response and the overreporting response. With mean claimed deductions per firm-year $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_{it}+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big)\big]$,
+For the mean arc elasticity of claimed deductions, I split it into the mechanical effect and two behavioural responses, the materials response and the overreporting response. With mean claimed deductions per firm-year $C(\Delta)=E\big[\tilde\tau_{P,it}\big(r_{it}(\Delta)M_{it}+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big)\big]$,
 $$
-\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_{it}\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)}.
+\frac{C(\Delta)-C(0)}{\Delta\,C(0)}=1+\frac{E\big[\tilde\tau_{P,it}(r_{it}(\Delta)-1)M_{it}\big]}{\Delta\,C(0)}+\frac{E\big[\tilde\tau_{P,it}\big((1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)-(1-q(e_i))e_i\big)\big]}{\Delta\,C(0)},
 $$
 
-where the second term on the right-hand side is the materials response and the third one the overreporting response. The mechanical effect, 1, applies the new rate to unchanged claims. I estimate the materials response and the overreporting response each with its own moment and auxiliary parameter.
+where the second term on the right-hand side is the materials response and the third, the overreporting response. The mechanical effect, 1, applies the new rate to unchanged claims. I estimate the materials response and the overreporting response each with its own moment and auxiliary parameter.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -640,11 +640,9 @@ $\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ 
 
 ## Results {#sec-cf-results}
 
-### Net sales-tax revenue and claimed deductions {#sec-cf-results-levels}
+### Net sales-tax revenue and claimed deductions{#sec-cf-results-levels}
 
-
-
-@fig-cf-revenue and @tbl-cf-revenueA show that a 30 percent cut in the rate on purchases would turn net sales-tax revenue from negative to positive. Net sales-tax revenue rises steadily as the rate falls. The estimate breaks even at a cut of about 17 percent, and for cuts of about 28 percent or more the 95 percent set lies entirely above zero ($[2, 426]$ at $-27.5$ percent). Raising the rate pushes net sales-tax revenue further below zero. A 20 percent increase lowers it from $-391$ to $-965$ real pesos per firm-year, and the 95 percent sets of the two levels do not overlap. 
+A 30 percent cut in the rate on purchases would turn net sales-tax revenue from negative to positive (@fig-cf-revenue, @tbl-cf-revenue). Net sales-tax revenue rises steadily as the rate falls. The estimate breaks even at a cut of about 17 percent, and for cuts of about 28 percent or more the 95 percent set lies entirely above zero ($[2, 426]$ at $-27.5$ percent). Raising the rate pushes net sales-tax revenue further below zero. A 20 percent increase lowers it from $-391$ to $-965$ real pesos per firm-year, and the 95 percent sets of the two levels do not overlap. 
 
 <!-- The sets at nearby rates overlap because they share the uncertainty about the level of net sales-tax revenue; the elasticities below, which compare two rates on the same draws of $M_i$, measure the change more precisely. @tbl-cf-revenue also reports net sales-tax revenue with true materials fixed, which I discuss in @sec-app-cf-robust. -->
 
@@ -694,7 +692,7 @@ Claimed purchase deductions respond more than one for one to the rate on purchas
 
 A back-of-envelope calculation shows that, of the 26 real pesos per firm-year that a 1 percent increase withdraws from net sales-tax revenue, the mechanical effect accounts for 74 percent, the materials response for 10 percent and the overreporting response for 16 percent. The materials share is net of the extra gross sales-tax revenue: buying more materials raises output and the sales tax on it, but the extra credit on those materials is about 3.6 times larger. For a 1 percent cut, the shares are 79 for mechanical, 10 for materials, and 11 percent for overreporting response.
 
-The changes in the overreporting response to the rate are signitificantly asymmetric, larger for increases than for cuts. The asymmetry comes from the incentives generated by the tax, which creates a floor on overreporting, $e_i\ge0$. A firm never underreports, because fewer deductions would increase its tax liability and decrease its after-tax profits. This matters for firms at the margin of overreporting, firms that would jump in or out of evasion depending on the rate. These firms are not trivial. In the estimated distribution of overreporting, about a third of the mass lies below a detection probability of 0.6 percent. These firms play the role of the extensive margin. A 1 percent increase raises their overreporting from almost nothing, and a 1 percent cut drives them out of evasion. They account for about 86 percent of the gap between the responses to increases and to cuts at $\pm1$ percent. Firms operating at the intensive margin, firms that keep overreporting and only adjust how much, respond almost equally in both directions. This is the case for firms with a detection probability of 2 percent or more.
+The overreporting response is asymmetric, larger for increases than for cuts. The asymmetry comes from the incentives generated by the tax, which creates a floor on overreporting, $e_i\ge0$. A firm never underreports, because fewer deductions would increase its tax liability and decrease its after-tax profits. This matters for firms at the margin of overreporting, firms that would jump in or out of evasion depending on the rate. These firms are not trivial. In the estimated distribution of overreporting, about a third of the mass lies below a detection probability of 0.6 percent. These firms play the role of the extensive margin. A 1 percent increase raises their overreporting from almost nothing, and a 1 percent cut drives them out of evasion. They account for about 86 percent of the gap between the responses to increases and to cuts at $\pm1$ percent. Firms operating at the intensive margin, firms that keep overreporting and only adjust how much, respond almost equally in both directions. This is the case for firms with a detection probability of 2 percent or more.
 
 :::{#tbl-cf-elasticities}
 ![](/tables/ch08-cf-elasticities-mresp.png)
@@ -729,11 +727,15 @@ Old key findings:
 
 ## Revenue lost to undetected overreporting {#sec-cf-gap}
 
-The same machinery measures what undetected overreporting costs at the current rate. The counterfactual is potential net sales-tax revenue, the net revenue the govenrment would collect in the absence of overreporting. Potential net sales-tax revenue is $P_i=\tau_{S,it}P_tY_{it}-\tau_{P,it}M_{it}$. The loss is the credit paid on undetected overreporting, $L_i=P_i-R_i(0;M_i)=\tau_{P,it}(1-q(e_i))e_i$.
+The same machinery measures what undetected overreporting costs at the current rate. The counterfactual is potential net sales-tax revenue. Potential net sales-tax revenue is the revenue the government would collect without overreporting, $P_i=\tau_{S,it}P_tY_{it}-\tau_{P,it}M_{it}$. The loss is the credit paid on undetected overreporting, $L_i=P_i-R_i(0;M_i)=\tau_{P,it}(1-q(e_i))e_i$. 
 
-I measure the loss as a percentage of gross salex-tax revenue, $G(0)$. The ratio of the mean loss to mean gross sales-tax revenue is cast as a moment with its own auxiliary parameter. The base of the ratio, gross sales-tax revenue is observed and positive, whereas potential revenue can be negative and true credits are latent.
+<!-- This is obvious, why explain it: True materials are the same in $P_i$ and $R_i(0;M_i)$, because the materials condition contains no overreporting (@eq-foc-m). -->
 
-Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$) and at least 1.5 percent ($[1.1, 3.1]$) across all firms in the sample (@tbl-cf-gap). The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]. The bases may differ though.
+I measure the loss as a percentage of gross sales-tax revenue, $G(0)$. The ratio of the mean loss to mean gross sales-tax revenue is cast as a moment with its own auxiliary parameter. The base of the ratio, gross sales-tax revenue, is observed and positive, whereas potential revenue can be negative and true credits are latent.
+
+Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$) and at least 1.5 percent ($[1.1, 3.1]$) across all firms in the sample (@tbl-cf-gap), a lower bound for the reasons in @sec-cf-design-levels. The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]. 
+
+<!-- This is clear from the text, it says "percent of total tax revenue": The bases differ: those figures measure detected overreporting against all taxes, whereas the shares here measure undetected overreporting against gross sales-tax revenue. -->
 
 ::: {.content-visible when-meta="draft"}
 **Not reused (2026-10-09, Hans): split of sec-cf-gap.** Definitions moved to @sec-cf-design; $E[P]<0$ moved to the Results opening (set only, no point: $E[P]$, $E[R(0)]$ and $E[L]$ are separate auxiliary parameters and their points do not add up, $-328-(-391)=63\neq72$); $L/|P|$, true credits and the (A) share dropped.
