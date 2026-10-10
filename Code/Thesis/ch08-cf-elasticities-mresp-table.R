@@ -32,14 +32,15 @@ f2 <- function(v) ifelse(v < 0, paste0("$-$", sprintf("%.2f", -v)), sprintf("%.2
 set <- function(lo, hi) paste0("[", f2(lo), ", ", f2(hi), "]")
 tbl <- d %>% transmute(`$\\Delta$` = pct(Delta), `Total` = f2(total),
                        `Materials` = paste(f2(input), set(input_lo, input_hi)), `Overreporting` = paste(f2(evasion), set(evasion_lo, evasion_hi)),
-                       `Base $|R_0|$` = paste(f2(revA), set(revA_lo, revA_hi)), `Base gross revenue` = paste(f2(revT), set(revT_lo, revT_hi)))
+                       `Share of gross revenue` = paste(f2(revT), set(revT_lo, revT_hi)), `Relative percentage magnitude` = paste(f2(revA), set(revA_lo, revA_hi)))
 print(tbl)
 tt_obj <- tt(tbl, width = c(0.5, 0.5, 1.2, 1.2, 1.5, 1.5), notes = paste0(
     "Arc elasticities with respect to the purchases rate, true materials responding, ELVIS interior firms; conservative 95\\% sets ",
     "in brackets ($\\chi^2_{18,.95}=28.87$). Claimed deductions: $[C(\\Delta)-C(0)]/(\\Delta C(0))$ = 1 (mechanical) + materials response + ",
-    "overreporting response; the total is the sum of the point estimates. Net sales-tax revenue: $[R(\\Delta)-R(0)]/(\\Delta|R(0)|)$, with ",
-    "$R(0)=", sprintf("%.0f", R0 * r0$scale), "$ per firm-year, and $[R(\\Delta)-R(0)]/(\\Delta\\,\\overline{t1})$, relative to mean gross sales-tax revenue ",
-    "(", formatC(r0$mean_t1p, format = "f", digits = 0, big.mark = ","), " per firm-year). Baselines treated as known.")) |>
+    "overreporting response; the total is the sum of the point estimates. Net sales-tax revenue: share of gross revenue, ",
+    "$[R(\\Delta)-R(0)]/(\\Delta\\,G(0))$, with mean gross sales-tax revenue $G(0)=", sub(",", "{,}", formatC(r0$mean_t1p, format = "f", digits = 0, big.mark = ","), fixed = TRUE),
+    "$ real pesos per firm-year; relative percentage magnitude, $[R(\\Delta)-R(0)]/(\\Delta\\,|R(0)|)$, with $|R(0)|=", sprintf("%.0f", -R0 * r0$scale), "$.")) |>
     group_tt(j = list("Claimed deductions" = 2:4, "Net sales-tax revenue" = 5:6)) |>
+    style_tt(i = 0, align = "l") |>
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch08-cf-elasticities-mresp")

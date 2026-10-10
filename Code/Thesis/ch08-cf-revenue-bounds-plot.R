@@ -1,4 +1,4 @@
-## PRODUCT: Thesis/figures/ch08-cf-revenue-bounds.png := counterfactual net sales-tax revenue per firm-year (real pesos),
+## PRODUCT: Thesis/figures/ch08-cf-revenue-bounds.png := 95% sets of counterfactual net sales-tax revenue per firm-year (real pesos),
 ## evader industries' interior firms, by change Delta in the purchases rate (tau_P -> (1+Delta) tau_P), for the headline
 ## (true materials respond to the rate through the two-tax wedge) and the robustness check (true materials fixed).
 ## Sources: Code/Products/1651-cf-revenue-mr1-D<Delta>.csv (cf_mresp=1) and 1652-cf-revenue-mr0-D<Delta>.csv (fixed M;
@@ -35,16 +35,15 @@ h <- d %>% filter(version == "True materials respond") %>% arrange(Delta)
 k <- which(diff(sign(h$rev)) != 0)[1]
 be <- if (is.na(k)) NA else h$Delta[k] - h$rev[k] * (h$Delta[k + 1] - h$Delta[k]) / (h$rev[k + 1] - h$rev[k])
 cat(sprintf("Break-even Delta (true materials respond): %.3f\n", be))
-dodge <- position_dodge(width = 1.6)
-p <- ggplot(d, aes(x = 100 * Delta, y = rev, colour = version, group = version)) +
+# Figure (Hans 2026-10-09): true materials respond only (the fixed-M version stays in the table and Robustness); no point
+# estimate; the lower bounds and the upper bounds of the 95% sets are each joined by a dashed line, in the spirit of the
+# identified-set plots of AK2020. All evaluated Delta are drawn, the break-even bracket rows included.
+pl <- out %>% filter(version == "True materials respond") %>% arrange(Delta) %>%
+    select(Delta, lo, hi) %>% pivot_longer(c(lo, hi), names_to = "bound", values_to = "v")
+p <- ggplot(pl, aes(x = 100 * Delta, y = v, group = bound)) +
     geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
-    { if (!is.na(be)) list(annotate("segment", x = 100 * be, xend = 100 * be, y = -Inf, yend = 0, colour = "grey55", linewidth = 0.3, linetype = "dashed"),
-                           annotate("text", x = 100 * be, y = min(d$lo), label = paste0("Break-even: \u2212", sprintf("%.0f%%", abs(100 * be))), colour = "grey35",
-                                    hjust = 1.08, vjust = 0, size = 3.2, family = THESIS_FONT)) } +
-    geom_errorbar(aes(ymin = lo, ymax = hi), width = 1.2, linewidth = 0.5, position = dodge) +
-    geom_line(linewidth = 0.5, position = dodge) +
-    geom_point(size = 2, position = dodge) +
-    scale_colour_manual(values = c("True materials respond" = THESIS_COLS[1], "True materials fixed" = THESIS_COLS[2]), name = NULL) +
+    geom_line(linewidth = 0.5, linetype = "dashed", colour = THESIS_COLS[1]) +
+    geom_point(size = 1.4, colour = THESIS_COLS[1]) +
     scale_x_continuous(breaks = 100 * c(-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3), labels = function(x) paste0(ifelse(x > 0, "+", ifelse(x < 0, "\u2212", "")), abs(x), "%")) +
     scale_y_continuous(labels = function(v) sub("^-", "\u2212", scales::label_comma()(v))) +
     labs(x = expression("Change in the purchases rate, " * Delta), y = "Net sales-tax revenue per firm-year") +
