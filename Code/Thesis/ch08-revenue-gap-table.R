@@ -1,5 +1,5 @@
-## PRODUCT: Thesis/tables/ch08-revenue-gap.png := revenue lost to undetected overreporting among the ELVIS interior firms,
-## at current rates: true credits E[tau_P M], potential revenue E[P] = E[t1/pgdp] - E[tau_P M], and the gap
+## PRODUCT: Thesis/tables/ch08-revenue-gap.png := revenue lost to undetected overreporting at current rates, as a share of
+## gross sales-tax revenue: interior firms and all firms in the sample (2026-10-10). Still computed below but not shown: true credits E[tau_P M], potential revenue E[P] = E[t1/pgdp] - E[tau_P M], and the gap
 ## R/P - 1 = L/|P| (P < 0), with L = tau_P (1 - q(e)) e and R = P - L.
 ## Source: Code/Products/1644-cf-gap.csv (cf_target=gap, T = E[L]/E[P]) and 1644-cf-true-credit.csv (cf_target=true_credit,
 ## T = E[tau_P M]/scale); mode=cfprofile, theta fixed at the operating point 1616, gamma free, R = 1000, cf_cold=1.
@@ -31,19 +31,20 @@ set0 <- function(a, b) paste0("[", neg(f0(a)), ", ", neg(f0(b)), "]")
 # sales (observed, positive base; the same base as the revenue elasticities). True credits E[tau_P M], potential revenue E[P]
 # and L/|P| (negative latent base, poorly bounded) are still computed above but no longer shown.
 stopifnot(abs(lt$int$mean_t1p - t1p) < 1e-6)   # interior run: no extra t1, so E[L] = T x mean t1/pgdp
-Lp <- c(lt$int$T_hat, lt$int$hard_lo, lt$int$hard_hi) * t1p
+# 2026-10-10 (Hans, outline 15): only the two shares the text reports; (A) and the loss level (72 real pesos, whose point does
+# not add up with the separately estimated E[P] and E[R(0)]) are dropped.
 tbl <- tibble(
-    ` ` = c("Loss per firm-year, interior firms (real pesos)",
-            "Loss / gross sales-tax revenue: interior firms", "\\quad (A) evader industries", "\\quad (B) all firms"),
-    Estimate = c(f0(Lp[1]), pc(lt$int$T_hat), pc(lt$A$T_hat), pc(lt$B$T_hat)),
-    `95\\% set` = c(set0(Lp[2], Lp[3]), sapply(lt, function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]"))),
-    `$TS_{\\min}$` = formatC(c(lt$int$TS_min, lt$int$TS_min, lt$A$TS_min, lt$B$TS_min), format = "f", digits = 1))
+    ` ` = c("Interior firms", "All firms in the sample"),
+    Estimate = c(pc(lt$int$T_hat), pc(lt$B$T_hat)),
+    `95\\% set` = sapply(lt[c("int", "B")], function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]")),
+    `$TS_{\\min}$` = formatC(c(lt$int$TS_min, lt$B$TS_min), format = "f", digits = 1))
 print(tbl)
 
-tt_obj <- tt(tbl, width = c(1.6, 0.6, 0.9, 0.5), notes = paste0(
-    "Current rates. Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting, estimated with its own moment. ",
-    "Interior firms: ELVIS sample, mean gross sales-tax revenue ", f0(t1p), " real pesos per firm-year. ",
-    "(A) adds the trimmed firms' gross sales-tax revenue and (B) every other firm's; their loss is set to zero, so (A) and (B) are lower bounds. ",
+tt_obj <- tt(tbl, width = c(1.3, 0.6, 0.9, 0.5), notes = paste0(
+    "Current rates. Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting. Each share is the mean loss over ",
+    "mean gross sales-tax revenue, estimated as an auxiliary parameter with its own moment. ",
+    "Interior firms: mean gross sales-tax revenue ", f0(t1p), " real pesos per firm-year. ",
+    "All firms in the sample: every other firm's gross sales-tax revenue is added with a loss of zero, which makes the share a lower bound. ",
     "Each set is the union of the values accepted over several solver runs. ",
     "Conservative test, $TS\\le\\chi^2_{", g$d_g, ",.95}=", sprintf("%.2f", g$crit), "$.")) |>
     style_tt(i = "notes", fontsize = 0.8)
