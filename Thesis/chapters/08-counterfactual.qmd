@@ -151,10 +151,10 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
 | 13 | partial 2026-10-10 | claims-split paragraph + asymmetry paragraphs (floor, near-zero firms = extensive margin) | bullets 1-2 to prose 2026-10-10 (+ back-of-envelope revenue split, R6); corner-firm lower bound open |
 | 14 | done 2026-10-10 | back-of-envelope paragraph after the claims split | materials share net of gross revenue; extra credit on true materials ~3.6x the extra gross sales-tax revenue |
-| 15 | proposed 2026-10-09 (split: 8b in Design; tbl-cf-gap still shows dropped rows, caption todo) | sec-cf-gap paragraphs + tbl-cf-gap caption             | define L and the share; drop E[P], L/|P|, true credits; add 72 pesos; new caption (L602, caption still say "net refunds": use gross/net sales-tax revenue, sales-tax refunds) |
+| 15 | done 2026-10-10 | sec-cf-gap paragraph + tbl-cf-gap (interior 4.7, all firms 1.5 lower bound; no (A), no 72-peso level, no TS column) + caption | two stale draft notes in the section (2026-10-03, 2026-10-04) still to delete on Hans's OK |
 | 16 | todo   | Robustness: dropped CV comment + draft notes           | to the appendix (Hans 2026-10-10; fixed-M columns out of tbl-cf-revenue, numbers in ch08-cf-revenue.csv); one paragraph on 1652; allcorr entry check as a post-JMP draft note; "Rejected alternative target" -> cut or appendix A |
-| 17 | todo   | Scope: "Partial equilibrium: $K$, $L$" (L708)          | materials and evasion respond (Hans, when Scope is reached) |
-| 18 | todo (reopened 2026-10-09) | Scope: "$(\lambda_1,\bar\lambda)$ is fixed" (L709) | stale: says detection level not identified; match the lambda-bar paragraph in sec-cf-estimates (Hans, when Scope is reached) |
+| 17 | Hans 2026-10-10: covered elsewhere | Scope bullet "Partial equilibrium" | bullet still says $M$ held fixed (stale: M responds); remove or fix |
+| 18 | Hans 2026-10-10: covered elsewhere | Scope bullet "$(\lambda_1,\bar\lambda)$ is fixed" | covered by the lambda-bar paragraph in sec-cf-estimates; bullet stale, remove or fix |
 | 19 | done   | Scope: "Estimates use the trimmed sample"              | - |
 | -  | done   | claims-level figure/table, "why Claims" note           | moved to a draft-only Superseded block (2026-10-07) |
 -->
@@ -689,7 +689,7 @@ The changes in net sales-tax revenue from the overreporting response are larger 
 Arc elasticities of claimed purchase deductions and of net sales-tax revenue with respect to $\tau_P$, at $\Delta=\pm1,\pm1.5,\pm2$ percent, true materials responding. Claimed deductions are decomposed into the mechanical effect (1), the materials response and the overreporting response. 95 percent conservative-test sets.
 :::
 
-![Behavioural part of the elasticity of claimed purchase deductions with respect to $\tau_P$, by change $\Delta$ in the purchases rate: overreporting response (firms overreport more or less) and materials response (firms buy more or fewer materials), estimates and 95 percent conservative-test sets, true materials responding, interior firms. The dashed line separates cuts from increases.](/figures/ch08-cf-elasticities-mresp.png){#fig-cf-beh-elast}
+![Behavioural part of the elasticity of claimed purchase deductions with respect to $\tau_P$, by change $\Delta$ in the purchases rate: overreporting response (firms overreport more or less) and materials response (firms buy more or fewer materials), 95 percent conservative-test sets, true materials responding, interior firms. Dashed lines join the lower bounds and the upper bounds of the sets, separately for cuts and increases; the vertical line separates cuts from increases.](/figures/ch08-cf-elasticities-mresp.png){#fig-cf-beh-elast}
 
 <!-- Superseded assets (fixed M, pre-audit solver, runs 1639–1642), replaced 2026-10-07:
 table /tables/ch08-elasticities.png, caption "Elasticity of claimed purchase deductions with respect to $\tau_P$: total (central difference at $\pm1$ percent) and behavioural, by side, at $\Delta=\pm1,\pm1.5,\pm2$ percent. 95 percent conservative-test sets."
@@ -716,7 +716,7 @@ Old key findings:
 
 ### Revenue lost to undetected overreporting {#sec-cf-gap}
 
-Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$) and at least 1.5 percent ($[1.1, 3.1]$) across all firms in the sample (@tbl-cf-gap). The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022], although the bases differ.
+Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$) and at least 1.5 percent ($[1.1, 3.1]$) across all firms in the sample (@tbl-cf-gap). The share for all firms is a lower bound because it counts the firms outside the structural estimation as losing nothing. The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]. The bases differ: those figures measure detected overreporting against all taxes, whereas the shares here measure undetected overreporting against gross sales-tax revenue.
 
 ::: {.content-visible when-meta="draft"}
 **Not reused (2026-10-09, Hans): split of sec-cf-gap.** Definitions moved to @sec-cf-design; $E[P]<0$ moved to the Results opening (set only, no point: $E[P]$, $E[R(0)]$ and $E[L]$ are separate auxiliary parameters and their points do not add up, $-328-(-391)=63\neq72$); $L/|P|$, true credits and the (A) share dropped.
@@ -735,7 +735,7 @@ Measured against a positive base, the loss is 4.7 percent of gross sales-tax rev
 :::{#tbl-cf-gap}
 ![](/tables/ch08-revenue-gap.png)
 
-Revenue lost to undetected overreporting among the interior firms, at current rates: credits on true materials, potential revenue, and the increase in net refunds. 95 percent conservative-test sets.
+Revenue lost to undetected overreporting at the current rate, as a share of gross sales-tax revenue: interior firms and all firms in the sample. 95 percent conservative-test sets.
 :::
 
 ::: {.content-visible when-meta="draft"}

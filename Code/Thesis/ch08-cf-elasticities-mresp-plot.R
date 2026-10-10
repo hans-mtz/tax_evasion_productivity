@@ -18,11 +18,16 @@ b <- b %>% mutate(x = match(Delta, lv) - (length(lv) + 1) / 2)
 lab <- function(D) paste0(ifelse(D > 0, "+", "\u2212"), abs(100 * D), "%")
 print(b)
 
-p <- ggplot(b, aes(x = x, y = est, colour = part)) +
+# Hans 2026-10-10: same style as fig-cf-revenue and fig-cf-revenue-totals: no point estimate; the lower bounds and the upper
+# bounds of the 95% sets are each joined by a dashed line, by component; cuts and increases are joined separately (no line
+# crosses the divider between -1 and +1, where Delta = 0 is not evaluated).
+pl <- b %>% mutate(side = ifelse(Delta < 0, "cut", "increase")) %>% select(part, side, x, lo, hi) %>%
+    pivot_longer(c(lo, hi), names_to = "bound", values_to = "v") %>% mutate(g = interaction(part, side, bound))
+p <- ggplot(pl, aes(x = x, y = v, colour = part, group = g)) +
     geom_vline(xintercept = 0, colour = "grey60", linewidth = 0.4, linetype = "dashed") +
     geom_hline(yintercept = 0, colour = "grey60", linewidth = 0.3) +
-    geom_pointrange(aes(ymin = lo, ymax = hi), size = 0.35, linewidth = 0.6,
-                    position = position_dodge(width = 0.15)) +
+    geom_line(linewidth = 0.5, linetype = "dashed") +
+    geom_point(size = 1.4) +
     scale_colour_manual(values = c("Overreporting response" = THESIS_COLS[1], "Materials response" = THESIS_COLS[2])) +
     scale_x_continuous(breaks = seq_along(lv) - (length(lv) + 1) / 2, labels = lab(lv)) +
     scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.08))) +

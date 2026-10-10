@@ -36,11 +36,10 @@ stopifnot(abs(lt$int$mean_t1p - t1p) < 1e-6)   # interior run: no extra t1, so E
 tbl <- tibble(
     ` ` = c("Interior firms", "All firms in the sample"),
     Estimate = c(pc(lt$int$T_hat), pc(lt$B$T_hat)),
-    `95\\% set` = sapply(lt[c("int", "B")], function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]")),
-    `$TS_{\\min}$` = formatC(c(lt$int$TS_min, lt$B$TS_min), format = "f", digits = 1))
+    `95\\% set` = sapply(lt[c("int", "B")], function(r) paste0("[", pc(r$hard_lo), ", ", pc(r$hard_hi), "]")))
 print(tbl)
 
-tt_obj <- tt(tbl, width = c(1.3, 0.6, 0.9, 0.5), notes = paste0(
+tt_obj <- tt(tbl, width = c(1.3, 0.6, 0.9), notes = paste0(
     "Current rates. Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting. Each share is the mean loss over ",
     "mean gross sales-tax revenue, estimated as an auxiliary parameter with its own moment. ",
     "Interior firms: mean gross sales-tax revenue ", f0(t1p), " real pesos per firm-year. ",
