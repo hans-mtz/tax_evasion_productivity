@@ -76,9 +76,13 @@ Counterfactual design (revised 2026-10-09, Hans): goal -> what I do -> how I do 
     accounting identity, the cross term sits in the responses valued at the new rate; the 1 = new rate on unchanged claims;
     carries the opener's 1.39 = 1 + 0.18 + 0.21); revenue change scaled by gross sales-tax revenue (1,547) and
     |net revenue| (391), because net revenue is negative (stated first).
+ 8b. Cost of overreporting at the current rate (moved from sec-cf-gap, Hans 2026-10-09): counterfactual = truthful reporting;
+    P_i = gross - tau_P M_i, L_i = P_i - R_i(0) = tau_P (1-q) e (credit on undetected overreporting); M the same in both
+    (optional sentence, Hans decides on reread); measure = E[L]/E[gross], auxiliary parameter; base observed and positive.
  9. Totals: (B) whole economy = interior mean x interior firm-years + trimmed + corner firms; the outside firms' overreporting
     does not respond and needs no draw of M_i; trimmed firms in a footnote (to be dropped after the draft, log 2026-10-09);
-    (A) dropped as a separate total (Hans, 2026-10-09; B already contains the trimmed firms). Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit
+    (A) dropped as a separate total (Hans, 2026-10-09; B already contains the trimmed firms). Outside firms add gross
+    revenue but no loss -> whole-economy loss share is a lower bound. Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit
     at any Delta; (ii) tau_P > 0 in the 19 industries where the test does not reject (16,154 firm-years): truthful by the
     ex-ante rule, not by the model. No firm starts overreporting (Results uses this for the increase-side lower bound).
  Not here (Hans): theta fixed at the operating point, only gamma free = computational (appendix A), never in the body;
@@ -86,7 +90,8 @@ Counterfactual design (revised 2026-10-09, Hans): goal -> what I do -> how I do 
 
 Results (Q3-Q5)
 10. At the current rate interior firms receive net refunds: R(0) = -391 [-605, -174] per firm-year; claims exceed the sales tax
-    for 57 percent of firm-years. A fact of the data (D1): stated, not explained.
+    for 57 percent of firm-years. A fact of the data (D1): stated, not explained. Potential revenue E[P] < 0 too: set
+    [-590, -42] only, no point (Hans: E[P], E[R(0)], E[L] points do not add up; show only the one that matters).
 11. Revenue falls steadily with the rate: -391 to -1,270 at +30 percent, +264 [49, 480] at -30 percent. Break-even of the point
     estimate at about -17 percent; the set first excludes zero at -27.5 percent [2, 426] (one bracket row in the table, D2).
     fig-cf-revenue, tbl-cf-revenue; economy totals (A), (B) in tbl-cf-revenue-totals (D3; Hans decides after reading the text).
@@ -104,9 +109,9 @@ Results (Q3-Q5)
     materials, so the curve is steeper when materials respond (-256 vs -227 between +-5 percent).
 
 Revenue lost to undetected overreporting, sec-cf-gap (Q6)
-15. The cost of overreporting at current rates is the loss L, the credit paid on undetected overreporting (D6: the cleanest
-    measure; observed, positive base, same as the revenue elasticities): 72 [43, 109] per firm-year, 4.7 percent [2.8, 7.1] of
-    the sales tax owed on sales; (A) 4.1, (B) at least 1.5 (lower bounds); compare 1.2-2.7 percent detected by tax authorities.
+15. Results only (definitions in 8b): 4.7 percent [2.8, 7.1] of gross sales-tax revenue (interior), at least 1.5 [1.1, 3.1]
+    (whole economy, lower bound); compare 1.2-2.7 percent detected by tax authorities. No (A), no L/|P|, no true credits,
+    no L level (avoids the non-additive points).
 
 Robustness (Q7)
 16. True materials fixed: same shape, sets overlap at every Delta (1652, revenue only; claims with fixed M after the JMP, D5).
@@ -138,12 +143,12 @@ TRACKER: ch. 8 rewrite against the outline (2026-10-07). Status: todo / proposed
 | 7  | done 2026-10-08 | "The counterfactual evasion is a function of the same latent"; "To obtain the confidence set" | generic auxiliary parameter; real units (drop "nominal COP ... deflated"); 28.86 -> 28.87 |
 | 8  | done 2026-10-08 | "Two further auxiliary parameters"                     | paired arcs split into input and evasion; revenue bases; why not textbook |
 | 9  | done 2026-10-08 | last sentence of "Two further auxiliary parameters"    | (1+Delta) tau_P r M*, t1 r^beta; two kinds of corner firms |
-| 10 | todo   | "Among the interior firms, potential revenue is negative" (sec-cf-gap) | move to Results opening with R(0); fact of the data |
+| 10 | proposed 2026-10-09 | "Among the interior firms, potential revenue is negative" (sec-cf-gap) | move to Results opening with R(0); fact of the data |
 | 11 | todo   | missing                                                | wire fig-cf-revenue, tbl-cf-revenue, tbl-cf-revenue-totals; new paragraph |
 | 12 | todo   | missing                                                | one sentence, revenue columns of tbl-cf-elasticities |
 | 13 | todo   | "Key findings" bullets                                 | keep numbers; add the two margins and the corner-firm lower bound; replace the asymmetry draft note |
 | 14 | todo   | missing                                                | new; input-channel columns of tbl-cf-revenue |
-| 15 | todo   | sec-cf-gap paragraphs + tbl-cf-gap caption             | define L and the share; drop E[P], L/|P|, true credits; add 72 pesos; new caption (L602, caption still say "net refunds": use gross/net sales-tax revenue, sales-tax refunds) |
+| 15 | proposed 2026-10-09 (split: 8b in Design; tbl-cf-gap still shows dropped rows, caption todo) | sec-cf-gap paragraphs + tbl-cf-gap caption             | define L and the share; drop E[P], L/|P|, true credits; add 72 pesos; new caption (L602, caption still say "net refunds": use gross/net sales-tax revenue, sales-tax refunds) |
 | 16 | todo   | Robustness: dropped CV comment + draft notes           | one paragraph on 1652; allcorr entry check as a post-JMP draft note; "Rejected alternative target" -> cut or appendix A |
 | 17 | todo   | Scope: "Partial equilibrium: $K$, $L$" (L708)          | materials and evasion respond (Hans, when Scope is reached) |
 | 18 | todo (reopened 2026-10-09) | Scope: "$(\lambda_1,\bar\lambda)$ is fixed" (L709) | stale: says detection level not identified; match the lambda-bar paragraph in sec-cf-estimates (Hans, when Scope is reached) |
@@ -572,7 +577,11 @@ Net sales-tax revenue needs a different base: at the current rate, mean claimed 
 
 <!-- I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. -->
 
-Totals for the whole economy multiply each interior mean by the number of interior firm-years and add the firms outside the structural estimation, whose overreporting does not respond to the rate.^[The top 0.5 percent of interior firms by reported materials (61 firm-years), trimmed from the estimation, enter with the same formula.] Their claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$, and their gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$; neither needs a draw of $M_i$. The corner firms fall into two groups. Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate and have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, and the ex-ante selection rule keeps them out of the structural estimation.
+The same machinery measures what undetected overreporting costs at the current rate. The counterfactual is truthful reporting. Potential net sales-tax revenue, with credits on true materials only, is $P_i=\tau_{S,it}P_tY_{it}-\tau_{P,it}M_{it}$, and the loss, $L_i=P_i-R_i(0;M_i)=\tau_{P,it}(1-q(e_i))e_i$, is the credit paid on undetected overreporting. True materials are the same in $P_i$ and $R_i(0;M_i)$, because the materials condition contains no overreporting (@eq-foc-m).
+
+I measure the cost as the ratio of the mean loss to mean gross sales-tax revenue. The ratio is an auxiliary parameter with its own moment. Its base, gross sales-tax revenue, is also the first base of the revenue elasticities: it is observed and positive, whereas potential revenue can be negative and true credits are latent.
+
+Totals for the whole economy multiply each interior mean by the number of interior firm-years and add the firms outside the structural estimation, whose overreporting does not respond to the rate.^[The top 0.5 percent of interior firms by reported materials (61 firm-years), trimmed from the estimation, enter with the same formula.] Their claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$, and their gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$; neither needs a draw of $M_i$. The corner firms fall into two groups. Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate and have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, and the ex-ante selection rule keeps them out of the structural estimation. These firms add gross sales-tax revenue but no loss to undetected overreporting. The loss share for the whole economy is therefore a lower bound.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
@@ -620,6 +629,8 @@ $\theta$ is fixed at the best point; only $\gamma$ is free at each $(\theta_0)$ 
  -->
 
 ## Results {#sec-cf-results}
+
+At the current rate, mean net sales-tax revenue from the interior firms is negative, $-391$ real pesos per firm-year (95 percent set $[-605,-174]$). The negative sign does not come from overreporting: even if the interior firms reported truthfully, mean net sales-tax revenue would be negative, with a 95 percent set of $[-590,-42]$ real pesos per firm-year.
 
 ::::: {.content-visible when-meta="draft"}
 **Superseded (claims levels with true materials fixed, pre-audit solver, runs 1621/1622). Out of the body 2026-10-07: Results lead with revenue (Hans); claims levels with true materials responding are rerun after the JMP.**
@@ -682,11 +693,17 @@ Old key findings:
 
 ### Revenue lost to undetected overreporting {#sec-cf-gap}
 
+Undetected overreporting costs the government 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$) and at least 1.5 percent ($[1.1, 3.1]$) across all firms in the sample (@tbl-cf-gap). The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022], although the bases differ.
+
+::: {.content-visible when-meta="draft"}
+**Not reused (2026-10-09, Hans): split of sec-cf-gap.** Definitions moved to @sec-cf-design; $E[P]<0$ moved to the Results opening (set only, no point: $E[P]$, $E[R(0)]$ and $E[L]$ are separate auxiliary parameters and their points do not add up, $-328-(-391)=63\neq72$); $L/|P|$, true credits and the (A) share dropped.
+
 The same machinery measures what overreporting costs at current rates. For each firm, net sales-tax revenue is $R=t1-\tau_P[M+(1-q(e))e]$, and potential net sales-tax revenue, with credits on true materials only, is $P=t1-\tau_PM$. The loss $L=P-R=\tau_P(1-q(e))e$ is the credit paid on undetected overreporting. I estimate the gap $E[L]/E[P]$ as an auxiliary parameter with its own moment, with $\theta$ fixed at the operating point (@tbl-cf-gap).
 
 Among the interior firms, potential revenue is negative: even reporting truthfully, these firms claim more in purchase credits than they owe on sales, $E[P]=-328$ real pesos per firm-year (95 percent set $[-590,-42]$). Undetected overreporting makes these net refunds larger, by $L/|P|=22$ percent ($[11, 131]$). Relative to claims, the loss is small: true credits are 1,875 per firm-year ($[1{,}589, 2{,}137]$), and claims paid exceed them by about 4 percent at the point estimates.
 
 Measured against a positive base, the loss is 4.7 percent of gross sales-tax revenue from the interior firms (95 percent set $[2.8, 7.1]$), 4.1 percent ($[2.8, 5.5]$) for all firms in the nine industries, and 1.5 percent ($[1.1, 3.1]$) for all firms in the sample. The last two treat the firms outside the structural sample as losing nothing, so they are lower bounds. The order of magnitude matches what tax authorities have detected from input overreporting, 1.2 to 2.7 percent of total tax revenue in five countries [@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022], although the bases differ.
+:::
 
 ::: {.content-visible when-meta="draft"}
 **Draft note (2026-10-04):** the interior set depends on the start of the $\gamma$ solve (cold $[3.5, 7.1]$, warm $[3.1, 6.2]$); reported as their union, since a failed solve only raises $TS$. A multi-start profile would settle it (post-JMP). Research log 2026-10-04.
