@@ -66,15 +66,19 @@ Counterfactual design (revised 2026-10-09, Hans): goal -> what I do -> how I do 
     7a. New overreporting: the evasion condition at the new rate, omega_i, psi_i, lambda_{0,jt} held fixed, gives the closed
         form (eq-counter-e). B_i = marginal cost / (tau_P rho_t), fixed, so only B_i/(1+Delta) moves; a firm stops when
         B_i >= 1+Delta, which only a cut can do.
-    7b. New true materials: r(Delta) (eq-cf-r), the same for every draw of a firm; output and gross sales-tax revenue scale by
-        r^beta. Magnitude: -4.4 / +4.8 percent at -/+30 percent.
-    7c. Plug 7a and 7b into eq-govt-rev; e~ does not depend on the materials response, so the two responses add up.
+    7b. New true materials: r(Delta) (eq-cf-r), the same for every draw of a firm; the response grows with beta through
+        1/(1-beta); magnitude +4.8 percent on average at +30 percent (Hans dropped the -4.4 at -30 percent).
+    7a/7b each end with a paragraph on how the quantity depends on M_i (answers P1's "depend on the same latent M_i").
+    7c. Plug 7a and 7b into eq-govt-rev -> R_i(Delta;M_i) per draw; its mean is theta_R(Delta); gross revenue scales by
+        r^beta. Independence of e~ from the materials response is NOT stated (Hans: a question nobody asked).
  8. What I report: revenue on a Delta grid (-30 to +30 percent); arc elasticities at +-1, 1.5, 2 percent from paired
-    differences on the same draws; claims decomposition equation in the body (mechanical 1 + materials + overreporting, no
-    interaction; carries the opener's 1.39 = 1 + 0.18 + 0.21); revenue change scaled by gross sales-tax revenue (1,547) and
-    |net revenue| (391), because net revenue is negative.
- 9. Totals: (B) whole economy = interior + trimmed + corner firms, mechanically; (A) dropped as a separate total (Hans,
-    2026-10-09; B already contains the trimmed firms). Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit
+    differences on the same draws; claims decomposition equation in the body (mechanical 1 + materials + overreporting; an
+    accounting identity, the cross term sits in the responses valued at the new rate; the 1 = new rate on unchanged claims;
+    carries the opener's 1.39 = 1 + 0.18 + 0.21); revenue change scaled by gross sales-tax revenue (1,547) and
+    |net revenue| (391), because net revenue is negative (stated first).
+ 9. Totals: (B) whole economy = interior mean x interior firm-years + trimmed + corner firms; the outside firms' overreporting
+    does not respond and needs no draw of M_i; trimmed firms in a footnote (to be dropped after the draft, log 2026-10-09);
+    (A) dropped as a separate total (Hans, 2026-10-09; B already contains the trimmed firms). Two kinds of corner firms: (i) tau_P = 0 (3,123 firm-years): no credit
     at any Delta; (ii) tau_P > 0 in the 19 industries where the test does not reject (16,154 firm-years): truthful by the
     ex-ante rule, not by the model. No firm starts overreporting (Results uses this for the increase-side lower bound).
  Not here (Hans): theta fixed at the operating point, only gamma free = computational (appendix A), never in the body;
@@ -406,7 +410,7 @@ $$
 
 The moments are combined into a single test statistic through the continuously updated estimator (CUE) objective $\hat L_n(\theta)$ of @Schennach2014's Definition F.1. Her Theorem F.1 shows that, at any $\theta$ satisfying the moment condition, $TS_n(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. Comparing $TS_n(\theta)$ with the $\chi^2_{d_g}$ critical value therefore gives a conservative test, whose size is at most its nominal level. 
 
-To obtain the confidence set of $\theta_T(\Delta)$, I invert the test, as in the counterfactual exercise of @AK2020 [App. F]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{d_g,1-\alpha}\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
+To obtain the confidence set of a counterfactual quantity $\theta_T(\Delta)$ (@sec-cf-design), I invert the test, as in the counterfactual exercise of @AK2020 [App. F]. The confidence set collects the candidate values that the conservative test does not reject, $\{\theta_T: TS(\Delta,\theta_T)\le\chi^2_{d_g,1-\alpha}\}$, and the point estimate is the candidate with the lowest statistic (@sec-app-cf-implementation).
 
 <!-- Soft test dropped: I call it the conservative test throughout and report as confidence sets the tested points it does not reject.  -->
 
@@ -422,7 +426,7 @@ decision + @fig-cf-trim, and the justification for the conservative test design 
 
 <!-- For the scaling parameter, I use $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$, where $\bar M_{j,t-1}$ is the mean reported materials of firm $i$'s industry $j$ in the previous year to reduce dimensionality of the grid search.  -->
 
-I searched over a $(\lambda_1,\bar\lambda)$ grid, profiling over $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ (@sec-app-elvis) and found an operating point, The test statistic $TS_n$ fails to reject at the 5 percent significance level the null hypothesis that $E[g(M,X,\hat\theta)]=0$. The estimation sample has 12,050 firm-years of unincorporated firms in the nine industries where the test in @sec-testing rejects.[^sample] Details of the implementation, including the exact objective function can be found in @sec-app-elvis. Next section discusses the operating-point for the parameters of interest.
+I searched over a $(\lambda_1,\bar\lambda)$ grid, profiling over $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ (@sec-app-elvis) and found an operating point. The test statistic $TS_n$ fails to reject at the 5 percent significance level the null hypothesis that $E[g(M,X,\hat\theta)]=0$. The estimation sample has 12,050 firm-years of unincorporated firms in the nine industries where the test in @sec-testing rejects.[^sample] Details of the implementation, including the exact objective function can be found in @sec-app-elvis. The next section discusses the operating point for the parameters of interest.
 
 <!-- The grid over the full set of parameters of interest to identify confidence intervals will be performed as a robustness check. During exploratory analysis, $\delta=(\delta_0,\delta_1, \delta_2)$ behaved well.  -->
 
@@ -517,7 +521,7 @@ Key observations:
 
 The objective is to estimate how the counterfactual overreporting response to a change in the tax rate moves net sales-tax revenue through fictitious deductions. I also consider changes in output and claimed deductions on true purchases due to changes in the counterfactual true materials decision of firms. The counterfactual overreporting and the counterfactual true materials, however, depend on the same latent $M_i$ as the moments of @sec-counter-estimation. Since only $M^*_i$ is observed, these quantities cannot be computed firm by firm from the data.
 
-Instead, I cast each counterfactual as a moment condition and add it to the set of moments in @sec-counter-estimation. For example, net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev becomes the moment $E[R_i(\Delta;M_i)-\theta_R(\Delta)]=0$, where $\theta_R(\Delta)$ is its mean. In general, for a quantity $T_i(\Delta;M_i)$ whose mean is the auxiliary parameter $\theta_T(\Delta)$, I cast it as $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. The confidence set of $\theta_T(\Delta)$ comes from inverting the test (@sec-cf-test). 
+Instead, I cast each counterfactual as a moment condition and add it to the set of moments in @sec-counter-estimation. For example, net sales-tax revenue $R_i(\Delta;M_i)$ in @eq-govt-rev becomes the moment $E[R_i(\Delta;M_i)-\theta_R(\Delta)]=0$, where $\theta_R(\Delta)$ is its mean over the interior firms. In general, for a quantity $T_i(\Delta;M_i)$ whose mean is the auxiliary parameter $\theta_T(\Delta)$, I cast it as $E[T_i(\Delta;M_i)-\theta_T(\Delta)]=0$. The confidence set of $\theta_T(\Delta)$ comes from inverting the test (@sec-cf-test). 
 
 <!-- Quantities in pesos are real and per firm-year. -->
 
@@ -568,7 +572,7 @@ Net sales-tax revenue needs a different base: at the current rate, mean claimed 
 
 <!-- I do not report the textbook elasticity, $(\Delta R/R)/(\Delta\tau/\tau)$: net sales-tax revenue is negative at the current rate, so that ratio is positive although revenue falls, and it diverges where revenue crosses zero. -->
 
-Totals for the whole economy add the firms outside the structural estimation, whose overreporting does not respond to the rate.^[The top 0.5 percent of interior firms by reported materials (61 firm-years), trimmed from the estimation, enter with the same formula.] Their claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$, and their gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$; neither needs a draw of $M_i$. The corner firms fall into two groups. Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate and have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, and the ex-ante selection rule keeps them out of the structural estimation.
+Totals for the whole economy multiply each interior mean by the number of interior firm-years and add the firms outside the structural estimation, whose overreporting does not respond to the rate.^[The top 0.5 percent of interior firms by reported materials (61 firm-years), trimmed from the estimation, enter with the same formula.] Their claimed deductions are $(1+\Delta)\tau_{P,it}r_{it}(\Delta)M^*_{it}$, and their gross sales-tax revenue scales by $r_{it}(\Delta)^{\beta}$; neither needs a draw of $M_i$. The corner firms fall into two groups. Firms that pay no sales tax on their purchases ($\tau_P=0$; 3,123 firm-years) get no credit at any rate and have no reason to start overreporting. Firms in the other 19 industries (16,154 firm-years) are treated as truthful, $M=M^*$ and $e=0$: the test does not detect overreporting in them, or was not run, and the ex-ante selection rule keeps them out of the structural estimation.
 
 ::: {.content-visible when-meta="draft"}
 **Superseded (linear $q$, single-tax run, 2026-09-22).**
