@@ -207,9 +207,6 @@ TS(T)=2n\min_{\gamma}\hat L_n(\hat\theta,\gamma;T),
 $$
 $\hat T$ is its minimizer, and the reported set is the conservative one, $\{T:TS(T)\le\chi^2_{d_g,.95}\}$ with $d_g=18$ (the 17 estimation rows plus row 10). Row 10 is left out of the reference measure's penalty, since it is bounded for each firm. Because a failed inner solve can only raise $TS$, each $\gamma$ problem is solved from several starting values (the operating $\gamma$, the solution at the previous $T$, and the best solution found so far), keeping the lowest; the set is the union of every $T$ accepted along the way, located by bisection outward from $\hat T$. Revenue per firm-year is $\hat T\times S$, and the set's bounds scale the same way. The bases of the elasticities in @sec-cf-design are treated as known.
 
-::: {.content-visible when-meta="draft"}
-**Superseded (linear $q$, single-tax run, 2026-09-22); replaced by @sec-cf-gap (2026-10-03).**
-
 ### Robustness: true materials fixed {#sec-app-cf-robust}
 
 The revenue curve keeps its shape when true materials stay at their current level (@tbl-app-cf-revenue-fixed). At every $\Delta$ evaluated, the 95 percent sets with true materials fixed and with true materials responding overlap. With true materials fixed, the estimate breaks even at a cut of about 19 percent, against about 17 percent with true materials responding. Fixing true materials flattens the curve: from a 5 percent cut to a 5 percent increase, net sales-tax revenue falls by 227 real pesos per firm-year with true materials fixed and by 256 with true materials responding. The materials response steepens the curve because the extra credit on true materials exceeds the extra gross sales-tax revenue from the extra output (@sec-cf-results).
@@ -261,6 +258,9 @@ Real mean revenue per firm-period (COP), 95% conservative-test confidence sets, 
 - To do (after the JMP draft): run the $\theta$-free check on Claims ($\theta$ seeded, not fixed, at the best point), replacing the CV-based check parked above.
 - To do (after the JMP draft): estimate the back-of-envelope revenue loss and its tax-rate elasticity (@sec-app-backofenvelope) inside ELVIS, as auxiliary parameters with their own moments. The current numbers are ballparks for the JMP draft.
 :::
+
+::: {.content-visible when-meta="draft"}
+**Superseded (linear $q$, single-tax run, 2026-09-22); replaced by @sec-cf-gap (2026-10-03).**
 
 ## Back-of-envelope: revenue loss and its tax-rate elasticity {#sec-app-backofenvelope}
 
