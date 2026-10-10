@@ -39,6 +39,10 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
 
 ::: {.content-visible when-meta="draft"}
 
+**Placeholder (thesis opening; outline takeaway; thesis only, wrap in `content-hidden when-meta="jmp"`):** comparing unincorporated firms' net materials share with the corporate benchmark detects overreporting from production data alone. The test rejects truthful reporting in 9 of the 18 industries liable for the sales tax and in neither exempt industry.
+
+**Placeholder (JMP opening; wrap in `content-visible when-meta="jmp"`):** one opening for the merged section "Identifying Tax Evasion" (ch. 4 + ch. 5), covering both steps: the test (this chapter) and the distribution of overreporting (@sec-deconvolution).
+
 **Draft note (outline for the opening paragraph):**
 
 - What this section delivers: evidence of overreporting, and its distribution, from production data alone, without audit data.
@@ -47,25 +51,7 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
 
 :::
 
-## Non-evaders {#sec-testing-nonevaders}
-
-Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations (@sec-setting-jo).
-
-**Assumption 1 (Non-evaders).** Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\theta_i\in\Theta^{NE}\subset \Theta$ that does not evade taxes by overreporting inputs.
-
-For those firms, then $\mathbb{E}[u_{it}|\theta_i\in\Theta^{NE}]=0$.
-
-In addition, I impose the following timing assumption.
-
-**Assumption 2 (Independence).** The measurement error in output, $\varepsilon_{it}$, is independent of overreporting $u_{it}$ and of true materials $M_{it}$, with $\mathbb{E}[\varepsilon_{it}]=0$.
-
-::: {.content-visible when-meta="draft"}
-
-**Draft note:** the approved paper states this as a timing assumption on an output shock ("firms choose overreporting before the output shock", citing @Gandhi2020, @Ackerberg2021, @Ackerberg2019). Following the supervisors, $\varepsilon$ is measurement error in output, not an output shock [@Gandhi2020], so independence is the classical measurement-error assumption and productivity is $\exp(\omega)$, not $\exp(\omega+\varepsilon)$. One sentence on why measurement error, and a contrast with GNR, belongs here or in @sec-model.
-
-:::
-
-## Identifying the output elasticity of materials {#sec-testing-beta}
+## The reported materials share {#sec-testing-share}
 
 Assume the production function is Cobb-Douglas, $M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})$. The econometrician observes output, capital, labour, and prices of intermediate inputs and output, and the sales-tax rates on sales and on purchases, $\{Y_{it},K_{it},L_{it},\rho_t,P_t,\tau_S,\tau_P\}$, but she only observes overreported intermediate inputs, $M^*_{it}=M_{it}+e_{it}$. Let $u_{it}\equiv\ln(M^*_{it}/M_{it})=\ln(1+e_{it}/M_{it})$ denote the log overreporting ratio.
 
@@ -78,11 +64,58 @@ $$
 \end{aligned}
 $$ {#eq-foc-cd}
 
-where $Y_{it}$ is output as measured, with measurement error $\varepsilon_{it}$. We can use @eq-foc-cd and Assumptions 1 and 2 to recover the output elasticity of materials, $\beta$,
+where $Y_{it}$ is output as measured, with measurement error $\varepsilon_{it}$.
+
+::: {.content-visible when-meta="draft"}
+
+**Placeholder (1.1, common technology):** state that the technology is common within the industry (corporations and unincorporated firms share $\beta$). @sec-model already gives the Cobb-Douglas form (@eq-pf) and "a common technology": cite it rather than restate it?
+
+**Draft note (outline): why $u$, a ratio, and not the level $e$** (slides `700-deconvolving-evasion.qmd`, "I don't need $f_e$, actually"):
+
+- Under Cobb-Douglas the firm's true materials are a share of revenue, so the wedge between $M^*$ and $M$ enters $\mathcal V$ only as $\ln(M^*/M)$, never as the level $e$.
+- A ratio is adjusted for the firm's true input level, so it is comparable across firms of different sizes; a level $e$ would need normalizing anyway.
+- @sec-deconvolution reports the overreporting ratio $e/M=\exp(u)-1$ directly.
+
+:::
+
+## Identifying the output elasticity of materials {#sec-testing-beta}
+
+<!-- Dropped (Hans, 2026-10-10: no generality framing; Assumption 1 stated for corporations). Was:
+
+Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations (@sec-setting-jo).
+
+**Assumption 1 (Non-evaders).** Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\theta_i\in\Theta^{NE}\subset \Theta$ that does not evade taxes by overreporting inputs.
+
+For those firms, then $\mathbb{E}[u_{it}|\theta_i\in\Theta^{NE}]=0$.
+ -->
+
+**Assumption 1 (Non-evaders).** Corporations do not overreport inputs (@sec-setting-jo).
+
+For corporations, then $\mathbb{E}[u_{it}\mid\text{corporation}]=0$.
+
+In addition, I impose the following assumption.
+
+**Assumption 2 (Independence).** The measurement error in output, $\varepsilon_{it}$, is independent of overreporting $u_{it}$, of true materials $M_{it}$, and of the firm's juridical organization, with $\mathbb{E}[\varepsilon_{it}]=0$.
+
+::: {.content-visible when-meta="draft"}
+
+**Draft note:** the approved paper states this as a timing assumption on an output shock ("firms choose overreporting before the output shock", citing @Gandhi2020, @Ackerberg2021, @Ackerberg2019). Following the supervisors, $\varepsilon$ is measurement error in output, not an output shock [@Gandhi2020], so independence is the classical measurement-error assumption and productivity is $\exp(\omega)$, not $\exp(\omega+\varepsilon)$. One sentence on why measurement error, and a contrast with GNR, belongs here or in @sec-model.
+
+:::
+
+We can use @eq-foc-cd and Assumptions 1 and 2 to recover the output elasticity of materials, $\beta$,
 
 $$
-    \ln\beta=\mathbb{E}\left[s_{it}\mid \Theta^{NE}\right].
+    \ln\beta=\mathbb{E}\left[s_{it}\mid \text{corporation}\right].
 $$ {#eq-foc-cd-exp}
+
+Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$, the distribution of $\varepsilon$.
+
+::: {.content-visible when-meta="draft"}
+
+**Placeholder (1.2, $f_\varepsilon$):** the sentence above is the approved paper's (`56-id-evasion.qmd`). Say that it comes from corporations ($s_{it}-\ln\beta=-\varepsilon_{it}$ for them) and that, by Assumption 2 (independent of juridical organization), unincorporated firms share it. @sec-deconvolution (l. 15) repeats the sentence: cite this one there when ch. 5 is drafted.
+
+:::
 
 ::: {.content-visible when-meta="draft"}
 
@@ -104,11 +137,9 @@ Tax evasion therefore can be recovered up to an independent random variable.
 
 ::: {.content-visible when-meta="draft"}
 
-**Draft note (outline): why $u$, a ratio, and not the level $e$** (slides `700-deconvolving-evasion.qmd`, "I don't need $f_e$, actually"):
+**Placeholder (1.3):** $E[\mathcal V_{it}]=E[u_{it}]$ (Assumption 2, $E[\varepsilon]=0$) and $u_{it}\ge0$ (@sec-model, $e_{it}\ge0$), so the mean is zero only if no unincorporated firm overreports. Productivity and size drop out of $\mathcal V$, so the two groups need not be alike.
 
-- Under Cobb-Douglas the firm's true materials are a share of revenue, so the wedge between $M^*$ and $M$ enters $\mathcal V$ only as $\ln(M^*/M)$, never as the level $e$.
-- A ratio is adjusted for the firm's true input level, so it is comparable across firms of different sizes; a level $e$ would need normalizing anyway.
-- @sec-deconvolution reports the overreporting ratio $e/M=\exp(u)-1$ directly.
+Reuse: @sec-model, "Productivity does not appear in the share." Intro l. 28, "Unlike the comparisons for individuals, my approach does not require the two groups to be alike in size or productivity: corporations are much larger than unincorporated firms, and the production function accounts for the differences in productivity behind this gap."
 
 :::
 
@@ -116,7 +147,23 @@ Tax evasion therefore can be recovered up to an independent random variable.
 
 @eq-ob-ev suggests a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$ and define the null hypothesis as the absence of cost overreporting and the alternative hypothesis as the presence of cost overreporting. Consequently, to verify for the presence of tax evasion by overreporting, we can use a one-sided test where under the alternative hypothesis $H_1: \mu_{\mathcal{V}}>0$, and under the null, $H_0: \mu_{\mathcal{V}}\le0$.
 
+::: {.content-visible when-meta="draft"}
+
+**Placeholder (2.1, why one-sided):** a rejection can only point to overreporting.
+
+Reuse: @sec-model, "Since underreporting inputs would increase the tax liability, no firm has an incentive to do so. Hence $e_{it}\ge0$." Intro l. 21, "A rejection is also unambiguous, because no firm gains by underreporting deductible inputs, so it can only point to overreporting." (reword the ", so")
+
+:::
+
 I invert the test. For each industry, @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the values of $\mu_{\mathcal V}$ in $[0,1]$ that the test does not reject at the 5 percent level, taking $\ln\hat\beta$ from corporations as the true value. The test detects overreporting where this set excludes zero. @sec-app-test-robustness reports a conservative version of the test and a bootstrap test that carries the sampling error of $\ln\hat\beta$.
+
+::: {.content-visible when-meta="draft"}
+
+**Placeholder (2.3, robustness; promised in the intro):** one sentence here, the argument in @sec-app-test-robustness (placeholder there).
+
+Reuse: intro l. 21, "The test is robust: it remains valid under any detection probability and cost of evasion that vanish without evasion, and under any common production technology."
+
+:::
 
 ::: {#tbl-evasion-test}
 ![](/tables/ch04-evasion-test.png)
@@ -129,15 +176,34 @@ Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among
 **Draft note (outline for the test design and results; replaces the old results paragraphs of `200-deconv.qmd`, whose industry counts come from an earlier table):**
 
 - Design (2026-09-26, replaces the bootstrap): test inversion over $\mu_{\mathcal V}\in[0,1]$, with $\ln\hat\beta$ from corporations taken as the true value; moments (corporations: $s-\ln\hat D$; unincorporated firms: $s-\ln\hat D-\mu$), plant-clustered, centred covariance re-estimated at each candidate; sharp $\chi^2_1$ (the corporations' moment holds exactly at $\ln\hat D$), conservative $\chi^2_2$. Sample: log materials share net of sales taxes, juridical organization codes 6--9 excluded. The earlier bootstrap overstated significance: its resampling joined sampled plants back by plant only, so plants that switch legal form brought rows from the other group and the replicates were not centred on the estimate. The corrected bootstrap and the conservative test are in @sec-app-test-robustness.
+
+:::
+
+::: {.content-visible when-meta="draft"}
+
+**Placeholder (3, results; add a heading when drafted):**
+
+**3.1 Where the test rejects:** 9 of the 18 liable industries at 5 percent, 7 at 1 percent, including 4 of the 5 largest, about two fifths of manufacturing output (@tbl-evasion-test). Reuse:
+
 - Results (@tbl-evasion-test), sharp test at 5 percent: the region excludes zero in 9 of the 18 industries liable for the sales tax, and in neither of the two exempt ones (311, 312), which paid almost no tax on their purchases (Hans, 2026-09-28; wording for the text: "The test rejects in 9 of the 18 industries whose products paid the sales tax, and in neither of the two food industries (311, 312), which paid almost no tax on their purchases (median rate 0.2 and 0.6 percent), so the credit rewarded overreporting little." A non-rejection is still inconclusive on its own; state it as consistent with the incentive, not as proof the test works, and note the income tax still rewarded overreporting there, see @sec-fiscal). The 9: 313 Beverages, 321 Textiles, 322 Wearing apparel, 324 Footwear, 331 Wood products, 342 Printing and publishing, 369 Non-metallic minerals, and, at the margin (lower ends 0.001 and 0.002), 351 Industrial chemicals and 352 Other chemicals. At 1 percent: the first seven. Conservative test at 5 percent: the same seven (351 and 352 no longer reject).
 - Why this is not cherry-picking (three devices, all using every industry tested):
   - Ranking fixed before the test: four of the five largest industries by output (313, 321, 351, 352; not 311), from the revenue ranking (`Code/Thesis/ch03-industry-stats.R`; the ch. 3 industry tables were cut 2026-09-26, so cite the ranking here if this argument stays). Two of the four (351, 352) are marginal.
   - Size-weighted (nominal gross output 1981--91, codes 6--9 excluded; recomputed 2026-09-26, the earlier figures could not be reproduced exactly): the 20 industries tested produce 89.9 percent of manufacturing output; the 9 with evidence produce 46.0 percent of the tested output, 41.3 percent of all manufacturing output. At 1 percent (7 industries): 29.4 and 26.4 percent.
   - Multiple testing: with 20 tests at 5 percent, about one rejection is expected by chance if no industry overreports; nine or more has probability $2\times10^{-7}$ (binomial; industry samples are separate).
-- The deconvolution uses a rule fixed before seeing magnitudes: the industries whose 99 percent sharp region excludes zero (seven).
+
+**3.2 Exempt industries:** neither rejects, as their near-zero rate on purchases predicts; cite @sec-setting-incentive for the medians instead of repeating them. Reuse:
+
 - Consistent with incentives: no evidence in the two industries exempt from the sales tax (311, 312); 311 no longer rejects once codes 6--9 are excluded. **Why the incentive is near zero, as the model predicts** (checked 2026-09-28, `1501` sample): exempt firms did get refunds of the tax paid on purchases (Hans), but their rate on purchases is almost zero: median $\tau_P$ 0.2 percent in 311 and 0.6 percent in 312 (below 1 percent in 78 and 61 percent of firm-years), against 9.2 percent in liable industries. The benefit shifter $\tau_P\rho_t$ in @eq-foc-e is therefore close to zero, which puts these firms near the corner where they do not overreport. **Exempt = 311 and 312 only** (checked in the data 2026-09-28, ch. 3 sample): firm-years reporting zero sales tax on sales are 92.0 percent in 311 and 88.1 percent in 312 (median rate 0), but only 3.3 percent in 382 and 6.2 percent in 384 (medians 9.1 and 9.4 percent). The 1974 zero-rating of agricultural machinery and transport equipment [@Perry1990, p. 181] covered some products, not these industries, and the 1983 reform eliminated those exemptions [@McLure1989, p. 65]; ch. 7 (`exempt_ind`) uses the same definition.
+
+**3.3 Scope:** non-rejections are inconclusive; the 20 tested industries are the 20 largest (Hans, 2026-10-10), consistent with @sec-counterfactual's corner firms ("The test fails to reject correct reporting for them, or their industry is small and they were not tested for overreporting"); which set goes forward: 9 to @sec-counterfactual, 7 (99 percent region excludes zero) to @sec-deconvolution and @sec-pf. Reuse:
+
+- The deconvolution uses a rule fixed before seeing magnitudes: the industries whose 99 percent sharp region excludes zero (seven).
 - Empty regions (323 Leather, 356 Plastics, 384 Transport equipment): the mean of $\mathcal V$ is negative, so every $\mu\ge0$ is rejected.
 - Industries where zero is not rejected: 311, 312, 332, 341, 381, 382, 383, 390. For these and for the empty regions, state only that the result is inconclusive, and that anyone interested in a particular industry should investigate whether the identifying assumptions hold there before drawing conclusions. Do not speculate about which assumption fails (Hans, 2026-09-24).
+
+:::
+
+::: {.content-visible when-meta="draft"}
 
 **Draft note (outline): what the test needs, and what it does not.** Stated in PLAN.md §10.
 
