@@ -145,15 +145,7 @@ The observed residual recovers overreporting up to measurement error, which is i
 
 ## Testing for overreporting {#sec-testing-test}
 
-@eq-ob-ev suggests a way to test the presence of tax evasion through cost overreporting. Let $\mathbb{E}[\mathcal{V}_{it}]\equiv \mu_{\mathcal{V}}$ and define the null hypothesis as the absence of cost overreporting and the alternative hypothesis as the presence of cost overreporting. Consequently, to verify for the presence of tax evasion by overreporting, we can use a one-sided test where under the alternative hypothesis $H_1: \mu_{\mathcal{V}}>0$, and under the null, $H_0: \mu_{\mathcal{V}}\le0$.
-
-::: {.content-visible when-meta="draft"}
-
-**Placeholder (2.1, why one-sided):** a rejection can only point to overreporting.
-
-Reuse: @sec-model, "Since underreporting inputs would increase the tax liability, no firm has an incentive to do so. Hence $e_{it}\ge0$." Intro l. 21, "A rejection is also unambiguous, because no firm gains by underreporting deductible inputs, so it can only point to overreporting." (reword the ", so")
-
-:::
+@eq-ob-ev suggests a test for overreporting. Let $\mu_{\mathcal V}\equiv\mathbb{E}[\mathcal V_{it}\mid\text{unincorporated}]$. The null hypothesis is that unincorporated firms do not overreport, $H_0:\mu_{\mathcal V}=0$, and the alternative is that they do, $H_1:\mu_{\mathcal V}>0$. The test is one-sided because no firm has an incentive to underreport deductible inputs: underreporting would raise its tax liability (@sec-model). A rejection can therefore only point to overreporting.
 
 I invert the test. For each industry, @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the values of $\mu_{\mathcal V}$ in $[0,1]$ that the test does not reject at the 5 percent level, taking $\ln\hat\beta$ from corporations as the true value.^[In Beverages (313), the mean residual of unincorporated firms, 0.39, is the largest of any tested industry. It partly reflects differences in products between the two groups. Corporations produce mostly beer and soft drinks; unincorporated firms produce wine, spirits and soft drinks. Beer corporations report a low materials share, which lowers the benchmark. Within the same four-digit product, the mean residual falls to 0.23 but remains positive. The mean also rises because the sample excludes state enterprises (@sec-setting-jo). In this industry they are distilleries, and the departments held a monopoly on producing aguardiente and rum [@Ocampo1983, pp. 251--254]. Their materials share is lower than the corporations'. With them and the other excluded organizations in the sample, the mean residual is also 0.23, and the test still rejects correct reporting at the 1 percent level.] The test detects overreporting where this set excludes zero. @sec-app-test-robustness reports a conservative version of the test and a bootstrap test that carries the sampling error of $\ln\hat\beta$.
 
