@@ -165,17 +165,15 @@ Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among
 
 :::
 
+## Where the test detects overreporting {#sec-testing-results}
+
+The test detects overreporting in 9 of the 18 industries liable for the sales tax (@tbl-evasion-test): Beverages (313), Textiles (321), Wearing apparel (322), Footwear (324), Wood products (331), Printing and publishing (342), Non-metallic minerals (369) and, at the margin, Industrial chemicals (351) and Other chemicals (352). The first seven also reject at the 1 percent level and under the conservative version of the test (@sec-app-test-robustness). The nine industries include 4 of the 5 largest by output and together produce 41 percent of manufacturing output.
+
+The rejections are unlikely to come from testing many industries. If no industry overreported, a 5 percent test across the 20 industries would reject in about one of them by chance, and the probability of nine or more rejections would be about $2\times10^{-7}$.
+
 ::: {.content-visible when-meta="draft"}
 
-**Placeholder (3, results; add a heading when drafted):**
-
-**3.1 Where the test rejects:** 9 of the 18 liable industries at 5 percent, 7 at 1 percent, including 4 of the 5 largest, about two fifths of manufacturing output (@tbl-evasion-test). Reuse:
-
-- Results (@tbl-evasion-test), sharp test at 5 percent: the region excludes zero in 9 of the 18 industries liable for the sales tax, and in neither of the two exempt ones (311, 312), which paid almost no tax on their purchases (Hans, 2026-09-28; wording for the text: "The test rejects in 9 of the 18 industries whose products paid the sales tax, and in neither of the two food industries (311, 312), which paid almost no tax on their purchases (median rate 0.2 and 0.6 percent), so the credit rewarded overreporting little." A non-rejection is still inconclusive on its own; state it as consistent with the incentive, not as proof the test works, and note the income tax still rewarded overreporting there, see @sec-fiscal). The 9: 313 Beverages, 321 Textiles, 322 Wearing apparel, 324 Footwear, 331 Wood products, 342 Printing and publishing, 369 Non-metallic minerals, and, at the margin (lower ends 0.001 and 0.002), 351 Industrial chemicals and 352 Other chemicals. At 1 percent: the first seven. Conservative test at 5 percent: the same seven (351 and 352 no longer reject).
-- Why this is not cherry-picking (three devices, all using every industry tested):
-  - Ranking fixed before the test: four of the five largest industries by output (313, 321, 351, 352; not 311), from the revenue ranking (`Code/Thesis/ch03-industry-stats.R`; the ch. 3 industry tables were cut 2026-09-26, so cite the ranking here if this argument stays). Two of the four (351, 352) are marginal.
-  - Size-weighted (nominal gross output 1981--91, codes 6--9 excluded; recomputed 2026-09-26, the earlier figures could not be reproduced exactly): the 20 industries tested produce 89.9 percent of manufacturing output; the 9 with evidence produce 46.0 percent of the tested output, 41.3 percent of all manufacturing output. At 1 percent (7 industries): 29.4 and 26.4 percent.
-  - Multiple testing: with 20 tests at 5 percent, about one rejection is expected by chance if no industry overreports; nine or more has probability $2\times10^{-7}$ (binomial; industry samples are separate).
+**Placeholder (results, continued):**
 
 **3.2 Exempt industries:** neither rejects, as their near-zero rate on purchases predicts; cite @sec-setting-incentive for the medians instead of repeating them. Reuse:
 
@@ -189,13 +187,3 @@ Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among
 
 :::
 
-::: {.content-visible when-meta="draft"}
-
-**Draft note (outline): what the test needs, and what it does not.** Stated in PLAN.md §10.
-
-- Valid for any detection function and evasion cost with $q(0,Z)=0$ and $\kappa(0,Z)=0$: at $e=0$ the evasion terms of profit vanish, so a non-evader's materials FOC is the standard one.
-- Technology need not be Cobb-Douglas, only common within the industry: under the null the share residual is $-\varepsilon$ for every firm.
-- The direction is always overreporting: with general technology the residual is $[u-(\ln D(M^*)-\ln D(M))]-\varepsilon$, and the bracket is positive because $d\ln D/d\ln M<1$ when $D>0$ and $Y_{MM}\le0$; and no firm gains by underreporting deductible costs.
-- Contrast with deconvolution (@sec-deconvolution draft note): deconvolution also needs $\partial q/\partial M=\partial\kappa/\partial M=0$ and a constant output elasticity of materials; the test needs neither.
-
-:::
