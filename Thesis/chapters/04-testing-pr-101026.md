@@ -101,3 +101,17 @@ Fixed since round 2: "ouput", the split of line 40, independence of overreportin
   - Logic: independence of *overreporting* is not what lets corporations reveal $f_\varepsilon$; that needs only independence of juridical organization. Independence of overreporting is what the deconvolution needs, which the next sentence says ("independence of the addends"). Moving "and overreporting" makes each condition do its own job:
 
   > Because the output measurement error is independent of juridical organization and corporations do not overreport, I can recover the distribution of the measurement error from the residual of corporations. Deconvolution requires the addends to be independent and the distribution of one of them to be known. Measurement error is independent of overreporting, and its distribution is known. It follows that the distribution of overreporting is identified.
+
+---
+
+# Round 4 (2026-10-11)
+
+Fixed since round 3: line 42 (test sentence), line 44 (each independence condition now does its own job). Footnote on 313 added at line 168.
+
+- **Line 48, now stale after the five-industry decision:** the deconvolution covers the five largest industries that reject at 1 percent and meet the variance condition (321, 322, 324, 342, 369), median 12.4 percent. "In the 7 industries … 14.5 percent" no longer matches ch. 5's table. Suggestion:
+
+  > In the 5 largest industries where it rejects at the 1 percent level and the deconvolution applies, unincorporated firms overreport on average 12.4 percent of their true materials in the median industry.
+
+  "The deconvolution applies" leaves the variance condition to ch. 5. Alternatively, line 44 can say it in one sentence, e.g. "The deconvolution also implies that the residual of unincorporated firms varies at least as much as that of corporations; I deconvolve only where this holds."
+- **Line 44:** "the unincorporated-firms' residual" → "unincorporated firms' residual" (no hyphen with the possessive).
+- **Still open (round 1):** "In this section" fits the JMP's merged section; the thesis chapter covers only the test, with the distribution in @sec-deconvolution.
