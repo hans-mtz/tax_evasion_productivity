@@ -74,7 +74,7 @@ s_{it} &= \ln\left(\frac{(1-\tau_P)\rho_t M^*_{it}}{(1-\tau_S)P_tY_{it}}\right)-
 \end{aligned}
 $$
 
-The first two terms differ only in materials, and @eq-share-net replaces the third with $\ln\beta-\varepsilon_{it}$, where $Y_{it}$ is output as measured, with measurement error $\varepsilon_{it}$. The remaining term is the log ratio of reported to true materials. Let $u_{it}\equiv\ln(M^*_{it}/M_{it})=\ln(1+e_{it}/M_{it})$ denote this log overreporting ratio. Then
+The last line follows from @eq-share-net replacing the log share of true materials. The remaining term is the log ratio of reported to true materials. Let $u_{it}\equiv\ln(M^*_{it}/M_{it})=\ln(1+e_{it}/M_{it})$ denote this log overreporting ratio. Then
 
 $$
 s_{it}=\ln\beta-\varepsilon_{it}+u_{it}.
@@ -105,7 +105,7 @@ For those firms, then $\mathbb{E}[u_{it}|\theta_i\in\Theta^{NE}]=0$.
 
 **Assumption 1 (Non-evaders).** Corporations do not overreport inputs (@sec-setting-jo).
 
-For corporations, then $\mathbb{E}[u_{it}\mid\text{corporation}]=0$.
+For corporations, $u_{it}=0$, and @eq-foc-cd becomes $s_{it}=\ln\beta-\varepsilon_{it}$.
 
 In addition, I impose the following assumption.
 
@@ -117,19 +117,13 @@ In addition, I impose the following assumption.
 
 :::
 
-We can use @eq-foc-cd and Assumptions 1 and 2 to recover the output elasticity of materials, $\beta$,
+Taking expectations among corporations, and using $\mathbb{E}[\varepsilon_{it}]=0$ and the independence of $\varepsilon_{it}$ from juridical organization (Assumption 2), recovers the output elasticity of materials:
 
 $$
     \ln\beta=\mathbb{E}\left[s_{it}\mid \text{corporation}\right].
 $$ {#eq-foc-cd-exp}
 
-Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$, the distribution of $\varepsilon$.
-
-::: {.content-visible when-meta="draft"}
-
-**Placeholder (1.2, $f_\varepsilon$):** the sentence above is the approved paper's (`56-id-evasion.qmd`). Say that it comes from corporations ($s_{it}-\ln\beta=-\varepsilon_{it}$ for them) and that, by Assumption 2 (independent of juridical organization), unincorporated firms share it. @sec-deconvolution (l. 15) repeats the sentence: cite this one there when ch. 5 is drafted.
-
-:::
+The same equation also recovers the measurement error of corporations, $\varepsilon_{it}=\ln\beta-s_{it}$, and with it its distribution, $f_\varepsilon$.
 
 ::: {.content-visible when-meta="draft"}
 
