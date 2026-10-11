@@ -135,21 +135,13 @@ The same equation also recovers the measurement error of corporations, $\varepsi
 
 ## The observed residual {#sec-testing-residual}
 
-Having recovered the output elasticity of materials, $\beta$, for all firms, I can form the following variable using observed data.
+Having recovered the output elasticity of materials, $\beta$, I can form the following variable from observed data for every firm. Subtracting $\ln\beta$ from both sides of @eq-foc-cd gives
 
 $$
-    \mathcal V_{it}\equiv s_{it}-\ln\beta=u_{it}-\varepsilon_{it}
+\mathcal V_{it}\equiv s_{it}-\ln\beta=u_{it}-\varepsilon_{it}.
 $$ {#eq-ob-ev}
 
-Tax evasion therefore can be recovered up to an independent random variable.
-
-::: {.content-visible when-meta="draft"}
-
-**Placeholder (1.3):** $E[\mathcal V_{it}]=E[u_{it}]$ (Assumption 2, $E[\varepsilon]=0$) and $u_{it}\ge0$ (@sec-model, $e_{it}\ge0$), so the mean is zero only if no unincorporated firm overreports. Productivity and size drop out of $\mathcal V$, so the two groups need not be alike.
-
-Reuse: @sec-model, "Productivity does not appear in the share." Intro l. 28, "Unlike the comparisons for individuals, my approach does not require the two groups to be alike in size or productivity: corporations are much larger than unincorporated firms, and the production function accounts for the differences in productivity behind this gap."
-
-:::
+The observed residual recovers overreporting up to measurement error, which is independent of it. Among unincorporated firms, its expected value is the expected overreporting, $\mathbb{E}[\mathcal V_{it}\mid\text{unincorporated}]=\mathbb{E}[u_{it}\mid\text{unincorporated}]$, because measurement error has mean zero in every juridical organization (Assumption 2). Since firms never underreport ($e_{it}\ge0$, @sec-model), $u_{it}\ge0$, and this expected value is zero only if no unincorporated firm overreports.
 
 ## Testing for overreporting {#sec-testing-test}
 
