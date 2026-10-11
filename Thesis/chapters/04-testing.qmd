@@ -37,6 +37,16 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
    chapter's raw test, or ch. 6's corrected productivity), and the exact group definitions
    (does "validation" mean corporations specifically, as elsewhere in this project). -->
 
+[In this chapter, I show how to test for overreporting, and in @sec-deconvolution how to recover its distribution.]{.content-hidden when-meta="jmp"}[In this section, I show how to test for overreporting and recover its distribution.]{.content-visible when-meta="jmp"} Since corporations report materials truthfully and share a common technology with unincorporated firms, the output elasticity of materials can be recovered from corporations. The difference between the materials share of gross output of unincorporated firms and the output elasticity of materials then recovers overreporting up to the output measurement error.
+
+The difference is an observed residual whose expected value can be tested. Under the null hypothesis of correct reporting, the expected value of this residual is zero. Under the alternative, it is positive.
+
+The distribution of the unincorporated firms' residual is a convolution of the distributions of overreporting and measurement error, and can be used to recover the distribution of overreporting. Because the output measurement error is independent of juridical organization and corporations do not overreport, I can recover the distribution of the measurement error from the residual of corporations. Deconvolution requires the addends to be independent and the distribution of one of them to be known. Measurement error is independent of overreporting, and its distribution is known. It follows that the distribution of overreporting is identified.
+
+Corporations and unincorporated firms have different productivities, but this does not preclude me from recovering the output elasticity of materials because it does not depend on productivity when the production function is Hicks-neutral.
+
+I find that among the 20 largest manufacturing industries in Colombia during the sample period, the test rejects correct reporting in 9 of the 18 industries liable for the sales tax and in neither exempt industry. In the 5 largest industries where the test rejects at the 1 percent level and the deconvolution applies, unincorporated firms overreport on average between 4.5 and 23.2 percent of their true materials.
+
 ::: {.content-visible when-meta="draft"}
 
 **Placeholder (thesis opening; outline takeaway; thesis only, wrap in `content-hidden when-meta="jmp"`):** comparing unincorporated firms' net materials share with the corporate benchmark detects overreporting from production data alone. The test rejects truthful reporting in 9 of the 18 industries liable for the sales tax and in neither exempt industry.
@@ -53,18 +63,22 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
 
 ## The reported materials share {#sec-testing-share}
 
-Assume the production function is Cobb-Douglas, $M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})$. The econometrician observes output, capital, labour, and prices of intermediate inputs and output, and the sales-tax rates on sales and on purchases, $\{Y_{it},K_{it},L_{it},\rho_t,P_t,\tau_S,\tau_P\}$, but she only observes overreported intermediate inputs, $M^*_{it}=M_{it}+e_{it}$. Let $u_{it}\equiv\ln(M^*_{it}/M_{it})=\ln(1+e_{it}/M_{it})$ denote the log overreporting ratio.
+Regardless of juridical organization, firms in an industry share the Cobb-Douglas technology of @eq-pf, $Y_{it}=M^{\beta}_{it}K_{it}^{\alpha_K}L_{it}^{\alpha_L}\exp(\omega_{it}+\varepsilon_{it})$, but may differ in productivity. The econometrician observes output, capital, labour, and prices of intermediate inputs and output, and the sales-tax rates on sales and on purchases, $\{Y_{it},K_{it},L_{it},\rho_t,P_t,\tau_S,\tau_P\}$, but she only observes overreported intermediate inputs, $M^*_{it}=M_{it}+e_{it}$.
 
-Let $s_{it}$ denote the log share of reported materials in output, net of sales taxes, $s_{it}\equiv\ln\big((1-\tau_P)\rho_tM^*_{it}/(1-\tau_S)P_tY_{it}\big)$.^[In the single-tax model (@sec-app-single-tax) the tax terms cancel and $s_{it}$ is the gross share, $\ln(\rho_tM^*_{it}/P_tY_{it})$.] Writing the net share of @eq-share-net for true and for reported materials, we get
+Let $s_{it}$ denote the log share of reported materials in output, net of sales taxes, $s_{it}\equiv\ln\big((1-\tau_P)\rho_tM^*_{it}/(1-\tau_S)P_tY_{it}\big)$.^[In the single-tax model (@sec-app-single-tax) the tax terms cancel and $s_{it}$ is the gross share, $\ln(\rho_tM^*_{it}/P_tY_{it})$.] To relate it to the materials condition (@eq-share-net), which holds for true materials, I subtract and add the log share of true materials:
 
 $$
 \begin{aligned}
-    \ln\left(\frac{(1-\tau_P)\rho_t M_{it}}{(1-\tau_S)P_{t}Y_{it}}\right) &=\ln\beta - \varepsilon_{it} \\
-    s_{it} &=\ln\beta - \varepsilon_{it}+u_{it}
+s_{it} &= \ln\left(\frac{(1-\tau_P)\rho_t M^*_{it}}{(1-\tau_S)P_tY_{it}}\right)-\ln\left(\frac{(1-\tau_P)\rho_t M_{it}}{(1-\tau_S)P_tY_{it}}\right)+\ln\left(\frac{(1-\tau_P)\rho_t M_{it}}{(1-\tau_S)P_tY_{it}}\right)\\
+&= \ln\left(\frac{M^*_{it}}{M_{it}}\right)+\ln\beta-\varepsilon_{it}.
 \end{aligned}
-$$ {#eq-foc-cd}
+$$
 
-where $Y_{it}$ is output as measured, with measurement error $\varepsilon_{it}$.
+The first two terms differ only in materials, and @eq-share-net replaces the third with $\ln\beta-\varepsilon_{it}$, where $Y_{it}$ is output as measured, with measurement error $\varepsilon_{it}$. The remaining term is the log ratio of reported to true materials. Let $u_{it}\equiv\ln(M^*_{it}/M_{it})=\ln(1+e_{it}/M_{it})$ denote this log overreporting ratio. Then
+
+$$
+s_{it}=\ln\beta-\varepsilon_{it}+u_{it}.
+$$ {#eq-foc-cd}
 
 ::: {.content-visible when-meta="draft"}
 
@@ -155,7 +169,7 @@ Reuse: @sec-model, "Since underreporting inputs would increase the tax liability
 
 :::
 
-I invert the test. For each industry, @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the values of $\mu_{\mathcal V}$ in $[0,1]$ that the test does not reject at the 5 percent level, taking $\ln\hat\beta$ from corporations as the true value. The test detects overreporting where this set excludes zero. @sec-app-test-robustness reports a conservative version of the test and a bootstrap test that carries the sampling error of $\ln\hat\beta$.
+I invert the test. For each industry, @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the values of $\mu_{\mathcal V}$ in $[0,1]$ that the test does not reject at the 5 percent level, taking $\ln\hat\beta$ from corporations as the true value.^[In Beverages (313), the mean residual of unincorporated firms, 0.39, is the largest of any tested industry. It partly reflects differences in products between the two groups. Corporations produce mostly beer and soft drinks; unincorporated firms produce wine, spirits and soft drinks. Beer corporations report a low materials share, which lowers the benchmark. Within the same four-digit product, the mean residual falls to 0.23 but remains positive. The mean also rises because the sample excludes state enterprises (@sec-setting-jo). In this industry they are distilleries, and the departments held a monopoly on producing aguardiente and rum [@Ocampo1983, pp. 251--254]. Their materials share is lower than the corporations'. With them and the other excluded organizations in the sample, the mean residual is also 0.23, and the test still rejects correct reporting at the 1 percent level.] The test detects overreporting where this set excludes zero. @sec-app-test-robustness reports a conservative version of the test and a bootstrap test that carries the sampling error of $\ln\hat\beta$.
 
 ::: {.content-visible when-meta="draft"}
 
