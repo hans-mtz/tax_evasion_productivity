@@ -1,6 +1,6 @@
 # Robustness of the Test for Overreporting {#sec-app-test-robustness}
 
-@tbl-evasion-test reports the sharp version of the test, which takes $\ln\hat\beta$ from corporations as the true value. This appendix reports two alternatives and shows that the test does not depend on the functional forms of the detection probability, the cost of evasion or the technology (@sec-app-test-general). @tbl-evasion-test-conservative gives the conservative test, which gives no credit for the corporations' moment. @tbl-evasion-test-bootstrap gives a bootstrap test that re-estimates $\ln\hat\beta$ in every replication, so it carries the sampling error of the first stage.
+@tbl-evasion-test reports the sharp version of the test, which takes $\ln\hat\beta$ from corporations as the true value. This appendix reports two alternatives and shows that the test does not depend on the functional forms of the detection probability, the cost of evasion or the technology (@sec-app-test-general). @tbl-evasion-test-conservative gives the conservative test, which gives no credit for the corporations' moment. @tbl-evasion-test-bootstrap gives a bootstrap test that re-estimates $\ln\hat\beta$ in every replication and thereby carries the sampling error of the first stage.
 
 ::: {#tbl-evasion-test-conservative}
 ![](/tables/appF-evasion-test-conservative.png)
@@ -38,17 +38,17 @@ $$ {#eq-app-share-general}
 
 where $D$ is the output elasticity of materials. Under Cobb-Douglas, $D=\beta$ and @eq-app-share-general is @eq-share-net. Corporations identify $D$ as a function of inputs, $\ln D(K,L,M)=\mathbb{E}[s_{it}\mid K,L,M,\text{corporation}]$, provided measurement error is also independent of capital and labour.
 
-**The residual.** Evaluate the elasticity at each firm's reported materials and add and subtract the log share of true materials. Suppressing $K_{it}$ and $L_{it}$,
+**The residual.** Evaluating the elasticity at each firm's reported materials, and adding and subtracting the log share of true materials, gives, suppressing $K_{it}$ and $L_{it}$,
 
 $$
 \mathcal V_{it}\equiv s_{it}-\ln D(M^*_{it})=\ln\left(\frac{M^*_{it}}{M_{it}}\right)-\ln\left(\frac{D(M^*_{it})}{D(M_{it})}\right)-\varepsilon_{it}=\ln\left(\frac{H(M^*_{it})}{H(M_{it})}\right)-\varepsilon_{it},
 $$ {#eq-app-residual-general}
 
-where $H\equiv G/G_M$. Under the null, $M^*_{it}=M_{it}$ and $\mathcal V_{it}=-\varepsilon_{it}$ for any $G$. The test's size does not depend on the technology, and a rejection means that some firms overreport. Under the alternative, $M^*_{it}>M_{it}$ for overreporting firms, and the first term is positive whenever $H$ increases in materials. Since $H'=1-GG_{MM}/G_M^2$, this holds when output is concave in materials, $G_{MM}\le0$. The exact condition is weaker: $GG_{MM}<G_M^2$, i.e. $\ln G$ concave in materials. The expected residual is then positive and the test stays one-sided. Under Cobb-Douglas, $H=M/\beta$ and the first term is $u_{it}$, as in @eq-ob-ev.
+where $H\equiv G/G_M$. Under the null, $M^*_{it}=M_{it}$ and $\mathcal V_{it}=-\varepsilon_{it}$ for any $G$. The test's size does not depend on the technology, and a rejection means that some firms overreport. Under the alternative, $M^*_{it}>M_{it}$ for overreporting firms, and $\ln\big(H(M^*_{it})/H(M_{it})\big)$ is positive whenever $H$ increases in materials. Since $\partial H/\partial M=1-GG_{MM}/G_M^2$, this holds when output is concave in materials, $G_{MM}\le0$. The exact condition is weaker: $GG_{MM}<G_M^2$, i.e. $\ln G$ concave in materials. The expected residual is then positive and the test stays one-sided. Under Cobb-Douglas, $H=M/\beta$ and $\ln\big(H(M^*_{it})/H(M_{it})\big)=u_{it}$, as in @eq-ob-ev.
 
 If $q$ or $\kappa$ depend on materials, evaders' true materials may depart from @eq-app-share-general under the alternative. This changes the power of the test, not its size: under the null no firm evades.
 
-**A second flexible input.** Let $N_{it}$ be a second flexible input that is not deductible, such as energy, fuels or services, and so is reported truthfully. Its share satisfies $\ln\big(P_{N,t}N_{it}/(1-\tau_S)P_tY_{it}\big)=\ln D_N-\varepsilon_{it}$, with $D_N\equiv G_NN/G$. Evaluating $D_N$ at reported materials,
+**A second flexible input.** Let $N_{it}$ be a second flexible input that is not creditable against the sales tax, such as energy, fuels or services. Under the model, the firm gains nothing by overreporting it and reports it truthfully. With $N_{it}$ in the technology, $G(K_{it},L_{it},M_{it},N_{it})$, its log share, $s^N_{it}\equiv\ln\big(P_{N,t}N_{it}/(1-\tau_S)P_tY_{it}\big)$, satisfies $s^N_{it}=\ln D_N-\varepsilon_{it}$, with $D_N\equiv G_NN/G$. Evaluating $D_N$ at reported materials,
 
 $$
 \mathcal V^N_{it}\equiv s^N_{it}-\ln D_N(M^*_{it})=-\ln\left(\frac{D_N(M^*_{it})}{D_N(M_{it})}\right)-\varepsilon_{it}.
