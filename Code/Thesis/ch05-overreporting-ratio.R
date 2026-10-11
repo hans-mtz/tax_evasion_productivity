@@ -28,9 +28,9 @@ unincorp_np_stats_df <- summ
 ev_tab <- summ %>% transmute(sic_3, EV = mean_V, n)
 
 ## 2026-10-01 rule (Hans): chapter text = the 5 largest industries (output share) where overreporting is detected at 1%
-## (313 7.7%, 321 7.2%, 369 3.0%, 342 2.3%, 322 2.1%); the appendix E asset (appE-overreporting-ratio-all) carries all nine interior industries.
+## (313 7.7%, 321 7.2%, 369 3.0%, 342 2.3%, 322 2.1%); 2026-10-11: 313 replaced by 324 (1.1%), variance condition; the appendix E asset (appE-overreporting-ratio-all) carries all nine interior industries.
 nine <- c("313", "321", "322", "324", "331", "342", "351", "352", "369")
-five <- c("313", "321", "322", "342", "369")
+five <- c("321", "322", "324", "342", "369")   # 2026-10-11 (Hans): the 5 largest industries (output share) with overreporting detected at 1% that meet the variance condition (313 fails it, research log 2026-10-11; 324 is next); same in ch. 5 and ch. 6
 ind_names <- c("313" = "Beverages", "321" = "Textiles", "322" = "Wearing apparel", "324" = "Footwear",
                "331" = "Wood products", "342" = "Printing and publishing", "351" = "Industrial chemicals",
                "352" = "Other chemicals", "369" = "Non-metallic minerals")
@@ -77,13 +77,12 @@ tbl <- stats %>% filter(sic_3 %in% sel) %>% transmute(
 
 tt_obj <- tt(tbl, align = "lccccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8),
              notes = paste0("Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, log materials share net of sales taxes). Sample: unincorporated firms that pay sales tax on purchases, the sample of the structural estimation in Chapter 8. $E[u]$: mean of the deconvolved $u$; under the model it equals $E[\\mathcal V]$ on the same sample."
-    , if (identical(sel, five)) " Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level (all nine in Appendix E)." else " Industries: the nine where overreporting is detected, whose unincorporated firms enter the structural estimation.")) %>%
+    , if (identical(sel, five)) " Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E)." else " Industries: the nine where overreporting is detected, whose unincorporated firms enter the structural estimation.")) %>%
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, slug)
 
-## Figure: f_x by industry. x-axis cut at 60%: all five densities are ~0 beyond it, except
-## Beverages (313), whose long, very thin right tail (P99 far out, skewness 7.3 in u) would
-## otherwise stretch the axis and flatten the other four curves.
+## Figure: f_x by industry. x-axis cut at 60%: all densities are ~0 beyond it (kept from the 2026-10-01 version,
+## when Beverages, 313, with its long thin right tail, was among the five).
 x_max <- 0.6
 
 plt <- dens %>% filter(x <= x_max, sic_3 %in% sel) %>%

@@ -36,7 +36,8 @@ write.csv(by_ind, file.path(PRODUCTS_DIR, "ch05-overreporting-by-industry.csv"),
 wmed <- function(v, w) { o <- order(v); v[o][which(cumsum(w[o]) / sum(w) >= 0.5)[1]] }
 sets <- list("seven at 1 percent" = c("313", "321", "322", "324", "331", "342", "369"),
              "four of the five largest" = c("313", "321", "351", "352"),
-             "five largest evaders" = c("313", "321", "322", "342", "369"))
+             "five largest evaders" = c("313", "321", "322", "342", "369"),
+             "five, variance condition" = c("321", "322", "324", "342", "369"))   # 2026-10-11: ch. 5 and ch. 6 set (313 fails the variance condition)
 out <- imap_dfr(sets, function(s, nm) {
     d <- by_ind %>% filter(sic_3 %in% s); stopifnot(nrow(d) == length(s))
     tibble(set = nm, industries = paste(s, collapse = " "), median = median(d$Ex),

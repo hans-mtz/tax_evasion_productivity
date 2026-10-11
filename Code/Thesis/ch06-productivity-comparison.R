@@ -22,7 +22,7 @@ load(file.path(PRODUCTS_DIR, "1523-omega-deconv-final.RData"))   # omega_fin_np_
 omega_cur_np_ls <- omega_fin_np_ls
 load(file.path(PRODUCTS_DIR, "1520-gnr-ols.RData"))              # gnr_omega
 
-five <- c("313", "321", "322", "342", "369")   # 2026-10-01: 5 largest industries (output share) with overreporting detected at 1% (same as ch. 5)
+five <- c("321", "322", "324", "342", "369")   # 2026-10-11 (Hans): the 5 largest industries (output share) with overreporting detected at 1% that meet the variance condition (313 fails it, research log 2026-10-11; 324 is next); same in ch. 5 and ch. 6
 
 ## weighted-sample metrics: x = omega values, w = probability weights (sum to 1)
 metrics <- function(x, w) {
@@ -66,7 +66,21 @@ tbl <- bind_rows(corrected %>% filter(Method == "w", sic_3 %in% five), gnr) %>% 
 print(tbl, n = Inf)
 
 tt_obj <- tt(tbl, align = "llccccccccc", width = c(0.8, 1.4, 0.9, 0.9, 0.9, 0.8, 0.8, 0.8, 0.8, 1, 0.8),
-             notes = "Productivity in levels, $\\exp(\\omega_{it})$; percentile ratios as in Gandhi, Navarro and Rivers (2020, Table 3); skewness of $\\omega_{it}$; $\\hat\\gamma_1$: persistence, the AR(1) coefficient of $\\omega_{it}$ (corrected: IV estimate within the production function step; GNR: OLS on firm-level $\\omega_{it}$). Corrected: moments of the deconvolved density of $\\omega$ (penalized B-spline deconvolution of $\\widetilde{\\mathcal W}_{it}=\\omega_{it}+(1-\\beta)\\varepsilon_{it}$), with the production function estimates of instrument $\\tilde{\\mathcal W}_{it-2}$. GNR: firm-level $\\omega_{it}$ from the uncorrected GNR (2020) Cobb-Douglas estimation, with the measurement error removed. Both exclude $\\varepsilon$. Log materials share net of sales taxes, juridical organization codes 6--9 excluded. Industries: the five largest industries, by share of output, where overreporting is detected at the 1 percent level.") %>%
+             notes = "Productivity in levels, $\\exp(\\omega_{it})$; percentile ratios as in Gandhi, Navarro and Rivers (2020, Table 3); skewness of $\\omega_{it}$; $\\hat\\gamma_1$: persistence, the AR(1) coefficient of $\\omega_{it}$ (corrected: IV estimate within the production function step; GNR: OLS on firm-level $\\omega_{it}$). Corrected: moments of the deconvolved density of $\\omega$ (penalized B-spline deconvolution of $\\widetilde{\\mathcal W}_{it}=\\omega_{it}+(1-\\beta)\\varepsilon_{it}$), with the production function estimates of instrument $\\tilde{\\mathcal W}_{it-2}$. GNR: firm-level $\\omega_{it}$ from the uncorrected GNR (2020) Cobb-Douglas estimation, with the measurement error removed. Both exclude $\\varepsilon$. Log materials share net of sales taxes, juridical organization codes 6--9 excluded. Industries: the five largest industries, by share of output, where overreporting is detected at the 1 percent level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it).") %>%
     style_tt(fontsize = 0.85) %>%
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "ch06-productivity-comparison")
+
+## Headline summaries for the intros (2026-10-11): across the `five` industries, the median of GNR's 90/10 ratio
+## over the corrected one, and the median shortening of the half-life of productivity shocks, ln(.5)/ln(gamma1).
+## PRODUCT: Code/Products/ch06-productivity-medians.csv
+hl <- \(g) log(0.5) / log(g)
+summ6 <- bind_rows(corrected %>% filter(Method == "w", sic_3 %in% five), gnr) %>% left_join(pers, by = c("sic_3", "Method")) %>%
+    select(sic_3, Method, r9010, gamma1) %>% pivot_wider(names_from = Method, values_from = c(r9010, gamma1)) %>%
+    mutate(r9010_ratio = r9010_gnr / r9010_w, hl_corrected = hl(gamma1_w), hl_gnr = hl(gamma1_gnr),
+           hl_shorter = 1 - hl_gnr / hl_corrected)
+print(summ6)
+med6 <- tibble(industries = paste(five, collapse = " "), median_r9010_larger = median(summ6$r9010_ratio) - 1,
+               median_hl_shorter = median(summ6$hl_shorter))
+print(med6)
+write.csv(med6, file.path(PRODUCTS_DIR, "ch06-productivity-medians.csv"), row.names = FALSE)
