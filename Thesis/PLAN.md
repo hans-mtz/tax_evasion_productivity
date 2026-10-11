@@ -136,6 +136,8 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[~]` first pass 2026-10-10: both render clean, no leaks, no unresolved refs; appendix A robustness was hidden in a draft block (fixed); re-run after the review pass |
 | Tue 10-13 | Send to supervisors | `[ ]` |
 
+**Status 2026-10-11:** ch. 4 (testing) is drafted in the text, results included, and appendix F carries the robustness derivation (research log 2026-10-11). Ch. 4 draft blocks left: Tim's two comments, the opening placeholders/bullets (Hans to confirm deletion), the ε-as-measurement-error and denominator notes, the test-design bullet.
+
 **TODO before sending: propagate the 313 / five-industry decision outside ch. 4** (decided 2026-10-11, research log; do it after ch. 4 is integrated; assets already regenerated, `cbc118c`). Deconvolution and PF now use 321, 322, 324, 342, 369 (313 fails the variance condition; it stays in the test and ELVIS). New headline medians over the five: $E[e/M]$ 12.4 percent (was 14.5 over seven), 90/10 66 percent larger (same), half-life 63 percent shorter (was 52).
 - [ ] Thesis intro (`01-intro.qmd` l. 21) and JMP intro (`JMP/sections/01-intro.qmd` l. 15): "7 of them … 14.5 percent"; "In those 7 industries … 52 percent shorter"; describe the selection (5 largest, rejects at 1 percent, variance condition).
 - [ ] Thesis abstract (`index.qmd` l. 5): "the 7 industries … 14.5 percent".
