@@ -136,6 +136,17 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[~]` first pass 2026-10-10: both render clean, no leaks, no unresolved refs; appendix A robustness was hidden in a draft block (fixed); re-run after the review pass |
 | Tue 10-13 | Send to supervisors | `[ ]` |
 
+**TODO before sending: propagate the 313 / five-industry decision outside ch. 4** (decided 2026-10-11, research log; do it after ch. 4 is integrated; assets already regenerated, `cbc118c`). Deconvolution and PF now use 321, 322, 324, 342, 369 (313 fails the variance condition; it stays in the test and ELVIS). New headline medians over the five: $E[e/M]$ 12.4 percent (was 14.5 over seven), 90/10 66 percent larger (same), half-life 63 percent shorter (was 52).
+- [ ] Thesis intro (`01-intro.qmd` l. 21) and JMP intro (`JMP/sections/01-intro.qmd` l. 15): "7 of them … 14.5 percent"; "In those 7 industries … 52 percent shorter"; describe the selection (5 largest, rejects at 1 percent, variance condition).
+- [ ] Thesis abstract (`index.qmd` l. 5): "the 7 industries … 14.5 percent".
+- [ ] JMP abstract (`JMP/abstract.qmd`): "In these 4 industries … 14.7 percent" rests on 313, 321, 351, 352; 313 is no longer deconvolved and 351, 352 are not in the five. Rethink the sentence (Hans).
+- [ ] Conclusion (`10-conclusion.qmd` l. 28–29): "seven industries … 14.5 percent"; check the productivity numbers.
+- [ ] Ch. 5 (`05-deconvolution.qmd`): the selection rule with the variance condition (why 313 is out); draft notes l. 84, 107, 113–122 (313 outlier notes, medians, "five largest evaders"); figure/table text now 321 322 324 342 369.
+- [ ] Ch. 6 (`06-pf-productivity.qmd`): text mentioning 313 (l. 68, 69, 90, 111) and the five industries; medians 66/63.
+- [ ] Appendix E: still all nine with 313 at 48 percent (as in ELVIS); add a line on why 313 is not in ch. 5–6?
+- [ ] Ch. 4 draft notes l. 200, 210 (ranking "4 of the 5 largest", "7 to deconvolution and PF"); appendix F l. 19 (old bootstrap list).
+- [ ] Re-render thesis and JMP; check that no "14.5", "seven industries" or "52 percent" remain (`grep`).
+
 Post-deadline (not before Oct 13): κ sensitivity, D robustness, 1% level grid, M/M* flip (§7a), net-share denominator (§9a).
 Post-deadline, ch. 8 counterfactual (2026-10-07): claims levels with true materials responding (replace the 1622 claims figure/table, now draft-only); claims elasticities with true materials fixed (robustness); entry of corner firms in the 19 non-rejecting industries via design `allcorr` (stage-2 re-estimation; the increase-side response is a lower bound without it); share of firms that stop overreporting on a cut (new auxiliary target, engine review sequence).
 Ch. 8 rewrite tracker: the TRACKER comment below the outline in `Thesis/chapters/08-counterfactual.qmd`.
