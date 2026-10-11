@@ -10,3 +10,4 @@ Why 313's mean V rose from the approved test's 0.176 to the current 0.390, and t
 - `06-old-fits.R`: old deconvolution fits (292, pooled).
 - `07-mix369-351.R`: product mix in 369 and 351.
 - `08-ranking-taxes.R` → `08-ranking.csv`, `08-taxes-by-jo.csv`: industry rankings (firm-years, real sales) under codes 0–5 vs all codes; taxes paid by juridical code.
+- `09-variance-ratio.R` → `09-variance-ratio.csv`: Var(V | unincorporated) / Var(V | corporation) by industry with a (plant, legal form) bootstrap (the model implies ≥ 1).
