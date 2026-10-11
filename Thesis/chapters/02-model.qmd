@@ -92,7 +92,7 @@ for every firm, and the log of the reported share of materials exceeds the log o
 The optimization problem of the firm is then,
 $$
 \begin{aligned}
-  \max_{M,e,K,L}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau_S)P_tK_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})-(1-\tau_P)\rho_tM_{it}-r_tK_{it}-w_tL_{it}\\
+  \max_{M,e,K,L}\;\mathbb{E}[\pi_{it}] = \;&(1-\tau_S)P_t E_{\varepsilon}[K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})]-(1-\tau_P)\rho_tM_{it}-r_tK_{it}-w_tL_{it}\\
   &+\tau_P\rho_te_{it}\big[1-(1+\phi)q(e_{it})\big]-\kappa_{it}(e_{it},\omega_{it}).
 \end{aligned}
 $$ {#eq-profit}
@@ -108,6 +108,8 @@ Taking the FOC of @eq-profit with respect to $M_{it}$, we have,
 $$
 (1-\tau_S)P_t\,\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})=(1-\tau_P)\rho_t.
 $$ {#eq-foc-m}
+
+where $E_\varepsilon[\exp(\varepsilon_{it})]=1$ because $\varepsilon_{it}$ is measurement error. 
 
 @eq-foc-m looks familiar except for the tax wedge: the left-hand side is the marginal revenue product of materials and the right-hand side is the price of materials, both net of taxes.
 
