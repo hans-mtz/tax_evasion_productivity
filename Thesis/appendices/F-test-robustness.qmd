@@ -20,14 +20,41 @@ Bootstrap test for overreporting of materials by industry. Mean of $\mathcal V_{
 
 :::
 
-::: {.content-visible when-meta="draft"}
+## The test under general detection, cost and technology {#sec-app-test-general}
 
-**Placeholder (ch. 4 outline 2.3; promised in the intro, l. 21): why the test is valid for any detection probability and cost of evasion that vanish without evasion, and for any common technology.** Sources:
+This section derives the results stated in @sec-testing-test: the test depends neither on the functional forms of the detection probability and the cost of evasion, nor on the Cobb-Douglas form of the technology.
 
-- the draft note "what the test needs, and what it does not" at the end of @sec-testing, items (i)–(iii) (checked with Hans 2026-09-25) and (iv), a second flexible input (optional);
-- PLAN.md §10, "Robustness of identification to the model's functional forms";
-- `Paper/sections/56-id-evasion.qmd` l. 311–325 (test with the labour share under translog; drop $\mathcal E$ and $D^{\mathcal E}$).
+**Setup.** Let output be $Y_{it}=G(K_{it},L_{it},M_{it})\exp(\omega_{it}+\varepsilon_{it})$, with $G_M>0$, common to corporations and unincorporated firms in an industry. Let the detection probability and the cost of evasion depend on overreporting and on any other variables $Z_{it}$, possibly including materials: $q(e,Z)$ and $\kappa(e,Z)$. With $\mathbb{E}[\exp(\varepsilon_{it})]=1$ as in @sec-model, the part of expected profit that depends on materials and overreporting is
 
-Harmonize notation: the sources use $D$, $G$ and $Y_{MM}$ for the same objects.
+$$
+(1-\tau_S)P_tG(K_{it},L_{it},M_{it})\exp(\omega_{it})-(1-\tau_P)\rho_tM_{it}+\tau_P\rho_te_{it}\big[1-(1+\phi)q(e_{it},Z_{it})\big]-\kappa(e_{it},Z_{it}).
+$$
 
-:::
+**Under the null.** A truthful firm faces no detection and incurs no cost of evasion: $q(0,Z)=0$ and $\kappa(0,Z)=0$ for every $Z$. At $e_{it}=0$, the evasion terms are zero for every $M_{it}$, and so are their derivatives with respect to $M_{it}$. The materials condition is the one without evasion, $(1-\tau_S)P_tG_M\exp(\omega_{it})=(1-\tau_P)\rho_t$. Multiplying by $M_{it}$ and dividing by measured output gives
+
+$$
+\ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln D(K_{it},L_{it},M_{it})-\varepsilon_{it},\qquad D\equiv\frac{G_M M}{G},
+$$ {#eq-app-share-general}
+
+where $D$ is the output elasticity of materials. Under Cobb-Douglas, $D=\beta$ and @eq-app-share-general is @eq-share-net. Corporations identify $D$ as a function of inputs, $\ln D(K,L,M)=\mathbb{E}[s_{it}\mid K,L,M,\text{corporation}]$, provided measurement error is also independent of capital and labour.
+
+**The residual.** Evaluate the elasticity at each firm's reported materials and add and subtract the log share of true materials. Suppressing $K_{it}$ and $L_{it}$,
+
+$$
+\mathcal V_{it}\equiv s_{it}-\ln D(M^*_{it})=\ln\left(\frac{M^*_{it}}{M_{it}}\right)-\ln\left(\frac{D(M^*_{it})}{D(M_{it})}\right)-\varepsilon_{it}=\ln\left(\frac{H(M^*_{it})}{H(M_{it})}\right)-\varepsilon_{it},
+$$ {#eq-app-residual-general}
+
+where $H\equiv G/G_M$. Under the null, $M^*_{it}=M_{it}$ and $\mathcal V_{it}=-\varepsilon_{it}$ for any $G$. The test's size does not depend on the technology, and a rejection means that some firms overreport. Under the alternative, $M^*_{it}>M_{it}$ for overreporting firms, and the first term is positive whenever $H$ increases in materials. Since $H'=1-GG_{MM}/G_M^2$, this holds when output is concave in materials, $G_{MM}\le0$. The exact condition is weaker: $GG_{MM}<G_M^2$, i.e. $\ln G$ concave in materials. The expected residual is then positive and the test stays one-sided. Under Cobb-Douglas, $H=M/\beta$ and the first term is $u_{it}$, as in @eq-ob-ev.
+
+If $q$ or $\kappa$ depend on materials, evaders' true materials may depart from @eq-app-share-general under the alternative. This changes the power of the test, not its size: under the null no firm evades.
+
+**A second flexible input.** Let $N_{it}$ be a second flexible input that is not deductible, such as energy, fuels or services, and so is reported truthfully. Its share satisfies $\ln\big(P_{N,t}N_{it}/(1-\tau_S)P_tY_{it}\big)=\ln D_N-\varepsilon_{it}$, with $D_N\equiv G_NN/G$. Evaluating $D_N$ at reported materials,
+
+$$
+\mathcal V^N_{it}\equiv s^N_{it}-\ln D_N(M^*_{it})=-\ln\left(\frac{D_N(M^*_{it})}{D_N(M_{it})}\right)-\varepsilon_{it}.
+$$
+
+Under the null, $\mathcal V^N_{it}=-\varepsilon_{it}$. Under the alternative, the first term differs from zero as long as $D_N$ is strictly monotone in materials; concavity is no longer needed. Its sign depends on the technology: negative if $D_N$ increases in materials, positive if it decreases. This version is a two-sided test, and a rejection still points only to overreporting.
+
+**Estimation.** Beyond Cobb-Douglas, the elasticity varies with inputs. Estimating it from corporations and evaluating it at unincorporated firms' inputs requires a parametric form, such as translog, or overlap in inputs between the two groups; corporations are much larger. The test in @sec-testing is the Cobb-Douglas case, $D=\beta$.
+
