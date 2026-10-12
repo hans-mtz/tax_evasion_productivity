@@ -37,13 +37,15 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
    chapter's raw test, or ch. 6's corrected productivity), and the exact group definitions
    (does "validation" mean corporations specifically, as elsewhere in this project). -->
 
-[In this chapter, I show how to test for overreporting, and in @sec-deconvolution how to recover its distribution.]{.content-hidden when-meta="jmp"}[In this section, I show how to test for overreporting and recover its distribution.]{.content-visible when-meta="jmp"} @eq-share-net shows that the share of materials equals the output elasticity of materials and the output error. Importantly, the output elasticity of materials does not depend on productivity. In general, the output elasticity of the flexible input of a Hicks-neutral production function does not depend on productivity conditional on inputs. This is what allows me to distinguish between overreporting and productivity.
+[In this chapter, I show how to test for overreporting, and in @sec-deconvolution how to recover its distribution.]{.content-hidden when-meta="jmp"}[In this section, I show how to test for overreporting and recover its distribution.]{.content-visible when-meta="jmp"} @eq-share-net shows that the share of materials equals the output elasticity of materials and the output error. Importantly, under Cobb-Douglas, the output elasticity of materials is constant and does not depend on productivity. In general, the output elasticity of the flexible input of a Hicks-neutral production function does not depend on productivity conditional on inputs. This is what allows me to distinguish between overreporting and productivity.
 
 Since corporations report materials truthfully and share a common technology with unincorporated firms, the output elasticity of materials can be recovered from corporations, even though corporations and unincorporated firms are heterogeneous in productivity. The difference between the materials share of gross output of unincorporated firms and the output elasticity of materials then recovers overreporting up to the output measurement error.
 
 The difference forms an observed residual whose expected value can be tested. Under the null hypothesis of correct reporting, the expected value of this residual is zero. Under the alternative, it is positive.
 
 The distribution of the unincorporated firms' residual is a convolution of the distributions of overreporting and measurement error, and can be used to recover the distribution of overreporting. Because the output measurement error is independent of juridical organization and corporations do not overreport, I can recover the distribution of the measurement error from the residual of corporations. Deconvolution requires the addends to be independent and the distribution of one of them to be known. Measurement error is independent of overreporting, and its distribution is known. It follows that the distribution of overreporting is identified.
+
+The data needed to test or deconvolve overreporting can usually be found in firm-level surveys, but also in administrative firms records or private transaction-level invoice data. Therefore, the method can be equally applied to any of them.
 
 I find that among the 20 largest manufacturing industries in Colombia during the sample period, the test rejects correct reporting in 9 of the 18 industries liable for the sales tax and in neither exempt industry. In the 5 largest industries where the test rejects at the 1 percent level and the deconvolution applies, unincorporated firms overreport on average between 4.5 and 23.2 percent of their true materials.
 
@@ -147,7 +149,7 @@ The observed residual recovers overreporting up to measurement error, which is i
 
 @eq-ob-ev suggests a test for overreporting. Let $\mu_{\mathcal V}\equiv\mathbb{E}[\mathcal V_{it}\mid\text{unincorporated}]$. The null hypothesis is that unincorporated firms do not overreport, $H_0:\mu_{\mathcal V}=0$, and the alternative is that they do, $H_1:\mu_{\mathcal V}>0$. The test is one-sided because no firm has an incentive to underreport deductible inputs. Underreporting would raise a firm's tax liability and decrease after-tax profits (@sec-model). A rejection can therefore only point to overreporting.
 
-To test the null hypothesis, I build a confidence set for $\mu_{\mathcal V}$ by test inversion. The test detects overreporting where the confidence set is non-empty and excludes zero. Test inversion consists on testing every candidate value $\mu_0$ on a grid over $[0,1]$ and keeping the values the test does not reject. These values form a confidence set for $\mu_{\mathcal V}$. Inverting a test at the 5 percent level gives a 95 percent confidence set [@CasellaBerger2002, sec. 9.2.1].
+To test the null hypothesis, I build a confidence set for $\mu_{\mathcal V}$ by test inversion. The test detects overreporting where the confidence set is non-empty and excludes zero. Test inversion consists of testing every candidate value $\mu_0$ on a grid over $[0,1]$ and keeping the values the test does not reject. These values form a confidence set for $\mu_{\mathcal V}$. Inverting a test at the 5 percent level gives a 95 percent confidence set [@CasellaBerger2002, sec. 9.2.1].
 
 The test described above implicitly takes $\beta$ from corporations as the true parameter. I make the assumption explicit by using two moments, one for each group. Let $C_{it}$ equal one for corporations and zero otherwise. If $\beta$ is the output elasticity of materials and $\mu_0\ge0$ is the expected residual of unincorporated firms,
 
@@ -165,7 +167,7 @@ $$
 
 where $\hat\Omega$ is the covariance matrix of the moments, clustered by plant and re-estimated at each candidate rather than fixed at a preliminary estimate [@AndersonRubin1949; @StockWright2000]. Under the null hypothesis, the statistic is asymptotically chi-squared with $d_g$ degrees of freedom.[^dg-df]
 
-[^dg-df]: I evaluate the statistic at $\ln\hat\beta$, the corporations' mean log share. That is, taking the corporations' estimate as the true value, the first moment is exactly zero at this value, and the statistic tests only the second: whether the residual of unincorporated firms has mean $\mu_0$. Then, it follows that $d_g=1$. @sec-app-test-robustness reports a conservative version of the test with $d_g=2$, and an alternative bootstrap test that carries the sampling error of $\ln\hat\beta$.
+[^dg-df]: I evaluate the statistic at $\ln\hat\beta$, the corporations' mean log share. That is, I take the corporations' estimate as the true value. The first moment is exactly zero at this value, and the statistic tests only the second: whether the residual of unincorporated firms has mean $\mu_0$. Hence $d_g=1$. @sec-app-test-robustness reports a conservative version of the test with $d_g=2$, and an alternative bootstrap test that carries the sampling error of $\ln\hat\beta$.
 
 <!-- Already established: 
 For each industry, @tbl-evasion-test displays the estimated mean of $\mathcal V_{it}$ among unincorporated firms and the values of $\mu_{\mathcal V}$ in $[0,1]$ that the test does not reject at the 5 percent level.  -->
@@ -198,7 +200,7 @@ The test detects overreporting in 9 of the 18 industries liable for the sales ta
 
 The test does not detect overreporting in either industry exempt from the sales tax, Food products (311) and Other food products (312). This is expected. Firms in these industries had no incentives to evade sales taxes (@sec-setting-incentive). The result aligns with the model, which predicts little overreporting where the reward is small.
 
-In the other nine liable industries, the test fails to reject correct reporting because the confidence set does not exclude zero or is empty, no candidate in $[0,1]$ is accepted. As with any statistical test, a failure to reject is inconclusive.
+In the other nine liable industries, the test fails to reject correct reporting because the confidence set either does not exclude zero or is empty, no candidate in $[0,1]$ is accepted. As with any statistical test, a failure to reject is inconclusive.
 
 <!-- These firms still had a reason to overreport: fictitious materials also lowered their income tax (@sec-setting-jo). -->
 
