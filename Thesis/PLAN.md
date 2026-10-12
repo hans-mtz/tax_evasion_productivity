@@ -61,7 +61,7 @@ Code/Thesis/              # one script per figure/table + 000-build-all.R
 | 1 | Introduction | `Paper/sections/010-intro`, abstract in `Paper/Tax-Prod.qmd`, `001-TODO` | `[ ]` mostly new writing; abstract stale (no counterfactual) |
 | 2 | Model | Slides `200-model`, `600-opt-tax` (model/FOC parts); `Paper/sections/9999-tax-wedge` | `[x]` done 2026-10-07 (prose, proof-read; appendix D aligned) |
 | 3 | Setting and data | `80-colombia`, `90-colombia-data`; Colombian tax-system notes from `30-lit-rev` | `[~]` outline written (`chapters/03-setting-data.qmd`); all 4 tables ported + rendered |
-| 4 | Testing for evasion | `200-deconv` §Testing (`#sec-tax-ev-test`), `11-the-story`, `56-id-evasion` "Testing for Tax Evasion" | `[ ]` |
+| 4 | Testing for evasion | `200-deconv` §Testing (`#sec-tax-ev-test`), `11-the-story`, `56-id-evasion` "Testing for Tax Evasion" | `[x]` done 2026-10-11 (prose, Hans's review pass, proof-reads 2–4 in `chapters/04-testing-pr-111026.md`) |
 | 5 | Deconvolving tax evasion | `56-id-evasion` (Identifying Tax Evasion, non-parametric), `120-implementation`, `200-deconv` (moments, parametric MLE), `930-eps-density`; Slides `700-deconvolving-evasion` | `[ ]` split `200-deconv` between ch. 4 and 5 |
 | 6 | PF parameters and productivity | `56-id-evasion` (PF, productivity, two flexible inputs, translog), `250-pf` | `[~]` table+figure built (joint efficient-GMM, both instruments, test-inversion; supersedes `250-pf.qmd`'s 4-column table); prose still TODO |
 | 7 | Fiscal policy evaluation | Slides `300-fiscal-reform` (most up to date); Paper `965-DiD`, `966-DiD-txrt`, `98-fiscal-ref-col`, `961-over-time` | `[~]` outline file `chapters/07-fiscal-policy.qmd` written (from slides); Hans merging Paper sections + new findings |
@@ -135,6 +135,8 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 | Sat 10-10 – Mon 10-12 | `thanks:`, JEL codes | `[ ]` |
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[~]` first pass 2026-10-10: both render clean, no leaks, no unresolved refs; appendix A robustness was hidden in a draft block (fixed); re-run after the review pass |
 | Tue 10-13 | Send to supervisors | `[ ]` |
+
+**Status 2026-10-11 (end):** ch. 4 marked done by Hans after his review pass. **Next session (2026-10-12): ch. 5 (deconvolution) audit against its outline** (`Thesis/feedback/ch05-deconvolution-outline-101026.md`).
 
 **Status 2026-10-11:** ch. 4 (testing) is drafted in the text, results included, and appendix F carries the robustness derivation (research log 2026-10-11). Ch. 4 draft blocks left: Tim's two comments, the opening placeholders/bullets (Hans to confirm deletion), the ε-as-measurement-error and denominator notes, the test-design bullet.
 
