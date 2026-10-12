@@ -61,13 +61,15 @@ Production functions with an elasticity that varies with materials do not rule o
 ### The overreporting ratio {#sec-deconvolution-ratio}
 :::
 
-The deconvolved object is the log ratio $u_{it}=\ln(1+e_{it}/M_{it})$. The overreporting ratio itself, $x_{it}\equiv e_{it}/M_{it}=\exp(u_{it})-1$, is a monotonic, differentiable transformation of $u_{it}$, so its density follows from a density transformation [@Hogg2019, Theorem 1.7.1],
+The deconvolution recovers the density of the log ratio $u_{it}$. To read overreporting as a share of true materials, I transform it into the overreporting ratio, $x_{it}\equiv e_{it}/M_{it}=\exp(u_{it})-1$. Because $x_{it}$ is a monotonic, differentiable function of $u_{it}$, its density follows from a density transformation [@Hogg2019, Theorem 1.7.1],
 
 $$
 f_{x}(y)= f_u\big(\ln (1+y)\big)\Bigg|\frac{1}{1+y}\Bigg|,\qquad y\ge0.
 $$ {#eq-ratio-dens}
 
-@tbl-overreporting-ratio and @fig-overreporting-ratio display the estimated distribution of the overreporting ratio by industry.
+@tbl-overreporting-ratio and @fig-overreporting-ratio show the distribution of the overreporting ratio in the five largest industries, by share of output, that meet two conditions: the test rejects at the 1 percent level, and the residual is at least as dispersed among unincorporated firms as among corporations, which the deconvolution requires.[^variance] @sec-app-pf-all reports all nine industries that enter the structural estimation.
+
+[^variance]: Because overreporting and measurement error are independent (@asm-independence), the variance of the residual among unincorporated firms equals the variance of overreporting plus the variance of measurement error. It therefore cannot fall below the corporations' variance, which is the variance of measurement error alone. I treat the condition as failed when fewer than 5 percent of bootstrap replications, which resample plants, give a ratio of variances of at least 1. Beverages (313) fails it: its unincorporated variance is 0.69 times the corporations', and the ratio reaches 1 in only 3.6 percent of replications.
 
 ::: {#tbl-overreporting-ratio}
 ![](/tables/ch05-overreporting-ratio.png)
@@ -77,7 +79,6 @@ Distribution of the overreporting ratio $e/M$ by industry, unincorporated firms.
 
 ![Deconvolved density of the overreporting ratio $e/M$ by industry, unincorporated firms.](/figures/ch05-overreporting-ratio.png){#fig-overreporting-ratio}
 
-In Beverages (313), the large mean likely overstates overreporting: the corporations, the benchmark, mostly produce beer and soft drinks, while the unincorporated firms mostly produce wine.
 
 ::: {.content-visible when-meta="draft"}
 
