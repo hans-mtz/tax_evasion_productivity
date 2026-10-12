@@ -136,6 +136,8 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[~]` first pass 2026-10-10: both render clean, no leaks, no unresolved refs; appendix A robustness was hidden in a draft block (fixed); re-run after the review pass |
 | Tue 10-13 | Send to supervisors | `[ ]` |
 
+**Status 2026-10-12 (later):** ch. 5 audit finished: "The overreporting ratio" opener (why the ratio), table/figure sentence with the two conditions and a variance-condition footnote (313), results paragraphs (range, single interior peak, spreads; Hans edited), 313 sentence and the stale draft-note block deleted. **Next: ch. 6 (PF and productivity) through the outline skill.**
+
 **Status 2026-10-12:** numbered assumptions in the thesis and the JMP (`::: {#asm-name}` with a `## Title` line, cited `@asm-name`; research log 2026-10-12); ch. 4's two assumptions converted. Ch. 5 "The convolution" finalized: the paragraph on why deconvolution works under Cobb-Douglas and the paragraph on other production functions (conditional deconvolution needs far more data, or the method in ch. 8), two proof-reads, Hans approved; ch. 5 subsection headings switch between `##` (thesis) and `###` (JMP). **Next: continue the ch. 5 audit from "The overreporting ratio"**; the five-industry TODO below still stands.
 
 **Status 2026-10-11 (end):** ch. 4 marked done by Hans after his review pass. **Next session (2026-10-12): ch. 5 (deconvolution) audit against its outline** (`Thesis/feedback/ch05-deconvolution-outline-101026.md`).
