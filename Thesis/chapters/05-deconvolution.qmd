@@ -26,19 +26,11 @@ $$ {#eq-conv}
 
 where $f_{\mathcal V}$ and $f_u$ denote the densities of $\mathcal V_{it}$ and $u_{it}$ among unincorporated firms. The data give $f_{\mathcal V}$, corporations give $f_\varepsilon$, and $f_u$ is the only unknown. Deconvolution solves @eq-conv for $f_u$. @sec-app-deconvolution describes the estimator, a spline density fitted by penalized maximum likelihood.
 
-<!-- 2026-10-12: entry 2, P2 (why deconvolution works here; rests on Cobb-Douglas) and P3 (density transformation to the ratio) to be drafted; they replace the draft note below. -->
+Deconvolution works here because, under Cobb-Douglas, overreporting enters the residual as a separate term. The log share of true materials equals $\ln\beta-\varepsilon_{it}$ for every firm, whatever its true materials or its productivity. This holds for firms that overreport as well, because neither the probability of detection nor the cost of evasion depends on true materials (@sec-model): overreporting leaves the materials condition unchanged and only shifts the reported share by $u_{it}$. The residual therefore splits into two independent terms, overreporting and measurement error, and their densities combine by convolution. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv.
 
-::: {.content-visible when-meta="draft"}
+Deconvolution, however, applies only under a constant output elasticity of materials. With an elasticity that varies with materials, the residual would also carry the difference between the log elasticities at true and at reported materials. That difference depends on the unknown true materials, and the residual would no longer split into independent terms. Other functional forms call for other methods, such as the one in @sec-counterfactual, which writes every unobservable as a function of true materials and estimates the model from moment conditions.
 
-**Draft note (outline): what deconvolution needs beyond the test** (PLAN.md §10).
-
-- $\varepsilon\perp u$ (Assumption 2) and $f_\varepsilon$ known from corporations.
-- Evasion separable from true materials, $\partial q/\partial M=\partial\kappa/\partial M=0$: then evaders' materials FOC is undistorted and $\mathcal V=u-\varepsilon$ holds exactly for them too, not only for non-evaders. Counterexample: evasion chosen as a share of true materials (slides `200-model.qmd`, "Robustness: Multiplicative Evasion").
-- A constant output elasticity of materials (Cobb-Douglas in $M$). With general technology the residual carries $\ln D(M^*)-\ln D(M)$, which depends on the unknown $M$; a second flexible, non-deductible input (labour) restores identification (`56-id-evasion.qmd`, "Identification with two Flexible Inputs"; one sentence here, details in an appendix).
-- The recovered $f_u$ is the population marginal among unincorporated firms; whether it is the same for every firm is a separate claim, not needed here.
-- Contrast with the test (moved from @sec-testing, 2026-10-11): deconvolution also needs $\partial q/\partial M=\partial\kappa/\partial M=0$ and a constant output elasticity of materials; the test needs neither.
-
-:::
+<!-- 2026-10-12: draft note "what deconvolution needs beyond the test" deleted (now in the text). P3 (density transformation) dropped: the next section does it. -->
 
 <!-- 2026-10-12: "## Estimation" (logspline, likelihood, penalty) and the implementation draft note moved to appendix I, @sec-app-deconvolution. -->
 
