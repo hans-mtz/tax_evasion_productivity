@@ -18,11 +18,18 @@ The distribution matters because it shows whether overreporting in a particular 
 
 In the five largest industries where the test rejects at the 1 percent level and the deconvolution applies, unincorporated firms overreport on average between 4.5 and 23.1 percent of their true materials, depending on the industry. Moreover, most firms overreport. In every industry, the 10th percentile of the distribution lies between 3.2 and 18.0 percent of true materials.
 
+
+::: {.content-hidden when-meta="jmp"}
+## The convolution
+:::
+
+::: {.content-visible when-meta="jmp"}
 ### The convolution
+:::
 
 <!-- The observed residual is overreporting blurred by measurement error, and deconvolution removes the blur. Two results from @sec-testing make this possible.  -->
 
-By @asm-independence, measurement error is independent of overreporting and of juridical organization. Its distribution, $f_\varepsilon$, is therefore the same for corporations and unincorporated firms and known from corporations, whose residual is $-\varepsilon_{it}$ (@sec-testing-beta). 
+By @asm-independence, measurement error is independent of overreporting and of juridical organization. Its distribution, $f_\varepsilon$, is therefore the same for corporations and unincorporated firms and known from corporations, whose residual is $-\varepsilon_{it}$ (@sec-testing-beta).
 
 Because $\mathcal V_{it}$ is the sum of two independent terms, $u_{it}$ and $-\varepsilon_{it}$, the density of the observed residual among unincorporated firms is the convolution of the densities of overreporting and of measurement error [@Meister2009]:
 
@@ -32,12 +39,13 @@ $$ {#eq-conv}
 
 where $f_{\mathcal V}$ and $f_u$ denote the densities of $\mathcal V_{it}$ and $u_{it}$ among unincorporated firms. The data give $f_{\mathcal V}$, corporations give $f_\varepsilon$, and $f_u$ is the only unknown. Deconvolution solves @eq-conv for $f_u$. @sec-app-deconvolution describes the estimator, a spline density fitted by penalized maximum likelihood.
 
-Deconvolution works here because, under Cobb-Douglas, the elasticity is constant and overreporting enters the residual as an additive term. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv.
+Deconvolution works here because, under Cobb-Douglas, the elasticity is constant: the log ratio of reported to true materials enters the residual as an additive term, and no other term in the residual depends on the firm's materials or other inputs. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv.
 
 <!-- Already explained: 
 The log share of true materials equals $\ln\beta-\varepsilon_{it}$ for every firm, regardless of its true materials or productivity. This holds for firms that overreport as well, because neither the probability of detection nor the cost of evasion depends on true materials (@sec-model): overreporting leaves the materials condition unchanged and only shifts the reported share by $u_{it}$. The residual therefore splits into two independent terms, overreporting and measurement error, and their densities combine by convolution. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv. -->
 
-To recover overreporting under more flexible functional forms of the production function, more advanced methods can be applied, such as the one in @sec-counterfactual. When production functions have an elasticity that varies with materials, the residual would also carry the difference between the log elasticities at true and at reported materials. The residual will still be a difference of two independent terms, but the addend would be the log ratio of reported over true inputs and the elasticity at the reported over at the true inputs.
+Production functions with an elasticity that varies with materials do not rule out recovering overreporting, but they require either far more data for deconvolution or a different method, such as the one in @sec-counterfactual. With an elasticity $G(M_{it},Z_{it})$ that depends on materials and on the other inputs, $Z_{it}=(K_{it},L_{it})$, the residual would be the reported share minus the log elasticity at reported materials. Corporations identify this elasticity because they report true materials. The residual's overreporting term, $\ln[M^*_{it}/(M^*_{it}-e_{it})]-\ln[G(M^*_{it},Z_{it})/G(M^*_{it}-e_{it},Z_{it})]$, would depend on reported materials and the other inputs as well as on overreporting. If measurement error were also independent of the other inputs, deconvolving the residual conditional on $(M^*_{it},Z_{it})$ would recover the density of this term. A density transformation would then give the density of overreporting, provided the term increases with $e_{it}$. Each value of the conditioning inputs, however, would need its own deconvolution, which would demand far more data than the single deconvolution under Cobb-Douglas.
+
 
 <!-- That difference depends on the unknown true materials, and the residual would no longer split into independent terms. Other functional forms call for other methods, such as the one in @sec-counterfactual, which writes every unobservable as a function of true materials and estimates the model from moment conditions. -->
 
@@ -45,7 +53,13 @@ To recover overreporting under more flexible functional forms of the production 
 
 <!-- 2026-10-12: "## Estimation" (logspline, likelihood, penalty) and the implementation draft note moved to appendix I, @sec-app-deconvolution. -->
 
+::: {.content-hidden when-meta="jmp"}
+## The overreporting ratio {#sec-deconvolution-ratio}
+:::
+
+::: {.content-visible when-meta="jmp"}
 ### The overreporting ratio {#sec-deconvolution-ratio}
+:::
 
 The deconvolved object is the log ratio $u_{it}=\ln(1+e_{it}/M_{it})$. The overreporting ratio itself, $x_{it}\equiv e_{it}/M_{it}=\exp(u_{it})-1$, is a monotonic, differentiable transformation of $u_{it}$, so its density follows from a density transformation [@Hogg2019, Theorem 1.7.1],
 
