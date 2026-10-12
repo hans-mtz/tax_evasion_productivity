@@ -1,7 +1,7 @@
 ## UPDATED 2026-10-01: reads 1603-np-deconv-stage2-macbook.RData -- the deconvolution on EXACTLY the stage-2 (ELVIS)
 ## sample, all 9 interior industries (313, 321, 322, 324, 331, 342, 351, 352, 369): unincorporated firms with tau_P > 0,
 ## net share in (5%, and for 369 75%), top 0.5% of M* trimmed; V and f_eps from the stage-2 first stage (1501).
-## Table shows E[u] next to E[V] on the same sample (equal under the model); figure is small multiples (9 industries).
+## Table: moments and quantiles of x = e/M (E[u], E[V] printed to the console only, 2026-10-12); figure is small multiples (9 industries).
 ## (2026-09-26 version: 1521, the test's sample, 7 industries selected by the 99% test rule.)
 ## PRODUCT: Thesis/{tables,figures}/appE-overreporting-ratio-all.png := same for all nine interior industries (appendix)
 ## PRODUCT: Thesis/tables/ch05-overreporting-ratio.png  := Table 5.x (5 industries), overreporting ratio x = e/M by industry
@@ -71,12 +71,13 @@ pct <- \(v) sprintf("%.1f\\%%", 100 * v)
 make_assets <- function(sel, slug, ncol, height) {
 tbl <- stats %>% filter(sic_3 %in% sel) %>% transmute(
     Industry = paste0(as.character(sic_3), " ", ind_names[as.character(sic_3)]),
-    Mean = pct(Ex), SD = pct(SDx), P10 = pct(p10), Median = pct(p50), P90 = pct(p90),
-    `$E[u]$` = sprintf("%.3f", Eu), `$E[\\mathcal V]$` = sprintf("%.3f", EV)
+    Mean = pct(Ex), SD = pct(SDx), P10 = pct(p10), Median = pct(p50), P90 = pct(p90)
 )
+## 2026-10-12 (Hans): E[u] and E[V] columns dropped from the assets (the fit does not impose E[u] = E[V]; in 342 and
+## 369 they differ; a mean-constrained deconvolution is on the post-submission list, PLAN §6). Still printed above.
 
-tt_obj <- tt(tbl, align = "lccccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8),
-             notes = paste0("Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, log materials share net of sales taxes). Sample: unincorporated firms that pay sales tax on purchases, the sample of the structural estimation in Chapter 8. $E[u]$: mean of the deconvolved $u$; under the model it equals $E[\\mathcal V]$ on the same sample."
+tt_obj <- tt(tbl, align = "lccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8),
+             notes = paste0("Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, log materials share net of sales taxes). Sample: unincorporated firms that pay sales tax on purchases, the sample of the structural estimation in Chapter 8."
     , if (identical(sel, five)) " Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E)." else " Industries: the nine where overreporting is detected, whose unincorporated firms enter the structural estimation.")) %>%
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, slug)

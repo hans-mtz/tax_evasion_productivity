@@ -34,58 +34,7 @@ where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$.
 
 :::
 
-## Estimation {#sec-deconvolution-estimation}
-
-Following @Kang2021, consider the following logspline model:
-
-$$
-f_{u|\Theta}(u)=\exp(s(u;\theta)-C(\theta)), \quad L < u < R
-$$
-
-where $[L,R]$ define the support of $f_u$,
-
-$$
-s(u;\theta)=\sum_{j=1}^{K-1}\theta_j B_j(u),
-$$
-
-$\{B_j(u), j=1,2,\dots, K\}$ is a sequence of cubic B-spline basis functions, and
-
-$$
-C(\theta) = \log\left(\int^R_L \exp(s(u;\theta)) \text{d}u \right) < \infty .
-$$
-
-Then $f_{u|\Theta}(u)$ is a positive density function on $(L,R)$. The logspline model assumes that $f_u$ is a twice continuously differentiable function. The last basis function is not used for identifiability purposes, given that by the property of B-splines, $\sum_{j=1}^{K}B_j(u)=1$ for all $u \in (L,R)$.
-
-The log likelihood of the observed variable $\mathcal{V}$ is
-
-$$
-\begin{aligned}
-    l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})f_{u|\theta}(u)\text{d}u\right)\\
-    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})\exp(s(u;\theta))\text{d}u\right)-nC(\theta)
-\end{aligned}
-$$
-
-The usual maximum likelihood estimate $\hat{\theta}$ is the maximizer of $l_{\mathcal{V}}(\theta)$.
-
-To avoid overfitting, I add a penalty term to the log-likelihood function. The penalty term is a linear combination of the squared second derivatives of the B-spline basis functions. The second derivative of the B-splines is approximated by finite differences [@Eilers1996]. The penalty term is given by
-
-$$
-\text{Penalty}(\theta) = \lambda \cdot \|\mathbf{D}\theta \|^2
-$$
-
-Intuitively, we want to penalize excessive curvature in the log-density $\log f_u(u) \approx s(u; \theta) = \sum_j \theta_j B_j(u)$, where $B_j$ are B-spline basis functions.
-
-::: {.content-visible when-meta="draft"}
-
-**Draft note (implementation facts to state, from `290-bs-mle-data.R`, `030-np-deconv-funs.R`, `292-np-deconv-unincorp.R`):**
-
-- Sample (2026-10-01): the stage-2 sample of @sec-counterfactual, unincorporated firms that pay sales tax on purchases (net share above 5 percent, below 75 percent in 369, top 0.5 percent of $M^*$ trimmed); $\mathcal V$ and $f_\varepsilon$ from the stage-2 first stage.
-- $f_\varepsilon$: kernel density (bandwidth `SJ-dpi`) of the corporations' residuals, industry by industry, with exponential decay outside the observed range.
-- 10 knots at equally spaced percentiles of the non-negative $\mathcal V$; support $[0,\max\mathcal V+0.1]$, so $u\ge0$ is imposed; $\lambda=10$ (the simulation in `120-implementation.qmd` used 0.1); Gauss-Legendre quadrature (15 nodes, adaptive).
-- Industries (2026-10-01): we look at the five largest industries where evasion was detected at the 1 percent significance level (313, 321, 322, 342, 369); all nine stage-2 industries in @sec-app-pf-all.
-- Share: two-tax (net-of-sales-tax), juridical organization codes 6--9 excluded.
-
-:::
+<!-- 2026-10-12: "## Estimation" (logspline, likelihood, penalty) and the implementation draft note moved to appendix I, @sec-app-deconvolution. -->
 
 ## The overreporting ratio {#sec-deconvolution-ratio}
 

@@ -38,5 +38,25 @@ Built blind (the chapter was not read). The reader state assumes the approved ch
 ## Decisions (agreed)
 1. Define the conversion from $u$ once in §4; the intro and conclusion quote it unchanged.
 
-## Audit
-Not started.
+## Updates after the five-industry decision (2026-10-12)
+- 7 → 5 industries (321, 322, 324, 342, 369): item 3's rule adds the variance condition ($\mathrm{Var}(\mathcal V\mid\text{uninc.})\ge\mathrm{Var}(\mathcal V\mid\text{corp.})$); 313 fails it (ch. 4's footnote explains 313). Q5 becomes "which industries go on, and why not all nine?"; ch. 4's scope paragraph is commented out, so ch. 5 answers it.
+- Headline (Hans, 2026-10-12): a **range** of industry means, 4.5 to 23.1 percent (the table's numbers), not the median 14.5 / 12.4. The median of the five is 369's own mean, and 369's deconvolved $E[u]$ (0.116) misses $E[\mathcal V]$ (0.361).
+- Sample: the stage-2 sample (1603) stays (Hans: option b); item 3's "on the test's sample" is dropped.
+- Item 4: the densities are interior and unimodal (P10 3–18 percent), not "mass near zero"; describe what the figure shows.
+
+## Audit (2026-10-12, agreed by Hans)
+
+| Outline entry | Status | Where | Change |
+|---|---|---|---|
+| Chapter opener + takeaway | missing | l. 15 "We can do better however" (old paper) | new opener: distribution, range headline |
+| 1. Why the distribution matters (Q1) | missing | — | 2–3 sentences |
+| 2. The idea (Q2, Q3) | partial | l. 15–23 | intuition before the equation; "sum" → difference; $f_\varepsilon$ from corporations' residuals; "recovers $f_u$, never $e$"; Q3 conditions **in the text** (Hans): $\varepsilon\perp u$, $f_\varepsilon$ known, separability $\partial q/\partial M=\partial\kappa/\partial M=0$, constant elasticity (draft note l. 27–33) |
+| 3. Industries ex ante (Q5) | missing in text | table note only | rule: 1 percent + variance condition, five largest |
+| 4. Results (Q1, Q4) | partial | conversion, table, figure | prose; range headline; one sentence that the fit does not impose $E[u]=E[\mathcal V]$ (342, 369: level from the test, shape from the deconvolution) |
+| §Estimation + implementation note | misplaced | | **moved** to appendix I `@sec-app-deconvolution` (`appendices/I-deconvolution.qmd`, 2026-10-12) |
+| l. 108, 313 sentence | stale | | cut (ch. 4 footnote) |
+| draft notes l. 112–123 | stale | | delete; heterogeneity point may become one results sentence |
+| JMP heading levels | — | `##` subsections under `## Deconvolving` | `###` in the JMP |
+
+Done 2026-10-12: $E[u]$, $E[\mathcal V]$ columns dropped from `ch05-overreporting-ratio` and `appE-overreporting-ratio-all`; ch. 4 intro 23.2 → 23.1 (the table's number).
+Post-submission: mean-constrained deconvolution (PLAN §6).
