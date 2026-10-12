@@ -116,3 +116,27 @@ Scope: the opening paragraphs (l. 40–46), the test section (l. 148–171) and 
 - l. 191: word order ("I test for overreporting in the 20 largest …").
 - l. 199: "no incentives" vs ch. 3's "almost no reward"; "This is expected" and "aligns with the model" say the same thing.
 - Appendix F table caption (`F-test-robustness.qmd` l. 8) still says "test-inversion region"; ch. 4 now says "confidence set".
+
+---
+
+# Proof-read 4: Hans's edits in commit f609485
+
+Fixed: l. 152 "consists of"; the footnote (dangling modifier, "Hence $d_g=1$").
+
+## New paragraph (l. 48)
+
+> The data needed to test or deconvolve overreporting can usually be found in firm-level surveys, but also in administrative firms records or private transaction-level invoice data. Therefore, the method can be equally applied to any of them.
+
+- **Grammar:** "administrative firms records" → "administrative firm records".
+- **Accuracy:** one deconvolves the residual, not overreporting: "test for overreporting or recover its distribution".
+- **Accuracy:** "private" → "confidential" (the intro's word, l. 26). Transaction-level invoice data are a new claim. Invoices record purchases and sales between firms, but not necessarily total output, and the intro presents them as the alternative that already measures overreporting directly (Carrillo et al. 2022; Zumaya 2021). Either drop them or check that they contain output.
+- **Main idea buried:** the paragraph's point is what the method needs. It states where the data are found, not what the data are. A reader who has just learned (l. 42) that the benchmark is the truth reporters needs both: reported inputs and output, and a group known to report truthfully.
+- **"Therefore … equally":** "equally" has no comparison, and the inference is weak, because the intro (l. 26) already makes this point. Suggested:
+  > Both steps need only reported inputs and output, and a group of firms known to report truthfully. Firm-level surveys and administrative firm records usually contain both.
+
+## Still open
+
+- **l. 204, empty sets, and a comma splice** (", no candidate in $[0,1]$ is accepted"). If "fails to reject" is meant in the one-sided sense, it holds: a negative mean does not reject $\mu=0$ in favour of $\mu>0$. But "because the confidence set is empty" gives the wrong reason, since an empty set means the inverted test rejects $\mu_0=0$. Minimal fix:
+  > In the other nine liable industries, the test does not detect overreporting: the confidence set either contains zero or is empty (no candidate in $[0,1]$ is accepted).
+- **l. 40:** "the share of materials equals the output elasticity of materials and the output error" → "the log share of materials equals the log output elasticity of materials minus the measurement error in output".
+- **l. 202:** "no incentives" vs ch. 3's "almost no reward".
