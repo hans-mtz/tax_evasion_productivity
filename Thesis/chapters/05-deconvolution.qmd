@@ -18,17 +18,15 @@ The distribution matters because it shows whether overreporting in a particular 
 
 In the five largest industries where the test rejects at the 1 percent level and the deconvolution applies, unincorporated firms overreport on average between 4.5 and 23.1 percent of their true materials, depending on the industry. Moreover, most firms overreport. In every industry, the 10th percentile of the distribution lies between 3.2 and 18.0 percent of true materials.
 
-<!-- 2026-10-12: the paragraph below and the convolution equation are outline entry 2 (the idea), to be redrafted next. -->
-
-By Assumption 2, the measurement error $\varepsilon_{it}$ is independent of overreporting $u_{it}$. Note that, from @eq-foc-cd, we also recovered $f_{\varepsilon}(\varepsilon)$, the distribution of $\varepsilon$. By using deconvolution methods, I can recover the tax evasion apart from the output shock.
-
-In particular, from probability theory, the density of the sum of two **independent** random variables is equal to the **convolution** of the densities of both addends [@Meister2009]. Hence, from @eq-ob-ev,
+The observed residual is overreporting blurred by measurement error, and deconvolution removes the blur. Two results from @sec-testing make this possible. Measurement error is independent of overreporting and of juridical organization (Assumption 2). Its distribution, $f_\varepsilon$, is therefore the same for corporations and unincorporated firms and known from corporations, whose residual is $-\varepsilon_{it}$ (@sec-testing-beta). Because $\mathcal V_{it}$ is the sum of two independent terms, $u_{it}$ and $-\varepsilon_{it}$, the density of the observed residual among unincorporated firms is the convolution of the densities of overreporting and of measurement error [@Meister2009]:
 
 $$
-f_{\mathcal{V}}(\mathcal{V})=\int f_u(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\text{d}\varepsilon
+f_{\mathcal{V}}(\mathcal{V})=\int f_u(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\,\text{d}\varepsilon,
 $$ {#eq-conv}
 
-where $f_{\mathcal{V}}$ denotes the density of $\mathcal{V}$.
+where $f_{\mathcal V}$ and $f_u$ denote the densities of $\mathcal V_{it}$ and $u_{it}$ among unincorporated firms. The data give $f_{\mathcal V}$, corporations give $f_\varepsilon$, and $f_u$ is the only unknown. Deconvolution solves @eq-conv for $f_u$. @sec-app-deconvolution describes the estimator, a spline density fitted by penalized maximum likelihood.
+
+<!-- 2026-10-12: entry 2, P2 (why deconvolution works here; rests on Cobb-Douglas) and P3 (density transformation to the ratio) to be drafted; they replace the draft note below. -->
 
 ::: {.content-visible when-meta="draft"}
 
