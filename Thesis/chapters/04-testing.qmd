@@ -37,9 +37,9 @@ content-hidden blocks, "Notes, Meeting with Tim Sep 2025"; surfaced 2026-09-22.)
    chapter's raw test, or ch. 6's corrected productivity), and the exact group definitions
    (does "validation" mean corporations specifically, as elsewhere in this project). -->
 
-[In this chapter, I show how to test for overreporting, and in @sec-deconvolution how to recover its distribution.]{.content-hidden when-meta="jmp"}[In this section, I show how to test for overreporting and recover its distribution.]{.content-visible when-meta="jmp"} @eq-share-net shows that the log share of materials equals the output elasticity of materials and the output error. Importantly, the output elasticity of materials does not depend on productivity. In general, the output elasticity of the flexible input of a Hicks-neutral production function does not depend on productivity. This is what allows me to distinguish between overreporting and productivity. Furthermore, this characteristic allows me to recover the elasticity from corporations even though corporations and unincorporated firms are heterogeneous in productivity.
+[In this chapter, I show how to test for overreporting, and in @sec-deconvolution how to recover its distribution.]{.content-hidden when-meta="jmp"}[In this section, I show how to test for overreporting and recover its distribution.]{.content-visible when-meta="jmp"} @eq-share-net shows that the share of materials equals the output elasticity of materials and the output error. Importantly, the output elasticity of materials does not depend on productivity. In general, the output elasticity of the flexible input of a Hicks-neutral production function does not depend on productivity conditional on inputs. This is what allows me to distinguish between overreporting and productivity.
 
-Since corporations report materials truthfully and share a common technology with unincorporated firms, the output elasticity of materials can be recovered from corporations. The difference between the materials share of gross output of unincorporated firms and the output elasticity of materials then recovers overreporting up to the output measurement error.
+Since corporations report materials truthfully and share a common technology with unincorporated firms, the output elasticity of materials can be recovered from corporations, even though corporations and unincorporated firms are heterogeneous in productivity. The difference between the materials share of gross output of unincorporated firms and the output elasticity of materials then recovers overreporting up to the output measurement error.
 
 The difference forms an observed residual whose expected value can be tested. Under the null hypothesis of correct reporting, the expected value of this residual is zero. Under the alternative, it is positive.
 
@@ -147,15 +147,15 @@ The observed residual recovers overreporting up to measurement error, which is i
 
 @eq-ob-ev suggests a test for overreporting. Let $\mu_{\mathcal V}\equiv\mathbb{E}[\mathcal V_{it}\mid\text{unincorporated}]$. The null hypothesis is that unincorporated firms do not overreport, $H_0:\mu_{\mathcal V}=0$, and the alternative is that they do, $H_1:\mu_{\mathcal V}>0$. The test is one-sided because no firm has an incentive to underreport deductible inputs. Underreporting would raise a firm's tax liability and decrease after-tax profits (@sec-model). A rejection can therefore only point to overreporting.
 
-For testing the null hypothesis, I form a confidence set for $\mu_{\mathcal V}$ by test inversion. The test therefore detects overreporting where the set excludes zero. To this end, I test every candidate value $\mu_0$ on a grid over $[0,1]$ and keep the values the test does not reject. These values form a confidence set for $\mu_{\mathcal V}$. Inverting a test at the 5 percent level gives a 95 percent confidence set [@CasellaBerger2002, sec. 9.2.1]. 
+To test the null hypothesis, I build a confidence set for $\mu_{\mathcal V}$ by test inversion. The test detects overreporting where the confidence set is non-empty and excludes zero. Test inversion consists on testing every candidate value $\mu_0$ on a grid over $[0,1]$ and keeping the values the test does not reject. These values form a confidence set for $\mu_{\mathcal V}$. Inverting a test at the 5 percent level gives a 95 percent confidence set [@CasellaBerger2002, sec. 9.2.1].
 
-The test described above implicitly assumes $\beta$ from corporations is the true parameter. I make the assumption explicit by using two moments, one for each group. Let $C_{it}$ equal one for corporations and zero otherwise. Under the null hypothesis, $\beta$ is the true parameter of the output elasticity of materials and $\mu_0$ is the expected nonnegative residual of unincorporated firms,
+The test described above implicitly takes $\beta$ from corporations as the true parameter. I make the assumption explicit by using two moments, one for each group. Let $C_{it}$ equal one for corporations and zero otherwise. If $\beta$ is the output elasticity of materials and $\mu_0\ge0$ is the expected residual of unincorporated firms,
 
 $$
 \mathbb{E}\big[C_{it}(s_{it}-\ln\beta)\big]=0,\qquad \mathbb{E}\big[(1-C_{it})(s_{it}-\ln\beta-\mu_0)\big]=0.
 $$ {#eq-test-moments}
 
-The first moment restates @eq-foc-cd-exp; the second states that the residual of unincorporated firms (@eq-ob-ev) has mean $\mu_0\in[0,1]$. 
+The first moment restates @eq-foc-cd-exp; the second states that the residual of unincorporated firms (@eq-ob-ev) has mean $\mu_0\in[0,1]$.
 
 Let $\hat g(\ln\beta,\mu_0)$ stack the sample means of the two moments over the $n$ firm-years of the industry. The test statistic is
 
@@ -163,7 +163,7 @@ $$
 TS(\ln\beta,\mu_0)=n\,\hat g(\ln\beta,\mu_0)'\,\hat\Omega(\ln\beta,\mu_0)^{-1}\,\hat g(\ln\beta,\mu_0),
 $$
 
-where $\hat\Omega$ is the covariance matrix of the moments, clustered by plant and re-estimated at each candidate rather than fixed at a preliminary estimate [@AndersonRubin1949; @StockWright2000]. Under the null hypothesis, it is asymptotically chi-squared with $d_g$ degrees of freedom.[^dg-df]
+where $\hat\Omega$ is the covariance matrix of the moments, clustered by plant and re-estimated at each candidate rather than fixed at a preliminary estimate [@AndersonRubin1949; @StockWright2000]. Under the null hypothesis, the statistic is asymptotically chi-squared with $d_g$ degrees of freedom.[^dg-df]
 
 [^dg-df]: I evaluate the statistic at $\ln\hat\beta$, the corporations' mean log share. That is, taking the corporations' estimate as the true value, the first moment is exactly zero at this value, and the statistic tests only the second: whether the residual of unincorporated firms has mean $\mu_0$. Then, it follows that $d_g=1$. @sec-app-test-robustness reports a conservative version of the test with $d_g=2$, and an alternative bootstrap test that carries the sampling error of $\ln\hat\beta$.
 
@@ -175,7 +175,7 @@ The test does not depend on the functional forms of the detection probability an
 ::: {#tbl-evasion-test}
 ![](/tables/ch04-evasion-test.png)
 
-Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among unincorporated firms and 95 percent test-inversion region for its expectation (sharp test), with $\ln\beta$ estimated from corporations.
+Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among unincorporated firms and 95 percent confidence set for its expectation (sharp test), with $\ln\beta$ estimated from corporations.
 :::
 
 ::: {.content-visible when-meta="draft"}
@@ -190,15 +190,15 @@ Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among
 
 I test for overreporting the 20 largest manufacturing industries by the number of firm-years.
 
-The test detects overreporting in 9 of the 18 industries liable for the sales tax (@tbl-evasion-test): Beverages (313), Textiles (321), Wearing apparel (322), Footwear (324), Wood products (331), Printing and publishing (342), Non-metallic minerals (369) and, narrowly, Industrial chemicals (351) and Other chemicals (352).[^bevs] In the first seven, the test also rejects at the 1 percent level. The nine industries include 4 of the 5 largest by output and together produce 41 percent of manufacturing output.[^unlk]
+The test detects overreporting in 9 of the 18 industries liable for the sales tax (@tbl-evasion-test): Beverages (313)[^bevs], Textiles (321), Wearing apparel (322), Footwear (324), Wood products (331), Printing and publishing (342), Non-metallic minerals (369) and, narrowly, Industrial chemicals (351) and Other chemicals (352). In the first seven, the test also rejects at the 1 percent level. The nine industries include 4 of the 5 largest by output and together produce 41 percent of manufacturing output.[^unlk]
 
 [^bevs]: In Beverages (313), the mean residual of unincorporated firms, 0.39, is the largest of any tested industry. It partly reflects differences in products between the two groups. Corporations produce mostly beer and soft drinks; unincorporated firms produce wine, spirits and soft drinks. Beer corporations report a low materials share, which lowers the benchmark. Within the same product (four-digit industry), the mean residual falls to 0.23 but remains positive. The mean is also higher because the sample excludes state enterprises (@sec-setting-jo). In this industry they are distilleries, and the departments held a monopoly on producing aguardiente and rum [@Ocampo1983, pp. 251--254]. Their materials share is lower than the corporations'. With them and the other excluded organizations in the sample, the mean residual is 0.23, and the test still rejects correct reporting at the 1 percent level.
 
 [^unlk]: The rejections are unlikely to come from testing many industries. If no industry overreported, a test at the 5 percent level across the 20 industries would reject in about one of them by chance, and the probability of nine or more rejections would be about $2\times10^{-7}$.
 
-The test does not detect overreporting in either industry exempt from the sales tax. The test fails to reject correct reporting in Food products (311) and Other food products (312). This makes sense. Firms in these industries had no incentives to evade sales taxes (@sec-setting-incentive). The result aligns with the model, which predicts little overreporting where the reward is small.
+The test does not detect overreporting in either industry exempt from the sales tax, Food products (311) and Other food products (312). This is expected. Firms in these industries had no incentives to evade sales taxes (@sec-setting-incentive). The result aligns with the model, which predicts little overreporting where the reward is small.
 
-In the other nine liable industries, the test fails to reject correct reporting because the confidence region does not exclude zero or is empty, $\mu_{\mathcal V}\notin[0,1]$. As with any statistical test, a failure to reject is inconclusive.
+In the other nine liable industries, the test fails to reject correct reporting because the confidence set does not exclude zero or is empty, no candidate in $[0,1]$ is accepted. As with any statistical test, a failure to reject is inconclusive.
 
 <!-- These firms still had a reason to overreport: fictitious materials also lowered their income tax (@sec-setting-jo). -->
 
