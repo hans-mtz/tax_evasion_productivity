@@ -96,3 +96,23 @@ Scope: the opening paragraphs (l. 40–46), the test section (l. 148–171) and 
 - **l. 199:** the first two sentences say the same thing. Merge them: "The test does not detect overreporting in either industry exempt from the sales tax, Food products (311) and Other food products (312)."
 - **Terminology:** the text says "confidence set" (l. 150), "confidence region" (l. 201) and "test-inversion region" (table caption). Pick one; "confidence set" matches Casella–Berger.
 - Trailing spaces at the end of l. 150 and l. 158 (harmless).
+
+---
+
+# Proof-read 3: Hans's edits in commit d32f0c8
+
+## New issues
+
+- **l. 150, grammar:** "Test inversion consists on testing" → "consists of testing".
+- **l. 201, correctness (carried over, now also punctuation):** an empty set means the χ² statistic rejects $\mu_0=0$ too, so "fails to reject correct reporting because the confidence set … is empty" still misdescribes the three empty-set industries. ", no candidate in $[0,1]$ is accepted" is a comma splice. Using the l. 150 criterion avoids both problems:
+  > In the other nine liable industries, the test does not detect overreporting: in six, the confidence set contains zero; in three, it is empty, because no candidate in $[0,1]$ is accepted. In either case the result is inconclusive.
+- **l. 40:** "the share of materials equals the output elasticity of materials and the output error". The equation is in logs and has a minus sign: "the log share of materials equals the log output elasticity of materials minus the measurement error in output".
+- **l. 40, consistency:** "Importantly, the output elasticity … does not depend on productivity" (unconditional) and "In general, … conditional on inputs" now say different things. The l. 42 claim ("even though … heterogeneous in productivity") needs the unconditional version, which holds under Cobb-Douglas. Suggested: "Under Cobb-Douglas, the output elasticity of materials is a constant, which does not depend on productivity."
+
+## Still open from proof-read 2 (not taken; ignore if deliberate)
+
+- l. 166: $d_g$ is defined only in the footnote.
+- l. 168: dangling modifier ("taking the corporations' estimate …, the first moment …"); "Then, it follows that".
+- l. 191: word order ("I test for overreporting in the 20 largest …").
+- l. 199: "no incentives" vs ch. 3's "almost no reward"; "This is expected" and "aligns with the model" say the same thing.
+- Appendix F table caption (`F-test-robustness.qmd` l. 8) still says "test-inversion region"; ch. 4 now says "confidence set".
