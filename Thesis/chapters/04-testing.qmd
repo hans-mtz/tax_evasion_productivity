@@ -96,22 +96,35 @@ $$ {#eq-foc-cd}
 
 ## Identifying the output elasticity of materials {#sec-testing-beta}
 
-<!-- Dropped (Hans, 2026-10-10: no generality framing; Assumption 1 stated for corporations). Was:
+<!-- Dropped (Hans, 2026-10-10: no generality framing; @asm-non-evaders stated for corporations). Was:
 
 Because the firms' optimization decisions depend on the fiscal environment, the identification strategy should be motivated by the fiscal environment $\Gamma$. In particular, the identification strategy will be as good as how well we can tell apart a subset of firms that have the highest incentive to not evade. For example, in the case of Spain, the firms above the revenue LTU threshold. In the case of Colombia, the corporations (@sec-setting-jo).
 
-**Assumption 1 (Non-evaders).** Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\theta_i\in\Theta^{NE}\subset \Theta$ that does not evade taxes by overreporting inputs.
+**@asm-non-evaders (Non-evaders).** Based on the fiscal environment $\Gamma$, the researcher can identify a subset of firms $\theta_i\in\Theta^{NE}\subset \Theta$ that does not evade taxes by overreporting inputs.
 
 For those firms, then $\mathbb{E}[u_{it}|\theta_i\in\Theta^{NE}]=0$.
  -->
 
-**Assumption 1 (Non-evaders).** Corporations do not overreport inputs (@sec-setting-jo).
+::: {#asm-non-evaders}
+
+## Truthful reporters
+
+Corporations do not overreport inputs (@sec-setting-jo).
+
+:::
 
 For corporations, $u_{it}=0$, and @eq-foc-cd becomes $s_{it}=\ln\beta-\varepsilon_{it}$.
 
 In addition, I impose the following assumption.
 
-**Assumption 2 (Independence).** The measurement error in output, $\varepsilon_{it}$, is independent of overreporting $u_{it}$, of true materials $M_{it}$, and of the firm's juridical organization, with $\mathbb{E}[\varepsilon_{it}]=0$.
+::: {#asm-independence}
+
+## Independence
+
+The measurement error in output, $\varepsilon_{it}$, is independent of overreporting $u_{it}$, of true materials $M_{it}$, and of the firm's juridical organization, with $\mathbb{E}[\varepsilon_{it}]=0$.
+
+:::
+
 
 ::: {.content-visible when-meta="draft"}
 
@@ -119,7 +132,7 @@ In addition, I impose the following assumption.
 
 :::
 
-Taking expectations among corporations recovers the output elasticity of materials, because measurement error has mean zero and is independent of juridical organization (Assumption 2):
+Taking expectations among corporations recovers the output elasticity of materials, because measurement error has mean zero and is independent of juridical organization (@asm-independence):
 
 $$
     \ln\beta=\mathbb{E}\left[s_{it}\mid \text{corporation}\right].
@@ -143,7 +156,7 @@ $$
 \mathcal V_{it}\equiv s_{it}-\ln\beta=u_{it}-\varepsilon_{it}.
 $$ {#eq-ob-ev}
 
-The observed residual recovers overreporting up to measurement error, which is independent of overreporting. Among unincorporated firms, its expected value is the expected overreporting, $\mathbb{E}[\mathcal V_{it}\mid\text{unincorporated}]=\mathbb{E}[u_{it}\mid\text{unincorporated}]$, because measurement error has mean zero in every juridical organization (Assumption 2). Since firms never underreport ($e_{it}\ge0$, @sec-model), $u_{it}\ge0$, and this expected value is zero only if no unincorporated firm overreports.
+The observed residual recovers overreporting up to measurement error, which is independent of overreporting. Among unincorporated firms, its expected value is the expected overreporting, $\mathbb{E}[\mathcal V_{it}\mid\text{unincorporated}]=\mathbb{E}[u_{it}\mid\text{unincorporated}]$, because measurement error has mean zero in every juridical organization (@asm-independence). Since firms never underreport ($e_{it}\ge0$, @sec-model), $u_{it}\ge0$, and this expected value is zero only if no unincorporated firm overreports.
 
 ## Testing for overreporting {#sec-testing-test}
 
@@ -188,7 +201,7 @@ Test for overreporting of materials by industry. Mean of $\mathcal V_{it}$ among
 
 :::
 
-## Results {#sec-testing-results}
+## Testing results {#sec-testing-results}
 
 I test for overreporting the 20 largest manufacturing industries by the number of firm-years.
 

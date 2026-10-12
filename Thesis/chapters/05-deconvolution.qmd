@@ -18,7 +18,13 @@ The distribution matters because it shows whether overreporting in a particular 
 
 In the five largest industries where the test rejects at the 1 percent level and the deconvolution applies, unincorporated firms overreport on average between 4.5 and 23.1 percent of their true materials, depending on the industry. Moreover, most firms overreport. In every industry, the 10th percentile of the distribution lies between 3.2 and 18.0 percent of true materials.
 
-The observed residual is overreporting blurred by measurement error, and deconvolution removes the blur. Two results from @sec-testing make this possible. Measurement error is independent of overreporting and of juridical organization (Assumption 2). Its distribution, $f_\varepsilon$, is therefore the same for corporations and unincorporated firms and known from corporations, whose residual is $-\varepsilon_{it}$ (@sec-testing-beta). Because $\mathcal V_{it}$ is the sum of two independent terms, $u_{it}$ and $-\varepsilon_{it}$, the density of the observed residual among unincorporated firms is the convolution of the densities of overreporting and of measurement error [@Meister2009]:
+### The convolution
+
+<!-- The observed residual is overreporting blurred by measurement error, and deconvolution removes the blur. Two results from @sec-testing make this possible.  -->
+
+By @asm-independence, measurement error is independent of overreporting and of juridical organization. Its distribution, $f_\varepsilon$, is therefore the same for corporations and unincorporated firms and known from corporations, whose residual is $-\varepsilon_{it}$ (@sec-testing-beta). 
+
+Because $\mathcal V_{it}$ is the sum of two independent terms, $u_{it}$ and $-\varepsilon_{it}$, the density of the observed residual among unincorporated firms is the convolution of the densities of overreporting and of measurement error [@Meister2009]:
 
 $$
 f_{\mathcal{V}}(\mathcal{V})=\int f_u(\mathcal{V}+\varepsilon)f_{\varepsilon}(\varepsilon)\,\text{d}\varepsilon,
@@ -26,15 +32,20 @@ $$ {#eq-conv}
 
 where $f_{\mathcal V}$ and $f_u$ denote the densities of $\mathcal V_{it}$ and $u_{it}$ among unincorporated firms. The data give $f_{\mathcal V}$, corporations give $f_\varepsilon$, and $f_u$ is the only unknown. Deconvolution solves @eq-conv for $f_u$. @sec-app-deconvolution describes the estimator, a spline density fitted by penalized maximum likelihood.
 
-Deconvolution works here because, under Cobb-Douglas, overreporting enters the residual as a separate term. The log share of true materials equals $\ln\beta-\varepsilon_{it}$ for every firm, whatever its true materials or its productivity. This holds for firms that overreport as well, because neither the probability of detection nor the cost of evasion depends on true materials (@sec-model): overreporting leaves the materials condition unchanged and only shifts the reported share by $u_{it}$. The residual therefore splits into two independent terms, overreporting and measurement error, and their densities combine by convolution. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv.
+Deconvolution works here because, under Cobb-Douglas, the elasticity is constant and overreporting enters the residual as an additive term. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv.
 
-Deconvolution, however, applies only under a constant output elasticity of materials. With an elasticity that varies with materials, the residual would also carry the difference between the log elasticities at true and at reported materials. That difference depends on the unknown true materials, and the residual would no longer split into independent terms. Other functional forms call for other methods, such as the one in @sec-counterfactual, which writes every unobservable as a function of true materials and estimates the model from moment conditions.
+<!-- Already explained: 
+The log share of true materials equals $\ln\beta-\varepsilon_{it}$ for every firm, regardless of its true materials or productivity. This holds for firms that overreport as well, because neither the probability of detection nor the cost of evasion depends on true materials (@sec-model): overreporting leaves the materials condition unchanged and only shifts the reported share by $u_{it}$. The residual therefore splits into two independent terms, overreporting and measurement error, and their densities combine by convolution. In this setting, deconvolution is a simple and elegant tool: it needs only reported shares, the corporations' residuals and @eq-conv. -->
+
+To recover overreporting under more flexible functional forms of the production function, more advanced methods can be applied, such as the one in @sec-counterfactual. When production functions have an elasticity that varies with materials, the residual would also carry the difference between the log elasticities at true and at reported materials. The residual will still be a difference of two independent terms, but the addend would be the log ratio of reported over true inputs and the elasticity at the reported over at the true inputs.
+
+<!-- That difference depends on the unknown true materials, and the residual would no longer split into independent terms. Other functional forms call for other methods, such as the one in @sec-counterfactual, which writes every unobservable as a function of true materials and estimates the model from moment conditions. -->
 
 <!-- 2026-10-12: draft note "what deconvolution needs beyond the test" deleted (now in the text). P3 (density transformation) dropped: the next section does it. -->
 
 <!-- 2026-10-12: "## Estimation" (logspline, likelihood, penalty) and the implementation draft note moved to appendix I, @sec-app-deconvolution. -->
 
-## The overreporting ratio {#sec-deconvolution-ratio}
+### The overreporting ratio {#sec-deconvolution-ratio}
 
 The deconvolved object is the log ratio $u_{it}=\ln(1+e_{it}/M_{it})$. The overreporting ratio itself, $x_{it}\equiv e_{it}/M_{it}=\exp(u_{it})-1$, is a monotonic, differentiable transformation of $u_{it}$, so its density follows from a density transformation [@Hogg2019, Theorem 1.7.1],
 
