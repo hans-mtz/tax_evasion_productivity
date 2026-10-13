@@ -18,7 +18,7 @@ $$
     \omega_{it}=g(\omega_{it-1})+\eta_{it}
 $$ {#eq-prod-markov}
 
-Let $\ln X_{it}=x_{it}$. With @eq-ob-ev, we can form the following observed variable,
+Let $\ln X_{it}=x_{it}$. With @eq-ob-ev, I can form the following observed variable,
 
 $$
 \begin{aligned}
@@ -29,9 +29,9 @@ $$
 \end{aligned}
 $$ {#eq-big-w}
 
-Here, intuitively, we are trading unobservables, the unobserved tax evasion for the measurement error. Also note that it is not necessary to learn tax evasion to recover productivity. This is useful if a practitioner is only interested in productivity and not in tax evasion.
+Here, intuitively, I am trading unobservables: the unobserved tax evasion for the measurement error. Also note that it is not necessary to learn tax evasion to recover productivity. This is useful if a practitioner is only interested in productivity and not in tax evasion.
 
-By replacing $\omega_{it}$ from @eq-big-w in @eq-prod-markov, we get
+By replacing $\omega_{it}$ from @eq-big-w in @eq-prod-markov, I get
 
 $$
 \begin{aligned}
@@ -39,15 +39,15 @@ $$
 \end{aligned}
 $$ {#eq-big-w-reg}
 
-If $g(\xi)=\gamma_0 +\gamma_1\xi$, to learn $\alpha$ and $g$, we need to find instruments $Z$ such that,
+If $g(\xi)=\gamma_0 +\gamma_1\xi$, to learn $\alpha$ and $g$, I can use instruments $Z$ such that,
 
 $$
 \mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\gamma_1(1-\beta)\varepsilon_{it-1}|Z]=0.
 $$ {#eq-eta-moments}
 
-@sec-app-pf-estimation lists candidates for $Z$ and the details of the estimation.
+As the instrument, I use $\widetilde{\mathcal W}_{it-2}$, the residual defined below in @eq-w-squiggle, lagged two years. $\widetilde{\mathcal W}_{it-2}$ is correlated with past productivity but independent of the innovation and of the two measurement errors in @eq-eta-moments. @sec-app-pf-estimation provides details of the estimation.
 
-Once the parameters of the production function are identified, we can use the following observed variable to recover $\omega_{it}$,
+Once the parameters of the production function are identified, I can use the following observed variable to recover $\omega_{it}$,
 
 $$
 \begin{aligned}
