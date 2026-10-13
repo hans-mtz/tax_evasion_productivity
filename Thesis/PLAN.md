@@ -279,6 +279,10 @@ Results and next steps:
 - [ ] Within-industry D for the ε rows. Auxiliary moment rows for every reported number (industry E[u], E[q], revenue).
 - [ ] First-stage error in Ω, or a statement that TS is conditional on stage 1.
 - [ ] Optional nested-solver re-test; PSIS k̂ diagnostic; `MIX_EDGE_EPS`.
+- [ ] (Moved from appendix A draft notes, 2026-10-13.) Instrument comparison for stage 2 ($\tilde{\mathcal W}_{it-2}$); cap $R_i\ge0$ (equivalent to capping $\tilde e_i$) at $+2,+4,+8$ percent, pending Nail Kashaev.
+- [ ] (Moved from appendix A.) Fine-tune the claims confidence sets: only the coarse grid (5 candidates per $\Delta$) has run; bisect toward each conservative-test crossing, as for the revenue grid.
+- [ ] (Moved from appendix A.) $\theta$-free check on claims ($\theta$ seeded, not fixed, at the operating point), replacing the old CV-based check.
+- [ ] (Moved from appendix A.) Revenue loss and its tax-rate elasticity as auxiliary parameters with their own moments inside ELVIS.
 
 **Remaining estimation sequence (agreed 2026-09-29; SUPERSEDED 2026-09-30 by the restart above — all under the wrong eigen-cut):**
 - [~] **1. Chain length.** Best point ($k$=0.3, κ=0.556, $s$=0.20), $n_{\text{keep}}$ = 3,000 / 10,000 / 30,000, $n_{\text{burn}}$ 1,000, two NM passes, then re-evaluation at two other seeds (`run-1568-chain-length.sh`). **Stopping rule:** shortest length with seed spread < ~10 in $TS$ (below the κ/$k$ gaps we need to resolve). If even 30,000 doesn't get there, the noise isn't mainly simulation → evidence for step 2, not longer chains.
