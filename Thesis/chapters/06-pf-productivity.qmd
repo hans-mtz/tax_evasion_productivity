@@ -12,6 +12,8 @@ In [this chapter]{.content-hidden when-meta="jmp"}[this section]{.content-visibl
 
 Failing to correct for overreporting leads to a larger output elasticity of materials and more dispersed and less persistent productivity. Uncorrected estimates overstate the ratio of the 90th to the 10th percentile of productivity by 66 percent and understate the half-life of productivity shocks by 63 percent, in the median of the five industries.
 
+## Identification {#sec-pf-identification}
+
 In the literature, it is not uncommon to assume that productivity follows a Markov process. That is,
 
 $$
@@ -72,7 +74,7 @@ Because tax evasion artificially inflates the materials' cost share of revenues,
 
 The elasticities of capital and labour vary across industries, with some being lower than the uncorrected estimates, some higher, and others quite similar. This is expected. The direction of the bias in the elasticities of capital and labour depends on whether these inputs are complements or substitutes for materials. This relationship will vary by industry. Put differently, the cross-elasticities of materials with capital and with labour differ across industries in direction and magnitude. Since these cross-elasticities are not included in the Cobb-Douglas production function, the elasticities of capital and labour should reflect different degrees of these variations once materials are corrected for overreporting.
 
-Correcting for overreporting also reduces dispersion in productivity. The 90th-to-10th-percentile ratio of $\exp(\omega_{it})$ is 1.70 to 2.30 with the correction, against 2.38 to 6.86 for GNR, about 41 percent lower on average (range 19 to 74 percent across the five industries; @tbl-productivity-comparison).
+Correcting for overreporting also reduces dispersion in productivity. The 90th-to-10th-percentile ratio of $\exp(\omega_{it})$ is 1.70 to 2.30 with the correction, against 2.38 to 6.86 for GNR. In the median of the five industries, the uncorrected ratio is 66 percent larger (range 23 to 291 percent; @tbl-productivity-comparison).
 
 <!-- Productivity estimates in [this chapter]{.content-hidden when-meta="jmp"}[this section]{.content-visible when-meta="jmp"} use the $\tilde{\mathcal W}_{it-2}$ estimates of @tbl-pf-comparison.  -->
 
@@ -82,6 +84,6 @@ Correcting for overreporting also reduces dispersion in productivity. The 90th-t
 Productivity corrected for tax evasion (deconvolved, instrument $\tilde{\mathcal W}_{it-2}$) and uncorrected (GNR), by industry.
 :::
 
-Correcting for overreporting also makes productivity more persistent. With instrument $\tilde{\mathcal W}_{it-2}$, the AR(1) coefficient of $\omega_{it}$ is 0.93 to 0.96 across the five industries, against 0.81 to 0.89 for GNR. The half-life of a productivity shock, $\ln 0.5/\ln\hat\gamma_1$, is therefore 9 to 15 years instead of 3 to 6 years: between 1.6 and 3.1 times longer, depending on the industry (@tbl-productivity-comparison).
+Correcting for overreporting also makes productivity more persistent. With instrument $\tilde{\mathcal W}_{it-2}$, the AR(1) coefficient of $\omega_{it}$ is 0.93 to 0.96 across the five industries, against 0.81 to 0.89 for GNR. The half-life of a productivity shock, $\ln 0.5/\ln\hat\gamma_1$, is therefore 9 to 15 years with the correction and 3 to 6 years without it. In the median of the five industries, the uncorrected half-life is 63 percent shorter (range 37 to 67 percent; @tbl-productivity-comparison).
 
 Three caveats apply to @tbl-productivity-comparison. First, the P-spline penalty smooths the deconvolved density, which can understate its dispersion, whereas the firm-level GNR estimates of $\omega_{it}$ carry estimation noise, which can overstate it. Second, @Gandhi2020 define productivity in levels as $\exp(\omega_{it}+\varepsilon_{it})$, with $\varepsilon_{it}$ an ex-post output shock. Here, $\varepsilon_{it}$ is measurement error in output, and productivity is $\exp(\omega_{it})$. The GNR estimates in @tbl-productivity-comparison use the same convention: both compare $\omega_{it}$ with $\omega_{it}$, and their published productivity ratios are not directly comparable with these. Third, the two persistence estimates come from different estimators: the corrected $\hat\gamma_1$ is an instrumental-variables estimate within the production-function step, whereas the GNR $\hat\gamma_1$ is a least-squares regression of firm-level $\omega_{it}$ on its lag, which estimation noise in $\omega_{it}$ biases towards zero. Part of the gap in persistence, and so in half-lives, may reflect this difference rather than overreporting.
