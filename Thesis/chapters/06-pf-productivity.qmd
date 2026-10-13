@@ -41,15 +41,7 @@ $$
 \mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\gamma_1(1-\beta)\varepsilon_{it-1}|Z]=0.
 $$ {#eq-eta-moments}
 
-@tbl-orth displays candidates for $Z$.
-
-|     |  Orthogonality     |
-|:----|:----------------:|
-|$\eta_{it}$ | $k_{it},l_{it},\varepsilon_{it}$, $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
-| $\varepsilon_{it}$ | $k_{it},l_{it},\omega_{it},m_{it},m^*_{it},\eta_{it}$, $k_{it-1},l_{it-1},\varepsilon_{it-1},\omega_{it-1},\mathcal{W}_{it-1},m_{it-1},m^*_{it-1}$|
-| $\varepsilon_{it-1}$ | $k_{it},l_{it},\omega_{it},\varepsilon_{it},m_{it},m^*_{it},\eta_{it}$, $k_{it-1},l_{it-1},\omega_{it-1},\mathcal{W}_{it},m_{it-1},m^*_{it-1}$|
-
-: Orthogonality by residuals {#tbl-orth}
+@sec-app-pf-estimation lists candidates for $Z$ and the details of the estimation.
 
 Once the parameters of the production function are identified, we can use the following observed variable to recover $\omega_{it}$,
 
@@ -60,37 +52,19 @@ $$
 \end{aligned}
 $$ {#eq-w-squiggle}
 
-::: {.content-visible when-meta="draft"}
-
-**Draft note (outline): estimation.** Decided 2026-09-26: the headline is the single instrument $\tilde{\mathcal W}_{it-2}$ (`lag_2_w_eps`, the tilded $\mathcal W$, lagged twice); $m^*_{it-1}$ and the joint system (both instruments) are reported as comparisons. First stage on the log materials share net of sales taxes, juridical organization codes 6--9 excluded. Industries: the five of @sec-deconvolution.
-
-- Single instrument: $(1, Z, k_{it}, l_{it})$ interacted with the residual, 4 moments, exactly identified; sharp region $\chi^2_2$, conservative $\chi^2_4$. Joint: $(1, m^*_{it-1}, \tilde{\mathcal W}_{it-2}, k_{it}, l_{it})$ interacted with the residual of @eq-eta-moments: 5 moments for $(\alpha_K,\alpha_L,\gamma_0,\gamma_1)$, $\beta$ fixed at its first-stage value (it never enters $\eta$); sharp $\chi^2_3$, conservative $\chi^2_5$.
-- Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the same statistic whose regions are reported (and the convention of @sec-app-elvis). The earlier joint point came from two-step GMM with the weight fixed at a first-step point; when that point fits badly the weight is too small and the statistic too low (313: 1.62 at the two-step point against 9.96 with the covariance re-estimated there).
-- Why $\tilde{\mathcal W}_{it-2}$ alone (comparison over all 28 industries): no estimate at a bound and no empty region; regions as tight as the joint system's (median width 0.25 for $\alpha_K$, 0.35 for $\alpha_L$; joint 0.23 and 0.40); $m^*_{it-1}$ alone is weak (regions for $\alpha_K$ reach 1 in 24 of 28 industries). The joint sharp region is empty in 311, 312, 313 and 352, where the $m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$ moments conflict. The untilded $\mathcal W_{it-2}$, which contains $\alpha_Kk+\alpha_Ll$, is not used.
-- Uncertainty by test inversion over $(\alpha_K,\alpha_L)\in[0,1]^2$ on a 0.005 grid, $(\gamma_0,\gamma_1)$ profiled in closed form at each grid point (the problem is linear in $\gamma$ at fixed $\alpha$). Why not a bootstrap: bias-corrected percentile intervals crossed 0 and 1 for several industries; test inversion only evaluates the bounded grid. An open bracket marks a region that reaches 0 or 1.
-- $\beta$: region from the corporations' share moment. With a single instrument the production-function moments are exactly identified given $\beta$, so profiling them leaves the share moment alone.
-- GNR and OLS: same sample and share (an R port of the Stata GNR code, validated to four decimals against it).
-
-:::
 
 ## Production function estimates {#sec-pf-estimates}
 
 ::: {#tbl-pf-comparison}
 ![](/tables/ch06-pf-comparison.png)
 
-Production function estimates by method: evasion-corrected with instrument $\tilde{\mathcal W}_{it-2}$, with $m^*_{it-1}$, and with both (joint efficient GMM), and uncorrected GNR and OLS. Below each corrected estimate, the 95 percent test-inversion regions (sharp and conservative).
+Production function estimates by method: evasion-corrected with instrument $\tilde{\mathcal W}_{it-2}$, and uncorrected GNR and OLS. Below each corrected estimate, the 95 percent test-inversion regions (sharp and conservative). Other instruments: @tbl-pf-instruments.
 :::
 
 First, because tax evasion artificially inflates the intermediates' cost share of revenues, lower output elasticities of intermediates than traditional methods are expected. @tbl-pf-comparison shows that correcting for tax evasion results in smaller output elasticities of intermediates than both OLS and GNR in all five industries.
 
 The elasticities of capital and labour vary across industries, with some being lower, some higher, and others quite similar. This is expected. The direction of the bias in the elasticities of capital and labour depends on whether these inputs are complements or substitutes of intermediate inputs. This relationship will vary by industry. Put differently, for different industries, the cross-elasticity between intermediates and capital, and intermediates and labour will be different in direction and magnitude. Since these cross-elasticities are not included in the CD production function, the elasticities of capital and labour should reflect different degrees of these variations once intermediates are corrected for overreporting.
 
-::: {.content-visible when-meta="draft"}
-
-**Draft note:** the second sentence of the first paragraph was updated to the current table: corrected $\hat\beta$ is below GNR and OLS in all five industries (2026-10-01). GNR's $\hat\beta$ also lies outside the corrected $\beta$'s sharp region in 313, 321 and 322 (inside in 342 and 369); OLS lies outside it in all five. Spelling standardized (labour, substitutes).
-
-
-:::
 
 Productivity estimates in [this chapter]{.content-hidden when-meta="jmp"}[this section]{.content-visible when-meta="jmp"} use the $\tilde{\mathcal W}_{it-2}$ estimates of @tbl-pf-comparison.
 
@@ -100,35 +74,8 @@ Productivity estimates in [this chapter]{.content-hidden when-meta="jmp"}[this s
 Productivity corrected for tax evasion (deconvolved, instrument $\tilde{\mathcal W}_{it-2}$) and uncorrected (GNR), by industry.
 :::
 
-Correcting for overreporting also reduces dispersion in productivity. The 90th-to-10th-percentile ratio of $\exp(\omega_{it})$ is 1.70 to 2.30 with the correction, against 2.88 to 6.86 for GNR, about 43 percent lower on average (range 29 to 74 percent across the five industries; @tbl-productivity-comparison).
+Correcting for overreporting also reduces dispersion in productivity. The 90th-to-10th-percentile ratio of $\exp(\omega_{it})$ is 1.70 to 2.30 with the correction, against 2.38 to 6.86 for GNR, about 41 percent lower on average (range 19 to 74 percent across the five industries; @tbl-productivity-comparison).
 
-Correcting for overreporting also makes productivity more persistent. With instrument $\tilde{\mathcal W}_{it-2}$, the AR(1) coefficient of $\omega_{it}$ is 0.90 to 0.95 across the five industries, against 0.81 to 0.89 for GNR, so the half-life of a productivity shock, $\ln 0.5/\ln\hat\gamma_1$, is 7 to 14 years instead of 3 to 6 years: between 1.5 and 2.9 times longer, depending on the industry (@tbl-productivity-comparison).
+Correcting for overreporting also makes productivity more persistent. With instrument $\tilde{\mathcal W}_{it-2}$, the AR(1) coefficient of $\omega_{it}$ is 0.93 to 0.96 across the five industries, against 0.81 to 0.89 for GNR, so the half-life of a productivity shock, $\ln 0.5/\ln\hat\gamma_1$, is 9 to 15 years instead of 3 to 6 years: between 1.6 and 3.1 times longer, depending on the industry (@tbl-productivity-comparison).
 
 Three caveats apply to @tbl-productivity-comparison. First, the P-spline penalty smooths the deconvolved density, which can understate its dispersion, whereas the firm-level GNR estimates of $\omega_{it}$ carry estimation noise, which can overstate it. Second, @Gandhi2020 define productivity in levels as $\exp(\omega_{it}+\varepsilon_{it})$, with $\varepsilon_{it}$ an ex-post output shock. Here, $\varepsilon_{it}$ is measurement error in output, so productivity is $\exp(\omega_{it})$. The GNR estimates in @tbl-productivity-comparison use the same convention, so both compare $\omega_{it}$ with $\omega_{it}$, and their published productivity ratios are not directly comparable with these. Third, the two persistence estimates come from different estimators: the corrected $\hat\gamma_1$ is an instrumental-variables estimate within the production-function step, whereas the GNR $\hat\gamma_1$ is a least-squares regression of firm-level $\omega_{it}$ on its lag, which estimation noise in $\omega_{it}$ biases towards zero. Part of the gap in persistence, and so in half-lives, may reflect this difference rather than overreporting.
-
-::: {.content-visible when-meta="draft"}
-
-**Draft note (productivity, 2026-09-24), outline for the results:** (1) Recomputed for both instruments (`293-omega-deconv-current-pf.R`, P-spline deconvolution, all 10 fits converged); the saved estimates (`425_omega.R`) used an older first stage and older $\hat\alpha$'s. (2) Omega vs. omega: GNR's firm-level $\omega$ removes the measurement error (`GNR_code_CD_me.do`: `vg = yg - eg - integ`, `logomega = vg - al*l - ak*k`, $\mathcal E=1$); same sample. (3) Dispersion is the robust finding: corrected productivity is much less dispersed than GNR's in every industry, P90/P10 1.7–2.8 vs. 3.1–6.7 and P80/P20 1.3–1.7 vs. 1.9–3.4 ($m^*_{it-1}$); both instruments agree except 313. (4) Levels are mixed: corrected mean above GNR in 331 and 322, below in 369, 313, 321; so the intro's "downward-biased productivity" claim is not supported as a level statement, only as "more dispersed". (5) Shape: all left-skewed; no consistent pattern. (5b) Persistence: corrected $\hat\gamma_1$ 0.92–0.98 ($m^*_{it-1}$) vs. GNR 0.86–0.90, higher in every industry (GNR 2020 report 0.64 vs. 0.53 for OLS, across all industries, under their $\exp(\omega+\varepsilon)$ convention). Tail ratios 75/25 and 95/5 tell the same dispersion story as 90/10. (6) Penalty-vs-noise caveat: now stated in the text. (7) 313 with $\tilde{\mathcal W}_{it-2}$: $\hat\alpha_K=0$ at the bound, outside its own sharp region, so its level is not comparable (said in the table note). The older `250-pf.qmd` discussion compared mean, SD and quartiles of $\exp(\omega)$; the metrics here follow it and add P90/P10, P80/P20 and skewness.
-
-
-:::
-
-::: {.content-visible when-meta="draft"}
-## Robustness: single-tax vs. net-of-tax first stage
-
-**Draft note (2026-09-26): superseded.** The net-of-tax first stage is now the headline for every chapter; this section, its table (gross labelled as headline, old five industries) and the TODO below need inverting or dropping.
-
-<!-- TODO prose: 2-3 sentences. This table exists specifically to support the limitation disclosed in ch. 8
-(Scope and limits) -- the headline ELVIS/counterfactual results use beta from THIS (gross/single-tax) first
-stage, not a net-of-tax one. Point: the evasion FOC itself is already correctly two-tax (only tau_P enters,
-see ch. 2's closing note); only the materials-FOC/production-identity side that feeds beta is exposed to the
-tau_S/tau_P wedge, and it moves beta by at most 0.012 across the 5 headline industries (table below) -- small
-relative to beta's own scale (0.24-0.39). Frame as reassurance evidence, not as "already resolved": ELVIS
-itself has not been re-run on the net-of-tax first stage (future work, explicitly not this week). -->
-
-::: {#tbl-beta-net-tax}
-![](/tables/ch06-beta-net-tax.png)
-
-$\hat\beta$ under the gross (approved, headline) vs. net-of-tax first stage, 5 headline industries.
-:::
-:::

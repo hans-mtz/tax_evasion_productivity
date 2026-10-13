@@ -1,4 +1,6 @@
-## PRODUCT: Thesis/tables/ch06-pf-comparison.png := Table 6.x, production function estimates by method
+## PRODUCT: Thesis/tables/ch06-pf-comparison.png := ch. 6 table: evasion-corrected (instrument W~_{it-2}) vs GNR and OLS
+## PRODUCT: Thesis/tables/appE-pf-instruments.png := appendix E: corrected estimates under the three instrument systems
+## (W~_{it-2}, m*_{it-1}, joint efficient GMM). Split 2026-10-12 (Hans: ch. 6 outline; OLS stays in ch. 6 as the standard benchmark).
 ## Rebuilt 2026-09-24 (Hans): report BOTH single-instrument fits used downstream -- m*_{it-1} (lag_m,
 ## feeds the ELVIS/counterfactual estimates) and W~_{it-2} (lag_2_w_eps = lag of w_eps = cal_W - aK k - aL l,
 ## the TILDED W) -- next to the joint efficient GMM (both instruments; the choice for the final version),
@@ -59,17 +61,23 @@ tbl <- w %>% rowwise() %>% reframe(
 )
 print(tbl, n = Inf)
 
-est_rows <- seq(1, nrow(tbl), by = 3)
-tt_obj <- tt(tbl, align = "lccccccccccccc",
-             width = c(1.0, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55),
-             notes = "Evasion-corrected columns use the first stage on the log materials share net of sales taxes; $\\hat\\beta$ is the corporations' first-stage estimate, common to the three evasion-corrected columns; below it, its 95\\% test-inversion regions from the corporations' share moment (the production-function moments are exactly identified given $\\beta$ and profiled): sharp ($\\chi^2_1$) and conservative ($\\chi^2_5$). Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate $(\\alpha_K,\\alpha_L)$, the statistic whose regions are shown. $\\tilde{\\mathcal W}_{it-2}$ (the headline) and $m^*_{it-1}$: one instrument each (exactly identified, statistic zero at the estimate); below them, the projections of the 95\\% test-inversion regions for $(\\alpha_K,\\alpha_L)$ (0.005 grid over $[0,1]^2$): sharp ($\\chi^2_2$, credit for profiling $\\gamma_0,\\gamma_1$) and conservative ($\\chi^2_4$). Joint efficient GMM: both instruments together; sharp ($\\chi^2_3$) and conservative ($\\chi^2_5$) regions. GNR and OLS: uncorrected estimates on the same sample (GNR's share regression on the log materials share net of sales taxes). $(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E).") %>%
-    group_tt(j = list(" " = 1:2, "$\\tilde{\\mathcal W}_{it-2}$" = 3:4, "$m^*_{it-1}$" = 5:6,
-                      "Joint efficient GMM" = 7:8, "GNR" = 9:11, "OLS" = 12:14)) %>%
-    style_tt(fontsize = 0.66) %>%
-    style_tt(i = "notes", fontsize = 0.8)
-colnames(tt_obj) <- c("Industry", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",
-                      "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",
-                      "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$")
+## ch. 6: corrected (W~_{it-2}) vs GNR and OLS
+main <- tbl %>% select(Industry, beta, w_K, w_L, g_m, g_k, g_l, o_m, o_k, o_l)
+tt_main <- tt(main, align = "lccccccccc", width = c(1.0, 2.3, 2.3, 2.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7),
+              notes = paste0("Evasion-corrected: ", "$\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion regions from the corporations' share moment: sharp ($\\chi^2_1$) and conservative ($\\chi^2_5$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. ", "Instrument $\\tilde{\\mathcal W}_{it-2}$ (exactly identified); below the estimates, the projections of the 95\\% test-inversion regions for $(\\alpha_K,\\alpha_L)$ (0.005 grid over $[0,1]^2$): sharp ($\\chi^2_2$) and conservative ($\\chi^2_4$). GNR and OLS: uncorrected estimates on the same sample (GNR's share regression on the log materials share net of sales taxes). Other instruments: Appendix E. ", "$(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. ", "Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E).")) %>%
+    group_tt(j = list(" " = 1:2, "Corrected, $\\tilde{\\mathcal W}_{it-2}$" = 3:4, "GNR" = 5:7, "OLS" = 8:10)) %>%
+    style_tt(fontsize = 0.75) %>% style_tt(i = "notes", fontsize = 0.8)
+colnames(tt_main) <- c("Industry", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",
+                       "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$")
+render_thesis_table(tt_main, "ch06-pf-comparison")
 
-render_thesis_table(tt_obj, "ch06-pf-comparison")
-cat("Saved: Thesis/tables/ch06-pf-comparison.{png,pdf}\n")
+## appendix E: corrected estimates under the three instrument systems
+inst <- tbl %>% select(Industry, beta, w_K, w_L, m_K, m_L, j_K, j_L)
+tt_inst <- tt(inst, align = "lccccccc", width = c(1.0, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3),
+              notes = paste0("$\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion regions from the corporations' share moment: sharp ($\\chi^2_1$) and conservative ($\\chi^2_5$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. ", "$\\tilde{\\mathcal W}_{it-2}$ (the headline in Chapter 6) and $m^*_{it-1}$: one instrument each (exactly identified, statistic zero at the estimate); below them, the projections of the 95\\% test-inversion regions for $(\\alpha_K,\\alpha_L)$ (0.005 grid over $[0,1]^2$): sharp ($\\chi^2_2$, credit for profiling $\\gamma_0,\\gamma_1$) and conservative ($\\chi^2_4$). Joint efficient GMM: both instruments together; sharp ($\\chi^2_3$) and conservative ($\\chi^2_5$) regions. ", "$(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. ", "Industries: the five of Chapter 6.")) %>%
+    group_tt(j = list(" " = 1:2, "$\\tilde{\\mathcal W}_{it-2}$" = 3:4, "$m^*_{it-1}$" = 5:6, "Joint efficient GMM" = 7:8)) %>%
+    style_tt(fontsize = 0.75) %>% style_tt(i = "notes", fontsize = 0.8)
+colnames(tt_inst) <- c("Industry", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",
+                       "$\\hat\\alpha_K$", "$\\hat\\alpha_L$")
+render_thesis_table(tt_inst, "appE-pf-instruments")
+cat("Saved: Thesis/tables/ch06-pf-comparison.{png,pdf}, Thesis/tables/appE-pf-instruments.{png,pdf}\n")
