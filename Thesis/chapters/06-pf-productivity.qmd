@@ -56,8 +56,9 @@ $$
 \end{aligned}
 $$ {#eq-w-squiggle}
 
+I recover the distribution of productivity net of measurement error by deconvolving $\widetilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$ with the corporations' distribution of measurement error, as in @sec-deconvolution.
 
-## Production function estimates {#sec-pf-estimates}
+## Production function and productivity estimates {#sec-pf-estimates}
 
 The estimates cover the five industries of @sec-deconvolution; @sec-app-pf-all reports all nine industries of the structural estimation.
 
@@ -71,16 +72,15 @@ Because tax evasion artificially inflates the materials' cost share of revenues,
 
 The elasticities of capital and labour vary across industries, with some being lower than the uncorrected estimates, some higher, and others quite similar. This is expected. The direction of the bias in the elasticities of capital and labour depends on whether these inputs are complements or substitutes for materials. This relationship will vary by industry. Put differently, the cross-elasticities of materials with capital and with labour differ across industries in direction and magnitude. Since these cross-elasticities are not included in the Cobb-Douglas production function, the elasticities of capital and labour should reflect different degrees of these variations once materials are corrected for overreporting.
 
+Correcting for overreporting also reduces dispersion in productivity. The 90th-to-10th-percentile ratio of $\exp(\omega_{it})$ is 1.70 to 2.30 with the correction, against 2.38 to 6.86 for GNR, about 41 percent lower on average (range 19 to 74 percent across the five industries; @tbl-productivity-comparison).
 
-Productivity estimates in [this chapter]{.content-hidden when-meta="jmp"}[this section]{.content-visible when-meta="jmp"} use the $\tilde{\mathcal W}_{it-2}$ estimates of @tbl-pf-comparison. I recover the distribution of productivity net of measurement error by deconvolving $\widetilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$ with the corporations' distribution of measurement error, as in @sec-deconvolution.
+<!-- Productivity estimates in [this chapter]{.content-hidden when-meta="jmp"}[this section]{.content-visible when-meta="jmp"} use the $\tilde{\mathcal W}_{it-2}$ estimates of @tbl-pf-comparison.  -->
 
 ::: {#tbl-productivity-comparison}
 ![](/tables/ch06-productivity-comparison.png)
 
 Productivity corrected for tax evasion (deconvolved, instrument $\tilde{\mathcal W}_{it-2}$) and uncorrected (GNR), by industry.
 :::
-
-Correcting for overreporting also reduces dispersion in productivity. The 90th-to-10th-percentile ratio of $\exp(\omega_{it})$ is 1.70 to 2.30 with the correction, against 2.38 to 6.86 for GNR, about 41 percent lower on average (range 19 to 74 percent across the five industries; @tbl-productivity-comparison).
 
 Correcting for overreporting also makes productivity more persistent. With instrument $\tilde{\mathcal W}_{it-2}$, the AR(1) coefficient of $\omega_{it}$ is 0.93 to 0.96 across the five industries, against 0.81 to 0.89 for GNR. The half-life of a productivity shock, $\ln 0.5/\ln\hat\gamma_1$, is therefore 9 to 15 years instead of 3 to 6 years: between 1.6 and 3.1 times longer, depending on the industry (@tbl-productivity-comparison).
 
