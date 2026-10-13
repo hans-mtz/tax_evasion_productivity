@@ -1,5 +1,7 @@
 # Conclusion (`10-conclusion.qmd`): outline, saved 2026-10-13
 
+**Hans, 2026-10-13: rewrite the conclusion short.** By the conclusion the reader has seen every result. Remind them of the question, say what we find in general (no specific numbers), give the overall takeaway, and stop. Model it on the chapter openers and takeaways. The outline below is too long and P1, P2a, P2b above are too detailed: replace them with that short version. The outline in this file is superseded by that instruction.
+
 RAP 2 (tax rates), aligned with the JMP intro. Copied verbatim from the draft note in the chapter. Written so far (2026-10-13, Hans approved, two proof-reads): P1 (question opens the paragraph, then known/missing), P2 split into P2a (overreporting responds: ch. 7 reform, claims split with the mechanical 1 percent) and P2b (revenue: negative at the current rate, 1.7 percent per 1 percent, break-even 17, significant 28, loss 4.7 / at least 1.5). Next: P3 (supporting findings), P4 (implications), P5 (limits), P6 (next steps).
 
 **Draft note (outline, 2026-09-25; ch. 8 numbers updated 2026-10-10): RAP 2 (tax rates), aligned with the JMP intro** (options: `Thesis/feedback/jmp-intro-rap-options.md`; the earlier RAP 3 outline is archived in `Thesis/feedback/conclusion-rap3-outline-archive-250926.md`). Numbers match the intro and abstract; check them against the final chapters before writing. Five or six paragraphs.
