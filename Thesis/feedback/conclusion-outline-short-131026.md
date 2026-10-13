@@ -1,0 +1,16 @@
+# Conclusion outline, short version (approved by Hans 2026-10-13)
+
+Decisions: answer first (mirrors the JMP intro, RAP 2); no limits; no citations; the earlier P1, P2a, P2b prose deleted (it was too detailed). Supersedes `conclusion-outline-131026.md`.
+
+<!-- **Outline (approved by Hans, 2026-10-13): short, general, no numbers, no limits, no citations; answer first, as the intro.** Saved in `Thesis/feedback/conclusion-outline-short-131026.md`; the longer 2026-09-25 outline is in `Thesis/feedback/conclusion-outline-131026.md`. Four short paragraphs, about 300 words. -->
+
+**P1: The question.** Do firms overreport deductible inputs more when the tax rate rises, and what does that do to sales-tax revenue? Why it was open: true inputs are unobserved, and a firm that overreports looks like a less productive firm. Model the wording on the openers of @sec-fiscal and @sec-counterfactual.
+
+**P2: What we find (general).** In Colombia in the 1980s, firms overreported materials in about half of the industries liable for the sales tax, and they overreported more when the rate rose. Claimed deductions respond more than mechanically, through both more overreporting and more purchases of true materials, so raising the rate on purchases lowers net sales-tax revenue; undetected overreporting costs the government revenue. Optional: the cost of evasion is convex in productivity, consistent with evasion by firm size. Failing to correct for overreporting yields larger output elasticities of materials and productivity that is more dispersed and less persistent.
+
+**P3: How (the method).** A structural production function and a group of truthful firms separate overreporting from productivity using production data alone: a test valid for any form of detection and cost, whose rejection can only mean overreporting, and deconvolution to measure how much firms overreport. Inputs, output and a benchmark group suffice, so the method applies to surveys, administrative records and confidential tax records alike.
+
+**P4: Takeaway.** Where a tax credits purchases, input overreporting is part of the response to the rate and part of what reported inputs measure. Tax policy: a rate increase raises less revenue than its mechanical effect, and the evasion response can be measured separately from the real response. Productivity: estimates built on reported inputs should account for overreporting.
+
+**Out:** numbers (chapters, abstract, intro); limits and next steps; margins, ELVIS, corner firms (@sec-counterfactual); literature positioning (@sec-literature).
+
