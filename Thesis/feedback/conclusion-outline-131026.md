@@ -1,0 +1,50 @@
+# Conclusion (`10-conclusion.qmd`): outline, saved 2026-10-13
+
+RAP 2 (tax rates), aligned with the JMP intro. Copied verbatim from the draft note in the chapter. Written so far (2026-10-13, Hans approved, two proof-reads): P1 (question opens the paragraph, then known/missing), P2 split into P2a (overreporting responds: ch. 7 reform, claims split with the mechanical 1 percent) and P2b (revenue: negative at the current rate, 1.7 percent per 1 percent, break-even 17, significant 28, loss 4.7 / at least 1.5). Next: P3 (supporting findings), P4 (implications), P5 (limits), P6 (next steps).
+
+**Draft note (outline, 2026-09-25; ch. 8 numbers updated 2026-10-10): RAP 2 (tax rates), aligned with the JMP intro** (options: `Thesis/feedback/jmp-intro-rap-options.md`; the earlier RAP 3 outline is archived in `Thesis/feedback/conclusion-rap3-outline-archive-250926.md`). Numbers match the intro and abstract; check them against the final chapters before writing. Five or six paragraphs.
+
+**P1: The question.**
+
+- Known: how revenue responds to tax rates is well measured for individuals' reported income, whose elasticity bundles evasion, avoidance and real responses [@Saez2012; @Chetty2009]; theory says rates should be lower where evasion responds more [@Cremer1993]; for firms, evidence comes from bunching at kinks and notches [@Best2015] and misreported imports [@FismanWei2004].
+- Missing: how firms' input overreporting responds to the rate had not been estimated, because overreporting is not observed and is confounded with low productivity.
+- R: does input overreporting rise with the tax rate, and by how much does it move claimed deductions?
+
+**P2: The answer: yes, and asymmetrically.**
+
+- After the 1983 reform, overreporting by unincorporated firms in the affected industries rose by about 8.5 percentage points of true materials between 1983 and 1987, and it rose most where the net incentive rose (@sec-fiscal).
+- In the structural model, a 1 percent increase in the purchases-side rate raises claimed deductions by about 1.4 percent: firms overreporting more add 0.2 points, and firms buying more materials add another 0.2; the response to cuts is smaller (@sec-counterfactual).
+- At the current rate, net sales-tax revenue from these firms is negative, as in the survey data. Each 1 percent increase in the rate lowers it by about 1.7 percent of gross sales-tax revenue; a cut of about 17 percent makes the estimate break even, and a cut of about 28 percent or more makes it significantly positive (@sec-cf-results).
+- Undetected overreporting costs 4.7 percent of gross sales-tax revenue from these firms; across all firms in the sample, at least 1.5 percent (@sec-cf-gap).
+<!-- Superseded bullets (linear q, single-tax run, 2026-09-22):
+- In the structural model estimated on all industries, a 0.5 percent rate increase raises claimed deductions by 16–28 percent, far above the mechanical 0.5 percent; cuts work gradually: 8 percent is the smallest cut distinguishable from current policy, lowering claimed deductions by 6–16 percent (sec-counterfactual).
+- Ballpark: undetected overreporting costs about 3 percent of potential net sales-tax revenue from these firms; near the current rate, a 1 percent increase lowers it by about 20 percent (sec-app-backofenvelope).
+- Mechanism (one sentence, optional): detection is rare, so an increase pushes every evader up by about the same amount, while a cut removes evasion firm by firm.
+-->
+
+**P3: What made the answer possible (supporting findings).**
+
+- Overreporting is separated from productivity using the production function, with corporations as truth-tellers, from production data alone.
+- Detection: overreporting in 9 of the 18 industries liable for the sales tax, including four of the five largest, and in neither exempt industry (311, 312); the test is valid for any detection probability and evasion cost that vanish without evasion and any common technology, and a rejection can only mean overreporting (@sec-testing).
+- Measurement: in the five largest industries where the test rejects at 1 percent and the deconvolution applies, unincorporated firms overreport between 4.5 and 23.1 percent of true materials on average (@sec-deconvolution).
+- By-product: without the correction, materials elasticities are larger, and in the median of the five industries the productivity 90–10 ratio is 66 percent larger and the half-life of productivity shocks 63 percent shorter (@sec-pf).
+
+**P4: Implications.**
+
+- Policy: raising the rate on purchases lowers net sales-tax revenue, and about a quarter of the loss comes from firms' responses (overreporting 16 percent, materials 10 percent, back-of-envelope); a large enough cut turns net sales-tax revenue positive. The response of claimed deductions is the input optimal commodity taxation under evasion needs [@Cremer1993].
+- Method: needs only production data, with no partner tax authority or experiment, so it applies to past periods and to places where authorities do not cooperate; and it speaks to tax rates, the margin experiments rarely vary [@Slemrod2019, pp. 913, 942].
+
+**P5: Limits (plainly, no speculation).**
+
+- The counterfactual is partial equilibrium: true materials and overreporting respond; capital, labour and productivity are fixed.
+- The level of detection is identified only through the model, without audit data; levels are conditional on it, while relative measures, elasticities and shares of gross sales-tax revenue, can be read with more confidence.
+- Functional forms: a power detection probability; a cost linear in evasion and convex in productivity.
+- Relies on a group of firms that do not evade (corporations here).
+- Where the test does not reject, the result is inconclusive; for a particular industry, whether the assumptions hold should be investigated.
+
+**P6: Next steps (one short paragraph).**
+
+- A confidence set for the level of detection, and entry of the firms in the industries held truthful.
+- Production function and productivity with both instruments jointly (efficient GMM).
+- Productivity differences by firm group through conditional deconvolution.
+- Estimating all stages in one system.
