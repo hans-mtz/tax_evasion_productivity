@@ -16,11 +16,11 @@ The null hypothesis that the elasticity equals $E_0$ can be written without a di
 
 $$\theta(E_0)=(r_1-r_0)-E_0\,d\,\bar r=0.$$ {#eq-elasticity-null}
 
-The function $\theta$ depends on four means, $m=(\mu_0,\mu_1,T_0,T_1)$, each estimated from its own moment. As in the sharp version of the test for overreporting, I take the corporations' mean log share in each industry, $\ln\hat\beta_j$, as the true value. Then $\mu_t$ is the mean of $s_{ijt}-\ln\hat\beta_j$ and $T_t$ the mean of $\tau_P$ among unincorporated firms in ST-liable industries in year $t$, so the null asks whether these means, taken as the truth, imply an elasticity of $E_0$. The statistic is
+The function $\theta$ depends on four means, $m=(\mu_0,\mu_1,T_0,T_1)$, each estimated from its own moment. As in the sharp version of the test for overreporting, I take the corporations' mean log share in each industry, $\ln\hat\beta_j$, as the true value. Then $\mu_t$ is the mean of $s_{ijt}-\ln\hat\beta_j$ and $T_t$ the mean of $\tau_P$ among unincorporated firms in ST-liable industries in year $t$. The null asks whether these means, taken as the truth, imply an elasticity of $E_0$. The statistic is
 
 $$TS(E_0)=\frac{\hat\theta(E_0)^2}{\nabla\theta(E_0)'\,\hat V\,\nabla\theta(E_0)},$$
 
-compared with a $\chi^2_1$ critical value. $\hat V$ is the variance of $\hat m$, estimated from centred influence scores summed within plant, with the divisor $n$: the covariance estimator of the test for overreporting, of the production-function step, and of the structural estimator. The gradient depends on $E_0$, so the variance is re-evaluated at every candidate. The confidence set contains the values of $E_0$ that the test does not reject at 5 percent. The four means are just identified, so no weight matrix enters.
+compared with a $\chi^2_1$ critical value. $\hat V$ is the variance of $\hat m$, estimated from centred influence scores summed within plant, with the divisor $n$, the same covariance estimator as in the test for overreporting, the production-function step and the structural estimator. The gradient depends on $E_0$, so the variance is re-evaluated at every candidate. The confidence set contains the values of $E_0$ that the test does not reject at 5 percent. Because the four means are just identified, no weighting matrix enters.
 
 ## Results
 
@@ -34,7 +34,7 @@ Midpoint elasticity of overreporting with respect to $\tau_P$, 1983 to each year
 
 ## Why not a bootstrap interval
 
-The usual elasticity, $(r_1-r_0)/r_0$ over $(T_1-T_0)/T_0$, is 25 in 1987, but its plant-bootstrap interval runs from $-260$ to $301$. The 1983 level has a standard error of 1.7 percentage points, so $r_0$ is not distinguishable from zero and is negative in 19 percent of the draws: the ratio has no finite moments. The rise itself is precise, because the error in the baseline cancels in the difference. Removing the variance of the output measurement error from the standard error would not help: $\mathcal V=u-\varepsilon$ is what the estimator averages, so the variance of $\varepsilon$ is part of its sampling variance.
+The usual elasticity, $(r_1-r_0)/r_0$ over $(T_1-T_0)/T_0$, is 25 in 1987, but its plant-bootstrap interval runs from $-260$ to $301$. The 1983 level has a standard error of 1.7 percentage points, so $r_0$ is not distinguishable from zero and is negative in 19 percent of the draws: the ratio has no finite moments. The rise itself is precise, because the error in the baseline cancels in the difference. Removing the variance of the output measurement error from the standard error would not help: because the estimator averages $\mathcal V=u-\varepsilon$, the variance of $\varepsilon$ is part of its sampling variance.
 
 ## Caveats
 
