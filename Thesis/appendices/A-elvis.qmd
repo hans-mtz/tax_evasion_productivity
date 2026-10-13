@@ -2,36 +2,38 @@
 
 ## Objective and implementation {#sec-app-elvis-implementation}
 
-The moments in @sec-counterfactual follow from the model's independence assumptions. This section describes how they enter the estimator: the objective and its test, the computation of the tilted moments, and the two rows whose implemented form differs from their theoretical form.
+The moments in @sec-counterfactual follow from the model's independence assumptions. This section describes how they enter the estimator, the objective and its test, and the computation of the tilted moments.
 
-**Objective.** Let $\hat g(\theta,\gamma)=n^{-1}\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ be the sample average of the tilted moment in @eq-elvis-tilt, and let $\hat V(\theta,\gamma)$ be the covariance of the tilted moments, clustered by plant. Following @Schennach2014's Definition F.1, the objective is the continuously updated quadratic form
+Let $\hat g(\theta,\gamma)=n^{-1}\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ be the sample average of the tilted moment in @eq-elvis-tilt, and let $\hat V(\theta,\gamma)$ be the covariance of the tilted moments, clustered by plant. Following @Schennach2014's Definition F.1, the objective is the continuously updated quadratic form
 $$
 \hat L_n(\theta)=\min_{\gamma\in\mathbb R^{d_g}}\tfrac12\,\hat g(\theta,\gamma)'\,\hat V(\theta,\gamma)^{-}\,\hat g(\theta,\gamma),
 $$
-where $\hat V^{-}$ is a generalized inverse. @Schennach2014 writes the objective as the supremum over $\gamma$ of the negative of this quadratic form; minimizing the nonnegative form gives the same statistic. The generalized inverse keeps every eigen-direction of $\hat V$ with a positive eigenvalue, as in @AK2020. The multiplier $\gamma$ is unbounded: @Schennach2014 and @AK2020 both treat a diverging $\gamma$ as an expected solution, not a numerical failure.
 
-**Test.** @Schennach2014's Theorem F.1 shows that, at any $\theta$ that satisfies the moment condition, $TS_n(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. The test compares $TS_n$ with the $\chi^2_{d_g}$ critical value directly, with no credit for the parameters profiled out or for $\gamma$. Because the counterfactual supports a policy claim, I use this conservative test, whose asymptotic size is at most its nominal level. The seventeen moments are the eight rows of @sec-counterfactual plus one $\varepsilon$ row for each of the nine industries, and the 95 percent critical value is $\chi^2_{17,.95}=27.59$.
+where $\hat V^{-}$ is a generalized inverse. @Schennach2014 writes the objective as the supremum over $\gamma$ of the negative of this quadratic form; minimizing the nonnegative form gives the same statistic. The generalized inverse keeps every eigen-direction of $\hat V$ with a positive eigenvalue, following @AK2020. The multiplier $\gamma$ is unbounded. @Schennach2014 and @AK2020 both treat a diverging $\gamma$ as an expected solution, not a numerical failure.
 
-**Tilted moments.** The integrals in @eq-elvis-tilt have no closed form. I compute them by self-normalized importance sampling. For each firm, 1,000 draws of $M$ on its support come from a mixture of three proposals: uniform in $M$, log-uniform in $M$, and log-uniform in the distance to the support's lower edge. The draws are reweighted to the reference density of @sec-counterfactual, whose row scales $D$ are computed once and held fixed across every compared fit. The draws are also fixed across fits, which makes the objective smooth in $(\theta,\gamma)$ [@Schennach2014, p. 360].
+@Schennach2014's Theorem F.1 shows that, at any $\theta$ that satisfies the moment condition, $TS_n(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. The test compares $TS_n$ with the $\chi^2_{d_g}$ critical value directly, with no credit for the parameters profiled out or for $\gamma$. Because the counterfactual supports a policy claim, I use this conservative test [as in @AK2020], whose asymptotic size is at most its nominal level. The seventeen moments are the eight rows of @sec-counterfactual plus one $\varepsilon$ row for each of the nine industries, and the 95 percent critical value is $\chi^2_{17,.95}=27.59$.
 
-**Rows as implemented.** Two rows differ from their theoretical form. First, the scores of $h$ diverge at the FOC ceiling. With $x=\lambda_{0,jt}e$ and $B=1-(1+\lambda_1)x^{\lambda_1}$, the scores are
+The integrals in @eq-elvis-tilt have no closed form. I compute them by self-normalized importance sampling. For each firm, 1,000 draws of $M$ on its support come from a mixture of three proposals: uniform in $M$, log-uniform in $M$, and log-uniform in the distance to the support's lower edge. The draws are reweighted to the reference density of @sec-counterfactual, whose row scales $D$ are computed once and held fixed across every compared fit. The draws are also fixed across fits, which makes the objective smooth in $(\theta,\gamma)$ [@Schennach2014, p. 360].
+
+For numerical stability, two rows are implemented as follows. First, the scores of $h$ diverge at the FOC ceiling. With $x=\lambda_{0,jt}e$ and $B=1-(1+\lambda_1)x^{\lambda_1}$, the scores are
 $$
 \frac{\partial h}{\partial\lambda_1}=-\frac{x^{\lambda_1}\big[1+(1+\lambda_1)\ln x\big]}{B},\qquad
 \frac{\partial h}{\partial\bar\lambda}=\frac{\lambda_1(1+\lambda_1)\,x^{\lambda_1}}{\bar\lambda\,B},
 $$
+
 and both go to infinity as $B\to0$, where a single extreme draw can dominate the weighting matrix. The rows therefore use the softsign transformation $s/(1+|s|)$, bounded in $(-1,1)$, with $B$ floored at $10^{-6}$. The transformed rows remain valid moments, because any function of $e$ alone is independent of $\varepsilon$. I use the softsign for two reasons: the score in $\lambda_1$ changes sign, and the softsign decays polynomially, which keeps firms distinguishable across the range of $e$, whereas $\exp$ and $\tanh$ saturate. Second, the row for the independence of $\psi$ and the purchases rate interacts $\psi$ with $\ln\bar\tau_{P,jt}$, the log of the leave-one-out industry–year mean purchases rate, rather than with the firm's own rate.
 
-**Optimization.** At each grid point of the detection parameters (@sec-app-elvis-search), I estimate the cost parameters by Nelder–Mead, in two passes. Every grid point starts from the same validated point, never from the solution at a neighbouring point, and the draws are common within a fit. Before the search begins, $\gamma$ is solved for at the starting point.
+At each grid point of the detection parameters (@sec-app-elvis-search), I estimate the cost parameters by Nelder–Mead, in two passes. Every grid point starts from the same validated point and the draws are common within a fit. Before the search begins, $\gamma$ is solved for at the starting point.
 
 ## Trimming {#sec-app-elvis-trim}
 
-I drop the top 0.5 percent of interior firm-years by reported materials before fitting: 61 firm-years, 22 of them in Textiles (321). Without the trim, no tested $(\lambda_1,\bar\lambda)$ passes the conservative test: the lowest statistic is 46.1, against a critical value of 27.59. The largest firms in Textiles report between 7 and 13 times their industry's lagged mean of reported materials, $\bar M_{j,t-1}$. At the operating point, the FOC ceiling caps their overreporting at about $0.24\,\bar M_{j,t-1}$, or $u\lesssim0.02$, while their observed residual $\mathcal V_{it}$ is about 0.27. The model must then attribute almost all of their residual to measurement error in output. The trimmed firms enter the counterfactual without a model of their evasion: their claimed deductions respond to the rate only mechanically and through materials, $(1+\Delta)\tau_{P,it}\,r_{it}(\Delta)\,M^*_{it}$.
+I drop the top 0.5 percent of interior firm-years by reported materials: 61 firm-years, 22 of them in Textiles (321). These firms could not be rationalized by the model during estimation. Either these firms are extremely aggressive in evasion or there was an additional measurement error which the model did not include. The largest firms in Textiles report between 7 and 13 times their industry's lagged mean of reported materials, $\bar M_{j,t-1}$. At the operating point, the FOC ceiling caps their overreporting at about $0.24\,\bar M_{j,t-1}$, or $u\lesssim0.02$, while their observed residual $\mathcal V_{it}$ is about 0.27. The model must then attribute almost all of their residual to measurement error in output. The trimmed firms enter the counterfactual without a model of their evasion: their claimed deductions respond to the rate only mechanically and through materials, $(1+\Delta)\tau_{P,it}\,r_{it}(\Delta)\,M^*_{it}$.
 
 ## Search over the detection parameters {#sec-app-elvis-search}
 
-The detection parameters $(\lambda_1,\bar\lambda)$ are fixed on a grid, and at each grid point the cost parameters $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated (@fig-cf-kkappa). On a coarse grid, $\lambda_1\in\{0.65,0.70,0.75\}$ and $\bar\lambda\in\{0.5,4.5,9\}$, only $(0.75,0.5)$ passes the conservative test, with $TS=23.7$; the next best point, $(0.70,9)$, reaches 29.5. A fine grid around it, $\lambda_1\in\{0.725,0.75,0.775\}$ and $\bar\lambda\in\{0.4,0.5,0.6\}$, finds a second passing point, $(0.775,0.5)$, with $TS=22.0$ at 1,000 draws per firm and 23.8 at 4,000, against 23.7 and 24.7 at the operating point. At this second point, the generalized inverse keeps all 17 eigen-directions of $\hat V$, $(\hat\delta_0,\hat\delta_1,\hat\delta_2)=(42.2,27.1,3.87)$ and $\hat\omega^*=3.50$. The difference in $TS$ lies within the noise between refits, and the fit is less settled: the effective sample size per firm is smaller and $\gamma$ is larger. I therefore keep $(0.75,0.5)$ as the operating point. The passing region is not a single point.
+The detection parameters $(\lambda_1,\bar\lambda)$ are fixed on a grid, and at each grid point the cost parameters $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated (@fig-cf-kkappa). On a coarse grid, $\lambda_1\in\{0.65,0.70,0.75\}$ and $\bar\lambda\in\{0.5,4.5,9\}$, only $(0.75,0.5)$ passes the conservative test, with $TS=23.7$; the next best point, $(0.70,9)$, reaches 29.5. A fine grid around it, $\lambda_1\in\{0.725,0.75,0.775\}$ and $\bar\lambda\in\{0.4,0.5,0.6\}$, finds a second passing point, $(0.775,0.5)$, with $TS=22.0$ at 1,000 draws per firm and 23.8 at 4,000, against 23.7 and 24.7 at the operating point. At this second point, the generalized inverse keeps all 17 eigen-directions of $\hat V$, $(\hat\delta_0,\hat\delta_1,\hat\delta_2)=(42.2,27.1,3.87)$ and $\hat\omega^*=3.50$. The difference in $TS$ lies within the noise between refits, and the fit is less settled: the effective sample size per firm is smaller and $\gamma$ is larger. I therefore keep $(0.75,0.5)$ as the operating point. The passing region is a set as with all modeld with latent variables [@Schennach2014].
 
-The moments do not pin down the level of detection $\bar\lambda$, but relative detection risk is nearly free of it: across industries, the relative risks at $\bar\lambda=0.5$ and at $\bar\lambda=9$ have a correlation of 0.87.
+The the level of detection is identified under the model with $\bar\lambda\le1$. Larger values will interact with $\lambda_1$ however larger values would be difficult to justify. Relative detection risk on the other hand is nearly free of $\bar\lambda$: across industries, the relative risks at $\bar\lambda=0.5$ and at $\bar\lambda=9$ have a correlation of 0.87.
 
 ![Conservative test statistic over the detection parameters. Left: coarse grid; right: fine grid around the operating point. Each cell is a separate fit with $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ estimated; height is $TS_{\text{cons}}$. Blue dots are not rejected, grey crosses are rejected; the plane is $\chi^2_{17,.95}=27.59$.](/figures/ch08-k-kappa-grid.png){#fig-cf-kkappa}
 
@@ -39,7 +41,7 @@ The moments do not pin down the level of detection $\bar\lambda$, but relative d
 
 This section states every formula the counterfactual computes, for one firm-year $i$ and one candidate value $M$ of its true materials. Materials are measured as real expenditure (nominal expenditure divided by $p_{\text{gdp}}$), so purchase credits are $\tau_{P,it}M$. The counterfactual purchases rate is $\tilde\tau_{P,it}=(1+\Delta)\tau_{P,it}$; the rate on sales $\tau_{S,it}$ does not change.
 
-**Held fixed.** The detection and cost parameters at the operating point, including the detection scale $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$: it is a parameter of the detection function, set through the industry's lagged mean of reported materials, so it does not move with the firm's current choices; capital and labour; productivity $\omega_{it}$, the cost shock $\psi_{it}$ and the output measurement error $\varepsilon_{it}$; and prices $P_t$, $\rho_t$.
+The counterfactual holds fixed the detection and cost parameters at the operating point, including the detection scale $\lambda_{0,jt}=1/(\bar\lambda\bar M_{j,t-1})$: it is a parameter of the detection function, set through the industry's lagged mean of reported materials, therefore it does not move with the firm's current choices; capital and labour; productivity $\omega_{it}$, the cost shock $\psi_{it}$ and the output measurement error $\varepsilon_{it}$; and prices $P_t$, $\rho_t$.
 
 ### Baseline objects at a candidate $M$
 
@@ -47,6 +49,7 @@ From the data $Z_{it}$ and a candidate $M\in\big(\max\{0,M^*_{it}-c_{\lambda_1}/
 $$
 e=M^*_{it}-M,\qquad x=\lambda_{0,jt}\,e,\qquad B\equiv1-(1+\lambda_1)x^{\lambda_1}.
 $$
+
 The baseline evasion FOC, $\tau_{P,it}\rho_t\big(1-(1+\lambda_1)x^{\lambda_1}\big)=\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$, says that $B$ is the firm's marginal cost of evasion relative to its marginal benefit, $B=\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}/(\tau_{P,it}\rho_t)$. Each candidate $M$ therefore pins down the firm's type $(\omega,\psi)$, and the tilt integrates over candidates.
 
 ### New evasion
@@ -60,7 +63,7 @@ $$ {#eq-app-cf-eprime}
 
 Since $B/(1+\Delta)>0$, $x'^{\lambda_1}<1/(1+\lambda_1)$: the new evasion stays below the FOC ceiling $c_{\lambda_1}$ for any $\Delta$. A firm with $B\ge1+\Delta$ stops overreporting.
 
-**Why $e'$ does not depend on the response of $M$.** The evasion FOC contains $\tau_{P,it}\rho_t$, the detection probability $q(e)$ through $\lambda_{0,jt}$ and $\lambda_1$, and the marginal cost $\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$. None of these is $M$: the detection parameter $\lambda_{0,jt}$ does not depend on the firm's materials, and the cost depends on productivity, not on the input level. So when $M$ re-optimizes, the evasion FOC is unchanged and @eq-app-cf-eprime holds as is. The candidate $M$ enters $e'$ only through the baseline $B$, as the firm's type. (Symmetrically, the materials FOC below contains no $e$: $M\perp e\mid\omega$.)
+$e'$ does not depend on the response of $M$. The evasion FOC contains $\tau_{P,it}\rho_t$, the detection probability $q(e)$ through $\lambda_{0,jt}$ and $\lambda_1$, and the marginal cost $\exp\{\delta_0-\delta_1\omega+\delta_2\omega^2+\psi\}$. None of these is $M$: the detection parameter $\lambda_{0,jt}$ does not depend on the firm's materials, and the cost depends on productivity, not on the input level. Therefore, when $M$ re-optimizes, the evasion FOC is unchanged and @eq-app-cf-eprime holds as is. The candidate $M$ enters $e'$ only through the baseline $B$, as the firm's type. (Symmetrically, the materials FOC below contains no $e$: $M\perp e\mid\omega$.)
 
 ### Response of true materials
 
@@ -70,14 +73,15 @@ $$
 \quad\Longrightarrow\quad
 M=\left[\frac{(1-\tau_{S,it})P_t\beta K^{\alpha_K}L^{\alpha_L}\exp(\omega)}{(1-\tau_{P,it})\rho_t}\right]^{\frac1{1-\beta}}.
 $$
+
 Taking the ratio of this solution at $\tilde\tau_{P,it}$ and at $\tau_{P,it}$, everything except the purchases rate cancels:
 $$
 r_{it}(\Delta)\equiv\frac{M(\Delta)}{M}=\left(\frac{1-(1+\Delta)\tau_{P,it}}{1-\tau_{P,it}}\right)^{-\frac1{1-\beta}}.
 $$ {#eq-app-cf-r}
 
-**Why $r$ does not depend on $M$.** The level of $M$ is set by $K$, $L$, $\omega$, $P_t$, $\rho_t$ and $\tau_{S,it}$, all held fixed, so they cancel in the ratio. The ratio depends only on $\tau_{P,it}$, $\Delta$ and $\beta$. It is therefore the same for every candidate $M$ of a firm: whatever the firm's true materials are, they scale by the same factor. With $\beta\approx0.39$ and $\tau_P\approx0.088$, the elasticity of $M$ with respect to the purchases rate at $\Delta=0$ is $\tau_P/[(1-\beta)(1-\tau_P)]\approx0.16$. The new true materials are $M'=r_{it}(\Delta)M$, and reported materials become $M'+e'$.
+$r$ does not depend on $M$. The level of $M$ is set by $K$, $L$, $\omega$, $P_t$, $\rho_t$ and $\tau_{S,it}$, all held fixed and cancel in the ratio. The ratio depends only on $\tau_{P,it}$, $\Delta$ and $\beta$. It is therefore the same for every candidate $M$ of a firm: whatever the firm's true materials are, they scale by the same factor. With $\beta\approx0.39$ and $\tau_P\approx0.088$, the elasticity of $M$ with respect to the purchases rate at $\Delta=0$ is $\tau_P/[(1-\beta)(1-\tau_P)]\approx0.16$. The new true materials are $M'=r_{it}(\Delta)M$, and reported materials become $M'+e'$.
 
-Output and gross sales-tax revenue scale with $M^{\beta}$, holding $K$, $L$, $\omega$ and the measurement error $\varepsilon$ fixed: $Y'=r_{it}^{\beta}Y$, so observed gross sales-tax revenue becomes $t1_{it}\,r_{it}^{\beta}$, where $t1_{it}=\tau_{S,it}\times$ nominal reported sales.
+Output and gross sales-tax revenue scale with $M^{\beta}$, holding $K$, $L$, $\omega$ and the measurement error $\varepsilon$ fixed: $Y'=r_{it}^{\beta}Y$. The observed gross sales-tax revenue becomes $t1_{it}\,r_{it}^{\beta}$, where $t1_{it}=\tau_{S,it}\times$ nominal reported sales.
 
 ### Claimed deductions and revenue
 
@@ -85,10 +89,12 @@ Claims are the credit on true purchases plus the credit on undetected overreport
 $$
 C_i(\Delta;M)=(1+\Delta)\tau_{P,it}\Big[r_{it}(\Delta)\,M+\big(1-q(e')\big)e'\Big],\qquad q(e')=x'^{\lambda_1},
 $$ {#eq-app-cf-claims}
+
 and net sales-tax revenue from the firm, in real terms, is
 $$
 R_i(\Delta;M)=\frac{t1_{it}\,r_{it}(\Delta)^{\beta}}{p_{\text{gdp},t}}-C_i(\Delta;M).
 $$ {#eq-app-cf-revenue}
+
 With true materials held fixed (the robustness version), $r_{it}\equiv1$: claims use $M$ and the sales tax is the observed $t1_{it}/p_{\text{gdp},t}$.
 
 ### Estimation
@@ -97,14 +103,17 @@ The target is the expected value per firm-year, in units of $S=n^{-1}\sum_i\tau_
 $$
 g_{10}(M,Z_{it};T)=\frac{R_i(\Delta;M)}{S}-T .
 $$
+
 Only $\gamma$ is free; $\theta$ stays at the operating point [@AK2020, App. F]. For each firm the tilted moment is the importance-sampling average over draws $M^{(s)}$ of the latent,
 $$
 \tilde g_{10,i}=\sum_s w_{is}(\gamma)\,g_{10}(M^{(s)},Z_{it};T),\qquad w_{is}(\gamma)=\frac{\pi_{is}\exp\big(\gamma'g(M^{(s)},Z_{it})\big)}{\sum_{s'}\pi_{is'}\exp\big(\gamma'g(M^{(s')},Z_{it})\big)},
 $$
-where $\pi_{is}$ is the importance weight of draw $s$ with respect to the reference density $f^0_{M|Z}$ and $g$ includes $g_{10}$. The draws are the same for every $T$ and $\Delta$. The sales-tax term $t1_{it}r_{it}^{\beta}/(p_{\text{gdp},t}S)$ is the same for every draw of firm $i$: it cancels in the weights and adds a firm-level constant to $\tilde g_{10,i}$. It still enters the variance $\hat\Omega$ across firms. The moment is linear in $T$, so the profiled statistic is
+
+where $\pi_{is}$ is the importance weight of draw $s$ with respect to the reference density $f^0_{M|Z}$ and $g$ includes $g_{10}$. The draws are the same for every $T$ and $\Delta$. The sales-tax term $t1_{it}r_{it}^{\beta}/(p_{\text{gdp},t}S)$ is the same for every draw of firm $i$: it cancels in the weights and adds a firm-level constant to $\tilde g_{10,i}$. It still enters the variance $\hat\Omega$ across firms. Because the moment is linear in $T$, the profiled statistic is
 $$
 TS(T)=2n\min_{\gamma}\hat L_n(\hat\theta,\gamma;T),
 $$
+
 $\hat T$ is its minimizer, and the reported set is the conservative one, $\{T:TS(T)\le\chi^2_{d_g,.95}\}$ with $d_g=18$ (the 17 estimation rows plus row 10). Row 10 is left out of the reference measure's penalty, since it is bounded for each firm. Because a failed inner solve can only raise $TS$, each $\gamma$ problem is solved from several starting values (the operating $\gamma$, the solution at the previous $T$, and the best solution found so far), keeping the lowest; the set is the union of every $T$ accepted along the way, located by bisection outward from $\hat T$. Revenue per firm-year is $\hat T\times S$, and the set's bounds scale the same way. The bases of the elasticities in @sec-cf-design are treated as known.
 
 ### Robustness: true materials fixed {#sec-app-cf-robust}
