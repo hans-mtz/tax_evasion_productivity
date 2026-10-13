@@ -136,6 +136,8 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[~]` first pass 2026-10-10: both render clean, no leaks, no unresolved refs; appendix A robustness was hidden in a draft block (fixed); re-run after the review pass |
 | Tue 10-13 | Send to supervisors | `[ ]` |
 
+**Status 2026-10-13 (end):** ch. 6 review pass finished: Hans's dispersion and persistence paragraphs proof-read (persistence spelling, footnote `[^eps-gnr]` subject and wording), and the comparisons now run in one direction throughout (uncorrected relative to corrected: elasticities of materials larger, capital and labour elasticities higher in some industries and lower in others, 90/10 66 percent larger, half-life 63 percent shorter; matches the opener and `ch06-productivity-comparison.R`'s definitions). Stale-number grep clean except the JMP abstract ("In these 4 industries … 14.7 percent", Hans to rethink). **Next: the JMP abstract sentence, then review pass item (2), the intros, (3) the conclusion, (4) the appendices as prose (appendix E estimation draft note), then the full render (Mon 10-12 row).**
+
 **Status 2026-10-12 (evening):** ch. 6 through the outline (`Thesis/feedback/ch06-pf-outline-121026.md`): opener (Hans), Identification heading, instrument sentence, industries sentence, productivity net of measurement error; numbers from unrounded estimates, comparisons framed as uncorrected vs corrected (medians 66/63 with ranges); main PF table corrected vs GNR vs OLS, other instruments and `tbl-orth` to appendix E (`@sec-app-pf-estimation`); single-tax beta rebuilt on the current sample in appendix D (`@tbl-beta-single-tax`). Intros, thesis abstract, conclusion updated (range 4.5–23.1 over the five; 63 percent). **Next: review pass item (2), the intros, then (3) the conclusion and (4) the appendices.**
 
 **Status 2026-10-12 (later):** ch. 5 audit finished: "The overreporting ratio" opener (why the ratio), table/figure sentence with the two conditions and a variance-condition footnote (313), results paragraphs (range, single interior peak, spreads; Hans edited), 313 sentence and the stale draft-note block deleted. **Next: ch. 6 (PF and productivity) through the outline skill.**
@@ -147,12 +149,12 @@ JMP to supervisors **Tue 2026-10-13** (set 2026-10-06; the Sept 21–25 schedule
 **Status 2026-10-11:** ch. 4 (testing) is drafted in the text, results included, and appendix F carries the robustness derivation (research log 2026-10-11). Ch. 4 draft blocks left: Tim's two comments, the opening placeholders/bullets (Hans to confirm deletion), the ε-as-measurement-error and denominator notes, the test-design bullet.
 
 **TODO before sending: propagate the 313 / five-industry decision outside ch. 4** (decided 2026-10-11, research log; do it after ch. 4 is integrated; assets already regenerated, `cbc118c`). Deconvolution and PF now use 321, 322, 324, 342, 369 (313 fails the variance condition; it stays in the test and ELVIS). New headline medians over the five: $E[e/M]$ 12.4 percent (was 14.5 over seven), 90/10 66 percent larger (same), half-life 63 percent shorter (was 52).
-- [ ] Thesis intro (`01-intro.qmd` l. 21) and JMP intro (`JMP/sections/01-intro.qmd` l. 15): "7 of them … 14.5 percent"; "In those 7 industries … 52 percent shorter"; describe the selection (5 largest, rejects at 1 percent, variance condition).
-- [ ] Thesis abstract (`index.qmd` l. 5): "the 7 industries … 14.5 percent".
+- [x] Thesis intro (`01-intro.qmd` l. 21) and JMP intro (`JMP/sections/01-intro.qmd` l. 15): "7 of them … 14.5 percent"; "In those 7 industries … 52 percent shorter"; describe the selection (5 largest, rejects at 1 percent, variance condition).
+- [x] Thesis abstract (`index.qmd` l. 5): "the 7 industries … 14.5 percent".
 - [ ] JMP abstract (`JMP/abstract.qmd`): "In these 4 industries … 14.7 percent" rests on 313, 321, 351, 352; 313 is no longer deconvolved and 351, 352 are not in the five. Rethink the sentence (Hans).
-- [ ] Conclusion (`10-conclusion.qmd` l. 28–29): "seven industries … 14.5 percent"; check the productivity numbers.
-- [ ] Ch. 5 (`05-deconvolution.qmd`): the selection rule with the variance condition (why 313 is out); draft notes l. 84, 107, 113–122 (313 outlier notes, medians, "five largest evaders"); figure/table text now 321 322 324 342 369.
-- [ ] Ch. 6 (`06-pf-productivity.qmd`): text mentioning 313 (l. 68, 69, 90, 111) and the five industries; medians 66/63.
+- [x] Conclusion (`10-conclusion.qmd` l. 28–29): "seven industries … 14.5 percent"; check the productivity numbers.
+- [x] Ch. 5 (`05-deconvolution.qmd`): the selection rule with the variance condition (why 313 is out); draft notes l. 84, 107, 113–122 (313 outlier notes, medians, "five largest evaders"); figure/table text now 321 322 324 342 369.
+- [x] Ch. 6 (`06-pf-productivity.qmd`): text mentioning 313 (l. 68, 69, 90, 111) and the five industries; medians 66/63.
 - [ ] Appendix E: still all nine with 313 at 48 percent (as in ELVIS); add a line on why 313 is not in ch. 5–6?
 - [ ] Ch. 4 draft notes l. 200, 210 (ranking "4 of the 5 largest", "7 to deconvolution and PF"); appendix F l. 19 (old bootstrap list).
 - [ ] Re-render thesis and JMP; check that no "14.5", "seven industries" or "52 percent" remain (`grep`).
