@@ -1,16 +1,14 @@
 # Estimating the Distribution of Overreporting {#sec-app-deconvolution}
 
-<!-- Moved from @sec-deconvolution ("Estimation") 2026-10-12 (outline audit: implementation goes to an appendix). Text unchanged. -->
+This appendix describes the estimator behind @sec-deconvolution: a spline model of the density of overreporting, fitted to the observed residuals by penalized maximum likelihood, with the distribution of measurement error taken from corporations.
 
-This appendix describes the estimator behind @sec-deconvolution.
-
-Following @Kang2021, consider the following logspline model:
+Following @Kang2021, the density of overreporting is a logspline,
 
 $$
-f_{u|\Theta}(u)=\exp(s(u;\theta)-C(\theta)), \quad L < u < R
+f_{u|\Theta}(u)=\exp(s(u;\theta)-C(\theta)), \quad L < u < R,
 $$
 
-where $[L,R]$ define the support of $f_u$,
+where $[L,R]$ is the support of $f_u$,
 
 $$
 s(u;\theta)=\sum_{j=1}^{K-1}\theta_j B_j(u),
@@ -22,35 +20,25 @@ $$
 C(\theta) = \log\left(\int^R_L \exp(s(u;\theta)) \text{d}u \right) < \infty .
 $$
 
-Then $f_{u|\Theta}(u)$ is a positive density function on $(L,R)$. The logspline model assumes that $f_u$ is a twice continuously differentiable function. The last basis function is not used for identifiability purposes, given that by the property of B-splines, $\sum_{j=1}^{K}B_j(u)=1$ for all $u \in (L,R)$.
+Then $f_{u|\Theta}(u)$ is a positive density on $(L,R)$, twice continuously differentiable. The last basis function is left out for identification: B-splines sum to one, $\sum_{j=1}^{K}B_j(u)=1$ for all $u \in (L,R)$.
 
-The log likelihood of the observed variable $\mathcal{V}$ is
+Because $\mathcal V_{it}=u_{it}-\varepsilon_{it}$, the log likelihood of the observed residuals is
 
 $$
 \begin{aligned}
     l_{\mathcal{V}}(\mathbf{\theta})=&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})f_{u|\theta}(u)\text{d}u\right)\\
-    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})\exp(s(u;\theta))\text{d}u\right)-nC(\theta)
+    =&\sum_{i=1}^{n}\log \left(\int f_{\varepsilon}(u-\mathcal{V_i})\exp(s(u;\theta))\text{d}u\right)-nC(\theta).
 \end{aligned}
 $$
 
-The usual maximum likelihood estimate $\hat{\theta}$ is the maximizer of $l_{\mathcal{V}}(\theta)$.
-
-To avoid overfitting, I add a penalty term to the log-likelihood function. The penalty term is a linear combination of the squared second derivatives of the B-spline basis functions. The second derivative of the B-splines is approximated by finite differences [@Eilers1996]. The penalty term is given by
+To avoid overfitting, I subtract a roughness penalty from the log likelihood [@Eilers1996]:
 
 $$
-\text{Penalty}(\theta) = \lambda \cdot \|\mathbf{D}\theta \|^2
+\text{Penalty}(\theta) = \lambda \cdot \|\mathbf{D}\theta \|^2,
 $$
 
-Intuitively, we want to penalize excessive curvature in the log-density $\log f_u(u) \approx s(u; \theta) = \sum_j \theta_j B_j(u)$, where $B_j$ are B-spline basis functions.
+where $\mathbf D$ takes third-order differences of adjacent coefficients. Each coefficient weights a B-spline that overlaps only its neighbours: large differences between adjacent coefficients make the log-density $s(u;\theta)$ wiggle, and the penalty keeps it smooth. The estimate $\hat\theta$ maximizes $l_{\mathcal V}(\theta)-\text{Penalty}(\theta)$.
 
-::: {.content-visible when-meta="draft"}
+I estimate each industry separately. The density of measurement error, $f_\varepsilon$, is a kernel density of the corporations' residuals, with the Sheather–Jones plug-in bandwidth and exponential tails beyond the range of the data. The support of $u$ is $[0,\max\mathcal V+0.1]$, which imposes $u\ge0$. The spline has eight interior knots at equally spaced percentiles of the non-negative values of $\mathcal V$, and the penalty weight is $\lambda=10$. Adaptive 15-node Gauss–Legendre quadrature computes the integrals in the likelihood, and BFGS maximizes the penalized likelihood.
 
-**Draft note (implementation facts to state, from `290-bs-mle-data.R`, `030-np-deconv-funs.R`, `292-np-deconv-unincorp.R`):**
-
-- Sample (2026-10-01): the stage-2 sample of @sec-counterfactual, unincorporated firms that pay sales tax on purchases (net share above 5 percent, below 75 percent in 369, top 0.5 percent of $M^*$ trimmed); $\mathcal V$ and $f_\varepsilon$ from the stage-2 first stage.
-- $f_\varepsilon$: kernel density (bandwidth `SJ-dpi`) of the corporations' residuals, industry by industry, with exponential decay outside the observed range.
-- 10 knots at equally spaced percentiles of the non-negative $\mathcal V$; support $[0,\max\mathcal V+0.1]$, so $u\ge0$ is imposed; $\lambda=10$ (the simulation in `120-implementation.qmd` used 0.1); Gauss-Legendre quadrature (15 nodes, adaptive).
-- Industries (2026-10-12): the five largest industries where the test rejects at the 1 percent level and the variance condition holds (321, 322, 324, 342, 369; 313 fails the variance condition); all nine stage-2 industries in @sec-app-pf-all.
-- Share: two-tax (net-of-sales-tax), juridical organization codes 6--9 excluded.
-
-:::
+The sample is the stage-2 sample of @sec-counterfactual: unincorporated firms that pay sales tax on purchases, with a log materials share net of sales taxes above 5 percent (and below 75 percent in Non-metallic minerals, 369), and with the top 0.5 percent by reported materials trimmed. $\mathcal V$ and $f_\varepsilon$ come from the first stage on the net share, with juridical organization codes 6 to 9 excluded. @sec-deconvolution reports the five largest industries where the test rejects at the 1 percent level and the variance condition holds; @sec-app-pf-all reports all nine stage-2 industries.
