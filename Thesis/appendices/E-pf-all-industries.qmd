@@ -1,12 +1,6 @@
 # Production-Function Estimates for All Industries {#sec-app-pf-all}
 
-The stage-2 estimation in @sec-counterfactual uses the nine industries where overreporting is detected, not only the five reported in @sec-pf. @tbl-pf-all-industries lists the production-function estimates it uses, with instrument $\tilde{\mathcal W}_{it-2}$. @tbl-overreporting-ratio-all and @fig-overreporting-ratio-all report the distribution of the overreporting ratio for the same nine industries.
-
-::: {.content-visible when-meta="draft"}
-
-**Draft note (2026-09-26):** these are the estimates for the re-estimated stage 2 (two-tax first stage, codes 6--9 excluded, instrument $\tilde{\mathcal W}_{it-2}$). The stage-2 results currently in @sec-counterfactual still come from the earlier run, which used $m^*_{it-1}$ on the single-tax first stage.
-
-:::
+The stage-2 estimation in @sec-counterfactual uses the nine industries where overreporting is detected, not only the five reported in @sec-pf. @tbl-pf-all-industries lists the production-function estimates it uses, with instrument $\tilde{\mathcal W}_{it-2}$. @tbl-overreporting-ratio-all and @fig-overreporting-ratio-all report the distribution of the overreporting ratio for the same nine industries. Beverages (313) appears here but not in @sec-deconvolution or @sec-pf: the variance of its unincorporated firms' residual falls short of the corporations', the condition the deconvolution requires.
 
 :::{#tbl-pf-all-industries}
 ![](/tables/appE-pf-all-industries.png)
@@ -30,6 +24,18 @@ Distribution of the overreporting ratio $e/M$ by industry, unincorporated firms,
 
 ## Estimation details {#sec-app-pf-estimation}
 
+The production-function moments in @eq-eta-moments hold for any instrument that is independent of the innovation $\eta_{it}$ and of the measurement errors $\varepsilon_{it}$ and $\varepsilon_{it-1}$. @tbl-orth lists the candidates by the residual they must be orthogonal to. With a single instrument $Z$, the vector $(1,Z,k_{it},l_{it})$ interacted with the residual gives four moments for the four parameters $(\alpha_K,\alpha_L,\gamma_0,\gamma_1)$, and the system is exactly identified. The joint system interacts $(1,m^*_{it-1},\tilde{\mathcal W}_{it-2},k_{it},l_{it})$ with the residual, which gives five moments for the same four parameters. In both systems, $\beta$ stays at its first-stage value, estimated from the corporations' log materials share net of sales taxes, with juridical organization codes 6 to 9 excluded.
+
+Uncertainty comes from test inversion. At each candidate $(\alpha_K,\alpha_L)$ on a 0.005 grid, the parameters $(\gamma_0,\gamma_1)$ are profiled out in closed form, because the problem is linear in $\gamma$ at fixed $\alpha$. With a single instrument, the sharp test compares the statistic with $\chi^2_2$, giving credit for profiling $(\gamma_0,\gamma_1)$, and the conservative test compares it with $\chi^2_4$; with the joint system, the critical values are $\chi^2_3$ and $\chi^2_5$. The grid covers $[0,1]^2$ and extends beyond it in steps of 0.25 wherever a region reaches its edge, down to $-1$ and up to 3. An open bracket marks a region that is not bounded on that side within $[-1,3]^2$, which happens only under $m^*_{it-1}$ and for the conservative region for $\alpha_L$ in Beverages (313). I use test inversion rather than a bootstrap because bias-corrected percentile intervals crossed 0 and 1 for several industries. The region for $\beta$ comes from the corporations' share moment alone. With a single instrument, the production-function moments are exactly identified given $\beta$, and profiling them leaves the share moment unchanged.
+
+The point estimate is the minimum of the same statistic whose regions are reported, with the covariance of the moments re-estimated at each candidate. A two-step estimator, which fixes the weighting matrix at a first-step point, understates the statistic when that point fits badly: in Beverages, the joint statistic is 1.62 at the two-step point and 9.96 with the covariance re-estimated there.
+
+The headline instrument is $\tilde{\mathcal W}_{it-2}$ alone. @tbl-pf-instruments compares it with $m^*_{it-1}$ and with the joint system in the five industries of @sec-pf. Across all 28 industries, $\tilde{\mathcal W}_{it-2}$ gives no estimate at a bound of the parameter space and no empty region, and its regions are about as tight as the joint system's: the median width is 0.25 for $\alpha_K$ and 0.35 for $\alpha_L$, against 0.23 and 0.40 for the joint system. On its own, $m^*_{it-1}$ is a weak instrument: its regions for $\alpha_K$ reach 1 in 24 of the 28 industries. The joint sharp region is empty in 311, 312, 313 and 352, where the moments of the two instruments conflict. The untilded $\mathcal W_{it-2}$, which contains $\alpha_Kk_{it-2}+\alpha_Ll_{it-2}$, is not used.
+
+GNR and OLS use the same sample and the same net-of-tax share. The GNR estimates come from an R port of the authors' Stata code, which reproduces it to four decimals.
+
+The distribution of productivity in @sec-pf comes from deconvolving $\tilde{\mathcal W}_{it}=\omega_{it}+(1-\beta)\varepsilon_{it}$ with the corporations' distribution of measurement error, scaled by $1-\beta$, using the estimator of @sec-app-deconvolution. The persistence of productivity is the coefficient $\gamma_1$ from regressing $\tilde{\mathcal W}_{it}$ on $\tilde{\mathcal W}_{it-1}$ with $\tilde{\mathcal W}_{it-2}$ as the instrument, which is independent of the measurement error in the lag, $\varepsilon_{it-1}$. Under GNR, it is the OLS coefficient of $\omega_{it}$ on $\omega_{it-1}$.
+
 Candidate instruments for the production-function moments of @sec-pf, by the residual they must be orthogonal to:
 
 |     |  Orthogonality     |
@@ -46,15 +52,3 @@ Candidate instruments for the production-function moments of @sec-pf, by the res
 Evasion-corrected production-function estimates under three instrument systems: $\tilde{\mathcal W}_{it-2}$ (the headline in @sec-pf), $m^*_{it-1}$, and both together (joint efficient GMM), with 95 percent test-inversion regions (sharp and conservative). Industries: the five of @sec-pf.
 :::
 
-::: {.content-visible when-meta="draft"}
-
-**Draft note (outline): estimation** (moved from @sec-pf, 2026-10-12; to turn into prose in the appendix pass). Decided 2026-09-26: the headline is the single instrument $\tilde{\mathcal W}_{it-2}$ (`lag_2_w_eps`, the tilded $\mathcal W$, lagged twice); $m^*_{it-1}$ and the joint system (both instruments) are reported as comparisons. First stage on the log materials share net of sales taxes, juridical organization codes 6--9 excluded. Industries: the five of @sec-deconvolution.
-
-- Single instrument: $(1, Z, k_{it}, l_{it})$ interacted with the residual, 4 moments, exactly identified; sharp region $\chi^2_2$, conservative $\chi^2_4$. Joint: $(1, m^*_{it-1}, \tilde{\mathcal W}_{it-2}, k_{it}, l_{it})$ interacted with the residual of @eq-eta-moments: 5 moments for $(\alpha_K,\alpha_L,\gamma_0,\gamma_1)$, $\beta$ fixed at its first-stage value (it never enters $\eta$); sharp $\chi^2_3$, conservative $\chi^2_5$.
-- Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the same statistic whose regions are reported (and the convention of @sec-app-elvis). The earlier joint point came from two-step GMM with the weight fixed at a first-step point; when that point fits badly the weight is too small and the statistic too low (313: 1.62 at the two-step point against 9.96 with the covariance re-estimated there).
-- Why $\tilde{\mathcal W}_{it-2}$ alone (comparison over all 28 industries): no estimate at a bound and no empty region; regions as tight as the joint system's (median width 0.25 for $\alpha_K$, 0.35 for $\alpha_L$; joint 0.23 and 0.40); $m^*_{it-1}$ alone is weak (regions for $\alpha_K$ reach 1 in 24 of 28 industries). The joint sharp region is empty in 311, 312, 313 and 352, where the $m^*_{it-1}$ and $\tilde{\mathcal W}_{it-2}$ moments conflict. The untilded $\mathcal W_{it-2}$, which contains $\alpha_Kk+\alpha_Ll$, is not used.
-- Uncertainty by test inversion on a 0.005 grid over $[0,1]^2$, extended beyond it in steps of 0.25 wherever a region reaches its edge, down to $-1$ and up to 3; $(\gamma_0,\gamma_1)$ profiled in closed form at each grid point (the problem is linear in $\gamma$ at fixed $\alpha$). Why not a bootstrap: bias-corrected percentile intervals crossed 0 and 1 for several industries. An open bracket marks a region not bounded on that side within $[-1,3]^2$ (only under $m^*_{it-1}$, and 313's conservative $\alpha_L$).
-- $\beta$: region from the corporations' share moment. With a single instrument the production-function moments are exactly identified given $\beta$, so profiling them leaves the share moment alone.
-- GNR and OLS: same sample and share (an R port of the Stata GNR code, validated to four decimals against it).
-
-:::
