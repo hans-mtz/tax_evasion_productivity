@@ -10,7 +10,7 @@
 ## one row with point estimates, then one row per test-inversion region (sharp, conservative) below it.
 ## Points (2026-09-26): Code/Products/1516-pf-points-updated-omega.csv -- for every system, the continuous minimum of the
 ##        same test-inversion statistic whose regions are shown (Omega re-estimated at each candidate).
-## Reads: Code/Products/1525-pf-regions-extended.csv  (ch. 6 table only: the W~_{it-2} sharp regions, closed beyond [0,1]^2)
+## Reads: Code/Products/1525-pf-regions-extended.csv  (all regions, closed beyond [0,1]^2; 2026-10-13)
 ##        Code/Products/1517-pf-systems-all-industries.RData (points + sharp/conservative regions, all three systems)
 ##        Code/Products/1512-pf-testinv-grid.csv            (single-instrument J on the (aK,aL) grid;
 ##                                                           sharp chi2_2 = 5.99, conservative chi2_4 = 9.49)
@@ -23,22 +23,36 @@ source("Code/Thesis/001-setup.R")
 
 five <- c("321", "322", "324", "342", "369")   # 2026-10-11 (Hans): the 5 largest industries (output share) with overreporting detected at 1% that meet the variance condition (313 fails it, research log 2026-10-11; 324 is next); same in ch. 5 and ch. 6
 f3  <- \(x) sprintf("%.3f", x)
-rg3 <- \(lo, hi) ifelse(is.na(lo), "empty",
-    paste0("$", ifelse(lo <= 0, "(\\,\\cdot\\,", sprintf("[%.3f", lo)), ",\\,",
-           ifelse(hi >= 1, "\\,\\cdot\\,)", sprintf("%.3f]", hi)), "$"))   # test convention: open end where 0 / 1 is not rejected
+## Hans 2026-10-13: no open ends in a table of estimates. Every (alpha_K, alpha_L) region comes from 1525 (1517's regions with
+## the grid extended beyond [0,1]^2 until each region closes; e.g. 324's alpha_K reaches below 0); beta's regions are interior.
+## A region still open at 1525's cap ([-1, 3]; m*_{it-1}, a weak instrument) prints with an open end and the note says so.
+rgc <- \(lo, hi, olo = rep(FALSE, length(lo)), ohi = rep(FALSE, length(lo))) ifelse(is.na(lo), "empty",
+    paste0("$", ifelse(olo, "(\\,\\cdot\\,", sprintf("[%.3f", lo)), ",\\,", ifelse(ohi, "\\,\\cdot\\,)", sprintf("%.3f]", hi)), "$"))
 
-## Points and regions for all three systems from ONE source: 1517 (minimum of the test-inversion statistic, Omega at
-## each candidate; sharp/conservative projections on a 0.005 grid). Single: chi2_2/chi2_4; joint: chi2_3/chi2_5.
+## Points from 1517 (minimum of the test-inversion statistic, Omega at each candidate); regions (sharp/conservative
+## projections on a 0.005 grid, closed) from 1525. Single: chi2_2/chi2_4; joint: chi2_3/chi2_5.
 load(file.path(PRODUCTS_DIR, "1517-pf-systems-all-industries.RData"))   # res
-sys <- \(x, pre) { z <- res %>% filter(system == x, sic_3 %in% five) %>%
-    transmute(sic_3, aK = alpha_K, aL = alpha_L, K_sharp = rg3(K_sh_lo, K_sh_hi), L_sharp = rg3(L_sh_lo, L_sh_hi),
-              K_cons = rg3(K_co_lo, K_co_hi), L_cons = rg3(L_co_lo, L_co_hi), stat)
+ext <- read.csv(file.path(PRODUCTS_DIR, "1525-pf-regions-extended.csv"), colClasses = c(sic_3 = "character")) %>%
+    filter(sic_3 %in% five) %>%
+    mutate(olo_K = !is.na(K_lo) & K_lo <= Klim_lo, ohi_K = !is.na(K_hi) & K_hi >= Klim_hi,
+           olo_L = !is.na(L_lo) & L_lo <= Llim_lo, ohi_L = !is.na(L_hi) & L_hi >= Llim_hi,
+           K_r = rgc(K_lo, K_hi, olo_K, ohi_K), L_r = rgc(L_lo, L_hi, olo_L, ohi_L))
+stopifnot(nrow(distinct(ext, sic_3, system, test)) == 30)   # 5 industries x 3 systems x 2 tests
+any_open <- any(ext %>% select(starts_with("olo"), starts_with("ohi")))
+if (any_open) warning("1525: region still open at the cap: ",
+    paste(with(filter(ext, olo_K | ohi_K | olo_L | ohi_L), paste(sic_3, system, test)), collapse = "; "))
+reg <- \(x, t, v) { z <- filter(ext, system == x, test == t); setNames(z[[v]], z$sic_3)[five] }
+sys <- \(x, pre) { z <- res %>% filter(system == x, sic_3 %in% five) %>% arrange(match(sic_3, five)) %>%
+    transmute(sic_3, aK = alpha_K, aL = alpha_L, K_sharp = reg(x, "sharp", "K_r"), L_sharp = reg(x, "sharp", "L_r"),
+              K_cons = reg(x, "cons", "K_r"), L_cons = reg(x, "cons", "L_r"), stat)
     names(z)[-1] <- paste0(pre, names(z)[-1]); z }
 m1 <- sys("lag_m", "m_"); w2 <- sys("lag_2_w_eps", "w_"); joint <- sys("joint", "j_")
 load(file.path(PRODUCTS_DIR, "1501-fs-net.RData"))                   # fs_net_ls (beta)
 t0 <- tibble(sic_3 = five, beta = sapply(five, \(s) fs_net_ls[[s]]$beta))
 load(file.path(PRODUCTS_DIR, "1522-beta-testinv.RData"))            # beta_ci: sharp chi2_1 / conservative chi2_5
-t0 <- t0 %>% left_join(beta_ci %>% transmute(sic_3, b_sharp = rg3(b_sh_lo, b_sh_hi), b_cons = rg3(b_co_lo, b_co_hi)), by = "sic_3")
+bci <- beta_ci %>% filter(sic_3 %in% five)
+stopifnot(bci$b_sh_lo > 0, bci$b_co_lo > 0, bci$b_sh_hi < 1, bci$b_co_hi < 1)   # interior: closed as printed
+t0 <- t0 %>% left_join(bci %>% transmute(sic_3, b_sharp = rgc(b_sh_lo, b_sh_hi), b_cons = rgc(b_co_lo, b_co_hi)), by = "sic_3")
 load(file.path(PRODUCTS_DIR, "1520-gnr-ols.RData"))                    # gnr_ols (uncorrected)
 gnr_ols <- gnr_ols %>% transmute(sic_3 = as.character(sic_3), `CD-GNR_m` = gnr_beta, `CD-GNR_k` = gnr_aK, `CD-GNR_l` = gnr_aL,
                                  OLS_m = ols_beta, OLS_k = ols_aK, OLS_l = ols_aL)
@@ -63,20 +77,10 @@ tbl <- w %>% rowwise() %>% reframe(
 print(tbl, n = Inf)
 
 ## ch. 6: corrected (W~_{it-2}) vs GNR and OLS. Hans 2026-10-12: sharp only in ch. 6 (as ch. 4); conservative in appendix E.
-## Hans 2026-10-13: no "sharp" label, and no open ends in a table of estimates: the (alpha_K, alpha_L) regions come from
-## 1525 (1517's regions with the grid extended beyond [0,1]^2 until each region closes; 324's alpha_K reaches below 0).
-ext <- read.csv(file.path(PRODUCTS_DIR, "1525-pf-regions-extended.csv"), colClasses = c(sic_3 = "character")) %>%
-    filter(system == "lag_2_w_eps", test == "sharp", sic_3 %in% five)
-stopifnot(setequal(ext$sic_3, five), !anyNA(ext[c("K_lo", "K_hi", "L_lo", "L_hi")]),
-          ext$K_lo > ext$Klim_lo, ext$K_hi < ext$Klim_hi, ext$L_lo > ext$Llim_lo, ext$L_hi < ext$Llim_hi)   # every region closed
-rgc <- \(lo, hi) sprintf("$[%.3f,\\,%.3f]$", lo, hi)
-main <- w %>% left_join(ext %>% transmute(sic_3, w_K_ext = rgc(K_lo, K_hi), w_L_ext = rgc(L_lo, L_hi)), by = "sic_3") %>%
-    rowwise() %>% reframe(Industry = c(sic_3, ""), beta = c(f3(beta), b_sharp),
-        w_K = c(f3(w_aK), w_K_ext), w_L = c(f3(w_aL), w_L_ext),
-        g_m = c(f3(as.numeric(`CD-GNR_m`)), ""), g_k = c(f3(as.numeric(`CD-GNR_k`)), ""), g_l = c(f3(as.numeric(`CD-GNR_l`)), ""),
-        o_m = c(f3(as.numeric(OLS_m)), ""), o_k = c(f3(as.numeric(OLS_k)), ""), o_l = c(f3(as.numeric(OLS_l)), ""))
-stopifnot(!any(grepl("cdot|empty", unlist(main))))
-print(main, n = Inf)
+## Hans 2026-10-13: no "sharp" row label in ch. 6.
+main <- tbl %>% select(Industry, beta, w_K, w_L, g_m, g_k, g_l, o_m, o_k, o_l) %>% filter(Industry != "cons.") %>%
+    mutate(Industry = if_else(Industry == "sharp", "", Industry))
+stopifnot(!any(grepl("cdot|empty", unlist(main))))   # ch. 6: every region closed
 tt_main <- tt(main, align = "lccccccccc", width = c(1.0, 2.3, 2.3, 2.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7),
               notes = paste0("Evasion-corrected: $\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion region from the corporations' share moment ($\\chi^2_1$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. Instrument $\\tilde{\\mathcal W}_{it-2}$ (exactly identified); below the estimates, the projections of the 95\\% test-inversion region for $(\\alpha_K,\\alpha_L)$ ($\\chi^2_2$, 0.005 grid over $[0,1]^2$, extended beyond it where the region reaches its edge). Conservative regions: Appendix E. GNR and OLS: uncorrected estimates on the same sample (GNR's share regression on the log materials share net of sales taxes). Other instruments: Appendix E. ", "Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E).")) %>%
     group_tt(j = list(" " = 1:2, "Corrected, $\\tilde{\\mathcal W}_{it-2}$" = 3:4, "GNR" = 5:7, "OLS" = 8:10)) %>%
@@ -88,7 +92,7 @@ render_thesis_table(tt_main, "ch06-pf-comparison")
 ## appendix E: corrected estimates under the three instrument systems
 inst <- tbl %>% select(Industry, beta, w_K, w_L, m_K, m_L, j_K, j_L)
 tt_inst <- tt(inst, align = "lccccccc", width = c(1.0, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3),
-              notes = paste0("$\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion regions from the corporations' share moment: sharp ($\\chi^2_1$) and conservative ($\\chi^2_5$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. ", "$\\tilde{\\mathcal W}_{it-2}$ (the headline in Chapter 6) and $m^*_{it-1}$: one instrument each (exactly identified, statistic zero at the estimate); below them, the projections of the 95\\% test-inversion regions for $(\\alpha_K,\\alpha_L)$ (0.005 grid over $[0,1]^2$): sharp ($\\chi^2_2$, credit for profiling $\\gamma_0,\\gamma_1$) and conservative ($\\chi^2_4$). Joint efficient GMM: both instruments together; sharp ($\\chi^2_3$) and conservative ($\\chi^2_5$) regions. ", "$(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. ", "Industries: the five of Chapter 6.")) %>%
+              notes = paste0("$\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion regions from the corporations' share moment: sharp ($\\chi^2_1$) and conservative ($\\chi^2_5$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. ", "$\\tilde{\\mathcal W}_{it-2}$ (the headline in Chapter 6) and $m^*_{it-1}$: one instrument each (exactly identified, statistic zero at the estimate); below them, the projections of the 95\\% test-inversion regions for $(\\alpha_K,\\alpha_L)$ (0.005 grid over $[0,1]^2$, extended beyond it where a region reaches its edge): sharp ($\\chi^2_2$, credit for profiling $\\gamma_0,\\gamma_1$) and conservative ($\\chi^2_4$). Joint efficient GMM: both instruments together; sharp ($\\chi^2_3$) and conservative ($\\chi^2_5$) regions. ", if (any_open) "$(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the region is not bounded on that side within $[-1,3]^2$. " else "", "Industries: the five of Chapter 6.")) %>%
     group_tt(j = list(" " = 1:2, "$\\tilde{\\mathcal W}_{it-2}$" = 3:4, "$m^*_{it-1}$" = 5:6, "Joint efficient GMM" = 7:8)) %>%
     style_tt(fontsize = 0.75) %>% style_tt(i = "notes", fontsize = 0.8)
 colnames(tt_inst) <- c("Industry", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",
