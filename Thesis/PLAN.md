@@ -124,7 +124,7 @@ Next step for remaining `[~]` rows (ch. 7, 8): move each producing script to `Co
 
 ## 6. Schedule
 
-JMP to supervisors **Wed 2026-10-14, end of day** (Hans, 2026-10-13; was Tue 10-13, set 2026-10-06; the Sept 21–25 schedule is in git history).
+JMP to supervisors **Tue 2026-10-13, end of day** (set 2026-10-06, confirmed by Hans 2026-10-13; the Sept 21–25 schedule is in git history).
 
 | Day | Target | Status |
 |---|---|---|
@@ -134,11 +134,11 @@ JMP to supervisors **Wed 2026-10-14, end of day** (Hans, 2026-10-13; was Tue 10-
 | Sat 10-10 – Sun 10-11 | Review pass, in this order (Hans, 2026-10-10): (1) the deconvolution chapter (`05-deconvolution.qmd`) and the production-function chapter (`06-pf-productivity.qmd`): reused text, never put through the outline exercise; run the outline skill on each (questions coming in, outline, audit, reuse, proof-read), and move the implementation of the deconvolution to an appendix (not in the text); (2) the intro, again (thesis `01-intro.qmd` and JMP `sections/01-intro.qmd`); (3) the conclusion, prose from the updated outline; (4) the appendices: make them read as prose, not a shopping list, and decide what stays and what goes | `[ ]` |
 | Sat 10-10 – Mon 10-12 | `thanks:`, JEL codes | `[ ]` |
 | Mon 10-12 | Full JMP render, leak check, cross-refs, layout | `[~]` first pass 2026-10-10: both render clean, no leaks, no unresolved refs; appendix A robustness was hidden in a draft block (fixed); re-run after the review pass |
-| Tue 10-13 | Ch. 6 review pass | `[x]` done 2026-10-13 |
-| Wed 10-14 | JMP abstract sentence ("4 industries … 14.7 percent"); review pass (2) intros, (3) conclusion, (4) appendices as prose; full render, leak check, cross-refs | `[ ]` |
-| Wed 10-14, end of day | Send to supervisors | `[ ]` |
+| Tue 10-13 | Ch. 6 review pass; JMP abstract sentence (range 4.5–23.1 over the five) | `[x]` done 2026-10-13 |
+| Tue 10-13 | Review pass (2) intros, (3) conclusion, (4) appendices as prose; full render, leak check, cross-refs | `[ ]` |
+| Tue 10-13, end of day | Send to supervisors | `[ ]` |
 
-**Status 2026-10-13 (end):** ch. 6 review pass finished: Hans's dispersion and persistence paragraphs proof-read (persistence spelling, footnote `[^eps-gnr]` subject and wording), and the comparisons now run in one direction throughout (uncorrected relative to corrected: elasticities of materials larger, capital and labour elasticities higher in some industries and lower in others, 90/10 66 percent larger, half-life 63 percent shorter; matches the opener and `ch06-productivity-comparison.R`'s definitions). Stale-number grep clean except the JMP abstract ("In these 4 industries … 14.7 percent", Hans to rethink). **Next: the JMP abstract sentence, then review pass item (2), the intros, (3) the conclusion, (4) the appendices as prose (appendix E estimation draft note), then the full render; send Wed 10-14 by end of day.**
+**Status 2026-10-13 (end):** ch. 6 review pass finished: Hans's dispersion and persistence paragraphs proof-read (persistence spelling, footnote `[^eps-gnr]` subject and wording), and the comparisons now run in one direction throughout (uncorrected relative to corrected: elasticities of materials larger, capital and labour elasticities higher in some industries and lower in others, 90/10 66 percent larger, half-life 63 percent shorter; matches the opener and `ch06-productivity-comparison.R`'s definitions). Stale-number grep clean; JMP abstract sentence replaced (deconvolution range 4.5–23.1 percent over the five). **Next: review pass item (2), the intros, (3) the conclusion, (4) the appendices as prose (appendix E estimation draft note), then the full render; send Tue 10-13 by end of day.**
 
 **Status 2026-10-12 (evening):** ch. 6 through the outline (`Thesis/feedback/ch06-pf-outline-121026.md`): opener (Hans), Identification heading, instrument sentence, industries sentence, productivity net of measurement error; numbers from unrounded estimates, comparisons framed as uncorrected vs corrected (medians 66/63 with ranges); main PF table corrected vs GNR vs OLS, other instruments and `tbl-orth` to appendix E (`@sec-app-pf-estimation`); single-tax beta rebuilt on the current sample in appendix D (`@tbl-beta-single-tax`). Intros, thesis abstract, conclusion updated (range 4.5–23.1 over the five; 63 percent). **Next: review pass item (2), the intros, then (3) the conclusion and (4) the appendices.**
 
@@ -153,7 +153,7 @@ JMP to supervisors **Wed 2026-10-14, end of day** (Hans, 2026-10-13; was Tue 10-
 **TODO before sending: propagate the 313 / five-industry decision outside ch. 4** (decided 2026-10-11, research log; do it after ch. 4 is integrated; assets already regenerated, `cbc118c`). Deconvolution and PF now use 321, 322, 324, 342, 369 (313 fails the variance condition; it stays in the test and ELVIS). New headline medians over the five: $E[e/M]$ 12.4 percent (was 14.5 over seven), 90/10 66 percent larger (same), half-life 63 percent shorter (was 52).
 - [x] Thesis intro (`01-intro.qmd` l. 21) and JMP intro (`JMP/sections/01-intro.qmd` l. 15): "7 of them … 14.5 percent"; "In those 7 industries … 52 percent shorter"; describe the selection (5 largest, rejects at 1 percent, variance condition).
 - [x] Thesis abstract (`index.qmd` l. 5): "the 7 industries … 14.5 percent".
-- [ ] JMP abstract (`JMP/abstract.qmd`): "In these 4 industries … 14.7 percent" rests on 313, 321, 351, 352; 313 is no longer deconvolved and 351, 352 are not in the five. Rethink the sentence (Hans).
+- [x] JMP abstract (`JMP/abstract.qmd`): "In these 4 industries … 14.7 percent" rests on 313, 321, 351, 352; 313 is no longer deconvolved and 351, 352 are not in the five. Rethink the sentence (Hans).
 - [x] Conclusion (`10-conclusion.qmd` l. 28–29): "seven industries … 14.5 percent"; check the productivity numbers.
 - [x] Ch. 5 (`05-deconvolution.qmd`): the selection rule with the variance condition (why 313 is out); draft notes l. 84, 107, 113–122 (313 outlier notes, medians, "five largest evaders"); figure/table text now 321 322 324 342 369.
 - [x] Ch. 6 (`06-pf-productivity.qmd`): text mentioning 313 (l. 68, 69, 90, 111) and the five industries; medians 66/63.
@@ -197,7 +197,7 @@ Ch. 8 rewrite tracker: the TRACKER comment below the outline in `Thesis/chapters
 - **313 in ELVIS (Hans, 2026-10-11):** rerun ELVIS and the counterfactual both with 313 (as now) and without it. 313 rejects but fails the variance condition (ratio 0.69, research log 2026-10-11), and its mean of 0.39 reflects the beer-heavy corporate benchmark; it stays in ELVIS for the JMP because the design-i moments target only $E[\varepsilon\mid j]$.
 - **Then:** 1700 rebuilt for rule A (gross only, percentile on all unincorporated); detection scale $ar M_{j,t-1}$ on the cut or uncut sample (audit: the cut lowers it, 342 −20%); 1621 with `trim=0`; ELVIS refit at (0.75, 0.5) and every counterfactual run; text and assets.
 
-## 9a. After the supervisor meeting (2026-09-25) — NEW DEADLINE Oct 13 (moved to Wed Oct 14, end of day)
+## 9a. After the supervisor meeting (2026-09-25) — NEW DEADLINE Oct 13
 
 Supervisors need one week for letters (due to the department Oct 20), so the JMP goes to them by **Tue 2026-10-13**. ELVIS approved for the counterfactual; $\hat\lambda$ not credible (scale problem). Plan, in order:
 - [x] (3) External evidence (2026-09-25): Ecuador, Mexico, IRS, Spain, Perry and Cárdenas; anchors only, not a calibration (log).
