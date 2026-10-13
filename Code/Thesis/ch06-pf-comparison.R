@@ -10,7 +10,8 @@
 ## one row with point estimates, then one row per test-inversion region (sharp, conservative) below it.
 ## Points (2026-09-26): Code/Products/1516-pf-points-updated-omega.csv -- for every system, the continuous minimum of the
 ##        same test-inversion statistic whose regions are shown (Omega re-estimated at each candidate).
-## Reads: Code/Products/1517-pf-systems-all-industries.RData (points + sharp/conservative regions, all three systems)
+## Reads: Code/Products/1525-pf-regions-extended.csv  (ch. 6 table only: the W~_{it-2} sharp regions, closed beyond [0,1]^2)
+##        Code/Products/1517-pf-systems-all-industries.RData (points + sharp/conservative regions, all three systems)
 ##        Code/Products/1512-pf-testinv-grid.csv            (single-instrument J on the (aK,aL) grid;
 ##                                                           sharp chi2_2 = 5.99, conservative chi2_4 = 9.49)
 ##        Code/Products/1513-pf-joint-testinv-summary-cons.csv (joint: grid-min point, sharp chi2_3 /
@@ -61,10 +62,23 @@ tbl <- w %>% rowwise() %>% reframe(
 )
 print(tbl, n = Inf)
 
-## ch. 6: corrected (W~_{it-2}) vs GNR and OLS
-main <- tbl %>% select(Industry, beta, w_K, w_L, g_m, g_k, g_l, o_m, o_k, o_l) %>% filter(Industry != "cons.")   # Hans 2026-10-12: sharp only in ch. 6 (as ch. 4); conservative in appendix E
+## ch. 6: corrected (W~_{it-2}) vs GNR and OLS. Hans 2026-10-12: sharp only in ch. 6 (as ch. 4); conservative in appendix E.
+## Hans 2026-10-13: no "sharp" label, and no open ends in a table of estimates: the (alpha_K, alpha_L) regions come from
+## 1525 (1517's regions with the grid extended beyond [0,1]^2 until each region closes; 324's alpha_K reaches below 0).
+ext <- read.csv(file.path(PRODUCTS_DIR, "1525-pf-regions-extended.csv"), colClasses = c(sic_3 = "character")) %>%
+    filter(system == "lag_2_w_eps", test == "sharp", sic_3 %in% five)
+stopifnot(setequal(ext$sic_3, five), !anyNA(ext[c("K_lo", "K_hi", "L_lo", "L_hi")]),
+          ext$K_lo > ext$Klim_lo, ext$K_hi < ext$Klim_hi, ext$L_lo > ext$Llim_lo, ext$L_hi < ext$Llim_hi)   # every region closed
+rgc <- \(lo, hi) sprintf("$[%.3f,\\,%.3f]$", lo, hi)
+main <- w %>% left_join(ext %>% transmute(sic_3, w_K_ext = rgc(K_lo, K_hi), w_L_ext = rgc(L_lo, L_hi)), by = "sic_3") %>%
+    rowwise() %>% reframe(Industry = c(sic_3, ""), beta = c(f3(beta), b_sharp),
+        w_K = c(f3(w_aK), w_K_ext), w_L = c(f3(w_aL), w_L_ext),
+        g_m = c(f3(as.numeric(`CD-GNR_m`)), ""), g_k = c(f3(as.numeric(`CD-GNR_k`)), ""), g_l = c(f3(as.numeric(`CD-GNR_l`)), ""),
+        o_m = c(f3(as.numeric(OLS_m)), ""), o_k = c(f3(as.numeric(OLS_k)), ""), o_l = c(f3(as.numeric(OLS_l)), ""))
+stopifnot(!any(grepl("cdot|empty", unlist(main))))
+print(main, n = Inf)
 tt_main <- tt(main, align = "lccccccccc", width = c(1.0, 2.3, 2.3, 2.3, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7),
-              notes = paste0("Evasion-corrected: $\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion region from the corporations' share moment, sharp test ($\\chi^2_1$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. Instrument $\\tilde{\\mathcal W}_{it-2}$ (exactly identified); below the estimates, the projections of the 95\\% test-inversion region for $(\\alpha_K,\\alpha_L)$, sharp test ($\\chi^2_2$, 0.005 grid over $[0,1]^2$). Conservative regions: Appendix E. GNR and OLS: uncorrected estimates on the same sample (GNR's share regression on the log materials share net of sales taxes). Other instruments: Appendix E. ", "$(\\,\\cdot\\,$ or $\\,\\cdot\\,)$: the bound of the parameter space (0 or 1) is not rejected. ", "Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E).")) %>%
+              notes = paste0("Evasion-corrected: $\\hat\\beta$ is the corporations' first-stage estimate (log materials share net of sales taxes); below it, its 95\\% test-inversion region from the corporations' share moment ($\\chi^2_1$). Point estimates of $(\\alpha_K,\\alpha_L)$: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate, the statistic whose regions are shown. Instrument $\\tilde{\\mathcal W}_{it-2}$ (exactly identified); below the estimates, the projections of the 95\\% test-inversion region for $(\\alpha_K,\\alpha_L)$ ($\\chi^2_2$, 0.005 grid over $[0,1]^2$, extended beyond it where the region reaches its edge). Conservative regions: Appendix E. GNR and OLS: uncorrected estimates on the same sample (GNR's share regression on the log materials share net of sales taxes). Other instruments: Appendix E. ", "Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it) (all nine in Appendix E).")) %>%
     group_tt(j = list(" " = 1:2, "Corrected, $\\tilde{\\mathcal W}_{it-2}$" = 3:4, "GNR" = 5:7, "OLS" = 8:10)) %>%
     style_tt(fontsize = 0.75) %>% style_tt(i = "notes", fontsize = 0.8)
 colnames(tt_main) <- c("Industry", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$", "$\\hat\\beta$", "$\\hat\\alpha_K$", "$\\hat\\alpha_L$",

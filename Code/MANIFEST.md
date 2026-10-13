@@ -1,19 +1,20 @@
 # Code manifest (auto-generated)
 
-Regenerate: `Rscript Code/000-manifest.R`. Scanned 161 `.R` files under `Code/` and 80 `.qmd` files under `Paper/`, `Quarto-Slides/`, `Thesis/`.
+Regenerate: `Rscript Code/000-manifest.R`. Scanned 280 `.R` files under `Code/` and 95 `.qmd` files under `Paper/`, `Quarto-Slides/`, `Thesis/`.
 
 Best-effort regex scan of `load`/`save`/`readRDS`/`saveRDS`/`read.csv`/`write.csv`/`ggsave`/`render_png_tt_tbl`/`render_png_etbl`/`source` calls in R, and markdown image refs in qmd. Not a full parser: misses dynamically-built paths (`sprintf`-constructed filenames), positional (non-`file=`) `save()` calls, and non-image asset refs. Treat gaps below as "not caught by the scan", not "doesn't exist".
 
 ## Issues
 
-### Broken loads/reads/sources (1)
+### Broken loads/reads/sources (2)
 A script loads/reads/sources a file with no producing script found in this scan, AND the file is not currently on disk. Each of these either needs its producing script re-run, or is stale/dead and safe to ignore once checked.
 
 | Script | Missing target |
 |---|---|
+| `Code/Deconvolution/910-all-inds.R` | `Paper/tbls/sic_distribution.csv` |
 | `Code/Deconvolution/930.2-boot-se-het.R` | `Code/Products/930.1-fs-se-het.RData` |
 
-### Unreferenced outputs (116)
+### Unreferenced outputs (163)
 A script writes a file that no other scanned script loads/reads, and no qmd references. Informational -- most are final deliverables (consumed by a qmd not caught by this scan's image-ref pattern), superseded intermediate runs, or one-off diagnostics. Not automatically dead.
 
 <details><summary>expand</summary>
@@ -91,10 +92,43 @@ A script writes a file that no other scanned script loads/reads, and no qmd refe
 | `Code/Deconvolution/1473-pf-testinv-regions.R` | `Paper/images/1473-pf-testinv-regions.png` |
 | `Code/Deconvolution/1474-pf-joint-efficient-gmm.R` | `Code/Products/1474-pf-joint-gmm.csv` |
 | `Code/Deconvolution/1475-pf-joint-gmm-bootstrap.R` | `Code/Products/1475-pf-bootstrap-timing.RData` |
+| `Code/Deconvolution/1476-pf-joint-gmm-bootstrap-full.R` | `Code/Products/1476-pf-joint-gmm-bootstrap.RData` |
 | `Code/Deconvolution/1476-pf-joint-gmm-bootstrap-full.R` | `Code/Products/1476-pf-joint-gmm-ci.csv` |
 | `Code/Deconvolution/1477-pf-joint-testinv-regions.R` | `Code/Products/1477-pf-joint-testinv-summary.csv` |
 | `Code/Deconvolution/1477-pf-joint-testinv-regions.R` | `Paper/images/1477-pf-joint-testinv-regions.png` |
 | `Code/Deconvolution/1478-pf-weakid-check.R` | `Code/Products/1478-pf-weakid-check.RData` |
+| `Code/Deconvolution/1478-pf-weakid-check.R` | `Code/Products/1478-pf-joint-testinv-summary-cons.csv` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | `Code/Products/1502-pf-joint-gmm-net.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | `Code/Products/1502-pf-joint-gmm-net.csv` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | `Code/Products/1503-stage2-data-twotax.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | `Code/Products/1510-test-inversion.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | `Code/Products/1510-test-inversion.csv` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | `Code/Products/1511-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | `Code/Products/1512-pf-testinv-summary.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | `Code/Products/1512-pf-testinv-overlap.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | `Paper/images/1512-pf-testinv-regions.png` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | `Code/Products/1513-pf-joint-testinv-summary.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | `Code/Products/1513-pf-joint-testinv-summary-cons.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | `Paper/images/1513-pf-joint-testinv-regions.png` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | `Code/Products/1514-boot-test-fixed.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | `Code/Products/1514-boot-test-fixed.csv` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | `Code/Products/1515-np-deconv-unincorp-net.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | `Code/Products/1516-pf-points-updated-omega.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | `Code/Products/1516-pf-points-updated-omega.csv` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | `Code/Products/1517-pf-systems-all-industries.csv` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | `Code/Products/1518-deconv-369-check.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | `Code/Products/1519-np-deconv-324-net.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | `Code/Products/1520-gnr-ols.csv` |
+| `Code/Deconvolution/1522-beta-testinv.R` | `Code/Products/1522-beta-testinv.RData` |
+| `Code/Deconvolution/1522-beta-testinv.R` | `Code/Products/1522-beta-testinv.csv` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | `Code/Products/1523-omega-deconv-final.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | `Code/Products/1524-omega-persistence-final.csv` |
+| `Code/Deconvolution/1530-fiscal-did.R` | `Code/Products/1530-fiscal-did.RData` |
+| `Code/Deconvolution/1530-fiscal-did.R` | `Code/Products/1530-fiscal-did-compare.csv` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | `Code/Products/1531-fs-pf-pooled.csv` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | `Code/Products/1546-stage2-input-designA-taujt-trim0.005.csv` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | `Code/Products/1603-np-deconv-stage2.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | `Code/Products/1603-np-deconv-stage2-summary.csv` |
 | `Code/Deconvolution/207-test.R` | `Code/Products/tests_tbl.RData` |
 | `Code/Deconvolution/220-gnr-cd-fs.R` | `Code/Products/gnr_fs.RData` |
 | `Code/Deconvolution/235-tims-test.R` | `Code/Products/tims-test.RData` |
@@ -108,6 +142,8 @@ A script writes a file that no other scanned script loads/reads, and no qmd refe
 | `Code/Deconvolution/251-plotting.R` | `Paper/images/graphs/251-pur-share-sales.png` |
 | `Code/Deconvolution/251-plotting.R` | `Paper/images/graphs/251-effective.png` |
 | `Code/Deconvolution/251-plotting.R` | `Paper/images/graphs/251-sales.png` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | `Code/Products/omega_deconv_current_pf.RData` |
+| `Code/Deconvolution/294-omega-persistence.R` | `Code/Products/294-omega-persistence.csv` |
 | `Code/Deconvolution/299-to-fortran-gnr.R` | `Code/Products/to_fortran_CD_GNR.RData` |
 | `Code/Deconvolution/490-boot-pf-prod.R` | `Code/Products/boot_pf_prod.RData` |
 | `Code/Deconvolution/510-productivity.R` | `Code/Products/productivity.RData` |
@@ -135,7 +171,19 @@ A script writes a file that no other scanned script loads/reads, and no qmd refe
 | `Code/Deconvolution/935-ev-loc.R` | `935-ev-loc-dept-map.png` |
 | `Code/Deconvolution/935-ev-loc.R` | `Paper/tbls/935-evasion-loc-metro.png` |
 | `Code/Deconvolution/935-ev-loc.R` | `Paper/tbls/935-evasion-loc-metro.pdf` |
-| `Code/Thesis/ch06-pf-comparison.R` | `Thesis/tables/ch06-pf-comparison.pdf` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | `02-decomp.csv` |
+| `Code/Fact-Checks/audit-313/04-productmix.R` | `Code/Fact-Checks/audit-313/04-productmix.csv` |
+| `Code/Fact-Checks/audit-313/08-ranking-taxes.R` | `08-ranking.csv` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | `Code/Fact-Checks/audit-313/09-variance-ratio.csv` |
+| `Code/Thesis/appD-beta-single-tax.R` | `appD-beta-single-tax.csv` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | `PerryCardenas1986-CuadroIII1.csv` |
+| `Code/Thesis/ch05-overreporting-medians.R` | `ch05-overreporting-by-industry.csv` |
+| `Code/Thesis/ch05-overreporting-medians.R` | `ch05-overreporting-medians.csv` |
+| `Code/Thesis/ch06-productivity-comparison.R` | `ch06-productivity-medians.csv` |
+| `Code/Thesis/ch07-overreporting-elasticity-inversion.R` | `ch07-overreporting-elasticity-inversion.csv` |
+| `Code/Thesis/ch07-overreporting-elasticity.R` | `ch07-overreporting-elasticity.csv` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-table.R` | `ch08-cf-elasticities-mresp.csv` |
+| `Code/Thesis/ch08-cf-revenue-split.R` | `ch08-cf-revenue-split.csv` |
 
 </details>
 
@@ -143,21 +191,351 @@ A script writes a file that no other scanned script loads/reads, and no qmd refe
 
 For each `Code/Thesis/*.R` (the new, curated pipeline), its transitive upstream in the legacy `Code/Deconvolution`/`Code/Colombia` tree -- i.e. which original scripts its own inputs were produced by.
 
+### `Code/Thesis/000-build-all.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/001-setup.R`
+- Direct inputs: `Code/Deconvolution/050-render-tbls.R`, `Code/Deconvolution/050-render-tbls.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appA-cf-revenue-fixed.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appD-beta-single-tax.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: `appD-beta-single-tax.csv`, `appD-beta-single-tax.csv`
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appE-pf-all-industries.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appF-evasion-test-bootstrap.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appF-evasion-test-conservative.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appG-fiscal-wedge.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/appH-elasticity.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-corps-by-industry-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-industry-stats.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-industry-stats.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-industry-stats.R`, `Code/Deconvolution/050-render-tbls.R`, `Code/Thesis/ch03-sample.R`
+
+### `Code/Thesis/ch03-cuadro-III1-data.R`
+- Direct inputs: (none found)
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): (none found)
+
+### `Code/Thesis/ch03-income-tax-1983-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-cuadro-III1-data.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-cuadro-III1-data.R`
+- Produces: `PerryCardenas1986-CuadroIII1.csv`, `PerryCardenas1986-CuadroIII1.csv`
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-cuadro-III1-data.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-industry-stats.R`
+- Direct inputs: `Code/Thesis/ch03-sample.R`, `Code/Thesis/ch03-sample.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch03-sample.R`
+
+### `Code/Thesis/ch03-jo-rules-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-marginal-tax-1983-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-cuadro-III1-data.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-cuadro-III1-data.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-cuadro-III1-data.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-sales-tax-by-year-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-sample.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-sample.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-sample.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-sample.R`
+- Direct inputs: (none found)
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): (none found)
+
+### `Code/Thesis/ch03-size-by-jo.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-summary-stats-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-sample.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-sample.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-sample.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch03-top-industries-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-industry-stats.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-industry-stats.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch03-industry-stats.R`, `Code/Deconvolution/050-render-tbls.R`, `Code/Thesis/ch03-sample.R`
+
+### `Code/Thesis/ch04-evasion-test.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Thesis/ch04-test-helpers.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch04-test-helpers.R`
+- Direct inputs: (none found)
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): (none found)
+
+### `Code/Thesis/ch05-overreporting-medians.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: `ch05-overreporting-by-industry.csv`, `ch05-overreporting-medians.csv`, `ch05-overreporting-by-industry.csv`, `ch05-overreporting-medians.csv`
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch05-overreporting-ratio.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch06-beta-net-tax-robustness.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch06-omega.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
 ### `Code/Thesis/ch06-pf-comparison.R`
-- Direct inputs: `Code/Products/1476-pf-joint-gmm-bootstrap.RData`, `Code/Products/deconv_prod_fun_trim.RData`, `Code/Products/1476-pf-joint-gmm-bootstrap.RData`, `Code/Products/deconv_prod_fun_trim.RData`, `Code/Products/1478-pf-joint-testinv-summary-cons.csv`, `Code/Products/1478-pf-joint-testinv-summary-cons.csv`, `Code/Deconvolution/050-render-tbls.R`, `Code/Deconvolution/050-render-tbls.R`
-- Produces: `Thesis/tables/ch06-pf-comparison.png`, `Thesis/tables/ch06-pf-comparison.pdf`, `Thesis/tables/ch06-pf-comparison.png`, `Thesis/tables/ch06-pf-comparison.pdf`
-- Transitive upstream (legacy scripts this descends from): `Code/Deconvolution/1476-pf-joint-gmm-bootstrap-full.R`, `Code/Deconvolution/1478-pf-weakid-check.R`, `Code/Deconvolution/300-deconv-prod.R`, `Code/Deconvolution/050-render-tbls.R`, `Code/Deconvolution/001-data.R`, `Code/Deconvolution/1477-pf-joint-testinv-regions.R`, `Code/Deconvolution/208-run-vars.R`, `Code/Deconvolution/230-fs.R`, `Code/Deconvolution/425_omega.R`, `Code/Deconvolution/930.1-fs-se-het.R`, `Code/Colombia/10_data_wrangling.R`, `Code/Deconvolution/205_intermediates.R`, `Code/Deconvolution/206-boot-test.R`, `Code/Deconvolution/290-bs-mle-data.R`, `Code/Deconvolution/291-bs-deconv.R`, `Code/Deconvolution/915.1-size.R`, `Code/Colombia/00_reading_data.R`, `Code/Deconvolution/911-all-inds-2.R`, `Code/Deconvolution/915-size.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
 
 ### `Code/Thesis/ch06-pf-testinv-regions.R`
-- Direct inputs: `Code/Products/1477-pf-joint-testinv-grid.csv`, `Code/Products/1477-pf-joint-testinv-grid.csv`
-- Produces: `Thesis/figures/ch06-pf-testinv-regions.png`, `Thesis/figures/ch06-pf-testinv-regions.png`
-- Transitive upstream (legacy scripts this descends from): `Code/Deconvolution/1477-pf-joint-testinv-regions.R`, `Code/Deconvolution/930.1-fs-se-het.R`, `Code/Deconvolution/001-data.R`, `Code/Deconvolution/915.1-size.R`, `Code/Colombia/10_data_wrangling.R`, `Code/Deconvolution/911-all-inds-2.R`, `Code/Deconvolution/915-size.R`, `Code/Colombia/00_reading_data.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch06-productivity-comparison.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: `ch06-productivity-medians.csv`, `ch06-productivity-medians.csv`
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-all-table.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-all-unincorp-plot.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-plot-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-liable-table.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-liable-vs-exempt-plot.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-plot-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-llc-plot.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-plot-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-llc-table.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-plot-helpers.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-prt-plot.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-plot-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-plot-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-prt-table.R`
+- Direct inputs: `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/ch07-fiscal-table-helpers.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-fiscal-table-helpers.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch07-overreporting-elasticity-ci.R`
+- Direct inputs: (none found)
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): (none found)
+
+### `Code/Thesis/ch07-overreporting-elasticity-inversion.R`
+- Direct inputs: (none found)
+- Produces: `ch07-overreporting-elasticity-inversion.csv`, `ch07-overreporting-elasticity-inversion.csv`
+- Transitive upstream (legacy scripts this descends from): (none found)
+
+### `Code/Thesis/ch07-overreporting-elasticity.R`
+- Direct inputs: (none found)
+- Produces: `ch07-overreporting-elasticity.csv`, `ch07-overreporting-elasticity.csv`
+- Transitive upstream (legacy scripts this descends from): (none found)
+
+### `Code/Thesis/ch08-behavioural-elasticity-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-claims-bounds-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-elasticities-mresp-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-elasticities-mresp-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: `ch08-cf-elasticities-mresp.csv`, `ch08-cf-elasticities-mresp.csv`
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-revenue-bounds-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-revenue-split.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: `ch08-cf-revenue-split.csv`, `ch08-cf-revenue-split.csv`
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-revenue-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-revenue-totals-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-cf-revenue-totals-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-claims-ci-hard-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-claims-ci-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-claims-headline-pct-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-claims-level-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-delta-grid-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-detection-prob-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-elasticities-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-elvis-cube-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-headline-estimates-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-headline-pct-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-k-kappa-grid-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-laffer-ci-hard-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Deconvolution/1300-cv-15delta-hard-plot.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/1300-cv-15delta-hard-plot.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/1300-cv-15delta-hard-plot.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-laffer-ci-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-lambda-grid-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Deconvolution/1305-lambdagrid-minonly-plot.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/1305-lambdagrid-minonly-plot.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/1305-lambdagrid-minonly-plot.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-revenue-gap-table.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-theory-vs-cv-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Thesis/001-setup.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/050-render-tbls.R`
+
+### `Code/Thesis/ch08-trim-cutoff-plot.R`
+- Direct inputs: `Code/Thesis/001-setup.R`, `Code/Deconvolution/1222-stage2-trim-all-gridpoints-plot.R`, `Code/Thesis/001-setup.R`, `Code/Deconvolution/1222-stage2-trim-all-gridpoints-plot.R`
+- Produces: (none found)
+- Transitive upstream (legacy scripts this descends from): `Code/Thesis/001-setup.R`, `Code/Deconvolution/1222-stage2-trim-all-gridpoints-plot.R`, `Code/Deconvolution/050-render-tbls.R`
 
 ## Full producer/consumer graph
 
 One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`ggsave`/table-png/`source` call. `role` is `produces` (writes/creates) or `consumes` (reads/depends on).
 
-<details><summary>expand (~1107 rows)</summary>
+<details><summary>expand (~1595 rows)</summary>
 
 | Script | Role | Target |
 |---|---|---|
@@ -343,6 +721,88 @@ One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`gg
 | `Code/Deconvolution/1478-pf-weakid-check.R` | produces | `Code/Products/1478-pf-weakid-check.RData` |
 | `Code/Deconvolution/1478-pf-weakid-check.R` | produces | `Code/Products/1478-pf-joint-testinv-summary-cons.csv` |
 | `Code/Deconvolution/1478-pf-weakid-check.R` | produces | `Code/Products/1478-pf-joint-testinv-summary-cons.csv` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | produces | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | produces | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | produces | `Code/Products/1502-pf-joint-gmm-net.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | produces | `Code/Products/1502-pf-joint-gmm-net.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | produces | `Code/Products/1502-pf-joint-gmm-net.csv` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | produces | `Code/Products/1502-pf-joint-gmm-net.csv` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | produces | `Code/Products/1503-stage2-data-twotax.RData` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | produces | `Code/Products/1503-stage2-data-twotax.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | produces | `Code/Products/1510-test-inversion.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | produces | `Code/Products/1510-test-inversion.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | produces | `Code/Products/1510-test-inversion.csv` |
+| `Code/Deconvolution/1510-test-inversion.R` | produces | `Code/Products/1510-test-inversion.csv` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | produces | `Code/Products/1511-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | produces | `Code/Products/1511-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Code/Products/1512-pf-testinv-grid.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Code/Products/1512-pf-testinv-summary.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Code/Products/1512-pf-testinv-overlap.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Code/Products/1512-pf-testinv-grid.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Code/Products/1512-pf-testinv-summary.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Code/Products/1512-pf-testinv-overlap.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Paper/images/1512-pf-testinv-regions.png` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | produces | `Paper/images/1512-pf-testinv-regions.png` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Code/Products/1513-pf-joint-testinv-grid.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Code/Products/1513-pf-joint-testinv-summary.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Code/Products/1513-pf-joint-testinv-summary-cons.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Code/Products/1513-pf-joint-testinv-grid.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Code/Products/1513-pf-joint-testinv-summary.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Code/Products/1513-pf-joint-testinv-summary-cons.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Paper/images/1513-pf-joint-testinv-regions.png` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | produces | `Paper/images/1513-pf-joint-testinv-regions.png` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | produces | `Code/Products/1514-boot-test-fixed.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | produces | `Code/Products/1514-boot-test-fixed.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | produces | `Code/Products/1514-boot-test-fixed.csv` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | produces | `Code/Products/1514-boot-test-fixed.csv` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | produces | `Code/Products/1515-np-deconv-unincorp-net.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | produces | `Code/Products/1515-np-deconv-unincorp-net.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | produces | `Code/Products/1516-pf-points-updated-omega.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | produces | `Code/Products/1516-pf-points-updated-omega.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | produces | `Code/Products/1516-pf-points-updated-omega.csv` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | produces | `Code/Products/1516-pf-points-updated-omega.csv` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | produces | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | produces | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | produces | `Code/Products/1517-pf-systems-all-industries.csv` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | produces | `Code/Products/1517-pf-systems-all-industries.csv` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | produces | `Code/Products/1518-deconv-369-check.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | produces | `Code/Products/1518-deconv-369-check.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | produces | `Code/Products/1519-np-deconv-324-net.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | produces | `Code/Products/1519-np-deconv-324-net.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | produces | `Code/Products/1520-gnr-ols.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | produces | `Code/Products/1520-gnr-ols.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | produces | `Code/Products/1520-gnr-ols.csv` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | produces | `Code/Products/1520-gnr-ols.csv` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | produces | `Code/Products/1521-np-deconv-selected.RData` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | produces | `Code/Products/1521-np-deconv-selected.RData` |
+| `Code/Deconvolution/1522-beta-testinv.R` | produces | `Code/Products/1522-beta-testinv.RData` |
+| `Code/Deconvolution/1522-beta-testinv.R` | produces | `Code/Products/1522-beta-testinv.RData` |
+| `Code/Deconvolution/1522-beta-testinv.R` | produces | `Code/Products/1522-beta-testinv.csv` |
+| `Code/Deconvolution/1522-beta-testinv.R` | produces | `Code/Products/1522-beta-testinv.csv` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | produces | `Code/Products/1523-omega-deconv-final.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | produces | `Code/Products/1523-omega-deconv-final.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | produces | `Code/Products/1524-omega-persistence-final.csv` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | produces | `Code/Products/1524-omega-persistence-final.csv` |
+| `Code/Deconvolution/1530-fiscal-did.R` | produces | `Code/Products/1530-fiscal-did.RData` |
+| `Code/Deconvolution/1530-fiscal-did.R` | produces | `Code/Products/1530-fiscal-did.RData` |
+| `Code/Deconvolution/1530-fiscal-did.R` | produces | `Code/Products/1530-fiscal-did-compare.csv` |
+| `Code/Deconvolution/1530-fiscal-did.R` | produces | `Code/Products/1530-fiscal-did-compare.csv` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | produces | `Code/Products/1531-fs-pf-pooled.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | produces | `Code/Products/1531-fs-pf-pooled.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | produces | `Code/Products/1531-fs-pf-pooled.csv` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | produces | `Code/Products/1531-fs-pf-pooled.csv` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | produces | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | produces | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | produces | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | produces | `Code/Products/1546-stage2-input-designA-taujt-trim0.005.csv` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | produces | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | produces | `Code/Products/1546-stage2-input-designA-taujt-trim0.005.csv` |
+| `Code/Deconvolution/1572-input-sig2eps.R` | produces | `Code/Products/1572-stage2-input-designA-tau-sig2eps-trim0.005.csv` |
+| `Code/Deconvolution/1572-input-sig2eps.R` | produces | `Code/Products/1572-stage2-input-designA-tau-sig2eps-trim0.005.csv` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | produces | `Code/Products/1603-np-deconv-stage2.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | produces | `Code/Products/1603-np-deconv-stage2.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | produces | `Code/Products/1603-np-deconv-stage2-summary.csv` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | produces | `Code/Products/1603-np-deconv-stage2-summary.csv` |
 | `Code/Deconvolution/205_intermediates.R` | produces | `Code/Products/intermediates.RData` |
 | `Code/Deconvolution/205_intermediates.R` | produces | `Code/Products/intermediates.RData` |
 | `Code/Deconvolution/206-boot-test.R` | produces | `Code/Products/boot_tax_ev_2ttst.RData` |
@@ -391,6 +851,10 @@ One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`gg
 | `Code/Deconvolution/291-bs-deconv.R` | produces | `Code/Products/bs_mle_data.RData` |
 | `Code/Deconvolution/291-bs-deconv.R` | produces | `Code/Products/bs_mle_data.RData` |
 | `Code/Deconvolution/291-bs-deconv.R` | produces | `Code/Products/bs_mle_data.RData` |
+| `Code/Deconvolution/292-np-deconv-unincorp.R` | produces | `Code/Products/np_deconv_unincorp.RData` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | produces | `Code/Products/omega_deconv_current_pf.RData` |
+| `Code/Deconvolution/294-omega-persistence.R` | produces | `Code/Products/294-omega-persistence.csv` |
+| `Code/Deconvolution/294-omega-persistence.R` | produces | `Code/Products/294-omega-persistence.csv` |
 | `Code/Deconvolution/299-to-fortran-gnr.R` | produces | `Code/Products/to_fortran_CD_GNR.RData` |
 | `Code/Deconvolution/300-deconv-prod.R` | produces | `Code/Products/run-vars.RData` |
 | `Code/Deconvolution/300-deconv-prod.R` | produces | `Code/Products/deconv_prod_fun_trim.RData` |
@@ -466,12 +930,32 @@ One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`gg
 | `Code/Deconvolution/935-ev-loc.R` | produces | `935-ev-loc-dept-map.png` |
 | `Code/Deconvolution/935-ev-loc.R` | produces | `Paper/tbls/935-evasion-loc-metro.png` |
 | `Code/Deconvolution/935-ev-loc.R` | produces | `Paper/tbls/935-evasion-loc-metro.pdf` |
-| `Code/Thesis/ch06-pf-comparison.R` | produces | `Thesis/tables/ch06-pf-comparison.png` |
-| `Code/Thesis/ch06-pf-comparison.R` | produces | `Thesis/tables/ch06-pf-comparison.pdf` |
-| `Code/Thesis/ch06-pf-comparison.R` | produces | `Thesis/tables/ch06-pf-comparison.png` |
-| `Code/Thesis/ch06-pf-comparison.R` | produces | `Thesis/tables/ch06-pf-comparison.pdf` |
-| `Code/Thesis/ch06-pf-testinv-regions.R` | produces | `Thesis/figures/ch06-pf-testinv-regions.png` |
-| `Code/Thesis/ch06-pf-testinv-regions.R` | produces | `Thesis/figures/ch06-pf-testinv-regions.png` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | produces | `02-decomp.csv` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | produces | `02-decomp.csv` |
+| `Code/Fact-Checks/audit-313/04-productmix.R` | produces | `Code/Fact-Checks/audit-313/04-productmix.csv` |
+| `Code/Fact-Checks/audit-313/04-productmix.R` | produces | `Code/Fact-Checks/audit-313/04-productmix.csv` |
+| `Code/Fact-Checks/audit-313/08-ranking-taxes.R` | produces | `08-ranking.csv` |
+| `Code/Fact-Checks/audit-313/08-ranking-taxes.R` | produces | `08-ranking.csv` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | produces | `Code/Fact-Checks/audit-313/09-variance-ratio.csv` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | produces | `Code/Fact-Checks/audit-313/09-variance-ratio.csv` |
+| `Code/Thesis/appD-beta-single-tax.R` | produces | `appD-beta-single-tax.csv` |
+| `Code/Thesis/appD-beta-single-tax.R` | produces | `appD-beta-single-tax.csv` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | produces | `PerryCardenas1986-CuadroIII1.csv` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | produces | `PerryCardenas1986-CuadroIII1.csv` |
+| `Code/Thesis/ch05-overreporting-medians.R` | produces | `ch05-overreporting-by-industry.csv` |
+| `Code/Thesis/ch05-overreporting-medians.R` | produces | `ch05-overreporting-medians.csv` |
+| `Code/Thesis/ch05-overreporting-medians.R` | produces | `ch05-overreporting-by-industry.csv` |
+| `Code/Thesis/ch05-overreporting-medians.R` | produces | `ch05-overreporting-medians.csv` |
+| `Code/Thesis/ch06-productivity-comparison.R` | produces | `ch06-productivity-medians.csv` |
+| `Code/Thesis/ch06-productivity-comparison.R` | produces | `ch06-productivity-medians.csv` |
+| `Code/Thesis/ch07-overreporting-elasticity-inversion.R` | produces | `ch07-overreporting-elasticity-inversion.csv` |
+| `Code/Thesis/ch07-overreporting-elasticity-inversion.R` | produces | `ch07-overreporting-elasticity-inversion.csv` |
+| `Code/Thesis/ch07-overreporting-elasticity.R` | produces | `ch07-overreporting-elasticity.csv` |
+| `Code/Thesis/ch07-overreporting-elasticity.R` | produces | `ch07-overreporting-elasticity.csv` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-table.R` | produces | `ch08-cf-elasticities-mresp.csv` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-table.R` | produces | `ch08-cf-elasticities-mresp.csv` |
+| `Code/Thesis/ch08-cf-revenue-split.R` | produces | `ch08-cf-revenue-split.csv` |
+| `Code/Thesis/ch08-cf-revenue-split.R` | produces | `ch08-cf-revenue-split.csv` |
 | `Code/Colombia/10_data_wrangling.R` | consumes | `Code/Products/col_df.RData` |
 | `Code/Colombia/10_data_wrangling.R` | consumes | `Code/Products/col_df.RData` |
 | `Code/Colombia/15_global_vars.R` | consumes | `Code/Products/colombia_data.RData` |
@@ -794,6 +1278,192 @@ One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`gg
 | `Code/Deconvolution/1478-pf-weakid-check.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
 | `Code/Deconvolution/1478-pf-weakid-check.R` | consumes | `Code/Products/1477-pf-joint-testinv-grid.csv` |
 | `Code/Deconvolution/1478-pf-weakid-check.R` | consumes | `Code/Products/1477-pf-joint-testinv-grid.csv` |
+| `Code/Deconvolution/1500-detection-reference-scale-check.R` | consumes | `Code/Products/1200-stage2-data.RData` |
+| `Code/Deconvolution/1500-detection-reference-scale-check.R` | consumes | `Code/Products/1200-stage2-data.RData` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1501-two-tax-first-stage.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | consumes | `Code/Products/1100-MSL-opttax.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1502-pf-joint-gmm-net.R` | consumes | `Code/Products/1100-MSL-opttax.RData` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1503-stage2-data-twotax.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1510-test-inversion.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1511-pf-instrument-comparison.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | consumes | `Code/Products/1472-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/1512-pf-testinv-regions.R` | consumes | `Code/Products/1472-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1513-pf-joint-testinv-regions.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1514-boot-test-fixed.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1515-np-deconv-unincorp-net.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | consumes | `Code/Products/1512-pf-testinv-grid.csv` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | consumes | `Code/Products/1513-pf-joint-testinv-grid.csv` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | consumes | `Code/Products/1512-pf-testinv-grid.csv` |
+| `Code/Deconvolution/1516-pf-points-updated-omega.R` | consumes | `Code/Products/1513-pf-joint-testinv-grid.csv` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1517-pf-systems-all-industries.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1518-deconv-369-check.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1519-np-deconv-324-net.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | consumes | `Code/Products/gnr-cd-me.csv` |
+| `Code/Deconvolution/1520-gnr-ols-r.R` | consumes | `Code/Products/gnr-cd-me.csv` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1521-np-deconv-selected.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1522-beta-testinv.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1522-beta-testinv.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1523-omega-deconv-final.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | consumes | `Code/Products/1520-gnr-ols.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | consumes | `Code/Products/1520-gnr-ols.RData` |
+| `Code/Deconvolution/1524-omega-persistence-final.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1525-pf-regions-extended.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1525-pf-regions-extended.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1525-pf-regions-extended.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1525-pf-regions-extended.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1525-pf-regions-extended.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Deconvolution/1525-pf-regions-extended.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Deconvolution/1530-fiscal-did.R` | consumes | `Code/Products/921-DD2.RData` |
+| `Code/Deconvolution/1530-fiscal-did.R` | consumes | `Code/Products/921-DD2.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1531-fs-pf-pooled.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | consumes | `Code/Products/1531-fs-pf-pooled.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | consumes | `Code/Products/1517-pf-systems-all-industries.RData` |
+| `Code/Deconvolution/1532-stage2-data-final.R` | consumes | `Code/Products/1531-fs-pf-pooled.RData` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | consumes | `Code/Products/1532-stage2-input-designA-trim0.005.csv` |
+| `Code/Deconvolution/1546-input-tau-bar.R` | consumes | `Code/Products/1532-stage2-input-designA-trim0.005.csv` |
+| `Code/Deconvolution/1552-foc-forward-sim.R` | consumes | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1552-foc-forward-sim.R` | consumes | `Code/Products/1550-s3tau-psi-coarse-designA.csv` |
+| `Code/Deconvolution/1552-foc-forward-sim.R` | consumes | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1552-foc-forward-sim.R` | consumes | `Code/Products/1550-s3tau-psi-coarse-designA.csv` |
+| `Code/Deconvolution/1556-foc-forward-sim-forms.R` | consumes | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1556-foc-forward-sim-forms.R` | consumes | `Code/Products/1554-yfe-l0.5.csv` |
+| `Code/Deconvolution/1556-foc-forward-sim-forms.R` | consumes | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1556-foc-forward-sim-forms.R` | consumes | `Code/Products/1554-yfe-l0.5.csv` |
+| `Code/Deconvolution/1572-input-sig2eps.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1572-input-sig2eps.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1572-input-sig2eps.R` | consumes | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1572-input-sig2eps.R` | consumes | `Code/Products/1546-stage2-input-designA-tau-trim0.005.csv` |
+| `Code/Deconvolution/1576-foc-forward-sim-kink.R` | consumes | `Code/Products/1572-stage2-input-designA-tau-sig2eps-trim0.005.csv` |
+| `Code/Deconvolution/1576-foc-forward-sim-kink.R` | consumes | `Code/Products/1572-stage2-input-designA-tau-sig2eps-trim0.005.csv` |
+| `Code/Deconvolution/1592-input-plant.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1592-input-plant.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1592-input-plant.R` | consumes | `Code/Products/1585-stage2-input-designA-interior-trim0.005.csv` |
+| `Code/Deconvolution/1592-input-plant.R` | consumes | `Code/Products/1585-stage2-input-designA-interior-trim0.005.csv` |
+| `Code/Deconvolution/1596-input-plant-all.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1596-input-plant-all.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1596-input-plant-all.R` | consumes | `Code/Products/1572-stage2-input-designA-tau-sig2eps-trim0.005.csv` |
+| `Code/Deconvolution/1596-input-plant-all.R` | consumes | `Code/Products/1572-stage2-input-designA-tau-sig2eps-trim0.005.csv` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/1521-np-deconv-selected.RData` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/1521-np-deconv-selected.RData` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/1592-stage2-input-designA-interior-plant-trim0.005.csv` |
+| `Code/Deconvolution/1598-input-designs.R` | consumes | `Code/Products/1592-stage2-input-designA-interior-plant-trim0.005.csv` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/1501-fs-net.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Deconvolution/1603-np-deconv-stage2.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Deconvolution/1604-input-umed-stage2.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Deconvolution/1604-input-umed-stage2.R` | consumes | `Code/Products/1603-np-deconv-stage2-summary-macbook.csv` |
+| `Code/Deconvolution/1604-input-umed-stage2.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Deconvolution/1604-input-umed-stage2.R` | consumes | `Code/Products/1603-np-deconv-stage2-summary-macbook.csv` |
+| `Code/Deconvolution/1618-input-pshare.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1618-input-pshare.R` | consumes | `Code/Products/1603-np-deconv-stage2-macbook.RData` |
+| `Code/Deconvolution/1618-input-pshare.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/1618-input-pshare.R` | consumes | `Code/Products/1603-np-deconv-stage2-macbook.RData` |
+| `Code/Deconvolution/1621-cf-economy.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1621-cf-economy.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1621-cf-economy.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Deconvolution/1621-cf-economy.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Deconvolution/1624-input-designi-notrim.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1624-input-designi-notrim.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1624-input-designi-notrim.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Deconvolution/1624-input-designi-notrim.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Deconvolution/1630-trim-levels.R` | consumes | `Code/Products/1624-stage2-input-designA-interior-plant-k-notrim.csv` |
+| `Code/Deconvolution/1630-trim-levels.R` | consumes | `Code/Products/1624-stage2-input-designA-interior-plant-k-notrim.csv` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/921-DD2.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/921-DD2.RData` |
+| `Code/Deconvolution/1700-sample-rule.R` | consumes | `Code/Products/deconv_funs.Rdata` |
+| `Code/Deconvolution/1701-compare-samples.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Deconvolution/1701-compare-samples.R` | consumes | `Code/Deconvolution/utils-cli.R` |
 | `Code/Deconvolution/205_intermediates.R` | consumes | `Code/Products/colombia_data.RData` |
 | `Code/Deconvolution/205_intermediates.R` | consumes | `Code/Products/test_data.RData` |
 | `Code/Deconvolution/205_intermediates.R` | consumes | `Code/Products/global_vars.RData` |
@@ -930,6 +1600,20 @@ One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`gg
 | `Code/Deconvolution/291-bs-deconv.R` | consumes | `Code/Products/fs.RData` |
 | `Code/Deconvolution/291-bs-deconv.R` | consumes | `Code/Products/np-deconv-funs.RData` |
 | `Code/Deconvolution/291-bs-deconv.R` | consumes | `Code/Products/bs_mle_data.RData` |
+| `Code/Deconvolution/292-np-deconv-unincorp.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/292-np-deconv-unincorp.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Deconvolution/292-np-deconv-unincorp.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/292-np-deconv-unincorp.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | consumes | `Code/Products/1472-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/293-omega-deconv-current-pf.R` | consumes | `Code/Products/1472-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/294-omega-persistence.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/294-omega-persistence.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Deconvolution/294-omega-persistence.R` | consumes | `Code/Products/1472-pf-instrument-comparison.csv` |
+| `Code/Deconvolution/294-omega-persistence.R` | consumes | `Code/Products/1472-pf-instrument-comparison.csv` |
 | `Code/Deconvolution/299-to-fortran-gnr.R` | consumes | `Code/Products/colombia_data.RData` |
 | `Code/Deconvolution/299-to-fortran-gnr.R` | consumes | `Code/Products/global_vars.RData` |
 | `Code/Deconvolution/299-to-fortran-gnr.R` | consumes | `Code/Products/intermediates.RData` |
@@ -1258,15 +1942,197 @@ One row per scanned `load`/`save`/`read.csv`/`write.csv`/`readRDS`/`saveRDS`/`gg
 | `Code/Deconvolution/950-deconv-size.R` | consumes | `Code/Products/930-boot-se-het.RData` |
 | `Code/Deconvolution/950-deconv-size.R` | consumes | `Code/Deconvolution/030-np-deconv-funs.R` |
 | `Code/Deconvolution/950-deconv-size.R` | consumes | `Code/Deconvolution/030-np-deconv-funs.R` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Products/1476-pf-joint-gmm-bootstrap.RData` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Products/deconv_prod_fun_trim.RData` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Products/1476-pf-joint-gmm-bootstrap.RData` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Products/deconv_prod_fun_trim.RData` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Products/1478-pf-joint-testinv-summary-cons.csv` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Products/1478-pf-joint-testinv-summary-cons.csv` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Deconvolution/050-render-tbls.R` |
-| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Deconvolution/050-render-tbls.R` |
-| `Code/Thesis/ch06-pf-testinv-regions.R` | consumes | `Code/Products/1477-pf-joint-testinv-grid.csv` |
-| `Code/Thesis/ch06-pf-testinv-regions.R` | consumes | `Code/Products/1477-pf-joint-testinv-grid.csv` |
+| `Code/Fact-Checks/audit-313/01-samples.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Fact-Checks/audit-313/01-samples.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/01-samples.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Fact-Checks/audit-313/01-samples.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Fact-Checks/audit-313/01-samples.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/01-samples.R` | consumes | `Code/Products/931.1-fs-se-het.RData` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Fact-Checks/audit-313/02-decomp.R` | consumes | `Code/Products/test_data.RData` |
+| `Code/Fact-Checks/audit-313/03-groups313.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/03-groups313.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/04-productmix.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/04-productmix.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/05-taxes-stage2.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/05-taxes-stage2.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Fact-Checks/audit-313/05-taxes-stage2.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/05-taxes-stage2.R` | consumes | `Code/Products/1532-stage2-data-final.RData` |
+| `Code/Fact-Checks/audit-313/05-taxes-stage2.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Fact-Checks/audit-313/05-taxes-stage2.R` | consumes | `Code/Products/1598-stage2-input-designA-interior-plant-k-trim0.005.csv` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/np_deconv_unincorp.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/bs_mle_data.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/1603-np-deconv-stage2-macbook.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/1521-np-deconv-selected.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/np-deconv-funs.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/np_deconv_unincorp.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/bs_mle_data.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/1603-np-deconv-stage2-macbook.RData` |
+| `Code/Fact-Checks/audit-313/06-old-fits.R` | consumes | `Code/Products/1521-np-deconv-selected.RData` |
+| `Code/Fact-Checks/audit-313/07-mix369-351.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/07-mix369-351.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/07-mix369-351.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/07-mix369-351.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/08-ranking-taxes.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/08-ranking-taxes.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | consumes | `Code/Products/colombia_data.RData` |
+| `Code/Fact-Checks/audit-313/09-variance-ratio.R` | consumes | `Code/Products/global_vars.RData` |
+| `Code/Lit/unpaywall-lookup.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Lit/unpaywall-lookup.R` | consumes | `Code/Deconvolution/utils-cli.R` |
+| `Code/Thesis/000-build-all.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/000-build-all.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/001-setup.R` | consumes | `Code/Deconvolution/050-render-tbls.R` |
+| `Code/Thesis/001-setup.R` | consumes | `Code/Deconvolution/050-render-tbls.R` |
+| `Code/Thesis/appA-cf-revenue-fixed.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appA-cf-revenue-fixed.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appD-beta-single-tax.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appD-beta-single-tax.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appE-pf-all-industries.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appE-pf-all-industries.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appF-evasion-test-bootstrap.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appF-evasion-test-bootstrap.R` | consumes | `Code/Thesis/ch04-test-helpers.R` |
+| `Code/Thesis/appF-evasion-test-bootstrap.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appF-evasion-test-bootstrap.R` | consumes | `Code/Thesis/ch04-test-helpers.R` |
+| `Code/Thesis/appF-evasion-test-conservative.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appF-evasion-test-conservative.R` | consumes | `Code/Thesis/ch04-test-helpers.R` |
+| `Code/Thesis/appF-evasion-test-conservative.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appF-evasion-test-conservative.R` | consumes | `Code/Thesis/ch04-test-helpers.R` |
+| `Code/Thesis/appG-fiscal-wedge.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/appG-fiscal-wedge.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/appH-elasticity.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/appH-elasticity.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-corps-by-industry-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-corps-by-industry-table.R` | consumes | `Code/Thesis/ch03-industry-stats.R` |
+| `Code/Thesis/ch03-corps-by-industry-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-corps-by-industry-table.R` | consumes | `Code/Thesis/ch03-industry-stats.R` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | consumes | `Code/Thesis/ch03-cuadro-III1-data.R` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-income-tax-1983-table.R` | consumes | `Code/Thesis/ch03-cuadro-III1-data.R` |
+| `Code/Thesis/ch03-industry-stats.R` | consumes | `Code/Thesis/ch03-sample.R` |
+| `Code/Thesis/ch03-industry-stats.R` | consumes | `Code/Thesis/ch03-sample.R` |
+| `Code/Thesis/ch03-jo-rules-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-jo-rules-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-marginal-tax-1983-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-marginal-tax-1983-table.R` | consumes | `Code/Thesis/ch03-cuadro-III1-data.R` |
+| `Code/Thesis/ch03-marginal-tax-1983-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-marginal-tax-1983-table.R` | consumes | `Code/Thesis/ch03-cuadro-III1-data.R` |
+| `Code/Thesis/ch03-sales-tax-by-year-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-sales-tax-by-year-table.R` | consumes | `Code/Thesis/ch03-sample.R` |
+| `Code/Thesis/ch03-sales-tax-by-year-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-sales-tax-by-year-table.R` | consumes | `Code/Thesis/ch03-sample.R` |
+| `Code/Thesis/ch03-size-by-jo.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-size-by-jo.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-summary-stats-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-summary-stats-table.R` | consumes | `Code/Thesis/ch03-sample.R` |
+| `Code/Thesis/ch03-summary-stats-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-summary-stats-table.R` | consumes | `Code/Thesis/ch03-sample.R` |
+| `Code/Thesis/ch03-top-industries-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-top-industries-table.R` | consumes | `Code/Thesis/ch03-industry-stats.R` |
+| `Code/Thesis/ch03-top-industries-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch03-top-industries-table.R` | consumes | `Code/Thesis/ch03-industry-stats.R` |
+| `Code/Thesis/ch04-evasion-test.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch04-evasion-test.R` | consumes | `Code/Thesis/ch04-test-helpers.R` |
+| `Code/Thesis/ch04-evasion-test.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch04-evasion-test.R` | consumes | `Code/Thesis/ch04-test-helpers.R` |
+| `Code/Thesis/ch05-overreporting-medians.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch05-overreporting-medians.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch05-overreporting-ratio.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch05-overreporting-ratio.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-beta-net-tax-robustness.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-beta-net-tax-robustness.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-omega.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-omega.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-pf-comparison.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-pf-testinv-regions.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-pf-testinv-regions.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-productivity-comparison.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch06-productivity-comparison.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch07-fiscal-all-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-all-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-all-unincorp-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-all-unincorp-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-liable-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-liable-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-liable-vs-exempt-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-liable-vs-exempt-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-llc-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-llc-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-llc-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-llc-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-plot-helpers.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-plot-helpers.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-prt-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-prt-plot.R` | consumes | `Code/Thesis/ch07-fiscal-plot-helpers.R` |
+| `Code/Thesis/ch07-fiscal-prt-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-prt-table.R` | consumes | `Code/Thesis/ch07-fiscal-table-helpers.R` |
+| `Code/Thesis/ch07-fiscal-table-helpers.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch07-fiscal-table-helpers.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-behavioural-elasticity-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-behavioural-elasticity-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-claims-bounds-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-claims-bounds-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-elasticities-mresp-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-bounds-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-bounds-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-split.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-split.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-totals-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-totals-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-totals-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-cf-revenue-totals-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-ci-hard-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-ci-hard-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-ci-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-ci-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-headline-pct-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-headline-pct-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-level-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-claims-level-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-delta-grid-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-delta-grid-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-detection-prob-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-detection-prob-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-elasticities-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-elasticities-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-elvis-cube-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-elvis-cube-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-headline-estimates-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-headline-estimates-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-headline-pct-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-headline-pct-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-k-kappa-grid-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-k-kappa-grid-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-laffer-ci-hard-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-laffer-ci-hard-plot.R` | consumes | `Code/Deconvolution/1300-cv-15delta-hard-plot.R` |
+| `Code/Thesis/ch08-laffer-ci-hard-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-laffer-ci-hard-plot.R` | consumes | `Code/Deconvolution/1300-cv-15delta-hard-plot.R` |
+| `Code/Thesis/ch08-laffer-ci-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-laffer-ci-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-lambda-grid-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-lambda-grid-plot.R` | consumes | `Code/Deconvolution/1305-lambdagrid-minonly-plot.R` |
+| `Code/Thesis/ch08-lambda-grid-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-lambda-grid-plot.R` | consumes | `Code/Deconvolution/1305-lambdagrid-minonly-plot.R` |
+| `Code/Thesis/ch08-revenue-gap-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-revenue-gap-table.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-theory-vs-cv-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-theory-vs-cv-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-trim-cutoff-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-trim-cutoff-plot.R` | consumes | `Code/Deconvolution/1222-stage2-trim-all-gridpoints-plot.R` |
+| `Code/Thesis/ch08-trim-cutoff-plot.R` | consumes | `Code/Thesis/001-setup.R` |
+| `Code/Thesis/ch08-trim-cutoff-plot.R` | consumes | `Code/Deconvolution/1222-stage2-trim-all-gridpoints-plot.R` |
 
 </details>
