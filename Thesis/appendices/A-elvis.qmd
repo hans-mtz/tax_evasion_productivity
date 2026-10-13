@@ -1,53 +1,39 @@
 # ELVIS Derivation and Implementation {#sec-app-elvis}
 
-## Estimation mechanics
+## Objective and implementation {#sec-app-elvis-implementation}
 
-<!-- Moved from ch. 8's "Estimation" subsection. -->
+The moments in @sec-counterfactual follow from the model's independence assumptions. This section describes how they enter the estimator: the objective and its test, the computation of the tilted moments, and the two rows whose implemented form differs from their theoretical form.
 
-- CUE quadratic objective. The weighting matrix keeps every eigen-direction of $\hat\Omega/n$ with a positive eigenvalue [@AK2020]; $\hat\Omega$ is clustered by plant.
-- $\tilde g$ by self-normalized importance sampling: 1,000 fixed draws per firm from a mixture of a uniform and two log-uniform proposals on the support (uniform in $M$, log-uniform in $M$, and log-uniform in the distance to the support's lower edge), reweighted. Fixed draws make the objective smooth in $(\theta,\gamma)$ [@Schennach2014, p. 360].
-- Reference measure: @Schennach2014's Proposition 2.1, $\exp(-\|D^{-1}(g(M)-g(M^*))\|^2)$ times the uniform on the support, with the row scales $D$ computed once and held fixed across every compared fit.
-- **Gross sales-tax revenue is observed.** The data record the sales tax each firm pays on its sales in each period, which is the observed counterpart of $\tau_{S,it}P_tY_{it}$ in @eq-govt-rev; total revenue in the counterfactual is computed from it directly, held at its baseline value.
-- **The score rows enter in bounded form.** With $B=1-(1+\lambda_1)x^{\lambda_1}$, the scores of $h$ are $\partial h/\partial\lambda_1=-x^{\lambda_1}[1+(1+\lambda_1)\ln x]/B$ and $\partial h/\partial\bar\lambda=\lambda_1(1+\lambda_1)x^{\lambda_1}/(\bar\lambda B)$. Both diverge at the FOC ceiling ($B\to0$), where a single extreme draw can dominate the weighting matrix. The rows use the softsign $s/(1+|s|)\in(-1,1)$ instead ($B$ floored at $10^{-6}$); softsign rather than $s/(1-s)$ because the score in $\lambda_1$ changes sign. Validity is unaffected: any function of $e$ alone is independent of $\varepsilon$. The transform decays polynomially, so firms stay distinguishable across the range of $e$; $\exp$ and $\tanh$ saturate.
-- Nelder–Mead, two passes; every grid point starts from the same validated point (no chaining across points), with common random numbers within a fit. $\gamma$ is solved for at the start point.
-- $\gamma$ is unbounded in the optimizer: @Schennach2014 and @AK2020 both treat $\gamma\to\pm\infty$ as an expected solution, not a numerical failure.
-- Implementation of h's socres: $s_{\lambda_1}$ and $s_{\bar\lambda}$ are the scores of $h$ in $\lambda_1$ and $\bar\lambda$, bounded by $s/(1+|s|)$.
-- Implementation of $\psi \ind \tau_P$: $\bar\tau_{P,jt}$ is the leave-one-out industry–year mean purchases rate
-- For the seventeen moments, the 95 percent critical value is $\chi^2_{17,.95}=27.59$.
-- 
+**Objective.** Let $\hat g(\theta,\gamma)=n^{-1}\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ be the sample average of the tilted moment in @eq-elvis-tilt, and let $\hat V(\theta,\gamma)$ be the covariance of the tilted moments, clustered by plant. Following @Schennach2014's Definition F.1, the objective is the continuously updated quadratic form
+$$
+\hat L_n(\theta)=\min_{\gamma\in\mathbb R^{d_g}}\tfrac12\,\hat g(\theta,\gamma)'\,\hat V(\theta,\gamma)^{-}\,\hat g(\theta,\gamma),
+$$
+where $\hat V^{-}$ is a generalized inverse. @Schennach2014 writes the objective as the supremum over $\gamma$ of the negative of this quadratic form; minimizing the nonnegative form gives the same statistic. The generalized inverse keeps every eigen-direction of $\hat V$ with a positive eigenvalue, as in @AK2020. The multiplier $\gamma$ is unbounded: @Schennach2014 and @AK2020 both treat a diverging $\gamma$ as an expected solution, not a numerical failure.
 
-## Trim cutoff
+**Test.** @Schennach2014's Theorem F.1 shows that, at any $\theta$ that satisfies the moment condition, $TS_n(\theta)=2n\hat L_n(\theta)$ is asymptotically bounded above by a $\chi^2_{d_g}$ random variable. The test compares $TS_n$ with the $\chi^2_{d_g}$ critical value directly, with no credit for the parameters profiled out or for $\gamma$. Because the counterfactual supports a policy claim, I use this conservative test, whose asymptotic size is at most its nominal level. The seventeen moments are the eight rows of @sec-counterfactual plus one $\varepsilon$ row for each of the nine industries, and the 95 percent critical value is $\chi^2_{17,.95}=27.59$.
 
-<!-- Moved from ch. 8's "Estimation" subsection, including @fig-cf-trim. -->
+**Tilted moments.** The integrals in @eq-elvis-tilt have no closed form. I compute them by self-normalized importance sampling. For each firm, 1,000 draws of $M$ on its support come from a mixture of three proposals: uniform in $M$, log-uniform in $M$, and log-uniform in the distance to the support's lower edge. The draws are reweighted to the reference density of @sec-counterfactual, whose row scales $D$ are computed once and held fixed across every compared fit. The draws are also fixed across fits, which makes the objective smooth in $(\theta,\gamma)$ [@Schennach2014, p. 360].
 
-- Top 0.5 percent of interior firms by $M^*$ dropped before fitting: 61 firm-years, 22 of them in 321.
-- Without the trim, no tested $(\lambda_1,\bar\lambda)$ passes the conservative test (best $TS=46.1$ against 27.59).
-- The largest firms in 321 report 7 to 13 times $\bar M_{j,t-1}$. At the operating point, the FOC ceiling caps their overreporting at about $0.24\,\bar M_{j,t-1}$ ($u\lesssim0.02$), against an observed $\mathcal V_{it}\approx0.27$.
-- The trimmed firms enter the counterfactual mechanically: their claims scale with the rate.
+**Rows as implemented.** Two rows differ from their theoretical form. First, the scores of $h$ diverge at the FOC ceiling. With $x=\lambda_{0,jt}e$ and $B=1-(1+\lambda_1)x^{\lambda_1}$, the scores are
+$$
+\frac{\partial h}{\partial\lambda_1}=-\frac{x^{\lambda_1}\big[1+(1+\lambda_1)\ln x\big]}{B},\qquad
+\frac{\partial h}{\partial\bar\lambda}=\frac{\lambda_1(1+\lambda_1)\,x^{\lambda_1}}{\bar\lambda\,B},
+$$
+and both go to infinity as $B\to0$, where a single extreme draw can dominate the weighting matrix. The rows therefore use the softsign transformation $s/(1+|s|)$, bounded in $(-1,1)$, with $B$ floored at $10^{-6}$. The transformed rows remain valid moments, because any function of $e$ alone is independent of $\varepsilon$. I use the softsign for two reasons: the score in $\lambda_1$ changes sign, and the softsign decays polynomially, which keeps firms distinguishable across the range of $e$, whereas $\exp$ and $\tanh$ saturate. Second, the row for the independence of $\psi$ and the purchases rate interacts $\psi$ with $\ln\bar\tau_{P,jt}$, the log of the leave-one-out industry–year mean purchases rate, rather than with the firm's own rate.
 
-## Search over the detection parameters $(\lambda_1,\bar\lambda)$
+**Optimization.** At each grid point of the detection parameters (@sec-app-elvis-search), I estimate the cost parameters by Nelder–Mead, in two passes. Every grid point starts from the same validated point, never from the solution at a neighbouring point, and the draws are common within a fit. Before the search begins, $\gamma$ is solved for at the starting point.
 
-- $(\lambda_1,\bar\lambda)$ is fixed on a grid; at each point $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated.
-- Coarse grid: $\lambda_1\in\{0.65,0.70,0.75\}\times\bar\lambda\in\{0.5,4.5,9\}$. Only $(0.75,0.5)$ passes the conservative test ($TS=23.7$); the next best is $(0.70,9)$ at 29.5.
-- Fine grid around it: $\lambda_1\in\{0.725,0.75,0.775\}\times\bar\lambda\in\{0.4,0.5,0.6\}$.
-- A second point passes on the fine grid: $(\lambda_1,\bar\lambda)=(0.775,0.5)$, $TS=22.0$ ($R=1000$; 23.8 at $R=4000$, against 23.7 and 24.7 at the operating point), with all 17 directions kept and $(\hat\delta_0,\hat\delta_1,\hat\delta_2)=(42.2,27.1,3.87)$, $\hat\omega^*=3.50$. The difference in $TS$ is within the noise between refits, and the fit is less settled (smaller effective sample size per firm, larger $\gamma$), so the operating point stays at $(0.75,0.5)$; the passing region is not a single point.
-- The moments do not pin down the level of detection $\bar\lambda$; relative detection risk is nearly free of it: across industries, relative risk at $\bar\lambda=0.5$ and $\bar\lambda=9$ correlates at 0.87.
+## Trimming {#sec-app-elvis-trim}
+
+I drop the top 0.5 percent of interior firm-years by reported materials before fitting: 61 firm-years, 22 of them in Textiles (321). Without the trim, no tested $(\lambda_1,\bar\lambda)$ passes the conservative test: the lowest statistic is 46.1, against a critical value of 27.59. The largest firms in Textiles report between 7 and 13 times their industry's lagged mean of reported materials, $\bar M_{j,t-1}$. At the operating point, the FOC ceiling caps their overreporting at about $0.24\,\bar M_{j,t-1}$, or $u\lesssim0.02$, while their observed residual $\mathcal V_{it}$ is about 0.27. The model must then attribute almost all of their residual to measurement error in output. The trimmed firms enter the counterfactual without a model of their evasion: their claimed deductions respond to the rate only mechanically and through materials, $(1+\Delta)\tau_{P,it}\,r_{it}(\Delta)\,M^*_{it}$.
+
+## Search over the detection parameters {#sec-app-elvis-search}
+
+The detection parameters $(\lambda_1,\bar\lambda)$ are fixed on a grid, and at each grid point the cost parameters $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ are estimated (@fig-cf-kkappa). On a coarse grid, $\lambda_1\in\{0.65,0.70,0.75\}$ and $\bar\lambda\in\{0.5,4.5,9\}$, only $(0.75,0.5)$ passes the conservative test, with $TS=23.7$; the next best point, $(0.70,9)$, reaches 29.5. A fine grid around it, $\lambda_1\in\{0.725,0.75,0.775\}$ and $\bar\lambda\in\{0.4,0.5,0.6\}$, finds a second passing point, $(0.775,0.5)$, with $TS=22.0$ at 1,000 draws per firm and 23.8 at 4,000, against 23.7 and 24.7 at the operating point. At this second point, the generalized inverse keeps all 17 eigen-directions of $\hat V$, $(\hat\delta_0,\hat\delta_1,\hat\delta_2)=(42.2,27.1,3.87)$ and $\hat\omega^*=3.50$. The difference in $TS$ lies within the noise between refits, and the fit is less settled: the effective sample size per firm is smaller and $\gamma$ is larger. I therefore keep $(0.75,0.5)$ as the operating point. The passing region is not a single point.
+
+The moments do not pin down the level of detection $\bar\lambda$, but relative detection risk is nearly free of it: across industries, the relative risks at $\bar\lambda=0.5$ and at $\bar\lambda=9$ have a correlation of 0.87.
 
 ![Conservative test statistic over the detection parameters. Left: coarse grid; right: fine grid around the operating point. Each cell is a separate fit with $(\delta_0,\delta_1,\delta_2)$ and $\gamma$ estimated; height is $TS_{\text{cons}}$. Blue dots are not rejected, grey crosses are rejected; the plane is $\chi^2_{17,.95}=27.59$.](/figures/ch08-k-kappa-grid.png){#fig-cf-kkappa}
-
-## Test inversion: the conservative test, and why
-
-<!-- OUTLINE, not yet prose -- pulled from CLAUDE.md so the numbers/formulas are ready to
-write from directly; still your own argument to make. Ch. 8's body keeps its one-line
-statement of the test (TS=2n*Lhat against chi2_{d_g,.95}, "conservative" test, what a passing point
-means) since results there are unreadable without it -- don't duplicate that here, this
-section is the justification for the design, not a restatement of it. -->
-
-- **Source definition (Schennach 2014, Definition F.1 and Theorem F.1):** with $\hat g(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)$ (the sample average of the tilted moment from @eq-elvis-tilt) and $\hat V(\theta,\gamma)=\frac1n\sum_{i=1}^n\tilde g(Z_i,\theta,\gamma)\tilde g(Z_i,\theta,\gamma)'$, her continuous updating objective is $\hat L_n^S(\theta)=\sup_{\gamma\in\mathbb R^{d_g}}-\tfrac12\,\hat g(\theta,\gamma)'\hat V(\theta,\gamma)^{-}\hat g(\theta,\gamma)$, with $\hat V^-$ a generalized inverse. Theorem F.1: at any $\theta$ satisfying the moment condition, $-2n\hat L_n^S(\theta)$ is asymptotically bounded above by $\chi^2_{d_g}$. Maximizing $\hat L_n^S$ over $\gamma$ is the same as minimizing the nonnegative quadratic form $\tfrac12\hat g'\hat V^-\hat g$; we report this positive quantity as $\hat L_n(\theta)$, so $TS(\theta)=2n\hat L_n(\theta)=-2n\hat L_n^S(\theta)$ — same statistic, sign flipped purely so the optimizer minimizes a nonnegative objective instead of maximizing a nonpositive one. $\hat V^-$ in our implementation keeps every eigen-direction with a positive eigenvalue, following @AK2020.
-- **Conservative test** (Theorem F.1, absolute): $TS_{\text{cons}}=2n\hat L_n$ against $\chi^2_{d_g,.95}$ directly -- no credit for profiling out nuisance parameters or $\gamma$.
-- **Why the conservative test:** the counterfactual's purpose is to support a policy claim, so the confidence sets use the test whose size is guaranteed not to exceed its nominal level.
-
-- Full derivations: Schennach (2014), Theorem F.1 and its proof; [`Paper/sections/9999-elvis.qmd`]{.content-visible when-meta="draft"}.
 
 ## Counterfactual implementation {#sec-app-cf-implementation}
 
