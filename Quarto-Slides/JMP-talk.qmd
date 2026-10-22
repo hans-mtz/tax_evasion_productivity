@@ -17,15 +17,13 @@ format:
     slide-level: 2
 filters:
   - latex-environment
-commands: [sm, footlineextra, keep]
+commands: [sm, footlineextra, canskip]
 bibliography: ../Thesis/biblio/references.bib
 # JMP talk, 35 min. Outline, budget and skip plan: other/talk-outline.md.
-# \keep = must-keep slide (small grey dot by the frame number).
+# \canskip = slide I can skip if running late (small grey dot by the frame number).
 ---
 
 ## Tax evasion through input overreporting
-
-\keep
 
 - VAT allows firms to deduct taxes paid on their purchases from the taxes collected on sales
 - By overreporting their inputs, firms can reduce their tax bill
@@ -40,15 +38,11 @@ bibliography: ../Thesis/biblio/references.bib
 
 ## Why is it difficult to detect?
 
-\keep
-
 - Overreporting is unobserved: firms conceal their actions because it is illegal
 - Tax-evading firms might *pass* as low-productivity firms
 - For a given level of output, high input use by a firm might be because the firm is overreporting or because its productivity is low
 
 ## What have people done?
-
-\keep
 
 - **Transaction-level data and administrative records** [[@Carrillo2022; @Zumaya2021]]{.sm}
   - False invoicing, ghost-firm invoices, invoice mills
@@ -60,8 +54,6 @@ bibliography: ../Thesis/biblio/references.bib
 
 ## The natural analogue for firms: output
 
-\keep
-
 - Output is a function of true inputs [(assuming output is correctly reported)]{.sm}
 - If we knew the production function (PF) and productivity, we could back out true inputs: the difference between reported and true inputs is the overreporting
 - However, we rely on *reported inputs* to recover the PF and productivity
@@ -70,8 +62,6 @@ bibliography: ../Thesis/biblio/references.bib
 - We have to solve the problem simultaneously, for overreporting and productivity
 
 ## What do I do?
-
-\keep
 
 - Instead of looking into the PF equation, I take the FOC of the firm's profit-maximization problem
 - The FOC links the materials share of revenue to the materials elasticity of output, up to measurement error
@@ -83,8 +73,6 @@ bibliography: ../Thesis/biblio/references.bib
 
 ## What do I find?
 
-\keep
-
 Colombian manufacturing, 1981--1991:
 
 1. **Detect:** overreporting in 9 of the 18 industries liable for the sales tax (about two fifths of manufacturing output); none in the 2 exempt food industries
@@ -93,6 +81,8 @@ Colombian manufacturing, 1981--1991:
 4. **Productivity:** failing to correct for overreporting leads to biased estimates of the PF and productivity
 
 ## Setting: Colombia, 1981--1991
+
+\canskip
 
 - Annual Survey of Manufacturing (EAM): a panel of manufacturing plants with more than 10 employees
   - Output and inputs, juridical organization, and the sales tax charged on sales and paid on purchases
@@ -104,8 +94,6 @@ Colombian manufacturing, 1981--1991:
 
 ## The benchmark group: corporations
 
-\keep
-
 - Two kinds of scrutiny restrained corporations from overreporting: government and market
   - Government: the Superintendent of Corporations closely supervised corporations and required each to have an auditor [[@FiscalSurveyColombia1965]]{.sm}
   - Market: tradable shares subject corporations to market discipline; the market penalizes aggressive tax behaviour even when it is legal [[@HanlonSlemrod2009]]{.sm}
@@ -116,8 +104,6 @@ Colombian manufacturing, 1981--1991:
 
 ## Model: firms, taxes and overreporting
 
-\keep
-
 - Price-taking firms maximize expected after-tax profits; they share a common technology but differ in productivity
 $$
 Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
@@ -127,8 +113,6 @@ $$
   - Overreporting is detected with a probability $q(e)$ and costs $\kappa(e,\omega)$; both are zero for a firm that does not overreport
 
 ## Model: the firm's problem
-
-\keep
 
 $$
 \begin{aligned}
@@ -144,8 +128,6 @@ $$
 
 ## Model: the materials FOC
 
-\keep
-
 - The FOC with respect to materials gives the log share of materials in revenue, net of sales taxes:
 $$
 \ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln\beta-\varepsilon_{it}
@@ -158,6 +140,8 @@ $$
 
 ## Testing for overreporting
 
+\canskip
+
 - Corporations do not overreport: $s_{it}=\ln\beta-\varepsilon_{it}$ gives $\ln\beta=E[s_{it}\mid\text{corporations}]$
 - Unincorporated firms (LLCs, proprietorships): the observed residual $\mathcal V_{it}=s_{it}-\ln\beta=u_{it}-\varepsilon_{it}$
 $$
@@ -169,8 +153,6 @@ $$
 
 ## Testing results
 
-\keep
-
 ![](images/talk-evasion-test.png){height=65% fig-align="center"}
 
 \small
@@ -178,8 +160,6 @@ $$
 - The test detects overreporting in 9 of the 18 industries liable for the sales tax: 4 of the 5 largest by output; 41% of manufacturing output
 
 ## Testing results
-
-\keep
 
 ![](images/talk-evasion-test-food.png){height=65% fig-align="center"}
 
@@ -189,8 +169,6 @@ $$
 - No overreporting in either exempt industry, Food products (311) and Other food products (312): this is expected
 
 ## Counterfactual: the rate on purchases
-
-\keep
 
 - How does net sales-tax revenue change as the government changes the sales-tax rate on purchases?
 - Expected net sales-tax revenue from firm $i$ at the new rate $\tilde\tau_{P}=(1+\Delta)\tau_{P}$:
@@ -204,8 +182,6 @@ $$
 
 ## The overreporting response: the evasion condition
 
-\keep
-
 - To compute the undetected overreporting at the new rate, $(1-q(\tilde e_i))\tilde e_i$, we need the firm's FOC with respect to $e$:
 $$
 \underbrace{\tau_P\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]}_{\text{marginal benefit}}=\underbrace{\frac{\partial\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}}}_{\text{marginal cost}}
@@ -215,8 +191,6 @@ $$
 - Estimating $q(e)$ and $\kappa(e,\omega)$ requires the latent true materials
 
 ## One unobservable: true materials
-
-\keep
 
 - I cast the estimation problem in terms of a single unobservable, true materials $M$:
 $$
@@ -233,8 +207,6 @@ $$
   
 ## ELVIS: existence and optimization
 
-\keep
-
 - Is there a distribution of $M$ given $Z$ with $E[g]=0$?
 - Theorem 2.1 of @Schennach2014: the existence problem is equivalent to an optimization problem
 $$
@@ -247,8 +219,6 @@ $$
 - Test: $TS_n=2n\hat L_n(\theta)$ against $\chi^2_{d_g}$ (conservative, Theorem F.1)
 
 <!-- ## Estimation: ELVIS {.shrink}
-
-\keep
 
 I estimate the model with ELVIS, Entropic Latent Variable Integration via Simulation [[@Schennach2014]]{.sm}
 
@@ -276,8 +246,6 @@ I estimate the model with ELVIS, Entropic Latent Variable Integration via Simula
 
 ## The counterfactual as a moment
 
-\keep
-
 - If we can write our counterfactual as a moment condition, then we can use ELVIS to answer the counterfactual
 - Add the counterfactual moment, with an auxiliary parameter $T$, to the set of moments: $E\big[R_i(\Delta;M_i)-T\big]=0$
 - For each $T$: is there a distribution of the unobservables conditional on the observables that satisfies the model's moments AND the counterfactual moment? Yes or no
@@ -286,8 +254,6 @@ I estimate the model with ELVIS, Entropic Latent Variable Integration via Simula
   - "Latent variable models are often set-identified" [[@Schennach2014, p. 346]]{.sm}
 
 ## Results: net sales-tax revenue
-
-\keep
 
 :::: {.columns}
 ::: {.column width="55%"}
@@ -306,8 +272,6 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
 
 ## Results: elasticity and the cost
 
-\keep
-
 - Elasticity: A 1% increase lowers net sales-tax revenue by about 1.7% of gross sales-tax revenue $[1.47, 1.91]$
 - Cost: 
   - Undetected overreporting costs 4.7% $[2.8, 7.1]$ of gross sales-tax revenue from the unincorporated firms in the 9 industries
@@ -315,8 +279,6 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
   - Same order of magnitude as what tax authorities have detected from input overreporting: 1.2--2.7% of total tax revenue in five countries [[@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]]{.sm}
 
 ## Conclusion
-
-\keep
 
 - Can we detect and measure tax evasion through input overreporting? How much does it cost the government?
 - Overreporting can be detected and measured from production data and a benchmark group alone
