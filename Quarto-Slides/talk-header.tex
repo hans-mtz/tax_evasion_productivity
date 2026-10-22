@@ -4,3 +4,5 @@
         \fill[gray!60] ([xshift=-3.2em,yshift=1.3ex]current page.south east) circle (0.35ex);
     \end{tikzpicture}%
 }
+% Section pages (only the Appendix divider) are unnumbered, so the frame total counts the main deck only
+\AtBeginSection{\begin{frame}[plain,noframenumbering]\sectionpage\end{frame}}
