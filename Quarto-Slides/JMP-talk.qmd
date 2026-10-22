@@ -93,6 +93,77 @@ Colombian manufacturing, 1981--1991:
 3. **Cost:** undetected overreporting costs 4.7% of gross sales-tax revenue; a 1% increase in the rate on purchases lowers net sales-tax revenue by about 1.7% of gross sales-tax revenue
 4. **Productivity:** failing to correct for overreporting leads to biased estimates of the PF and productivity
 
+## Setting: Colombia, 1981--1991
+
+- Annual Survey of Manufacturing (EAM): a panel of manufacturing plants with more than 10 employees
+  - Output and inputs, juridical organization, and the sales tax charged on sales and paid on purchases
+- The Colombian sales tax worked as a VAT: manufacturers credited the tax paid on their purchases against the tax charged on their sales
+- The credit rewards overreporting materials: each fictitious peso lowers the tax liability by the rate on purchases
+  - Capital goods could not be credited and labour was not a taxed purchase
+- Weak enforcement: tax evasion flourished, and the tax authority audited inefficiently [[@Sanchez1994; @Perry1990]]{.sm}
+- Food products (311, 312) were exempt from the sales tax: almost no reward to overreporting
+
+## The benchmark group: corporations
+
+\keep
+
+- Two kinds of scrutiny restrained corporations from overreporting: government and market
+  - Government: the Superintendent of Corporations closely supervised corporations and required each to have an auditor [[@FiscalSurveyColombia1965]]{.sm}
+  - Market: tradable shares subject corporations to market discipline; the market penalizes aggressive tax behaviour even when it is legal [[@HanlonSlemrod2009]]{.sm}
+- Limited liability companies (LLCs) and proprietorships faced only the tax authority, whose audits were weak
+- Ecuador: tax evaded through fictitious purchases was 1.7% for corporations and 11.5% for sole proprietorships [[@Carrillo2022]]{.sm}
+  - If corporations nonetheless overreport, my estimates are a lower bound
+- Corporations have different productivities than the rest of the firms. But that's OK: the critical assumption is a common technology
+
+## Model: firms, taxes and overreporting
+
+\keep
+
+- Price-taking firms maximize expected after-tax profits; they share a common technology but differ in productivity
+$$
+Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it})
+$$
+  - $\omega_{it}$: productivity, known to the firm; $\varepsilon_{it}$: measurement error in output
+- Materials are flexible and deductible; firms report $M^*_{it}=M_{it}+e_{it}$, $e_{it}\ge0$
+  - Overreporting is detected with a probability $q(e)$ and costs $\kappa(e,\omega)$; both are zero for a firm that does not overreport
+
+## Model: the materials FOC
+
+\keep
+
+- The FOC for materials gives the log share of materials in revenue, net of sales taxes:
+$$
+\ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln\beta-\varepsilon_{it}
+$$
+  - Productivity does not appear in the share (Hicks-neutral productivity)
+- With reported materials $M^*_{it}$, the log share $s_{it}$ satisfies
+$$
+s_{it}=\ln\beta-\varepsilon_{it}+u_{it},\qquad u_{it}=\ln(M^*_{it}/M_{it})\ge0
+$$
+
+## Testing for overreporting
+
+- Corporations do not overreport: $s_{it}=\ln\beta-\varepsilon_{it}$ gives $\ln\beta=E[s_{it}\mid\text{corporations}]$
+- Unincorporated firms: the observed residual $\mathcal V_{it}=s_{it}-\ln\beta=u_{it}-\varepsilon_{it}$
+$$
+H_0:\ \mu_{\mathcal V}=0\qquad\text{vs.}\qquad H_1:\ \mu_{\mathcal V}>0
+$$
+- One-sided: no firm has an incentive to underreport deductible inputs. A rejection can only point to overreporting
+- The test does not depend on the functional forms of the detection probability and the cost of evasion, nor on the Cobb-Douglas form of the technology
+- Confidence set for $\mu_{\mathcal V}$ by test inversion, clustered by plant
+
+## Testing results
+
+\keep
+
+![](images/talk-evasion-test.png){height=50% fig-align="center"}
+
+\small
+
+- The test detects overreporting in 9 of the 18 industries liable for the sales tax: 4 of the 5 largest by output; 41% of manufacturing output
+- No overreporting in either exempt industry, Food products (311) and Other food products (312): this is expected
+- In the other nine liable industries, the test fails to reject: a failure to reject is inconclusive
+
 # Appendix {.plain .noframenumbering}
 
 ## References {.allowframebreaks}
