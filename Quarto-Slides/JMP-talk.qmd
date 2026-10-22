@@ -214,7 +214,37 @@ $$
 - The cost of evasion depends on productivity, which lets the model match the observed pattern in recent evidence [[@Carrillo2022]]{.sm}
 - Estimating $q(e)$ and $\kappa(e,\omega)$ requires the latent true materials
 
-## Estimation: ELVIS {.shrink}
+## One unobservable: true materials
+
+\keep
+
+- I cast the estimation problem in terms of a single unobservable, true materials $M$:
+$$
+e(M)=M^*_{it}-M,\qquad\varepsilon(M)=\ln(M^*_{it}/M)-\mathcal V_{it},
+$$
+$$
+\omega(M)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon(M)
+$$
+  - $\mathcal V_{it}$: the observed residual of the test; $\tilde{\mathcal W}_{it}$: from the production-function estimates
+  - The evasion condition then gives the cost shock $\psi(M)$
+- The model's independence assumptions give the moment conditions $E[g(M,Z,\theta)]=0$, e.g. $E[\psi]=0$, $E[\psi\ln\tau_P]=0$, $E[\varepsilon]=0$
+  - $Z$: observables; $\theta$: the parameters of $q$ and $\kappa$
+
+## ELVIS: existence and optimization
+
+\keep
+
+- Theorem 2.1 of @Schennach2014: the existence problem is equivalent to an optimization problem
+$$
+\inf_{f_{M|Z}}\big\|E[g(M,Z,\theta)]\big\|=0\iff\inf_{\gamma}\big\|E[\tilde g(Z,\theta,\gamma)]\big\|=0,
+$$
+$$
+\tilde g(Z,\theta,\gamma)=\frac{\int g(M,Z,\theta)\,e^{\gamma'g(M,Z,\theta)}f^0_{M|Z}(M|Z)\,dM}{\int e^{\gamma'g(M,Z,\theta)}f^0_{M|Z}(M|Z)\,dM}
+$$
+- Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to a reference density $f^0_{M|Z}$; $\gamma$ is the Lagrange multiplier on the moment constraints
+- Test: $TS_n=2n\hat L_n(\theta)$ against $\chi^2_{d_g}$ (conservative, Theorem F.1)
+
+<!-- ## Estimation: ELVIS {.shrink}
 
 \keep
 
@@ -240,7 +270,7 @@ I estimate the model with ELVIS, Entropic Latent Variable Integration via Simula
 - We could assume a parametric distribution (indirect inference, maximum simulated likelihood). ELVIS does not impose parametric assumptions on the distribution of the unobservables
 :::
 ::::
-
+ -->
 
 ## The counterfactual as a moment
 
@@ -295,30 +325,7 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
 
 # Appendix {.plain .noframenumbering}
 
-## One unobservable: true materials {.noframenumbering}
 
-- I cast the estimation problem in terms of a single unobservable, true materials $M$:
-$$
-e(M)=M^*_{it}-M,\qquad\varepsilon(M)=\ln(M^*_{it}/M)-\mathcal V_{it},
-$$
-$$
-\omega(M)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon(M)
-$$
-  - $\mathcal V_{it}$: the observed residual of the test; $\tilde{\mathcal W}_{it}$: from the production-function estimates
-  - The evasion condition then gives the cost shock $\psi(M)$
-- Moments from the model's independence assumptions, e.g. $E[\psi]=0$, $E[\psi\ln\tau_P]=0$, $E[\varepsilon]=0$
-
-## ELVIS: existence and optimization {.noframenumbering}
-
-- Theorem 2.1 of @Schennach2014: the existence problem is equivalent to an optimization problem
-$$
-\inf_{f_{M|Z}}\big\|E[g(M,Z,\theta)]\big\|=0\iff\inf_{\gamma}\big\|E[\tilde g(Z,\theta,\gamma)]\big\|=0,
-$$
-$$
-\tilde g(Z,\theta,\gamma)=\frac{\int g(M,Z,\theta)\,e^{\gamma'g(M,Z,\theta)}f^0_{M|Z}(M|Z)\,dM}{\int e^{\gamma'g(M,Z,\theta)}f^0_{M|Z}(M|Z)\,dM}
-$$
-- Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to a reference density $f^0_{M|Z}$; $\gamma$ is the Lagrange multiplier on the moment constraints
-- Test: $TS_n=2n\hat L_n(\theta)$ against $\chi^2_{d_g}$ (conservative, Theorem F.1)
 
 ## Model estimates {.noframenumbering}
 
