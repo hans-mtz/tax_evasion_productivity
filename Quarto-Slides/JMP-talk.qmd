@@ -1,0 +1,101 @@
+---
+title: "Tax Evasion and Productivity"
+author: "Hans Martinez"
+institute: "Western University"
+date: today
+date-format: long
+format:
+  beamer:
+    aspectratio: 169
+    include-in-header:
+      - header-includes.tex
+      - talk-header.tex
+    template-partials:
+      - before-body.tex
+    keep-tex: true
+    mainfont: Arial
+    slide-level: 2
+filters:
+  - latex-environment
+commands: [sm, footlineextra, keep]
+bibliography: ../Thesis/biblio/references.bib
+---
+
+<!-- JMP talk, 35 min. Outline, budget and skip plan: other/talk-outline.md.
+     \keep = must-keep slide (small grey dot by the frame number). -->
+
+## Tax evasion through input overreporting
+
+\keep
+
+- VAT allows firms to deduct taxes paid on their purchases from the taxes collected on sales
+- By overreporting their inputs, firms can reduce their tax bill
+- Input overreporting is widespread: a common practice and a concern among OECD countries [[@OECD2017]]{.sm}
+  - Losses of 1.2--2.7% of total tax revenue in Chile, Colombia, Ecuador, Poland and Slovakia
+  - Conditional on detected evasion: true losses are plausibly larger
+- Governments have limited resources, and overreporting costs the government tax revenue
+
+\medskip
+
+**Question:** Can we detect and measure tax evasion through input overreporting? How much does overreporting of inputs cost the government?
+
+## Why is it difficult to detect?
+
+\keep
+
+- Overreporting is unobserved: firms conceal their actions because it is illegal
+- Tax-evading firms might *pass* as low-productivity firms
+- For a given level of output, high input use by a firm might be because the firm is overreporting or because its productivity is low
+
+## What have people done?
+
+\keep
+
+- **Transaction-level data and administrative records** [[@Carrillo2022; @Zumaya2021]]{.sm}
+  - False invoicing, ghost-firm invoices, invoice mills
+  - Access to this data is restricted; it is conditional on detected evasion
+- **On the consumer side:** a benchmark group to measure misreporting from potentially evading individuals [[@Pissarides1989; @Gorodnichenko2009]]{.sm}
+  - Self-employed vs. employees
+  - The self-employed might underreport their income to pay less income tax; employees cannot misreport because their income is reported by their employers
+  - Consumption is a function of true income: comparing their consumption backs out how much the self-employed underreport
+
+## The natural analogue for firms: output
+
+\keep
+
+- Output is a function of true inputs [(assuming output is correctly reported)]{.sm}
+- If we knew the production function (PF) and productivity, we could back out true inputs: the difference between reported and true inputs is the overreporting
+- However, we rely on *reported inputs* to recover the PF and productivity
+  - Proxy-variable methods rely on the *flexible* input [[@Levinsohn2003; @Ackerberg2015; @Gandhi2020]]{.sm}
+  - If the flexible input is deductible, firms might overreport it: materials, in my application
+- We have to solve the problem simultaneously, for overreporting and productivity
+
+## What do I do?
+
+\keep
+
+- Instead of looking into the PF equation, I take the FOC of the firm's profit-maximization problem
+- The FOC links the materials share of revenue to the materials elasticity of output, up to measurement error
+  - It does not depend on productivity (Hicks-neutral productivity)
+- Just like in the individuals' case, I estimate this elasticity from a benchmark group of firms that do not overreport
+  - The benchmark group can have different productivity than the potentially tax-evading firms
+  - The critical assumption: both share a common technology
+- With the elasticity at hand, the difference between reported and true materials reveals the overreporting, up to measurement error
+
+## What do I find?
+
+\keep
+
+Colombian manufacturing, 1981--1991:
+
+1. **Detect:** overreporting in 9 of the 18 industries liable for the sales tax (about two fifths of manufacturing output); none in the 2 exempt food industries
+2. **Measure:** potentially tax-evading firms overreport on average 4.5--23.1% of their true materials, depending on the industry
+3. **Cost:** undetected overreporting costs 4.7% of gross sales-tax revenue; a 1% increase in the rate on purchases lowers net sales-tax revenue by about 1.7% of gross sales-tax revenue
+4. **Productivity:** failing to correct for overreporting leads to biased estimates of the PF and productivity
+
+# Appendix {.plain .noframenumbering}
+
+## References {.allowframebreaks}
+
+::: {#refs}
+:::
