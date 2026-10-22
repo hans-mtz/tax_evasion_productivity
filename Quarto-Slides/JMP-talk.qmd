@@ -19,10 +19,9 @@ filters:
   - latex-environment
 commands: [sm, footlineextra, keep]
 bibliography: ../Thesis/biblio/references.bib
+# JMP talk, 35 min. Outline, budget and skip plan: other/talk-outline.md.
+# \keep = must-keep slide (small grey dot by the frame number).
 ---
-
-<!-- JMP talk, 35 min. Outline, budget and skip plan: other/talk-outline.md.
-     \keep = must-keep slide (small grey dot by the frame number). -->
 
 ## Tax evasion through input overreporting
 
@@ -160,7 +159,7 @@ $$
 ## Testing for overreporting
 
 - Corporations do not overreport: $s_{it}=\ln\beta-\varepsilon_{it}$ gives $\ln\beta=E[s_{it}\mid\text{corporations}]$
-- Unincorporated firms: the observed residual $\mathcal V_{it}=s_{it}-\ln\beta=u_{it}-\varepsilon_{it}$
+- Unincorporated firms (LLCs, proprietorships): the observed residual $\mathcal V_{it}=s_{it}-\ln\beta=u_{it}-\varepsilon_{it}$
 $$
 H_0:\ \mu_{\mathcal V}=0\qquad\text{vs.}\qquad H_1:\ \mu_{\mathcal V}>0
 $$
@@ -230,11 +229,13 @@ $$
   - The evasion condition then gives the cost shock $\psi(M)$
 - The model's independence assumptions give the moment conditions $E[g(M,Z,\theta)]=0$, e.g. $E[\psi]=0$, $E[\psi\ln\tau_P]=0$, $E[\varepsilon]=0$
   - $Z$: observables; $\theta$: the parameters of $q$ and $\kappa$
-
+- I estimate the model with *ELVIS*, Entropic Latent Variable Integration via Simulation
+  
 ## ELVIS: existence and optimization
 
 \keep
 
+- Is there a distribution of $M$ given $Z$ with $E[g]=0$?
 - Theorem 2.1 of @Schennach2014: the existence problem is equivalent to an optimization problem
 $$
 \inf_{f_{M|Z}}\big\|E[g(M,Z,\theta)]\big\|=0\iff\inf_{\gamma}\big\|E[\tilde g(Z,\theta,\gamma)]\big\|=0,
@@ -303,7 +304,7 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
 :::
 ::::
 
-## Results: the cost of overreporting
+## Results: elasticity and the cost
 
 \keep
 
