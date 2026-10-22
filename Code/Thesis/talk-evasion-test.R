@@ -3,6 +3,8 @@
 ##          industries where the test rejects (region excludes 0) in bold; short note.
 ##          Quarto-Slides/images/talk-evasion-test-food.png := the same table, exempt food industries (311, 312)
 ##          also highlighted (second results slide).
+##          Quarto-Slides/images/talk-evasion-test-conservative.png := same layout, conservative region (chi2_2),
+##          slide version of Thesis/tables/appF-evasion-test-conservative.png (appendix slide).
 ## Reads:   Code/Products/1510-test-inversion.RData -> out (as ch04-evasion-test.R).
 source("Code/Thesis/001-setup.R"); source("Code/Thesis/ch04-test-helpers.R")
 load(file.path(PRODUCTS_DIR, "1510-test-inversion.RData"))   # out
@@ -26,3 +28,15 @@ make_tt <- function(food = FALSE) {
 }
 render_png_tt_tbl(make_tt(), "talk-evasion-test", out_dir = "Quarto-Slides/images", linewidth_pt = THESIS_TEXTWIDTH_PT)
 render_png_tt_tbl(make_tt(food = TRUE), "talk-evasion-test-food", out_dir = "Quarto-Slides/images", linewidth_pt = THESIS_TEXTWIDTH_PT)
+
+## Conservative region (appendix slide)
+dc <- d %>% mutate(region = fmt_region(lo, hi), reject = !is.na(lo) & lo > 0)
+lc <- dc[1:10, ]; rc <- dc[11:20, ]
+tbl_c <- data.frame(lc$Industry, lc$mu, lc$region, rc$Industry, rc$mu, rc$region)
+names(tbl_c) <- names(tbl)
+tt_c <- tt(tbl_c, align = "lcclcc", width = c(3.3, 0.9, 1.75, 4.1, 0.9, 1.75),
+           notes = "$\\hat\\mu$: mean of $\\mathcal V_{it}$ among unincorporated firms. 95\\% test-inversion region, conservative test ($\\chi^2_{2,0.95}=5.99$); bold: the region excludes 0. $(\\,\\cdot\\,,\\ b]$: 0 not rejected. $\\dagger$: empty region.") %>%
+    style_tt(i = "notes", fontsize = 0.8)
+for (r in which(lc$reject)) tt_c <- style_tt(tt_c, i = r, j = 1:3, bold = TRUE)
+for (r in which(rc$reject)) tt_c <- style_tt(tt_c, i = r, j = 4:6, bold = TRUE)
+render_png_tt_tbl(tt_c, "talk-evasion-test-conservative", out_dir = "Quarto-Slides/images", linewidth_pt = THESIS_TEXTWIDTH_PT)

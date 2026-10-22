@@ -171,7 +171,7 @@ $$
 
 \keep
 
-![](images/talk-evasion-test.png){height=50% fig-align="center"}
+![](images/talk-evasion-test.png){height=70% fig-align="center"}
 
 \small
 
@@ -181,11 +181,11 @@ $$
 
 \keep
 
-![](images/talk-evasion-test-food.png){height=50% fig-align="center"}
+![](images/talk-evasion-test-food.png){height=70% fig-align="center"}
 
 \small
 
-- The test detects overreporting in 9 of the 18 industries liable for the sales tax: 4 of the 5 largest by output; 41% of manufacturing output
+<!-- - The test detects overreporting in 9 of the 18 industries liable for the sales tax: 4 of the 5 largest by output; 41% of manufacturing output -->
 - No overreporting in either exempt industry, Food products (311) and Other food products (312): this is expected
 
 ## Counterfactual: the rate on purchases
@@ -193,62 +193,60 @@ $$
 \keep
 
 - How does net sales-tax revenue change as the government changes the sales-tax rate on purchases?
+- Expected net sales-tax revenue from firm $i$ at the new rate $\tilde\tau_{P}=(1+\Delta)\tau_{P}$:
+$$
+R_i(\Delta;M_i) = \underbrace{\tau_{S}P_tY_{it}(\Delta)}_{\text{gross sales-tax revenue}} - \underbrace{\tilde\tau_{P}\big[M_{it}(\Delta)+(1-q(\tilde{e}_i(\Delta)))\tilde{e}_i(\Delta)\big]}_{\text{claimed deductions}}
+$$
 - A change in the rate moves net sales-tax revenue through three channels:
   1. Mechanical: every peso the firm claims is credited at the new rate
   2. Overreporting: a higher rate raises the marginal benefit of overreporting
   3. Materials: the rate changes the net-of-tax price of materials relative to output
-- The overreporting response needs the model: the FOC with respect to $e$, the evasion condition
-$$
-\underbrace{\tau_P\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]}_{\text{marginal benefit}}=\underbrace{\frac{\partial\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}}}_{\text{marginal cost}}
-$$
-  - A higher tax rate on purchases raises overreporting
-  - The cost of evasion depends on productivity, which lets the model match the observed pattern in recent evidence [[@Carrillo2022]]{.sm}
 
-## One unobservable: true materials
-
-\small
-
-- I cast the estimation problem in terms of a single unobservable, true materials $M$:
-$$
-e(M)=M^*_{it}-M,\qquad\varepsilon(M)=\ln(M^*_{it}/M)-\mathcal V_{it},
-$$
-$$
-\omega(M)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon(M)
-$$
-  - $\mathcal V_{it}$: the observed residual of the test; $\tilde{\mathcal W}_{it}$: from the production-function estimates (appendix)
-  - The evasion condition then gives the cost shock $\psi(M)$
-- Moments from the model's independence assumptions, e.g. $E[\psi]=0$, $E[\psi\ln\tau_P]=0$, $E[\varepsilon]=0$
-- Why ELVIS?
-  - Moments are nonlinear in the unobservable, true materials. So a standard GMM or instruments/2SLS would not work
-  - We could assume a parametric distribution (indirect inference, maximum simulated likelihood). ELVIS does not impose parametric assumptions on the distribution of the unobservables
-
-## ELVIS [[@Schennach2014]]{.sm}
+## The overreporting response: the evasion condition
 
 \keep
 
-\small
+- To compute the undetected overreporting at the new rate, $(1-q(\tilde e_i))\tilde e_i$, we need the firm's FOC with respect to $e$:
+$$
+\underbrace{\tau_P\rho_t\big[1-(1+\phi)\big(q(e_{it})+q'(e_{it})e_{it}\big)\big]}_{\text{marginal benefit}}=\underbrace{\frac{\partial\kappa_{it}(e_{it},\omega_{it})}{\partial e_{it}}}_{\text{marginal cost}}
+$$
+- A higher tax rate on purchases raises overreporting
+- The cost of evasion depends on productivity, which lets the model match the observed pattern in recent evidence [[@Carrillo2022]]{.sm}
+- Estimating $q(e)$ and $\kappa(e,\omega)$ requires the latent true materials
 
-- Entropic Latent Variable Integration via Simulation
-- A method of simulated moments: MCMC methods sample from a non-parametric distribution of the unobservables conditional on the observables, such that the moment conditions hold
-- It turns an existence question into an optimization problem:
-$$
-\inf_{f_{M|Z}}\big\|E[g(M,Z,\theta)]\big\|=0\iff\inf_{\gamma}\big\|E[\tilde g(Z,\theta,\gamma)]\big\|=0,\qquad\tilde g(Z,\theta,\gamma)=\frac{\int g\,e^{\gamma'g}f^0_{M|Z}\,dM}{\int e^{\gamma'g}f^0_{M|Z}\,dM}
-$$
-  - "Is there a distribution of the unobservables conditional on the observables such that the moments hold?" becomes "what is the distribution of the unobservables conditional on the observables that maximizes entropy?"
-- Why do we care about entropy? We don't. We just need a distribution that satisfies the moment conditions; ELVIS selects the one that maximizes entropy
-- ELVIS is always going to find a distribution: we test whether the moments are equal to zero, $TS_n=2n\hat L_n(\theta)$ against $\chi^2_{d_g}$
+## Estimation: ELVIS {.shrink}
+
+\keep
+
+I estimate the model with ELVIS, Entropic Latent Variable Integration via Simulation [[@Schennach2014]]{.sm}
+
+:::: {.columns}
+::: {.column width="56%"}
+\footnotesize
+
+**What is ELVIS?**
+
+- A method of simulated moments where we use Markov chain Monte Carlo (MCMC) methods to sample from a non-parametric distribution of the unobservables conditional on the observables, such that the moment conditions hold
+- It turns an existence question into an optimization problem: instead of asking "is there a distribution of the unobservables conditional on the observables such that the moments hold?", it asks "what is the distribution of the unobservables conditional on the observables that maximizes entropy?"
+- Why do we care about entropy? We don't. We just need a distribution that satisfies the moment conditions
+- ELVIS is always going to find a distribution: we test whether the moments are equal to zero
+:::
+::: {.column width="44%"}
+\footnotesize
+
+**Why ELVIS?**
+
+- Moments are nonlinear in the unobservable, true materials. So a standard GMM or instruments/2SLS would not work
+- We could assume a parametric distribution (indirect inference, maximum simulated likelihood). ELVIS does not impose parametric assumptions on the distribution of the unobservables
+:::
+::::
+
 
 ## The counterfactual as a moment
 
 \keep
 
-\small
-
 - If we can write our counterfactual as a moment condition, then we can use ELVIS to answer the counterfactual
-- Net sales-tax revenue at the new rate $\tilde\tau_P=(1+\Delta)\tau_P$ depends on the latent $M_{it}$:
-$$
-R_i(\Delta;M_i)=\tau_SP_tY_{it}(\Delta)-\tilde\tau_P\big[M_{it}(\Delta)+(1-q(\tilde e_i))\tilde e_i\big]
-$$
 - Add the counterfactual moment, with an auxiliary parameter $T$, to the set of moments: $E\big[R_i(\Delta;M_i)-T\big]=0$
 - For each $T$: is there a distribution of the unobservables conditional on the observables that satisfies the model's moments AND the counterfactual moment? Yes or no
   - The confidence set collects the values of $T$ that the test does not reject
@@ -270,7 +268,7 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
 
 - Current rate: $-391$ $[-605,-174]$: refunds on claimed deductions exceed gross sales-tax revenue
 - Breaks even at a cut of about 17%; significantly positive from a cut of 27.5% $[2, 426]$
-- A 1% increase lowers net sales-tax revenue by about 1.7% of gross sales-tax revenue $[1.47, 1.91]$
+
 :::
 ::::
 
@@ -278,9 +276,11 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
 
 \keep
 
-- Undetected overreporting costs 4.7% $[2.8, 7.1]$ of gross sales-tax revenue from the unincorporated firms in the 9 industries
-- At least 1.5% $[1.1, 3.1]$ across all firms in the sample
-- Same order of magnitude as what tax authorities have detected from input overreporting: 1.2--2.7% of total tax revenue in five countries [[@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]]{.sm}
+- Elasticity: A 1% increase lowers net sales-tax revenue by about 1.7% of gross sales-tax revenue $[1.47, 1.91]$
+- Cost: 
+  - Undetected overreporting costs 4.7% $[2.8, 7.1]$ of gross sales-tax revenue from the unincorporated firms in the 9 industries
+  - At least 1.5% $[1.1, 3.1]$ across all firms in the sample
+  - Same order of magnitude as what tax authorities have detected from input overreporting: 1.2--2.7% of total tax revenue in five countries [[@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]]{.sm}
 
 ## Conclusion
 
@@ -290,9 +290,138 @@ Real pesos per firm-year, unincorporated firms in the 9 industries where the tes
 - Overreporting can be detected and measured from production data and a benchmark group alone
 - It is common and large
 - It is costly in two ways: for the government, which credits fictitious purchases, and for productivity measurement
-- A higher rate on purchases raises claimed deductions by more than its mechanical effect: net sales-tax revenue falls by more than the higher credit alone implies
+- A higher rate on purchases raises claimed deductions by more than its mechanical effect: 
+  - net sales-tax revenue falls by more than the higher credit alone implies
 
 # Appendix {.plain .noframenumbering}
+
+## One unobservable: true materials {.noframenumbering}
+
+- I cast the estimation problem in terms of a single unobservable, true materials $M$:
+$$
+e(M)=M^*_{it}-M,\qquad\varepsilon(M)=\ln(M^*_{it}/M)-\mathcal V_{it},
+$$
+$$
+\omega(M)=\tilde{\mathcal W}_{it}-(1-\beta)\varepsilon(M)
+$$
+  - $\mathcal V_{it}$: the observed residual of the test; $\tilde{\mathcal W}_{it}$: from the production-function estimates
+  - The evasion condition then gives the cost shock $\psi(M)$
+- Moments from the model's independence assumptions, e.g. $E[\psi]=0$, $E[\psi\ln\tau_P]=0$, $E[\varepsilon]=0$
+
+## ELVIS: existence and optimization {.noframenumbering}
+
+- Theorem 2.1 of @Schennach2014: the existence problem is equivalent to an optimization problem
+$$
+\inf_{f_{M|Z}}\big\|E[g(M,Z,\theta)]\big\|=0\iff\inf_{\gamma}\big\|E[\tilde g(Z,\theta,\gamma)]\big\|=0,
+$$
+$$
+\tilde g(Z,\theta,\gamma)=\frac{\int g(M,Z,\theta)\,e^{\gamma'g(M,Z,\theta)}f^0_{M|Z}(M|Z)\,dM}{\int e^{\gamma'g(M,Z,\theta)}f^0_{M|Z}(M|Z)\,dM}
+$$
+- Among the conditional distributions of $M$ given $Z$ that satisfy the moment conditions, ELVIS selects the one with maximum entropy relative to a reference density $f^0_{M|Z}$; $\gamma$ is the Lagrange multiplier on the moment constraints
+- Test: $TS_n=2n\hat L_n(\theta)$ against $\chi^2_{d_g}$ (conservative, Theorem F.1)
+
+## Model estimates {.noframenumbering}
+
+:::: {.columns}
+::: {.column width="45%"}
+![](../Thesis/tables/ch08-headline-estimates.png){height=78%}
+:::
+::: {.column width="55%"}
+\small
+
+- Interior firms in the nine industries where the test rejects; the test statistic $TS_n$ fails to reject at the 5% level
+- Cost of evasion convex in productivity: $\hat\delta_1=27.15>0$, $\hat\delta_2=3.80>0$; it falls with productivity up to $\hat\omega^*=3.57$ (about the 57th percentile) and rises after it
+- Mean detection probability 6.8% $[5.7, 11.0]$; median 2.0%, 80th percentile 18.5%, 90th percentile 27%, maximum 57%
+- The model's mean overreporting $E[u]$ is within 0.02 of the data's $E[\mathcal V]$ in seven of the nine industries
+:::
+::::
+
+## Claimed deductions: elasticities {.noframenumbering}
+
+![](../Thesis/tables/ch08-cf-elasticities-mresp.png){width=85% fig-align="center"}
+
+\small
+
+- Claimed purchase deductions respond more than one for one: $+1\%$ $\to$ 1.39 $=$ 1 (mechanical) $+$ 0.18 (materials) $+$ 0.21 (overreporting)
+- At $-1\%$: 1.32; the materials response is again 0.18, but the overreporting response falls to 0.14
+
+## Net sales-tax revenue: whole economy {.noframenumbering}
+
+:::: {.columns}
+::: {.column width="58%"}
+![](../Thesis/figures/ch08-cf-revenue-totals.png){width=100%}
+:::
+::: {.column width="42%"}
+\small
+
+Total over every firm-year in the sample, millions of real pesos
+
+- Current rate: $-15.9$ $[-18.4,-13.2]$
+- Breaks even at a cut of about 24%; a 30% cut raises it to 3.6 $[1.0, 6.2]$
+- The whole economy needs a larger cut because of the corner firms in the other 19 industries
+:::
+::::
+
+## Robustness: true materials fixed {.noframenumbering}
+
+![](../Thesis/tables/appA-cf-revenue-fixed.png){width=85% fig-align="center"}
+
+## Test for overreporting: conservative test {.noframenumbering}
+
+![](images/talk-evasion-test-conservative.png){width=90% fig-align="center"}
+
+## How much: deconvolution {.noframenumbering}
+
+![](../Thesis/tables/ch05-overreporting-ratio.png){width=90% fig-align="center"}
+
+\small
+
+- In the five largest industries where the test rejects at the 1% level and the deconvolution applies, unincorporated firms overreport on average between 4.5 and 23.1% of their true materials
+
+## Production function estimates {.noframenumbering}
+
+![](../Thesis/tables/ch06-pf-comparison.png){height=72% fig-align="center"}
+
+\small
+
+- The uncorrected estimates show output elasticities of materials that are consistently larger than the corrected ones
+
+## Productivity {.noframenumbering}
+
+![](../Thesis/tables/ch06-productivity-comparison.png){height=68% fig-align="center"}
+
+\small
+
+- Uncorrected productivity distributions are more dispersed and less persistent: in the median of the five industries, the 90/10 ratio is 66% larger and the half-life of productivity shocks is 63% shorter
+
+## The 1983 reform {.noframenumbering}
+
+![](../Thesis/figures/ch07-fiscal-liable-vs-exempt.png){height=68% fig-align="center"}
+
+\small
+
+- Between 1983 and 1987, after Colombia raised the sales-tax rate for most manufacturing industries, overreporting by unincorporated firms in the affected industries rose by about 8.5 percentage points of true materials
+
+## The 1983 reform: elasticity {.noframenumbering}
+
+![](../Thesis/tables/appH-elasticity.png){width=90% fig-align="center"}
+
+\small
+
+- The response implies a midpoint elasticity of overreporting with respect to the tax rate of 5.9
+
+## Overreporting elsewhere: Ecuador and Mexico {.noframenumbering}
+
+\small
+
+- **Share of true purchases.** Ecuador: among firms that use ghost receipts, ghost purchases are 10.4% of the value of their purchase deductions [(3.6% of their purchases)]{.sm}
+  - Mine: unincorporated firms overreport 4.5--23.1% of their true materials on average
+- **Losses.** Detected losses 1.2--2.7% of total tax revenue in Chile, Colombia, Ecuador, Poland and Slovakia [[@OECD2017; @Carrillo2022; @CASE2018; @Pelaez2022]]{.sm}
+  - Mine: 4.7% of gross sales-tax revenue (interior firms), 1.5% (all firms)
+  - Theirs count only what enforcement detects: true losses plausibly larger
+- **Corporations as benchmark.** Ecuador: tax evaded through fake receipts 1.7% for corporations vs 11.5% for sole proprietorships [[@Carrillo2022, p. 6]]{.sm}
+- **Pattern by size.** Ecuador: share of deductions backed by fake receipts rises with revenue, drops sharply at the very top [[@Carrillo2022, p. 6]]{.sm}
+  - Mine: cost of evasion convex in productivity, minimum at $\hat\omega^*=3.57$ ($\approx$ 57th percentile)
 
 ## References {.allowframebreaks}
 
