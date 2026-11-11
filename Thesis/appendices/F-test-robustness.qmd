@@ -20,13 +20,13 @@ Both alternatives confirm most of the rejections of the sharp test. The conserva
 
 This section derives the results stated in @sec-testing-test: the test depends neither on the functional forms of the detection probability and the cost of evasion, nor on the Cobb-Douglas form of the technology.
 
-**Setup.** Let output be $Y_{it}=G(K_{it},L_{it},M_{it})\exp(\omega_{it}+\varepsilon_{it})$, with $G_M>0$, common to corporations and unincorporated firms in an industry. Let the detection probability and the cost of evasion depend on overreporting and on any other variables $Z_{it}$, possibly including materials: $q(e,Z)$ and $\kappa(e,Z)$. With $\mathbb{E}[\exp(\varepsilon_{it})]=1$ as in @sec-model, the part of expected profit that depends on materials and overreporting is
+**Setup.** Let output from the firm's perspective be $Y_{it}=G(K_{it},L_{it},M_{it})\exp(\omega_{it})$, with $G_M>0$, common to corporations and unincorporated firms in an industry. Let the detection probability and the cost of evasion depend on overreporting and on any other variables $Z_{it}$, possibly including materials: $q(e,Z)$ and $\kappa(e,Z)$. The firm's problem is
 
 $$
-(1-\tau_S)P_tG(K_{it},L_{it},M_{it})\exp(\omega_{it})-(1-\tau_P)\rho_tM_{it}+\tau_P\rho_te_{it}\big[1-(1+\phi)q(e_{it},Z_{it})\big]-\kappa(e_{it},Z_{it}).
+\max_{M,e,K,L}\;\mathbb{E}[\pi_{it}] =(1-\tau_S)P_tG(K_{it},L_{it},M_{it})\exp(\omega_{it})-(1-\tau_P)\rho_tM_{it}-r_tK_{it}-w_tL_{it}+\tau_P\rho_te_{it}\big[1-(1+\phi)q(e_{it},Z_{it})\big]-\kappa(e_{it},Z_{it}).
 $$
 
-**Under the null.** A truthful firm faces no detection and incurs no cost of evasion: $q(0,Z)=0$ and $\kappa(0,Z)=0$ for every $Z$. At $e_{it}=0$, the evasion terms are zero for every $M_{it}$, and so are their derivatives with respect to $M_{it}$. The materials condition is the one without evasion, $(1-\tau_S)P_tG_M\exp(\omega_{it})=(1-\tau_P)\rho_t$. Multiplying by $M_{it}$ and dividing by measured output gives
+**Under the null.** A truthful firm faces no detection and incurs no cost of evasion: $q(0,Z)=0$ and $\kappa(0,Z)=0$ for every $Z$. At $e_{it}=0$, the evasion terms are zero for every $M_{it}$, and so are their derivatives with respect to $M_{it}$. The materials condition is the one without evasion, $(1-\tau_S)P_tG_M\exp(\omega_{it})=(1-\tau_P)\rho_t$. Multiplying by $M_{it}$ and dividing by the value of observed output, $P_tY_{it}$, gives
 
 $$
 \ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln D(K_{it},L_{it},M_{it})-\varepsilon_{it},\qquad D\equiv\frac{G_M M}{G},
