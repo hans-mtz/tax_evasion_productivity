@@ -26,8 +26,8 @@ tbl <- res %>% transmute(Industry = sic_3, `Corporations` = formatC(n_corp, big.
                          Difference = ifelse(d_beta < 0, paste0("$-$", f3(-d_beta)), f3(d_beta)))
 tt_obj <- tt(tbl, align = "lcccc", width = c(0.8, 1, 1.4, 1.4, 1), notes = paste0(
     "Output elasticity of materials, $\\hat\\beta=\\exp(\\mathbb E[s_{it}\\mid\\text{corporation}])$. Two-tax: log materials share net of sales taxes, ",
-    "$s_{it}=\\ln[(\\rho_tM_{it}-t_{2,it})/(P_tY_{it}-t_{1,it})]$, the headline (Chapter 2). Single-tax: the gross share $\\ln(\\rho_tM_{it}/P_tY_{it})$. ",
-    "Same corporations (corporate firm-years in the production sample); difference = single-tax minus two-tax. Industries: the five of Chapters 5 and 6.")) |>
+    "$s_{it}=\\ln[(\\rho_tM_{it}-t_{2,it})/(P_tY_{it}-t_{1,it})]$. Single-tax: the gross share $\\ln(\\rho_tM_{it}/P_tY_{it})$. ",
+    "Same corporations (corporate firm-years in the production sample); difference = single-tax minus two-tax.")) |>
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "appD-beta-single-tax")
 cat("Saved: Thesis/tables/appD-beta-single-tax.{png,pdf}; Code/Products/appD-beta-single-tax.csv\n")

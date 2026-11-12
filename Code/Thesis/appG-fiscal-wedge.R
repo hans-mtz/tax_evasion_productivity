@@ -17,10 +17,10 @@ tbl <- data.frame(Year = paste0("19", YEARS), check.names = FALSE)
 for (lab in names(cols)) tbl[[lab]] <- year_path(cols[[lab]]$model, cols[[lab]]$prefix)
 print(tbl)
 note <- paste0(
-    "Outcome: the gross minus the net-of-sales-tax log materials share, $\\ln(\\rho_tM^*_{it}/P_tY_{it})-\\ln\\big((1-\\tau_{P,it})\\rho_tM^*_{it}/(P_tY_{it}-\\tau_{S,it}\\,\\text{sales}_{it})\\big)$, ",
-    "the tax wedge that the gross share carries. Same specification as the differences in the event study of the 1983 reform: ",
+    "Outcome: $\\ln(\\rho_tM^*_{it}/P_tY_{it})-\\ln\\big((1-\\tau_{P,it})\\rho_tM^*_{it}/(P_tY_{it}-\\tau_{S,it}\\,\\text{sales}_{it})\\big)$. ",
+    "Same specification as the differences in the event study of the 1983 reform: ",
     "difference relative to 1983 (reference, --), industry fixed effects, unincorporated firms (or LLCs, proprietorships) relative to corporations, ",
-    "in sales-tax-liable and exempt industries. The coefficients equal the gap between the event study on the gross share and on the net share. ",
+    "in sales-tax-liable and exempt industries. ",
     "Standard errors in parentheses, clustered by plant. * p$<$0.1, ** p$<$0.05, *** p$<$0.01. Observations: ",
     format(wedge$n, big.mark = ","), "; juridical organization codes 6--9 excluded.")
 tt_obj <- tt(tbl, width = c(0.8, 1, 1, 1, 1.2), notes = note) |>

@@ -17,11 +17,8 @@ tbl <- res %>% transmute(
 )
 print(tbl)
 note <- paste0(
-    "Midpoint elasticity of overreporting, as a share of true materials, with respect to the sales tax rate on purchases $\\tau_P$, 1983 to each year: ",
-    "the change in overreporting over its midpoint, divided by the change in $\\tau_P$ over its midpoint. Unincorporated firms in sales-tax-liable industries; $\\tau_P$ columns: mean rate among these firms. ",
     "The 95\\% set collects the elasticities that a $\\chi^2_1$ test does not reject at 5\\%, taking the corporations' mean log share by industry, ",
-    "the overreporting levels and the mean rates as the truth; variance clustered by plant. Overreporting cannot be negative, which caps the elasticity at ",
-    sprintf("%.1f in 1987.", res$cap[res$post == "87"]))
+    "the overreporting levels and the mean rates as the truth.")
 tt_obj <- tt(tbl, width = c(0.7, 1, 1, 1, 1, 0.9, 1.2), notes = note) |>
     style_tt("notes", fontsize = 0.8)
 render_thesis_table(tt_obj, "appH-elasticity")

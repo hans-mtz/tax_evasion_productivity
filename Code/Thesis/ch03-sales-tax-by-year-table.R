@@ -53,7 +53,7 @@ print(tbl)
 
 tt_obj <- tbl |>
     tt(width = c(0.9, 2.6, 0.9, 1, 1, 1, 1),
-       notes = "$\\tau_S$: sales tax charged on sales over sales; N and the $\\tau_S$ columns use firms with $0<\\tau_S<50\\%$ (ST-exempt firms excluded). $\\tau_P$: sales tax paid on purchases over raw materials, median over firms with $0<\\tau_P<50\\%$.") |>
+       notes = "$\\tau_S$: sales tax charged on sales over sales. $\\tau_P$: sales tax paid on purchases over raw materials.") |>
     style_tt(i = c(4, 11), bold = TRUE) |>
     style_tt("notes", fontsize = 0.8)
 

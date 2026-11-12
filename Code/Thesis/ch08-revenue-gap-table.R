@@ -40,12 +40,11 @@ tbl <- tibble(
 print(tbl)
 
 tt_obj <- tt(tbl, width = c(1.3, 0.6, 0.9), notes = paste0(
-    "Current rates. Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting. Each share is the mean loss over ",
-    "mean gross sales-tax revenue, estimated as an auxiliary parameter with its own moment. ",
+    "Loss $L=\\tau_P(1-q(e))e$: the credit paid on undetected overreporting. Each share is the mean loss over ",
+    "mean gross sales-tax revenue. ",
     "Interior firms: mean gross sales-tax revenue ", f0(t1p), " real pesos per firm-year. ",
     "All firms in the sample: every other firm's gross sales-tax revenue is added with a loss of zero, which makes the share a lower bound. ",
-    "Each set is the union of the values accepted over several solver runs. ",
-    "Conservative test, $TS\\le\\chi^2_{", g$d_g, ",.95}=", sprintf("%.2f", g$crit), "$.")) |>
+    "$TS\\le\\chi^2_{", g$d_g, ",.95}=", sprintf("%.2f", g$crit), "$.")) |>
     style_tt(i = "notes", fontsize = 0.8)
 
 render_thesis_table(tt_obj, "ch08-revenue-gap")

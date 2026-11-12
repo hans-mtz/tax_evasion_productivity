@@ -42,13 +42,10 @@ print(tbl)
 
 crit <- d$crit[1]
 tt_obj <- tt(tbl, width = c(0.6, 0.8, 1.4, 0.8, 1.3), notes = paste0(
-    "Real pesos per firm-year, ELVIS interior firms (12,050 firm-years). Net sales-tax revenue = gross sales-tax revenue minus ",
+    "ELVIS interior firms (12,050 firm-years). Net sales-tax revenue = gross sales-tax revenue minus ",
     "expected sales-tax refunds. 95\\% set: conservative test, $TS\\le\\chi^2_{18,.95}=", sprintf("%.2f", crit), "$. ",
     "True materials respond: the materials first-order condition with the two tax rates, capital, labour and productivity fixed. ",
-    "True $M$: mean change in true materials; gross revenue: mean change in gross sales-tax revenue from the output response. ",
-    "Both come from the data alone. ", pct(z0), " is the smallest cut, on a finer grid, whose 95\\% set excludes zero. ",
-    "The estimate breaks even at a cut of about ",
-    sprintf("%.0f", abs(100 * be)), "\\%, interpolating linearly between ", pct(m$Delta[k]), " and ", pct(m$Delta[k + 1]), ".")) |>
+    "Gross revenue: mean change in gross sales-tax revenue from the output response.")) |>
     group_tt(j = list("Net sales-tax revenue" = 2:3, "Materials channel" = 4:5)) |>
     style_tt(i = which(w$Delta == 0), background = "#f2f2f2") |>
     style_tt(i = "notes", fontsize = 0.8)

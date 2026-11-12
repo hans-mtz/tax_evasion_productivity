@@ -42,7 +42,7 @@ pf <- pf_raw |> left_join(names_df, by = "sic_3") |>
 stopifnot(!anyNA(pf$name), nrow(pf) == 9, !any(pf$at_bound))
 print(as_tibble(pf), n = Inf)
 
-note_common <- "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations, log materials share net of sales taxes), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$) for the nine industries where overreporting is detected, whose unincorporated firms enter the stage-2 estimation of the detection and evasion-cost parameters as interior firms. Instrument $\\tilde{\\mathcal W}_{it-2}$. Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate $(\\alpha_K,\\alpha_L)$. "
+note_common <- "Output elasticities of materials ($\\hat\\beta$, from the first stage on corporations, log materials share net of sales taxes), capital ($\\hat\\alpha_K$) and labour ($\\hat\\alpha_L$) for the nine industries where overreporting is detected. Point estimates: the minimum of the test-inversion statistic, with the covariance of the moments re-estimated at each candidate $(\\alpha_K,\\alpha_L)$. "
 note_tail <- " $n$: observations in the first stage. Juridical organization codes 6--9 excluded. $^{\\S}$ Two corporate plants: the plant-clustered variance behind the region for $\\beta$ is unreliable."
 make_tbl <- function(test, slug) {
     sh <- test == "sharp"; lab <- if (sh) "sharp" else "cons."

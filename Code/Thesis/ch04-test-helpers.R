@@ -15,7 +15,7 @@ test_names <- tribble(
 fmt_region <- function(lo, hi) ifelse(is.na(lo), "$\\dagger$",
                                       ifelse(lo == 0, sprintf("$(\\,\\cdot\\,,\\ %.3f]$", hi), sprintf("$[%.3f,\\ %.3f]$", lo, hi)))
 test_inv_note <- function(chi, df) paste0(
-    "$\\hat\\mu$: mean of $\\mathcal V_{it}=\\ln(\\rho_tM^*_{it}/P_tY_{it})-\\ln\\hat D$ among unincorporated firms, with the ",
+    "$\\hat\\mu$: mean of $\\mathcal V_{it}=\\ln(\\rho_tM^*_{it}/P_tY_{it})-\\ln\\hat D$, with the ",
     "log materials share net of sales taxes and $\\ln\\hat D$ the mean among corporations. 95\\% test-inversion region for ",
     "$\\mu=E[\\mathcal V_{it}]$ over the grid $\\mu\\in[0,1]$ (under the model $\\mu\\ge0$), taking $\\ln\\hat D$ as the true value; ",
     "plant-clustered, efficiently weighted moments; ", chi, " critical value (", df, "). ",

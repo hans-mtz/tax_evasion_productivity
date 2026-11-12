@@ -27,12 +27,9 @@ tbl <- w %>% transmute(`$\\Delta$` = pct(Delta), `Estimate` = f0(rev_mr), `95\\%
                        `Estimate ` = f0(rev_fx), `95\\% set ` = set(lo_fx, hi_fx))
 print(tbl)
 tt_obj <- tt(tbl, width = c(0.5, 0.7, 1.3, 0.7, 1.3), notes = paste0(
-    "Real pesos per firm-year, ELVIS interior firms (12,050 firm-years). Net sales-tax revenue = gross sales-tax revenue minus ",
+    "ELVIS interior firms (12,050 firm-years). Net sales-tax revenue = gross sales-tax revenue minus ",
     "expected sales-tax refunds. 95\\% set: conservative test, $TS\\le\\chi^2_{18,.95}=", sprintf("%.2f", d$crit[1]), "$. ",
-    "True materials respond: the materials first-order condition with the two tax rates, capital, labour and productivity fixed. ",
-    "True materials fixed: true materials stay at their current level. Break-even of the estimate, interpolating linearly: ",
-    sprintf("%.0f", abs(100 * be_mr)), "\\% cut with true materials responding, ", sprintf("%.0f", abs(100 * be_fx)),
-    "\\% cut with true materials fixed.")) |>
+    "True materials respond: the materials first-order condition with the two tax rates, capital, labour and productivity fixed.")) |>
     group_tt(j = list("True materials respond" = 2:3, "True materials fixed" = 4:5)) |>
     style_tt(i = which(w$Delta == 0), background = "#f2f2f2") |>
     style_tt(i = "notes", fontsize = 0.8)

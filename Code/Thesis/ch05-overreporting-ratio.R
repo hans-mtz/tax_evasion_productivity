@@ -77,8 +77,8 @@ tbl <- stats %>% filter(sic_3 %in% sel) %>% transmute(
 ## 369 they differ; a mean-constrained deconvolution is on the post-submission list, PLAN §6). Still printed above.
 
 tt_obj <- tt(tbl, align = "lccccc", width = c(3.2, 0.8, 0.8, 0.8, 0.8, 0.8),
-             notes = paste0("Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, log materials share net of sales taxes). Sample: unincorporated firms that pay sales tax on purchases, the sample of the structural estimation in Chapter 8."
-    , if (identical(sel, five)) " Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance of the unincorporated firms' residual is at least the corporations' (the condition the deconvolution requires; Beverages, 313, fails it)." else " Industries: the nine where overreporting is detected, whose unincorporated firms enter the structural estimation.")) %>%
+             notes = paste0("Overreporting ratio $x=e/M$: overreported materials as a share of true materials. Moments and quantiles of the density $f_x(y)=f_u(\\ln(1+y))/(1+y)$, obtained by transforming the deconvolved density of $u=\\ln(1+e/M)$ (penalized B-spline deconvolution, log materials share net of sales taxes). Sample: unincorporated firms that pay sales tax on purchases."
+    , if (identical(sel, five)) " Industries: the five largest, by share of output, where overreporting is detected at the 1\\% level and the variance condition is satisfied." else " Industries: the nine where overreporting is detected.")) %>%
     style_tt(i = "notes", fontsize = 0.8)
 render_thesis_table(tt_obj, slug)
 
