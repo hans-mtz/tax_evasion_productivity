@@ -202,22 +202,22 @@ s_{ijt}^{N} &= \ln\beta_j + u^{IT}_{ijt}-\varepsilon_{ijt} & j &\in \text{ST-Exe
 \end{aligned}
 $$ {#eq-fiscal-noncorp}
 
-where $u^{ST}_{ijt}$ and $u^{IT}_{ijt}$ stand for the overreporting due to the ST and the income tax (IT), respectively. Let $D^E_{ijt}$ be a dummy indicating whether the industry is ST-exempt and $D^{L}_{ijt}$ a dummy indicating whether the industry is ST-liable, such that $D^E_{ijt} + D^{L}_{ijt} = 1$. Combining @eq-fiscal-corp with @eq-fiscal-noncorp,
+where $u^{ST}_{ijt}$ and $u^{IT}_{ijt}$ stand for the overreporting due to the ST and the income tax (IT), respectively. Let $D^E_{ijt}$ be a dummy indicating whether the industry is ST-exempt. Combining @eq-fiscal-corp with @eq-fiscal-noncorp,
 
 $$
-    s_{ijt} = \ln\beta_j + D_{ijt}^N D^E_{ijt}\, u^{IT}_{ijt} + D_{ijt}^N D^{L}_{ijt} (u^{ST}_{ijt} + u^{IT}_{ijt}) - \varepsilon_{ijt}
+    s_{ijt} = \ln\beta_j + D_{ijt}^N D^E_{ijt}\, u^{IT}_{ijt} + D_{ijt}^N (1-D^{E}_{ijt}) (u^{ST}_{ijt} + u^{IT}_{ijt}) - \varepsilon_{ijt}
 $$ {#eq-fiscal-lvl-split}
 
 Taking expectations,
 
 $$
 \begin{aligned}
-E[s_{ijt}|D^{N}=1,D^E=1,j]-\ln\beta_j &= \mu^{IT}_E \\
-E[s_{ijt}|D^{N}=1,D^{L}=1,j]-\ln\beta_j &= \mu^{ST}_{L}+\mu^{IT}_{L}\equiv\mu^{ST+IT}_{L}
+E[s_{ijt}|D^{N}=1,D^E=1,j]-E[s_{ijt}|D^{N}=0,j] &= \mu^{IT}_E \\
+E[s_{ijt}|D^{N}=1,D^{E}=0,j]-E[s_{ijt}|D^{N}=0,j] &= \mu^{ST}_{L}+\mu^{IT}_{L}\equiv\mu^{ST+IT}_{L}
 \end{aligned}
 $$
 
-identifies the average overreporting by firms in ST-exempt industries, $\mu^{IT}_E$, and in ST-liable industries, $\mu^{ST+IT}_{L}$. If I assume $\mu^{IT}_E = \mu^{IT}_{L}$, I can also identify the overreporting due to ST, $\mu^{ST}_{L}$. Since income-tax rates depend on the juridical organization and not on the industry, I assume that the income tax generates the same incentives to evade taxes across industries, whether they are exempt of ST or not. Because I aggregate different juridical organizations in exempt and liable industries into unincorporated firms, this assumption might break if the composition of juridical organizations is non-trivially different between exempt and liable industries. The regression versions of @eq-fiscal-lvl-reg and @eq-fiscal-diff-reg interact the year dummies with $D^N_{ijt}D^E_{ijt}$ and $D^N_{ijt}D^L_{ijt}$, giving one path per industry type, $\mu_{E,t}$ and $\mu_{L,t}$ (and $\Delta\mu_{E,t}$, $\Delta\mu_{L,t}$ relative to 1983). Splitting unincorporated firms further by JO, into LLCs and proprietorships, gives four such paths.
+identifies the average overreporting by firms in ST-exempt industries, $\mu^{IT}_E$, and in ST-liable industries, $\mu^{ST+IT}_{L}$. If I assume $\mu^{IT}_E = \mu^{IT}_{L}$, I can also identify the overreporting due to ST, $\mu^{ST}_{L}$. Since income-tax rates depend on the juridical organization and not on the industry, I assume that the income tax generates the same incentives to evade taxes across industries, whether they are exempt of ST or not. Because I aggregate different juridical organizations in exempt and liable industries into unincorporated firms, this assumption might break if the composition of juridical organizations is non-trivially different between exempt and liable industries. The regression versions of @eq-fiscal-lvl-reg and @eq-fiscal-diff-reg interact the year dummies with $D^N_{ijt}D^E_{ijt}$ and $D^N_{ijt}(1-D^E_{ijt})$, giving one path per industry type, $\mu_{E,t}$ and $\mu_{L,t}$ (and $\Delta\mu_{E,t}$, $\Delta\mu_{L,t}$ relative to 1983). Splitting unincorporated firms further by JO, into LLCs and proprietorships, gives four such paths.
 
 ### Changes in true materials cannot explain the pattern {#sec-fiscal-m}
 
