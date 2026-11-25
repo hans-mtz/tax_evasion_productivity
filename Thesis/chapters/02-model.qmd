@@ -103,23 +103,31 @@ The first term is revenue net of the tax on sales; the second, the cost of true 
 
 ### The materials condition {#sec-model-foc-m}
 
-Taking the FOC of @eq-profit with respect to $M_{it}$, we have,
+Taking the FOC of @eq-profit with respect to $M_{it}$ and rearranging, we have,
 
 $$
-(1-\tau_S)P_t\,\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it})=(1-\tau_P)\rho_t.
+\frac{(1-\tau_P)\rho_t}{(1-\tau_S)P_t}=\beta K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta-1}\exp(\omega_{it}).
 $$ {#eq-foc-m}
 
 <!-- where $E_\varepsilon[\exp(\varepsilon_{it})]=1$ because $\varepsilon_{it}$ is measurement error.  -->
 
-@eq-foc-m looks familiar except for the tax wedge: the left-hand side is the marginal revenue product of materials and the right-hand side is the price of materials, both net of taxes.
+@eq-foc-m looks familiar except for the tax wedge: the left-hand side is the price of materials relative to the price of output, both net of taxes, and the right-hand side is the marginal product of materials.
 
 The taxes matter when $\tau_P\neq\tau_S$. By changing either rate, the government changes the price of materials relative to output, and with it the firm's choice of materials. If $(1-\tau_P)/(1-\tau_S)>1$, materials become more expensive relative to output than without taxes, and the firm uses less of them; if the ratio is below one, as when the rate on purchases exceeds the rate on sales, materials become cheaper and the firm uses more of them.
 
-The econometrician observes output, including measurement error $\varepsilon_{it}$, as a function of inputs. Multiplying @eq-foc-m by $M_{it}$, dividing by the value of observed output, $P_tY_{it}$, and taking logs gives the log share of materials in output, net of sales taxes:
+The econometrician observes output, including measurement error $\varepsilon_{it}$, as a function of inputs. In other words, from the econometrician's perspective,
+
+$$
+Y_{it}=K_{it}^{\alpha_K}L_{it}^{\alpha_L}M_{it}^{\beta}\exp(\omega_{it}+\varepsilon_{it}).
+$$ {#eq-pf-econ}
+
+Multiplying both sides of @eq-foc-m by $M_{it}$, dividing by @eq-pf-econ, and taking logs,
 
 $$
 \ln\left(\frac{(1-\tau_P)\rho_tM_{it}}{(1-\tau_S)P_tY_{it}}\right)=\ln\beta-\varepsilon_{it}.
 $$ {#eq-share-net}
+
+The left-hand side of @eq-share-net is the materials share of output, net of sales taxes, in logs.
 
 With a single rate, the tax terms cancel and the gross share, $\rho_tM_{it}/P_tY_{it}$, satisfies the same equation as the no-tax optimization condition. The two shares differ little in the data: the log ratio $\ln\big((1-\tau_S)/(1-\tau_P)\big)$ has a standard deviation of 0.05 across firm-years, against 0.34 for the log gross share.
 

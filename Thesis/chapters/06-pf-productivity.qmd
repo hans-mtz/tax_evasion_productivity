@@ -25,11 +25,14 @@ Let $\ln X_{it}=x_{it}$. With the estimate of $\beta$ and the observed residual 
 $$
 \begin{aligned}
     \mathcal W_{it} & \equiv y_{it} - \beta (m^*_{it}-\mathcal{V}_{it})\\
-    & = y_{it} - \beta (m_{it}+u_{it}-u_{it}+\varepsilon_{it})\\
+    & = y_{it} - \beta (m^*_{it}-u_{it}+\varepsilon_{it})\\
+    & = y_{it} - \beta \big(m^*_{it}-(m^*_{it}-m_{it})+\varepsilon_{it}\big)\\
     & = y_{it} - \beta m_{it}-\beta\varepsilon_{it}\\
-    & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it}
+    & = \alpha_K k_{it}+\alpha_L l_{it}+\omega_{it}+(1-\beta)\varepsilon_{it},
 \end{aligned}
 $$ {#eq-big-w}
+
+where the second line follows from @eq-ob-ev, the third line from the definition of $u_{it}$, and the last line from @eq-pf-econ.
 
 Here, intuitively, I am trading unobservables, the unobserved tax evasion for the measurement error. 
 
@@ -43,7 +46,7 @@ $$
 \end{aligned}
 $$ {#eq-big-w-reg}
 
-If productivity follos an AR(1) process $g(\xi)=\gamma_0 +\gamma_1\xi$, I can use instruments $Z$ to learn $\alpha$ and $g$, such that,
+If productivity follows an AR(1) process $g(\xi)=\gamma_0 +\gamma_1\xi$, I can use instruments $Z$ to learn $\alpha$ and $g$, such that,
 
 $$
 \mathbb{E}[\eta_{it}+(1-\beta)\varepsilon_{it}+\gamma_1(1-\beta)\varepsilon_{it-1}|Z]=0.
